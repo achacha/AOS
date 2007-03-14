@@ -187,32 +187,32 @@ void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, const AS
   {
     AString str((*it).second);
 
-    LIST_AString::iterator it = listControlNames.begin();
-    while (it != listControlNames.end())
+    LIST_AString::iterator itN = listControlNames.begin();
+    while (itN != listControlNames.end())
     {
-      if (!(*it).compare("plural", 6))
+      if (!(*itN).compare("plural", 6))
       {
         AString strTemp;
         AWordUtility::getPlural(str, strTemp);
         str.assign(strTemp);
       }
 
-      if (!(*it).compare("uppercase", 9))
+      if (!(*itN).compare("uppercase", 9))
       {
         str.makeUpper();
       }
 
-      if (!(*it).compare("lowercase", 9))
+      if (!(*itN).compare("lowercase", 9))
       {
         str.makeLower();
       }
 
-      if (!(*it).compare("proper", 6))
+      if (!(*itN).compare("proper", 6))
       {
         str.use(0) = toupper(str.at(0));
       }
 
-      if (!(*it).compare("article", 7))
+      if (!(*itN).compare("article", 7))
       {
         AString strTemp(str);
         if (AConstant::npos == AWordUtility::sstr_Vowels.find(str.at(0)))
@@ -226,7 +226,7 @@ void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, const AS
         str.append(strTemp);
       }
 
-      ++it;
+      ++itN;
     }
 
     target.append(str);
@@ -268,20 +268,20 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, const AS
     AString str(vec.at(index));
     
     //a_Apply control code actions
-    LIST_AString::iterator it = listControlNames.begin();
-    while (it != listControlNames.end())
+    LIST_AString::iterator itN = listControlNames.begin();
+    while (itN != listControlNames.end())
     {
 //      TRACE1("Checking control: %s\n", (*it).c_str());
       
       //a_Verb only control
-      if ('$' == (*it).at(0, '\x0'))
+      if ('$' == (*itN).at(0, '\x0'))
       {
         //a_Add variable to global map
-        (*it).peek(strSaveVariable, 1);
+        (*itN).peek(strSaveVariable, 1);
       }
       else if (!strTypeName.compare("verb"))
       {
-        if (!(*it).compare("present", 7))
+        if (!(*itN).compare("present", 7))
         {
           if (AConstant::npos != AWordUtility::sstr_Vowels.find(str.last()))
           {
@@ -290,7 +290,7 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, const AS
           }
           str.append("ing", 3);
         }
-        else if (!(*it).compare("past", 4))
+        else if (!(*itN).compare("past", 4))
         {
           if (AConstant::npos == AWordUtility::sstr_Vowels.find(str.last()))
           {
@@ -303,29 +303,29 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, const AS
         }
       }
 
-      if (!(*it).compare("plural", 6))
+      if (!(*itN).compare("plural", 6))
       {
         AString strTemp;
         AWordUtility::getPlural(str, strTemp);
         str.assign(strTemp);
       }
 
-      if (!(*it).compare("uppercase", 9))
+      if (!(*itN).compare("uppercase", 9))
       {
         str.makeUpper();
       }
 
-      if (!(*it).compare("lowercase", 9))
+      if (!(*itN).compare("lowercase", 9))
       {
         str.makeLower();
       }
 
-      if (!(*it).compare("proper", 6))
+      if (!(*itN).compare("proper", 6))
       {
         str.use(0) = toupper(str.at(0));
       }
 
-      if (!(*it).compare("article", 7))
+      if (!(*itN).compare("article", 7))
       {
         AString strTemp(str);
         if (AConstant::npos == AWordUtility::sstr_Vowels.find(str.at(0)))
@@ -339,7 +339,7 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, const AS
         str.append(strTemp);
       }
 
-      ++it;
+      ++itN;
     }
     
     target.append(str);
