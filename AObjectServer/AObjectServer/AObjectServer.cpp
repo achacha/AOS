@@ -241,7 +241,7 @@ int main(int argc, char **argv)
       }
     }
     else
-      iniFilename.set(ASW("./aosconfig/AObjectServer.ini", 29));
+      iniFilename.set(ASW("./aos_root/AObjectServer.ini", 29));
 
     if (AFileSystem::exists(iniFilename))
     {

@@ -21,8 +21,8 @@ const AString AOSConfiguration::CONFIG("config");
 #define DEFAULT_REPORTED_SECURE_SERVER_PORT 443
 #define DEFAULT_REPORTED_SERVER_NAME "127.0.0.1"
 
-#define DEFAULT_AOS_CERT_FILENAME "aosconfig/aos_cert.pem"
-#define DEFAULT_AOS_PKEY_FILENAME "aosconfig/aos_pkey.pem"
+#define DEFAULT_AOS_CERT_FILENAME "aos_root/certs/aos_cert.pem"
+#define DEFAULT_AOS_PKEY_FILENAME "aos_root/certs/aos_pkey.pem"
 
 #define DEFAULT_ADMIN_SERVER_PORT 12345
 

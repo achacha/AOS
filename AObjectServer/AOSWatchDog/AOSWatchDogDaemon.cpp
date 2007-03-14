@@ -38,7 +38,7 @@ u4 AOSWatchDogDaemon::callbackMain(AThread& thread)
   m_aosExecutablePath.useFilename().assign("AObjectServer.exe");
   
   AFilename iniFilename(m_aosExecutablePath);
-  iniFilename.usePathNames().push_back("aosconfig");
+  iniFilename.usePathNames().push_back("aos_root");
   iniFilename.useFilename().assign("AOSWatchDog.ini");
   AFILE_TRACER_DEBUG_MESSAGE((AString("Using INI file: ")+iniFilename.toAString()).c_str(), (void *)&thread);
   try
