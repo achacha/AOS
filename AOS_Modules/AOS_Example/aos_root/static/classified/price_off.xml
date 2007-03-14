@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table><tr><td colspan="2">
+	<img 
+		align="top" 
+		src="images/plus_16x16.png" 
+		onclick="var x=getHttpXml('price', 1); this.style.visibility='hidden'; return x;"
+	/><span class="feature_off">Price (static)</span>
+</td></tr></table>

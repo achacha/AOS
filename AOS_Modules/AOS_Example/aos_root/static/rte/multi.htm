@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+	<script type="text/javascript" src="lang/en.js"></script>
+	<script type="text/javascript" src="html2xhtml.js"></script>
+	<script type="text/javascript" src="richtext.js"></script>
+</head>
+<body>
+<!-- START Demo Code -->
+<form name="RTEDemo" action="multi.htm" method="post" onsubmit="return submitForm();">
+<script language="JavaScript" type="text/javascript">
+<!--
+function submitForm() {
+	alert("rte1 = " + document.RTEDemo.rte1.value);
+	alert("rte2 = " + document.RTEDemo.rte2.value);
+	alert("rte3 = " + document.RTEDemo.rte3.value);
+	alert("rte4 = " + document.RTEDemo.rte4.value);
+	
+	//change the following line to true to submit form
+	return false;
+}
+
+//-->
+</script>
+<noscript><p><b>Javascript must be enabled to use this form.</b></p></noscript>
+
+<script language="JavaScript" type="text/javascript">
+<!--
+var rte1 = new RichText('rte1', 'here&#39;s the "<em>preloaded</em> <b>content</b>"', 580, 200, true, false);
+rte1.create();
+
+document.writeln('<br><br>');
+var rte2 = new RichText('rte2', 'preloaded <b>text</b>', 560, 100, true, false);
+rte2.create();
+
+document.writeln('<br><br>');
+var rte3 = new RichText('rte3', 'preloaded <b>text</b>', 550, 100, false, false);
+rte3.create();
+
+document.writeln('<br><br>');
+var rte4 = new RichText('rte4', 'preloaded <b>text</b>', 450, 100, true, true);
+rte4.create();
+
+//-->
+</script>
+
+<p>Click submit to show the value of the text box.</p>
+<p><input type="submit" name="submit" value="Submit"></p>
+</form>
+<!-- END Demo Code -->
+
+</body>
+</html>

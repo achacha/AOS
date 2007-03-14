@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<command name='TestFail'>
+	<input/>
+	<module class='Test' name='start'>
+		<name>foo</name>
+		<value>bar</value>
+	</module>
+	<module class='TestFail' name='work'>
+		<name>red</name>
+		<value>pink</value>
+	</module>
+	<module class='Test' name='end'>
+		<name>blue</name>
+		<value>teal</value>
+	</module>
+</command>

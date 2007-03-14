@@ -1,0 +1,111 @@
+<html>
+<head> 
+<script>document.write('<title>' + self.opener.lang['Search'] + '</title>');</script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+<!-- 
+body { background-color: #DEDCD5; margin: 10px;}
+table, select, input { font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 8pt; }
+legend { font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 8pt; padding-left: 5px; padding-right: 8px; }
+-->
+</style>
+<script language="JavaScript" type="text/javascript"> 
+<!-- 
+var dialogArgs = self.opener.dialogArgs;
+var lang = self.opener.lang;
+var ua = self.opener.ua;
+var rte = dialogArgs.rte;
+
+function submitForm() {
+	if(document.getElementById("searchText").value == ""){
+    alert(lang['SearchVal0']);
+		return;
+	}
+  var searchText = document.getElementById("searchText").value;
+  var replaceText = document.getElementById("replaceText").value;
+  searchAndReplace(searchText, replaceText, document.getElementById("matchCase").checked, document.getElementById("wholeWord").checked);
+	window.close();
+	return false;
+}
+
+function searchAndReplace(searchFor, replaceWith, matchCase, wholeWord) {
+	var w = rte.getWindow();
+	var cfrmMsg = lang['SearchConfirm'].replace("SF",searchFor).replace("RW",replaceWith);
+	rte.hideGuideLines();
+	var tmpContent = w.document.body.innerHTML.replace("'", "\'").replace('"', '\"');
+	var strRegex;
+	if (matchCase && wholeWord) {
+		strRegex = "/(?!<[^>]*)(\\b(" + searchFor + ")\\b)(?![^<]*>)/g";
+	} else if (matchCase) {
+		strRegex = "/(?!<[^>]*)(" + searchFor + ")(?![^<]*>)/g";
+	} else if (wholeWord) {
+		strRegex = "/(?!<[^>]*)(\\b(" + searchFor + ")\\b)(?![^<]*>)/gi";
+	} else {
+		strRegex = "/(?!<[^>]*)(" + searchFor + ")(?![^<]*>)/gi";
+	}
+	var cmpRegex=eval(strRegex);
+	var runCount = 0;
+	var tmpNext = tmpContent;
+	var intFound = tmpNext.search(cmpRegex);
+	while(intFound > -1) {
+		runCount = runCount+1;
+		tmpNext = tmpNext.substr(intFound + searchFor.length);
+		intFound = tmpNext.search(cmpRegex);
+	}
+	if (runCount > 0) {
+		cfrmMsg = cfrmMsg.replace("[RUNCOUNT]",runCount);
+		if(confirm(cfrmMsg)) {
+			tmpContent=tmpContent.replace(cmpRegex,replaceWith);
+			w.document.body.innerHTML = tmpContent.replace("\'", "'").replace('\"', '"');
+		} else {
+			alert(lang['SearchAbort']);
+		}
+		rte.showGuideLines();
+	} else {
+		rte.showGuideLines();
+		alert("["+searchFor+"] "+lang['SearchNotFound']);
+	}
+}
+//--> 
+</script> 
+</head>
+<body>
+<form name="linkForm">
+<table cellpadding="0" cellspacing="0" border="0" width=100%>
+<tr>
+<td>
+<fieldset style="margin-left: 5px;"><legend><script>document.write(lang['Search']);</script></legend>
+<table cellpadding="4" cellspacing="0" border="0" width=100%>
+<tr>
+<td align="right" nowrap><script>document.write(lang['SearchFind']);</script>:&nbsp;</td>
+<td><input name="searchText" type="text" id="searchText" size="35" value=""></td>
+</tr>
+<tr>
+<td align="right" nowrap><script>document.write(lang['SearchReplace']);</script>:&nbsp;</td>
+<td><input name="replaceText" type="text" id="replaceText" size="35" value=""></td>
+</tr> 
+<tr>
+<td align="right" nowrap>&nbsp;</td>
+<td align="left">
+<input id=matchCase name=matchCase type=checkbox><script>document.write(lang['SearchMatch']);</script><br>
+<input id=wholeWord name=wholeWord type=checkbox><script>document.write(lang['SearchWholeWord']);</script>
+</td> 
+</tr>
+</table> 
+</fieldset>
+</td>
+</tr>
+<tr>
+<td align="right" style="padding-top:3px;padding-bottom:3px">
+<input type="button" name="btnsubmit" value="" style="width:80px" onclick="submitForm();"/>&nbsp;
+<input type="button" name="btncancel" value="" style="width:80px;" onClick="window.close();"/>
+</td>
+</tr>
+</table>
+</form>
+</body>
+</html>
+<script>
+document.linkForm.btnsubmit.value = lang['SearchSubmit'];
+document.linkForm.btncancel.value = lang['SearchCancel'];
+</script>

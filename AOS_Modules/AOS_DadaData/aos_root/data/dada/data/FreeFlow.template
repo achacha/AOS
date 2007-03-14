@@ -1,0 +1,10 @@
+{%html}
+{%pronoun_s:proper} {%verb} to {%adjective:article} {%noun}, {%connect} can {%pronoun_s} {%adverb} {%verb}
+{%noun_proper} {%adverb} {%verb:plural}, {%connect} the {%noun} is {%adjective}
+{%pronoun_s} {%verb:plural} the {%noun} of {%adjective:article} {%noun}
+{%pronoun_p_pos} {%noun} is {%verb:infinite,article} {%noun} {%preposition} {%adjective:article} {%noun}
+{%verb:infinite} still and {%verb:infinite} {%adverb}
+In {%noun:article} of {%noun:plural}, {%noun:article} is {%adjective:article} and {%adjective:article} {%noun}!
+{%verb:infinite} in {%location} is like {%verb:infinite} {%adjective:article} {%noun}
+{%pronoun_p} don't {%verb} {%preposition} {%verb:infinite} {%noun:article%, it only {%verb:plural} {%noun}
+In the {%location}, {%noun:article} is {%adverb:article} {%verb:infinite} {%noun}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<command>
+	<input/>
+	<module/>
+	<output class="GenerateImage">
+		<canvas>
+			<x>200</x>
+			<y>100</y>
+		</canvas>
+	</output>
+</command>

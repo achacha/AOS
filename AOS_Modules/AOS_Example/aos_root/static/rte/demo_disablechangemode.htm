@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+	<title>Cross-Browser Rich Text Editor</title>
+	<script type="text/javascript" src="lang/en.js"></script>
+	<script type="text/javascript" src="html2xhtml.js"></script>
+	<script type="text/javascript" src="richtext.js"></script>
+</head>
+<body>
+
+<!-- START Demo Code -->
+<form name="RTEDemo" action="demo.htm" method="post" onsubmit="return submitForm();">
+<script type="text/javascript">
+<!--
+function submitForm() {
+	alert("rte1 = " + document.RTEDemo.rte1.value);
+	return false;
+}
+//-->
+</script>
+<noscript><p><b>Javascript must be enabled to use this form.</b></p></noscript>
+
+<script type="text/javascript">
+<!--
+//Usage: object_name = new RichText('object_name', html, width, height, buttons, readOnly)
+var rte1 = new RichText('rte1');
+rte1.value = '<P class=ftrimage align=center><A href="http://news.yahoo.com/s/ap/20060126/ap_on_sp_so_ga_su/soc_euro_rdp;_ylt=ApQy97BrGjJXRTUkXWEQs.ALMxIF;_ylu=X3oDMTA5aHJvMDdwBHNlYwN5bmNhdA--"><IMG height=119 alt="Manchester United&quot;s Wayne Rooney, right, keeps the ball from Blackburn&quot;s Lucas Neill during their English League Cup Semi-Final second leg soccer match at Old Trafford Stadium, Manchester, England, Wednesday Jan. 25, 2006.  (AP Photo/Jon Super)" src="britain_soccer_mjs815.jpg" width=100 border=0></A></P><H1 align=center><A href="http://news.yahoo.com/s/ap/20060126/ap_on_sp_so_ga_su/soc_euro_rdp;_ylt=AiF.8IrBpEYO5gh5zkYvtmgLMxIF;_ylu=X3oDMTA5aHJvMDdwBHNlYwN5bmNhdA--">Manchester United Reaches League Cup Final</A> </H1><P align=right><EM><FONT size=5><FONT face="palatino linotype">AP - <SPAN class=timedate>Wed Jan 25, 11:57 PM ET</SPAN></FONT></FONT></EM> </P><P><STRONG>MANCHESTER</STRONG>, <EM>England</EM> - <FONT color=#3333ff><SUP>Ruud van Nistelrooy</SUP> </FONT>and <FONT style="BACKGROUND-COLOR: #66ff99"><SUB>Louis Saha</SUB> </FONT> scored to overcome a standout effort by American goalkeeper Brad Friedel, enabling Manchester United to beat Blackburn Rovers 2-1 Wednesday night and reach the English League Cup final against upstart Wigan Athletic.</P>';
+rte1.width = 800;
+rte1.height = 400;
+rte1.enableChangeMode = false;
+rte1.showButtons = true;
+rte1.readOnly = false;
+rte1.generateXHTML = true;
+rte1.create();
+//-->
+</script>
+<p>Click submit to show the value of the text box.</p>
+<p><input type="submit" name="submit" value="Submit"></p>
+</form>
+<!-- END Demo Code -->
+</body>
+</html>

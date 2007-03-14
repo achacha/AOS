@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table><tr><th>
+	<img 
+		align="top" 
+		src="images/minus_16x16.png" 
+		onclick="var x=getHttpXml('price', 0); this.style.visibility='hidden'; return x;"
+	/><span class="feature_on">Price (static)</span>
+</th><td>
+	<input type="text" maxlength=20 name="price"/>
+</td></tr></table>

@@ -1,0 +1,56 @@
+<html> 
+<head> 
+<script>document.write('<title>' + self.opener.lang['PasteText'] + '</title>');</script>
+<style type="text/css">
+<!-- 
+body { font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 8pt; background-color: #DEDCD5; margin: 10px;}
+table, textarea, input { font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 8pt; }
+legend { font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 8pt; padding-left: 5px; padding-right: 8px; }
+-->
+</style>
+<script language="JavaScript" type="text/javascript"> 
+<!-- 
+var dialogArgs = self.opener.dialogArgs;
+var lang = self.opener.lang;
+var ua = self.opener.ua;
+var rte = dialogArgs.rte;
+
+function submitForm(){
+  if (document.frm_obj.content.value==''){ 
+    alert(lang['PasteTextVal0']); 
+  }else{
+    cleaned = formatText(document.frm_obj.content.value); 
+    rte.insertHTML(cleaned); 
+    window.close(); 
+  }
+}
+
+function formatText(html){ 
+   html = html.replace(/&/g, "&amp;"); 
+   html = html.replace(/</g, "&lt;"); 
+   html = html.replace(/>/g, "&gt;");
+   html = html.replace(/\n/g,"</p><p>"); 
+   html = html.replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"); 
+   return html; 
+}
+//--> 
+</script> 
+</head> 
+<body> 
+<form name="frm_obj"> 
+<fieldset style="margin:8px;"><legend><script>document.write(lang['PasteText']);</script></legend>
+<div style="padding:8px;">
+<script>document.write(lang['PasteTextHint']);</script><textarea name="content" type="text" id="cleanText" style="width:280px; height:230px;"></textarea></div>
+</fieldset>
+<div align="right" style="padding-right:3px;padding-bottom:3px">
+<input type="button" name="btnsubmit" value="" style="width:80px" onclick="submitForm();"/>&nbsp;
+<input type="button" name="btncancel" value="" style="width:80px" onClick="window.close();"/>
+</div>
+</form>
+<script>
+document.frm_obj.btnsubmit.value = lang['PasteTextSubmit'];
+document.frm_obj.btncancel.value = lang['PasteTextCancel'];
+document.frm_obj.content.focus();
+</script>
+</body>
+</html>

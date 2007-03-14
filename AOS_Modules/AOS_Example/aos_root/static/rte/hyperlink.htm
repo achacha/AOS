@@ -1,0 +1,211 @@
+<html>
+<head> 
+<script type="text/javascript">
+document.writeln('<title>' + self.opener.lang['HyperLink'] + '</title>');
+</script>
+<style type="text/css">
+<!-- 
+body { background-color: #DEDCD5; margin: 10px;}
+table, select, input { font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 8pt; }
+legend { font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 8pt; padding-left: 5px; padding-right: 8px; }
+-->
+</style>
+<script language="JavaScript" type="text/javascript"> 
+<!-- 
+var dialogArgs = self.opener.dialogArgs;
+var lang = self.opener.lang;
+var ua = self.opener.ua;
+
+function get_anchors() {
+	document.getElementById('documentAnchors').disabled = true;
+	var ta = dialogArgs.rte.getTextarea();
+
+	var re = new RegExp("<[aA][^>]+?name=\"?(.+?)(\".*?>|>)", "m");
+	var anchors = new Array;
+	var m = re.exec(ta.value);
+	while(m) { 
+		anchors.push(m[1]);
+		m = re.exec(RegExp.rightContext);
+	} 
+	if (anchors.length) { 
+		var s = anchors.length + " matches:\n";
+		for(var i = 0; i < anchors.length; i++) { 
+			s = s + "- " + anchors[i] + "\n";
+			document.forms['linkForm'].documentAnchors.options[i] = new Option(anchors[i],anchors[i]); 
+		} 
+		//alert(s) 
+	} else { 
+		document.forms['linkForm'].documentAnchors.options[0] = new Option(lang['LinkNoA'],'');
+	} 
+	return anchors;
+} 
+
+var baseurl; 
+function setType(type) {
+	var aa = document.getElementById('linkText');
+	var ab = document.getElementById('linkTarget');
+	var ac = document.getElementById('url');
+	var ad = document.getElementById('documentAnchors');
+	switch (type) {
+		case "mailto" :
+			baseurl= '<a href="mailto:';
+			aa.disabled = false;
+			ab.disabled = true;
+			ac.disabled = false;
+			ad.disabled = true;
+			break;
+		case "newanchor" :
+			baseurl= '<a "';
+			aa.disabled = true;
+			ab.disabled = true;
+			ac.disabled = false;
+			ad.disabled = true;
+			break;
+		case "oldanchor" :
+			baseurl= '<a href=""';
+			endurl='#';
+			aa.disabled = false;
+			ab.disabled = true;
+			ac.disabled = true;
+			ad.disabled = false;
+    break;
+    default:
+      baseurl= '<a href="';
+			aa.disabled = false;
+			ab.disabled = false;
+			ac.disabled = false;
+			ad.disabled = true;
+			break;
+	}
+}
+
+function AddLink() { 
+	var oForm = document.linkForm;
+	var rte = dialogArgs.rte;
+	//validate form 
+	var protocol='';
+	var prefix="href";
+	var html;
+	var selIndex = document.linkForm.linkType.options[document.linkForm.linkType.selectedIndex].value;
+	switch (selIndex) { 
+		case 'http':
+			protocol='http://';
+			break;
+		case 'https':
+			protocol='https://';
+			break;
+		case 'ftp':
+			protocol='ftp://';
+			break;
+		case 'relative':
+			protocol='';
+			break;
+		case 'oldanchor':
+			oForm.url.value=document.linkForm.documentAnchors.options[document.linkForm.documentAnchors.selectedIndex].value;
+			protocol='#';
+			break;
+		case 'newanchor':
+			oForm.linkText.value=' ';
+			prefix='name';
+			break;
+		case 'mailto':
+			protocol='mailto:';
+			break;
+	}
+	if (oForm.url.value == '') {
+		alert(lang['LinkVal0']);
+		return false;
+	} 
+	if (oForm.linkText.value != '' && (selIndex == "http" || selIndex == "https" || selIndex == "ftp" || selIndex == "relative" )) {
+		html = '<a '+ prefix + '="'+protocol + document.linkForm.url.value + '" target="' + document.linkForm.linkTarget.options[document.linkForm.linkTarget.selectedIndex].value + '">' + document.linkForm.linkText.value + '</a>';
+		rte.insertHTML(html);
+	} else if(oForm.linkText.value != '') {
+		html = '<a '+ prefix + '="'+protocol + document.linkForm.url.value + '">' + document.linkForm.linkText.value + '</a>';
+		rte.insertHTML(html);
+	} else {
+		var param=protocol+document.linkForm.url.value + '" target="' + document.linkForm.linkTarget.options[document.linkForm.linkTarget.selectedIndex].value + '"';
+		rte.getWindow().document.execCommand('createLink',false, param );
+	}
+	window.close();
+	return true;
+}
+
+function init() {
+	document.getElementById('documentAnchors').disabled = true;
+	document.linkForm.btnsubmit.value = lang['LinkSubmit'];
+	document.linkForm.btncancel.value = lang['LinkCancel'];
+	var range = dialogArgs.range;
+	var rte = dialogArgs.rte;
+	if (ua.ie || ua.opera) {
+		document.getElementById('linkText').value = rte.stripHTML(range.text);
+	} else {
+		document.getElementById('linkText').value = rte.stripHTML(range.toString());
+	}
+}
+//--> 
+</script> 
+</head>
+<body onload="get_anchors()">
+<form name="linkForm">
+<table cellpadding="0" cellspacing="0" border="0" width=100% height=100%>
+<tr>
+<td>
+<fieldset style="margin-left: 5px;">
+	<legend><script>document.write(lang['HyperLink']);</script></legend>
+	<table cellpadding="4" cellspacing="0" border="0" width=100%>
+	<tr>
+	<td align="right" nowrap><script>document.write(lang['LinkType']);</script>:</td>
+	<td>
+	<select  name="linkType" id="linkType" onChange="setType(this.value);">
+	<option value="http" selected>http://</option>
+	<option value="https">https://</option>
+	<option value="ftp">ftp://</option>
+	<script>if(!ua.ie) document.writeln('<option value="relative">relative</option>')</script>
+	<option value="mailto">email</option>
+	<option value="oldanchor"><script>document.write(lang['LinkOldA']);</script></option>
+	<option value="newanchor"><script>document.write(lang['LinkNewA']);</script></option>
+	</select> 
+	</td>
+	</tr>
+	<tr>
+	<td align="right" nowrap><script>document.write(lang['LinkAnchors']);</script>:</td>
+	<td>
+	<select name="documentAnchors" id="documentAnchors">
+	</select></td>
+	</tr>
+	<tr>
+	<td align="right" nowrap><script>document.write(lang['LinkAddress']);</script>:</td>
+	<td><input name="url" type="text" id="url" size="50" value=""></td>
+	</tr>
+	<tr>
+	<td align="right" nowrap><script>document.write(lang['LinkText']);</script>:</td>
+	<td><input name="linkText" type="text" id="linkText" size="50" value=""></td>
+	</tr>
+	<tr>
+	<td align="right" nowrap><script>document.write(lang['LinkOpenIn']);</script>:</td>
+	<td align="left">
+	<select name="linkTarget" id="linkTarget"">
+	<option value="_blank">blank</option>
+	<option value="_self" selected>self</option>
+	<option value="_parent">parent</option>
+	<option value="_top">top</option>
+	</select> 
+	</td>
+	</tr>
+	</table>
+</fieldset>
+</td>
+</tr>
+<tr>
+<td align="right" style="padding-top:3px;padding-bottom:3px">
+<input type="button" name="btnsubmit" value="" onclick="AddLink();" style="width:80px;"/>&nbsp;
+<input type="button" name="btncancel" value="" onClick="window.close();" style="width:80px;"/>
+</td>
+</tr>
+</table>
+</form>
+<script>
+init();
+</script>
+</body>
+</html>

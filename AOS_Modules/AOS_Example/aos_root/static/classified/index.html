@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title>Simple Classified Item Lister</title>
+	<script src="/rte/lang/en.js" type="text/javascript"></script>
+	<script src="/rte/html2xhtml.js" type="text/javascript"></script>
+	<script src="/rte/richtext.js" type="text/javascript"></script>
+	<script src="classified.js" type="text/javascript"></script>
+	<link href="classified.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<form action="classified_submit" method="post">
+<span id="classified_title">
+	<table><tr>
+  	<th><img align="top" src="images/blank_16x16.png"><span class="feature_on">Title</span></th>
+  	<td><input type="text" name="title" maxlength="100" size="100"/></td>
+  </tr></table>  
+</span>
+<br/>
+<small>AOS static XML</small><br/>
+<table>
+	<tr><th><span class="feature_on">Contact Email</span></th>
+	<td><input type="text" name="contact_email" maxlength="20" size="20"/></td></tr>
+</table>
+<br/>
+<small>AOS dynamic command</small><br/>
+<span id="price">
+	<table><tr><td colspan="2">
+		<img 
+			align="top" 
+			src="images/plus_16x16.png" 
+			onclick="var x=getHttpXml('price', 1); this.style.visibility='hidden'; return x;"
+		/><span class="feature_off">Price</span>
+	</td></tr></table>  
+</span>
+
+<br/>
+<table><tr><td>
+<div class="feature_on">Description<br/>
+<script type="text/javascript">
+<!--
+//Usage: object_name = new RichText('object_name', html, width, height, buttons, readOnly)
+var rte1 = new RichText('descript', '', 600, 300, true, false);
+rte1.generateXHTML = true;
+rte1.create();
+//-->
+</script>
+</div>
+<br/>
+<small><input type="checkbox" name="dumpContext" value="1"/><b>DEBUG</b>: add &amp;dumpContext=1</small><br/>
+<small><input type="checkbox" name="overrideOutput" value="NOP"/><b>DEBUG</b>: add &amp;overrideOutput=NOP</small><br/><br/>
+<input type="Submit" value="Add Classified Ad"/>
+<br/>
+</td></tr></table>
+</form>
+</body>
+</html>
+
+<!-- <iframe allowTransparency="true" frameborder="0" src="http://" width="250" height="150" scrolling="no"/> -->

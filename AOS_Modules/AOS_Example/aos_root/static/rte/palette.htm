@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Color Palette</title>
+<script language="JavaScript" type="text/javascript">
+<!--
+var dialogArgs;
+
+function selectColor(color) {
+	var rte = dialogArgs.rte;
+	var cmd = dialogArgs.cmd;
+	var range = dialogArgs.range;
+	var ua = self.parent.ua;
+
+	if (ua.ie) {
+		if (cmd == "HiliteColor") cmd = "BackColor";
+		range.select();
+	}
+	
+	rte.getWindow().document.execCommand(cmd, false, color);
+	rte.getPalette().style.visibility = "hidden";
+}
+
+function InitColorPalette() {
+	var x = document.getElementsByTagName('TD');
+	for (var i=0; i < x.length; i++) {
+		if (x[i].className == 'cell') {
+			x[i].onmouseover = over;
+			x[i].onmouseout = out;
+			x[i].onclick = click;
+		}
+	}
+}
+	
+function over() {
+	this.style.border='#777777 1px solid';
+}
+
+function out() {
+	this.style.border='#E9E8F2 1px solid';
+}
+	
+function click() {
+	selectColor(this.id);
+}
+	//-->
+	</script>
+
+<style type="text/css">
+.palette {
+	BORDER: #9b95a6 1px solid;
+	PADDING: 2px;
+	CURSOR: default;
+	POSITION: absolute;
+	BACKGROUND-COLOR: #DEDCD5;
+}
+.nopadding {
+	PADDING: 0px;
+}
+.cell {
+	BORDER: #E1E2EC 1px solid;
+	PADDING: 1px;
+	CURSOR: default;
+}
+.point {
+	BORDER: white 1px solid;
+	MARGIN: 0px;
+	WIDTH: 13px;
+	HEIGHT: 13px;
+}
+
+</style>
+</head>
+<body style="background:white;margin:0px;padding:0px">
+<script type="text/javascript">
+var colorTable = [
+	["#FFFFFF","#FFCCCC","#FFCC99","#FFFF99","#FFFFCC","#99FF99","#99FFFF","#CCFFFF","#CCCCFF","#FFCCFF"],
+	["#CCCCCC","#FF6666","#FF9966","#FFFF66","#FFFF33","#66FF99","#33FFFF","#66FFFF","#9999FF","#FF99FF"],
+	["#C0C0C0","#FF0000","#FF9900","#FFCC66","#FFFF00","#33FF33","#66CCCC","#33CCFF","#6666CC","#CC66CC"],
+	["#999999","#CC0000","#FF6600","#FFCC33","#FFCC00","#33CC00","#00CCCC","#3366FF","#6633FF","#CC33CC"],
+	["#666666","#990000","#CC6600","#CC9933","#999900","#009900","#339999","#3333FF","#6600CC","#993399"],
+	["#333333","#660000","#993300","#996633","#666600","#006600","#336666","#000099","#333399","#663366"],
+	["#000000","#330000","#663300","#663333","#333300","#003300","#003333","#000066","#330099","#330033"]
+];
+
+var d = document;
+d.writeln('<table class="palette" width=143 height=109 cellSpacing=0 cellPadding=0><tr><td class="nopadding"><table cellSpacing=0 cellPadding=0 align="center" border=0>');
+for (var i in colorTable) {
+	d.writeln('<tr>');
+	for (var j in colorTable[i]) {
+		d.writeln('<td  class="cell" id="' + colorTable[i][j] + '" unselectable="on"><table class="point" style="BACKGROUND-COLOR:' + colorTable[i][j] + ';" cellSpacing=0 cellPadding=0 ><tr><td unselectable="on"></td></tr></table></td>');
+	}
+	d.writeln('</tr>');
+}
+d.writeln('</table></td></tr></table>');
+
+InitColorPalette();
+</script>
+</body>
+</html>

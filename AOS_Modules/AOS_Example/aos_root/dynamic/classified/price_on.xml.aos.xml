@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<command forceAJAX="1">
+	<input/>
+	<module class="classified_input">
+		<state>1</state>
+		<display>Price (dynamic)</display>
+		<variable>price</variable>
+	</module>
+	<output/>
+</command>
