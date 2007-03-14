@@ -1,0 +1,38 @@
+<html>
+
+<body>
+<pre>
+
+Design Guidelines used during development
+=========================================
+
+- Non-const pointers passed as parameters to methods are assumed to be objects that will be owned by this and cleanup appropriately.
+  void MyClass::set(Object* pObject);   // Here the pObject will be owned and cleaned up by MyClass
+  myclassObject.set(new Object);        // This is always safe and will not leak
+
+- Const pointers passed as parameters to methods will be used and/or copied but never owned
+
+- Access members will be in the form of setSomething/getSomething/useSomething
+  get returns a copy of the parameter or a constant refernce and assumes a const object
+    - Something getSomething() const;
+    - const Something& getSomething() const;  
+  set modifies the parameter  
+    - void setSomething(const Something s);
+  use returns a modifiable reference to the parameter 
+    - Something& useSomething();
+
+- clone() method always returns a pointer to a duplicate that the called has to own and delete
+
+
+Build notes
+===========
+- Use Multi-threaded Debug DLL and Multi-threaded DLL for runtime
+
+make_distribution.py <target path> [verbose | clean] - will do everything.
+  gather_distribution.py <target path> [verbose | clean] - gathers headers, external binaries and if path is not .. then initernal binaries
+  gather_headers_only.py <target path> [verbose | clean] - gathers headers only
+  build_distribution.py <debug|release|all> <build|rebuild|clean> - invokes MSDEV
+</pre>
+</body>
+</html>
+

@@ -1,0 +1,1 @@
+If a file has .71. then it is for Microsoft Developer Studio .NET 2003 (_MSC_VER = 13xx)

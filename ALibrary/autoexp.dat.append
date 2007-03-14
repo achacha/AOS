@@ -1,0 +1,6 @@
+;ALibrary defines  (paste them into the already existing file)
+; autoexp.dat is usually in /Program Files/Microsoft Visual Studio .NET 2004/Common7/packages/Debugger directory (or similar)
+AString=buffer=<mp_Buffer>, length=<m_Length>
+AAutoPtr=<m__Pointer>
+AAutoArrayPtr=<m__Pointer>
+AAutoBasicArrayPtr=<m__Pointer>
