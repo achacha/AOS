@@ -1,0 +1,4 @@
+Win32 OpenSSL v0.9.8b
+
+libeay32MDd.lib
+ssleay32MDd.lib

@@ -1,0 +1,10 @@
+gd_io.h
+
+// pUser pointer to AFile associated with it
+typedef struct gdIOCtx
+{
+  ...
+  
+  gdIOCtx() : pUser(NULL) {}
+  void *pUser;   //a_Added a pointer to store user context (AFile object)
+}
