@@ -1,0 +1,48 @@
+#ifndef INCLUDED__AOSOutputGeneratorInterface_HPP__
+#define INCLUDED__AOSOutputGeneratorInterface_HPP__
+
+#include "apiAOS_Base.hpp"
+#include "AOSOutputContext.hpp"
+#include "AOSAdminInterface.hpp"
+
+class ALog;
+
+class AOS_BASE_API AOSOutputGeneratorInterface : public AOSAdminInterface
+{
+public:
+  AOSOutputGeneratorInterface(ALog&);
+  virtual ~AOSOutputGeneratorInterface() {}
+
+  /*!
+  Initialization routine for the module
+  This is called when the module is registered by the executor
+  This is where the controls get added
+  */
+  virtual void init(AOSServices&) {}
+
+  /*!
+  Generate output based on AContext
+  */
+  virtual bool execute(AOSOutputContext&) = 0;
+
+  /*!
+  De-initialization routine for the module
+  This is called by the module executor when it is being destroyed
+  */
+  virtual void deinit() {}
+
+  /*!
+  AOSModuleInterface
+  */
+  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+
+protected:
+  ALog& m_Log;
+
+public:
+#ifdef __DEBUG_DUMP__
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+#endif
+};
+
+#endif //INCLUDED__AOSOutputGeneratorInterface_HPP__

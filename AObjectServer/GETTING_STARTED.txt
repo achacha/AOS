@@ -1,0 +1,172 @@
+Requirements
+------------
+Python 2.4 or higher  ( http://www.python.org/ )
+Microsoft Development Environment 2003
+Microsoft XML 4.0 engine ( http://www.microsoft.com/downloads/details.aspx?familyid=3144b72b-b4f2-46da-b4b6- )
+	exact name: MSXML 4.0 Service Pack 2 (Microsoft XML Core Services)
+	download: msxml.msi
+
+
+Preparing First Build
+---------------------
+1. Unzip into your work directory (Assuming C:\aos\ for this case)
+2. Using 'Start | Run' and execute 'cmd' for the command prompt
+3. cd C:\aos\
+
+
+Publish content
+---------------
+4. cd AObjectServer          - c:\aos\AObjectServer\
+5. make_aosconfig.py         - this script will publish the content to _debug\aosconfig and _release\aosconfig (more about this later)
+
+
+Building AObjectServer
+----------------------
+6. With MSDEV open c:\aos\AObjectServer\AObjectServer.sln
+7. Right click on AObjectServer project and "Set As StartUp Project"
+8. Build | Build Solution
+
+Running AObjectServer
+---------------------
+Adjust aosconfig/AObjectServer.ini as needed (default ports are 10080 (http), 10443 (https) and 12345 (admin))
+
+
+Adding new module project (which can contain any number of modules)
+-------------------------
+1. cd c:\aos\AOS_Modules\
+2. new_AOS_Project.py MyNewProject SomeNewModule
+
+  This will create a new directory AOS_MyNewProject with correct project settings
+	This will create an empty module class called SomeNewModule
+
+	To create more modules, just add new classes derived from AOSModuleInterface
+	  you can use this blank module as a template for new modules
+
+
+Adding your new project to the workspace
+----------------------------------------
+1. Right click on solution and select Add | Existing Project...
+2. Select your vcproj file
+
+
+Creating new content
+--------------------
+We will use AOSModules/AOS_Example for this.
+
+You will notice that your new project and all module projects contain a directory 'aosconfig'.
+This is the where modules are configured and content/data kept.  During deployment (make_aosconfig.py),
+all aosconfig directories are copied to one central location creating one site config, so it is important
+to avoid name conflicts.  This setup allows you to develop many different modules completely independently
+and add them to the main site as needed.
+
+This is the directory structure:
+/aosconfig
+  /aos_dynamic  - all dynamic commands definitions with extension .aos.xml
+	/aos_static   - all static content, if dynamic command does not exist, static will be checked next
+	/aos_data     - optional data directory, usable by modules if needed
+
+aos_dynamic
+-----------
+We will assume 127.0.0.1 is your server (you can replace this if you have a DNS name, etc).
+
+Look in C:\aos\AOS_Modules\AOS_Example\aosconfig\aos_dynamic\classified\
+
+This is the classified project that you can view via: http://127.0.0.1/classified/   (MUST have trailing / to access directory otherwise classified is a filename)
+
+AOS server will do the following when it gets this request:
+1. It will see that classified/ is being accessed so it will check what a default filename is in AObjectServer.ini (in AObjectServer/aosconfig)
+2. Seeing that default is index.html, it will first look for aos_dynamic/classified/index.html.aos.xml to see if default is dynamic
+3. Since it does not exist it then looks in aos_static/classified/index.html (NOTE: .aos.xml is only appended to signify dynamic command in aos_dynamic)
+4. It finds aos_static/classified/index.html and displays that
+
+On that page there will be an AJAX call to /classified/classified_price_on.xml?ajax=1  (ajax=1 parameter forces a very lean XML result if not explcitly specified in command definition)
+
+Note that aos_dynamic/classified/classified_price_on.xml.aos.xml exists and it contains:
+<?xml version="1.0" encoding="utf-8"?>
+<command ajax="1">
+	<input/>
+	<module class="classified_input">
+		<state>1</state>
+		<display>Price (dynamic)</display>
+		<variable>classified_price</variable>
+	</module>
+	<output/>
+</command>
+
+<input/> - means that no special input handling is needed
+<output/> - means that no output generation is needed, output will be XML
+<module class="classified_input"> - means that a module of class 'classified_input' will be executed.
+
+Look in AOSModule_classified_input.cpp:
+
+const AString& AOSModule_classified_input::getClass() const
+{
+  static const AString CLASS("classified_input");
+  return CLASS;
+}
+
+this is how it knows that the module is called classified_input.
+
+Now look at AOSExample.cpp:
+extern "C" AOS_EXAMPLE_API int aos_register(
+  AOSInputExecutor& inputExecutor, 
+  AOSModuleExecutor& moduleExecutor, 
+  AOSOutputExecutor& outputExecutor, 
+  ALog& alog
+)
+{
+  alog.add(ASWNL("AOS_Example: aos_register"), ALog::INFO);
+
+  //Register modules
+  moduleExecutor.registerModule(new AOSModule_classified_input(alog));
+  
+  return 0;
+}
+
+This is a required line for every registered module, it is called when AObjectServer starts and creates a registry of modules based on the
+class name (via a call to getClass()).  Since there is one instance of every module, you can design them in a way to share data (and
+make sure you protect changes using AMutex or ACriticalSection or ASemaphore) or design your modules to not share data and be able to
+execute in parallel without any synchronization issues (this is a design decision).
+
+Back to module section in the command definition:
+	<module class="classified_input">
+		<state>1</state>
+		<display>Price (dynamic)</display>
+		<variable>classified_price</variable>
+	</module>
+
+The parameters (state, display and variable) are passed to the module via module parameters, see AOSModule_classified_input.cpp:
+bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement& moduleParams)
+{
+...
+}
+
+moduleParams is where this data will be populated and you can see in the body of the code how it is extracted.
+
+AOSContext is the workhorse of the execution, it contains almost everything you will ever need to know about the call to the module.
+context.useOutputRootXmlElement() is a reference the root XML element of the output document, this is where the result goes.
+
+
+The best way to learn how everything works is to look at the few examples in AOS_Modules.
+
+After you build the code you can put a breakpoint at AOSRequestDispatcher.cpp
+
+bool AOSRequestDispatcher::_processRequest(AOSContext& context)
+{
+...
+    const AOSCommand *pCommand = context.getCommand();     <==== Put breakpoint here
+    if (pCommand && pCommand->isEnabled())
+		{
+
+This is the effective execution location for every request, pCommand will contain the command definition for the call, if
+it is NULL then it is assumed to be a static and attempt is made to load static data instead.
+
+...
+      m_ModuleExecutor.execute(context);
+
+This is where all modules get executed, you may want to step into here and execute modules or just put a breakpoint in your module
+and it will stop there if the module is executed (this .execute call is a good way to make sure your module is actually being executed).
+
+
+Once you get the hang of how configuration and execution works, you won't need to put breakpoints in the AObjectServer code, only in your
+modules.

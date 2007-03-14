@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"?>
+<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AOSModuleInterface.xsd">
+	<description><![CDATA[
+ Read HTML form data and add to the query string (consolidate variables from HTTP request)
+ Read in form data is then saved separately from query string object as well
+ 
+ Input data is URL decoded and variables are parsed and added to AContext::AHTTPRequestHeader::AUrl::AQueryString
+ Access AQueryString object via context.useRequestHeader().useUrl().useQueryString()
+]]></description>
+	<output>
+		<variable>
+			<path>/data/input</path>
+			<description><![CDATA[
+		HTML form data before URL decode
+		]]></description>
+		</variable>
+	</output>
+</module>

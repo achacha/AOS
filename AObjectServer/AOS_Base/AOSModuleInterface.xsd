@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by achacha (eBay Inc) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="module">
+		<xs:annotation>
+			<xs:documentation>Module definition (root element)</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="description"/>
+				<xs:element name="input" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="variable" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="output" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="variable" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="variable">
+		<xs:annotation>
+			<xs:documentation>Namespace variable</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="path">
+					<xs:annotation>
+						<xs:documentation>Path in the namespace</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="description">
+					<xs:annotation>
+						<xs:documentation>Description of the element and data it contains</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="required" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Is the variable is required</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

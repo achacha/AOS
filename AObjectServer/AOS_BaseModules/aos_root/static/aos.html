@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<title>Asynchronous Object Server</title>
+</head>
+<body bgcolor="#dddddd">
+<div align="center"><img border="1" src="aos.png"></div><br/>
+<br/>
+<hr/>
+<br/>
+<h2>Sample Applications</h2>
+<b>Clasified Ads</b><br/>
+&nbsp;&nbsp;<a href="/classified/">Classified Ad Entry Form</a><br/>
+&nbsp;&nbsp;<a href="/classified/classified_list">Classified Ad List</a><br/>
+<br/>
+<b>Sample applications</b>
+<i>Mixed AJAX dynamic call and static data</i>
+<br/>
+&nbsp;&nbsp;<a href="/tooltips/">Tooltips</a><br/>
+<i>Example of tooltips (using overLIB 4.2.1) and static Ajax calls</i>
+<br/>
+<br/>
+<br/>
+<b>Dynamic URLs</b><br/>
+&nbsp;&nbsp;<a href="/ping">Simple check if server is alive</a><br/>
+&nbsp;&nbsp;<a href="/sql.xml">Simple SQL query</a><br/>
+&nbsp;&nbsp;<a href="/imagegen/generated_X.png">Generated PNG image</a><br/>
+&nbsp;&nbsp;<a href="/DisplayInput.xml">No output generator used, raw XML; this is the XML used in the following examples</a><br/>
+&nbsp;&nbsp;<a href="/DisplayInputWithXslt.html">XSLT generated</a><br/>
+&nbsp;&nbsp;<a href="/DisplayInputWithTemplate.html">Template</a> Single HTML template<br/>
+&nbsp;&nbsp;<a href="/DisplayInputWithTemplateParts.html">Template parts</a> Output made up of 4 separate template parts<br/>
+<br/>
+NOTE: .html extension is remapped to a dynamic command, these are no longer static pages once dynamic command is defined<br/>
+If you turn off the dynamic command and there exists a static page with the same name, then dynamic command will not execute and static page will load instead.
+This allows you to have fallbacks when developing dynamic content, you can develop the static page first then "replace" it with a dynamic one
+and if needed you can turn off the dynamic and start using the static page again.  Can be very useful under high loads conditions.<br/>
+<br/>
+<br/>
+<b>Message Forum (not done yet)</b><br/>
+&nbsp;&nbsp;<a href="/forum/">Message Forum</a><br/>
+<br/>
+<br/>
+<b>Dada Poetry Generator</b><br/>
+&nbsp;&nbsp;<a href="/dada/Dada?templateName=TheRaven">The Raven</a> originally by Edgar Allan Poe<br/>
+&nbsp;&nbsp;<a href="/dada/Dada?templateName=FreeFlow">Free Flow</a><br/>
+<br/>
+<br/>
+<hr/>
+<br/>
+<b><big>Generic Tests</big></b><br/>
+Text file compression (/aos_static/TheCallOfCthulhu.html)<br/>
+&nbsp;&nbsp;<a href="/TheCallOfCthulhu.html">The Call Of Cthulhu - original uncompressed (90,112 bytes)</a><br/>
+&nbsp;&nbsp;<a href="/TheCallOfCthulhu.html?deflate=1">The Call Of Cthulhu - ZLib deflate level 1 (35,932 bytes)</a><br/>
+&nbsp;&nbsp;<a href="/TheCallOfCthulhu.html?deflate=6">The Call Of Cthulhu - ZLib deflate level 6 (31,225 bytes)</a><br/>
+&nbsp;&nbsp;<a href="/TheCallOfCthulhu.html?deflate=9">The Call Of Cthulhu - ZLib deflate level 9 (31,118 bytes)</a><br/>
+<br/>
+Simple dynamic test (/aos_dynamic/test/Test.xml.aos.xml)<br/>
+&nbsp;&nbsp;<a href="/test/Test.xml">Simple test of dynamically generated  XML</a><br/>
+&nbsp;&nbsp;<a href="/test/Test.xml?ajax=1">Simple test (ajax=1)</a><br/>
+&nbsp;&nbsp;<a href="/test/Test.xml?dumpContext=1">Simple test (dumpContext=1) - context converted to XML</a><br/>
+&nbsp;&nbsp;<a href="/test/Test.xml?dumpContext=2">Simple test (dumpContext=2) - Debug build only, adds debugDump for context</a><br/>
+
+
+</body>
+</html>

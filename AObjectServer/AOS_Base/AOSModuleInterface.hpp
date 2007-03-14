@@ -1,0 +1,57 @@
+#ifndef INCLUDED__AOSModuleInterface_HPP__
+#define INCLUDED__AOSModuleInterface_HPP__
+
+#include "apiAOS_Base.hpp"
+#include "AOSAdminInterface.hpp"
+#include "AObjectContainer.hpp"
+#include "AOSContext.hpp"
+
+class AOSServices;
+class ALog;
+
+class AOS_BASE_API AOSModuleInterface : public AOSAdminInterface
+{
+public:
+  AOSModuleInterface(ALog&);
+  virtual ~AOSModuleInterface() {}
+
+  /*!
+  Initialization routine for the module
+  This is called when the module is registered by the executor
+  This is where the controls get added
+  */
+  virtual void init(AOSServices&) {}
+
+  /*!
+  Process input and manupulate the request and module objects as needed
+  */
+  virtual bool execute(AOSContext& context, const AXmlElement& moduleParams) = 0;
+
+  /*!
+  De-initialization routine for the module
+  This is called by the module executor when it is being destroyed
+  */
+  virtual void deinit() {}
+
+  /*!
+  AOSModuleInterface
+  */
+  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+
+protected:
+  ALog& m_Log;
+
+  /*!
+  Every module will have their own object container that is shared by all calls to this module
+  It is very important that blocking access here be minimal and it only be used for read-only purposes
+  Locks here can be a significant performance hit
+  */
+  AObjectContainer m_Objects;
+
+public:
+#ifdef __DEBUG_DUMP__
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+#endif
+};
+
+#endif //INCLUDED__AOSModuleInterface_HPP__

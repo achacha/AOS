@@ -1,0 +1,30 @@
+Version 0.8.2.6 Beta
+
++ English Changelog started :)
+
+# Fixes Buttons and UAP Support for Windows Vista
+
+# SQL Code Generator -> Ident Quotes '"' replaced by SQLite Ident Brackets '[' , ']'
+
++ CodeCompletion works now also with Ident Brackets
+
++ Hidden ini Flag [Main] IgnoreInvalidToken=1 
+  Hint:
+    - This disables Editing on all Grids! Because Zeos Database Objects does not support Ident Brackets and Invalid Chars
+    - Now you can design Tables/Fields/Indizes... with Invalid Chars
+    - CodeCompletion inserts always with IdentBrackets
+
+
+# All Controls are set to DEFAULT_CHARSET  (some was set to ANSI_CHARSET before) 
+
++ Added "Help - Change Languguage" Menu Item
+
+# Filter does not appear anymore at "OnChange" Event, you have to press Enter or the Button to apply the Filter
+
++ Added "Import Done!" Messagebox
+
++ Added Hungarian Language File
+
++ Added Norwegian Language File
+
++ Ship sqlite3.dll Version 3.3.6

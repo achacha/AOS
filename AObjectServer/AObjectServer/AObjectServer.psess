@@ -1,0 +1,58 @@
+<VSPerformanceSession Version="1.00">
+  <Options>
+    <Solution>..\AObjectServer.sln</Solution>
+    <CollectionMethod>Instrumentation</CollectionMethod>
+    <AllocationMethod>None</AllocationMethod>
+    <Reportname>..\..\_debug\AObjectServer\AObjectServer.vsp</Reportname>
+    <AddReport>true</AddReport>
+    <UniqueReport>Timestamp</UniqueReport>
+    <SamplingMethod>Cycles</SamplingMethod>
+    <CycleCount>10000000</CycleCount>
+    <PageFaultCount>10</PageFaultCount>
+    <SysCallCount>10</SysCallCount>
+    <SamplingCounter PlatformID="00000000" CounterID="0000000000000000" ReloadValue="00000000000f4240" />
+    <RelocateBinaries>false</RelocateBinaries>
+    <HardwareCounters EnableHWCounters="false" />
+    <EtwSettings />
+  </Options>
+  <PreinstrumentEvent>
+    <InstrEventExclude>false</InstrEventExclude>
+  </PreinstrumentEvent>
+  <PostinstrumentEvent>
+    <InstrEventExclude>false</InstrEventExclude>
+  </PostinstrumentEvent>
+  <Binaries>
+    <ProjBinary>
+      <Path>..\..\_debug\AObjectServer.exe</Path>
+      <ArgumentTimestamp>01/01/0001 00:00:00</ArgumentTimestamp>
+      <Instrument>false</Instrument>
+      <LaunchProject>true</LaunchProject>
+      <LaunchMethod>Executable</LaunchMethod>
+      <ExecutablePath>..\..\_debug\AObjectServer.exe</ExecutablePath>
+      <StartupDirectory>..\..\_debug</StartupDirectory>
+      <NetAppHost>IIS</NetAppHost>
+      <PreinstrumentEvent>
+        <InstrEventExclude>false</InstrEventExclude>
+      </PreinstrumentEvent>
+      <PostinstrumentEvent>
+        <InstrEventExclude>false</InstrEventExclude>
+      </PostinstrumentEvent>
+      <ProjRef>{AA8153A0-3581-4865-B0FE-A7D5267A7950}|AObjectServer\AObjectServer.vcproj</ProjRef>
+      <ProjPath>AObjectServer.vcproj</ProjPath>
+      <ProjName>AObjectServer</ProjName>
+    </ProjBinary>
+  </Binaries>
+  <Reports>
+    <Report>
+      <Path>..\AObjectServer070302.vsp</Path>
+    </Report>
+    <Report>
+      <Path>..\..\_debug\AObjectServer\AObjectServer070302.vsp</Path>
+    </Report>
+  </Reports>
+  <Launches>
+    <ProjBinary>
+      <Path>:PB:{AA8153A0-3581-4865-B0FE-A7D5267A7950}|AObjectServer\AObjectServer.vcproj</Path>
+    </ProjBinary>
+  </Launches>
+</VSPerformanceSession>
