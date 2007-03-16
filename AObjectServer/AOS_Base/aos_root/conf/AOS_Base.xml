@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- /config/base -->
+<base>
+	 <listen>
+		<!-- Listener ports -->
+		 <http>80</http>
+		 <https>443</https>
+		 <admin>12345</admin>
+	</listen>
+</base>

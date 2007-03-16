@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- /config/base -->
-<base>
-  <version>1.0.2.0</version>
-</base>
+<!-- /config/server -->
+<server>
+	<reported>
+		<!-- Reported overrides -->
+		<hostname>localhost</hostname>
+		<server>AObjectServer 1.0.2.0</server>
+		<http/>
+		<https/>
+	</reported>
+</server>

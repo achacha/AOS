@@ -138,25 +138,19 @@ AOSContext::Status AOSContext::init()
 
   setExecutionState(ASW("AOSContext: Processing HTTP header",34), false);
 
-  //a_Initialize context after HTTP/HTTPS header is read
-  //a_Statics contains instance specific information
-  static const AString LOCAL_HOSTNAME = m_Services.useConfiguration().getReportedServerName();
-  static const int LOCAL_SERVER_PORT = m_Services.useConfiguration().getReportedServerPort();
-  static const int LOCAL_SECURE_SERVER_PORT = m_Services.useConfiguration().getReportedSecureServerPort();
-
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT, false);
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT, false);
 
-  m_RequestHeader.useUrl().setServer(LOCAL_HOSTNAME);
+  m_RequestHeader.useUrl().setServer(m_Services.useConfiguration().getReportedHostname());
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_HTTPS))
   {
     m_RequestHeader.useUrl().setProtocol(AUrl::HTTPS);
-    m_RequestHeader.useUrl().setPort(LOCAL_SECURE_SERVER_PORT);
+    m_RequestHeader.useUrl().setPort(m_Services.useConfiguration().getReportedHttpsPort());
   }
   else
   {
     m_RequestHeader.useUrl().setProtocol(AUrl::HTTP);
-    m_RequestHeader.useUrl().setPort(LOCAL_SERVER_PORT);
+    m_RequestHeader.useUrl().setPort(m_Services.useConfiguration().getReportedHttpPort());
   }
 
   //a_Map response MIME type based on request extension
@@ -175,7 +169,7 @@ AOSContext::Status AOSContext::init()
   }
 
   //a_Initialize response header
-  m_ResponseHeader.setPair(AHTTPHeader::HT_RES_Server, AOS_SERVER_NAME);
+  m_ResponseHeader.setPair(AHTTPHeader::HT_RES_Server, m_Services.useConfiguration().getReportedServer());
 
   return AOSContext::STATUS_OK;
 }

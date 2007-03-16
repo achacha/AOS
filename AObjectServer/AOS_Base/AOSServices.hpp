@@ -9,9 +9,9 @@
 #include "AOSSessionManager.hpp"
 #include "AOSContextManager.hpp"
 #include "AOSDatabaseConnectionPool.hpp"
+#include "AOSConfiguration.hpp"
 
 class AFilename;
-class AOSConfiguration;
 
 class AOS_BASE_API AOSServices : public AOSAdminInterface
 {

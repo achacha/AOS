@@ -7,9 +7,11 @@ def makeSystemCall(param):
 # rsync.py base command
 RSYNC_BASE=".\\rsync.py -rtuC --exclude=.svn ";
 def syncModule(module_source_path):
-	EXEC_RSYNC_BASE = RSYNC_BASE + module_source_path + " ";
+	EXEC_RSYNC_BASE = RSYNC_BASE + " ";
 	if (dryrun == 1):
 		EXEC_RSYNC_BASE += "-n ";
+	
+	EXEC_RSYNC_BASE += module_source_path + " ";	
 	
 	print "|----------------------------DEBUG content: "+module_source_path;
 	EXEC_RSYNC = EXEC_RSYNC_BASE + target_path_DEBUG; 
@@ -62,16 +64,19 @@ while (len(sys.argv) > argc):
 target_path_DEBUG = os.path.join(target_path, "_debug");
 target_path_RELEASE = os.path.join(target_path, "_release");
 
+# Now process modules located in ../AOS_Modules 
+# (similar code can be added for other module paths by calling syncModule(...source path...)
+parent_path = os.path.split(os.getcwd())[0];
+modules_path = os.path.join(parent_path, "AObjectServer");
+
 if (verbose == 1):
 	print "verbose="+str(verbose);
 	print "dryrun="+str(dryrun);
 	print "target_path_DEBUG="+target_path_DEBUG;
 	print "target_path_RELEASE="+target_path_RELEASE;
+	print "parent_path="+parent_path;
+	print "modules_path="+modules_path;
 
-# Now process modules located in ../AOS_Modules 
-# (similar code can be added for other module paths by calling syncModule(...source path...)
-parent_path = os.path.split(os.getcwd())[0];
-modules_path = os.path.join(parent_path, "AObjectServer");
 if (os.path.exists(modules_path)):
 	modules = os.listdir(modules_path);
 	for module in modules:

@@ -39,7 +39,7 @@ bool AOSAdmin::isRunning()
 
 void AOSAdmin::startAdminListener()
 {
-  if (m_Services.useConfiguration().getAdminServerPort() > 0)
+  if (m_Services.useConfiguration().getIntWithDefault(AOSConfiguration::LISTEN_ADMIN_PORT, -1) > 0)
   {
     mthread_AdminListener.setProc(AOSAdmin::threadprocAdminListener);
     mthread_AdminListener.setParameter(this);
@@ -66,9 +66,9 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
   AOSAdmin *pThis = (AOSAdmin *)thread.getParameter();
   AASSERT(NULL, pThis);
 
-  ASocketListener listener(pThis->m_Services.useConfiguration().getAdminServerPort());
-
   AString str;
+  int admin_port = pThis->m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_ADMIN_PORT);
+  ASocketListener listener(admin_port);
   try
   {
     listener.open();
@@ -80,11 +80,11 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
     return -1;
   }
 
-  pThis->m_Services.useLog().add(ARope("HTTP admin listening on port ")+AString::fromInt(pThis->m_Services.useConfiguration().getAdminServerPort()), ALog::MESSAGE);
+  pThis->m_Services.useLog().add(ARope("HTTP admin listening on port ")+AString::fromInt(admin_port), ALog::MESSAGE);
   
   {
     ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer HTTP admin listening on port " << pThis->m_Services.useConfiguration().getAdminServerPort() << std::endl;
+    std::cout << "AObjectServer HTTP admin listening on port " << admin_port << std::endl;
   }
   while(thread.isRun())
   {

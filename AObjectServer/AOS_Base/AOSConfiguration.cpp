@@ -10,21 +10,19 @@
 #include "AFileSystem.hpp"
 #include "AOSServices.hpp"
 
+const AString AOSConfiguration::LISTEN_ADMIN_PORT("/config/base/listen/admin");
+const AString AOSConfiguration::LISTEN_HTTP_PORT("/config/base/listen/http");
+const AString AOSConfiguration::LISTEN_HTTPS_PORT("/config/base/listen/https");
+
+
+// ___DEPRECATED___
 #define DEFAULT_INI_FILENAME ASW("AObjectServer.ini",17)
 
 const AString AOSConfiguration::CONFIG("config");
 
-#define DEFAULT_AOS_SERVER_PORT 10080
-#define DEFAULT_AOS_SECURE_SERVER_PORT 10443
-
-#define DEFAULT_REPORTED_SERVER_PORT 80
-#define DEFAULT_REPORTED_SECURE_SERVER_PORT 443
-#define DEFAULT_REPORTED_SERVER_NAME "127.0.0.1"
 
 #define DEFAULT_AOS_CERT_FILENAME "aos_root/certs/aos_cert.pem"
 #define DEFAULT_AOS_PKEY_FILENAME "aos_root/certs/aos_pkey.pem"
-
-#define DEFAULT_ADMIN_SERVER_PORT 12345
 
 #define DEFAULT_FIRST_CHAR_READ_TRIES 12
 #define DEFAULT_DATABASE_MAX_CONNECTIONS 6
@@ -63,6 +61,13 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_ConfigBits=" << std::endl;
   m_ConfigBits.debugDump(os, indent+2);
 
+  ADebugDumpable::indent(os, indent+1) << "m_ReportedServer="  << m_ReportedServer << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_ReportedHostname="  << m_ReportedHostname << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_ReportedHttpPort="  << m_ReportedHttpPort << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_ReportedHttpsPort=" << m_ReportedHttpsPort << std::endl;
+  
+  
+  //a_@deprecated
   ADebugDumpable::indent(os, indent+1) << "m_Ini=" << std::endl;
   m_Ini.debugDump(os, indent+2);
 
@@ -91,29 +96,16 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
 {
   AOSAdminInterface::addAdminXml(eBase, request);
   
-  addProperty(
-    eBase,
-    ASWNL("aos_base_config_directory"),
-    getAosBaseConfigDirectory()
-  );
+  addProperty(eBase, ASWNL("aos_base_config_directory"), getAosBaseConfigDirectory());
+  addProperty(eBase, ASWNL("aos_base_dynamic_directory"), getAosBaseDynamicDirectory());
+  addProperty(eBase, ASWNL("aos_base_static_directory"), getAosBaseStaticDirectory());
+  addProperty(eBase, ASWNL("aos_base_data_directory"), getAosBaseDataDirectory());
 
-  addProperty(
-    eBase,
-    ASWNL("aos_base_dynamic_directory"),
-    getAosBaseDynamicDirectory()
-  );
+  addProperty(eBase, ASWNL("reported_server")    , m_ReportedServer);
+  addProperty(eBase, ASWNL("reported_hostname")  , m_ReportedHostname);
+  addProperty(eBase, ASWNL("reported_http_port") , AString::fromInt(m_ReportedHttpPort));
+  addProperty(eBase, ASWNL("reported_https_port"), AString::fromInt(m_ReportedHttpsPort));
 
-  addProperty(
-    eBase,
-    ASWNL("aos_base_static_directory"),
-    getAosBaseStaticDirectory()
-  );
-
-  addProperty(
-    eBase,
-    ASWNL("aos_base_data_directory"),
-    getAosBaseDataDirectory()
-  );
 
   {
     AUrl url;
@@ -176,25 +168,6 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
     AString::fromInt(getHttpFirstCharReadTries())
   );
 
-  addProperty(
-    eBase,
-    ASWNL("aos_server_port"),
-    AString::fromInt(getAosServerPort())
-  );
-
-
-  addProperty(
-    eBase,
-    ASWNL("reported_server_name"),
-    getReportedServerName()
-  );
-
-  addProperty(
-    eBase,
-    ASWNL("reported_server_port"),
-    AString::fromInt(getReportedServerPort())
-  );
-
   //a_Commands
   MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.begin();
   while (cit != m_CommandPtrs.end())
@@ -255,7 +228,11 @@ AOSConfiguration::AOSConfiguration(
   m_BaseConfigDir(configDir),
   m_Services(services),
   m_ScreenSynch(screenSynch),
-  m_Config(ASW("config",6))
+  m_Config(ASW("config",6)),
+  m_ReportedServer(AOS_SERVER_NAME),
+  m_ReportedHostname("localhost"),
+  m_ReportedHttpPort(80),
+  m_ReportedHttpsPort(443)
 {
   registerAdminObject(services.useAdminRegistry());
 
@@ -518,33 +495,6 @@ void AOSConfiguration::dumpCommands(AOutputBuffer& target) const
   }
 }
 
-int AOSConfiguration::getAosServerPort() const
-{
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("aos_server_port"), str))
-    return str.toInt();
-  else
-    return DEFAULT_AOS_SERVER_PORT;
-}
-
-int AOSConfiguration::getAosSecureServerPort() const
-{
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("aos_secure_server_port"), str))
-    return str.toInt();
-  else
-    return DEFAULT_AOS_SECURE_SERVER_PORT;
-}
-
-int AOSConfiguration::getAdminServerPort() const
-{
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("admin_server_port"), str))
-    return str.toInt();
-  else
-    return DEFAULT_ADMIN_SERVER_PORT;
-}
-
 int AOSConfiguration::getHttpFirstCharReadTries() const
 {
   AString str;
@@ -618,31 +568,72 @@ u4 AOSConfiguration::getDynamicModuleLibraries(LIST_AString& target) const
   return ret;
 }
 
-int AOSConfiguration::getReportedServerPort() const
+int AOSConfiguration::getReportedHttpPort() const
 {
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("reported_server_port"), str))
-    return str.toInt();
-  else
-    return DEFAULT_REPORTED_SERVER_PORT;
+  return m_ReportedHttpPort;
 }
 
-int AOSConfiguration::getReportedSecureServerPort() const
+int AOSConfiguration::getReportedHttpsPort() const
 {
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("reported_secure_server_port"), str))
-    return str.toInt();
-  else
-    return DEFAULT_REPORTED_SECURE_SERVER_PORT;
+  return m_ReportedHttpsPort;
 }
 
-AString AOSConfiguration::getReportedServerName() const
+const AString& AOSConfiguration::getReportedHostname() const
 {
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("reported_server_name"), str))
-    return str;
+  return m_ReportedHostname;
+}
+
+const AString& AOSConfiguration::getReportedServer() const
+{
+  return m_ReportedServer;
+}
+
+void AOSConfiguration::setReportedServer(const AString& configPath)
+{
+  if (exists(configPath))
+  {
+    m_ReportedServer.clear();
+    getString(configPath, m_ReportedServer);
+    m_Services.useLog().add(ARope("Setting reported server: ")+m_ReportedServer, ALog::DEBUG);
+  }
   else
-    return DEFAULT_REPORTED_SERVER_NAME;
+    m_Services.useLog().add(ARope("AOSConfiguration::setReportedServer: Unable to find path: ")+configPath, ALog::WARNING);
+}
+
+void AOSConfiguration::setReportedHostname(const AString& configPath)
+{
+  if (exists(configPath))
+  {
+    m_ReportedHostname.clear();
+    getString(configPath, m_ReportedHostname);
+    m_Services.useLog().add(ARope("Setting reported hostname: ")+m_ReportedHostname, ALog::DEBUG);
+  }
+  else
+    m_Services.useLog().add(ARope("AOSConfiguration::setReportedHostname: Unable to find path: ")+configPath, ALog::WARNING);
+}
+
+void AOSConfiguration::setReportedHttpPort(const AString& configPath)
+{
+  if (exists(configPath))
+  {
+    int port = getInt(configPath);
+    m_ReportedHttpPort = (!port ? 80 : port);
+    m_Services.useLog().add(ARope("Setting reported http port: ")+AString::fromInt(m_ReportedHttpPort), ALog::DEBUG);
+  }
+  else
+    m_Services.useLog().add(ARope("AOSConfiguration::setReportedHttpPort: Unable to find path: ")+configPath, ALog::WARNING);
+}
+
+void AOSConfiguration::setReportedHttpsPort(const AString& configPath)
+{
+  if (exists(configPath))
+  {
+    int port = getInt(configPath);
+    m_ReportedHttpsPort = (!port ? 443 : port);
+    m_Services.useLog().add(ARope("Setting reported https port: ")+AString::fromInt(m_ReportedHttpsPort), ALog::DEBUG);
+  }
+  else
+    m_Services.useLog().add(ARope("AOSConfiguration::setReportedHttpsPort: Unable to find path: ")+configPath, ALog::WARNING);
 }
 
 AString AOSConfiguration::getAosCertFilename() const
@@ -715,7 +706,35 @@ bool AOSConfiguration::exists(const AString& path) const
   return (NULL != m_Config.getRoot().findNode(path));
 }
 
-bool AOSConfiguration::get(const AString& path, AOutputBuffer& target)
+bool AOSConfiguration::getString(const AString& path, AOutputBuffer& target)
 {
   return m_Config.getRoot().emitFromPath(path, target);
 }
+
+int AOSConfiguration::getInt(const AString& path)
+{
+  AString str;
+  if (m_Config.getRoot().emitFromPath(path, str))
+    return str.toInt();
+  else
+    ATHROW_EX(this, AException::DoesNotExist, path);
+}
+
+int AOSConfiguration::getIntWithDefault(const AString& path, int iDefault)
+{
+  AString str;
+  if (m_Config.getRoot().emitFromPath(path, str))
+    return str.toInt();
+  else
+    return iDefault;
+}
+
+AString AOSConfiguration::getStringWithDefault(const AString& path, const AString& strDefault)
+{
+  AString str;
+  if (m_Config.getRoot().emitFromPath(path, str))
+    return str;
+  else
+    return strDefault;
+}          
+

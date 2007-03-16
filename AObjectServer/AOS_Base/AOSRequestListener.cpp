@@ -50,7 +50,8 @@ void AOSRequestListener::startListening()
   if (mthread_Listener.isThreadActive() || mthread_SecureListener.isThreadActive())
     ATHROW(this, AException::ProgrammingError);
 
-  if (m_Services.useConfiguration().getAosServerPort() > 0)
+  int http_port = m_Services.useConfiguration().getIntWithDefault(AOSConfiguration::LISTEN_HTTP_PORT, -1);
+  if (http_port > 0)
   {
     mthread_Listener.setThis(static_cast<void *>(this));
     mthread_Listener.start();
@@ -61,7 +62,8 @@ void AOSRequestListener::startListening()
     std::cout << "HTTP disabled, not listening." << std::endl;
   }
 
-  if (m_Services.useConfiguration().getAosSecureServerPort() > 0)
+  int https_port = m_Services.useConfiguration().getIntWithDefault(AOSConfiguration::LISTEN_HTTPS_PORT, -1);
+  if (https_port > 0)
   {
     mthread_SecureListener.setThis(static_cast<void *>(this));
     mthread_SecureListener.start();
@@ -88,13 +90,14 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
   AOSContext *pContext = NULL;
   try
   {
-    ASocketListener listener(pThis->m_Services.useConfiguration().getAosServerPort());
+    int http_port = pThis->m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTP_PORT);
+    ASocketListener listener(http_port);
     listener.open();
 
-    pThis->m_Services.useLog().add(ASWNL("AObjectServer started.  HTTP listening on port ")+AString::fromInt(pThis->m_Services.useConfiguration().getAosServerPort()));
+    pThis->m_Services.useLog().add(ASWNL("AObjectServer started.  HTTP listening on port ")+AString::fromInt(http_port));
     {
       ALock lock(pThis->m_Services.useScreenSynch());
-      std::cout << "AObjectServer HTTP listening on port " << pThis->m_Services.useConfiguration().getAosServerPort() << std::endl;
+      std::cout << "AObjectServer HTTP listening on port " << http_port << std::endl;
     }
 
     while(thread.isRun())
@@ -171,17 +174,18 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
 
   thread.setRunning(true);
 
+  int https_port = pThis->m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTPS_PORT);
   ASocketListener_SSL listener(
-    pThis->m_Services.useConfiguration().getAosSecureServerPort(),
+    https_port,
     pThis->m_Services.useConfiguration().getAosCertFilename(),
     pThis->m_Services.useConfiguration().getAosPKeyFilename()
   );
   listener.open();
 
-  pThis->m_Services.useLog().add(ASWNL("AObjectServer started.  HTTPS listening on port ")+AString::fromInt(pThis->m_Services.useConfiguration().getAosSecureServerPort()));
+  pThis->m_Services.useLog().add(ASWNL("AObjectServer started.  HTTPS listening on port ")+AString::fromInt(https_port));
   {
     ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer HTTPS listening on port " << pThis->m_Services.useConfiguration().getAosSecureServerPort() << std::endl;
+    std::cout << "AObjectServer HTTPS listening on port " << https_port << std::endl;
   }
 
   AOSContext *pContext = NULL;

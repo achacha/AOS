@@ -162,10 +162,10 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
         }
         
         //a_Sleep between selects, requests in this queue are already slow
-        AThread::sleep(30);
+        AThread::sleep(10);
       }
       else
-        AThread::sleep(100);    //a_Nothing in queue, deep sleep
+        AThread::sleep(30);    //a_Nothing in queue, deep sleep
     }
     catch(AException& e)
     {

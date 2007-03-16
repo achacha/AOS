@@ -112,6 +112,11 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           pContext->useOutputRootXmlElement().addElement(ASW("/context/dump",13), *pContext);
           pContext->useOutputRootXmlElement().addElement(ASW("/context/buffer",15), pContext->useOutputBuffer(), AXmlData::CDataHexDump);
 
+          if (dumpContext > 1)
+          {
+            pContext->useOutputRootXmlElement().addElement(ASW("/context/buffer",15), pContext->useServices().useConfiguration().getConfigRoot());
+          }
+
           //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
           pContext->useOutputBuffer().clear();
         }

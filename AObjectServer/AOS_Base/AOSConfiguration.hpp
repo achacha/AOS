@@ -26,15 +26,50 @@ public:
   virtual ~AOSConfiguration();
 
   /*!
+  Initialize static structures of this class (used in reporting actual hostname and port)
+  App server may be behind a load balancer or web server and may need to report something else
+  This is not required and localhost, 80, 443 is assumed by default
+  server is the HTTP header server identifier
+  */
+  static void initializeStaticHostInfo(const AString& hostname, int http_port, int https_port, const AString& serverId);
+
+  /*! Listener constants */
+  static const AString LISTEN_ADMIN_PORT;    // /config/base/listen/admin
+  static const AString LISTEN_HTTP_PORT;     // /config/base/listen/http
+  static const AString LISTEN_HTTPS_PORT;    // /config/base/listen/https
+
+  /*!
   Returns true if exists
   */
   bool exists(const AString& path) const;
 
   /*!
-  String corresponding to the path
+  Emitted data corresponding to the path
+  Result is appended
   Returns true if exists
   */
-  bool get(const AString& path, AOutputBuffer& target);
+  bool getString(const AString& path, AOutputBuffer& target);
+
+  /*!
+  String corresponding to the path
+  This is not the most efficient call due to temporary return object, but useful for initializing statics
+  Returns emitted data into a string for a path or default
+  */
+  AString getStringWithDefault(const AString& path, const AString& strDefault);
+
+  /*!
+  String corresponding to the path
+  If does not exist, will throw AException
+  Returns true if exists
+  */
+  int getInt(const AString& path);
+
+  /*!
+  String corresponding to the path
+  Result is converted to int if does not exist default is returned
+  Returns true if exists
+  */
+  int getIntWithDefault(const AString& path, int iDefault);
 
   /*!
   Configuration XML document's root element
@@ -80,12 +115,21 @@ public:
   
   /*!
   Server specific parameters
-  @deprecated
+  Set methods will look up the config path and set value if found
   */
-  int getReportedServerPort() const;
-  int getReportedSecureServerPort() const;
-  AString getReportedServerName() const;
-  bool getMimeTypeFromExt(AString, AString&) const;  //a_true if ext to MIME type mapping exists
+  const AString& getReportedServer() const;
+  const AString& getReportedHostname() const;
+  int getReportedHttpPort() const;
+  int getReportedHttpsPort() const;
+  void setReportedServer(const AString& configPath);
+  void setReportedHostname(const AString& configPath);
+  void setReportedHttpPort(const AString& configPath);
+  void setReportedHttpsPort(const AString& configPath);
+
+  /*!
+  Map mimetype from extension
+  */
+  bool getMimeTypeFromExt(AString ext, AString& mimeType) const;  //a_true if ext to MIME type mapping exists
 
   /*!
   Database(s)
@@ -110,8 +154,6 @@ public:
   AOS server information
   @deprecated
   */
-  int getAosServerPort() const;
-  int getAosSecureServerPort() const;
   AString getAosCertFilename() const;
   AString getAosPKeyFilename() const;
   
@@ -129,7 +171,6 @@ public:
   Admin server information
   @deprecated
   */
-  int getAdminServerPort() const;
   const AString& getAdminBaseHttpDirectory() const;
 
   /*!
@@ -203,6 +244,12 @@ private:
 
   //a_XML document with all config files overlayed based on load order
   AXmlDocument m_Config;
+
+  //a_Reported statics
+  AString m_ReportedServer;
+  AString m_ReportedHostname;
+  int m_ReportedHttpPort;
+  int m_ReportedHttpsPort;
 
   //a_Commands
   typedef std::map<AString, AOSCommand *> MAP_ASTRING_COMMANDPTR;
