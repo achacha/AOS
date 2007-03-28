@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -58,13 +58,13 @@
 /* ====================================================================
  * Copyright 2002 Sun Microsystems, Inc. ALL RIGHTS RESERVED.
  *
- * Portions of the attached software ("Contribution") are developed by
+ * Portions of the attached software ("Contribution") are developed by 
  * SUN MICROSYSTEMS, INC., and are contributed to the OpenSSL project.
  *
  * The Contribution is licensed pursuant to the OpenSSL open source
  * license provided above.
  *
- * The elliptic curve binary polynomial software is originally written by
+ * The elliptic curve binary polynomial software is originally written by 
  * Sheueling Chang Shantz and Douglas Stebila of Sun Microsystems Laboratories.
  *
  */
@@ -92,6 +92,10 @@ extern "C" {
 # endif
 #endif
 
+
+#ifndef OPENSSL_ECC_MAX_FIELD_BITS
+# define OPENSSL_ECC_MAX_FIELD_BITS 661
+#endif
 
 typedef enum {
 	/* values as defined in X9.62 (ECDSA) and elsewhere */
@@ -182,13 +186,13 @@ EC_GROUP *EC_GROUP_new_curve_GF2m(const BIGNUM *p, const BIGNUM *a, const BIGNUM
  * specified by a curve name (in form of a NID) */
 EC_GROUP *EC_GROUP_new_by_curve_name(int nid);
 /* handling of internal curves */
-typedef struct {
+typedef struct { 
 	int nid;
 	const char *comment;
 	} EC_builtin_curve;
-/* EC_builtin_curves(EC_builtin_curve *r, size_t size) returns number
- * of all available curves or zero if a error occurred.
- * In case r ist not zero nitems EC_builtin_curve structures
+/* EC_builtin_curves(EC_builtin_curve *r, size_t size) returns number 
+ * of all available curves or zero if a error occurred. 
+ * In case r ist not zero nitems EC_builtin_curve structures 
  * are filled with the data of the first nitems internal groups */
 size_t EC_get_builtin_curves(EC_builtin_curve *r, size_t nitems);
 
@@ -200,7 +204,7 @@ void EC_POINT_free(EC_POINT *);
 void EC_POINT_clear_free(EC_POINT *);
 int EC_POINT_copy(EC_POINT *, const EC_POINT *);
 EC_POINT *EC_POINT_dup(const EC_POINT *, const EC_GROUP *);
-
+ 
 const EC_METHOD *EC_POINT_method_of(const EC_POINT *);
 
 int EC_POINT_set_to_infinity(const EC_GROUP *, EC_POINT *);
@@ -265,7 +269,7 @@ int EC_GROUP_have_precompute_mult(const EC_GROUP *);
  * used to represent the field elements */
 int EC_GROUP_get_basis_type(const EC_GROUP *);
 int EC_GROUP_get_trinomial_basis(const EC_GROUP *, unsigned int *k);
-int EC_GROUP_get_pentanomial_basis(const EC_GROUP *, unsigned int *k1,
+int EC_GROUP_get_pentanomial_basis(const EC_GROUP *, unsigned int *k1, 
 	unsigned int *k2, unsigned int *k3);
 
 #define OPENSSL_EC_NAMED_CURVE	0x001
@@ -315,7 +319,7 @@ void EC_KEY_set_enc_flags(EC_KEY *, unsigned int);
 point_conversion_form_t EC_KEY_get_conv_form(const EC_KEY *);
 void EC_KEY_set_conv_form(EC_KEY *, point_conversion_form_t);
 /* functions to set/get method specific data  */
-void *EC_KEY_get_key_method_data(EC_KEY *,
+void *EC_KEY_get_key_method_data(EC_KEY *, 
 	void *(*dup_func)(void *), void (*free_func)(void *), void (*clear_free_func)(void *));
 void EC_KEY_insert_key_method_data(EC_KEY *, void *data,
 	void *(*dup_func)(void *), void (*free_func)(void *), void (*clear_free_func)(void *));
@@ -482,6 +486,7 @@ void ERR_load_EC_strings(void);
 #define EC_R_D2I_ECPKPARAMETERS_FAILURE			 117
 #define EC_R_DISCRIMINANT_IS_ZERO			 118
 #define EC_R_EC_GROUP_NEW_BY_NAME_FAILURE		 119
+#define EC_R_FIELD_TOO_LARGE				 138
 #define EC_R_GROUP2PKPARAMETERS_FAILURE			 120
 #define EC_R_I2D_ECPKPARAMETERS_FAILURE			 121
 #define EC_R_INCOMPATIBLE_OBJECTS			 101
@@ -492,7 +497,9 @@ void ERR_load_EC_strings(void);
 #define EC_R_INVALID_FIELD				 103
 #define EC_R_INVALID_FORM				 104
 #define EC_R_INVALID_GROUP_ORDER			 122
+#define EC_R_INVALID_PENTANOMIAL_BASIS			 132
 #define EC_R_INVALID_PRIVATE_KEY			 123
+#define EC_R_INVALID_TRINOMIAL_BASIS			 137
 #define EC_R_MISSING_PARAMETERS				 124
 #define EC_R_MISSING_PRIVATE_KEY			 125
 #define EC_R_NOT_A_NIST_PRIME				 135
