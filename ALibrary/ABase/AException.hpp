@@ -123,6 +123,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
 	  /*!
     Default construction is of an unknown exception
     */
+#ifdef NDEBUG
     AException(
       const ADebugDumpable *const pObject = NULL,
       int iID = AException::Unknown, 
@@ -132,7 +133,18 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
       errno_t errornum = 0,
       bool walkStack = false
     );
-	  
+#else
+    AException(
+      const ADebugDumpable *const pObject = NULL,
+      int iID = AException::Unknown, 
+      const char* pccFilename = "", 
+      int iLineNumber = 0, 
+      const AString& strExtra = AString::sstr_Empty,
+      errno_t errornum = 0,
+      bool walkStack = true
+    );
+#endif
+
     /*!
     Copy ctor
     */

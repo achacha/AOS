@@ -502,3 +502,22 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
     target.append(AString::sstr_CRLF);
   }
 }
+
+void ATextConverter::makeAsciiPrintable(const AString& strSource, AOutputBuffer& target)
+{
+  AString strPeek;
+  char c = 0;
+  for(size_t i=0; i<strSource.getSize(); ++i)
+  {
+    c = strSource.at(i);
+    if (isalnum(c))
+    {
+      target.append(c);
+    }
+    else
+    {
+      target.append("\\x",2);
+      convertBYTEtoHEX(c, target);
+    }
+  }
+}

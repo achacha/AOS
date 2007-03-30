@@ -20,12 +20,8 @@ AException::AException
   m_StackWalker(AStackWalker::SWO_SET_STACKONLY),
   m_errno(errornum)
 {
-#ifdef __DEBUG_DUMP__
   if (pObject)
-  {
     pObject->debugDumpToAOutputBuffer(m_DebugDump);
-  }
-#endif
   
   //a_Get stack trace
   if (walkStack)

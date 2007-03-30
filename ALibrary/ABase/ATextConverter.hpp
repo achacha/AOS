@@ -59,6 +59,12 @@ class ABASE_API ATextConverter
     static void makeCDataSafe(const AString& strSource, AOutputBuffer&);  
 
     /*!
+    Coverts to ASCII printable string with non-alphanum encoded in C style escape (\xNN)
+    Useful for including messages with user input into XML or screen dump
+    */
+    static void makeAsciiPrintable(const AString& strSource, AOutputBuffer&);
+
+    /*!
     String conversion to hex dump (ratio input:output=1:2)
     */
     static void convertStringToHexDump(const AString& source, AOutputBuffer&, bool boolIncludeNonAscii = false);    
