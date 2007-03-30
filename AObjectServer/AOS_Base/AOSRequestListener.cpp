@@ -172,14 +172,23 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
   AOSRequestListener *pThis = static_cast<AOSRequestListener *>(thread.getThis());
   AASSERT(NULL, pThis);
 
-  thread.setRunning(true);
 
   int https_port = pThis->m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTPS_PORT);
-  ASocketListener_SSL listener(
-    https_port,
-    pThis->m_Services.useConfiguration().getAosCertFilename(),
-    pThis->m_Services.useConfiguration().getAosPKeyFilename()
-  );
+  AString cert, pkey;
+  if (!pThis->m_Services.useConfiguration().getString(ASW("/config/base/crypto/cert",24), cert))
+  {
+    ALock lock(pThis->m_Services.useScreenSynch());
+    std::cout << "AObjectServer HTTPS missing /config/base/crypto/cert, secure socket not listening." << std::endl;
+    return -1;
+  }
+  if (!pThis->m_Services.useConfiguration().getString(ASW("/config/base/crypto/pkey",24), pkey))
+  {
+    ALock lock(pThis->m_Services.useScreenSynch());
+    std::cout << "AObjectServer HTTPS missing /config/base/crypto/pkey, secure socket not listening." << std::endl;
+    return -1;
+  }
+
+  ASocketListener_SSL listener(https_port, cert, pkey);
   listener.open();
 
   pThis->m_Services.useLog().add(ASWNL("AObjectServer started.  HTTPS listening on port ")+AString::fromInt(https_port));
@@ -188,6 +197,7 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
     std::cout << "AObjectServer HTTPS listening on port " << https_port << std::endl;
   }
 
+  thread.setRunning(true);
   AOSContext *pContext = NULL;
   try
   {

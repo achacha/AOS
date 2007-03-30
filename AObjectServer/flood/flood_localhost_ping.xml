@@ -40,10 +40,7 @@
          Notice the payload attribute - this allows us to specify the POST
          content.  -->
 		<!-- The default method is "GET", so let's get APR's index page. -->
-		<url>http://localhost:10080/ping</url>
-		<!--url>http://localhost/dada/Dada?templateName=TheRaven</url-->
-		<!--url>http://localhost/dada/Dada?templateName=FreeFlow</url-->
-		<!--url>http://localhost/DisplayInputWithTemplateParts.html</url-->
+		<url>http://localhost/ping</url>
 	</urllist>
 	<!-- The profile describes how we will hit the urllists.  For this
        example, we execute with the round_robin profile.

@@ -146,16 +146,8 @@ public:
 
   /*!
   HTTP 1.1 pipelining enabled
-  @deprecated
   */
   int isHttpPipeliningEnabled() const;
-
-  /*!
-  AOS server information
-  @deprecated
-  */
-  AString getAosCertFilename() const;
-  AString getAosPKeyFilename() const;
   
   /*!
   Paths

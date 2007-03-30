@@ -426,7 +426,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
     ARope rope("AOSContext: Invalid first char: \\", 33);
     rope.append(AString::fromInt((int)c));
     rope.append(": ",2);
-    rope.append(str);
+    ATextConverter::makeAsciiPrintable(str, rope);
     m_EventVisitor.set(rope, true);
     return AOSContext::STATUS_HTTP_INVALID_FIRST_CHAR;
   }

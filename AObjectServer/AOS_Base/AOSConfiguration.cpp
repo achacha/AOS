@@ -169,12 +169,16 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
   );
 
   //a_Commands
-  MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.begin();
-  while (cit != m_CommandPtrs.end())
   {
-    AXmlElement& eObject = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("AOSCommand",10));
-    (*cit).second->addAdminXml(eObject, request);
-    ++cit;
+    ARope rope;
+    MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.begin();
+    while (cit != m_CommandPtrs.end())
+    {
+      rope.append((*cit).second->getCommandName());
+      rope.append(AString::sstr_CRLF);
+      ++cit;
+    }
+    addProperty(eBase, ASWNL("Commands"), rope);
   }
 
   //a_Ini
@@ -634,24 +638,6 @@ void AOSConfiguration::setReportedHttpsPort(const AString& configPath)
   }
   else
     m_Services.useLog().add(ARope("AOSConfiguration::setReportedHttpsPort: Unable to find path: ")+configPath, ALog::WARNING);
-}
-
-AString AOSConfiguration::getAosCertFilename() const
-{
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("aos_cert_filename"), str))
-    return str;
-  else
-    return DEFAULT_AOS_CERT_FILENAME;
-}
-
-AString AOSConfiguration::getAosPKeyFilename() const
-{
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("aos_pkey_filename"), str))
-    return str;
-  else
-    return DEFAULT_AOS_PKEY_FILENAME;
 }
 
 const AString& AOSConfiguration::getAosDefaultInputProcessor() const

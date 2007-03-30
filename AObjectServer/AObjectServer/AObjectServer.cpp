@@ -16,7 +16,7 @@
 ADynamicLibrary dllModules;                  //a_Map of DLLs loaded
 ASocketLibrary_SSL g_SecureSocketLibrary;    //a_Global init for SSL and socket library
 
-static const AString _BUILD_INFO_(AOS_SERVER_NAME+"\tBUILD("+__TIME__+" "+__DATE__+")");
+static const AString _BUILD_INFO_(AString(AOS_SERVER_NAME)+"\tBUILD("+__TIME__+" "+__DATE__+")");
 
 void traceMultiline(const AString& str, void *ptr)
 {
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
       }
     }
     else
-      iniFilename.set(ASW("./aos_root/AObjectServer.ini", 29));
+      iniFilename.set(ASW("./aos_root/AObjectServer.ini", 28));
 
     if (AFileSystem::exists(iniFilename))
     {
