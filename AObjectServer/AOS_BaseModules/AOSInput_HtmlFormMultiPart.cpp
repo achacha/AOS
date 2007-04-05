@@ -14,8 +14,8 @@ AOSInput_HtmlFormMultiPart::AOSInput_HtmlFormMultiPart(ALog& alog) :
 
 bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
 {
-  AString str;
-  if (context.useRequestHeader().find(AHTTPHeader::HT_ENT_Content_Length, str))
+  AString strLength;
+  if (context.useRequestHeader().find(AHTTPHeader::HT_ENT_Content_Length, strLength))
   {
     //a_Get the boundary string
     AString strBoundary;
@@ -83,7 +83,7 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
           continue;
         }
 
-        size_t pos = 0;
+        pos = 0;
         AString xpath("/request/data/part.",19);
         xpath.append(AString::fromInt(part));
         if (AConstant::npos != (pos = str.findNoCase(ASW("Content-Type:", 13))))

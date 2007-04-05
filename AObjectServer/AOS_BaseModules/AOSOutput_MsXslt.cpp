@@ -51,16 +51,26 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& fi
   *p= NULL;
 
   if (filename.isEmpty())
+  {
+    delete p;
     ATHROW_EX(this, AException::InvalidParameter, AString("Empty filename"));
+  }
 
   HRESULT hr = (*p).CreateInstance(__uuidof(MSXML2::DOMDocument40));
   if (FAILED(hr))
+  {
+    delete p;
     ATHROW_LAST_OS_ERROR(this);
+  }
 
 	(*p)->async = VARIANT_FALSE;
   if (! (*p)->load((const _bstr_t)filename.c_str()) )
+  {
+    ((MSXML2::IXMLDOMDocument2Ptr *)p)->Release();
+    delete p;
     ATHROW_EX(this, AException::OperationFailed, AString("Unable to parse XSL: ")+filename);
-  
+  }
+
   XslDocHolder holder;
   holder.m_ComPtr = p;
   holder.m_filename = filename;

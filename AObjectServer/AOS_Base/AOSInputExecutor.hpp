@@ -3,9 +3,9 @@
 
 #include "apiAOS_Base.hpp"
 #include "AOSAdminInterface.hpp"
+#include "AOSContext.hpp"
 
 class AOSServices;
-class AOSContext;
 class AOSInputProcessorInterface;
 class AOSAdminRegistry;
 
