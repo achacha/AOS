@@ -216,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSModule_rss20.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSOutput_generate_image.cpp"
 				>
 			</File>
@@ -257,6 +261,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSModule_classified_submit.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSModule_rss20.hpp"
 				>
 			</File>
 			<File

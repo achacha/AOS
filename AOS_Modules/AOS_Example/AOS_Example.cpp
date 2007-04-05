@@ -4,6 +4,7 @@
 #include "AOSModule_classified_input.hpp"
 #include "AOSModule_classified_submit.hpp"
 #include "AOSModule_classified_list.hpp"
+#include "AOSModule_RSS20.hpp"
 
 #include "AOSOutput_generate_image.hpp"
 
@@ -37,6 +38,7 @@ extern "C" AOS_EXAMPLE_API int aos_register(
   moduleExecutor.registerModule(new AOSModule_classified_input(alog));
   moduleExecutor.registerModule(new AOSModule_classified_submit(alog));
   moduleExecutor.registerModule(new AOSModule_classified_list(alog));
+  moduleExecutor.registerModule(new AOSModule_rss20(alog));
   
   //Register output generators
   outputExecutor.registerOutputGenerator(new AOSOutput_generate_image(alog));
