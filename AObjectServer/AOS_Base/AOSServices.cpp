@@ -10,10 +10,10 @@ void AOSServices::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSServices @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Log=" << std::endl;
-  m_Log.debugDump(os, indent+2);
+  mp_Log->debugDump(os, indent+2);
 
-  ADebugDumpable::indent(os, indent+1) << "m_AdminRegistry=" << std::endl;
-  m_AdminRegistry.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "*mp_AdminRegistry=" << std::endl;
+  mp_AdminRegistry->debugDump(os, indent+2);
 
   ADebugDumpable::indent(os, indent+1) << "*mp_DatabaseConnPool=" << std::endl;
   mp_DatabaseConnPool->debugDump(os, indent+2);
@@ -49,48 +49,35 @@ void AOSServices::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& requ
 {
   AOSAdminInterface::addAdminXml(eBase, request);
   
-  addProperty(eBase, ASW("log",3), m_Log);
+  addProperty(eBase, ASW("log",3), *mp_Log);
   
   {
     AString str(16,16);
-    str.parseU4(m_Log.getEventMask(), 16);
+    str.parseU4(mp_Log->getEventMask(), 16);
     str.justifyRight(8, '0');
     addProperty(eBase, ASW("log.eventmask",13), str);
   }
 }
 
-AOSServices::AOSServices(const AFilename& iniFilename) :
+AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
   m_ConsoleSynch("Console_cout"),
-  m_Log(new AMutex(iniFilename.toAString()), iniFilename.toAString()+".log"),
-  m_AdminRegistry(m_Log),
   m_GlobalObjects(ASW("global",6)),
   mp_Configuration(NULL),
   mp_DatabaseConnPool(NULL),
   mp_SessionManager(NULL),
-  mp_ContextManager(NULL)
+  mp_ContextManager(NULL),
+  mp_Log(NULL)
 {
-  mp_Configuration = new AOSConfiguration(iniFilename, *this, m_ConsoleSynch);
+  //a_Create log
+  AFilename logfile(basePath);
+  logfile.usePathNames().push_back(ASW("logs",4));
+  logfile.useFilename().assign(ASW("aos.log",7));
+  AFilename mutexfile(logfile);
+  mutexfile.useFilename().assign(ASW("aos.mutex",9));
+  mp_Log = new ALog_AFile(new AMutex(logfile.toAString()), mutexfile, mask);
 
-  _initDatabasePool();
-
-  mp_SessionManager = new AOSSessionManager(*this);
-  mp_ContextManager = new AOSContextManager(*this);
-}
-
-AOSServices::AOSServices(const AFilename& iniFilename, ALog::EVENT_MASK mask) :
-  m_ConsoleSynch("Console_cout"),
-  m_Log(new AMutex(iniFilename.toAString()), iniFilename.toAString()+".log", mask),
-  mp_Configuration(NULL),
-  mp_DatabaseConnPool(NULL),
-  m_AdminRegistry(m_Log),
-  m_GlobalObjects(ASW("global",6)),
-  mp_SessionManager(NULL),
-  mp_ContextManager(NULL)
-{
-  mp_Configuration = new AOSConfiguration(iniFilename, *this, m_ConsoleSynch);
-
-  _initDatabasePool();
-
+  mp_AdminRegistry = new AOSAdminRegistry(*mp_Log);
+  mp_Configuration = new AOSConfiguration(basePath, *this, m_ConsoleSynch);
   mp_SessionManager = new AOSSessionManager(*this);
   mp_ContextManager = new AOSContextManager(*this);
 }
@@ -103,21 +90,29 @@ AOSServices::~AOSServices()
   delete mp_Configuration;
 }
 
-void AOSServices::_initDatabasePool()
+bool AOSServices::initDatabasePool()
 {
   mp_DatabaseConnPool = new AOSDatabaseConnectionPool(*this);
 
-  AUrl urlServer;
-  int iMaxConnections = mp_Configuration->getDatabaseMaxConnections();
-  if (iMaxConnections > 0 && mp_Configuration->getDatabaseUrl(urlServer))
+  int iMaxConnections = mp_Configuration->getInt(AOSConfiguration::DATABASE_CONNECTIONS, 2);
+  AString strUrl = mp_Configuration->getString(AOSConfiguration::DATABASE_URL, AString::sstr_Empty);
+  if (iMaxConnections > 0 && !strUrl.isEmpty())
   {
+    AUrl urlServer(strUrl);
     mp_DatabaseConnPool->init(urlServer, iMaxConnections);
+    return true;
+  }
+  else
+  {
+    mp_Log->add(ARope("AOSServices::_initDatabasePool: Unable to init DB pool url='")+strUrl+ASWNL("' connections=")+AString::fromInt(iMaxConnections) , ALog::FAILURE);
+    return false;
   }
 }
 
 ALog& AOSServices::useLog()
 {
-  return m_Log;
+  AASSERT(this, mp_Log);
+  return *mp_Log;
 }
 
 AOSConfiguration& AOSServices::useConfiguration()
@@ -127,11 +122,13 @@ AOSConfiguration& AOSServices::useConfiguration()
 
 AOSAdminRegistry& AOSServices::useAdminRegistry()
 {
-  return m_AdminRegistry;
+  AASSERT(this, mp_AdminRegistry);
+  return *mp_AdminRegistry;
 }
 
 AOSDatabaseConnectionPool& AOSServices::useDatabaseConnectionPool()
 {
+  AASSERT(this, mp_DatabaseConnPool);
   return *mp_DatabaseConnPool;
 }
 

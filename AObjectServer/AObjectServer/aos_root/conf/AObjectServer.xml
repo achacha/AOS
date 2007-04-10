@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- /config/server -->
 <server>
+	<log-level>5</log-level>
+	<default-filename>index.html</default-filename>
+	<default-input-processor>application/x-www-form-urlencoded</default-input-processor>
+	<default-output-generator/>
+	<mime-types>mime_types.ini</mime-types>
+	<load>
+		<module>AOS_BaseModules</module>
+		<module>AOS_DadaData</module>
+		<module>AOS_Test</module>
+		<module>AOS_Example</module>
+		<module>AOS_Forum</module>
+		<module>AOS_Blog</module>
+	</load>
+	<listen>
+		<!-- Listener ports -->
+		<http>80</http>
+		<https>443</https>
+		<admin>12345</admin>
+	</listen>
 	<reported>
 		<!-- Reported overrides -->
 		<hostname>localhost</hostname>
@@ -8,4 +27,25 @@
 		<http/>
 		<https/>
 	</reported>
+	<context-manager>
+		<history-maxsize>100</history-maxsize>
+		<freestore-maxsize>50</freestore-maxsize>
+	</context-manager>
+	<admin>
+		<base-http-dir>admin/</base-http-dir>
+	</admin>
+	<database>
+		<!--url>mysql://aos:aos@localhost/aos/</url-->
+		<!--odbc://aos:aos@localhost/aos_global/</url-->
+		<url>sqlite:///./aos_root/AObjectServer.db</url>
+		<connections>4</connections>
+	</database>
+	<crypto>
+		<cert>aos_root/certs/aos_cert.pem</cert>
+		<pkey>aos_root/certs/aos_pkey.pem</pkey>
+	</crypto>
+	<http>
+		<first-char-read-tries>15</first-char-read-tries>
+		<http11-pipelining-enabled>true</http11-pipelining-enabled>
+	</http>
 </server>

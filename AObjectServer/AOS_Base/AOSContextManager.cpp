@@ -80,12 +80,10 @@ void AOSContextManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
 }
 
 AOSContextManager::AOSContextManager(AOSServices& services) :
-  m_Services(services),
-  m_HistoryMaxSize(100),
-  m_FreestoreMaxSize(50)
+  m_Services(services)
 {
-  m_HistoryMaxSize = services.useConfiguration().getAOSContextManagerHistoryMaxSize();
-  m_FreestoreMaxSize = services.useConfiguration().getAOSContextManagerFreestoreMaxSize();
+  m_HistoryMaxSize = services.useConfiguration().getInt("/config/server/context-manager/history-maxsize", 100);
+  m_FreestoreMaxSize = services.useConfiguration().getInt("/config/server/context-manager/freestore-maxsize", 50);
 
   registerAdminObject(m_Services.useAdminRegistry());
 }

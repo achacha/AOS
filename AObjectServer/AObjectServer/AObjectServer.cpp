@@ -40,55 +40,26 @@ int main(int argc, char **argv)
   try
   {
     //a_Check if INI filename was provided
-    AFilename iniFilename;
+    AFilename basePath("./aos_root/",11);
     if (argc > 1)
     {
       //a_Check existance of INI file
-      iniFilename.set(argv[1], true);
-      iniFilename.join(ASW("AObjectServer.ini",17));
-      if (!AFileSystem::exists(iniFilename))
-      {
-        AString str("main: INI file does not exist: ");
-        iniFilename.emit(str);
-        AOS_DEBUGTRACE(str.c_str(), NULL);
-        return -1;
-      }
+      basePath.set(argv[1], true);
     }
-    else
-      iniFilename.set(ASW("./aos_root/AObjectServer.ini", 28));
 
-    if (AFileSystem::exists(iniFilename))
+    if (!AFileSystem::exists(basePath))
     {
-      AString str("main: Using INI: ");
-      iniFilename.emit(str);
-      AOS_DEBUGTRACE(str.c_str(), NULL);
-    }
-    else
-    {
-      AFilename absolute;
-      AFileSystem::expand(iniFilename, absolute);
-      AString str("main: INI file does not exist: '");
-      absolute.emit(str);
-      str.append('\'');
+      AString str("main: Base path does not exist: ");
+      basePath.emit(str);
       AOS_DEBUGTRACE(str.c_str(), NULL);
       return -1;
     }
 
     //a_Initialize services
-    AOSServices services(iniFilename);
-
-    //a_Load the main base config XML if exists
-    services.useConfiguration().loadConfig("AOS_Base");
-    services.useConfiguration().loadConfig("AObjectServer");
-
-    //a_Configure server reported values
-    services.useConfiguration().setReportedServer("/config/server/reported/server");
-    services.useConfiguration().setReportedHostname("/config/server/reported/hostname");
-    services.useConfiguration().setReportedHttpPort("/config/server/reported/http");
-    services.useConfiguration().setReportedHttpsPort("/config/server/reported/https");
+    AOSServices services(basePath);
 
     //a_Admin port
-    int admin_port = services.useConfiguration().getIntWithDefault(AOSConfiguration::LISTEN_ADMIN_PORT, -1);
+    int admin_port = services.useConfiguration().getInt(AOSConfiguration::LISTEN_ADMIN_PORT, -1);
     if (-1 != admin_port && !ASocketLibrary::canBindToPort(admin_port))
     {
       AString str("main: Unable to bind to admin port ");
@@ -100,7 +71,7 @@ int main(int argc, char **argv)
     }
 
     //a_HTTP port
-    int http_port = services.useConfiguration().getIntWithDefault(AOSConfiguration::LISTEN_HTTP_PORT, -1);
+    int http_port = services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTP_PORT, -1);
     if (-1 != http_port && !ASocketLibrary::canBindToPort(http_port))
     {
       AString str("main: Unable to bind to http port ");
@@ -112,7 +83,7 @@ int main(int argc, char **argv)
     }
 
     //a_HTTPS port
-    int https_port = services.useConfiguration().getIntWithDefault(AOSConfiguration::LISTEN_HTTPS_PORT, -1);
+    int https_port = services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTPS_PORT, -1);
     if (-1 != https_port && !ASocketLibrary::canBindToPort(https_port))
     {
       AString str("main: Unable to bind to https port ");
@@ -175,7 +146,7 @@ int main(int argc, char **argv)
       //a_Initialize the global objects
       //
       AString strError;
-      if (services.useDatabaseConnectionPool().isInitialized())
+      if (services.initDatabasePool())
       {
         size_t rows = services.loadGlobalObjects(strError);
         if (AConstant::npos == rows)
@@ -186,10 +157,10 @@ int main(int argc, char **argv)
         else
         {
           str.clear();
-          AUrl url;
-          services.useConfiguration().getDatabaseUrl(url);
-          str.assign("Database connection pool connected to: ");
-          url.emit(str);
+          str.assign("Database connection pool connected ");
+          services.useConfiguration().emitString(AOSConfiguration::DATABASE_CONNECTIONS, str);
+          str.append("x to ");
+          services.useConfiguration().emitString(AOSConfiguration::DATABASE_URL, str);
           AOS_DEBUGTRACE(str.c_str(), NULL);
           str.assign("Querying for global variables, processed ");
           str.append(AString::fromSize_t(rows));
@@ -301,9 +272,6 @@ int main(int argc, char **argv)
 
       //a_TODO: Should verify that defaults configured have been loaded...
                   
-      //a_Load commands
-      services.useConfiguration().loadCommands(services);
-
       //a_Start listener
       listener.startListening();
 

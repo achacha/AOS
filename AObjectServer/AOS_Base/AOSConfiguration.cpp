@@ -9,34 +9,23 @@
 #include "ALog.hpp"
 #include "AFileSystem.hpp"
 #include "AOSServices.hpp"
+#include "AINIProfile.hpp"
 
-const AString AOSConfiguration::LISTEN_ADMIN_PORT("/config/base/listen/admin");
-const AString AOSConfiguration::LISTEN_HTTP_PORT("/config/base/listen/http");
-const AString AOSConfiguration::LISTEN_HTTPS_PORT("/config/base/listen/https");
+const AString AOSConfiguration::LISTEN_ADMIN_PORT("/config/server/listen/admin");
+const AString AOSConfiguration::LISTEN_HTTP_PORT("/config/server/listen/http");
+const AString AOSConfiguration::LISTEN_HTTPS_PORT("/config/server/listen/https");
 
+const AString AOSConfiguration::DATABASE_URL("/config/server/database/url");
+const AString AOSConfiguration::DATABASE_CONNECTIONS("/config/server/database/connections");
 
-// ___DEPRECATED___
-#define DEFAULT_INI_FILENAME ASW("AObjectServer.ini",17)
+//#define DEFAULT_INI_FILENAME ASW("AObjectServer.ini",17)
+//const AString AOSConfiguration::CONFIG("config");
 
-const AString AOSConfiguration::CONFIG("config");
-
-
-#define DEFAULT_AOS_CERT_FILENAME "aos_root/certs/aos_cert.pem"
-#define DEFAULT_AOS_PKEY_FILENAME "aos_root/certs/aos_pkey.pem"
-
-#define DEFAULT_FIRST_CHAR_READ_TRIES 12
-#define DEFAULT_DATABASE_MAX_CONNECTIONS 6
-
-#define DEFAULT_AOS_DEFAULT_FILENAME "index.html"
-
-#define AOS_CONFIG_BASE_PATH "aos_config_base_path"
-#define AOS_STATIC_BASE_PATH "aos_static_base_path"
-#define AOS_DYNAMIC_BASE_PATH "aos_dynamic_base_path"
-#define AOS_DATA_BASE_PATH "aos_data_base_path"
-#define AOS_DEFAULT_FILENAME "aos_default_filename"
-#define AOS_DEFAULT_INPUT_PROCESSOR "aos_default_input_processor"
-#define AOS_DEFAULT_OUTPUT_GENERATOR "aos_default_output_generator"
-#define ADMIN_BASE_PATH "admin_base_path"
+//#define AOS_CONFIG_BASE_PATH "aos_config_base_path"
+//#define AOS_STATIC_BASE_PATH "aos_static_base_path"
+//#define AOS_DYNAMIC_BASE_PATH "aos_dynamic_base_path"
+//#define AOS_DATA_BASE_PATH "aos_data_base_path"
+//#define AOS_LOG_LEVEL "log_level"
 
 #define DEFAULT_AOSCONTEXTMANAGER_HISTORY_MAX_SIZE 100
 #define DEFAULT_AOSCONTEXTMANAGER_FREESTORE_MAX_SIZE 50
@@ -65,11 +54,6 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_ReportedHostname="  << m_ReportedHostname << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ReportedHttpPort="  << m_ReportedHttpPort << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ReportedHttpsPort=" << m_ReportedHttpsPort << std::endl;
-  
-  
-  //a_@deprecated
-  ADebugDumpable::indent(os, indent+1) << "m_Ini=" << std::endl;
-  m_Ini.debugDump(os, indent+2);
 
   //a_Commands
   ADebugDumpable::indent(os, indent+1) << "m_CommandPtrs={" << std::endl;
@@ -106,22 +90,6 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
   addProperty(eBase, ASWNL("reported_http_port") , AString::fromInt(m_ReportedHttpPort));
   addProperty(eBase, ASWNL("reported_https_port"), AString::fromInt(m_ReportedHttpsPort));
 
-
-  {
-    AUrl url;
-    if (getDatabaseUrl(url))
-      addProperty(
-        eBase,
-        ASWNL("database_url"),
-        url
-      );
-  }
-
-  addProperty(
-    eBase,
-    ASWNL("database_max_connections"),
-    AString::fromInt(getDatabaseMaxConnections())
-  );
 
   {
     LIST_AString moduleNames;
@@ -162,12 +130,6 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
     getAosDefaultOutputGenerator()
   );
 
-  addProperty(
-    eBase,
-    ASWNL("http_first_char_read_tries"),
-    AString::fromInt(getHttpFirstCharReadTries())
-  );
-
   //a_Commands
   {
     ARope rope;
@@ -179,18 +141,6 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
       ++cit;
     }
     addProperty(eBase, ASWNL("Commands"), rope);
-  }
-
-  //a_Ini
-  {
-    ARope rope;
-    m_Ini.emit(rope);
-    AXmlElement& eObject = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("AINIProfile",11));
-    addProperty(
-      eObject,
-      ASWNL("ini"),
-      rope
-    );
   }
 
   {
@@ -225,11 +175,16 @@ void AOSConfiguration::processAdminAction(AXmlElement& eBase, const AHTTPRequest
 }
 
 AOSConfiguration::AOSConfiguration(
-  const AFilename& configDir,
+  const AFilename& baseDir,
   AOSServices& services,
   ASynchronization& screenSynch
 ) :
-  m_BaseConfigDir(configDir),
+  m_BaseDir(baseDir),
+  m_AosBaseConfigDir(baseDir),
+  m_AosBaseDataDir(baseDir),
+  m_AosBaseStaticDir(baseDir),
+  m_AosBaseDynamicDir(baseDir),
+  m_AdminBaseHttpDir(baseDir),
   m_Services(services),
   m_ScreenSynch(screenSynch),
   m_Config(ASW("config",6)),
@@ -240,16 +195,29 @@ AOSConfiguration::AOSConfiguration(
 {
   registerAdminObject(services.useAdminRegistry());
 
-  AFilename iniFilename(configDir);
-  iniFilename.useFilename().assign(DEFAULT_INI_FILENAME);
-  m_Ini.setFilename(iniFilename);
-  m_Ini.parse();
+  m_AosBaseConfigDir.usePathNames().push_back("conf");
+  m_AosBaseDynamicDir.usePathNames().push_back("dynamic");
+  m_AosBaseDataDir.usePathNames().push_back("data");
+  m_AosBaseStaticDir.usePathNames().push_back("static");
+  m_AdminBaseHttpDir.usePathNames().push_back("admin");
 
-  AString strLogLevel;
-  if (m_Ini.getValue(CONFIG, ASW("log_level",9), strLogLevel))
+  //a_TODO: parameter after ini is removed
+  loadConfig("AObjectServer");
+
+  //a_Configure server internals from config
+  setAosDefaultFilename("/config/server/default-filename");
+
+  //a_Configure server reported values
+  setReportedServer("/config/server/reported/server");
+  setReportedHostname("/config/server/reported/hostname");
+  setReportedHttpPort("/config/server/reported/http");
+  setReportedHttpsPort("/config/server/reported/https");
+
+  int logLevel = getInt("/config/server/log-level", -1);
+  if (-1 != logLevel)
   {
     m_Services.useLog().setEventMask(ALog::SILENT);
-    switch(strLogLevel.toInt())
+    switch(logLevel)
     {
       case 5 : m_Services.useLog().addEventMask(ALog::ALL);
         break;
@@ -264,33 +232,8 @@ AOSConfiguration::AOSConfiguration(
     }
   }
 
-  iniFilename.emitPath(m_AosBaseConfigDir);
-  if (!m_Ini.getValue(CONFIG, AOS_CONFIG_BASE_PATH, m_AosBaseConfigDir))
-    ATHROW_EX(this, AException::InvalidConfiguration, "Missing required INI entry [config]" AOS_DATA_BASE_PATH);
-
-  iniFilename.emitPath(m_AosBaseDynamicDir);
-  if (!m_Ini.getValue(CONFIG, AOS_DYNAMIC_BASE_PATH, m_AosBaseDynamicDir))
-    ATHROW_EX(this, AException::InvalidConfiguration, "Missing required INI entry [config]" AOS_DYNAMIC_BASE_PATH);
-  
-  iniFilename.emitPath(m_AosBaseDataDir);
-  if (!m_Ini.getValue(CONFIG, AOS_DATA_BASE_PATH, m_AosBaseDataDir))
-    ATHROW_EX(this, AException::InvalidConfiguration, "Missing required INI entry [config]" AOS_DATA_BASE_PATH);
-
-  iniFilename.emitPath(m_AosBaseStaticDir);
-  if (!m_Ini.getValue(CONFIG, AOS_STATIC_BASE_PATH, m_AosBaseStaticDir))
-    ATHROW_EX(this, AException::InvalidConfiguration, "Missing required INI entry [config]" AOS_STATIC_BASE_PATH);
-
-  if (!m_Ini.getValue(CONFIG, AOS_DEFAULT_FILENAME, m_AosDefaultFilename))
-    m_AosDefaultFilename = DEFAULT_AOS_DEFAULT_FILENAME;
-
-  m_Ini.getValue(CONFIG, AOS_DEFAULT_INPUT_PROCESSOR, m_AosDefaultInputProcessor);
-  m_Ini.getValue(CONFIG, AOS_DEFAULT_OUTPUT_GENERATOR, m_AosDefaultOutputGenerator);
-
-  iniFilename.emitPath(m_AdminBaseHttpDir);
-  if (!m_Ini.getValue(CONFIG, ADMIN_BASE_PATH, m_AdminBaseHttpDir))
-    ATHROW_EX(this, AException::InvalidConfiguration, "Missing required INI entry [config]" ADMIN_BASE_PATH);
-  
   _readMIMETypes();
+  _loadCommands();
 }
 
 AOSConfiguration::~AOSConfiguration()
@@ -309,12 +252,15 @@ AOSConfiguration::~AOSConfiguration()
 
 void AOSConfiguration::_readMIMETypes()
 {
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("mime_types"), str))
+  if (exists(ASWNL("/config/server/mime-types")))
   {
-    AFilename filename = getBaseConfigDir();
+    AString str;
+    emitString(ASWNL("/config/server/mime-types"), str);
+
+    AFilename filename(m_BaseDir);
     AFilename fMime(str);
     filename.join(fMime);
+
     AINIProfile mimeTypes(filename);
     AINIProfile::Iterator it = mimeTypes.getIterator(ASWNL("MIME_Types"));
     AString strName(16,16), strValue(64, 16);
@@ -339,9 +285,9 @@ void AOSConfiguration::_readMIMETypes()
   }
 }
 
-const AFilename& AOSConfiguration::getBaseConfigDir() const
+const AFilename& AOSConfiguration::getBaseDir() const
 {
-  return m_BaseConfigDir;
+  return m_BaseDir;
 }
 
 bool AOSConfiguration::getMimeTypeFromExt(AString strExt, AString& target) const
@@ -363,7 +309,8 @@ bool AOSConfiguration::getMimeTypeFromExt(AString strExt, AString& target) const
 
 void AOSConfiguration::loadConfig(const AString& name)
 {
-  AFilename filename(m_AosBaseConfigDir, name, false);
+  AFilename filename(m_AosBaseConfigDir);
+  filename.useFilename().assign(name);
   filename.setExtension("xml");
   
   if (AFileSystem::exists(filename))
@@ -376,10 +323,10 @@ void AOSConfiguration::loadConfig(const AString& name)
     m_Config.useRoot().addContent(configDoc.useRoot());
   }
   else
-    m_Services.useLog().add(ASW("XML config does not exist: ",27), filename, ALog::DEBUG);
+    m_Services.useLog().add(ASW("XML config does not exist: ",27), filename, ALog::WARNING);
 }
 
-void AOSConfiguration::loadCommands(AOSServices& services)
+void AOSConfiguration::_loadCommands()
 {
   LIST_AFilename fileList;
   const AString& EXT1 = ASW("aos",3);
@@ -411,6 +358,7 @@ void AOSConfiguration::loadCommands(AOSServices& services)
       //a_Parse each /command/command type
       AXmlElement::NodeContainer::const_iterator cit = nodes.begin();
       AString strPath(1024, 512);
+      AString dynamicDir(m_AosBaseDynamicDir.toAString());
       while(cit != nodes.end())
       {
         AXmlElement *pElement = dynamic_cast<AXmlElement *>(*cit);
@@ -418,8 +366,8 @@ void AOSConfiguration::loadCommands(AOSServices& services)
         {
           //a_Get relative path
           (*it).emit(strPath);
-          AASSERT(this, strPath.getSize() >= m_AosBaseDynamicDir.getSize());
-          strPath.remove(m_AosBaseDynamicDir.getSize()-1);
+          AASSERT(this, strPath.getSize() >= dynamicDir.getSize());
+          strPath.remove(dynamicDir.getSize()-1);
           strPath.rremove(EXT_SIZE);
 
           //a_Parse command and associate to relative path
@@ -428,7 +376,7 @@ void AOSConfiguration::loadCommands(AOSServices& services)
           m_CommandPtrs[strPath] = p;
 
           //a_Register the command with admin
-          p->registerAdminObject(services.useAdminRegistry());
+          p->registerAdminObject(m_Services.useAdminRegistry());
 
           {
             ALock lock(m_ScreenSynch);
@@ -499,54 +447,22 @@ void AOSConfiguration::dumpCommands(AOutputBuffer& target) const
   }
 }
 
-int AOSConfiguration::getHttpFirstCharReadTries() const
-{
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("http_first_char_read_tries"), str))
-    return str.toInt();
-  else
-    return DEFAULT_FIRST_CHAR_READ_TRIES;
-}
-
-bool AOSConfiguration::getDatabaseUrl(AUrl& url) const
-{
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("database_url"), str))
-  {
-    url.parse(str);
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-int AOSConfiguration::getDatabaseMaxConnections() const
-{
-  AString str;
-  if (m_Ini.getValue(CONFIG, ASWNL("database_max_connections"), str))
-    return str.toInt();
-  else
-    return DEFAULT_DATABASE_MAX_CONNECTIONS;
-}
-
-const AString& AOSConfiguration::getAosBaseConfigDirectory() const
+const AFilename& AOSConfiguration::getAosBaseConfigDirectory() const
 {
   return m_AosBaseConfigDir;
 }
 
-const AString& AOSConfiguration::getAosBaseStaticDirectory() const
+const AFilename& AOSConfiguration::getAosBaseStaticDirectory() const
 {
   return m_AosBaseStaticDir;
 }
 
-const AString& AOSConfiguration::getAosBaseDynamicDirectory() const
+const AFilename& AOSConfiguration::getAosBaseDynamicDirectory() const
 {
   return m_AosBaseDynamicDir;
 }
 
-const AString& AOSConfiguration::getAosBaseDataDirectory() const
+const AFilename& AOSConfiguration::getAosBaseDataDirectory() const
 {
   return m_AosBaseDataDir;
 }
@@ -556,7 +472,7 @@ const AString& AOSConfiguration::getAosDefaultFilename() const
   return m_AosDefaultFilename;
 }
 
-const AString& AOSConfiguration::getAdminBaseHttpDirectory() const
+const AFilename& AOSConfiguration::getAdminBaseHttpDir() const
 {
   return m_AdminBaseHttpDir;
 }
@@ -564,10 +480,14 @@ const AString& AOSConfiguration::getAdminBaseHttpDirectory() const
 u4 AOSConfiguration::getDynamicModuleLibraries(LIST_AString& target) const
 {
   u4 ret = 0;
-  AString str(1024, 1024);
-  if (m_Ini.getValue(CONFIG, ASWNL("module_libs"), str))
+  AXmlNode::ConstNodeContainer nodes;
+  m_Config.getRoot().find("/config/server/load/module", nodes);
+  for(AXmlNode::ConstNodeContainer::iterator it = nodes.begin(); it != nodes.end(); ++it)
   {
-    str.split(target, ',', AString::sstr_WhiteSpace);
+    AString str;
+    (*it)->emitContent(str);
+    target.push_back(str);
+    ++ret;
   }
   return ret;
 }
@@ -597,7 +517,7 @@ void AOSConfiguration::setReportedServer(const AString& configPath)
   if (exists(configPath))
   {
     m_ReportedServer.clear();
-    getString(configPath, m_ReportedServer);
+    emitString(configPath, m_ReportedServer);
     m_Services.useLog().add(ARope("Setting reported server: ")+m_ReportedServer, ALog::DEBUG);
   }
   else
@@ -609,7 +529,7 @@ void AOSConfiguration::setReportedHostname(const AString& configPath)
   if (exists(configPath))
   {
     m_ReportedHostname.clear();
-    getString(configPath, m_ReportedHostname);
+    emitString(configPath, m_ReportedHostname);
     m_Services.useLog().add(ARope("Setting reported hostname: ")+m_ReportedHostname, ALog::DEBUG);
   }
   else
@@ -620,8 +540,7 @@ void AOSConfiguration::setReportedHttpPort(const AString& configPath)
 {
   if (exists(configPath))
   {
-    int port = getInt(configPath);
-    m_ReportedHttpPort = (!port ? 80 : port);
+    m_ReportedHttpPort = getInt(configPath, 80);
     m_Services.useLog().add(ARope("Setting reported http port: ")+AString::fromInt(m_ReportedHttpPort), ALog::DEBUG);
   }
   else
@@ -632,12 +551,44 @@ void AOSConfiguration::setReportedHttpsPort(const AString& configPath)
 {
   if (exists(configPath))
   {
-    int port = getInt(configPath);
-    m_ReportedHttpsPort = (!port ? 443 : port);
+    m_ReportedHttpsPort = getInt(configPath, 443);
     m_Services.useLog().add(ARope("Setting reported https port: ")+AString::fromInt(m_ReportedHttpsPort), ALog::DEBUG);
   }
   else
     m_Services.useLog().add(ARope("AOSConfiguration::setReportedHttpsPort: Unable to find path: ")+configPath, ALog::WARNING);
+}
+
+void AOSConfiguration::setAosDefaultFilename(const AString& configPath)
+{
+  if (exists(configPath))
+  {
+    emitString(configPath, m_AosDefaultFilename);
+    m_Services.useLog().add(ARope("Setting default filename: ")+m_AosDefaultFilename, ALog::DEBUG);
+  }
+  else
+    m_Services.useLog().add(ARope("AOSConfiguration::setAosDefaultFilename: Unable to find path: ")+configPath, ALog::WARNING);
+}
+
+void AOSConfiguration::setAosDefaultInputProcessor(const AString& configPath)
+{
+  if (exists(configPath))
+  {
+    emitString(configPath, m_AosDefaultInputProcessor);
+    m_Services.useLog().add(ARope("Setting default input processor: ")+m_AosDefaultInputProcessor, ALog::DEBUG);
+  }
+  else
+    m_Services.useLog().add(ARope("AOSConfiguration::setAosDefaultInputProcessor: Unable to find path: ")+configPath, ALog::WARNING);
+}
+
+void AOSConfiguration::setAosDefaultOutputGenerator(const AString& configPath)
+{
+  if (exists(configPath))
+  {
+    emitString(configPath, m_AosDefaultOutputGenerator);
+    m_Services.useLog().add(ARope("Setting default output generator: ")+m_AosDefaultOutputGenerator, ALog::DEBUG);
+  }
+  else
+    m_Services.useLog().add(ARope("AOSConfiguration::setAosDefaultOutputGenerator: Unable to find path: ")+configPath, ALog::WARNING);
 }
 
 const AString& AOSConfiguration::getAosDefaultInputProcessor() const
@@ -650,37 +601,37 @@ const AString& AOSConfiguration::getAosDefaultOutputGenerator() const
   return m_AosDefaultOutputGenerator;
 }
 
-size_t AOSConfiguration::getAOSContextManagerHistoryMaxSize() const
-{
-  AString str;
-  if (m_Ini.getValue(ASW("AOSContextManager",17), ASW("history_max_size",16), str))
-    return str.toSize_t();
-  else
-    return DEFAULT_AOSCONTEXTMANAGER_HISTORY_MAX_SIZE;
-}
+//size_t AOSConfiguration::getAOSContextManagerHistoryMaxSize() const
+//{
+//  AString str;
+//  if (m_Ini.getValue(ASW("AOSContextManager",17), ASW("history_max_size",16), str))
+//    return str.toSize_t();
+//  else
+//    return DEFAULT_AOSCONTEXTMANAGER_HISTORY_MAX_SIZE;
+//}
+//
+//size_t AOSConfiguration::getAOSContextManagerFreestoreMaxSize() const
+//{
+//  AString str;
+//  if (m_Ini.getValue(ASW("AOSContextManager",17), ASW("freestore_max_size",18), str))
+//    return str.toSize_t();
+//  else
+//    return DEFAULT_AOSCONTEXTMANAGER_FREESTORE_MAX_SIZE;
+//}
 
-size_t AOSConfiguration::getAOSContextManagerFreestoreMaxSize() const
-{
-  AString str;
-  if (m_Ini.getValue(ASW("AOSContextManager",17), ASW("freestore_max_size",18), str))
-    return str.toSize_t();
-  else
-    return DEFAULT_AOSCONTEXTMANAGER_FREESTORE_MAX_SIZE;
-}
-
-int AOSConfiguration::isHttpPipeliningEnabled() const
-{
-  static int value = -1;
-  if (-1 == value)
-  {
-    AString str;
-    if (m_Ini.getValue(CONFIG, ASW("http11_pipelining_enabled",25), str))
-      value = str.toInt();
-    else
-      value = 0;
-  }
-  return (0 != value);
-}
+//int AOSConfiguration::isHttpPipeliningEnabled() const
+//{
+//  static int value = -1;
+//  if (-1 == value)
+//  {
+//    AString str;
+//    if (m_Ini.getValue(CONFIG, ASW("http11_pipelining_enabled",25), str))
+//      value = str.toInt();
+//    else
+//      value = 0;
+//  }
+//  return (0 != value);
+//}
 
 const AXmlElement& AOSConfiguration::getConfigRoot() const
 {
@@ -692,21 +643,21 @@ bool AOSConfiguration::exists(const AString& path) const
   return (NULL != m_Config.getRoot().findNode(path));
 }
 
-bool AOSConfiguration::getString(const AString& path, AOutputBuffer& target)
+bool AOSConfiguration::emitString(const AString& path, AOutputBuffer& target) const
 {
   return m_Config.getRoot().emitFromPath(path, target);
 }
 
-int AOSConfiguration::getInt(const AString& path)
+AString AOSConfiguration::getString(const AString& path, const AString& strDefault) const
 {
   AString str;
   if (m_Config.getRoot().emitFromPath(path, str))
-    return str.toInt();
+    return str;
   else
-    ATHROW_EX(this, AException::DoesNotExist, path);
-}
+    return strDefault;
+}          
 
-int AOSConfiguration::getIntWithDefault(const AString& path, int iDefault)
+int AOSConfiguration::getInt(const AString& path, int iDefault) const
 {
   AString str;
   if (m_Config.getRoot().emitFromPath(path, str))
@@ -715,12 +666,14 @@ int AOSConfiguration::getIntWithDefault(const AString& path, int iDefault)
     return iDefault;
 }
 
-AString AOSConfiguration::getStringWithDefault(const AString& path, const AString& strDefault)
+bool AOSConfiguration::getBool(const AString& path, bool boolDefault) const
 {
   AString str;
   if (m_Config.getRoot().emitFromPath(path, str))
-    return str;
+  {
+    return str.equalsNoCase("true") || str.equals("1");
+  }
   else
-    return strDefault;
-}          
+    return boolDefault;
+}
 

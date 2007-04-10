@@ -179,7 +179,8 @@ AOSContext::Status AOSContext::_processHttpHeader()
   setExecutionState(ASW("AOSContext: Reading HTTP method",31), false, 30000.0);  //a_Read header for 60 seconds
   AString str(8188, 1024);
 
-  // 20 + 40 + 60 + 80 + 100 + 120 + 140 + 160 + 180 + 200 +220 + 240 = 1560ms
+  // Sum( N * sleeptime, 0 to N-1)
+  static int s_firstCharReadRetries = m_Services.useConfiguration().getInt("/config/server/http/first-char-read-tries", 15);
   int tries = 0;
   int sleeptime = 20;
   char c = '\x0';
@@ -195,7 +196,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   }
 
   while (
-    tries < m_Services.useConfiguration().getHttpFirstCharReadTries() 
+    tries < s_firstCharReadRetries 
     && 1 != bytesRead
   )
   {
@@ -205,10 +206,10 @@ AOSContext::Status AOSContext::_processHttpHeader()
     bytesRead = mp_RequestFile->read(c);
   }
   
-  if (m_Services.useConfiguration().getHttpFirstCharReadTries() <= tries)
+  if (s_firstCharReadRetries <= tries)
   {
     ARope rope("AOSContext: Unable to read first char within ",43);
-    rope.append(AString::fromInt(m_Services.useConfiguration().getHttpFirstCharReadTries()));
+    rope.append(AString::fromInt(s_firstCharReadRetries));
     rope.append(" retries",8);
     m_EventVisitor.set(rope);
     return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
@@ -460,8 +461,9 @@ AOSContext::Status AOSContext::_processHttpHeader()
   setExecutionState(ASW("AOSContext: Parsing HTTP header",31), false, 5000.0);
   m_RequestHeader.parse(str);
 
+  static bool isHttpPipeliningEnabled = m_Services.useConfiguration().getBool("/config/server/http/http11-pipelining-enabled", true);
   if (
-       m_Services.useConfiguration().isHttpPipeliningEnabled()
+       isHttpPipeliningEnabled
     && m_RequestHeader.isHttpPipeliningEnabled()
   )
   {

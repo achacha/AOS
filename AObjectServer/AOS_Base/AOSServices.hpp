@@ -16,8 +16,7 @@ class AFilename;
 class AOS_BASE_API AOSServices : public AOSAdminInterface
 {
 public:
-  AOSServices(const AFilename& iniFilename);
-  AOSServices(const AFilename& iniFilename, ALog::EVENT_MASK mask);     //a_Optionally set the log mask
+  AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask = ALog::DEFAULT);
   virtual ~AOSServices();
   
   /*!
@@ -37,6 +36,9 @@ public:
   AOSContext manager
   */
   AOSContextManager& useContextManager();
+
+  //a_Initialize database pool
+  bool initDatabasePool();
 
   /*!
   Initialize the global objects
@@ -64,7 +66,7 @@ public:
 
 private:
   //a_Physical log
-  ALog_AFile m_Log;
+  ALog_AFile *mp_Log;
   
   //a_Global objects for all requests
   AObjectContainer m_GlobalObjects;
@@ -73,7 +75,7 @@ private:
   AOSConfiguration *mp_Configuration;
   
   //a_Admin registry
-  AOSAdminRegistry m_AdminRegistry;
+  AOSAdminRegistry *mp_AdminRegistry;
 
   //Database connection pool
   AOSDatabaseConnectionPool *mp_DatabaseConnPool;
@@ -86,9 +88,6 @@ private:
 
   //a_Screen output synchronization
   AMutex m_ConsoleSynch;
-
-  //a_Initialize database pool
-  void _initDatabasePool();
 
 public:
 #ifdef __DEBUG_DUMP__

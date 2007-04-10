@@ -85,15 +85,18 @@ bool AOSOutput_MsXslt::execute(AOSOutputContext& context)
 {
 	CoInitialize(NULL);
 
-  AString xsltName(context.getConfiguration().getAosBaseDataDirectory());
+  AFilename xsltFile(context.getConfiguration().getAosBaseDataDirectory());
+  AString xsltName;
   if (!context.getOutputParams().emitFromPath(ASW("/params/output/filename", 23), xsltName))
   {
     m_Log.append("AOSOutput_MsXslt: Unable to find '/params/output/filename' parameter");
     ATHROW_EX(this, AException::InvalidParameter, "Xslt requires '/params/output/filename' parameter");
   }
+  xsltFile.join(xsltName);
 
   MSXML2::IXMLDOMDocument2Ptr *p = NULL;
-  DocContainer::iterator it = m_Dox.find(xsltName);
+  AString xsltPathName(xsltFile.toAString());
+  DocContainer::iterator it = m_Dox.find(xsltPathName);
   XslDocHolder *pXslDocHolder = NULL;
   if (
     it == m_Dox.end() 
@@ -102,7 +105,7 @@ bool AOSOutput_MsXslt::execute(AOSOutputContext& context)
 #endif
   )
   {
-    pXslDocHolder = _readXslFile(xsltName);
+    pXslDocHolder = _readXslFile(xsltPathName);
   }
   else
   {

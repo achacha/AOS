@@ -39,7 +39,7 @@ bool AOSAdmin::isRunning()
 
 void AOSAdmin::startAdminListener()
 {
-  if (m_Services.useConfiguration().getIntWithDefault(AOSConfiguration::LISTEN_ADMIN_PORT, -1) > 0)
+  if (m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_ADMIN_PORT, -1) > 0)
   {
     mthread_AdminListener.setProc(AOSAdmin::threadprocAdminListener);
     mthread_AdminListener.setParameter(this);
@@ -67,7 +67,7 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
   AASSERT(NULL, pThis);
 
   AString str;
-  int admin_port = pThis->m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_ADMIN_PORT);
+  int admin_port = pThis->m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_ADMIN_PORT, 12345);
   ASocketListener listener(admin_port);
   try
   {
@@ -158,7 +158,7 @@ void AOSAdmin::_processRequest(AFile_Socket& client, AHTTPRequestHeader& request
   {
     //a_Serve page
     AString strExt;
-    AFilename httpFileServe(m_Services.useConfiguration().getAdminBaseHttpDirectory(), request.useUrl().getPath());
+    AFilename httpFileServe(m_Services.useConfiguration().getAdminBaseHttpDir(), request.useUrl().getPath());
     if (request.useUrl().getFilename().isEmpty())
     {
       httpFileServe.useFilename().assign("index.html", 10);

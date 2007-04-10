@@ -213,7 +213,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
 void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
 {
   pContext->setExecutionState(ASW("Serving static content",22));
-  AFilename httpFilename(m_Services.useConfiguration().getAosBaseStaticDirectory(), true);
+  AFilename httpFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
 
   static const AString ROOT_PATH("/", 1);
   AString filepart(pContext->useRequestUrl().getPathAndFilename());

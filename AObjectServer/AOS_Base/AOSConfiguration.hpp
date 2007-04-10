@@ -5,7 +5,6 @@
 #include "AOSAdminInterface.hpp"
 #include "ABitArray.hpp"
 #include "AThread.hpp"
-#include "AINIProfile.hpp"
 #include "AFilename.hpp"
 #include "AXmlDocument.hpp"
 
@@ -22,7 +21,7 @@ Global configuration
 class AOS_BASE_API AOSConfiguration : public AOSAdminInterface
 {
 public:
-  AOSConfiguration(const AFilename& baseConfigDir, AOSServices&, ASynchronization&);
+  AOSConfiguration(const AFilename& baseDir, AOSServices&, ASynchronization&);
   virtual ~AOSConfiguration();
 
   /*!
@@ -34,9 +33,15 @@ public:
   static void initializeStaticHostInfo(const AString& hostname, int http_port, int https_port, const AString& serverId);
 
   /*! Listener constants */
-  static const AString LISTEN_ADMIN_PORT;    // /config/base/listen/admin
-  static const AString LISTEN_HTTP_PORT;     // /config/base/listen/http
-  static const AString LISTEN_HTTPS_PORT;    // /config/base/listen/https
+  static const AString LISTEN_ADMIN_PORT;    
+  static const AString LISTEN_HTTP_PORT;     
+  static const AString LISTEN_HTTPS_PORT;
+
+  /*!
+  Database
+  */
+  static const AString DATABASE_URL;
+  static const AString DATABASE_CONNECTIONS;
 
   /*!
   Returns true if exists
@@ -48,28 +53,27 @@ public:
   Result is appended
   Returns true if exists
   */
-  bool getString(const AString& path, AOutputBuffer& target);
+  bool emitString(const AString& path, AOutputBuffer& target) const;
 
   /*!
   String corresponding to the path
   This is not the most efficient call due to temporary return object, but useful for initializing statics
   Returns emitted data into a string for a path or default
   */
-  AString getStringWithDefault(const AString& path, const AString& strDefault);
-
-  /*!
-  String corresponding to the path
-  If does not exist, will throw AException
-  Returns true if exists
-  */
-  int getInt(const AString& path);
+  AString getString(const AString& path, const AString& strDefault) const;
 
   /*!
   String corresponding to the path
   Result is converted to int if does not exist default is returned
-  Returns true if exists
   */
-  int getIntWithDefault(const AString& path, int iDefault);
+  int getInt(const AString& path, int iDefault) const;
+
+  /*!
+  String corresponding to the path
+  Case insensitive "true" or "1" are true
+  Result is converted to bool if does not exist default is returned
+  */
+  bool getBool(const AString& path, bool boolDefault) const;
 
   /*!
   Configuration XML document's root element
@@ -77,14 +81,9 @@ public:
   const AXmlElement& getConfigRoot() const;
   
   /*!
-  Base config directory
+  Base directory
   */
-  const AFilename& getBaseConfigDir() const;
-  
-  /*!
-  Load commands
-  */
-  void loadCommands(AOSServices&);
+  const AFilename& getBaseDir() const;
 
   /*!
   Load configuration for a given module
@@ -108,12 +107,6 @@ public:
   const ABitArray& getConfigBits() const { return m_ConfigBits; }
 
   /*!
-  Global ini
-  @deprecated
-  */
-  AINIProfile& useIni() { return m_Ini; }
-  
-  /*!
   Server specific parameters
   Set methods will look up the config path and set value if found
   */
@@ -127,43 +120,36 @@ public:
   void setReportedHttpsPort(const AString& configPath);
 
   /*!
+  Admin base directory
+  */
+  const AFilename& getAdminBaseHttpDir() const;
+
+  /*!
+  Default filename
+  */
+  void setAosDefaultFilename(const AString&);
+  const AString& getAosDefaultFilename() const;
+
+  /*!
+  Input/Output defaults
+  */
+  const AString& getAosDefaultInputProcessor() const;
+  void setAosDefaultInputProcessor(const AString&);
+  const AString& getAosDefaultOutputGenerator() const;
+  void setAosDefaultOutputGenerator(const AString&);
+
+  /*!
   Map mimetype from extension
   */
   bool getMimeTypeFromExt(AString ext, AString& mimeType) const;  //a_true if ext to MIME type mapping exists
-
-  /*!
-  Database(s)
-  @deprecated
-  */
-  bool getDatabaseUrl(AUrl&) const;        //a_Returns false if none specified
-  int  getDatabaseMaxConnections() const;  //a_Number of pooled connections to the database
-
-  /*!
-  HTTP header reading
-  @deprecated
-  */
-  int getHttpFirstCharReadTries() const;
-
-  /*!
-  HTTP 1.1 pipelining enabled
-  */
-  int isHttpPipeliningEnabled() const;
   
   /*!
   Paths
-  @deprecated
   */
-  const AString& getAosBaseConfigDirectory() const;    // Location of the config files
-  const AString& getAosBaseDynamicDirectory() const;   // Commands
-  const AString& getAosBaseDataDirectory() const;      // Data dir that is base for all command filename parameters
-  const AString& getAosBaseStaticDirectory() const;    // Filesystem (fallback if command not found)
-  const AString& getAosDefaultFilename() const;        // Default filename
-
-  /*!
-  Admin server information
-  @deprecated
-  */
-  const AString& getAdminBaseHttpDirectory() const;
+  const AFilename& getAosBaseConfigDirectory() const;    // Location of the config files
+  const AFilename& getAosBaseDynamicDirectory() const;   // Commands
+  const AFilename& getAosBaseDataDirectory() const;      // Data dir that is base for all command filename parameters
+  const AFilename& getAosBaseStaticDirectory() const;    // Filesystem (fallback if command not found)
 
   /*!
   Dynamic module libraries
@@ -175,13 +161,6 @@ public:
   */
   const AOSCommand* const getCommand(const AUrl&) const;
   void dumpCommands(AOutputBuffer&) const;                      //TODO: temporary until AOSAdmin is better
-
-  /*!
-  Input/Output defaults
-  @deprecated
-  */
-  const AString& getAosDefaultInputProcessor() const;
-  const AString& getAosDefaultOutputGenerator() const;
 
   /*!
   Context manager parameters
@@ -197,42 +176,40 @@ public:
   virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
 
-  //static constants
-  //@deprecated
-  static const AString CONFIG;
-
 private:
   ASynchronization& m_ScreenSynch;
   
   //a_Services
   AOSServices& m_Services;
 
-  //a_Directory where all config info lives for this instance
-  AFilename m_BaseConfigDir;
+  //a_Directory where all info lives for this instance
+  AFilename m_BaseDir;
 
   //a_Configuration bits and Ini profile
   ABitArray m_ConfigBits;
-  
-  //@deprecated
-  AINIProfile m_Ini;
+
+  /*!
+  Load commands
+  */
+  void _loadCommands();
 
   //a_MIME type lookup
   MAP_AString_AString m_ExtToMimeType;
   void _readMIMETypes();
 
-  //a_AOS
-  //@deprecated
-  AString m_AosBaseConfigDir;
-  AString m_AosBaseStaticDir;
-  AString m_AosBaseDynamicDir;
-  AString m_AosBaseDataDir;
+  //a_AOS directories from base
+  AFilename m_AosBaseConfigDir;
+  AFilename m_AosBaseStaticDir;
+  AFilename m_AosBaseDynamicDir;
+  AFilename m_AosBaseDataDir;
+  
+  //a_Internals
   AString m_AosDefaultFilename;
   AString m_AosDefaultInputProcessor;
   AString m_AosDefaultOutputGenerator;
   
   //a_Admin
-  //@deprecated 
-  AString m_AdminBaseHttpDir;
+  AFilename m_AdminBaseHttpDir;
 
   //a_XML document with all config files overlayed based on load order
   AXmlDocument m_Config;
