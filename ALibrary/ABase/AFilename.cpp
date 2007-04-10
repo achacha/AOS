@@ -63,6 +63,37 @@ AFilename::AFilename(
   join(filepath2);
 }
 
+AFilename::AFilename(
+  const AFilename& filepath0, 
+  const AFilename& filepath1 
+)
+{
+  set(filepath0);
+  join(filepath1);
+}
+
+AFilename::AFilename(
+  const AFilename& filepath0,
+  const AFilename& filepath1,
+  const AFilename& filepath2
+)
+{
+  set(filepath0);
+  join(filepath1);
+  join(filepath2);
+}
+
+void AFilename::set(const AFilename& filepath)
+{
+  m_Drive = filepath.m_Drive;
+  m_Type = filepath.m_Type;
+  m_RelativePath = filepath.m_RelativePath;
+  m_Filename = filepath.m_Filename;
+  m_PathNames.clear();
+  for (LIST_AString::const_iterator cit = filepath.m_PathNames.begin(); cit != filepath.m_PathNames.end(); ++cit)
+    m_PathNames.push_back(*cit);
+}
+
 void AFilename::set(
   const AString& filepath,
   bool forceDirectory // = false

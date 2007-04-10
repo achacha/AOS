@@ -37,15 +37,18 @@ public:
   
   /*!
   Create and join
-    forceDirectory will force all parts to be treated as directroes
+    forceDirectory will force all parts to be treated as directories
   */
   AFilename(const AString& filepath0, const AString& filepath1, bool forceDirectory = false);
   AFilename(const AString& filepath0, const AString& filepath1, const AString& filepath2, bool forceDirectory = false);
+  AFilename(const AFilename& filepath0, const AFilename& filepath1);
+  AFilename(const AFilename& filepath0, const AFilename& filepath1, const AFilename& filepath2);
 
   /*!
   Set to new path, clearing any old data
   forceDirectory forces the path to be a directory regardless of trailing / or not
   */
+  void set(const AFilename& filepath);
   void set(const AString& filepath, bool forceDirectory = false);
 
   /*!

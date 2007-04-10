@@ -436,6 +436,12 @@ void AXmlElement::fromAFile(AFile& file)
         {
           //a_Process a comment
           if (str.getSize() - 3 != str.findNoCase(AXmlDocument::sstr_EndComment))
+          {
+            //a_Try reading more in case > was contained in the comment
+            file.readUntil(str, AXmlDocument::sstr_EndComment, true, false);
+          }
+
+          if (str.getSize() - 3 != str.findNoCase(AXmlDocument::sstr_EndComment))
             ATHROW_EX(this, AException::InvalidData, AString("Comment does not terminate with --> in ") +str);
 
           AAutoPtr<AXmlInstruction> p(new AXmlInstruction(AXmlInstruction::COMMENT));
