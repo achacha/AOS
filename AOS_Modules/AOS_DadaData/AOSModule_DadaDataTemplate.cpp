@@ -45,10 +45,7 @@ void AOSModule_DadaDataTemplate::addAdminXml(
 
 void AOSModule_DadaDataTemplate::init(AOSServices& services)
 {
-  AFilename iniFilename(services.useConfiguration().getBaseConfigDir());
-  iniFilename.join(ASW("AOS_DadaData.ini",16));
   ADadaDataHolder *pddh = new ADadaDataHolder();
-  //pddh->readData(iniFilename, AFilename(services.useConfiguration().getAosBaseDataDirectory()), m_Log);
   pddh->readData(services);
   m_Objects.insert(PATH_DADADATA, pddh);
 }
