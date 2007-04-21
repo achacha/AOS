@@ -87,6 +87,8 @@ const AString AString::sstr_LessThan("<",1);
 const AString AString::sstr_GreaterThan(">",1);
 const AString AString::sstr_OpenBrace("{",1);
 const AString AString::sstr_CloseBrace("}",1);
+const AString AString::sstr_QuestionMark("?",1);
+const AString AString::sstr_Undefined("undefined",9);
 const AString AString::sstr_Equals("=",1);
 const AString AString::sstr_Slash("/",1);
 const AString AString::sstr_DoubleSlash("//",2);
@@ -569,7 +571,6 @@ int AString::_compare(const char* pccSource, size_t length, bool boolNoCase) con
         return ret;
     }
   }
-
 }
 
 size_t AString::diff(const AString& source, size_t startIndex) const
@@ -2465,4 +2466,89 @@ u2 AString::getBufferIncrementSize() const
 void AString::setBufferIncrementSize(u2 newIncrement)
 { 
   m_BufferIncrement = newIncrement; 
+}
+
+void AString::reserve(size_t size) 
+{ 
+  _resize(size);
+}
+
+void AString::reserveMoreSpace(size_t moreSpace)
+{ 
+  _resize(getSize() + moreSpace);
+}
+
+bool AString::operator< (const AString& strSource) const
+{
+  return (_compare(strSource.mp_Buffer, strSource.m_Length) <  0 ? true : false);
+}
+
+bool AString::operator> (const AString& strSource) const
+{ 
+  return (_compare(strSource.mp_Buffer, strSource.m_Length) >  0 ? true : false); 
+}
+
+bool AString::operator<= (const AString& strSource) const
+{ 
+  return (_compare(strSource.mp_Buffer, strSource.m_Length) <= 0 ? true : false);
+}
+
+bool AString::operator>= (const AString& strSource) const
+{ 
+  return (_compare(strSource.mp_Buffer, strSource.m_Length) >= 0 ? true : false);
+}
+
+bool AString::operator== (const AString& strSource) const
+{ 
+  return (_compare(strSource.mp_Buffer, strSource.m_Length) == 0 ? true : false);
+}
+
+bool AString::operator!= (const AString& strSource) const
+{ 
+  return (_compare(strSource.mp_Buffer, strSource.m_Length) != 0 ? true : false);
+}
+
+bool AString::operator< (const char *pccSource) const
+{ 
+  return (_compare(pccSource, AConstant::npos) <  0 ? true : false);
+}
+
+bool AString::operator> (const char *pccSource) const 
+{ 
+  return (_compare(pccSource, AConstant::npos) >  0 ? true : false);
+}
+
+bool AString::operator<= (const char *pccSource) const
+{ 
+  return (_compare(pccSource, AConstant::npos) <= 0 ? true : false); 
+}
+
+bool AString::operator>= (const char *pccSource) const 
+{ 
+  return (_compare(pccSource, AConstant::npos) >= 0 ? true : false);
+}
+
+bool AString::operator== (const char *pccSource) const 
+{ 
+  return (_compare(pccSource, AConstant::npos) == 0 ? true : false);
+}
+
+bool AString::operator!= (const char *pccSource) const 
+{ 
+  return (_compare(pccSource, AConstant::npos) != 0 ? true : false);
+}
+
+void AString::assign(char cSource)
+{
+  _assign(&cSource, 1);
+}
+
+void AString::assign(const char *pccSource, size_t length /* = AConstant::npos */)
+{ 
+  _assign(pccSource, length); 
+}
+
+void AString::assign(const unsigned char *pccSource, size_t length /* = AConstant::npos */)
+{ 
+  _assign((const char *)pccSource, length); 
 }

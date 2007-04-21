@@ -88,11 +88,10 @@ public:
   Allows control of read blocks
   ARope version does NOT clear the rope (rope is to be cleared by the caller, since the object is meant for appends)
   
-  NOTE: Returns number of bytes read, 0 bytes read if at EOF
+  NOTE: Returns number of bytes read, 0 bytes read if already at EOF
   */
-  virtual size_t readUntilEOF(AString&);
-  virtual size_t peekUntilEOF(AString&);
-  virtual size_t readUntilEOF(ARope&);
+  virtual size_t readUntilEOF(AOutputBuffer&);
+  virtual size_t peekUntilEOF(AOutputBuffer&);
   
   /*!
   Ability to read/skip until delimeter is found, appends result
@@ -174,6 +173,12 @@ public:
   virtual void open() = 0;          //a_Open
   virtual void flush() = 0;         //a_Signals to flush the contents
   virtual void close() = 0;         //a_Close
+
+  /*!
+  AEmittable - reads from current read position and writes to output
+  Equivalent to peekUntilEOF
+  */
+  void emit(AOutputBuffer&) const;
 
   /*!
   IO operators

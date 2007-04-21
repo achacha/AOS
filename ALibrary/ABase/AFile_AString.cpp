@@ -94,3 +94,8 @@ bool AFile_AString::_isNotEof()
 {
   return (m_ReadPos < m_Data.getSize());
 }
+
+void AFile_AString::emit(AOutputBuffer& target) const
+{
+  m_Data.emit(target);
+}

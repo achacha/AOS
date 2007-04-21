@@ -139,6 +139,12 @@ public:
   bool equalsExtension(const AString&, const AString&) const;  //a_2 extensions  filename.ext1.ext2
 
   /*!
+  Operators
+  */
+  bool operator <(const AFilename&) const;
+  bool operator ==(const AFilename&) const;
+
+  /*!
   Clear object (or part of it)
   */
   void clear();

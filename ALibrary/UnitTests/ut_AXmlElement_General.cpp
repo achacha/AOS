@@ -29,6 +29,7 @@ void testAddAndSerialize(int& iRet)
 
   AString str0(8188, 1024), str1(8188, 1024);
   elem.emit(str0, 0);
+//  std::cout << str0 << std::endl;
   ASSERT_UNIT_TEST(str0.equals("\
 <root>\r\n\
   <path0>\r\n\

@@ -107,11 +107,20 @@ AXmlElement *AXmlElement::_getAndInsert(LIST_AString& xparts, AXmlNode* pParent)
   }
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const AString& value, AXmlData::Encoding encoding)
+AXmlElement *AXmlElement::_createAndAppend(LIST_AString& xparts, AXmlNode *pParent)
 {
-//  if (m_Name.isEmpty())
-//    ATHROW_EX(this, AException::InvalidObject, "AXmlElement does not have a name");
+  AString& strName = xparts.front();
+  AXmlElement *p = new AXmlElement(strName, this);
+  addContent(p);
+  xparts.pop_front();
+  if (xparts.size() > 0)
+    return p->_createAndAppend(xparts, this);
+  else
+    return p;
+}
 
+AXmlElement& AXmlElement::addElement(const AString& xpath, const AString& value, AXmlData::Encoding encoding, bool insert)
+{
   LIST_AString xparts;
   xpath.split(xparts, '/');
   if (!xparts.size())
@@ -121,7 +130,12 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const AString& value,
   xparts.pop_back();
   AXmlElement *pParent = NULL;
   if (xparts.size() > 0)
-    pParent = _getAndInsert(xparts, this);
+  { 
+    if (insert)
+      pParent = _getAndInsert(xparts, this);
+    else
+      pParent = _createAndAppend(xparts, this);
+  }
   else
     pParent = this;
 
@@ -132,7 +146,7 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const AString& value,
   return *pNew;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const ARope& value, AXmlData::Encoding encoding)
+AXmlElement& AXmlElement::addElement(const AString& xpath, const ARope& value, AXmlData::Encoding encoding, bool insert)
 {
   if (m_Name.isEmpty())
     ATHROW_EX(this, AException::InvalidObject, "AXmlElement does not have a name");
@@ -142,12 +156,17 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const ARope& value, A
   if (!xparts.size())
     ATHROW(this, AException::InvalidParameter);
 
-  AXmlElement *p = _getAndInsert(xparts, this);
+  AXmlElement *p = NULL;
+  if (insert)
+    p = _getAndInsert(xparts, this);
+  else
+    p = _createAndAppend(xparts, this);
+
   p->addData(value, encoding);
   return *p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const AEmittable& object, AXmlData::Encoding encoding)
+AXmlElement& AXmlElement::addElement(const AString& xpath, const AEmittable& object, AXmlData::Encoding encoding, bool insert)
 {
   if (m_Name.isEmpty())
     ATHROW_EX(this, AException::InvalidObject, "AXmlElement does not have a name");
@@ -162,12 +181,17 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const AEmittable& obj
   object.emit(value);
 
   //a_Add rope as data
-  AXmlElement *p = _getAndInsert(xparts, this);
+  AXmlElement *p = NULL;
+  if (insert)
+    p = _getAndInsert(xparts, this);
+  else
+    p = _createAndAppend(xparts, this);
+
   p->addData(value, encoding);
   return *p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const AXmlEmittable& object)
+AXmlElement& AXmlElement::addElement(const AString& xpath, const AXmlEmittable& object, bool insert)
 {
   if (m_Name.isEmpty())
     ATHROW_EX(this, AException::InvalidObject, "AXmlElement does not have a name");
@@ -179,48 +203,55 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const AXmlEmittable& 
 
   ARope rope;
 
-  AXmlElement *p = _getAndInsert(xparts, this);
+  AXmlElement *p = NULL;
+  if (insert)
+    p = _getAndInsert(xparts, this);
+  else
+    p = _createAndAppend(xparts, this);
+
   object.emit(*p);
   return *p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const size_t value)
+AXmlElement& AXmlElement::addElement(const AString& xpath, const size_t value, bool insert)
 {
-  return addElement(xpath, AString::fromSize_t(value));
+  return addElement(xpath, AString::fromSize_t(value), AXmlData::None, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const double value)
+AXmlElement& AXmlElement::addElement(const AString& xpath, const double value, bool insert)
 {
-  return addElement(xpath, AString::fromDouble(value));
+  return addElement(xpath, AString::fromDouble(value), AXmlData::None, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const u8 value)
+AXmlElement& AXmlElement::addElement(const AString& xpath, const u8 value, bool insert)
 {
-  return addElement(xpath, AString::fromU8(value));
+  return addElement(xpath, AString::fromU8(value), AXmlData::None, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const u4 value)
+AXmlElement& AXmlElement::addElement(const AString& xpath, const u4 value, bool insert)
 {
-  return addElement(xpath, AString::fromU4(value));
+  return addElement(xpath, AString::fromU4(value), AXmlData::None, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const char value)
+AXmlElement& AXmlElement::addElement(const AString& xpath, const char value, bool insert)
 {
-  return addElement(xpath, AString(value));
+  return addElement(xpath, AString(value), AXmlData::None, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const bool value)
+AXmlElement& AXmlElement::addElement(const AString& xpath, const bool value, bool insert)
 {
-  return addElement(xpath, value ? AString::sstr_True : AString::sstr_False);
+  return addElement(xpath, value ? AString::sstr_True : AString::sstr_False, AXmlData::None, insert);
 }
 
 AXmlElement& AXmlElement::addElement(
   const AString& xpath, 
   const char * value, 
-  u4 len // = AConstant::npos
+  u4 len,                      // = AConstant::npos
+  AXmlData::Encoding encoding, // = AXmlData::None
+  bool insert                  // = true
 )
 {
-  return addElement(xpath, AString(value, len));
+  return addElement(xpath, AString(value, len), encoding, insert);
 }
 
 AXmlElement& AXmlElement::addAttribute(const AString& name, const AString& value)

@@ -144,18 +144,18 @@ public:
     operator ==   - equal
     operator !=   - not equal
   */
-  bool operator<  (const AString& strSource) const { return (_compare(strSource.mp_Buffer, strSource.m_Length) <  0 ? true : false); }
-  bool operator>  (const AString& strSource) const { return (_compare(strSource.mp_Buffer, strSource.m_Length) >  0 ? true : false); }
-  bool operator<= (const AString& strSource) const { return (_compare(strSource.mp_Buffer, strSource.m_Length) <= 0 ? true : false); }
-  bool operator>= (const AString& strSource) const { return (_compare(strSource.mp_Buffer, strSource.m_Length) >= 0 ? true : false); }
-  bool operator== (const AString& strSource) const { return (_compare(strSource.mp_Buffer, strSource.m_Length) == 0 ? true : false); }
-  bool operator!= (const AString& strSource) const { return (_compare(strSource.mp_Buffer, strSource.m_Length) != 0 ? true : false); }
-  bool operator<  (const char *pccSource)    const { return (_compare(pccSource, AConstant::npos) <  0 ? true : false); }
-  bool operator>  (const char *pccSource)    const { return (_compare(pccSource, AConstant::npos) >  0 ? true : false); }
-  bool operator<= (const char *pccSource)    const { return (_compare(pccSource, AConstant::npos) <= 0 ? true : false); }
-  bool operator>= (const char *pccSource)    const { return (_compare(pccSource, AConstant::npos) >= 0 ? true : false); }
-  bool operator== (const char *pccSource)    const { return (_compare(pccSource, AConstant::npos) == 0 ? true : false); }
-  bool operator!= (const char *pccSource)    const { return (_compare(pccSource, AConstant::npos) != 0 ? true : false); }
+  bool operator<  (const AString& strSource) const;
+  bool operator>  (const AString& strSource) const;
+  bool operator<= (const AString& strSource) const;
+  bool operator>= (const AString& strSource) const;
+  bool operator== (const AString& strSource) const;
+  bool operator!= (const AString& strSource) const;
+  bool operator<  (const char *pccSource)    const;
+  bool operator>  (const char *pccSource)    const;
+  bool operator<= (const char *pccSource)    const;
+  bool operator>= (const char *pccSource)    const;
+  bool operator== (const char *pccSource)    const;
+  bool operator!= (const char *pccSource)    const;
 
   /*!
   Conversion utilities to AString
@@ -307,9 +307,9 @@ public:
   /*!
   Assignment
   */
-  void assign(char cSource)                                                    { _assign(&cSource, 1); }
-  void assign(const char *pccSource, size_t length = AConstant::npos)          { _assign(pccSource, length); }
-  void assign(const unsigned char *pccSource, size_t length = AConstant::npos) { _assign((const char *)pccSource, length); }
+  void assign(char cSource);
+  void assign(const char *pccSource, size_t length = AConstant::npos);
+  void assign(const unsigned char *pccSource, size_t length = AConstant::npos);
   void assign(const AString& strSource, size_t length = AConstant::npos);
     
   /*!
@@ -440,7 +440,7 @@ public:
   Indexed access operators
     use(size_t) - will allow modification of the element at offset
   */
-  inline u1& use(size_t index);
+  u1& use(size_t index);
 
   /*!
   get functions (unlike peek) will get the content and remove it
@@ -450,18 +450,18 @@ public:
      removeDelimeters flag means that the delimeter that was first found is removed ("Hello World" will return "Hello" and leave "World", if false " World" is left
      returns bytes copied or AConstant::npos if delimeter not found
   */
-  inline u1 get(size_t index = 0);
-  inline u1 rget();                                                                                      //a_Gets and removes the last byte
-         size_t get(AString& bufDestination, size_t sourceIndex = 0, size_t bytes = AConstant::npos);              //a_Return # of bytes moved
-         size_t getUntil(AString& bufDestination, const AString& delimeters = AString::sstr_WhiteSpace, bool removeDelimeters = true);     //a_Return # of bytes moved
-         size_t getUntil(AString& bufDestination, char delimeter, bool removeDelimeter = true);                                            //a_Return # of bytes moved
+  u1 get(size_t index = 0);
+  u1 rget();                                                                                      //a_Gets and removes the last byte
+  size_t get(AString& bufDestination, size_t sourceIndex = 0, size_t bytes = AConstant::npos);              //a_Return # of bytes moved
+  size_t getUntil(AString& bufDestination, const AString& delimeters = AString::sstr_WhiteSpace, bool removeDelimeters = true);     //a_Return # of bytes moved
+  size_t getUntil(AString& bufDestination, char delimeter, bool removeDelimeter = true);                                            //a_Return # of bytes moved
 
   /*!
   remove - Pop removes count at a position
   rremove - Pops from the end, effectively shrinking the string
   */
-  inline void remove(size_t length = 1, size_t offset = 0);
-  inline void rremove(size_t length = 1);
+  void remove(size_t length = 1, size_t offset = 0);
+  void rremove(size_t length = 1);
 
   /*!
   Remove until a given delimeter
@@ -474,7 +474,7 @@ public:
   set(AString&,size_t) sets this buffer with source at an index and grows buffer as needed
   set(AString&,size_t,size_t,size_t) sets this buffer with source at an index and grows buffer as needed and int in length
   */
-  inline void set(u1 uByte, size_t index);
+  void set(u1 uByte, size_t index);
   void set(const AString& bufSource, size_t destinationIndex = 0);
   void set(const AString& bufSource, size_t destinationIndex, size_t bytes, size_t sourceIndex);
 
@@ -499,21 +499,28 @@ public:
   /*!
   Sets the new physical size of the buffer
   Pads the current content with a given byte
-  To only allocate the space use reserve() instead
+  To only allocate the space in the internal buffer use reserve() or reserveMoreSpace() instead
   */
   void setSize(size_t newSize, u1 u1Pad = ' ');
 
   /*!
   Returns true if the buffer is logically empty
   */
-  inline bool isEmpty() const;
+  bool isEmpty() const;
+
+  /*!
+  Reserves space for the string only, does not alter content (but may truncate if size is less than actual)
+  Reserving more space doesn't mean you can access it, just allocated for future use (useful before doing lots of appends)
+  To resize the actual string and pad it use setSize(...) call
+  */
+  void reserve(size_t size);
 
   /*!
   Reserves additional space for the string only, does not alter content, just makes sure additional space is allocated
   Reserving more space doesn't mean you can access it, just allocated for future use (useful before doing lots of appends)
-  To resize the actual string use setSize(...) call
+  To resize the actual string and pad it use setSize(...) call
   */
-  void reserveMoreSpace(size_t moreSpace) { _resize(getSize() + moreSpace); }
+  void reserveMoreSpace(size_t moreSpace);
   
   /*!
   Unicode support
@@ -689,6 +696,8 @@ public:
   static const AString sstr_GreaterThan;   //a_">"
   static const AString sstr_OpenBrace;     //a_"{"
   static const AString sstr_CloseBrace;    //a_"}"
+  static const AString sstr_QuestionMark;  //a_"?"
+  static const AString sstr_Undefined;     //a_"undefined"
   static const AString sstr_Equals;        //a_"="
   static const AString sstr_Slash;         //a_"/"
   static const AString sstr_DoubleSlash;    //a_"//"

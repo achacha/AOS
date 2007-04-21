@@ -1293,7 +1293,7 @@ void AStackWalker::OnCallstackEntry(CallstackEntryType eType, CallstackEntry &en
     AAutoPtr<ARope> pRope(new ARope());
     
     //a_Module name
-    if (entry.moduleName[0] != 0)
+    if (!entry.moduleName.isEmpty())
     {
       pRope->append(entry.moduleName);
       pRope->append(":::",3);

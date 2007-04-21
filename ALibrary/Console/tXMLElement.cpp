@@ -114,23 +114,23 @@ void testPathAdd()
   elem.addElement("/path0/path1/obj2", "value2");
 
   AString str(8188, 1024);
-  elem.emitXml(str, 0);
+  elem.emit(str, 0);
   std::cout << str << std::endl;
   elem.debugDump();
 
   AXmlNode *p;
 
-  if (p = elem.find("/root/path0/path1/"))
+  if (p = elem.findNode("/root/path0/path1/"))
   {
     p->useAttributes().insert("attrib0", "0");
     p->useAttributes().insert("attrib1", "0");
     p->useAttributes().insert("attrib2", "0");
-    p->addContent(new AXmlElement("foo"));
-    p->addContent(new AXmlData("more data"));
+    p->addContentNode(new AXmlElement("foo"));
+    p->addContentNode(new AXmlData(ASWNL("more data")));
     p->addComment("This is the comment");
 
     str.clear();
-    elem.emitXml(str, 0);
+    elem.emit(str, 0);
     std::cout << str << std::endl;
   }
   else
@@ -144,7 +144,7 @@ void testPathAdd()
   AXmlElement restored;
   restored.fromAFile(strfile);
   str.clear();
-  restored.emitXml(str, 0);
+  restored.emit(str, 0);
   std::cout << str << std::endl;
 }
 
@@ -156,7 +156,7 @@ void testOutput()
   elem.addAttribute("a3", "foo");
   elem.addElement("path0").addElement("path1").addElement("path2").addComment("My comment");
   AString str0(8188, 1024), str1(8188, 1024);
-  elem.emitXml(str0);
+  elem.emit(str0);
   std::cout << str0 << std::endl;
 }
 
@@ -183,7 +183,7 @@ void testRandomXml()
   doc.addComment("This is header comment");
 
   AString output(10240, 2048);
-  doc.emitXml(output, 0);
+  doc.emit(output, 0);
   std::cout << output << std::endl;
 }
 
@@ -197,34 +197,34 @@ void testMultiAdd()
   e.addElement("/base/path0/obj3", "v");
 
   AString str0(8188, 1024);
-  e.emitXml(str0,0);
+  e.emit(str0,0);
   std::cout << str0 << std::endl;
 }
 
 void testXmlEmit()
 {
   AXmlElement e("root");
-  e.addElement("/base/path0/obj0", "v0").addData("foo0");
-  e.addElement("/base/path0/obj1", "v1");
-  e.addElement("/base/path0/obj2", "v2").addData("foo1");
-  e.addElement("/base/path0/obj3", "v3");
-  e.addElement("/base/path0/obj3", "v4");
-  e.addElement("/base/path1/obj0", "v10");
-  e.addElement("/base/path1/obj1", "v11").addData("foo2", AXmlData::CDataDirect);
-  e.addElement("/base/path2/obj0", "v20");
-  e.addElement("/base/path2/obj1", "v21").addData("foo3", AXmlData::CDataSafe);
+  e.addElement(ASWNL("/base/path0/obj0"), ASWNL("v0")).addData(ASWNL("foo0"));
+  e.addElement(ASWNL("/base/path0/obj1"), ASWNL("v1"));
+  e.addElement(ASWNL("/base/path0/obj2"), ASWNL("v2")).addData(ASWNL("foo1"));
+  e.addElement(ASWNL("/base/path0/obj3"), ASWNL("v3"));
+  e.addElement(ASWNL("/base/path0/obj3"), ASWNL("v4"));
+  e.addElement(ASWNL("/base/path1/obj0"), ASWNL("v10"));
+  e.addElement(ASWNL("/base/path1/obj1"), ASWNL("v11")).addData(ASWNL("foo2"), AXmlData::CDataDirect);
+  e.addElement(ASWNL("/base/path2/obj0"), ASWNL("v20"));
+  e.addElement(ASWNL("/base/path2/obj1"), ASWNL("v21")).addData(ASWNL("foo3"), AXmlData::CDataSafe);
 
   AString str;
-  e.emitXml(str,0);
+  e.emit(str,0);
   std::cout << str << std::endl;
 
   AXmlElement target("newroot");
-  AXmlNode *pNode = e.find("/root/base/path2");
+  AXmlNode *pNode = e.findNode("/root/base/path2");
   if (pNode)
   {
     pNode->emit(target);
     str.clear();
-    target.emitXml(str,0);
+    target.emit(str,0);
     std::cout << str << std::endl;
   }
 
@@ -238,14 +238,27 @@ void testClone()
 
   AXmlElement e;
   e.fromAFile(strfile);
-  e.emitXml(str,0);
+  e.emit(str,0);
   std::cout << str << std::endl;
   
   AXmlElement newroot("nr");
   newroot.addContent(e.clone());
   
   str.clear();
-  newroot.emitXml(str,0);
+  newroot.emit(str,0);
+  std::cout << str << std::endl;
+}
+
+void testAppend()
+{
+  AXmlElement e("root");
+  e.addElement("dir00/dir01", "1");
+  e.addElement("dir00/dir02", "2");
+  e.addElement("dir00/dir03", "3");
+  e.addElement("dir00/dir01", "4");
+
+  AString str;
+  e.emit(str,0);
   std::cout << str << std::endl;
 }
 
@@ -257,7 +270,8 @@ int main()
   //testRandomXml();
   //testMultiAdd();
   //testXmlEmit();
-  testClone();
+  //testClone();
+  testAppend();
 
 	return 0;
 }

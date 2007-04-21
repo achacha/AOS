@@ -2,11 +2,8 @@
 #include "AFilename.hpp"
 #include "AXmlElement.hpp"
 
-int ut_AFilename_General()
+void testGeneric(int& iRet)
 {
-  std::cerr << "ut_AFilename_General" << std::endl;
-  int iRet = 0x0;
-
   AString strOut(1024, 256);
   AFilename fn("c:\\path0\\path1//filename.extension");
 
@@ -96,6 +93,37 @@ int ut_AFilename_General()
   fn.set("some/path.foo");
   ASSERT_UNIT_TEST(fn.isRelativePath(), "AFilename set", "2", iRet);
   ASSERT_UNIT_TEST(!fn.isDirectory(), "AFilename set", "3", iRet);
+}
+
+void testCompare(int& iRet)
+{
+  AFilename fOne("c:\\path0\\path1\\filename.ext");
+  AFilename fTwo("c:\\path0\\path1\\filename.ext");
+  ASSERT_UNIT_TEST(!(fOne < fTwo), "AFilename operator <", "0", iRet);
+  ASSERT_UNIT_TEST(fOne == fTwo, "AFilename operator ==", "0", iRet);
+
+  fTwo.set("c:/path0/path1/filename.ext");
+  ASSERT_UNIT_TEST(!(fOne < fTwo), "AFilename operator <", "1", iRet);
+  ASSERT_UNIT_TEST(fOne == fTwo, "AFilename operator ==", "1", iRet);
+
+  fTwo.set("/relative");
+  ASSERT_UNIT_TEST(fTwo < fOne, "AFilename operator <", "2", iRet);
+
+  fOne.set("/relative");
+  ASSERT_UNIT_TEST(fOne == fTwo, "AFilename operator ==", "2", iRet);
+
+  fOne.set("filename.ext0");
+  fTwo.set("filename.ext1");
+  ASSERT_UNIT_TEST(fOne < fTwo, "AFilename operator <", "3", iRet);
+}
+
+int ut_AFilename_General()
+{
+  std::cerr << "ut_AFilename_General" << std::endl;
+  int iRet = 0x0;
+
+  testGeneric(iRet);
+  testCompare(iRet);
 
   return iRet;
 }

@@ -25,20 +25,22 @@ public:
   /*!
   Adds a new element
   
+  insert - will try to find existing structure, otherwise will create new xpath
+
   **** NOTE: Add returns NEWLY added element (NOT 'this' as with the other methods) ****
   This is done to allow you to add an element and get a reference to the newly added element
   */
-  AXmlElement& addElement(const AString& xpath, const AString& value = AString::sstr_Empty, AXmlData::Encoding encoding = AXmlData::None);
-  AXmlElement& addElement(const AString& xpath, const ARope& value, AXmlData::Encoding encoding = AXmlData::None);
-  AXmlElement& addElement(const AString& xpath, const AEmittable& object, AXmlData::Encoding encoding);
-  AXmlElement& addElement(const AString& xpath, const AXmlEmittable& object);
-  AXmlElement& addElement(const AString& xpath, const char value);
-  AXmlElement& addElement(const AString& xpath, const u4 value);
-  AXmlElement& addElement(const AString& xpath, const u8 value);
-  AXmlElement& addElement(const AString& xpath, const double value);
-  AXmlElement& addElement(const AString& xpath, const size_t value);
-  AXmlElement& addElement(const AString& xpath, const bool value);
-  AXmlElement& addElement(const AString& xpath, const char * value, u4 len = AConstant::npos);
+  AXmlElement& addElement(const AString& xpath, const AString& value = AString::sstr_Empty, AXmlData::Encoding encoding = AXmlData::None, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const ARope& value, AXmlData::Encoding encoding = AXmlData::None, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const AEmittable& object, AXmlData::Encoding encoding, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const AXmlEmittable& object, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const char value, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const u4 value, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const u8 value, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const double value, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const size_t value, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const bool value, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const char * value, u4 len = AConstant::npos, AXmlData::Encoding encoding = AXmlData::None, bool insert = true);
   
   /*!
   Adds a comment
@@ -107,6 +109,10 @@ public:
   virtual void toAFile(AFile&) const;
 
 protected:
+  /*! Creates a new element */
+  AXmlElement *_createAndAppend(LIST_AString& xparts, AXmlNode* pParent);
+  
+  /*! Attempts to insert */
   AXmlElement *_getAndInsert(LIST_AString& xparts, AXmlNode* pParent);
 
 public:

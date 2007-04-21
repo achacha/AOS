@@ -91,8 +91,9 @@ void testExt()
 
   AFilename fn("/path2/path1/foo.");
   str.clear();
-  if (fn.getExtension(str))
+  if (fn.hasExtension())
   {
+    fn.emitExtension(str);
     std::cout << "Extension: " << str << std::endl;
   }
   else
@@ -144,8 +145,22 @@ void testNoExt()
 {
   AFilename f("c:/somedir/foo.txt");
   AString noext;
-  f.getFilenameNoExt(noext);
+  f.emitFilenameNoExt(noext);
   std::cout << noext << std::endl;
+}
+
+void testCompare()
+{
+  AFilename left ("./aos_root/static/classified/index.html");
+  AFilename right("./aos_root/static/rte/html2xhtml.js");
+
+  //AString left ("index.html");
+  //AString right("html2xhtml.js");
+
+  if (left < right)
+    std::cout << "left < right" << std::endl;
+  if (right < left)
+    std::cout << "right < left" << std::endl;
 }
 
 int main()
@@ -156,7 +171,8 @@ int main()
   //testJoin();
   //testRelativePath();
   //testExt();
-  testNoExt();
+  //testNoExt();
+  testCompare();
 
   return 0;
 }

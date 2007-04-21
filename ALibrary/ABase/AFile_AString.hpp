@@ -18,7 +18,12 @@ public:
   AFile_AString(const AFile_AString&);
   virtual ~AFile_AString() {}
 
-	/*!
+  /*!
+  AEmittable - emits the entire data string to target regardless of current position
+  */
+  void emit(AOutputBuffer& target) const;
+
+  /*!
   Access to read and write positions
   */
   inline void   setReadPos(size_t pos);

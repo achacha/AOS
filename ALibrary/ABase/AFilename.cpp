@@ -7,18 +7,18 @@
 void AFilename::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFilename @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_Type=" << m_Type << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_RelativePath=" << m_RelativePath << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Type=" << m_Type;
+  ADebugDumpable::indent(os, indent+1) << "  m_RelativePath=" << m_RelativePath << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Drive=" << m_Drive << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_Filename=" << m_Filename << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_PathNames={" << m_Filename << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_PathNames={" << std::endl;
   LIST_AString::const_iterator cit = m_PathNames.begin();
   while (cit != m_PathNames.end())
   {
     ADebugDumpable::indent(os, indent+2) << *cit << std::endl;
     ++cit;
   }
-  ADebugDumpable::indent(os, indent+1) << "}" << m_Filename << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Filename=" << m_Filename << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
@@ -457,4 +457,76 @@ void AFilename::setExtension(const AString& ext)
 
   m_Filename.append('.');
   m_Filename.append(ext);
+}
+
+bool AFilename::operator <(const AFilename& that) const
+{
+  std::cout << "Comparing: " << this->toAString() << " < " << that.toAString() << "=";
+  if (m_Drive < that.m_Drive)
+  {
+    std::cout << "true" << std::endl;
+    return true;
+  }
+
+  if (m_PathNames.size() > 0)
+  {
+    //a_Equal @ of path name entries, do compare
+    LIST_AString::const_iterator citThis = m_PathNames.begin();
+    LIST_AString::const_iterator citThat = that.m_PathNames.begin();
+    while(citThis != m_PathNames.end())
+    {
+      if (citThat == that.m_PathNames.end())
+      {
+        //a_That is shorter
+        std::cout << "false" << std::endl;
+        return false;
+      }
+
+      if (*citThis != *citThat)
+      {
+        bool ret = (*citThis < *citThat);
+        std::cout << (ret ? "true" : "false") << std::endl;
+        return ret;
+      }
+
+      ++citThis;
+      ++citThat;
+    }
+    if (citThat != that.m_PathNames.end())
+    {
+      //a_This is shorter
+      std::cout << "true" << std::endl;
+      return true;
+    }
+  }
+  else if (that.m_PathNames.size() > 0)
+    return true;
+
+  //a_Equal paths at this point leaves it to the filename
+  bool ret = (m_Filename < that.m_Filename);
+  std::cout << (ret ? "true" : "false") << std::endl;
+  return ret;
+}
+
+bool AFilename::operator ==(const AFilename& that) const
+{
+  if (m_Drive != that.m_Drive)
+    return false;
+
+  if (m_PathNames.size() != that.m_PathNames.size())
+    return false;
+
+  LIST_AString::const_iterator citThis = m_PathNames.begin();
+  LIST_AString::const_iterator citThat = that.m_PathNames.begin();
+  while(citThis != m_PathNames.end())
+  {
+    if (*citThis != *citThat)
+      return false;
+
+    ++citThis;
+    ++citThat;
+  }
+
+  //a_Equal paths at this point leaves it to the filename
+  return (m_Filename == that.m_Filename);
 }

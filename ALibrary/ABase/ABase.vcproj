@@ -259,7 +259,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ACache.cpp"
+				RelativePath=".\ACache_FileSystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ACacheInterface.cpp"
 				>
 			</File>
 			<File
@@ -903,7 +907,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ACache.hpp"
+				RelativePath=".\ACache_FileSystem.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ACacheInterface.hpp"
 				>
 			</File>
 			<File

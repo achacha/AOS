@@ -328,7 +328,7 @@ size_t AFile::write(const ARope& rope)
   return rope.toAFile(*this);
 }
 
-size_t AFile::peekUntilEOF(AString& strPeek)
+size_t AFile::peekUntilEOF(AOutputBuffer& target)
 {
   size_t ret = _readBlockIntoLookahead();
   while (!ret)
@@ -336,12 +336,12 @@ size_t AFile::peekUntilEOF(AString& strPeek)
     ret = _readBlockIntoLookahead();
   }
 
-  m_LookaheadBuffer.emit(strPeek);
+  m_LookaheadBuffer.emit(target);
 
   return m_LookaheadBuffer.getSize();
 }
 
-size_t AFile::readUntilEOF(AString& strRead)
+size_t AFile::readUntilEOF(AOutputBuffer& target)
 {
   size_t ret = _readBlockIntoLookahead();
   while (ret)
@@ -349,23 +349,7 @@ size_t AFile::readUntilEOF(AString& strRead)
     ret = _readBlockIntoLookahead();
   }
 
-  m_LookaheadBuffer.emit(strRead);
-  ret = m_LookaheadBuffer.getSize();
-  m_LookaheadBuffer.clear();
-
-  return ret;
-}
-
-size_t AFile::readUntilEOF(ARope& rope)
-{
-  size_t ret = _readBlockIntoLookahead();
-  while (ret)
-  {
-    ret = _readBlockIntoLookahead();
-  }
-
-  m_LookaheadBuffer.emit(rope);
-
+  m_LookaheadBuffer.emit(target);
   ret = m_LookaheadBuffer.getSize();
   m_LookaheadBuffer.clear();
 
@@ -765,4 +749,12 @@ void AFile::_append(const char *pcc, size_t length)
     length = (size_t)strlen(pcc);
 
   write(pcc, length);
+}
+
+void AFile::emit(AOutputBuffer& target) const
+{
+  //a_Cast away the constness, because the object uses internal buffer to maintain readahead
+  //a_Peeking fills it up and in this case constness does not apply
+  AFile *pFile = const_cast<AFile *>(this);
+  pFile->peekUntilEOF(target);
 }
