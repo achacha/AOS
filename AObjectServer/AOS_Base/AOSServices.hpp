@@ -8,6 +8,7 @@
 #include "AMutex.hpp"
 #include "AOSSessionManager.hpp"
 #include "AOSContextManager.hpp"
+#include "AOSCacheManager.hpp"
 #include "AOSDatabaseConnectionPool.hpp"
 #include "AOSConfiguration.hpp"
 
@@ -37,7 +38,14 @@ public:
   */
   AOSContextManager& useContextManager();
 
-  //a_Initialize database pool
+  /*!
+  AOSContext manager
+  */
+  AOSCacheManager& useCacheManager();
+
+  /*!
+  Initialize database pool
+  */
   bool initDatabasePool();
 
   /*!
@@ -65,6 +73,9 @@ public:
   ASynchronization& useScreenSynch() { return m_ConsoleSynch; }
 
 private:
+  //a_No default ctor
+  AOSServices() : m_ConsoleSynch(AString::sstr_QuestionMark) {}
+
   //a_Physical log
   ALog_AFile *mp_Log;
   
@@ -83,8 +94,11 @@ private:
   //a_Session manager
   AOSSessionManager *mp_SessionManager;
 
-  //a_Session manager
+  //a_Context manager
   AOSContextManager *mp_ContextManager;
+
+  //a_Cache manager
+  AOSCacheManager *mp_CacheManager;
 
   //a_Screen output synchronization
   AMutex m_ConsoleSynch;

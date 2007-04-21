@@ -231,16 +231,15 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   }
   
   size_t contentLenth = AConstant::npos;
-  if (AFileSystem::exists(httpFilename) && AFileSystem::isA(httpFilename, AFileSystem::File))
+  AFile *pFile = m_Services.useCacheManager().getStaticFile(httpFilename);
+  if (pFile)
   {
-    AString& strFilename = httpFilename.toAString();
-    pContext->setExecutionState(ARope("Buffering physical file: ",25)+strFilename);
-    AFile_Physical localFile(strFilename, "rb");
-    localFile.open();
+    ARope rope("Buffering physical file: ",25);
+    httpFilename.emit(rope);
+    pContext->setExecutionState(rope);
     
     //a_Send the file
-    localFile.readUntilEOF(pContext->useOutputBuffer());
-    localFile.close();
+    pFile->emit(pContext->useOutputBuffer());
     pContext->useEventVisitor().reset();
     contentLenth = pContext->useOutputBuffer().getSize();
   }

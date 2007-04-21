@@ -215,6 +215,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSCacheManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSCommand.cpp"
 				>
 			</File>
@@ -346,6 +350,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSAdminRegistry.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSCacheManager.hpp"
 				>
 			</File>
 			<File

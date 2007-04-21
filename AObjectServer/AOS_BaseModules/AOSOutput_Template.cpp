@@ -136,6 +136,7 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
   AXmlNode::ConstNodeContainer::const_iterator cit = templateNames.begin();
   while (cit != templateNames.end())
   {
+    filename.clear();
     filenameBase.emit(filename);
     AString filenamePart;
     (*cit)->emitContent(filenamePart);

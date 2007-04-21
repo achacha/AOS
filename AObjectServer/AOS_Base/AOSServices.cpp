@@ -66,6 +66,7 @@ AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
   mp_DatabaseConnPool(NULL),
   mp_SessionManager(NULL),
   mp_ContextManager(NULL),
+  mp_CacheManager(NULL),
   mp_Log(NULL)
 {
   //a_Create log
@@ -74,18 +75,20 @@ AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
   logfile.useFilename().assign(ASW("aos.log",7));
   AFilename mutexfile(logfile);
   mutexfile.useFilename().assign(ASW("aos.mutex",9));
-  mp_Log = new ALog_AFile(new AMutex(logfile.toAString()), mutexfile, mask);
+  mp_Log = new ALog_AFile(new AMutex(mutexfile.toAString()), logfile, mask);
 
   mp_AdminRegistry = new AOSAdminRegistry(*mp_Log);
   mp_Configuration = new AOSConfiguration(basePath, *this, m_ConsoleSynch);
   mp_SessionManager = new AOSSessionManager(*this);
   mp_ContextManager = new AOSContextManager(*this);
+  mp_CacheManager = new AOSCacheManager(*this);
 }
 
 AOSServices::~AOSServices()
 {
   delete mp_SessionManager;
   delete mp_ContextManager;
+  delete mp_CacheManager;
   delete mp_DatabaseConnPool;
   delete mp_Configuration;
 }
@@ -166,4 +169,9 @@ AOSSessionManager& AOSServices::useSessionManager()
 AOSContextManager& AOSServices::useContextManager()
 {
   return *mp_ContextManager;
+}
+
+AOSCacheManager& AOSServices::useCacheManager()
+{
+  return *mp_CacheManager;
 }
