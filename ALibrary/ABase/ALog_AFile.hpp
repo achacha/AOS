@@ -14,7 +14,7 @@
 
 // ALog_AFile used for file based logging
 class AException;
-class AMutex;
+class ASync_Mutex;
 
 class ABASE_API ALog_AFile : public ALog
 {
@@ -24,7 +24,7 @@ public:
   The date on the log file will be that of the time the log object was created (not the date of the actual event, that info is inside the log)
 
   Usage:
-    ALog_AFile mylog(new ACriticalSection(), "mydir/mylogname.log");
+    ALog_AFile mylog(new ASync_CriticalSection(), "mydir/mylogname.log");
     // e.g. log file may be mydir/mylogname.20060522.000000.log, then after rotate mydir/mylogname.20060522.000001.log
     //...etc...
 
@@ -39,7 +39,7 @@ public:
 
   Usage:
     AAutoPtr<AFile> pFile(new AFile_AString());
-    ALog_AFile mylog(new ACriticalSection(), pFile.get());
+    ALog_AFile mylog(new ASync_CriticalSection(), pFile.get());
     //...etc...
 
 

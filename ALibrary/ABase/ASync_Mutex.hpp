@@ -5,12 +5,12 @@
 #include "ASynchronization.hpp"
 #include "AString.hpp"
 
-// AMutex
+// ASync_Mutex
 //
 // This provides a native mutex that does not guarantee recursion
 //
 
-class ABASE_API AMutex : public ASynchronization
+class ABASE_API ASync_Mutex : public ASynchronization
 {
 public:
 
@@ -24,12 +24,12 @@ public:
   timeout - milliseconds until it ulocks itself, if INFINITE it will wait until signaled
   i - initial state
   */
-  AMutex(
+  ASync_Mutex(
     const AString& strMutexName, 
     u4 timeout = INFINITE,
     ASynchronization::eInitialState i = UNLOCKED
   );
-	virtual ~AMutex();
+	virtual ~ASync_Mutex();
 
 	/*!
   ASynchronization
@@ -51,8 +51,8 @@ public:
 
 private:
 	// disallow copy/assignment
-	AMutex(const AMutex&);
-	AMutex& operator=(const AMutex&);
+	ASync_Mutex(const ASync_Mutex&);
+	ASync_Mutex& operator=(const ASync_Mutex&);
 
   //a_Name of this mutex (used for locking)
   AString mstr_Name;

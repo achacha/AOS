@@ -3,7 +3,7 @@
 
 #include "ADebugDumpable.hpp"
 #include "AThread.hpp"
-#include "ACriticalSection.hpp"
+#include "ASync_CriticalSection.hpp"
 
 /*!
 Ability to manage a homogenous pool of threads under one facade
@@ -67,7 +67,7 @@ private:
   void *mp_This;
   void *mp_Parameter;
 
-  ACriticalSection m_SynchObjectThreadPool;
+  ASync_CriticalSection m_SynchObjectThreadPool;
 
 public:
 #ifdef __DEBUG_DUMP__

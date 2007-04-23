@@ -1,10 +1,10 @@
-#ifndef INCLUDED__ACriticalSectionSpinLock_HPP__
-#define INCLUDED__ACriticalSectionSpinLock_HPP__
+#ifndef INCLUDED__ASync_CriticalSectionSpinLock_HPP__
+#define INCLUDED__ASync_CriticalSectionSpinLock_HPP__
 
 #include "apiABase.hpp"
 #include "ASynchronization.hpp"
 
-class ABASE_API ACriticalSectionSpinLock : public ASynchronization
+class ABASE_API ASync_CriticalSectionSpinLock : public ASynchronization
 {
 public:
   /*!
@@ -19,8 +19,8 @@ public:
      critical sections. This gives great performance and scalability 
      in almost all worst-case scenarios." - MSDN help
   */
-  ACriticalSectionSpinLock(u4 spinCount = 4000, ASynchronization::eInitialState i = UNLOCKED);
-  virtual ~ACriticalSectionSpinLock();
+  ASync_CriticalSectionSpinLock(u4 spinCount = 4000, ASynchronization::eInitialState i = UNLOCKED);
+  virtual ~ASync_CriticalSectionSpinLock();
 
 	/*!
   ASynchronization
@@ -31,8 +31,8 @@ public:
 
 private:
   //a_Prevent copy
-  ACriticalSectionSpinLock(const ACriticalSectionSpinLock & that);
-  ACriticalSectionSpinLock& operator=(const ACriticalSectionSpinLock & that);
+  ASync_CriticalSectionSpinLock(const ASync_CriticalSectionSpinLock & that);
+  ASync_CriticalSectionSpinLock& operator=(const ASync_CriticalSectionSpinLock & that);
 
   //a_Critical section object
 #ifdef __WINDOWS__

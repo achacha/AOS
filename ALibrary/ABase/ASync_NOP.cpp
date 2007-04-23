@@ -1,7 +1,7 @@
 #include "pchABase.hpp"
-#include "ASynch_NOP.hpp"
+#include "ASync_NOP.hpp"
 
-ASynch_NOP::ASynch_NOP(
+ASync_NOP::ASync_NOP(
   eInitialState i //= ASynchronization::UNLOCKED
 )
 {
@@ -9,26 +9,26 @@ ASynch_NOP::ASynch_NOP(
     ++m_LockCount;
 }
 
-ASynch_NOP::~ASynch_NOP()
+ASync_NOP::~ASync_NOP()
 {
 }
 
-void ASynch_NOP::lock()
+void ASync_NOP::lock()
 {
   ++m_LockCount;
 }
 
-bool ASynch_NOP::trylock()
+bool ASync_NOP::trylock()
 {
   return true;  //a_Can always lock
 }
 
-void ASynch_NOP::unlock()
+void ASync_NOP::unlock()
 {
   --m_LockCount;
 }
 
-int ASynch_NOP::getLockCount() const
+int ASync_NOP::getLockCount() const
 {
   return m_LockCount;
 }

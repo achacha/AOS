@@ -69,7 +69,7 @@ public:
    - NULL will force a delete of the existing synchronization
    - the object will own the synchronization and will delete it when destroyed
    - see lock/unlock/trylock/canlock below on how it can be used in any derived class
-  NOTE: This object will OWN and DELETE this pointer, so you should use: myObject.setSynchronization(new AMutex())
+  NOTE: This object will OWN and DELETE this pointer, so you should use: myObject.setSynchronization(new ASync_Mutex())
   */
   void setSynchronization(ASynchronization *pSynchObject);
 
@@ -83,7 +83,7 @@ public:
      };
 
      AMyObject foo("someobject");
-     foo.setSynchonization(new ACriticalSection());
+     foo.setSynchonization(new ASync_CriticalSection());
   
      {
        // Use of { } will guarantee that when ALock object goes out of scope it unlocks the synch object automatically

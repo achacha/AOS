@@ -1,5 +1,5 @@
-#ifndef INCLUDED_ASynch_NOP_HPP_
-#define INCLUDED_ASynch_NOP_HPP_
+#ifndef INCLUDED_ASync_NOP_HPP_
+#define INCLUDED_ASync_NOP_HPP_
 
 #include "apiABase.hpp"
 #include "ASynchronization.hpp"
@@ -9,11 +9,11 @@ NOP ASynchronization class
 
 Does nothing when called for lock and unlock, just keeps track of the calls
 */
-class ABASE_API ASynch_NOP : public ASynchronization
+class ABASE_API ASync_NOP : public ASynchronization
 {
 public:
-  ASynch_NOP(eInitialState i = ASynchronization::UNLOCKED);
-  virtual ~ASynch_NOP();
+  ASync_NOP(eInitialState i = ASynchronization::UNLOCKED);
+  virtual ~ASync_NOP();
 
 public:
   virtual void lock();       //a_Lock this object

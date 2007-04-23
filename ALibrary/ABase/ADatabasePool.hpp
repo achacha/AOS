@@ -3,8 +3,8 @@
 
 #include "ADebugDumpable.hpp"
 #include "ADatabase.hpp"
-#include "ACriticalSection.hpp"
-#include "ASemaphore.hpp"
+#include "ASync_CriticalSection.hpp"
+#include "ASync_Semaphore.hpp"
 #include "ATimer.hpp"
 #include "AMovingAverage.hpp"
 
@@ -70,8 +70,8 @@ private:
   
   ADatabase *_lockDatabase();
   void _unlockDatabase(ADatabase *);
-  ASemaphore m_Semaphore;
-  ACriticalSection m_SynchObject;
+  ASync_Semaphore m_Semaphore;
+  ASync_CriticalSection m_SynchObject;
 
 public:
 #ifdef __DEBUG_DUMP__

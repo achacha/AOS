@@ -303,14 +303,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ACriticalSection.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ACriticalSectionSpinLock.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ADaemon.cpp"
 				>
 			</File>
@@ -533,10 +525,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AMutex.cpp"
-				>
-			</File>
-			<File
 				RelativePath="ANamePointerPair.cpp"
 				>
 				<FileConfiguration
@@ -685,10 +673,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ASemaphore.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ASocketException.cpp"
 				>
 			</File>
@@ -735,7 +719,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ASynch_NOP.cpp"
+				RelativePath=".\ASync_CriticalSection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_CriticalSectionSpinLock.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_Mutex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_NOP.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_ReadWriteLock.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_Semaphore.cpp"
 				>
 			</File>
 			<File
@@ -951,14 +955,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ACriticalSection.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ACriticalSectionSpinLock.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ADaemon.hpp"
 				>
 			</File>
@@ -1119,10 +1115,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AMutex.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ANamePointerPair.hpp"
 				>
 			</File>
@@ -1187,10 +1179,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ASemaphore.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ASerializable.hpp"
 				>
 			</File>
@@ -1219,7 +1207,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ASynch_NOP.hpp"
+				RelativePath=".\ASync_CriticalSection.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_CriticalSectionSpinLock.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_Mutex.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_NOP.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_ReadWriteLock.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ASync_Semaphore.hpp"
 				>
 			</File>
 			<File
@@ -1367,12 +1375,12 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="NewFilter1"
+			>
+		</Filter>
 		<File
 			RelativePath="..\autoexp.dat.append"
-			>
-		</File>
-		<File
-			RelativePath="makefile.gcc"
 			>
 		</File>
 		<File

@@ -28,7 +28,7 @@ public:
   pSynchObject is OWNED and DELETED by this class, if NULL it is unsynchroinized
 
   Usage:
-    AStringHashMap mymap(new AMutex("MyHashMap"));  // synchronized by a mutex
+    AStringHashMap mymap(new ASync_Mutex("MyHashMap"));  // synchronized by a mutex
 
     or
 

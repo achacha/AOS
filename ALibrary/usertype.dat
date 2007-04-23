@@ -1,6 +1,8 @@
 AAttributes
 ABase
 ABitArray
+ACache
+ACache_FileSystem
 AConstant
 AContentType_TextHtml
 AContentType_Binary
@@ -9,8 +11,6 @@ AContentTypeFactory
 AContentTypeInterface
 ACookie
 ACookies
-ACriticalSection
-ACriticalSectionSpinLock
 ADatabase
 ADebugDumpable
 ADigestInterface
@@ -43,7 +43,6 @@ ALog
 ALog_AFile
 AMapOfPtrs
 AMovingAverage
-AMutex
 ANameValuePair
 ANamePointerPair
 ANumber
@@ -59,7 +58,6 @@ ARng_Uniform
 AResultSet
 ARope
 ARopeDeque
-ASemaphore
 ASerializable
 ASingletonPattern
 ASocketException
@@ -68,7 +66,12 @@ ASocketLibrary
 AString
 AStringHashMap
 ASynchronization
-ASynch_NOP
+ASync_CriticalSection
+ASync_CriticalSectionSpinLock
+ASync_Mutex
+ASync_NOP
+ASync_ReadWriteLock
+ASync_Semaphore
 ATemplate
 ATemplate_Code
 ATemplate_Text

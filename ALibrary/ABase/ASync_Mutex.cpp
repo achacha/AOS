@@ -1,10 +1,10 @@
 #include "pchABase.hpp"
 
-#include "AMutex.hpp"
+#include "ASync_Mutex.hpp"
 #include "ASystemException.hpp"
 #include "ADebugDumpable.hpp"
 
-AMutex::AMutex(
+ASync_Mutex::ASync_Mutex(
   const AString& strName, 
   u4 timeout,                         // = INFINITE
   ASynchronization::eInitialState i   // = UNLOCKED
@@ -18,7 +18,7 @@ AMutex::AMutex(
 }
     
 
-AMutex::~AMutex()
+ASync_Mutex::~ASync_Mutex()
 {
   try
   {
@@ -32,7 +32,7 @@ AMutex::~AMutex()
 }
 
 
-void AMutex::lock()
+void ASync_Mutex::lock()
 {
   if (m_handle)
   {
@@ -45,7 +45,7 @@ void AMutex::lock()
   }
 }
 
-bool AMutex::trylock()
+bool ASync_Mutex::trylock()
 {
   if (m_handle)
     return (WAIT_TIMEOUT != ::WaitForSingleObject(m_handle, 0));
@@ -53,23 +53,23 @@ bool AMutex::trylock()
     ATHROW(this, AException::InvalidObject);
 }
 
-void AMutex::unlock()
+void ASync_Mutex::unlock()
 {
 	if (!::ReleaseMutex(m_handle))
     ATHROW_LAST_OS_ERROR(this);
 }
 
-const AString& AMutex::getName()
+const AString& ASync_Mutex::getName()
 { 
   return mstr_Name; 
 }
 
-u4 AMutex::getTimeout() const
+u4 ASync_Mutex::getTimeout() const
 {
   return m_Timeout;
 }
 
-void AMutex::setTimeout(u4 timeout)
+void ASync_Mutex::setTimeout(u4 timeout)
 {
   m_Timeout = timeout;
 }

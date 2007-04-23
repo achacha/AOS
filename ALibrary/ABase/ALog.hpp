@@ -15,7 +15,7 @@ Interface for a lockable log
 
 This is an abstract class. Implementations are ALog_AFile, etc...
 
-Must have some synchronization object, use ASynch_NOP in single threaded mode if needed
+Must have some synchronization object, use ASync_NOP in single threaded mode if needed
 
 Example:
 ALog myLog(new ASynch_Mutex("MyLogMutex"));                      // everything logged by default

@@ -1,9 +1,9 @@
 #include "pchABase.hpp"
 
-#include "ACriticalSection.hpp"
+#include "ASync_CriticalSection.hpp"
 #include "AException.hpp"
 
-ACriticalSection::ACriticalSection(ASynchronization::eInitialState i) :
+ASync_CriticalSection::ASync_CriticalSection(ASynchronization::eInitialState i) :
   mp__CriticalSection(new CRITICAL_SECTION)
 {
   ::InitializeCriticalSection(mp__CriticalSection);
@@ -13,34 +13,34 @@ ACriticalSection::ACriticalSection(ASynchronization::eInitialState i) :
 }
 
 
-ACriticalSection::~ACriticalSection()
+ASync_CriticalSection::~ASync_CriticalSection()
 {
   if (mp__CriticalSection)
     ::DeleteCriticalSection(mp__CriticalSection);
   delete mp__CriticalSection;
 }
 
-ACriticalSection::ACriticalSection(const ACriticalSection&)
+ASync_CriticalSection::ASync_CriticalSection(const ASync_CriticalSection&)
 {
 }
 
-ACriticalSection& ACriticalSection::operator=(const ACriticalSection&)
+ASync_CriticalSection& ASync_CriticalSection::operator=(const ASync_CriticalSection&)
 {
   return *this;
 }
 
-void ACriticalSection::lock()
+void ASync_CriticalSection::lock()
 {
   ::EnterCriticalSection(mp__CriticalSection);
 }
 
 
-bool ACriticalSection::trylock()
+bool ASync_CriticalSection::trylock()
 {
   return (::TryEnterCriticalSection(mp__CriticalSection) ? true : false);
 }
 
-void ACriticalSection::unlock()
+void ASync_CriticalSection::unlock()
 {
   if (mp__CriticalSection) 
     ::LeaveCriticalSection(mp__CriticalSection);

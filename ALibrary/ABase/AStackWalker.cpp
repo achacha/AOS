@@ -29,7 +29,7 @@
 #include "AStackWalker.hpp"
 #include "AString.hpp"
 #include "AXmlElement.hpp"
-#include "ACriticalSection.hpp"
+#include "ASync_CriticalSection.hpp"
 #include "ALock.hpp"
 
 // The "ugly" assembler-implementation is needed for systems before XP
@@ -665,7 +665,7 @@ private:
         if (dwSize > 0)
         {
           vData = malloc(dwSize);
-          if (GetFileVersionInfoA(szImg, dwHandle, dwSize, vData) != 0)
+          if (vData && GetFileVersionInfoA(szImg, dwHandle, dwSize, vData) != 0)
           {
             UINT len;
             if (VerQueryValue(vData, _T("\\"), (LPVOID*) &fInfo, &len) == 0)
@@ -1000,7 +1000,7 @@ BOOL AStackWalker::ProcessCallstack(
   LPVOID pUserData                               // = NULL
 )
 {
-  static ACriticalSection cs;
+  static ASync_CriticalSection cs;
   ALock lock(cs);
 
   //a_Clear the results since we are walking again

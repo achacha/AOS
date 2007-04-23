@@ -5,7 +5,7 @@
 #include "AXmlElement.hpp"
 #include "AFile_Physical.hpp"
 #include "AFileSystem.hpp"
-#include "ACriticalSection.hpp"
+#include "ASync_CriticalSection.hpp"
 #include "ALock.hpp"
 
 #ifdef __DEBUG_DUMP__
@@ -51,7 +51,7 @@ ACache_FileSystem::ACache_FileSystem(size_t maxItems) :
   m_Hit(0),
   m_Miss(0)
 {
-  mp_Sync = new ACriticalSection();
+  mp_Sync = new ASync_CriticalSection();
 }
 
 ACache_FileSystem::~ACache_FileSystem()

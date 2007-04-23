@@ -1,51 +1,52 @@
 #include "pchABase.hpp"
 
-#include "ACriticalSectionSpinLock.hpp"
-#include "AException.hpp"
+#include "ASync_CriticalSectionSpinLock.hpp"
+#include "ASystemException.hpp"
 
-ACriticalSectionSpinLock::ACriticalSectionSpinLock(
+ASync_CriticalSectionSpinLock::ASync_CriticalSectionSpinLock(
   u4 spinCount,                        // = 4000
   ASynchronization::eInitialState i    // = UNLOCKED
 ) :
   mp_CriticalSection(new CRITICAL_SECTION),
   m_SpinCount(spinCount)
 {
-  ::InitializeCriticalSectionAndSpinCount(mp_CriticalSection, m_SpinCount);
+  if (!::InitializeCriticalSectionAndSpinCount(mp_CriticalSection, m_SpinCount))
+    ATHROW_LAST_OS_ERROR(this);
 
   if (i==LOCKED) 
     lock();
 }
 
 
-ACriticalSectionSpinLock::~ACriticalSectionSpinLock()
+ASync_CriticalSectionSpinLock::~ASync_CriticalSectionSpinLock()
 {
   if (mp_CriticalSection)
     ::DeleteCriticalSection(mp_CriticalSection);
   delete mp_CriticalSection;
 }
 
-ACriticalSectionSpinLock::ACriticalSectionSpinLock(const ACriticalSectionSpinLock& that) :
+ASync_CriticalSectionSpinLock::ASync_CriticalSectionSpinLock(const ASync_CriticalSectionSpinLock& that) :
   m_SpinCount(AConstant::npos)
 {
 }
 
-ACriticalSectionSpinLock& ACriticalSectionSpinLock::operator=(const ACriticalSectionSpinLock&)
+ASync_CriticalSectionSpinLock& ASync_CriticalSectionSpinLock::operator=(const ASync_CriticalSectionSpinLock&)
 {
   return *this;
 }
 
-void ACriticalSectionSpinLock::lock()
+void ASync_CriticalSectionSpinLock::lock()
 {
   ::EnterCriticalSection(mp_CriticalSection);
 }
 
 
-bool ACriticalSectionSpinLock::trylock()
+bool ASync_CriticalSectionSpinLock::trylock()
 {
   return (::TryEnterCriticalSection(mp_CriticalSection) ? true : false);
 }
 
-void ACriticalSectionSpinLock::unlock()
+void ASync_CriticalSectionSpinLock::unlock()
 {
   if (mp_CriticalSection) 
     ::LeaveCriticalSection(mp_CriticalSection);

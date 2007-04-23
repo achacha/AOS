@@ -1,10 +1,10 @@
 
 #include "pchABase.hpp"
 
-#include "ASemaphore.hpp"
+#include "ASync_Semaphore.hpp"
 #include "ASystemException.hpp"
 
-ASemaphore::ASemaphore(
+ASync_Semaphore::ASync_Semaphore(
   const AString& strName, 
   size_t maxCount,                    // = 1
   ASynchronization::eInitialState i   // = UNLOCKED
@@ -24,7 +24,7 @@ ASemaphore::ASemaphore(
     ATHROW_LAST_OS_ERROR(this);
 }
 
-ASemaphore::~ASemaphore()
+ASync_Semaphore::~ASync_Semaphore()
 {
   try
   {
@@ -37,7 +37,7 @@ ASemaphore::~ASemaphore()
   }
 }
 
-void ASemaphore::lock()
+void ASync_Semaphore::lock()
 {
   if (m_handle)
   {
@@ -50,7 +50,7 @@ void ASemaphore::lock()
   }
 }
 
-bool ASemaphore::trylock()
+bool ASync_Semaphore::trylock()
 {
   if (m_handle)
     return (WAIT_TIMEOUT != ::WaitForSingleObjectEx(m_handle, 0, TRUE));
@@ -58,7 +58,7 @@ bool ASemaphore::trylock()
     ATHROW(this, AException::InvalidObject);
 }
 
-void ASemaphore::unlock()
+void ASync_Semaphore::unlock()
 {
   if (!::ReleaseSemaphore( m_handle, 1, NULL ))
     ATHROW_LAST_OS_ERROR(this);
