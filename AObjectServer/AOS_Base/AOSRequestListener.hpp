@@ -3,7 +3,7 @@
 
 #include "apiAOS_Base.hpp"
 #include "AThread.hpp"
-#include "ACriticalSection.hpp"
+#include "ASync_CriticalSection.hpp"
 #include "AOSContext.hpp"
 #include "AOSAdminInterface.hpp"
 
@@ -37,8 +37,8 @@ private:
   //a_Listener threads
   AThread mthread_Listener;
   AThread mthread_SecureListener;
-  ACriticalSection m_QueueAdd;
-  ACriticalSection m_QueueRemove;
+  ASync_CriticalSection m_QueueAdd;
+  ASync_CriticalSection m_QueueRemove;
 
   //a_First queue
   AOSContextQueueInterface *mp_FirstQueue;

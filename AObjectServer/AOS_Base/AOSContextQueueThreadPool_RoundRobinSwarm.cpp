@@ -75,7 +75,7 @@ AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinS
   m_AddCounters.resize(m_queueCount);
   for (int i=0; i<m_queueCount; ++i)
   {
-    m_QueueLocks[i] = new ACriticalSectionSpinLock();
+    m_QueueLocks[i] = new ASync_CriticalSectionSpinLock();
     m_AddCounters[i] = 0;
   }
 }

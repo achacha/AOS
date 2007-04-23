@@ -3,7 +3,7 @@
 
 #include "apiAOS_Base.hpp"
 #include "AOSAdminInterface.hpp"
-#include "ACriticalSectionSpinLock.hpp"
+#include "ASync_CriticalSectionSpinLock.hpp"
 
 class AOSServices;
 class AOSContext;

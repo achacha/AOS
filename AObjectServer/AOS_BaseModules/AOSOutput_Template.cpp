@@ -3,7 +3,7 @@
 #include "ATemplate.hpp"
 #include "AFile_Physical.hpp"
 #include "AException.hpp"
-#include "AMutex.hpp"
+#include "ASync_Mutex.hpp"
 #include "ALock.hpp"
 
 #ifdef __DEBUG_DUMP__
@@ -97,7 +97,7 @@ const AString& AOSOutput_Template::getClass() const
 AOSOutput_Template::AOSOutput_Template(ALog& alog) :
   AOSOutputGeneratorInterface(alog),
   mp_Templates(new AOSOutput_Template::TEMPLATES()),
-  mp_TemplatesGuard(new AMutex("AOSOutput_Template"))
+  mp_TemplatesGuard(new ASync_Mutex("AOSOutput_Template"))
 {
 }
 

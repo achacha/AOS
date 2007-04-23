@@ -1,6 +1,6 @@
 #include "pchAOS_Base.hpp"
 #include "AOSSessionManager.hpp"
-#include "ACriticalSection.hpp"
+#include "ASync_CriticalSection.hpp"
 #include "ALock.hpp"
 #include "AOSServices.hpp"
 
@@ -114,7 +114,7 @@ AOSSessionManager::SessionMapHolder *AOSSessionManager::_getSessionHolder(const 
   if (itHashMap == m_SessionHashMap.end())
   {
     //a_Create session and the lock
-    SessionMapHolder *pSessionMapHolder = new SessionMapHolder(new ACriticalSection());
+    SessionMapHolder *pSessionMapHolder = new SessionMapHolder(new ASync_CriticalSection());
     m_SessionHashMap[hash] = pSessionMapHolder;
     return pSessionMapHolder;
   }

@@ -4,7 +4,7 @@
 #include "apiAOS_Base.hpp"
 #include "AOSAdminInterface.hpp"
 #include "ACache_FileSystem.hpp"
-#include "ACriticalSection.hpp"
+#include "ASync_CriticalSection.hpp"
 
 class AOSServices;
 

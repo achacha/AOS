@@ -2,7 +2,7 @@
 #include "AOSServices.hpp"
 #include "AOSAdminRegistry.hpp"
 #include "AOSConfiguration.hpp"
-#include "AMutex.hpp"
+#include "ASync_Mutex.hpp"
 #include "AResultSet.hpp"
 
 #ifdef __DEBUG_DUMP__
@@ -75,7 +75,7 @@ AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
   logfile.useFilename().assign(ASW("aos.log",7));
   AFilename mutexfile(logfile);
   mutexfile.useFilename().assign(ASW("aos.mutex",9));
-  mp_Log = new ALog_AFile(new AMutex(mutexfile.toAString()), logfile, mask);
+  mp_Log = new ALog_AFile(new ASync_Mutex(mutexfile.toAString()), logfile, mask);
 
   mp_AdminRegistry = new AOSAdminRegistry(*mp_Log);
   mp_Configuration = new AOSConfiguration(basePath, *this, m_ConsoleSynch);

@@ -5,7 +5,7 @@
 #include "AOSAdminInterface.hpp"
 #include "ALog_AFile.hpp"
 #include "AOSAdminRegistry.hpp"
-#include "AMutex.hpp"
+#include "ASync_Mutex.hpp"
 #include "AOSSessionManager.hpp"
 #include "AOSContextManager.hpp"
 #include "AOSCacheManager.hpp"
@@ -101,7 +101,7 @@ private:
   AOSCacheManager *mp_CacheManager;
 
   //a_Screen output synchronization
-  AMutex m_ConsoleSynch;
+  ASync_Mutex m_ConsoleSynch;
 
 public:
 #ifdef __DEBUG_DUMP__

@@ -3,7 +3,7 @@
 
 #include "apiAOS_Base.hpp"
 #include "AThread.hpp"
-#include "AMutex.hpp"
+#include "ASync_Mutex.hpp"
 
 class AFile_Socket;
 class AHTTPRequestHeader;
@@ -36,7 +36,7 @@ protected:
 
 private:
   AThread mthread_AdminListener;
-  AMutex m_ClientSynch;
+  ASync_Mutex m_ClientSynch;
 
   //a_Process a request
   void _processRequest(AFile_Socket&, AHTTPRequestHeader&);

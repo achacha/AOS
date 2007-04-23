@@ -1,6 +1,6 @@
 #include "pchAOS_Base.hpp"
 #include "AOSCacheManager.hpp"
-#include "ACriticalSection.hpp"
+#include "ASync_CriticalSection.hpp"
 #include "ALock.hpp"
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"

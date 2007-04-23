@@ -3,7 +3,7 @@
 
 #include "apiAOS_Base.hpp"
 #include "AOSContextQueueThreadPool.hpp"
-#include "ACriticalSectionSpinLock.hpp"
+#include "ASync_CriticalSectionSpinLock.hpp"
 
 class AOS_BASE_API AOSContextQueue_IsAvailable : public AOSContextQueueThreadPool
 {
@@ -45,7 +45,7 @@ protected:
 
 private:
   // Queue and synch
-  ACriticalSectionSpinLock m_SynchObjectContextContainer;
+  ASync_CriticalSectionSpinLock m_SynchObjectContextContainer;
   typedef std::list<AOSContext *> REQUESTS;
   REQUESTS m_Queue;
   size_t m_AddCounter;

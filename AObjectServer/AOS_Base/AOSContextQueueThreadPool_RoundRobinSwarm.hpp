@@ -41,7 +41,7 @@ protected:
 
 private:
   //a_AOSContext container
-//ACriticalSectionSpinLock m_SynchObjectContextContainer;  //TODO convert to array
+//ASync_CriticalSectionSpinLock m_SynchObjectContextContainer;  //TODO convert to array
   typedef std::vector<ASynchronization *> QUEUE_LOCKS;
   QUEUE_LOCKS m_QueueLocks;
 
