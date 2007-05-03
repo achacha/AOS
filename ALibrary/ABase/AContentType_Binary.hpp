@@ -4,7 +4,7 @@
 #include "apiABase.hpp"
 #include "AContentTypeInterface.hpp"
 
-class AEventVisitor;
+class ASync_EventVisitor;
 class AOutputBuffer;
 
 class ABASE_API AContentType_Binary : public AContentTypeInterface

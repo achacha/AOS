@@ -2,7 +2,19 @@
 
 #include "ASync_Mutex.hpp"
 #include "ASystemException.hpp"
-#include "ADebugDumpable.hpp"
+#include "ATextGenerator.hpp"
+
+ASync_Mutex::ASync_Mutex(
+  u4 timeout,                         // = INFINITE
+  ASynchronization::eInitialState i   // = UNLOCKED
+):
+  m_Timeout(timeout)
+{
+  ATextGenerator::generateUniqueId(mstr_Name);
+  m_handle = ::CreateMutex(NULL, i == LOCKED, mstr_Name.c_str());
+  if (!m_handle)
+    ATHROW_LAST_OS_ERROR(this);
+}
 
 ASync_Mutex::ASync_Mutex(
   const AString& strName, 

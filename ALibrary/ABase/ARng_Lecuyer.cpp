@@ -62,8 +62,10 @@ void ARng_Lecuyer::_initialize()
   {
     lK = m_lSeed / RNG_LEBD_IQ1;
     m_lSeed = RNG_LEBD_IA1 * (m_lSeed - lK * RNG_LEBD_IQ1) - lK * RNG_LEBD_IR1;
-    if (m_lSeed < 0x0L) m_lSeed += RNG_LEBD_IM1;
-    if (iJ < RNG_LEBD_NTAB) m_lV[iJ] = m_lSeed;
+    if (m_lSeed < 0x0L)
+      m_lSeed += RNG_LEBD_IM1;
+    if (iJ < RNG_LEBD_NTAB)
+      m_lV[iJ] = m_lSeed;
   }
 
   m_lY = m_lV[0x0];

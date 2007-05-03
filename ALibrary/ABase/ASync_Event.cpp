@@ -1,10 +1,24 @@
 #include "pchABase.hpp"
 
-#include "AEvent.hpp"
+#include "ASync_Event.hpp"
 #include "ASystemException.hpp"
 #include "ADebugDumpable.hpp"
+#include "ATextGenerator.hpp"
 
-AEvent::AEvent(
+ASync_Event::ASync_Event(
+  u4 timeout,                        // = INFINITE
+  bool autoReset,                    // = false
+  ASynchronization::eInitialState i  // = UNLOCKED
+):
+  m_Timeout(timeout)
+{
+  ATextGenerator::generateUniqueId(mstr_Name);
+  m_handle = ::CreateEvent(NULL, autoReset, i == LOCKED, mstr_Name.c_str());
+  if (!m_handle)
+    ATHROW_LAST_OS_ERROR(this);
+}
+
+ASync_Event::ASync_Event(
   const AString& strName,
   u4 timeout,                        // = INFINITE
   bool autoReset,                    // = false
@@ -17,9 +31,9 @@ AEvent::AEvent(
   if (!m_handle)
     ATHROW_LAST_OS_ERROR(this);
 }
-    
 
-AEvent::~AEvent()
+
+ASync_Event::~ASync_Event()
 {
   try
   {
@@ -33,7 +47,7 @@ AEvent::~AEvent()
 }
 
 
-void AEvent::lock()
+void ASync_Event::lock()
 {
   if (m_handle)
   {
@@ -47,7 +61,7 @@ void AEvent::lock()
   }
 }
 
-bool AEvent::trylock()
+bool ASync_Event::trylock()
 {
   if (m_handle)
   {
@@ -58,23 +72,23 @@ bool AEvent::trylock()
     ATHROW(this, AException::InvalidObject);
 }
 
-void AEvent::unlock()
+void ASync_Event::unlock()
 {
 	if (!::SetEvent(m_handle))
     ATHROW_LAST_OS_ERROR(this);
 }
 
-const AString& AEvent::getName()
+const AString& ASync_Event::getName()
 { 
   return mstr_Name; 
 }
 
-u4 AEvent::getTimeout() const
+u4 ASync_Event::getTimeout() const
 {
   return m_Timeout;
 }
 
-void AEvent::setTimeout(u4 timeout)
+void ASync_Event::setTimeout(u4 timeout)
 {
   m_Timeout = timeout;
 }

@@ -33,7 +33,7 @@ public:
   /*!
   Create item if it does not exist
   If does not exist, will read the file and cache it
-  Returns AString * which is data object for a given key filename
+  Returns AFile * which is data object for a given key filename
   Returns NULL if file is not found
   */
   AFile *get(const AFilename& key);
@@ -57,7 +57,7 @@ private:
     void hit();
   };
 
-  typedef std::map<AFilename, CACHE_ITEM *> CONTAINER;
+  typedef std::map<AString, CACHE_ITEM *> CONTAINER;
   CONTAINER m_Cache;
 
   size_t m_Hit;

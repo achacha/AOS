@@ -23,8 +23,8 @@ AElementObserver_FORM
 AElementObserver_SRC
 AElementObserverInterface
 AEmittable
-AEvent
-AEventVisitor
+ASync_Event
+ASync_EventVisitor
 AFile
 AFilename
 AFile_AString
@@ -69,7 +69,7 @@ ASynchronization
 ASync_CriticalSection
 ASync_CriticalSectionSpinLock
 ASync_Mutex
-ASync_NOP
+ASync_Counter
 ASync_ReadWriteLock
 ASync_Semaphore
 ATemplate
@@ -80,6 +80,7 @@ ATextConverter
 ATextGenerator
 ATextOdometer
 AThread
+AThreadPool
 ATime
 ATimer
 AXmlData

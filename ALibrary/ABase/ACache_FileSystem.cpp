@@ -146,7 +146,7 @@ void ACache_FileSystem::emit(AOutputBuffer& target) const
 AFile *ACache_FileSystem::get(const AFilename& key)
 {
   ALock lock(mp_Sync);
-  CONTAINER::iterator it = m_Cache.find(key);
+  CONTAINER::iterator it = m_Cache.find(key.toAString());
   if (it == m_Cache.end())
   {
     ++m_Miss;
@@ -161,7 +161,7 @@ AFile *ACache_FileSystem::get(const AFilename& key)
       file.open();
       file.readUntilEOF(p->pData->useAString());
 
-      m_Cache[key] = p.get();
+      m_Cache[key.toAString()] = p.get();
       p.setOwnership(false);
       return p->pData;
     }
@@ -169,7 +169,7 @@ AFile *ACache_FileSystem::get(const AFilename& key)
     {
       //a_File is a directory or does not exist, NULL value for p->pData
       CACHE_ITEM *p = new CACHE_ITEM();
-      m_Cache[key] = p;
+      m_Cache[key.toAString()] = p;
       return NULL;
     }
   }

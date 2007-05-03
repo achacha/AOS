@@ -5,6 +5,7 @@
 #include "AException.hpp"
 #include "AFile.hpp"
 #include "ARope.hpp"
+#include "AXmlElement.hpp"
 
 #include <ctype.h>
 
@@ -2114,6 +2115,12 @@ void AString::emit(AOutputBuffer& target) const
 { 
   if (mp_Buffer && m_Length > 0)
     target.append(mp_Buffer, m_Length);
+}
+
+void AString::emit(AXmlElement& target) const
+{
+  target.addAttribute(ASW("class",5), ASW("AString",7));
+  target.addData(*this, AXmlData::CDataDirect);
 }
 
 size_t AString::split(

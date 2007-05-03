@@ -9,10 +9,6 @@ void ASynchronization::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ASynchronization::ASynchronization(eInitialState /* i = UNLOCKED */)
-{
-}
-
 ASynchronization::~ASynchronization()
 {
 }

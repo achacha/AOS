@@ -173,7 +173,7 @@ public:
   /*!
   DANGER: Do not use this unless absolutely necessary
   Thread termination function
-  It should be used as the last resort, setFlag()/hasFlag() are a cleaner way
+  It should be used as the last resort, setRun/isRunning are a cleaner way
     the thread should be allowed to gracefully exit
   */
   void terminate(u4 uExitCode = 0x0);

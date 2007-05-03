@@ -1,11 +1,11 @@
-#ifndef INCLUDED__AEvent_HPP__
-#define INCLUDED__AEvent_HPP__
+#ifndef INCLUDED__ASync_Event_HPP__
+#define INCLUDED__ASync_Event_HPP__
 
 #include "apiABase.hpp"
 #include "ASynchronization.hpp"
 #include "AString.hpp"
 
-class ABASE_API AEvent : public ASynchronization
+class ABASE_API ASync_Event : public ASynchronization
 {
 public:
 
@@ -15,18 +15,33 @@ public:
 
 public:
 	/*!
+  Create event with random name
+
+  timeout - in milliseconds, it will wait for event or timeout (INFINITE means it will wait for event signal only)
+  autoReset - if true the event will reset right after being signaled
+  i - initial state (UNLOCKED by default)
+  */
+  ASync_Event(
+    u4 timeout = INFINITE,
+    bool autoReset = false, 
+    ASynchronization::eInitialState i = UNLOCKED
+  );
+
+  /*!
+  Create named event
+
   strEventName - unique name of the event
   timeout - in milliseconds, it will wait for event or timeout (INFINITE means it will wait for event signal only)
   autoReset - if true the event will reset right after being signaled
   i - initial state (UNLOCKED by default)
   */
-  AEvent(
+  ASync_Event(
     const AString& strEventName, 
     u4 timeout = INFINITE,
     bool autoReset = false, 
     ASynchronization::eInitialState i = UNLOCKED
   );
-	virtual ~AEvent();
+	virtual ~ASync_Event();
 
 	/*!
   ASynchronization
@@ -48,8 +63,8 @@ public:
 
 private:
 	// disallow copy/assignment
-	AEvent(const AEvent&);
-	AEvent& operator=(const AEvent&);
+	ASync_Event(const ASync_Event&);
+	ASync_Event& operator=(const ASync_Event&);
 
   //a_Name of this mutex (used for locking)
   AString mstr_Name;

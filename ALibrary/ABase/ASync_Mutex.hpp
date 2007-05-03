@@ -20,6 +20,19 @@ public:
 
 public:
 	/*!
+  Create mutex with random name
+
+  timeout - milliseconds until it ulocks itself, if INFINITE it will wait until signaled
+  i - initial state
+  */
+  ASync_Mutex(
+    u4 timeout = INFINITE,
+    ASynchronization::eInitialState i = UNLOCKED
+  );
+
+  /*!
+  Create named mutex
+
   strMutexName - unique name for this mutex
   timeout - milliseconds until it ulocks itself, if INFINITE it will wait until signaled
   i - initial state

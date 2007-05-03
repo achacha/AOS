@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tFilename.cpp"
+			RelativePath=".\tReadWriteLock.cpp"
 			>
 		</File>
 	</Files>

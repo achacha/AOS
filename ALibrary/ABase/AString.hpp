@@ -5,6 +5,7 @@
 #include "AConstant.hpp"
 #include "ASerializable.hpp"
 #include "AOutputBuffer.hpp"
+#include "AXmlEmittable.hpp"
 
 class AFile;
 class ARope;
@@ -55,7 +56,8 @@ ASWNL - calls strlen() on the 'const char *' which is not as efficient but more 
 */
 class ABASE_API AString : 
   public ASerializable, 
-  public AOutputBuffer
+  public AOutputBuffer,
+  public AXmlEmittable
 {
 public:
   /*!
@@ -117,6 +119,7 @@ public:
   AString accessors toString returns a copy, emit appends contents
   */
   virtual void emit(AOutputBuffer&) const;
+  virtual void emit(AXmlElement& target) const;
 
   /*!
   Non modifying operators

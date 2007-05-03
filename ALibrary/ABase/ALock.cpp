@@ -59,6 +59,7 @@ void ALock::lock()
   if (!mp__Synchronization) 
     return;
 
+  AASSERT(NULL, me__LockMode == ALock::UNLOCKED);
   if (me__LockMode == ALock::UNLOCKED) 
     mp__Synchronization->lock();
   
@@ -70,8 +71,9 @@ bool ALock::trylock()
   if (!mp__Synchronization) 
     return ALock::UNLOCKED;
 
+  AASSERT(NULL, me__LockMode == ALock::UNLOCKED);
   if (me__LockMode == ALock::LOCKED) 
-    return ALock::UNLOCKED;
+    return false;
 
   bool boolTry = mp__Synchronization->trylock();
   me__LockMode = (boolTry ? ALock::LOCKED : ALock::UNLOCKED);

@@ -3,6 +3,7 @@
 
 #include "apiABase.hpp"
 #include "ADebugDumpable.hpp"
+#include "ALock.hpp"
 
 /*!
 Synchronization class
@@ -23,11 +24,8 @@ public:
     LOCKED   = 0x1
   };
 
-  ASynchronization(eInitialState i = UNLOCKED);
   virtual ~ASynchronization();
 
-
-public:
   virtual void lock()    = 0;       //a_Lock this object
   virtual bool trylock() = 0;       //a_Try and lock, return status
   virtual void unlock()  = 0;       //a_Unlock this object

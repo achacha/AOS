@@ -1,17 +1,17 @@
-#include "ACache.hpp"
+#include "templateACache.hpp"
 #include "AFile_IOStream.hpp"
-#include "AMovingAverage.hpp"
 #include "AUrl.hpp"
-#include "ACriticalSection.hpp"
+
+typedef ACache<AString, AUrl> CACHE;
 
 int main()
 {
-  AFile_IOStream iosfile;
-  ACache cache(new ACriticalSection());
+//  AFile_IOStream iosfile;
   
-  cache.set("name", AString("Foo"));
-  cache.set("url", AUrl("http://www.achacha.org/"));
-  cache.set("avg", AMovingAverage());
+  CACHE cache;
+  
+  cache["url1"] = AUrl("http://www.achacha.org/aos.html");
+  cache["url2"] = AUrl("http://www.achacha.org/index.html");
 
   cache.debugDump();
 

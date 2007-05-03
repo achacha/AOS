@@ -359,10 +359,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AEvent.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AEventVisitor.cpp"
 				>
 			</File>
@@ -719,6 +715,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ASync_Counter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ASync_CriticalSection.cpp"
 				>
 			</File>
@@ -727,11 +727,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ASync_Mutex.cpp"
+				RelativePath=".\ASync_Event.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ASync_NOP.cpp"
+				RelativePath=".\ASync_Mutex.cpp"
 				>
 			</File>
 			<File
@@ -1015,10 +1015,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AEvent.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AEventVisitor.hpp"
 				>
 			</File>
@@ -1207,6 +1203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ASync_Counter.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ASync_CriticalSection.hpp"
 				>
 			</File>
@@ -1215,11 +1215,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ASync_Mutex.hpp"
+				RelativePath=".\ASync_Event.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ASync_NOP.hpp"
+				RelativePath=".\ASync_Mutex.hpp"
 				>
 			</File>
 			<File
@@ -1374,10 +1374,6 @@
 				RelativePath="uTypes.hpp"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="NewFilter1"
-			>
 		</Filter>
 		<File
 			RelativePath="..\autoexp.dat.append"
