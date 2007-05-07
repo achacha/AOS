@@ -2,6 +2,7 @@
 
 #include "ASync_ReadWriteLock.hpp"
 #include "ASystemException.hpp"
+#include "AThread.hpp"
 
 ASync_ReadWriteLock::ASync_ReadWriteLock()
 {
@@ -16,32 +17,32 @@ ASync_ReadWriteLock::~ASync_ReadWriteLock()
 void ASync_ReadWriteLock::lock()
 {
   std::cout.put('R');
-  m_Locks.m_ReadCounter.lock();
   if (m_Locks.m_WriteState)
   {
     std::cout.put('B');
     m_Locks.m_ReadLock.lock();
   }
+  m_Locks.m_ReadCounter.lock();
 }
 
 bool ASync_ReadWriteLock::trylock()
 {
-  m_Locks.m_ReadCounter.trylock();
   if (m_Locks.m_WriteState)
     return m_Locks.m_ReadLock.trylock();
 
+  m_Locks.m_ReadCounter.trylock();
   return true;
 }
 
 void ASync_ReadWriteLock::unlock()
 {
+  m_Locks.m_ReadCounter.unlock();
   if (m_Locks.m_WriteState)
   {
     std::cout.put('b');
     m_Locks.m_ReadLock.unlock();
   }
   std::cout.put('r');
-  m_Locks.m_ReadCounter.unlock();
   if (1 == m_Locks.m_WriteState && 0 == m_Locks.m_ReadCounter.getLockCount())
   {
     std::cout.put('e');
@@ -77,6 +78,7 @@ void ASync_ReadWriteLock::InternalReadWriteLock::lock()
   m_WriteLock.lock();   //a_One writer per lock
   
   ::InterlockedExchange(&m_WriteState, 1);  //a_Redirect readers to lock (waiting to write)
+
   m_ReadLock.lock();    //a_Block readers
 
   //a_Wait for all active readers to unlock

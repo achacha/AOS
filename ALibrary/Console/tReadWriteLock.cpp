@@ -47,11 +47,11 @@ int main()
 {  
   //a_Create thread that locks mutex every N seconds for M seconds
   AThreadPool readerPool(__threadReader, 3);
-  AThreadPool writerPool(__threadWriter, 2);
+  AThreadPool writerPool(__threadWriter, 1);
   readerPool.start();
   writerPool.start();
 
-  //a_Loop and try to lock for write every K seconds << N or M
+  //a_Wait for exit
   AFile_IOStream iosfile;
   AString str;
   while (iosfile.readLine(str) != AConstant::npos)
@@ -64,7 +64,7 @@ int main()
       while(readerPool.getRunningThreadCount() > 0 || writerPool.getRunningThreadCount() > 0 )
       {
         AThread::sleep(300);
-        std::cout << "!" << std::flush;
+        std::cout << "?" << std::flush;
       }
       break;
     }

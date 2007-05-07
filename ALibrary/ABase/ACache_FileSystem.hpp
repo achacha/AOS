@@ -3,8 +3,7 @@
 #include "ACacheInterface.hpp"
 #include "AFilename.hpp"
 #include "AFile_AString.hpp"
-
-class ASynchronization;
+#include "ASync_CriticalSectionSpinLock.hpp"
 
 class ABASE_API ACache_FileSystem : public ACacheInterface
 {
@@ -12,7 +11,7 @@ public:
   /*!
   ctor
   */
-  ACache_FileSystem(size_t maxItems = 10240);
+  ACache_FileSystem(size_t hashSize = 97, size_t maxItems = 10240);
 
   /*!
   dtor
@@ -58,12 +57,23 @@ private:
   };
 
   typedef std::map<AString, CACHE_ITEM *> CONTAINER;
-  CONTAINER m_Cache;
+  
+  struct CONTAINER_ITEM
+  {
+    ASync_CriticalSectionSpinLock m_Sync;
+    CONTAINER m_Cache;
+
+    CONTAINER_ITEM();
+    ~CONTAINER_ITEM();
+  };
+
+  typedef std::vector<CONTAINER_ITEM *> CONTAINERS;
+  CONTAINERS m_CacheArray;
 
   size_t m_Hit;
   size_t m_Miss;
 
-  ASynchronization *mp_Sync;
+  ASync_CriticalSectionSpinLock m_Sync;
 
 public:
 #ifdef __DEBUG_DUMP__
