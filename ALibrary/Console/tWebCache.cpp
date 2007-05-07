@@ -9,9 +9,7 @@
 ACache_FileSystem g_Cache;
 
 #define WORK(f) do { g_Cache.get(AFilename(f));\
-      AThread::sleep(ARandomNumberGenerator::get().nextRange(800, 100));\
       std::cout.put('.'); } while(0)
-
 
 u4 _threadproc(AThread& thread)
 {

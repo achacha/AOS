@@ -67,9 +67,7 @@ ACache_FileSystem::~ACache_FileSystem()
   try
   {
     for (size_t i=0; i<m_CacheArray.size(); ++i)
-    {
       delete m_CacheArray.at(i);
-    }
   }
   catch(...) {}
 }
@@ -99,11 +97,12 @@ ACache_FileSystem::CONTAINER_ITEM::CONTAINER_ITEM()
 ACache_FileSystem::CONTAINER_ITEM::~CONTAINER_ITEM()
 {
   //a_Release memory from the cache
-  ALock lock(m_Sync);
-  for (CONTAINER::iterator it = m_Cache.begin(); it != m_Cache.end(); ++it)
+  try
   {
-    delete (*it).second;
+    for (CONTAINER::iterator it = m_Cache.begin(); it != m_Cache.end(); ++it)
+      delete (*it).second;
   }
+  catch(...) {}
 }
 
 void ACache_FileSystem::manage()

@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tReadWriteLock.cpp"
+			RelativePath=".\tWebCache.cpp"
 			>
 		</File>
 	</Files>
