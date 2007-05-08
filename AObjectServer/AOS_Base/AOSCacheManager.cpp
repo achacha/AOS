@@ -27,6 +27,19 @@ void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& 
 {
   AOSAdminInterface::addAdminXml(eBase, request);
 
+  {
+    AXmlElement& elem = eBase.addElement(ASW("static_file_cache",17));
+    addProperty(elem, ASW("size",4), AString::fromSize_t(m_StaticFileCache.getSize()));  
+    
+    size_t hit = m_StaticFileCache.getHit();
+    size_t miss = m_StaticFileCache.getMiss();
+    addProperty(elem, ASW("hit",3), AString::fromSize_t(hit));
+    addProperty(elem, ASW("miss",4), AString::fromSize_t(miss));
+    if (hit > 0 || miss > 0)
+    {
+      addProperty(elem, ASW("efficiency",10), AString::fromSize_t(hit/(hit+miss)));
+    }
+  }
 }
 
 AOSCacheManager::AOSCacheManager(AOSServices& services) :
