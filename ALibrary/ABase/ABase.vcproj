@@ -735,10 +735,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ASync_ReadWriteLock.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ASync_Semaphore.cpp"
 				>
 			</File>
@@ -1220,10 +1216,6 @@
 			</File>
 			<File
 				RelativePath=".\ASync_Mutex.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ASync_ReadWriteLock.hpp"
 				>
 			</File>
 			<File

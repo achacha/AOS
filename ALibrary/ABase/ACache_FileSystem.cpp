@@ -222,53 +222,24 @@ AFile *ACache_FileSystem::get(const AFilename& key)
     (*it).second->hit();
     return (*it).second->pData;
   }
-
 }
-
-//AFile *ACache_FileSystem::get(const AFilename& key)
-//{
-//  ALock lockReader(m_Sync);
-//  CONTAINER::iterator it = m_Cache.find(key.toAString());
-//  if (it == m_Cache.end())
-//  {
-//    ++m_Miss;
-//
-//    //a_Read in data
-//    if (AFileSystem::exists(key) && AFileSystem::isA(key, AFileSystem::File))
-//    {
-//      AAutoPtr<CACHE_ITEM> p(new CACHE_ITEM());
-//      p->pData = new AFile_AString((size_t)AFileSystem::length(key), 256);
-//
-//      AFile_Physical file(key, "rb");
-//      file.open();
-//      file.readUntilEOF(p->pData->useAString());
-//
-//      m_Cache[key.toAString()] = p.get();
-//      p.setOwnership(false);
-//      return p->pData;
-//    }
-//    else
-//    {
-//      //a_File is a directory or does not exist, NULL value for p->pData
-//      CACHE_ITEM *p = new CACHE_ITEM();
-//      m_Cache[key.toAString()] = p;
-//      return NULL;
-//    }
-//  }
-//  else
-//  {
-//    ++m_Hit;
-//    (*it).second->hit();
-//    return (*it).second->pData;
-//  }
-//}
 
 size_t ACache_FileSystem::getSize() const
 {
   size_t size=0;
-  for (size_t i=0; m_CacheArray.size(); ++i)
+  for (size_t i=0; i<m_CacheArray.size(); ++i)
   {
     size += m_CacheArray.at(i)->m_Cache.size();
   }
   return size;
+}
+
+size_t ACache_FileSystem::getHit() const
+{
+  return m_Hit;
+}
+
+size_t ACache_FileSystem::getMiss() const
+{
+  return m_Miss;
 }

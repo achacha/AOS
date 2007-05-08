@@ -42,6 +42,16 @@ public:
   */
   size_t getSize() const;
 
+  /*!
+  Get hit count
+  */
+  size_t getHit() const;
+
+  /*!
+  Get miss count
+  */
+  size_t getMiss() const;
+
 private:
   size_t m_MaxItems;
 
