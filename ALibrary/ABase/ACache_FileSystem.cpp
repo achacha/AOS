@@ -55,10 +55,10 @@ ACache_FileSystem::ACache_FileSystem(size_t hashSize, size_t maxItems) :
   m_Hit(0),
   m_Miss(0)
 {
-  m_CacheArray.reserve(hashSize);
+  m_CacheArray.resize(hashSize);
   for (size_t i=0; i<hashSize; ++i)
   {
-    m_CacheArray.assign(i, new CONTAINER_ITEM());
+    m_CacheArray[i] = new CONTAINER_ITEM();
   }
 }
 
