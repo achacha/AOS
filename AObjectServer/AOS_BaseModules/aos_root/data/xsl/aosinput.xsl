@@ -9,7 +9,9 @@
 			<h1>Simple AOS xslt example</h1>
 			<xsl:apply-templates select="execute"/>
 			<br/>
-			<b>Total execution time: <xsl:value-of select="total_time"/></b>
+			<b>Request execution time: <xsl:value-of select="request_time"/></b>
+			<br/>
+			<b>Context execution time: <xsl:value-of select="context_time"/></b>
 			</body>
 		</html>
 	</xsl:template>

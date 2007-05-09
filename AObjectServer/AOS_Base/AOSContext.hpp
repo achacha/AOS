@@ -198,8 +198,14 @@ public:
 
   /*!
   Gets the context timer (lifetime of the context)
+  Can span several requests if pipelining is enabled
   */
   const ATimer& getContextTimer() const;
+
+  /*!
+  Gets the request timer
+  */
+  const ATimer& getRequestTimer() const;
 
   /*!
   Timeout timer (used for socket reading/keepalive/etc)
@@ -295,9 +301,14 @@ protected:
   ABitArray m_ContextFlags;
   
   /*!
-  Request timer
+  Context timer
   */
   ATimer m_ContextTimer;
+
+  /*!
+  Request timer
+  */
+  ATimer m_RequestTimer;
 
   /*!
   Timeout timer used in context processing

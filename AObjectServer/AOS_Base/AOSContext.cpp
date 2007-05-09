@@ -61,6 +61,18 @@ void AOSContext::debugDump(std::ostream& os, int indent) const
   m_ContextFlags.debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
+  ADebugDumpable::indent(os, indent+1) << "m_ContextTimer={" << std::endl;
+  m_ContextTimer.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_RequestTimer={" << std::endl;
+  m_RequestTimer.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_TimeoutTimer={" << std::endl;
+  m_TimeoutTimer.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
@@ -126,6 +138,10 @@ ABitArray& AOSContext::useContextFlags()
 
 AOSContext::Status AOSContext::init()
 {
+  //a_Start the timer
+  m_RequestTimer.start();
+
+  //a_Reset context if pipelining, else it was already reset
   if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
   {
     //a_Reset if pipelining, if not this object woulod have been reset with a new socket prior to this call
@@ -200,6 +216,10 @@ AOSContext::Status AOSContext::_processHttpHeader()
     && 1 != bytesRead
   )
   {
+    ARope rope("AOSContext: Sleep cycle ",24);
+    rope.append(AString::fromInt(tries));
+    setExecutionState(rope);
+
     AThread::sleep(sleeptime);
     sleeptime += 20;
     ++tries;
@@ -483,7 +503,8 @@ void AOSContext::emit(AXmlElement& target) const
   AASSERT(this, !target.useName().isEmpty());
 
   target.useAttributes().insert(ASW("this",4), AString::fromPointer(this));
-  target.useAttributes().insert(ASW("timer",5), AString::fromDouble(m_ContextTimer.getInterval()));
+  target.useAttributes().insert(ASW("request_timer",13), AString::fromDouble(m_RequestTimer.getInterval()));
+  target.useAttributes().insert(ASW("context_timer",13), AString::fromDouble(m_ContextTimer.getInterval()));
 
   m_EventVisitor.emit(target.addElement(ASW("Events",6)));
   m_Services.useGlobalObjects().emit(target.addElement(ASW("GlobalObjects",13)));
@@ -719,6 +740,11 @@ const AXmlElement& AOSContext::getModuleParams(const AString& moduleName) const
 const ATimer& AOSContext::getContextTimer() const
 {
   return m_ContextTimer;
+}
+
+const ATimer& AOSContext::getRequestTimer() const
+{
+  return m_RequestTimer;
 }
 
 ATimer& AOSContext::useTimeoutTimer()

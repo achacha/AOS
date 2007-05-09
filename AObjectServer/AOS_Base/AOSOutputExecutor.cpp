@@ -170,7 +170,8 @@ void AOSOutputExecutor::execute(AOSContext& context)
         AOSOutputContext outputContext(context);
 
         //a_Publish total execution time before output is generated
-        context.useOutputRootXmlElement().addElement(ASW("total_time",10), context.getContextTimer());
+        context.useOutputRootXmlElement().addElement(ASW("request_time",12), context.getRequestTimer());
+        context.useOutputRootXmlElement().addElement(ASW("context_time",12), context.getContextTimer());
 
         //a_Execute output
         if (!(*it).second->execute(outputContext))
