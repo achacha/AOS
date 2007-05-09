@@ -21,7 +21,7 @@
 			</table>
 			<br/>
 			<br/>
-			<div align="center"><small>Total execution time: <xsl:value-of select="/root/total_time"/></small></div>
+			<div align="center"><small>Request execution time: <xsl:value-of select="/root/request_time"/></small></div>
 			</body>
 		</html>
 	</xsl:template>

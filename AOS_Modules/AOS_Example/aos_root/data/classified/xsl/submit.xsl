@@ -11,7 +11,7 @@
 			<xsl:apply-templates select="error"/>
 			<br/>
 			<br/>
-			<div align="center"><small>Total execution time: <xsl:value-of select="total_time"/></small></div>
+			<div align="center"><small>Request execution time: <xsl:value-of select="request_time"/></small></div>
 			</body>
 		</html>
 	</xsl:template>

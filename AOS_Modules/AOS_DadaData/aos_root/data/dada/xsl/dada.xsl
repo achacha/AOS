@@ -10,7 +10,7 @@
 				<xsl:apply-templates select="dada/line"/>
 				<br/>
 				<br/>
-				<div align="center"><font size="1">Total server execution time is <xsl:value-of select="/root/total_time"/> milliseconds.</font></div>
+				<div align="center"><font size="1">Request execution time is <xsl:value-of select="/root/request_time"/> milliseconds.</font></div>
 			</body>
 		</html>
 	</xsl:template>
