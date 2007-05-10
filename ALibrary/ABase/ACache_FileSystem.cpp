@@ -90,7 +90,8 @@ void ACache_FileSystem::CACHE_ITEM::hit()
   lastUsed = ATime::getTickCount();
 }
 
-ACache_FileSystem::CONTAINER_ITEM::CONTAINER_ITEM()
+ACache_FileSystem::CONTAINER_ITEM::CONTAINER_ITEM() :
+  m_ByteSize(0)
 {
 }
 
@@ -115,7 +116,8 @@ void ACache_FileSystem::emit(AXmlElement& target) const
   const AString HITS("hits", 4);
   const AString LAST("last_used", 9);
   const AString FOUND("found", 5);
-  const AString SIZE("size", 4);
+  const AString COUNT("count", 5);
+  const AString BYTES("bytes", 5);
 
   AXmlElement& base = target.addElement(ASW("ACache_FileSystem",17));
   base.addAttribute(HITS, AString::fromSize_t(m_Hit));
@@ -129,20 +131,16 @@ void ACache_FileSystem::emit(AXmlElement& target) const
     const CONTAINER_ITEM *pCache = m_CacheArray.at(i);
     eCache.addAttribute(ASW("id",2), AString::fromSize_t(i));
 
+    eCache.addAttribute(COUNT, AString::fromSize_t(pCache->m_Cache.size()));
+    eCache.addAttribute(BYTES, AString::fromSize_t(pCache->m_ByteSize));
+
     const CONTAINER& container = pCache->m_Cache;
     for(CONTAINER::const_iterator cit = container.begin(); cit != container.end(); ++cit)
     {
       AXmlElement& file = base.addElement(KEY, (*cit).first, AXmlData::None, false);  //a_Create new key instead of reusing
       file.addAttribute(HITS, AString::fromInt((*cit).second->hits));
       file.addAttribute(LAST, AString::fromS8((*cit).second->lastUsed));
-      if (NULL == (*cit).second->pData)
-      {
-        file.addAttribute(FOUND, AString::sstr_False);
-      }
-      else
-      {
-        file.addAttribute(SIZE, AString::fromSize_t((*cit).second->pData->useAString().getSize()));
-      }
+      file.addAttribute(FOUND, (NULL == (*cit).second->pData ? AString::sstr_False : AString::sstr_True));
     }
   }
 }
@@ -165,10 +163,16 @@ void ACache_FileSystem::emit(AOutputBuffer& target) const
     target.append("---CACHE[",9);
     target.append(AString::fromSize_t(i));
     target.append("]",1);
+    target.append("(count=",7);
+    target.append(AString::fromSize_t(pCache->m_Cache.size()));
+    target.append("  bytes=",8);
+    target.append(AString::fromSize_t(pCache->m_ByteSize));
+    target.append(")\r\n",3);
 
     const CONTAINER& container = pCache->m_Cache;
     for(CONTAINER::const_iterator cit = container.begin(); cit != container.end(); ++cit)
     {
+      target.append("  ",2);
       target.append((*cit).first);
       target.append(" (",2);
       target.append((*cit).second->pData ? AString::fromSize_t((*cit).second->pData->useAString().getSize()) : ASW("-",1));
@@ -184,17 +188,17 @@ void ACache_FileSystem::emit(AOutputBuffer& target) const
 
 AFile *ACache_FileSystem::get(const AFilename& key)
 {
-  //TODO:
   const AString& strKey = key.toAString();
   size_t hash = strKey.getHash(m_CacheArray.size());
-  CONTAINER& container = m_CacheArray.at(hash)->m_Cache;
+  CONTAINER_ITEM& containerItem = *(m_CacheArray.at(hash));
 
-  CONTAINER::iterator it = container.find(strKey);
-  if (it == container.end())
+  CONTAINER::iterator it = containerItem.m_Cache.find(strKey);
+  if (it == containerItem.m_Cache.end())
   {
     ++m_Miss;
 
     //a_Read in data
+    ALock lock(containerItem.m_Sync);
     if (AFileSystem::exists(key) && AFileSystem::isA(key, AFileSystem::File))
     {
       AAutoPtr<CACHE_ITEM> p(new CACHE_ITEM());
@@ -204,7 +208,9 @@ AFile *ACache_FileSystem::get(const AFilename& key)
       file.open();
       file.readUntilEOF(p->pData->useAString());
 
-      container[strKey] = p.get();
+      //a_Add/set new data and add to byte count
+      containerItem.m_Cache[strKey] = p.get();
+      containerItem.m_ByteSize += p.get()->pData->getAString().getSize();
       p.setOwnership(false);
       return p->pData;
     }
@@ -212,7 +218,7 @@ AFile *ACache_FileSystem::get(const AFilename& key)
     {
       //a_File is a directory or does not exist, NULL value for p->pData
       CACHE_ITEM *p = new CACHE_ITEM();
-      container[strKey] = p;
+      containerItem.m_Cache[strKey] = p;
       return NULL;
     }
   }
@@ -224,12 +230,22 @@ AFile *ACache_FileSystem::get(const AFilename& key)
   }
 }
 
-size_t ACache_FileSystem::getSize() const
+size_t ACache_FileSystem::getItemCount() const
 {
   size_t size=0;
   for (size_t i=0; i<m_CacheArray.size(); ++i)
   {
     size += m_CacheArray.at(i)->m_Cache.size();
+  }
+  return size;
+}
+
+size_t ACache_FileSystem::getByteSize() const
+{
+  size_t size=0;
+  for (size_t i=0; i<m_CacheArray.size(); ++i)
+  {
+    size += m_CacheArray.at(i)->m_ByteSize;
   }
   return size;
 }

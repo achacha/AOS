@@ -38,9 +38,14 @@ public:
   AFile *get(const AFilename& key);
 
   /*!
-  Cache item count
+  Cache item count (total)
   */
-  size_t getSize() const;
+  size_t getItemCount() const;
+
+  /*!
+  Cache item size (total)
+  */
+  size_t getByteSize() const;
 
   /*!
   Get hit count
@@ -72,6 +77,8 @@ private:
   {
     ASync_CriticalSectionSpinLock m_Sync;
     CONTAINER m_Cache;
+
+    size_t m_ByteSize;  //total bytes in this cache
 
     CONTAINER_ITEM();
     ~CONTAINER_ITEM();
