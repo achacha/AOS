@@ -29,7 +29,8 @@ void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& 
 
   {
     AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("static_file_cache",17));
-    addProperty(elem, ASW("size",4), AString::fromSize_t(m_StaticFileCache.getSize()));  
+    addProperty(elem, ASW("byte_size",9), AString::fromSize_t(m_StaticFileCache.getByteSize()));  
+    addProperty(elem, ASW("item_count",10), AString::fromSize_t(m_StaticFileCache.getItemCount()));  
     
     size_t hit = m_StaticFileCache.getHit();
     size_t miss = m_StaticFileCache.getMiss();
