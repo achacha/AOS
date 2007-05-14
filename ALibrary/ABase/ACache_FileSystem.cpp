@@ -50,7 +50,7 @@ void ACache_FileSystem::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ACache_FileSystem::ACache_FileSystem(size_t hashSize, size_t maxItems) :
+ACache_FileSystem::ACache_FileSystem(size_t maxItems, size_t hashSize) :
   m_MaxItems(maxItems),
   m_Hit(0),
   m_Miss(0)
@@ -104,6 +104,15 @@ ACache_FileSystem::CONTAINER_ITEM::~CONTAINER_ITEM()
       delete (*it).second;
   }
   catch(...) {}
+}
+
+void ACache_FileSystem::CONTAINER_ITEM::clear()
+{
+  ALock lock(m_Sync);
+  for (CONTAINER::iterator it = m_Cache.begin(); it != m_Cache.end(); ++it)
+    delete (*it).second;
+  m_Cache.clear();
+  m_ByteSize = 0;
 }
 
 void ACache_FileSystem::manage()
@@ -258,4 +267,15 @@ size_t ACache_FileSystem::getHit() const
 size_t ACache_FileSystem::getMiss() const
 {
   return m_Miss;
+}
+
+void ACache_FileSystem::clear()
+{
+  for (size_t i=0; i<m_CacheArray.size(); ++i)
+  {
+    CONTAINER_ITEM *pContainerItem = m_CacheArray.at(i);
+    pContainerItem->clear();
+  }
+  m_Hit = 0;
+  m_Miss = 0;
 }

@@ -11,7 +11,7 @@ public:
   /*!
   ctor
   */
-  ACache_FileSystem(size_t hashSize = 97, size_t maxItems = 10240);
+  ACache_FileSystem(size_t maxItems = 10240, size_t hashSize = 97);
 
   /*!
   dtor
@@ -57,9 +57,15 @@ public:
   */
   size_t getMiss() const;
 
+  /*!
+  Clear the cache
+  */
+  virtual void clear();
+
 private:
   size_t m_MaxItems;
 
+  //a_Item container inside the cache
   struct CACHE_ITEM
   {
     AFile_AString *pData;
@@ -73,6 +79,7 @@ private:
 
   typedef std::map<AString, CACHE_ITEM *> CONTAINER;
   
+  //a_Contains the cache, sync, byte count, etc
   struct CONTAINER_ITEM
   {
     ASync_CriticalSectionSpinLock m_Sync;
@@ -82,6 +89,8 @@ private:
 
     CONTAINER_ITEM();
     ~CONTAINER_ITEM();
+
+    void clear();
   };
 
   typedef std::vector<CONTAINER_ITEM *> CONTAINERS;

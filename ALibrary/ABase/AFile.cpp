@@ -330,8 +330,9 @@ size_t AFile::write(const ARope& rope)
 
 size_t AFile::peekUntilEOF(AOutputBuffer& target)
 {
+  //a_Read everything into lookahead buffer for peek
   size_t ret = _readBlockIntoLookahead();
-  while (!ret)
+  while (ret > 0)
   {
     ret = _readBlockIntoLookahead();
   }
@@ -343,17 +344,35 @@ size_t AFile::peekUntilEOF(AOutputBuffer& target)
 
 size_t AFile::readUntilEOF(AOutputBuffer& target)
 {
-  size_t ret = _readBlockIntoLookahead();
-  while (ret)
+  size_t bytesRead = m_LookaheadBuffer.getSize();
+  if (bytesRead > 0)
   {
-    ret = _readBlockIntoLookahead();
+    m_LookaheadBuffer.emit(target);
+    m_LookaheadBuffer.clear();
+  }
+  
+  //a_Read
+  size_t ret = _readBlockIntoLookahead();
+  if (ret > 0)
+  {
+    do 
+    {
+      bytesRead += ret;
+      m_LookaheadBuffer.emit(target);
+      m_LookaheadBuffer.clear();
+      ret = _readBlockIntoLookahead();
+    }
+    while (ret == m_ReadBlock);
+
+    if (ret > 0)
+    {
+      bytesRead += ret;
+      m_LookaheadBuffer.emit(target);
+      m_LookaheadBuffer.clear();
+    }
   }
 
-  m_LookaheadBuffer.emit(target);
-  ret = m_LookaheadBuffer.getSize();
-  m_LookaheadBuffer.clear();
-
-  return ret;
+  return bytesRead;
 }
 
 size_t AFile::_readBlockIntoLookahead()

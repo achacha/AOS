@@ -26,6 +26,11 @@ public:
   Cache management function, should be called by cache manager thread/loop
   */
   virtual void manage() = 0; 
+
+  /*!
+  Clear the cache
+  */
+  virtual void clear() = 0;
 };
 
 #endif // INCLUDED__ACacheInterface_HPP__

@@ -48,6 +48,10 @@ public:
   const AXmlElement& getRoot() const;
 
   /*!
+  TODO: High level wrappers for getting,setting,testing,adding elements and cdata
+  */
+  
+  /*!
   Use -1 for all cases processing cases to reduce spaces/CRLF, XSLT/etc parsers don't care about formatting
   indent >=0 will add 2 spaces per indent and make it human-readable
   */
