@@ -230,8 +230,22 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     httpFilename.join(pContext->useRequestUrl().getPathAndFilename());
   }
   
+  AAutoPtr<AFile> pFile;
   size_t contentLenth = AConstant::npos;
-  AFile *pFile = m_Services.useCacheManager().getStaticFile(httpFilename);
+  if (m_Services.useConfiguration().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))
+  {
+    //a_Use cache manager
+    pFile.reset(m_Services.useCacheManager().getStaticFile(httpFilename));
+    pFile.setOwnership(false);  //a_Cache owned, do not release
+  }
+  else
+  {
+    //a_No caching, read fom file system
+    pContext->setExecutionState(ARope("Reading physical file: ",25)+httpFilename.toAString());
+    pFile.reset(new AFile_Physical(httpFilename, "rb"));
+    pFile->open();
+  }
+
   if (pFile)
   {
     ARope rope("Buffering physical file: ",25);
@@ -245,6 +259,7 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   }
   else
   {
+    //TODO: externalize
     //a_File not found
     pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);
     pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html", 9));

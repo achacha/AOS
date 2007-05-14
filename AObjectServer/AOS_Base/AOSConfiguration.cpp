@@ -5,6 +5,7 @@
 #include "AOSCommand.hpp"
 #include "AFile_Physical.hpp"
 #include "AXmlDocument.hpp"
+#include "AXmlElement.hpp"
 #include "AUrl.hpp"
 #include "ALog.hpp"
 #include "AFileSystem.hpp"
@@ -17,15 +18,6 @@ const AString AOSConfiguration::LISTEN_HTTPS_PORT("/config/server/listen/https")
 
 const AString AOSConfiguration::DATABASE_URL("/config/server/database/url");
 const AString AOSConfiguration::DATABASE_CONNECTIONS("/config/server/database/connections");
-
-//#define DEFAULT_INI_FILENAME ASW("AObjectServer.ini",17)
-//const AString AOSConfiguration::CONFIG("config");
-
-//#define AOS_CONFIG_BASE_PATH "aos_config_base_path"
-//#define AOS_STATIC_BASE_PATH "aos_static_base_path"
-//#define AOS_DYNAMIC_BASE_PATH "aos_dynamic_base_path"
-//#define AOS_DATA_BASE_PATH "aos_data_base_path"
-//#define AOS_LOG_LEVEL "log_level"
 
 #define DEFAULT_AOSCONTEXTMANAGER_HISTORY_MAX_SIZE 100
 #define DEFAULT_AOSCONTEXTMANAGER_FREESTORE_MAX_SIZE 50
@@ -666,6 +658,15 @@ int AOSConfiguration::getInt(const AString& path, int iDefault) const
     return iDefault;
 }
 
+size_t AOSConfiguration::getSize_t(const AString& path, size_t iDefault) const
+{
+  AString str;
+  if (m_Config.getRoot().emitFromPath(path, str))
+    return str.toSize_t();
+  else
+    return iDefault;
+}
+
 bool AOSConfiguration::getBool(const AString& path, bool boolDefault) const
 {
   AString str;
@@ -675,5 +676,40 @@ bool AOSConfiguration::getBool(const AString& path, bool boolDefault) const
   }
   else
     return boolDefault;
+}
+
+void AOSConfiguration::setString(const AString& path, const AString& value, AXmlData::Encoding encoding)
+{
+  m_Config.useRoot().addElement(path, value, encoding);
+}
+
+void AOSConfiguration::setInt(const AString& path, int value)
+{
+  m_Config.useRoot().addElement(path, AString::fromInt(value));
+}
+
+void AOSConfiguration::setSize_t(const AString& path, size_t value)
+{
+  m_Config.useRoot().addElement(path, value);
+}
+
+void AOSConfiguration::setBool(const AString& path, bool value)
+{
+  //a_TODO: Need a better way to set existing elements
+  AXmlNode *pNode = m_Config.useRoot().findNode(path);
+  if (pNode)
+  {
+    pNode->clear();
+    pNode->addContentNode(new AXmlData(AString::fromBool(value)));
+  }
+  else
+  {
+    m_Config.useRoot().addElement(path, AString::fromBool(value));
+  }
+}
+
+AXmlElement& AOSConfiguration::useConfigRoot()
+{
+  return m_Config.useRoot();
 }
 

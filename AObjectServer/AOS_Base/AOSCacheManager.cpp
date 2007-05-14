@@ -5,6 +5,8 @@
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"
 
+const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/cache/enabled");
+
 #ifdef __DEBUG_DUMP__
 void AOSCacheManager::debugDump(std::ostream& os, int indent) const
 {
@@ -12,7 +14,7 @@ void AOSCacheManager::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent+1) << "m_StaticFileCache={" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-  m_StaticFileCache.debugDump(os, indent+2);
+  mp_StaticFileCache->debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
@@ -27,13 +29,25 @@ void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& 
 {
   AOSAdminInterface::addAdminXml(eBase, request);
 
+  AASSERT(this, mp_StaticFileCache);
+
   {
     AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("static_file_cache",17));
-    addProperty(elem, ASW("byte_size",9), AString::fromSize_t(m_StaticFileCache.getByteSize()));  
-    addProperty(elem, ASW("item_count",10), AString::fromSize_t(m_StaticFileCache.getItemCount()));  
+
+    addPropertyWithAction(
+      elem, 
+      ASW("enabled",7), 
+      AString::fromBool(m_Services.useConfiguration().getBool(STATIC_CACHE_ENABLED, false)),
+      ASW("Update",6), 
+      ASWNL("Enable static content caching(1) or disable and clear(0)"),
+      ASW("Set",3)
+    );
+
+    addProperty(elem, ASW("byte_size",9), AString::fromSize_t(mp_StaticFileCache->getByteSize()));  
+    addProperty(elem, ASW("item_count",10), AString::fromSize_t(mp_StaticFileCache->getItemCount()));  
     
-    size_t hit = m_StaticFileCache.getHit();
-    size_t miss = m_StaticFileCache.getMiss();
+    size_t hit = mp_StaticFileCache->getHit();
+    size_t miss = mp_StaticFileCache->getMiss();
     addProperty(elem, ASW("hit",3), AString::fromSize_t(hit));
     addProperty(elem, ASW("miss",4), AString::fromSize_t(miss));
     if (hit > 0 || miss > 0)
@@ -43,9 +57,42 @@ void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& 
   }
 }
 
+void AOSCacheManager::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+{
+  AString str;
+  if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
+  {
+    //a_Toggle cache state and clear when disabled
+    if (str.equals(ASW("AOSCacheManager.static_file_cache.enabled",41)))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
+      {
+        if (str.equals("0"))
+        {
+          //a_Clear and disable
+          m_Services.useConfiguration().setBool(STATIC_CACHE_ENABLED, false);
+          mp_StaticFileCache->clear();
+        }
+        else
+        {
+          //a_Enable
+          m_Services.useConfiguration().setBool(STATIC_CACHE_ENABLED, true);
+        }
+      }
+    }
+  }
+}
+
 AOSCacheManager::AOSCacheManager(AOSServices& services) :
   m_Services(services)
 {
+  int maxItems = m_Services.useConfiguration().getInt("/config/server/cache/max_items", -1);
+  if (-1 == maxItems)
+    mp_StaticFileCache = new ACache_FileSystem();
+  else
+    mp_StaticFileCache = new ACache_FileSystem(maxItems);
+
   registerAdminObject(m_Services.useAdminRegistry());
 }
 
@@ -55,5 +102,6 @@ AOSCacheManager::~AOSCacheManager()
 
 AFile *AOSCacheManager::getStaticFile(const AFilename& filename)
 {
-  return m_StaticFileCache.get(filename);
+  AASSERT(this, mp_StaticFileCache);
+  return mp_StaticFileCache->get(filename);
 }

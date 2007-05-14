@@ -4,9 +4,9 @@
 #include "apiAOS_Base.hpp"
 #include "AOSAdminInterface.hpp"
 #include "ABitArray.hpp"
-#include "AThread.hpp"
 #include "AFilename.hpp"
 #include "AXmlDocument.hpp"
+#include "AXmlData.hpp"
 
 class AUrl;
 class AFile_Socket;
@@ -70,16 +70,50 @@ public:
 
   /*!
   String corresponding to the path
+  Result is converted to size_t if does not exist default is returned
+  */
+  size_t getSize_t(const AString& path, size_t iDefault) const;
+
+  /*!
+  String corresponding to the path
   Case insensitive "true" or "1" are true
   Result is converted to bool if does not exist default is returned
   */
   bool getBool(const AString& path, bool boolDefault) const;
 
   /*!
+  Saves value into DOM at path
+  */
+  void setString(const AString& path, const AString& value, AXmlData::Encoding encoding = AXmlData::None);
+
+  /*!
+  Saves value into DOM at path
+  */
+  void setInt(const AString& path, int value);
+
+  /*!
+  Saves value into DOM at path
+  */
+  void setSize_t(const AString& path, size_t value);
+
+  /*!
+  Saves value into DOM at path
+  Converts bool to "true" or "false"
+  */
+  void setBool(const AString& path, bool value);
+
+  /*!
   Configuration XML document's root element
+  Read only
   */
   const AXmlElement& getConfigRoot() const;
   
+  /*!
+  Configuration XML document's root element
+  Modifiable
+  */
+  AXmlElement& useConfigRoot();
+
   /*!
   Base directory
   */

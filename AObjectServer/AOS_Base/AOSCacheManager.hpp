@@ -11,6 +11,9 @@ class AOSServices;
 class AOS_BASE_API AOSCacheManager : public AOSAdminInterface
 {
 public:
+  static const AString STATIC_CACHE_ENABLED;  //a_Path to static cache enabled
+
+public:
   AOSCacheManager(AOSServices&);
   virtual ~AOSCacheManager();
   
@@ -23,6 +26,7 @@ public:
   AOSAdminInterface
   */
   virtual void addAdminXml(AXmlElement& base, const AHTTPRequestHeader& request);
+  virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
 
 private:
@@ -30,7 +34,7 @@ private:
   AOSServices& m_Services;
 
   //a_Static file cache
-  ACache_FileSystem m_StaticFileCache;
+  ACache_FileSystem *mp_StaticFileCache;
 
 public:
 #ifdef __DEBUG_DUMP__

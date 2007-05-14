@@ -40,7 +40,7 @@ int main(int argc, char **argv)
   try
   {
     //a_Check if INI filename was provided
-    AFilename basePath("./aos_root/",11);
+    AFilename basePath(ASW("./aos_root/",11));
     if (argc > 1)
     {
       //a_Check existance of INI file
