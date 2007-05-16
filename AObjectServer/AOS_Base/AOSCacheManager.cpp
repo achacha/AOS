@@ -6,6 +6,7 @@
 #include "AOSConfiguration.hpp"
 #include "AOSContext.hpp"
 #include "AFile_Physical.hpp"
+#include "AFileSystem.hpp"
 
 const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/cache/enabled");
 
@@ -106,13 +107,22 @@ bool AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filena
   if (m_Services.useConfiguration().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))
   {
     //a_Get from cache
-    mp_StaticFileCache->get(filename, pFile);
+    return mp_StaticFileCache->get(filename, pFile);
   }
   else
   {
     //a_No caching, read fom file system
-    context.setExecutionState(ARope("Reading physical file: ",25)+filename.toAString());
-    pFile.reset(new AFile_Physical(filename, "rb"));
-    pFile->open();
+    if (AFileSystem::isA(filename, AFileSystem::File))
+    {
+      context.setExecutionState(ARope("Reading physical file: ",25)+filename.toAString());
+      pFile.reset(new AFile_Physical(filename, "rb"));
+      pFile->open();
+      return true;
+    }
+    else
+    {
+      pFile.reset(NULL);
+      return false;
+    }
   }
 }
