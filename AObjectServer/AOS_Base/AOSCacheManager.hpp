@@ -7,6 +7,7 @@
 #include "ASync_CriticalSection.hpp"
 
 class AOSServices;
+class AOSContext;
 
 class AOS_BASE_API AOSCacheManager : public AOSAdminInterface
 {
@@ -19,8 +20,12 @@ public:
   
   /*!
   Use static content cache
+  If cache enabled will get item fro cache and auto ptr will be set on no-delete
+  If not caching or file too large then auto ptr will auto delete the item when out of scope
+
+  Returns true is a file is found (cached or otherwise)
   */
-  AFile *getStaticFile(const AFilename&);
+  bool getStaticFile(AOSContext&, const AFilename&, AAutoPtr<AFile>&);
 
   /*!
   AOSAdminInterface

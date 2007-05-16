@@ -8,7 +8,8 @@
 	<mime-types>mime_types.ini</mime-types>
   <cache>
     <enabled>true</enabled>
-    <max_kbytes>10240</max_kbytes>
+    <max_items desc="Maximum number of items to store in the static cache">10240</max_items>
+    <max_filesize desc="Maximum number of kbytes t cache, file larger than this will be read from disk every time">512</max_filesize>
   </cache>
 	<load>
 		<module>AOS_BaseModules</module>

@@ -4,6 +4,8 @@
 #include "ALock.hpp"
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"
+#include "AOSContext.hpp"
+#include "AFile_Physical.hpp"
 
 const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/cache/enabled");
 
@@ -87,11 +89,9 @@ void AOSCacheManager::processAdminAction(AXmlElement& eBase, const AHTTPRequestH
 AOSCacheManager::AOSCacheManager(AOSServices& services) :
   m_Services(services)
 {
-  int maxItems = m_Services.useConfiguration().getInt("/config/server/cache/max_items", -1);
-  if (-1 == maxItems)
-    mp_StaticFileCache = new ACache_FileSystem();
-  else
-    mp_StaticFileCache = new ACache_FileSystem(maxItems);
+  int maxItems = m_Services.useConfiguration().getInt("/config/server/cache/max_items", 20000);
+  int maxFileSize = m_Services.useConfiguration().getInt("/config/server/cache/max_filesize", 512 * 1024);
+  mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSize);
 
   registerAdminObject(m_Services.useAdminRegistry());
 }
@@ -100,8 +100,19 @@ AOSCacheManager::~AOSCacheManager()
 {
 }
 
-AFile *AOSCacheManager::getStaticFile(const AFilename& filename)
+bool AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filename, AAutoPtr<AFile>& pFile)
 {
   AASSERT(this, mp_StaticFileCache);
-  return mp_StaticFileCache->get(filename);
+  if (m_Services.useConfiguration().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))
+  {
+    //a_Get from cache
+    mp_StaticFileCache->get(filename, pFile);
+  }
+  else
+  {
+    //a_No caching, read fom file system
+    context.setExecutionState(ARope("Reading physical file: ",25)+filename.toAString());
+    pFile.reset(new AFile_Physical(filename, "rb"));
+    pFile->open();
+  }
 }

@@ -232,26 +232,8 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   
   AAutoPtr<AFile> pFile;
   size_t contentLenth = AConstant::npos;
-  if (m_Services.useConfiguration().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))
+  if (m_Services.useCacheManager().getStaticFile(*pContext, httpFilename, pFile))
   {
-    //a_Use cache manager
-    pFile.reset(m_Services.useCacheManager().getStaticFile(httpFilename));
-    pFile.setOwnership(false);  //a_Cache owned, do not release
-  }
-  else
-  {
-    //a_No caching, read fom file system
-    pContext->setExecutionState(ARope("Reading physical file: ",25)+httpFilename.toAString());
-    pFile.reset(new AFile_Physical(httpFilename, "rb"));
-    pFile->open();
-  }
-
-  if (pFile)
-  {
-    ARope rope("Buffering physical file: ",25);
-    httpFilename.emit(rope);
-    pContext->setExecutionState(rope);
-    
     //a_Send the file
     pFile->emit(pContext->useOutputBuffer());
     pContext->useEventVisitor().reset();
