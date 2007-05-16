@@ -10,8 +10,13 @@ class ABASE_API ACache_FileSystem : public ACacheInterface
 public:
   /*!
   ctor
+
+  maxItems to store in cache
+  maxFileSize in bytes that are cached
+
+  hashSize MUST be prime
   */
-  ACache_FileSystem(size_t maxItems = 10240, size_t hashSize = 97);
+  ACache_FileSystem(size_t maxItems = 10240, size_t maxFileSize = 1048576, size_t hashSize = 97);
 
   /*!
   dtor
@@ -32,10 +37,12 @@ public:
   /*!
   Create item if it does not exist
   If does not exist, will read the file and cache it
-  Returns AFile * which is data object for a given key filename
-  Returns NULL if file is not found
+  
+  pFile is set to AFile * that is either a cached one or from disk if file is too large to cache
+    auto-delete is set accordingly and item handles (or not) when AAutoPtr is out of scope
+  Returns true if file is found
   */
-  AFile *get(const AFilename& key);
+  bool get(const AFilename& key, AAutoPtr<AFile>& pFile);
 
   /*!
   Cache item count (total)
@@ -64,6 +71,7 @@ public:
 
 private:
   size_t m_MaxItems;
+  size_t m_MaxFileSize;
 
   //a_Item container inside the cache
   struct CACHE_ITEM

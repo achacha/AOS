@@ -13,7 +13,9 @@ void ACache_FileSystem::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "(ACache_FileSystem @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Hit=" << m_Hit << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Miss=" << m_Miss << std::endl;
-  
+  ADebugDumpable::indent(os, indent+1) << "m_MaxFileSize=" << m_MaxFileSize << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_MaxItems=" << m_MaxItems << std::endl;
+
   ADebugDumpable::indent(os, indent+1) << "ATime::getTickCount()=" << ATime::getTickCount() << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_CacheArray={" << std::endl;
   for(size_t i=0; i<m_CacheArray.size(); ++i)
@@ -50,8 +52,9 @@ void ACache_FileSystem::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ACache_FileSystem::ACache_FileSystem(size_t maxItems, size_t hashSize) :
+ACache_FileSystem::ACache_FileSystem(size_t maxItems, size_t maxFileSize, size_t hashSize) :
   m_MaxItems(maxItems),
+  m_MaxFileSize(maxFileSize),
   m_Hit(0),
   m_Miss(0)
 {
@@ -132,6 +135,7 @@ void ACache_FileSystem::emit(AXmlElement& target) const
   base.addAttribute(HITS, AString::fromSize_t(m_Hit));
   base.addAttribute(ASW("miss",4), AString::fromSize_t(m_Miss));
   base.addAttribute(ASW("max_items",9), AString::fromSize_t(m_MaxItems));
+  base.addAttribute(ASW("max_filesize",12), AString::fromSize_t(m_MaxFileSize));
   base.addAttribute(ASW("time_now",8), AString::fromSize_t(ATime::getTickCount()));
 
   for (size_t i = 0; i < m_CacheArray.size(); ++i)
@@ -156,8 +160,10 @@ void ACache_FileSystem::emit(AXmlElement& target) const
 
 void ACache_FileSystem::emit(AOutputBuffer& target) const
 {
-  target.append("maxItems=",9);
+  target.append("MaxItems=",9);
   target.append(AString::fromSize_t(m_MaxItems));
+  target.append("  MaxFileSize=",14);
+  target.append(AString::fromSize_t(m_MaxFileSize));
   target.append("  H/M=",6);
   target.append(AString::fromSize_t(m_Hit));
   target.append('/');
@@ -195,7 +201,7 @@ void ACache_FileSystem::emit(AOutputBuffer& target) const
   }
 }
 
-AFile *ACache_FileSystem::get(const AFilename& key)
+bool ACache_FileSystem::get(const AFilename& key, AAutoPtr<AFile>& pFile)
 {
   const AString& strKey = key.toAString();
   size_t hash = strKey.getHash(m_CacheArray.size());
@@ -210,32 +216,50 @@ AFile *ACache_FileSystem::get(const AFilename& key)
     ALock lock(containerItem.m_Sync);
     if (AFileSystem::exists(key) && AFileSystem::isA(key, AFileSystem::File))
     {
-      AAutoPtr<CACHE_ITEM> p(new CACHE_ITEM());
-      p->pData = new AFile_AString((size_t)AFileSystem::length(key), 256);
+      if (AFileSystem::length(key) > m_MaxFileSize)
+      {
+        //a_File too big to cache, create a physical object and return it with auto delete on
+        pFile.reset(new AFile_Physical(key, "rb"));
+        pFile->open();
+        return true;
+      }
+      else
+      {
+        //a_File exists cache it
+        AAutoPtr<CACHE_ITEM> p(new CACHE_ITEM());
+        p->pData = new AFile_AString((size_t)AFileSystem::length(key), 256);
 
-      AFile_Physical file(key, "rb");
-      file.open();
-      file.readUntilEOF(p->pData->useAString());
+        AFile_Physical file(key, "rb");
+        file.open();
+        file.readUntilEOF(p->pData->useAString());
 
-      //a_Add/set new data and add to byte count
-      containerItem.m_Cache[strKey] = p.get();
-      containerItem.m_ByteSize += p.get()->pData->getAString().getSize();
-      p.setOwnership(false);
-      return p->pData;
+        //a_Add/set new data and add to byte count
+        containerItem.m_Cache[strKey] = p.get();
+        containerItem.m_ByteSize += p.get()->pData->getAString().getSize();
+        p.setOwnership(false);
+        
+        pFile.reset(p->pData, false);
+        return true;
+      }
     }
     else
     {
       //a_File is a directory or does not exist, NULL value for p->pData
       CACHE_ITEM *p = new CACHE_ITEM();
       containerItem.m_Cache[strKey] = p;
-      return NULL;
+
+      pFile.reset(NULL);
+      return false;
     }
   }
   else
   {
+    //a_Item found in cache
     ++m_Hit;
     (*it).second->hit();
-    return (*it).second->pData;
+    
+    pFile.reset((*it).second->pData, false);
+    return true;
   }
 }
 

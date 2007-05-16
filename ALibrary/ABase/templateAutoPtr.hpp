@@ -73,17 +73,24 @@ public:
     if (mbool__Owns) delete m__Pointer;
   }
  
-  //a_Set
+  /*!
+  Assign to a pointer and take ownership
+  */
   AAutoPtr& operator=(T* pointer)
   {
     reset(pointer);
     return *this;
   }
-	void reset(T* pointer = NULL)
+
+  /*!
+  Assign to pointer and take ownership by default
+  If previous pointer is owned, it is deleted
+  */
+  void reset(T* pointer = NULL, bool owns = true)
   {
     if (mbool__Owns) delete m__Pointer;
     m__Pointer = pointer;
-    mbool__Owns = true;
+    mbool__Owns = owns;
   }
 
   //a_Cast and access
