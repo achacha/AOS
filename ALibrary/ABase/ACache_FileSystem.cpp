@@ -214,7 +214,7 @@ bool ACache_FileSystem::get(const AFilename& key, AAutoPtr<AFile>& pFile)
 
     //a_Read in data
     ALock lock(containerItem.m_Sync);
-    if (AFileSystem::exists(key) && AFileSystem::isA(key, AFileSystem::File))
+    if (AFileSystem::isA(key, AFileSystem::File))
     {
       if (AFileSystem::length(key) > m_MaxFileSize)
       {

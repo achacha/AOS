@@ -44,7 +44,7 @@ u4 AFileSystem::_getFilesFromPath(
   WIN32_FIND_DATA findData;
   HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
   if (INVALID_HANDLE_VALUE == hFind)
-    ATHROW_LAST_OS_ERROR_EX(NULL, str.c_str());
+    ATHROW_LAST_OS_ERROR_EX(NULL, (AString("Unable to access/list directory: ")+str).c_str());
 
   //a_ Ignore /./
   if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && !strcmp(findData.cFileName, "."))
@@ -143,7 +143,7 @@ bool AFileSystem::isA(const AFilename& source, AFileSystem::PATH_TYPE ptype)
   WIN32_FIND_DATA findData;
   HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
   if (INVALID_HANDLE_VALUE == hFind)
-    ATHROW_LAST_OS_ERROR_EX(NULL, source.toAString());
+    return false;  //a_Does not exist, thus not anything
 
   ::FindClose(hFind);
   switch(ptype)
