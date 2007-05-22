@@ -74,6 +74,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         }
 
         //a_Try to initialize the context and read the HTTP header
+        AASSERT(pContext, !pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR));
         switch (pContext->init())
         {
           case AOSContext::STATUS_HTTP_INCOMPLETE_NODATA:
@@ -110,6 +111,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           case AOSContext::STATUS_HTTP_SOCKET_CLOSED:
           {
             //a_Socket was closed, terminate
+            pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
             pThis->_goTerminate(pContext);
             pContext = NULL;
           }
@@ -198,11 +200,13 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
     {
       pContext->setExecutionState(e);
       pThis->_goError(pContext);
+      pContext = NULL;
     }
     catch(...)
     {
       pContext->setExecutionState(ASW("Unknown exception caught in AOSContextQueue_PreExecutor::threadproc",67), true);
       pThis->_goError(pContext);
+      pContext = NULL;
     }
   }
 
@@ -316,7 +320,16 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     pContext->setExecutionState(ASW("Writing compressed",18));
 
     pContext->useResponseHeader().emit(pContext->useSocket());
-    pContext->useSocket().write(compressed);
+    
+    try
+    {
+      pContext->useSocket().write(compressed);
+    }
+    catch(...)
+    {
+      pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+      throw;
+    }
   }
   else
   {
@@ -325,7 +338,15 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
 
     //a_The writing of the output
     pContext->useResponseHeader().emit(pContext->useSocket());
-    pContext->useSocket().write(pContext->useOutputBuffer());
+    try
+    {
+      pContext->useSocket().write(pContext->useOutputBuffer());
+    }
+    catch(...)
+    {
+      pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+      throw;
+    }
   }
 
   pContext->useEventVisitor().reset();

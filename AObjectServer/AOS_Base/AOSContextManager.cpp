@@ -137,8 +137,15 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
 void AOSContextManager::deallocate(AOSContext *p)
 {
   //a_Close it if still open
-  p->setExecutionState(ASW("AOSContextManager::deallocate: Closing socket connection",56));
-  p->useSocket().close();
+  if (p->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
+  {
+    p->setExecutionState(ASW("AOSContextManager::deallocate: Socket error detected",52));
+  }
+  else
+  {
+    p->setExecutionState(ASW("AOSContextManager::deallocate: Closing socket connection",56));
+    p->useSocket().close();
+  }
 
   if (p)
   {

@@ -56,7 +56,16 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
         }
 #endif
         //a_Should only be here if an error occured
-        AASSERT(this, pContext->useEventVisitor().getErrorCount() > 0);
+        AASSERT(pThis, pContext->useEventVisitor().getErrorCount() > 0);
+
+        //a_Check is socket was closed, if so do nothing else, we are done
+        if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
+        {
+          //a_Proceed
+          pThis->_goTerminate(pContext);
+          pContext = NULL;
+          continue;
+        }
 
         if (
              pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT)
@@ -91,11 +100,13 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
     catch(AException& e)
     {
       pContext->setExecutionState(e);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       pThis->_goError(pContext);
     }
     catch(...)
     {
       pContext->setExecutionState(ASWNL("Unknown exception caught in AOSContextQueue_ErrorExecutor::_threadproc"), true);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       pThis->_goError(pContext);
     }
   }

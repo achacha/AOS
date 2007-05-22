@@ -225,6 +225,7 @@ public:
     CONFLAG_IS_AVAILABLE_SELECTED = 0, //a_IsAvailable queue did a select with no success
     CONFLAG_IS_AVAILABLE_PENDING,      //a_IsAvailable queue did a select and either data is pending or socket is closed
     CONFLAG_IS_HTTP11_PIPELINING,      //a_HTTP 1.1 pipelining is being used
+    CONFLAG_IS_SOCKET_ERROR,           //a_Socket in error state
     //
     CONFLAG_LAST                       //a_Last one used for sizing the bit array
   };

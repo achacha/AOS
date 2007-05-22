@@ -163,7 +163,15 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(compressed.getSize()));
 
             //a_The writing of the output
-            pContext->writeOutputBuffer(compressed);
+            try
+            {
+              pContext->writeOutputBuffer(compressed);
+            }
+            catch(...)
+            {
+              pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+              throw;
+            }
           }
           else
           {
@@ -171,7 +179,15 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
 
             //a_The writing of the output
-            pContext->writeOutputBuffer();
+            try
+            {
+              pContext->writeOutputBuffer();
+            }
+            catch(...)
+            {
+              pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+              throw;
+            }
           }
         }
         pContext->useEventVisitor().reset();
