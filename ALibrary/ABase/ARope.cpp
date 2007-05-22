@@ -11,15 +11,23 @@ void ARope::debugDump(std::ostream& os, int indent) const
     << "  m_LastBlockFree=" << m_LastBlockFree
     << "  m_FreeStore.size()=" << m_FreeStore.size() << std::endl;
  
-  ADebugDumpable::indent(os, indent+1) << "m_Blocks={" << std::endl;
-  BlockContainer::const_iterator cit = m_Blocks.begin();
-  while (cit != m_Blocks.end())
+  if (m_Blocks.size() * m_BlockSize < 10240)
   {
-    ADebugDumpable::dumpMemory_HexAscii(os, (*cit), m_BlockSize, indent+2);
-    os << std::endl;
-    ++cit;
+    //a_Display if not too much
+    ADebugDumpable::indent(os, indent+1) << "m_Blocks={" << std::endl;
+    BlockContainer::const_iterator cit = m_Blocks.begin();
+    while (cit != m_Blocks.end())
+    {
+      ADebugDumpable::dumpMemory_HexAscii(os, (*cit), m_BlockSize, indent+2);
+      os << std::endl;
+      ++cit;
+    }
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   }
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  else
+  {
+    ADebugDumpable::indent(os, indent+1) << "Supressing content due to block count/size" << std::endl;
+  }
 
   if (mp_LastBlock)
   {
