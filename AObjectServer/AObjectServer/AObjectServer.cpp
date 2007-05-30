@@ -288,12 +288,12 @@ int main(int argc, char **argv)
     catch(AException& ex)
     {
       services.useLog().append(ex);
-      throw;
+      return -2;
     }
     catch(...)
     {
-      services.useLog().append("Unknown exception caught, server exiting.");
-      throw;
+      services.useLog().append("main: init: Unknown exception caught.");
+      return -2;
     }
   }
   catch(AException& ex)
@@ -301,10 +301,12 @@ int main(int argc, char **argv)
     AString str("main: ");
     str.append(ex);
     traceMultiline(str, NULL);
+    return -1;
   }
   catch(...)
   {
-    AOS_DEBUGTRACE("Unknown exception caught, server exiting.", NULL);
+    AOS_DEBUGTRACE("main: Unknown exception caught", NULL);
+    return -1;
   }
  
   return 0;
