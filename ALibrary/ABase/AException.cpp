@@ -25,7 +25,7 @@ AException::AException
   
   //a_Get stack trace
   if (walkStack)
-    m_StackWalker.ProcessCallstack();
+    m_StackWalker.ProcessCallstack(true);
 }
 
 AException::AException(const AException &that) :

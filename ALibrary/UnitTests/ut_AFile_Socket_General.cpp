@@ -14,11 +14,11 @@ u4 threadprocServer(AThread& thread)
 {
   int& iRet = *(int *)thread.getParameter();
   
+  ASocketListener listener(UNIT_TEST_PORT);
   try
   {
     AHTTPRequestHeader requestHeader;
     AHTTPResponseHeader responseHeader;
-    ASocketListener listener(UNIT_TEST_PORT);
     listener.open();
     thread.setRunning(true);
     while(thread.isRun())
@@ -53,6 +53,7 @@ u4 threadprocServer(AThread& thread)
         }
         responseHeader.toAFile(connection);
         connection.close();
+        break;
       }
       else
         AThread::sleep(500);
@@ -68,6 +69,7 @@ u4 threadprocServer(AThread& thread)
     std::cerr << "Unknown exception in ut_AFile_Socket_General::threadprocServer" << std::endl;
     ++iRet;
   }
+  listener.close();
   thread.setRunning(false);
 
   return 0;
@@ -83,7 +85,7 @@ int ut_AFile_Socket_General()
   int timeout = 10;
   while (!server.isRunning() && timeout > 0)
   {
-    AThread::sleep(100);
+    AThread::sleep(300);
     --timeout;
   }
   if (!timeout)

@@ -994,6 +994,7 @@ static AStackWalker::PReadProcessMemoryRoutine s_readMemoryFunction = NULL;
 static LPVOID s_readMemoryFunction_UserData = NULL;
 
 BOOL AStackWalker::ProcessCallstack(
+  bool skipCallingFrame,                         // = false
   HANDLE hThread,                                // = NULL
   CONTEXT *pContext,                             // = NULL
   PReadProcessMemoryRoutine readMemoryFunction,  // = NULL
@@ -1121,6 +1122,10 @@ BOOL AStackWalker::ProcessCallstack(
         OnDbgHelpErr("StackWalk64", GetLastError(), stackframe.AddrPC.Offset);
       break;
     }
+
+    //a_Ignore the AStackWalker frame and calling frame if specified (AException uses true so that actual spot of exception is shown and not ctor of exception)
+    if (0 == frameNum || (skipCallingFrame && 1 == frameNum))
+      continue;
 
     csEntry.offset = stackframe.AddrPC.Offset;
     csEntry.offsetFromSymbol = 0;

@@ -4,6 +4,7 @@
 #include "AFilename.hpp"
 #include "AFile_AString.hpp"
 #include "ASync_CriticalSectionSpinLock.hpp"
+#include "templateAutoPtr.hpp"
 
 class ABASE_API ACache_FileSystem : public ACacheInterface
 {

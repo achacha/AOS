@@ -5,11 +5,11 @@
 #include "AException.hpp"
 #include "ARandomNumberGenerator.hpp"
 #include "AFile_IOStream.hpp"
+#include "AFile.hpp"
 
 ACache_FileSystem g_Cache;
 
-#define WORK(f) do { g_Cache.get(AFilename(f));\
-      std::cout.put('.'); } while(0)
+#define WORK(f) do { AAutoPtr<AFile> p; if (g_Cache.get(AFilename(f),p)) std::cout.put('.'); else std::cout.put('!'); } while(0)
 
 u4 _threadproc(AThread& thread)
 {

@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tWebCache.cpp"
+			RelativePath=".\tException.cpp"
 			>
 		</File>
 	</Files>

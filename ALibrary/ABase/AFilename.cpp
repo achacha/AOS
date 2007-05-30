@@ -461,10 +461,8 @@ void AFilename::setExtension(const AString& ext)
 
 bool AFilename::operator <(const AFilename& that) const
 {
-  std::cout << "Comparing: " << this->toAString() << " < " << that.toAString() << "=";
   if (m_Drive < that.m_Drive)
   {
-    std::cout << "true" << std::endl;
     return true;
   }
 
@@ -478,14 +476,12 @@ bool AFilename::operator <(const AFilename& that) const
       if (citThat == that.m_PathNames.end())
       {
         //a_That is shorter
-        std::cout << "false" << std::endl;
         return false;
       }
 
       if (*citThis != *citThat)
       {
         bool ret = (*citThis < *citThat);
-        std::cout << (ret ? "true" : "false") << std::endl;
         return ret;
       }
 
@@ -495,7 +491,6 @@ bool AFilename::operator <(const AFilename& that) const
     if (citThat != that.m_PathNames.end())
     {
       //a_This is shorter
-      std::cout << "true" << std::endl;
       return true;
     }
   }
@@ -504,7 +499,6 @@ bool AFilename::operator <(const AFilename& that) const
 
   //a_Equal paths at this point leaves it to the filename
   bool ret = (m_Filename < that.m_Filename);
-  std::cout << (ret ? "true" : "false") << std::endl;
   return ret;
 }
 

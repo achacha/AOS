@@ -97,9 +97,12 @@ public:
   );
 
   /*!
-  Synchronizes internally (originally not thread safe)
+  Synchronizes internally
+
+  skipCallingFrame - will skip ProcessCallstack frame and if true will skip one more (often exception ctor)
   */
   BOOL ProcessCallstack(
+    bool skipCallingFrame = false,
     HANDLE hThread = NULL, 
     CONTEXT *context = NULL, 
     PReadProcessMemoryRoutine readMemoryFunction = NULL,
