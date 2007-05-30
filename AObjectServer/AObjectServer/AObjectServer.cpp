@@ -110,191 +110,182 @@ int main(int argc, char **argv)
       services.useLog().add(ASWNL("=+=+=+= AOS Server starting at ")+str, AString(_BUILD_INFO_));
     }
 
-    try
+    AOSAdmin admin(services);
+    services.registerAdminObject(services.useAdminRegistry());
+
+    //
+    //a_Initialize the global objects
+    //
+    AString str;
+    AString strError;
+    if (services.initDatabasePool())
     {
-      AOSAdmin admin(services);
-      services.registerAdminObject(services.useAdminRegistry());
-
-      AString str;
-
-      //  AOSContextQueue_HttpReader cqHttpReader(services, 6);
-      AOSContextQueue_IsAvailable cqIsAvailable(services);
-
-      AOSContextQueue_PreExecutor cqPreExecutor(services, 5);
-      AOSContextQueue_Executor cqExecutor(services, 12);
-      AOSContextQueue_ErrorExecutor cqErrorExecutor(services);
-
-      //a_Connect queues to listener
-      AOSRequestListener listener(services, &cqPreExecutor);
-      
-      cqIsAvailable.setYesContextQueue(&cqPreExecutor);
-
-      cqPreExecutor.setYesContextQueue(&cqExecutor);
-      cqPreExecutor.setNoContextQueue(&cqIsAvailable);
-      cqPreExecutor.setErrorContextQueue(&cqErrorExecutor);
-
-      cqExecutor.setYesContextQueue(&cqPreExecutor);                 //a_Used in HTTP/1.1 pipelining
-      cqExecutor.setErrorContextQueue(&cqErrorExecutor);
-
-      //a_Start all the queues (listener is the last thing to start, see below)
-      cqIsAvailable.useThreadPool().start();
-      cqPreExecutor.useThreadPool().start();
-      cqExecutor.useThreadPool().start();
-      cqErrorExecutor.useThreadPool().start();
-
-      //
-      //a_Initialize the global objects
-      //
-      AString strError;
-      if (services.initDatabasePool())
+      size_t rows = services.loadGlobalObjects(strError);
+      if (AConstant::npos == rows)
       {
-        size_t rows = services.loadGlobalObjects(strError);
-        if (AConstant::npos == rows)
+        AOS_DEBUGTRACE((AString("DBERROR: Global init: ")+strError).c_str(), NULL);
+        return -1;
+      }
+      else
+      {
+        str.clear();
+        str.assign("Database connection pool connected ");
+        services.useConfiguration().emitString(AOSConfiguration::DATABASE_CONNECTIONS, str);
+        str.append("x to ");
+        services.useConfiguration().emitString(AOSConfiguration::DATABASE_URL, str);
+        AOS_DEBUGTRACE(str.c_str(), NULL);
+        str.assign("Querying for global variables, processed ");
+        str.append(AString::fromSize_t(rows));
+        str.append(" rows.");
+        AOS_DEBUGTRACE(str.c_str(), NULL);
+      }
+    }
+    else
+    {
+      AOS_DEBUGTRACE("Database was not initialized, skipping global init.", NULL);
+    }
+
+    //
+    //a_Create and configure the queues
+    //
+    AOSContextQueue_IsAvailable cqIsAvailable(services);
+    AOSContextQueue_PreExecutor cqPreExecutor(services, 5);
+    AOSContextQueue_Executor cqExecutor(services, 12);
+    AOSContextQueue_ErrorExecutor cqErrorExecutor(services);
+
+    //a_Connect queues to listener
+    AOSRequestListener listener(services, &cqPreExecutor);
+    
+    cqIsAvailable.setYesContextQueue(&cqPreExecutor);
+
+    cqPreExecutor.setYesContextQueue(&cqExecutor);
+    cqPreExecutor.setNoContextQueue(&cqIsAvailable);
+    cqPreExecutor.setErrorContextQueue(&cqErrorExecutor);
+
+    cqExecutor.setYesContextQueue(&cqPreExecutor);                 //a_Used in HTTP/1.1 pipelining
+    cqExecutor.setErrorContextQueue(&cqErrorExecutor);
+
+    //
+    //a_Load the processors, modules, generators dynamically from DLL
+    //
+    LIST_AString listModules;
+    services.useConfiguration().getDynamicModuleLibraries(listModules);
+
+    //a_Load modules
+    LIST_AString::const_iterator cit = listModules.begin();
+    while(cit != listModules.end())
+    {
+      if (!dllModules.load(*cit))
+      {
+        AString strDebug("Unable to load dynamic library: ");
+        strDebug.append(*cit);
+        AOS_DEBUGTRACE(strDebug.c_str(), NULL);
+      }
+
+      {
+        AString strDebug("=====[ BEGIN: Processing library '");
+        strDebug.append(*cit);
+        strDebug.append("' ]=====");
+        AOS_DEBUGTRACE(strDebug.c_str(), NULL);
+      }
+
+      //a_Load the corresponding XML config for each library if exists
+      services.useConfiguration().loadConfig(*cit);
+
+      //a_Register modules
+      PROC_AOS_Register *procRegister = static_cast<PROC_AOS_Register *>(dllModules.getEntryPoint(*cit, "aos_register"));
+      if (procRegister)
+      {
+        if (
+          procRegister(
+            cqExecutor.useAOSInputExecutor(), 
+            cqExecutor.useAOSModuleExecutor(), 
+            cqExecutor.useAOSOutputExecutor(), 
+            services.useLog()
+          )
+        )
         {
-          AOS_DEBUGTRACE((AString("DBERROR: Global init: ")+strError).c_str(), NULL);
-          return -1;
+          AString strDebug("  FAILED to register module: '");
+          strDebug.append(*cit);
+          strDebug.append('\'');
+          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
         }
         else
         {
-          str.clear();
-          str.assign("Database connection pool connected ");
-          services.useConfiguration().emitString(AOSConfiguration::DATABASE_CONNECTIONS, str);
-          str.append("x to ");
-          services.useConfiguration().emitString(AOSConfiguration::DATABASE_URL, str);
-          AOS_DEBUGTRACE(str.c_str(), NULL);
-          str.assign("Querying for global variables, processed ");
-          str.append(AString::fromSize_t(rows));
-          str.append(" rows.");
-          AOS_DEBUGTRACE(str.c_str(), NULL);
+          AString strDebug("  Registered: '");
+          strDebug.append(*cit);
+          strDebug.append('\'');
+          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
         }
       }
       else
       {
-        AOS_DEBUGTRACE("Database was not initialized, skipping global init.", NULL);
+        AString strDebug("  Module: '");
+        strDebug.append(*cit);
+        strDebug.append("': unable to find proc symbol: aos_register");
+        AOS_DEBUGTRACE(strDebug.c_str(), NULL);
       }
 
-      //
-      //a_Load the processors, modules, generators dynamically from DLL
-      //
-      LIST_AString listModules;
-      services.useConfiguration().getDynamicModuleLibraries(listModules);
-
-      //a_Load modules
-      LIST_AString::const_iterator cit = listModules.begin();
-      while(cit != listModules.end())
+      //a_Initialize against global object container
+      PROC_AOS_Init *procInit = static_cast<PROC_AOS_Init *>(dllModules.getEntryPoint(*cit, "aos_init"));
+      if (procInit)
       {
-        if (!dllModules.load(*cit))
+        if (procInit(services))
         {
-          AString strDebug("Unable to load dynamic library: ");
+          AString strDebug("  FAILED to initialize module: '");
           strDebug.append(*cit);
+          strDebug.append('\'');
           AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-
-        {
-          AString strDebug("=====[ BEGIN: Processing library '");
-          strDebug.append(*cit);
-          strDebug.append("' ]=====");
-          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-
-        //a_Load the corresponding XML config for each library if exists
-        services.useConfiguration().loadConfig(*cit);
-
-        //a_Register modules
-        PROC_AOS_Register *procRegister = static_cast<PROC_AOS_Register *>(dllModules.getEntryPoint(*cit, "aos_register"));
-        if (procRegister)
-        {
-          if (
-            procRegister(
-              cqExecutor.useAOSInputExecutor(), 
-              cqExecutor.useAOSModuleExecutor(), 
-              cqExecutor.useAOSOutputExecutor(), 
-              services.useLog()
-            )
-          )
-          {
-            AString strDebug("  FAILED to register module: '");
-            strDebug.append(*cit);
-            strDebug.append('\'');
-            AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-          }
-          else
-          {
-            AString strDebug("  Registered: '");
-            strDebug.append(*cit);
-            strDebug.append('\'');
-            AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-          }
         }
         else
         {
-          AString strDebug("  Module: '");
+          AString strDebug("  Initialized: '");
           strDebug.append(*cit);
-          strDebug.append("': unable to find proc symbol: aos_register");
+          strDebug.append("'");
           AOS_DEBUGTRACE(strDebug.c_str(), NULL);
         }
-
-        //a_Initialize against global object container
-        PROC_AOS_Init *procInit = static_cast<PROC_AOS_Init *>(dllModules.getEntryPoint(*cit, "aos_init"));
-        if (procInit)
-        {
-          if (procInit(services))
-          {
-            AString strDebug("  FAILED to initialize module: '");
-            strDebug.append(*cit);
-            strDebug.append('\'');
-            AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-          }
-          else
-          {
-            AString strDebug("  Initialized: '");
-            strDebug.append(*cit);
-            strDebug.append("'");
-            AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-          }
-        }
-        else
-        {
-          AString strDebug("  Module: '");
-          strDebug.append(*cit);
-          strDebug.append("': unable to find proc symbol: aos_init");
-          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-
-        {
-          AString strDebug("=====[   END: Processing library '");
-          strDebug.append(*cit);
-          strDebug.append("' ]=====");
-          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-        ++cit;
       }
-
-      //a_TODO: Should verify that defaults configured have been loaded...
-                  
-      //a_Start listener
-      listener.startListening();
-
-      //a_Start admin listener
-      admin.startAdminListener();
-
-      do
+      else
       {
-        //a_This is the watcher for the main loop, when admin is not running the server has stopped
-        AThread::sleep(3000);
+        AString strDebug("  Module: '");
+        strDebug.append(*cit);
+        strDebug.append("': unable to find proc symbol: aos_init");
+        AOS_DEBUGTRACE(strDebug.c_str(), NULL);
       }
-      while (admin.isRunning());
+
+      {
+        AString strDebug("=====[   END: Processing library '");
+        strDebug.append(*cit);
+        strDebug.append("' ]=====");
+        AOS_DEBUGTRACE(strDebug.c_str(), NULL);
+      }
+      ++cit;
     }
-    catch(AException& ex)
+
+    //
+    //a_Start all the queues (listener is the last thing to start, see below)
+    //
+    cqIsAvailable.useThreadPool().start();
+    cqPreExecutor.useThreadPool().start();
+    cqExecutor.useThreadPool().start();
+    cqErrorExecutor.useThreadPool().start();
+
+    //
+    //a_Start listener
+    //
+    listener.startListening();
+
+    //
+    //a_Start admin listener
+    //
+    admin.startAdminListener();
+
+    do
     {
-      services.useLog().append(ex);
-      return -2;
+      //a_This is the watcher for the main loop, when admin is not running the server has stopped
+      AThread::sleep(3000);
     }
-    catch(...)
-    {
-      services.useLog().append("main: init: Unknown exception caught.");
-      return -2;
-    }
+    while (admin.isRunning());
   }
   catch(AException& ex)
   {
