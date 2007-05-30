@@ -138,7 +138,7 @@ bool AFile_IOStream::_isNotEof()
 
 bool AFile_IOStream::isOpen()
 {
-  return (mp_OStream->rdstate() & std::ios::goodbit);
+  return (mp_OStream->rdstate() == std::ios::goodbit);
 }
 
 AFile_IOStream::operator std::istream*()
