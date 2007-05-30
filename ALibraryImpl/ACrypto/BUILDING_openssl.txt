@@ -1,0 +1,20 @@
+Pre-requisites: perl, masm32
+
+1. cd into openssl-xxx directory
+2. ms\do_masm.bat
+3. perl Configure VC-WIN32
+4. RELEASE BUILD: nmake -f ms\ntdll.mak
+  a. modify ms\ntdll.mak
+    CFLAG= /MDd /Ox /O2 /Ob2 /W3 /WX /GR /Gs0 /GF /Gy /nologo -D_WINDOWS -DNDEBUG -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DOPENSSL_USE_APPLINK -I. /Fdout32dll -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE    
+    LIB_CFLAG= /DLL -D_WINDLL
+  
+  b. nmake -f ms\ntdll.mak
+  c. Copy libeay32.* and ssleay32.* into release directory
+5. DEBUG BUILD: 
+  a. modify ms\ntdll.mak
+    CFLAG= /MDd /RTC1 /GR /FR /Od /W3 /WX /Gs0 /GF /Gy /ZI /nologo -DWIN32 -D_DEBUG -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DBN_ASM -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_USE_APPLINK -I. /Fdout32dll -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE
+    LIB_CFLAG= /DLL /DEBUG -D_WINDLL
+  b. nmake -f ms\ntdll.mak
+  c. Copy libeay32.* and ssleay32.* into debug directory
+
+
