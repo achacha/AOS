@@ -24,21 +24,21 @@ void ACache_FileSystem::debugDump(std::ostream& os, int indent) const
     ADebugDumpable::indent(os, indent+2) << "cache[" << i << "]={" << std::endl;
     for(CONTAINER::const_iterator cit = container.begin(); cit != container.end(); ++cit)
     {
-      ADebugDumpable::indent(os, indent+3) << "key={" << std::endl;
-      (*cit).first.debugDump(os, indent+4);
-      ADebugDumpable::indent(os, indent+3) << "}" << std::endl;
+      ADebugDumpable::indent(os, indent+3) << "entry={" << (*cit).first << std::endl;
+      ADebugDumpable::indent(os, indent+4) << "key=" << (*cit).first << std::endl;
       if ((*cit).second)
       {
-        ADebugDumpable::indent(os, indent+3) << "value={" << std::endl;
+        ADebugDumpable::indent(os, indent+4) << "value={" << std::endl;
         //a_Turn this on to dump contents, but will be very long
         //(*cit).second->data.debugDump(os, indent+3);
         if ((*cit).second->pData)
-          ADebugDumpable::indent(os, indent+4) << "data.size=" << (*cit).second->pData->useAString().getSize() << std::endl;
+          ADebugDumpable::indent(os, indent+5) << "data.size=" << (*cit).second->pData->useAString().getSize() << std::endl;
         else
-          ADebugDumpable::indent(os, indent+4) << "data.size=NULL" << std::endl;
+          ADebugDumpable::indent(os, indent+5) << "data.size=NULL" << std::endl;
+        ADebugDumpable::indent(os, indent+4) << "}" << std::endl;
+        ADebugDumpable::indent(os, indent+4) << "hits=" << (*cit).second->hits << std::endl;
+        ADebugDumpable::indent(os, indent+4) << "lastUsed=" << (*cit).second->lastUsed << std::endl;
         ADebugDumpable::indent(os, indent+3) << "}" << std::endl;
-        ADebugDumpable::indent(os, indent+3) << "hits=" << (*cit).second->hits << std::endl;
-        ADebugDumpable::indent(os, indent+3) << "lastUsed=" << (*cit).second->lastUsed << std::endl;
       }
       else
       {
