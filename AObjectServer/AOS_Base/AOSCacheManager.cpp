@@ -91,8 +91,9 @@ AOSCacheManager::AOSCacheManager(AOSServices& services) :
   m_Services(services)
 {
   int maxItems = m_Services.useConfiguration().getInt("/config/server/cache/max_items", 20000);
-  int maxFileSize = m_Services.useConfiguration().getInt("/config/server/cache/max_filesize", 512 * 1024);
-  mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSize);
+  int maxFileSizeInK = m_Services.useConfiguration().getInt("/config/server/cache/max_filesize", 512 * 1024);
+  int cacheCount = m_Services.useConfiguration().getInt("/config/server/cache/cache_count", 97);
+  mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
 
   registerAdminObject(m_Services.useAdminRegistry());
 }
