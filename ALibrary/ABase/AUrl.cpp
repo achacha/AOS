@@ -679,7 +679,7 @@ void AUrl::emit(AOutputBuffer& result, bool boolFull, bool boolHidePassword /* =
   //a_Server:Port
   result.append(m_strServer);
   if (
-    m_iPort >= 0
+    m_iPort > 0
     && !(m_iPort == AUrl::HTTP && m_strProtocol.equals("http:",5))
     && !(m_iPort == AUrl::HTTPS && m_strProtocol.equals("https:",6))
     && !m_strServer.isEmpty()
@@ -783,6 +783,8 @@ void AUrl::setProtocol(const AString &strProtocol)
 	  if (m_strProtocol.equals("ftp:",4)) { m_iPort = AUrl::FTP; return; }
 	  if (m_strProtocol.equals("file:",5)) { m_iPort = AUrl::FILE; return; }
 	  if (m_strProtocol.equals("mysql:",6)) { m_iPort = AUrl::MYSQL; return; }
+	  if (m_strProtocol.equals("odbc:",5)) { m_iPort = AUrl::ODBC; return; }
+    if (m_strProtocol.equals("sqlite:",7)) { m_iPort = AUrl::SQLITE; return; }
 	  if (m_strProtocol.equals("news:",5)) { m_iPort = AUrl::NNTP; return; }
 	  if (m_strProtocol.equals("mailto:",7)) { m_iPort = AUrl::SMTP; return; }
 	  if (m_strProtocol.equals("gopher:",7)) { m_iPort = AUrl::GOPHER; return; }
