@@ -42,7 +42,7 @@
 	</admin>
 	<database>
 		<!--url>mysql://aos:aos@localhost/aos/</url-->
-		<!--odbc://aos:aos@localhost/aos_global/</url-->
+		<!--url>odbc://aos:aos@localhost/aos_global/</url-->
 		<url>sqlite:///./aos_root/AObjectServer.db</url>
 		<connections>4</connections>
 	</database>

@@ -162,7 +162,8 @@ int main(int argc, char **argv)
     cqPreExecutor.setNoContextQueue(&cqIsAvailable);
     cqPreExecutor.setErrorContextQueue(&cqErrorExecutor);
 
-    cqExecutor.setYesContextQueue(&cqPreExecutor);                 //a_Used in HTTP/1.1 pipelining
+    cqExecutor.setYesContextQueue(&cqIsAvailable);                 //a_Used in HTTP/1.1 pipelining
+    //cqExecutor.setYesContextQueue(&cqPreExecutor);                 //a_Used in HTTP/1.1 pipelining
     cqExecutor.setErrorContextQueue(&cqErrorExecutor);
 
     //

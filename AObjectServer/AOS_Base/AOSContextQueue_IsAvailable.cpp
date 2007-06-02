@@ -101,7 +101,7 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
               {
                 //a_Select called on this AOSContext and no data available
                 //a_TODO: make this configurable and possibly used Keep-Alive header
-                if ((*it)->useTimeoutTimer().getInterval() > 10000)
+                if ((*it)->useTimeoutTimer().getInterval() > 300000)
                 {
                   REQUESTS::iterator itMove = it;
                   ++it;
