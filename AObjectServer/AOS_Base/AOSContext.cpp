@@ -121,6 +121,7 @@ void AOSContext::reset(AFile_Socket *pFile)
   m_ResponseHeader.clear();
   m_OutputBuffer.clear();
   m_OutputXmlDocument.clear();
+  m_OutputXmlDocument.useRoot().useName().assign(XML_ROOT);
   mp_Command = NULL;
 
   m_ContextFlags.clear();
