@@ -26,8 +26,8 @@ void AOSContextQueue_PreExecutor::processAdminAction(AXmlElement& eBase, const A
 
 AOSContextQueue_PreExecutor::AOSContextQueue_PreExecutor(
   AOSServices& services,
-  int threadCount,                 // = 16
-  int queueCount,                  // = 4
+  size_t threadCount,              // = 16
+  size_t queueCount,               // = 4
   AOSContextQueueInterface *pYes,  // = NULL 
   AOSContextQueueInterface *pNo    // = NULL
 ) :
@@ -120,7 +120,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           case AOSContext::STATUS_OK:
           {
             //a_Update the context name
-            pContext->useEventVisitor().useName().append("\r\n  ",4);
+            pContext->useEventVisitor().useName().append(' ');
             pContext->useRequestUrl().emit(pContext->useEventVisitor().useName());
 
             //a_Add event of URL requested
@@ -148,7 +148,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             if (m_Services.useSessionManager().exists(strSessionId))
             {
               //a_Fetch session
-              pContext->setExecutionState(AString("Using existing session",22)+strSessionId);
+              pContext->setExecutionState(AString("Using existing session ",23)+strSessionId);
               AOSSessionData *pSessionData = m_Services.useSessionManager().getSessionData(strSessionId);
               pContext->setSessionObject(pSessionData);
             }
@@ -157,11 +157,12 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
               //a_Create session
               if (!strSessionId.isEmpty())
               {
-                pContext->setExecutionState(AString("Existing session not found",26)+strSessionId);
+                pContext->setExecutionState(AString("Existing session not found ",27)+strSessionId);
               }
 
               pContext->setExecutionState(ASW("Creating new session",20));
-              static AString localHostHash(AString::fromSize_t(ASocketLibrary::getLocalHostName().getHash()));
+              
+              AString localHostHash(AString::fromSize_t(ASocketLibrary::getLocalHostName().getHash()));
               strSessionId.clear();
               ATextGenerator::generateRandomAlphanum(strSessionId, 13);
               strSessionId.append(AString::fromSize_t(ATime::getTickCount()));
@@ -173,7 +174,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
               ACookie& cookie = pContext->useResponseCookies().addCookie(ASW("AOSSession", 10), strSessionId);
               cookie.setMaxAge(3600);
               cookie.setPath(ASW("/",1));
-              pContext->setExecutionState(ASW("Created new session",19)+strSessionId);
+              pContext->setExecutionState(ASW("Created new session ",20)+strSessionId);
             }
           }
           pThis->_goYes(pContext);

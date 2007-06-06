@@ -34,7 +34,7 @@
 <flood>
 	<!-- A urllist describes which hosts and which methods we want to hit. -->
 	<urllist>
-		<name>localhost test</name>
+		<name>localhost_test</name>
 		<description>ping!</description>
 		<!-- We first send a POST request to search.apache.org looking for "foo" 
          Notice the payload attribute - this allows us to specify the POST
@@ -49,7 +49,7 @@
 		<name>Example Profile</name>
 		<description>A Test Round Robin Configuration</description>
 		<!-- See above.  This indicates which URLs we will hit.  -->
-		<useurllist>localhost test</useurllist>
+		<useurllist>localhost_test</useurllist>
 		<!-- Specifies that we will use round_robin profile logic -->
 		<profiletype>round_robin</profiletype>
 		<!-- Specifies that we will use generic socket logic 
@@ -66,14 +66,12 @@
          status code from the server.  -->
 		<verify_resp>verify_200</verify_resp>
 	</profile>
-	<!-- A farmer runs one profile a certain number of times.  This farmer is
-       called Joe.  -->
+	<!-- A farmer runs one profile a certain number of times.  This farmer is called Joe.  -->
 	<farmer>
 		<name>Joe</name>
-		<!-- We run the Joe farmer 5 times
+		<!-- We run the Joe farmer 'count' times
          Note that we have the "time" option which indicates for how many
-         seconds a farmer should run.  The "time" and "count" elements are
-         exclusive.  -->
+         seconds a farmer should run.  The "time" and "count" elements are exclusive.  -->
 		<count>100</count>
 		<!-- Farmer Joe uses this profile -->
 		<useprofile>Example Profile</useprofile>
@@ -81,16 +79,13 @@
 	<!-- A farm contains a bunch of farmers - each farmer is an independent 
        worker (i.e. a thread or child process).  -->
 	<farm>
-		<!-- We call our farm "Bingo" - note that the farm must be called Bingo
-         in the current implementation. -->
+		<!-- We call our farm "Bingo" - note that the farm must be called Bingo in the current implementation. -->
 		<name>Bingo</name>
-		<!-- We will start 5 farmers named Joe.  We will start 2 farmers every 5 
-         seconds.  -->
-		<usefarmer count="80" startcount="5" startdelay="1">Joe</usefarmer>
+		<!-- We will start 'count' farmers named Joe.  We will start 'startcount' farmers every 'startdelay' seconds.  -->
+		<usefarmer count="60" startcount="5" startdelay="1">Joe</usefarmer>
 	</farm>
 	<!-- Set the seed to a known value so we can reproduce the same tests.
-       Flood uses a seeded PRNG - this allows the tests which use random
-       numbers to be reproduced.  -->
+       Flood uses a seeded PRNG - this allows the tests which use random numbers to be reproduced.  -->
 	<seed>1</seed>
 </flood>
 <!-- That's all folks! -->

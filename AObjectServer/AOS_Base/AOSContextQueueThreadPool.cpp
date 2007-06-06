@@ -6,7 +6,7 @@
 
 AOSContextQueueThreadPool::AOSContextQueueThreadPool(
   AOSServices& services,
-  int threadCount,                    // = 1
+  size_t threadCount,                 // = 1
   AOSContextQueueInterface *pForward, // = NULL, 
   AOSContextQueueInterface *pBack,    // = NULL
   AOSContextQueueInterface *pError    // = NULL

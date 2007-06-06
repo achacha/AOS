@@ -22,8 +22,8 @@ void AOSContextQueue_Executor::processAdminAction(AXmlElement& eBase, const AHTT
 
 AOSContextQueue_Executor::AOSContextQueue_Executor(
   AOSServices& services,
-  int threadCount,                  // = 12
-  int queueCount,                   // = 3
+  size_t threadCount,               // = 12
+  size_t queueCount,                // = 3
   AOSContextQueueInterface *pYes,   // = NULL 
   AOSContextQueueInterface *pNo,    // = NULL
   AOSContextQueueInterface *pError  // = NULL

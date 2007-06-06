@@ -19,7 +19,7 @@ public:
   **/
   AOSContextQueueThreadPool(
     AOSServices& services,
-    int threadCount = 1,
+    size_t threadCount = 1,
     AOSContextQueueInterface *pYes = NULL, 
     AOSContextQueueInterface *pNo = NULL,
     AOSContextQueueInterface *pError = NULL

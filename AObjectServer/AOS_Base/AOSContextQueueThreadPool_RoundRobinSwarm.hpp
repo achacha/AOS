@@ -13,8 +13,8 @@ class AOS_BASE_API AOSContextQueueThreadPool_RoundRobinSwarm : public AOSContext
 public:
   AOSContextQueueThreadPool_RoundRobinSwarm(
     AOSServices&,  
-    int threadCount = 16,
-    int queueCount = 4,
+    size_t threadCount = 16,
+    size_t queueCount = 4,
     AOSContextQueueInterface *pYes = NULL, 
     AOSContextQueueInterface *pNo = NULL,
     AOSContextQueueInterface *pError = NULL
@@ -41,7 +41,6 @@ protected:
 
 private:
   //a_AOSContext container
-//ASync_CriticalSectionSpinLock m_SynchObjectContextContainer;  //TODO convert to array
   typedef std::vector<ASynchronization *> QUEUE_LOCKS;
   QUEUE_LOCKS m_QueueLocks;
 
@@ -52,9 +51,9 @@ private:
   typedef std::vector<size_t> ADD_COUNTERS;
   ADD_COUNTERS m_AddCounters;
 
-  const int m_queueCount;
-  volatile int m_currentWriteQueue;
-  volatile int m_currentReadQueue;
+  const size_t m_queueCount;
+  volatile long m_currentWriteQueue;
+  volatile long m_currentReadQueue;
 };
 
 #endif //INCLUDED__AOSContextQueueThreadPool_RoundRobinSwarm_HPP__

@@ -17,8 +17,8 @@ class AOS_BASE_API AOSContextQueue_Executor : public BASECLASS_AOSContextQueue_E
 public:
   AOSContextQueue_Executor(
     AOSServices&,
-    int threadCount = 12,
-    int queueCount = 3,
+    size_t threadCount = 12,
+    size_t queueCount = 3,
     AOSContextQueueInterface *pYes = NULL, 
     AOSContextQueueInterface *pNo = NULL,
     AOSContextQueueInterface *pError = NULL

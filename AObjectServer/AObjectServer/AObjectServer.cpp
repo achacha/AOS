@@ -149,9 +149,19 @@ int main(int argc, char **argv)
     //a_Create and configure the queues
     //
     AOSContextQueue_IsAvailable cqIsAvailable(services);
-    AOSContextQueue_PreExecutor cqPreExecutor(services, 5);
-    AOSContextQueue_Executor cqExecutor(services, 12);
     AOSContextQueue_ErrorExecutor cqErrorExecutor(services);
+
+    AOSContextQueue_PreExecutor cqPreExecutor(
+      services, 
+      services.useConfiguration().getSize_t("/config/server/context_queues/pre_executor/threads", 50), 
+      services.useConfiguration().getSize_t("/config/server/context_queues/pre_executor/queues", 4)
+    );
+
+    AOSContextQueue_Executor cqExecutor(
+      services, 
+      services.useConfiguration().getSize_t("/config/server/context_queues/executor/threads", 100), 
+      services.useConfiguration().getSize_t("/config/server/context_queues/executor/queues", 3)
+    );
 
     //a_Connect queues to listener
     AOSRequestListener listener(services, &cqPreExecutor);
@@ -163,7 +173,6 @@ int main(int argc, char **argv)
     cqPreExecutor.setErrorContextQueue(&cqErrorExecutor);
 
     cqExecutor.setYesContextQueue(&cqIsAvailable);                 //a_Used in HTTP/1.1 pipelining
-    //cqExecutor.setYesContextQueue(&cqPreExecutor);                 //a_Used in HTTP/1.1 pipelining
     cqExecutor.setErrorContextQueue(&cqErrorExecutor);
 
     //

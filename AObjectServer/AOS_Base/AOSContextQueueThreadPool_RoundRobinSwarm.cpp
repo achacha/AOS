@@ -59,8 +59,8 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::processAdminAction(AXmlElement& 
 
 AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinSwarm(
   AOSServices& services,
-  int threadCount,                 // = 16
-  int queueCount,                  // = 4
+  size_t threadCount,              // = 16
+  size_t queueCount,               // = 4
   AOSContextQueueInterface *pYes,  // = NULL 
   AOSContextQueueInterface *pNo,   // = NULL
   AOSContextQueueInterface *pError // = NULL
@@ -74,9 +74,9 @@ AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinS
   m_Queues.resize(m_queueCount);
   m_QueueLocks.resize(m_queueCount);
   m_AddCounters.resize(m_queueCount);
-  for (int i=0; i<m_queueCount; ++i)
+  for (size_t i=0; i<m_queueCount; ++i)
   {
-    m_QueueLocks[i] = new ASync_CriticalSectionSpinLock();
+    m_QueueLocks[i] = new ASync_CriticalSection();// SpinLock();
     m_AddCounters[i] = 0;
   }
 }
@@ -94,35 +94,58 @@ AOSContextQueueThreadPool_RoundRobinSwarm::~AOSContextQueueThreadPool_RoundRobin
 void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
 {
   //a_Add context to the next queue
-  ALock lock(m_QueueLocks[m_currentWriteQueue]);
-  ++m_AddCounters[m_currentWriteQueue];
-  m_Queues[m_currentWriteQueue].push_back(pContext);
-  m_currentWriteQueue = (m_currentWriteQueue + 1) % m_queueCount;
+  volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
+  ALock lock(m_QueueLocks.at(currentQueue));
 
-  pContext->setExecutionState(getClass()+"::add["+AString::fromInt(m_currentWriteQueue)+"]="+AString::fromPointer(pContext));
-}
+  ++m_AddCounters.at(currentQueue);
+  m_Queues.at(currentQueue).push_back(pContext);
+
+  pContext->setExecutionState(getClass()+"::add["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
+}                                                                                                                                                                                                 
+
+//static ASync_CriticalSection ZZZZ;
 
 AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
 {
-  ALock lock(m_QueueLocks[m_currentReadQueue]);
-  AOSContext *pContext = NULL;
+  volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
+  ALock lock(m_QueueLocks.at(currentQueue));
 
-  int tries = 0;
-  while (!pContext && tries < m_queueCount)
+  if (!m_Queues.at(currentQueue).empty())
   {
-    if (!m_Queues[m_currentReadQueue].empty())
-    {
-      pContext = m_Queues[m_currentReadQueue].front();
-      m_Queues[m_currentReadQueue].pop_front();
-      m_currentReadQueue = (m_currentReadQueue + 1) % m_queueCount;
+    AOSContext *pContext = m_Queues.at(currentQueue).front();
+    m_Queues.at(currentQueue).pop_front();
 
-      pContext->setExecutionState(getClass()+"::_nextContext["+AString::fromInt(m_currentReadQueue)+"]="+AString::fromPointer(pContext));
+    pContext->setExecutionState(getClass()+"::_nextContext["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
 
-      break;
-    }
-    m_currentReadQueue = (m_currentReadQueue + 1) % m_queueCount;
-    ++tries;
+    return pContext;
   }
+  else
+    return NULL;
 
-  return pContext;
+  //a_Next queue
+    //int currentQueue;
+    //{
+    //  ALock lock(ZZZZ);
+    //  currentQueue = m_currentReadQueue;
+    //  m_currentReadQueue = (m_currentReadQueue + 1) % m_queueCount;
+    //}
+
+    //AOSContext *pContext = NULL;
+
+//  int tries = 0;
+//  while (!pContext && tries < m_queueCount)
+//  {
+//    ALock lock(m_QueueLocks.at(m_currentReadQueue));
+//    if (!m_Queues.at(m_currentReadQueue).empty())
+//    {
+//      pContext = m_Queues.at(m_currentReadQueue).front();
+//      m_Queues.at(m_currentReadQueue).pop_front();
+//
+//      pContext->setExecutionState(getClass()+"::_nextContext["+AString::fromInt(m_currentReadQueue)+"]="+AString::fromPointer(pContext));
+//    }
+////    else
+////      ++tries;
+////  }
+//
+//  return pContext;
 }

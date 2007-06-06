@@ -14,8 +14,8 @@ class AOS_BASE_API AOSContextQueue_PreExecutor : public BASECLASS_AOSContextQueu
 public:
   AOSContextQueue_PreExecutor(
     AOSServices&,  
-    int threadCount = 16,
-    int queueCount = 4,
+    size_t threadCount = 16,
+    size_t queueCount = 4,
     AOSContextQueueInterface *pYes = NULL, 
     AOSContextQueueInterface *pNo = NULL
   );

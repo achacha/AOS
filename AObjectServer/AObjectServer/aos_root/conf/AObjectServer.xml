@@ -20,6 +20,16 @@
 		<module>AOS_Forum</module>
 		<module>AOS_Blog</module>
 	</load>
+	<context_queues>
+		<pre_executor>
+			<threads desc="Threads in the pre-executor queue manager">60</threads>
+			<queues desc="Queues in the pre-executor queue manager">4</queues>
+		</pre_executor>
+		<executor>
+			<threads desc="Threads in the executor queue manager">50</threads>
+			<queues desc="Queues in the executor queue manager">3</queues>
+		</executor>
+	</context_queues>
 	<listen>
 		<!-- Listener ports -->
 		<http>80</http>
