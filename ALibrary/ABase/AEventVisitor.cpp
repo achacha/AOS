@@ -155,9 +155,9 @@ void AEventVisitor::reset(
 
 void AEventVisitor::emit(AOutputBuffer& target) const
 {
-  if (m_Name.isEmpty())
-    target.append("AEventVisitor",13);
-  else
+  target.append("AEventVisitor {",15);
+  target.append(AString::sstr_EOL);
+  if (!m_Name.isEmpty())
     target.append(m_Name);
   
   target.append(" (",2);
@@ -189,7 +189,7 @@ void AEventVisitor::emit(AOutputBuffer& target) const
     mp_CurrentEvent->emit(target);
   }
 
-  target.append('}');
+  target.append("}}",2);
   target.append(AString::sstr_EOL);
 }
 
