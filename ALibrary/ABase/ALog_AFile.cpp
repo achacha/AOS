@@ -10,6 +10,7 @@
 
 #define DEFAULT_CYCLE_SLEEP 10000
 #define DEFAULT_MAX_FILE_SIZE 1024 * 1024
+#define FREESTORE_SIZE 13
 
 #ifdef __DEBUG_DUMP__
 void ALog_AFile::debugDump(std::ostream& os, int indent) const
@@ -83,7 +84,7 @@ ALog_AFile::ALog_AFile(
   
   //a_Initialize free buffers
   m_LoggerThread.setThis(this);
-  for (int i=0; i<10; ++i)
+  for (int i=0; i<FREESTORE_SIZE; ++i)
     m_BuffersFreeStore.push_back(new LogBuffer());
 
   m_LoggerThread.start();
@@ -104,7 +105,7 @@ ALog_AFile::ALog_AFile(
 {
   //a_Initialize free buffers
   m_LoggerThread.setThis(this);
-  for (int i=0; i<10; ++i)
+  for (int i=0; i<FREESTORE_SIZE; ++i)
     m_BuffersFreeStore.push_back(new LogBuffer());
 
   m_LoggerThread.start();
@@ -195,6 +196,7 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
           LogBuffer *pBuffer = pThis->m_BuffersToWrite.front();
           if (pBuffer->m_ReadyToWrite)
           {
+            ALock lock(pThis->mp_SynchObject);
             pThis->mp_File->write(pBuffer->m_Buffer);
             pThis->m_BuffersToWrite.pop_front();
             pBuffer->clear();
@@ -206,6 +208,7 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
             break;
           }
         }
+
         pThis->mp_File->close();
       }
 
@@ -242,13 +245,13 @@ void ALog_AFile::_add(
 )
 {
   LogBuffer *pBuffer = NULL;
+
   //a_Get log buffer
+  ALock lock(mp_SynchObject);
+  if (m_BuffersFreeStore.size() > 0)
   {
-    if (m_BuffersFreeStore.size() > 0)
-    {
-      pBuffer = m_BuffersFreeStore.front();
-      m_BuffersFreeStore.pop_front();
-    }
+    pBuffer = m_BuffersFreeStore.front();
+    m_BuffersFreeStore.pop_front();
   }
   if (!pBuffer)
     pBuffer = new LogBuffer();
