@@ -100,6 +100,11 @@ AOSCacheManager::AOSCacheManager(AOSServices& services) :
 
 AOSCacheManager::~AOSCacheManager()
 {
+  try
+  {
+    delete mp_StaticFileCache;
+  }
+  catch(...) {}
 }
 
 bool AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filename, AAutoPtr<AFile>& pFile)

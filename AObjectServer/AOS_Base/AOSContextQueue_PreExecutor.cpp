@@ -120,7 +120,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           case AOSContext::STATUS_OK:
           {
             //a_Update the context name
-            pContext->useEventVisitor().useName().append(' ');
+            pContext->useEventVisitor().useName().append("  \r\n",4);
             pContext->useRequestUrl().emit(pContext->useEventVisitor().useName());
 
             //a_Add event of URL requested

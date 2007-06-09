@@ -86,11 +86,17 @@ AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
 
 AOSServices::~AOSServices()
 {
-  delete mp_SessionManager;
-  delete mp_ContextManager;
-  delete mp_CacheManager;
-  delete mp_DatabaseConnPool;
-  delete mp_Configuration;
+  try
+  {
+    delete mp_AdminRegistry;
+    delete mp_SessionManager;
+    delete mp_ContextManager;
+    delete mp_CacheManager;
+    delete mp_DatabaseConnPool;
+    delete mp_Configuration;
+    delete mp_Log;
+  }
+  catch(...) {}
 }
 
 bool AOSServices::initDatabasePool()
