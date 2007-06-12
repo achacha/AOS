@@ -8,7 +8,7 @@
 
 const AString& AOSOutput_XalanXslt::getClass() const
 {
-  static const AString CLASS("Xslt");
+  static const AString CLASS("XalanXslt");
   return CLASS;
 }
 

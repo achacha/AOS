@@ -12,7 +12,7 @@
 
 const AString& AOSOutput_MsXslt::getClass() const
 {
-  static const AString CLASS("MsXslt");
+  static const AString CLASS("Xslt");
   return CLASS;
 }
 

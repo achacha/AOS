@@ -35,12 +35,8 @@
 	<!-- A urllist describes which hosts and which methods we want to hit. -->
 	<urllist>
 		<name>localhost_test</name>
-		<description>ping!</description>
-		<!-- We first send a POST request to search.apache.org looking for "foo" 
-         Notice the payload attribute - this allows us to specify the POST
-         content.  -->
-		<!-- The default method is "GET", so let's get APR's index page. -->
-		<url>http://localhost/ping</url>
+		<description>freeflow</description>
+		<url>http://localhost/dada/Dada?templateName=FreeFlow</url>
 	</urllist>
 	<!-- The profile describes how we will hit the urllists.  For this
        example, we execute with the round_robin profile.
@@ -79,13 +75,11 @@
 	<!-- A farm contains a bunch of farmers - each farmer is an independent 
        worker (i.e. a thread or child process).  -->
 	<farm>
-		<!-- We call our farm "Bingo" - note that the farm must be called Bingo in the current implementation. -->
 		<name>Bingo</name>
 		<!-- We will start 'count' farmers named Joe.  We will start 'startcount' farmers every 'startdelay' seconds.  -->
-		<usefarmer count="80" startcount="5" startdelay="1">Joe</usefarmer>
+		<usefarmer count="5" startcount="5" startdelay="1">Joe</usefarmer>
 	</farm>
-	<!-- Set the seed to a known value so we can reproduce the same tests.
-       Flood uses a seeded PRNG - this allows the tests which use random numbers to be reproduced.  -->
+	<!-- Set the seed to a known value so we can reproduce the same tests. Flood uses a seeded PRNG - this allows the tests which use random numbers to be reproduced.  -->
 	<seed>1</seed>
 </flood>
 <!-- That's all folks! -->
