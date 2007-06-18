@@ -472,10 +472,18 @@ AOSContext::Status AOSContext::_processHttpHeader()
   }
   str.append(AString::sstr_CRLF);
 
-  setExecutionState(ASW("AOSContext: Reading HTTP header",31), false, 6000.0);  //a_Read header for 60 seconds
-  if (AConstant::npos == mp_RequestFile->readUntil(str, AString::sstr_CRLFCRLF, true, false))
+  //a_Read until only 2 bytes (CR and LF) are read which signifies a blank line and end of http header
+  setExecutionState(ASW("AOSContext: Reading HTTP header",31), false, 60000.0);  //a_Read header for 60 seconds
+  u4 headerBytes = mp_RequestFile->readUntil(str, AString::sstr_CRLF, true, false);
+  while (2 != headerBytes && AConstant::npos != headerBytes)
   {
-    m_EventVisitor.set(ARope("Incomplete HTTP header, CRLF CRLF not found: '", 45)+str+'\'');
+    headerBytes = mp_RequestFile->readUntil(str, AString::sstr_CRLF, true, false);
+  }
+  
+  //a_Check if header not done
+  if (AConstant::npos == headerBytes || headerBytes > 2)
+  {
+    m_EventVisitor.set(ARope("Incomplete HTTP header or CRLF CRLF not found: '", 45)+str+'\'');
     
     //a_Put the stuff we read back
     mp_RequestFile->putBack(str);
