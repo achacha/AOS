@@ -74,8 +74,9 @@ public:
   /*!
   Waits until threadproc is done and returns
   a.k.a.  pthread_join() on *nix
+  On windows it polls the process and sleeps inbetween polls for sleepTime milliseconds
   */
-  u4 waitForThreadToExit();
+  u4 waitForThreadToExit(u4 sleepTime = 50);
 
   /*!
   Each call to suspend increments the suspend_counter by 1, if suspend_counter > 0, thread is suspended

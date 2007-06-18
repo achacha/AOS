@@ -125,29 +125,25 @@ void AHTTPRequestHeader::emit(AXmlElement& target) const
 
 void AHTTPRequestHeader::emit(AOutputBuffer& target) const
 {
-  ARope emittable;
-
   //a_The parent will output it as the initial line
-  emittable.append(mstr_Method);
-  emittable.append(AString::sstr_Space);
-  emittable.append(murl_Request.getPathFileAndQueryString());
-  emittable.append(AString::sstr_Space);
-  emittable.append(mstr_HTTPVersion);
-  emittable.append(AString::sstr_CRLF);
+  target.append(mstr_Method);
+  target.append(AString::sstr_Space);
+  target.append(murl_Request.getPathFileAndQueryString());
+  target.append(AString::sstr_Space);
+  target.append(mstr_HTTPVersion);
+  target.append(AString::sstr_CRLF);
 
   //a_Parent class will do the body
-  AHTTPHeader::emit(emittable);
+  AHTTPHeader::emit(target);
   
   //a_Cookies
   if (mcookies_Request.size())
   {
-    mcookies_Request.emitRequestHeaderString(emittable);
+    mcookies_Request.emitRequestHeaderString(target);
   }
 
   //a_Add the empty line to signify the end
-  emittable.append(AString::sstr_CRLF);
-
-  emittable.emit(target);
+  target.append(AString::sstr_CRLF);
 }
 
 void AHTTPRequestHeader::emitProxyHeader(AOutputBuffer& target) const

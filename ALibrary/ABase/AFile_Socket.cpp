@@ -51,7 +51,7 @@ void AFile_Socket::makeHandle()
   {
     m_SocketInfo.m_handle = ::socket(PF_INET, SOCK_STREAM, 0);
     if (!m_SocketInfo.isValid())
-      ATHROW(this, ASocketException::FailedToCreateHandle);
+      ATHROW_LAST_SOCKET_ERROR(this);
   }
 }
 
@@ -105,7 +105,7 @@ void AFile_Socket::close()
     ::closesocket(m_SocketInfo.m_handle);
     m_SocketInfo.m_handle = INVALID_SOCKET;
   }
-  m_EOF == true;
+  m_EOF = true;
 }
 
 const AString &AFile_Socket::getAddress() const
@@ -166,7 +166,7 @@ size_t AFile_Socket::_write(const void *buf, size_t size)
     size_t bytesWritten = ::send(m_SocketInfo.m_handle, (const char *) buf + totalBytesWritten, bytesToWrite, 0);
 
     if (bytesWritten == 0)
-      ATHROW(this, ASocketException::WriteOperationFailed);
+      ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::WriteOperationFailed);
       
     if (bytesWritten == SOCKET_ERROR)
     {
@@ -197,7 +197,7 @@ size_t AFile_Socket::readBlocking(void *buf, size_t size)
     size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf + totalBytesRead, bytesToRead, 0 );
 
     if (bytesReceived == 0)
-      ATHROW(this, ASocketException::ReadOperationFailed);
+      ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::ReadOperationFailed);
 
     if (bytesReceived == SOCKET_ERROR)
       ATHROW_LAST_SOCKET_ERROR(this);
@@ -221,7 +221,7 @@ size_t AFile_Socket::_read(void *buf, size_t size)
   
   //a_Cannot read zero bytes, return of 0 means EOF
   if (!size)
-    ATHROW(this, ASocketException::InvalidParameter);
+    ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::InvalidParameter);
   
   size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf, size, 0);
     

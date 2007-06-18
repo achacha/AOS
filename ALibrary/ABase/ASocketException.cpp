@@ -65,6 +65,8 @@ void ASocketException::getDescription(AOutputBuffer& target) const throw()
 
     case SocketError:
       __getLastWSASocketError(target); break;
+    
+    default:
       AException::getDescription(target); break;
   }
 }

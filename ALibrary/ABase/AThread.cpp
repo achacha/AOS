@@ -217,7 +217,7 @@ u4 AThread::resume(bool boolForceResume /* = false */)
   return ret;
 }
 
-u4 AThread::waitForThreadToExit()
+u4 AThread::waitForThreadToExit(u4 sleepTime)
 {
   if (!mh__Thread)
     ATHROW(this, AException::InvalidObject);
@@ -227,6 +227,8 @@ u4 AThread::waitForThreadToExit()
   {
     if (!::GetExitCodeThread(mh__Thread, &ret))
       ATHROW_LAST_OS_ERROR(this);
+
+    AThread::sleep(sleepTime);
   }
   while (STILL_ACTIVE == ret);
 

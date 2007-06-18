@@ -113,30 +113,26 @@ void AHTTPResponseHeader::emit(AXmlElement& target) const
 
 void AHTTPResponseHeader::emit(AOutputBuffer& target) const
 {
-  ARope emittable;
-  
   //a_The parent will output it as the initial line
-  emittable.append(mstr_HTTPVersion);
-  emittable.append(' ');
-  emittable.append(AString::fromInt(mi_StatusCode));
-  emittable.append(' ');
+  target.append(mstr_HTTPVersion);
+  target.append(' ');
+  target.append(AString::fromInt(mi_StatusCode));
+  target.append(' ');
   if (_isValidStatusCode())
-    emittable.append(_getStatusCodeDescription());
+    target.append(_getStatusCodeDescription());
   else
-    emittable.append(mstr_ExtensionDescription);
-  emittable.append(AString::sstr_CRLF);
+    target.append(mstr_ExtensionDescription);
+  target.append(AString::sstr_CRLF);
 
   //a_Parent class will do the body
-  AHTTPHeader::emit(emittable);
+  AHTTPHeader::emit(target);
 
   //a_Cookies if any
   if (mcookies_Response.size())
-    mcookies_Response.emitResponseHeaderString(emittable);
+    mcookies_Response.emitResponseHeaderString(target);
 
   //a_Add the empty line to signify the end
-  emittable.append(AString::sstr_CRLF);
-
-  emittable.emit(target);
+  target.append(AString::sstr_CRLF);
 }
 
 bool AHTTPResponseHeader::_parseLineZero()
