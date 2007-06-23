@@ -126,6 +126,13 @@ public:
   Version of the header (supported by both response and request)
   */
   const AString& getVersion() const;
+  
+  /*!
+  Set version
+  Valid versions:  "HTTP/0.9"  "HTTP/1.0"  "HTTP/1.1"
+  Invalid version will throw exception
+  */
+  void setVersion(const AString&);
 
   /*!
   Keep-Alive timeout value or AConstant::npos if none
@@ -144,7 +151,7 @@ protected:
   //a_Storage of name value pairs
   MAP_AString_NVPair m_Pairs;
   
-  //a_Owned and controled by the request and response derived classes
+  //a_Managed by the request and response derived classes
   AString mstr_LineZero;
   AString mstr_HTTPVersion;
 

@@ -374,6 +374,13 @@ AHTTPHeader::HEADER_TOKENS AHTTPHeader::_mapStringToType(const AString &strToken
   ATHROW(this, AException::InvalidToken);
 }
 
+void AHTTPHeader::setVersion(const AString& version)
+{
+  mstr_HTTPVersion.assign(version);
+  if (!_isValidVersion())
+    ATHROW(this, AException::InvalidParameter);
+}
+
 bool AHTTPHeader::_isValidVersion()
 {
   //a_So far these 3 versions of HTTP are supported, RFC 2616 is for as of now latest HTTP/1.1
@@ -400,27 +407,30 @@ void AHTTPHeader::fromAFile(AFile& aFile)
 {
   //a_Very simple routine for reading HTTP header, waits indefinitely for lines
   AString str(1024, 1024);
-  size_t bytesRead = aFile.readLine(str);
+  size_t bytesRead = aFile.readLine(str, AConstant::npos, false);
   while (AConstant::npos == bytesRead && aFile.isNotEof())
   {
     AThread::sleep(100);
-    bytesRead = aFile.readLine(str);
+    bytesRead = aFile.readLine(str, AConstant::npos, false);
   }
 
   if (bytesRead > 0)
   {
     if (!parseLineZero(str))
+    {
+      bytesRead = aFile.readLine(str, AConstant::npos, false);
       ATHROW_EX(this, AException::InvalidData, ASWNL("Unable to parse line zero"));
+    }
 
     str.assign(".");
     while (!str.isEmpty())
     {
       str.clear();
-      bytesRead = aFile.readLine(str);
+      bytesRead = aFile.readLine(str, AConstant::npos, false);
       while (AConstant::npos == bytesRead && aFile.isNotEof())
       {
         AThread::sleep(100);
-        bytesRead = aFile.readLine(str);
+        bytesRead = aFile.readLine(str, AConstant::npos, false);
       }
       if (str.getSize() > 0)
         parseTokenLine(str);

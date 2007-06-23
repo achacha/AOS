@@ -57,14 +57,15 @@ size_t AFile::readLine(
     }
     ret = m_LookaheadBuffer.popFrontUntil(strRead, '\n', true, true, maxBytes);
 
-    if (0 == ret)
-    {
-      //a_No delimeter, get rest of data
-      m_LookaheadBuffer.emit(strRead);
-      m_LookaheadBuffer.clear();
+    //a_Lookahead is empty, wait short time and try reading again
+    //if (0 == ret)
+    //{
+    //  //a_No delimeter, get rest of data
+    //  m_LookaheadBuffer.emit(strRead);
+    //  m_LookaheadBuffer.clear();
 
-      return strRead.getSize();
-    }
+    //  return strRead.getSize();
+    //}
   }
 
   if (
