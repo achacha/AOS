@@ -221,17 +221,18 @@ void AEventVisitor::emit(AXmlElement& target) const
   target.addElement(ASW("Timer",5), m_LifespanTimer);
 
   //a_Emit events
+  AXmlElement& events = target.addElement(ASW("Events",6));
   EVENTS::const_iterator cit = m_Events.begin();
   u8 lastTick = 0;
   u8 firstTick = 0;
   while (cit != m_Events.end())
   {
-    (*cit)->emit(target.addElement(ASW("Event",5)));
+    (*cit)->emit(events.addElement(ASW("Event",5)));
     ++cit;
   }
   if (mp_CurrentEvent)
   {
-    AXmlElement& e = target.addElement(ASW("Event",5));
+    AXmlElement& e = events.addElement(ASW("Event",5));
     e.addAttribute(ASW("active",6), AString::sstr_True);
     mp_CurrentEvent->emit(e);
   }
@@ -245,7 +246,7 @@ void AEventVisitor::Event::emit(AXmlElement& target) const
   target.addAttribute(ASW("interval",8), m_interval);
   if (m_isError)
     target.addAttribute(ASW("error",5), AString::sstr_True);
-  target.addElement(ASW("Event",5), m_state, AXmlData::CDataDirect);
+  target.addData(m_state, AXmlData::CDataDirect);
 }
 
 double AEventVisitor::getTimeIntervalInState() const

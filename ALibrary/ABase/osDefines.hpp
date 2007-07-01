@@ -16,17 +16,17 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
   #define HAS_MUTABLE
   #define HAS_BOOL
   
-	#ifndef WINVER
-	#define WINVER 0x0500		      // Target version: Windows 2000/XP/Me or better
-	#endif
+#ifndef WINVER				// Allow use of features specific to Windows XP or later.
+#define WINVER 0x0501		// Change this to the appropriate value to target other versions of Windows.
+#endif
 
-	#ifndef _WIN32_WINNT		      // Allow use of features specific to Windows
-	#define _WIN32_WINNT 0x0500		// Target Windows 2000 or better
-	#endif						
+#ifndef _WIN32_WINNT		// Allow use of features specific to Windows XP or later.                   
+#define _WIN32_WINNT 0x0501	// Change this to the appropriate value to target other versions of Windows.
+#endif						
 
-	#ifndef _WIN32_WINDOWS		    // Allow use of features specific to Windows 98 or later.
-	#define _WIN32_WINDOWS 0x0500 // Target Windows Me or better (Windows XP uses _WIN32_WINNT define, so this one is really pretty useless nowadays)
-	#endif
+#ifndef _WIN32_WINDOWS		// Allow use of features specific to Windows 98 or later.
+#define _WIN32_WINDOWS 0x0500 // Target Windows Me or better (Windows XP uses _WIN32_WINNT define, so this one is really pretty useless nowadays)
+#endif
 
   #define __CDECL __cdecl
 
