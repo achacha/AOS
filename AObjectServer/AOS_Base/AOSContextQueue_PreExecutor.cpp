@@ -343,10 +343,16 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     {
       pContext->useSocket().write(pContext->useOutputBuffer());
     }
+    catch(AException& ex)
+    {
+      pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+      m_Services.useLog().add(ex);
+      throw ex;
+    }
     catch(...)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-      throw;
+      m_Services.useLog().add(ASWNL("Unknown exception: _processStaticPage"), ALog::CRITICAL_ERROR);
     }
   }
 

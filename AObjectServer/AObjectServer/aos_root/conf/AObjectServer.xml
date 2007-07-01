@@ -2,6 +2,7 @@
 <!-- /config/server -->
 <server>
 	<log-level>5</log-level>
+  <error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet>
 	<default-filename>index.html</default-filename>
 	<default-input-processor>application/x-www-form-urlencoded</default-input-processor>
 	<default-output-generator/>

@@ -85,6 +85,16 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");
           pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_500_Internal_Server_Error);
 
+          //a_Add XSLT stylesheet for the error XML
+          if (m_Services.useConfiguration().exists(ASW("/config/server/error-stylesheet",31)))
+          {
+            AString errorStylesheet;
+            m_Services.useConfiguration().emitString(ASW("/config/server/error-stylesheet",31), errorStylesheet);
+            pContext->useOutputXmlDocument().addInstruction(AXmlInstruction::XML_STYLESHEET)
+              .addAttribute(ASW("type",4), ASW("text/xsl",8))
+              .addAttribute(ASW("href",4), errorStylesheet);
+          }
+
           //a_Emit HTTP result
           pContext->writeOutputBuffer(true);
         }
