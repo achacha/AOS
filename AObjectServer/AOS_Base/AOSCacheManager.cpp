@@ -113,7 +113,12 @@ bool AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filena
   if (m_Services.useConfiguration().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))
   {
     //a_Get from cache
-    return mp_StaticFileCache->get(filename, pFile);
+    if (mp_StaticFileCache->get(filename, pFile))
+    {
+      return !pFile.isNull();
+    }
+    else
+      return false;
   }
   else
   {

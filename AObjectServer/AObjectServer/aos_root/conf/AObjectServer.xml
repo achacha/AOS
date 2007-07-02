@@ -3,7 +3,11 @@
 <server>
 	<log-level>5</log-level>
   <error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet>
-	<default-filename>index.html</default-filename>
+	<error-templates desc="HTTP status response templates, located relative to aos_data directory">
+    <HTTP-404>http/404.template</HTTP-404> 
+    <HTTP-500>http/500.template</HTTP-500> 
+  </error-templates>
+  <default-filename>index.html</default-filename>
 	<default-input-processor>application/x-www-form-urlencoded</default-input-processor>
 	<default-output-generator/>
 	<mime-types>mime_types.ini</mime-types>

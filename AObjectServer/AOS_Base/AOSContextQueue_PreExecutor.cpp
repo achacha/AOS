@@ -7,6 +7,7 @@
 #include "AFile_Physical.hpp"
 #include "AZlib.hpp"
 #include "AOSConfiguration.hpp"
+#include "ATemplate.hpp"
 
 const AString& AOSContextQueue_PreExecutor::getClass() const
 {
@@ -246,17 +247,43 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   }
   else
   {
-    //TODO: externalize
-    //a_File not found
-    pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);
-    pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html", 9));
-    pContext->useOutputBuffer().append("<html><head><title>");
-    pContext->useOutputBuffer().append("AOS: File not found");
-    pContext->useOutputBuffer().append("</title></head><body><b><font color='red'>Error 404: File not found: </b></font><big>");
-    pContext->useRequestUrl().emit(pContext->useOutputBuffer());
-    pContext->useOutputBuffer().append("</big></body></html>");
+    //a_Handle file not found
     pContext->setExecutionState(ARope("File not found (HTTP static): ",30)+httpFilename);
     pContext->useServices().useLog().add(ASWNL("File not found (HTTP static): "), httpFilename, ALog::INFO);
+    pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);
+    pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html", 9));
+    
+    bool showDefault404 = true;
+    if (m_Services.useConfiguration().exists(ASW("/config/server/error-templates/HTTP-404",39)))
+    {
+      AFilename filename(
+        m_Services.useConfiguration().getAosBaseDataDirectory(),
+        m_Services.useConfiguration().getString(ASW("/config/server/error-templates/HTTP-404",39), AString::sstr_Empty)
+      );
+
+      if (AFileSystem::exists(filename))
+      {
+        AFile_Physical file(filename);
+        file.open();
+
+        //a_Process error template
+        ATemplate resultTemplate;
+        resultTemplate.fromAFile(file);
+        resultTemplate.process(pContext->useOutputBuffer(), pContext->useOutputRootXmlElement());
+
+        showDefault404 = false;
+      }
+    }
+    
+    if (showDefault404)
+    {
+      //a_404 template not specified, going with basic default
+      pContext->useOutputBuffer().append("<html><head><title>");
+      pContext->useOutputBuffer().append("HTTP status code 404: File not found");
+      pContext->useOutputBuffer().append("</title></head><body><font color='red'>HTTP status 404: File not found (static).</font><!-- ");
+      pContext->useRequestUrl().emit(pContext->useOutputBuffer());
+      pContext->useOutputBuffer().append(" --></body></html>");
+    }
   }
 
   int dumpContext = 0;
