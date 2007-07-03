@@ -82,21 +82,42 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           pContext->useEventVisitor().emit(eError);
           
           //a_Prepare result
-          pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");
+          pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/html");
           pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_500_Internal_Server_Error);
 
-          //a_Add XSLT stylesheet for the error XML
-          if (m_Services.useConfiguration().exists(ASW("/config/server/error-stylesheet",31)))
+          AAutoPtr<ATemplate> pTemplate;
+          if (m_Services.useCacheManager().getStatusTemplate(500, pTemplate))
           {
-            AString errorStylesheet;
-            m_Services.useConfiguration().emitString(ASW("/config/server/error-stylesheet",31), errorStylesheet);
-            pContext->useOutputXmlDocument().addInstruction(AXmlInstruction::XML_STYLESHEET)
-              .addAttribute(ASW("type",4), ASW("text/xsl",8))
-              .addAttribute(ASW("href",4), errorStylesheet);
+            //a_Template for this status code is found, so process and emit into output buffer
+            pContext->useOutputBuffer().clear();
+            pTemplate->process(pContext->useOutputBuffer(), pContext->useOutputRootXmlElement());
+          }
+
+          //a_Add XSLT stylesheet for the error XML
+          //if (m_Services.useConfiguration().exists(ASW("/config/server/error-stylesheet",31)))
+          //{
+          //  AString errorStylesheet;
+          //  m_Services.useConfiguration().emitString(ASW("/config/server/error-stylesheet",31), errorStylesheet);
+          //  pContext->useOutputXmlDocument().addInstruction(AXmlInstruction::XML_STYLESHEET)
+          //    .addAttribute(ASW("type",4), ASW("text/xsl",8))
+          //    .addAttribute(ASW("href",4), errorStylesheet);
+          //}
+
+          if (pContext->useOutputBuffer().isEmpty())
+          {
+            //a_Put some generic stuff since there is no error template
+            pContext->useOutputBuffer().append("<html><head><title>Error 500: Internal Server Error</title></head>");
+            pContext->useOutputBuffer().append("<body>Error 500: Internal Server Error</body></html>");
           }
 
           //a_Emit HTTP result
-          pContext->writeOutputBuffer(true);
+          int dumpContext = 0;
+          AString str;
+          if (pContext->useRequestParameterPairs().get(ASW("dumpContext", 11), str))
+          {
+            dumpContext = str.toInt();
+          }
+          pContext->writeOutputBuffer(dumpContext > 0 ? true : false);
         }
 
         //a_Close connection

@@ -254,27 +254,15 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html", 9));
     
     bool showDefault404 = true;
-    if (m_Services.useConfiguration().exists(ASW("/config/server/error-templates/HTTP-404",39)))
-    {
-      AFilename filename(
-        m_Services.useConfiguration().getAosBaseDataDirectory(),
-        m_Services.useConfiguration().getString(ASW("/config/server/error-templates/HTTP-404",39), AString::sstr_Empty)
-      );
-
-      if (AFileSystem::exists(filename))
-      {
-        AFile_Physical file(filename);
-        file.open();
-
-        //a_Process error template
-        ATemplate resultTemplate;
-        resultTemplate.fromAFile(file);
-        resultTemplate.process(pContext->useOutputBuffer(), pContext->useOutputRootXmlElement());
-
-        showDefault404 = false;
-      }
-    }
     
+    AAutoPtr<ATemplate> pTemplate;
+    if (m_Services.useCacheManager().getStatusTemplate(404, pTemplate))
+    {
+      //a_Template for this status code is found, so process and emit into output buffer
+      pTemplate->process(pContext->useOutputBuffer(), pContext->useOutputRootXmlElement());
+      showDefault404 = false;
+    }
+
     if (showDefault404)
     {
       //a_404 template not specified, going with basic default

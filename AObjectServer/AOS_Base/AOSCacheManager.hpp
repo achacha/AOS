@@ -5,6 +5,7 @@
 #include "AOSAdminInterface.hpp"
 #include "ACache_FileSystem.hpp"
 #include "ASync_CriticalSection.hpp"
+#include "ATemplate.hpp"
 
 class AOSServices;
 class AOSContext;
@@ -19,13 +20,21 @@ public:
   virtual ~AOSCacheManager();
   
   /*!
-  Use static content cache
-  If cache enabled will get item fro cache and auto ptr will be set on no-delete
+  Get static file from cache or try to load it into the cache
+  If cache enabled will get item from cache and auto ptr will be set on no-delete
   If not caching or file too large then auto ptr will auto delete the item when out of scope
 
-  Returns true is a file is found (cached or otherwise)
+  Returns true only if a file entry is found and exists on the file system, false otherwise
   */
   bool getStaticFile(AOSContext&, const AFilename&, AAutoPtr<AFile>&);
+
+  /*!
+  Get status code template from cache or try to load into the cache
+  Auto pointer is set to no-delete and is a holder for the template obect in the cache
+
+  Returns true only if a file entry is found and exists on the file system, false otherwise
+  */
+  bool getStatusTemplate(int statusCode, AAutoPtr<ATemplate>&);
 
   /*!
   AOSAdminInterface
@@ -40,6 +49,10 @@ private:
 
   //a_Static file cache
   ACache_FileSystem *mp_StaticFileCache;
+
+  //a_Template cache
+  typedef std::map<int, ATemplate *> TEMPLATE_CACHE;
+  TEMPLATE_CACHE *mp_TemplateCache;
 
 public:
 #ifdef __DEBUG_DUMP__

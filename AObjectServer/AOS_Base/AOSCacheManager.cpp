@@ -7,6 +7,7 @@
 #include "AOSContext.hpp"
 #include "AFile_Physical.hpp"
 #include "AFileSystem.hpp"
+#include "ATextOdometer.hpp"
 
 const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/cache/enabled");
 
@@ -95,6 +96,8 @@ AOSCacheManager::AOSCacheManager(AOSServices& services) :
   int cacheCount = m_Services.useConfiguration().getInt("/config/server/cache/cache_count", 97);
   mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
 
+  mp_TemplateCache = new TEMPLATE_CACHE();
+
   registerAdminObject(m_Services.useAdminRegistry());
 }
 
@@ -103,6 +106,11 @@ AOSCacheManager::~AOSCacheManager()
   try
   {
     delete mp_StaticFileCache;
+    
+    //a_Release templates
+    for(TEMPLATE_CACHE::iterator it = mp_TemplateCache->begin(); it != mp_TemplateCache->end(); ++it)
+      delete (*it).second;
+    delete mp_TemplateCache;
   }
   catch(...) {}
 }
@@ -135,5 +143,58 @@ bool AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filena
       pFile.reset(NULL);
       return false;
     }
+  }
+}
+
+bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTemplate)
+{
+  AASSERT(this, mp_TemplateCache);
+  TEMPLATE_CACHE::iterator it = mp_TemplateCache->find(statusCode);
+  if (mp_TemplateCache->end() == it)
+  {
+    //a_Not found insert
+    AString pathFilename("/config/server/error-templates/HTTP-",36);
+    ATextOdometer odo(AString::fromInt(statusCode), 3);
+    odo.emit(pathFilename);
+
+    AFilename filename(
+      m_Services.useConfiguration().getAosBaseDataDirectory(),
+      m_Services.useConfiguration().getString(pathFilename, AString::sstr_Empty)
+    );
+
+    if (AFileSystem::exists(filename))
+    {
+      AFile_Physical file(filename);
+      file.open();
+
+      //a_Process error template
+      ATemplate *p = new ATemplate();
+      p->fromAFile(file);
+
+      (*mp_TemplateCache)[statusCode] = p;
+
+      pTemplate.reset(p);
+      pTemplate.setOwnership(false);
+
+      return true;
+    }
+    else
+    {
+      //a_File not found
+      (*mp_TemplateCache)[statusCode] = NULL;
+
+      pTemplate.reset();
+
+      return false;
+    }
+  }
+  else
+  {
+    //a_Put the pointer into the holder and remove ownership
+    //a_NULL in iterator means the file does not exist and we already checked before
+    pTemplate.reset((*it).second);
+    pTemplate.setOwnership(false);
+    
+    return (NULL != (*it).second);
   }
 }
