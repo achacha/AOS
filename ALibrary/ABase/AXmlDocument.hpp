@@ -77,7 +77,7 @@ public:
   virtual void toAFile(AFile&) const;
   
 private:
-  AXmlDocument() {}  //a_No default dtro, must have root element name
+  AXmlDocument() {}  //a_No default dtor, must have root element name
 
   //a_Instruction elements order sensitive and go before the xml data
   typedef std::list<AXmlInstruction *> LIST_NODEPTR;
