@@ -2,6 +2,9 @@
 <!-- /config/server -->
 <server>
 	<log-level>5</log-level>
+	<debug>
+		<allow-dumpContext>true</allow-dumpContext>
+	</debug>
   <!--error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet-->
 	<error-templates desc="HTTP status response templates, located relative to aos_data directory">
     <HTTP-404>http/404.template</HTTP-404> 

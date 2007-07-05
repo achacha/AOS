@@ -33,7 +33,7 @@ protected:
   u4 _threadproc(AThread&);
 
   //a_Serve a static page and deallocate the AOSContext
-  void _processStaticPage(AOSContext *pContext);
+  bool _processStaticPage(AOSContext *pContext);
 };
 
 #endif //INCLUDED__AOSContextQueue_PreExecutor_HPP__

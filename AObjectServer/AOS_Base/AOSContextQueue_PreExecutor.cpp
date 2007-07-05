@@ -178,19 +178,42 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
               pContext->setExecutionState(ASW("Created new session ",20)+strSessionId);
             }
           }
+          
+          //a_Go to next stage
           pThis->_goYes(pContext);
           pContext = NULL;
         }
         else
         {
           //a_Serve page (static)
-          _processStaticPage(pContext);  //a_Deallocated the context when done
+          bool processSuccess = _processStaticPage(pContext);
           
-          if (!pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
+          if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
           {
-            //a_Not pipelining, this context is done
+            //a_Socket error occured, just terminate and keep processing
             pThis->_goTerminate(pContext);
             pContext = NULL;
+          }
+          else
+          {
+            //a_If an error occured, send context to error handler and continue
+            if (!processSuccess)
+            {
+              pThis->_goError(pContext);
+              pContext = NULL;
+            }
+            else if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
+            {
+              //a_No error and pipelining, go to next state and continue
+              pThis->_goYes(pContext);
+              pContext = NULL;
+            }
+            else
+            {
+              //a_No error, but not pipelining, terminate and continue
+              pThis->_goTerminate(pContext);
+              pContext = NULL;
+            }
           }
 
           continue;
@@ -216,8 +239,10 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
   return 0;
 }
 
-void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
+bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
 {
+  AASSERT(this, pContext);
+  
   pContext->setExecutionState(ASW("Serving static content",22));
   AFilename httpFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
 
@@ -241,6 +266,7 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   if (m_Services.useCacheManager().getStaticFile(*pContext, httpFilename, pFile))
   {
     //a_Send the file
+    AASSERT(pContext, !pFile.isNull());
     pFile->emit(pContext->useOutputBuffer());
     pContext->useEventVisitor().reset();
     contentLenth = pContext->useOutputBuffer().getSize();
@@ -250,28 +276,10 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     //a_Handle file not found
     pContext->setExecutionState(ARope("File not found (HTTP static): ",30)+httpFilename);
     pContext->useServices().useLog().add(ASWNL("File not found (HTTP static): "), httpFilename, ALog::INFO);
+    
+    //a_Set response status and return with failed
     pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);
-    pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html", 9));
-    
-    bool showDefault404 = true;
-    
-    AAutoPtr<ATemplate> pTemplate;
-    if (m_Services.useCacheManager().getStatusTemplate(404, pTemplate))
-    {
-      //a_Template for this status code is found, so process and emit into output buffer
-      pTemplate->process(pContext->useOutputBuffer(), pContext->useOutputRootXmlElement());
-      showDefault404 = false;
-    }
-
-    if (showDefault404)
-    {
-      //a_404 template not specified, going with basic default
-      pContext->useOutputBuffer().append("<html><head><title>");
-      pContext->useOutputBuffer().append("HTTP status code 404: File not found");
-      pContext->useOutputBuffer().append("</title></head><body><font color='red'>HTTP status 404: File not found (static).</font><!-- ");
-      pContext->useRequestUrl().emit(pContext->useOutputBuffer());
-      pContext->useOutputBuffer().append(" --></body></html>");
-    }
+    return false;
   }
 
   int dumpContext = 0;
@@ -341,10 +349,17 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     {
       pContext->useSocket().write(compressed);
     }
+    catch(AException& ex)
+    {
+      pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+      m_Services.useLog().add(ex);
+      return false;
+    }
     catch(...)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-      throw;
+      m_Services.useLog().add(ASWNL("Unknown exception: _processStaticPage: writing compressed"), ALog::CRITICAL_ERROR);
+      return false;
     }
   }
   else
@@ -362,14 +377,16 @@ void AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
       m_Services.useLog().add(ex);
-      throw ex;
+      return false;
     }
     catch(...)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-      m_Services.useLog().add(ASWNL("Unknown exception: _processStaticPage"), ALog::CRITICAL_ERROR);
+      m_Services.useLog().add(ASWNL("Unknown exception: _processStaticPage: writing uncompressed"), ALog::CRITICAL_ERROR);
+      return false;
     }
   }
 
   pContext->useEventVisitor().reset();
+  return true;
 }

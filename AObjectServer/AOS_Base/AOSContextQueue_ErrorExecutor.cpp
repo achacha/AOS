@@ -55,8 +55,11 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           continue;
         }
 #endif
-        //a_Should only be here if an error occured
-        AASSERT(pThis, pContext->useEventVisitor().getErrorCount() > 0);
+        pContext->setExecutionState(ASW("AOSContextQueue_ErrorExecutor: Processing error condition", 67));
+
+        //a_Should only be here if an error occured, if status not set >200, then assume 500
+        if (pContext->useResponseHeader().getStatusCode() == AHTTPResponseHeader::SC_200_Ok)
+          pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_500_Internal_Server_Error);
 
         //a_Check is socket was closed, if so do nothing else, we are done
         if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
@@ -76,22 +79,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
         }
         else
-        {
-          //a_Process and display error
-          AXmlElement& eError = pContext->useOutputRootXmlElement().addElement(ASW("error", 5));
-          pContext->useEventVisitor().emit(eError);
-          
-          //a_Prepare result
-          pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/html");
-          pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_500_Internal_Server_Error);
-
-          AAutoPtr<ATemplate> pTemplate;
-          if (m_Services.useCacheManager().getStatusTemplate(500, pTemplate))
-          {
-            //a_Template for this status code is found, so process and emit into output buffer
-            pContext->useOutputBuffer().clear();
-            pTemplate->process(pContext->useOutputBuffer(), pContext->useOutputRootXmlElement());
-          }
+        {          
 
           //a_Add XSLT stylesheet for the error XML
           //if (m_Services.useConfiguration().exists(ASW("/config/server/error-stylesheet",31)))
@@ -103,21 +91,53 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           //    .addAttribute(ASW("href",4), errorStylesheet);
           //}
 
-          if (pContext->useOutputBuffer().isEmpty())
-          {
-            //a_Put some generic stuff since there is no error template
-            pContext->useOutputBuffer().append("<html><head><title>Error 500: Internal Server Error</title></head>");
-            pContext->useOutputBuffer().append("<body>Error 500: Internal Server Error</body></html>");
-          }
-
           //a_Emit HTTP result
           int dumpContext = 0;
-          AString str;
-          if (pContext->useRequestParameterPairs().get(ASW("dumpContext", 11), str))
+          if (m_Services.useConfiguration().getBool("/config/server/debug/allow-dumpContext", false))
           {
-            dumpContext = str.toInt();
+            AString str;
+            if (pContext->useRequestParameterPairs().get(ASW("dumpContext", 11), str))
+            {
+              dumpContext = str.toInt();
+            }
           }
-          pContext->writeOutputBuffer(dumpContext > 0 ? true : false);
+          if (dumpContext > 0)
+          {
+            //a_Process and display error as XML
+            AXmlElement& eError = pContext->useOutputRootXmlElement().addElement(ASW("error", 5));
+            pContext->useEventVisitor().emit(eError);
+            
+            //a_Write contents of the output XML instead of output buffer
+            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");
+            pContext->writeOutputBuffer(true);
+          }
+          else
+          {
+            int statusCode = pContext->useResponseHeader().getStatusCode();
+            AAutoPtr<ATemplate> pTemplate;
+            if (m_Services.useCacheManager().getStatusTemplate(statusCode, pTemplate))
+            {
+              //a_Template for this status code is found, so process and emit into output buffer
+              pContext->useOutputBuffer().clear();
+              pTemplate->process(pContext->useOutputBuffer(), pContext->useOutputRootXmlElement());
+              pContext->setExecutionState(ARope("Using error template for status ")+AString::fromInt(statusCode));
+            }
+            else
+            {
+              pContext->setExecutionState(ARope("Did not find error template for status ")+AString::fromInt(statusCode));
+            }
+
+            if (pContext->useOutputBuffer().isEmpty())
+            {
+              //a_Put some generic stuff since there is no error template
+              pContext->useOutputBuffer().append("<html><head><title>Error 500: Internal Server Error</title></head>");
+              pContext->useOutputBuffer().append("<body>Error 500: Internal Server Error</body></html>");
+            }
+
+            //a_Write output buffer
+            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/html");
+            pContext->writeOutputBuffer();
+          }
         }
 
         //a_Close connection
