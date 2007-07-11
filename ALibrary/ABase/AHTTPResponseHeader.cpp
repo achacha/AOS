@@ -10,7 +10,7 @@ void AHTTPResponseHeader::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "(AHTTPResponseHeader @ " << std::hex << this << std::dec << ") { " << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "mi_StatusCode=" << mi_StatusCode << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mstr_ExtensionDescription=" << mstr_ExtensionDescription << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mstr_ReasonPhrase=" << mstr_ReasonPhrase << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "mcookies_Response=" << std::endl;
   mcookies_Response.debugDump(os, indent+2);
@@ -54,14 +54,14 @@ AHTTPResponseHeader::~AHTTPResponseHeader()
 void AHTTPResponseHeader::_copy(const AHTTPResponseHeader& that)
 {
   mi_StatusCode = that.mi_StatusCode;
-  mstr_ExtensionDescription.assign(that.mstr_ExtensionDescription);
+  mstr_ReasonPhrase.assign(that.mstr_ReasonPhrase);
   mcookies_Response = that.mcookies_Response;
 }
 
 void AHTTPResponseHeader::clear()
 {
   mi_StatusCode = AHTTPResponseHeader::SC_200_Ok;
-  mstr_ExtensionDescription.clear();
+  mstr_ReasonPhrase.clear();
   mcookies_Response.clear();
 
   AHTTPHeader::clear();
@@ -81,9 +81,33 @@ int AHTTPResponseHeader::getStatusCode() const
   return mi_StatusCode;
 }
 
+void AHTTPResponseHeader::setStatusCode(int statusCode, const AString& reason)
+{ 
+  mi_StatusCode = statusCode;
+
+  if (!isValidStatusCode(mi_StatusCode) && reason.isEmpty())
+    throw AException(this, AException::InvalidParameter);
+
+  if (!reason.isEmpty())
+    mstr_ReasonPhrase.assign(reason);
+  else
+    mstr_ReasonPhrase.clear();
+}
+
 void AHTTPResponseHeader::setStatusCode(AHTTPResponseHeader::STATUS_CODES eStatusCode) 
 { 
   mi_StatusCode = eStatusCode;
+  mstr_ReasonPhrase.clear();
+}
+
+const AString& AHTTPResponseHeader::getReasonPhrase() const
+{
+  return mstr_ReasonPhrase;
+}
+
+void AHTTPResponseHeader::setReasonPhrase(const AString& reason)
+{
+  mstr_ReasonPhrase.assign(reason);
 }
 
 void AHTTPResponseHeader::emit(AXmlElement& target) const
@@ -94,10 +118,10 @@ void AHTTPResponseHeader::emit(AXmlElement& target) const
   target.addElement(ASW("version",7), mstr_HTTPVersion);
 
   //a_The parent will output it as the initial line
-  if (_isValidStatusCode())
-    target.addElement(ASW("status",6), _getStatusCodeDescription()).addAttribute(ASW("code",4), u4(mi_StatusCode));
+  if (isValidStatusCode(mi_StatusCode) && mstr_ReasonPhrase.isEmpty())
+    target.addElement(ASW("status",6), getStatusCodeReasonPhrase(mi_StatusCode)).addAttribute(ASW("code",4), u4(mi_StatusCode));
   else
-    target.addElement(ASW("status",6), mstr_ExtensionDescription).addAttribute(ASW("code",4), u4(mi_StatusCode));
+    target.addElement(ASW("status",6), mstr_ReasonPhrase).addAttribute(ASW("code",4), u4(mi_StatusCode));
   
   //a_From parent
   MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
@@ -118,10 +142,10 @@ void AHTTPResponseHeader::emit(AOutputBuffer& target) const
   target.append(' ');
   target.append(AString::fromInt(mi_StatusCode));
   target.append(' ');
-  if (_isValidStatusCode())
-    target.append(_getStatusCodeDescription());
+  if (isValidStatusCode(mi_StatusCode) && mstr_ReasonPhrase.isEmpty())
+    target.append(getStatusCodeReasonPhrase(mi_StatusCode));
   else
-    target.append(mstr_ExtensionDescription);
+    target.append(mstr_ReasonPhrase);
   target.append(AString::sstr_CRLF);
 
   //a_Parent class will do the body
@@ -166,11 +190,11 @@ bool AHTTPResponseHeader::_parseLineZero()
     return false;
 
   //a_If the status code is unknown, save the description
-  if (!_isValidStatusCode())
+  if (!isValidStatusCode(mi_StatusCode))
   {
-    mstr_ExtensionDescription.clear();
-    mstr_LineZero.peek(mstr_ExtensionDescription, iP2 + 1);
-    mstr_ExtensionDescription.stripTrailing();
+    mstr_ReasonPhrase.clear();
+    mstr_LineZero.peek(mstr_ReasonPhrase, iP2 + 1);
+    mstr_ReasonPhrase.stripTrailing();
   }
   return true;
 }
@@ -188,9 +212,9 @@ bool AHTTPResponseHeader::_handledByChild(const ANameValuePair &nvPair)
     return false;
 }
 
-bool AHTTPResponseHeader::_isValidStatusCode() const
+bool AHTTPResponseHeader::isValidStatusCode(int statusCode)
 {
-  switch(mi_StatusCode)
+  switch(statusCode)
   {
     case SC_100_Continue:
     case SC_101_Switching_Protocols:
@@ -237,9 +261,9 @@ bool AHTTPResponseHeader::_isValidStatusCode() const
   return false;
 }
 
-AString AHTTPResponseHeader::_getStatusCodeDescription() const
+AString AHTTPResponseHeader::getStatusCodeReasonPhrase(int statusCode)
 {
-  switch(mi_StatusCode)
+  switch(statusCode)
   {
     case SC_100_Continue                        : return "Continue";
     case SC_101_Switching_Protocols             : return "Switching Protocols";
@@ -282,6 +306,7 @@ AString AHTTPResponseHeader::_getStatusCodeDescription() const
     case SC_504_Gateway_Timeout                 : return "Gateway Time-out";
     case SC_505_HTTP_Version_Not_Supported      : return "HTTP Version not supported";
   }
-  return "Unknown";
+  
+  return AString::sstr_Empty;
 }
 

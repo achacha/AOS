@@ -75,6 +75,11 @@ const AString& AHTTPRequestHeader::getMethod() const
   return mstr_Method;
 }
 
+bool AHTTPRequestHeader::isPOST() const 
+{ 
+  return mstr_Method.equals("POST",4);
+}
+
 const AUrl &AHTTPRequestHeader::getUrl() const 
 { 
   return murl_Request;

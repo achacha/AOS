@@ -76,9 +76,11 @@ public:
   If this element is 'a' and contains b/bb,c/cc@foo,d/dd
   The 'a/c/cc@foo' will be found.  Current element must be first element of the xpath
   Adds AXmlElement* to the result container, will not clear the result, will append
+
+  Returns elements found
   */
-  void find(const AString& path, AXmlNode::NodeContainer& result);
-  void find(const AString& path, AXmlNode::ConstNodeContainer& result) const;
+  size_t find(const AString& path, AXmlNode::NodeContainer& result);
+  size_t find(const AString& path, AXmlNode::ConstNodeContainer& result) const;
 
   /*!
   Emit XML unformatted

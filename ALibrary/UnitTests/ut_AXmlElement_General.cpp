@@ -12,7 +12,7 @@ void testGetSet(int& iRet)
   elem.addElement("path0").addElement("path1").addElement("path2").addComment("My comment");
   AString str0(8188, 1024), str1(8188, 1024);
   elem.emit(str0);
-  ASSERT_UNIT_TEST(str0.equals("<root a1=\"foo\" a2=\"foo\" a3=\"foo\"><path0><path1><path2><!-- My comment--></path2></path1></path0></root>"), "add_emit", "0", iRet);
+  ASSERT_UNIT_TEST(str0.equals("<root a1=\"foo\" a2=\"foo\" a3=\"foo\"><path0><path1><path2><!--My comment--></path2></path1></path0></root>"), "add_emit", "0", iRet);
   
   elem.clear();
   str0.clear();
@@ -28,9 +28,7 @@ void testAddAndSerialize(int& iRet)
   elem.addElement("/path0/path1/obj2", "value2");
 
   AString str0(8188, 1024), str1(8188, 1024);
-  elem.emit(str0, 0);
-//  std::cout << str0 << std::endl;
-  ASSERT_UNIT_TEST(str0.equals("\
+  str1.assign("\
 <root>\r\n\
   <path0>\r\n\
     <path1>\r\n\
@@ -41,7 +39,10 @@ void testAddAndSerialize(int& iRet)
       <obj1>value1</obj1>\r\n\
     </path2>\r\n\
   </path0>\r\n\
-</root>"), "add_emit", "0", iRet);
+</root>");
+  elem.emit(str0, 0);
+  //std::cout << str0 << std::endl;
+  ASSERT_UNIT_TEST(str0.equals(str1), "add_emit", "1", iRet);
 
   AXmlNode *p;
   if (p = elem.findNode("/root/path0/path1/"))
@@ -60,7 +61,7 @@ void testAddAndSerialize(int& iRet)
     <path1 attrib0=\"0\" attrib1=\"0\" attrib2=\"0\">\r\n\
       <obj0>value0</obj0>\r\n\
       <obj2>value2</obj2>\r\n\
-      <foo/>more data<!-- This is the comment-->\r\n\
+      <foo/>more data<!--This is the comment-->\r\n\
     </path1>\r\n\
     <path2>\r\n\
       <obj1>value1</obj1>\r\n\
@@ -74,11 +75,14 @@ void testAddAndSerialize(int& iRet)
   AFile_AString strfile;
   elem.toAFile(strfile);
   ASSERT_UNIT_TEST(strfile.useAString().equals("\
-<root><path0><path1 attrib0=\"0\" attrib1=\"0\" attrib2=\"0\"><obj0>value0</obj0><obj2>value2</obj2><foo/>more data<!-- This is the comment--></path1><path2><obj1>value1</obj1></path2></path0></root>"), "toAFile", "", iRet);
+<root><path0><path1 attrib0=\"0\" attrib1=\"0\" attrib2=\"0\"><obj0>value0</obj0><obj2>value2</obj2><foo/>more data<!--This is the comment--></path1><path2><obj1>value1</obj1></path2></path0></root>"), "toAFile", "", iRet);
 
   AXmlElement restored;
   restored.fromAFile(strfile);
+  str1.clear();
   restored.emit(str1, 0);
+  //std::cout << str0 << std::endl << str1 << std::endl;
+
   ASSERT_UNIT_TEST(str0.equals(str1), "Serialization", "", iRet);
 }
 

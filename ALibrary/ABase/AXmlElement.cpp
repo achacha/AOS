@@ -402,7 +402,16 @@ void AXmlElement::fromAFile(AFile& file)
   
   //a_Find /> or >
   char c = ' ';
-  file.readUntilOneOf(str, AXmlDocument::sstr_End);
+  if (m_Name.equals(ASW("!--",3)))
+  {
+    //a_Special case for comment, must end with '-->' and may contain '>' inside
+    file.readUntil(str, AXmlDocument::sstr_EndComment);
+    addComment(str);
+    return;
+  }
+  else
+    file.readUntilOneOf(str, AXmlDocument::sstr_End);
+
   if (!str.isEmpty() && str.at(str.getSize() - 1) == '/')
   {
     c = '/';  //a_Singular mode
@@ -443,7 +452,7 @@ void AXmlElement::fromAFile(AFile& file)
         file.readUntilOneOf(str, AXmlDocument::sstr_EndOrWhitespace);
         file.skipOver(AXmlDocument::sstr_EndOrWhitespace);                //a_Skip over whitespace and >
         if (str != m_Name)
-          ATHROW_EX(this, AException::InvalidData, AString("Close tag </")+str+"> does not match opened tag <"+m_Name+">");
+          ATHROW_EX(&file, AException::InvalidData, AString("Close tag </")+str+"> does not match opened tag <"+m_Name+">");
         
         boolEndTagFound = true;
       }
@@ -466,21 +475,16 @@ void AXmlElement::fromAFile(AFile& file)
         else if (0 == str.findNoCase(AXmlDocument::sstr_StartComment))
         {
           //a_Process a comment
-          if (str.getSize() - 3 != str.findNoCase(AXmlDocument::sstr_EndComment))
+          if (str.getSize() - 3 != str.find(AXmlDocument::sstr_EndComment))
           {
             //a_Try reading more in case > was contained in the comment
-            file.readUntil(str, AXmlDocument::sstr_EndComment, true, false);
+            if (AConstant::npos == file.readUntil(str, AXmlDocument::sstr_EndComment))
+              ATHROW_EX(this, AException::InvalidData, AString("Comment does not terminate with --> in ") +str);
           }
 
-          if (str.getSize() - 3 != str.findNoCase(AXmlDocument::sstr_EndComment))
-            ATHROW_EX(this, AException::InvalidData, AString("Comment does not terminate with --> in ") +str);
-
-          AAutoPtr<AXmlInstruction> p(new AXmlInstruction(AXmlInstruction::COMMENT));
-          str.remove(4);
           str.rremove(3);
-          p->parse(str);
-          addContent(p.get());
-          p.setOwnership(false);
+          str.remove(4);
+          addComment(str);
         }
         else
         {
@@ -526,8 +530,9 @@ bool AXmlElement::hasElements() const
   return false;
 }
 
-void AXmlElement::find(const AString& path, AXmlNode::NodeContainer& result)
+size_t AXmlElement::find(const AString& path, AXmlNode::NodeContainer& result)
 {
+
   AString strAttribute;
   AString strPath(path);
   if ('/' == strPath.at(0))
@@ -553,25 +558,28 @@ void AXmlElement::find(const AString& path, AXmlNode::NodeContainer& result)
   {
     //a_This is where we stop
     result.push_back(this);
-    return;
+    return 1;
   }
 
   listPath.pop_front();
   strPath.removeUntil('/');
 
+  size_t ret = 0;
   NodeContainer::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
     AXmlElement *p = dynamic_cast<AXmlElement *>(*cit);
     if (p && !p->getName().compare(listPath.front()))
     {
-      p->find(strPath, result);
+      ret += p->find(strPath, result);
     }
     ++cit;
   }
+  
+  return ret;
 }
 
-void AXmlElement::find(const AString& path, AXmlNode::ConstNodeContainer& result) const
+size_t AXmlElement::find(const AString& path, AXmlNode::ConstNodeContainer& result) const
 {
   AString strAttribute;
   AString strPath(path);
@@ -598,21 +606,24 @@ void AXmlElement::find(const AString& path, AXmlNode::ConstNodeContainer& result
   {
     //a_This is where we stop
     result.push_back(this);
-    return;
+    return 1;
   }
 
   listPath.pop_front();
   strPath.removeUntil('/');
 
+  size_t ret = 0;
   NodeContainer::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
     AXmlElement *p = dynamic_cast<AXmlElement *>(*cit);
     if (p && !p->getName().compare(listPath.front()))
     {
-      p->find(strPath, result);
+      ret += p->find(strPath, result);
     }
     ++cit;
   }
+
+  return ret;
 }
 

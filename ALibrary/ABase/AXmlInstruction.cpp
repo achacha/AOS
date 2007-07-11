@@ -141,8 +141,6 @@ void AXmlInstruction::parse(const AString& contents)
 
     case '!':
       m_Data.assign(contents);
-      m_Data.stripLeading();
-      m_Data.stripTrailing();
       break;
   }
 }
@@ -184,10 +182,11 @@ void AXmlInstruction::emit(AOutputBuffer& target, int indent) const
   {
     target.append(' ');
     m_Attributes.emit(target);
+    if (!m_Data.isEmpty())
+      target.append(' ');
   }
   if (!m_Data.isEmpty())
   {
-    target.append(' ');
     target.append(m_Data);
   }
 

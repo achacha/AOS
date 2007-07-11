@@ -39,8 +39,8 @@ public:
   /*!
   Name of this node
   */
-  inline const AString& getName() const;
-  inline AString& useName();
+  const AString& getName() const;
+  AString& useName();
 
   /*!
   Find path based on this node as root

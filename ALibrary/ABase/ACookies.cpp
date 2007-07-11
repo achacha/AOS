@@ -316,6 +316,6 @@ void ACookies::emit(AXmlElement& target) const
   
   for (size_t i = 0; i < mvector__Cookies.size(); ++i)
   {
-    mvector__Cookies[i]->emit(target);
+    mvector__Cookies[i]->emit(target.addElement(ASW("ACookie",7)));
   }
 }

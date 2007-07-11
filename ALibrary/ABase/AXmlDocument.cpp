@@ -173,9 +173,13 @@ void AXmlDocument::fromAFile(AFile& file)
       if (AConstant::npos == file.readUntilOneOf(str, sstr_EndInstructionOrWhitespace, false))
         ATHROW(this, AException::InvalidData);
 
-      if (AConstant::npos == file.skipOver())
-        ATHROW(this, AException::InvalidData);
-      
+      if (0 != str.find(ASW("!--",3)))
+      {
+        //a_Comment not found
+        if (AConstant::npos == file.skipOver())
+          ATHROW(this, AException::InvalidData);
+      }
+        
       //a_Xml instruction (singular by default)
       AAutoPtr<AXmlInstruction> p(new AXmlInstruction(str));
       

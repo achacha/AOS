@@ -45,6 +45,11 @@ public:
   void parseCookie(const AString& strCookieLine);
 
   /*!
+  Is a POST
+  */
+  bool isPOST() const;
+
+  /*!
   Helpers
   */
   bool isHttpPipeliningEnabled() const;

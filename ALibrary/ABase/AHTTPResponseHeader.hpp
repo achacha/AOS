@@ -64,22 +64,60 @@ public:
   AHTTPResponseHeader operator=(const AHTTPResponseHeader&);
   virtual ~AHTTPResponseHeader();
 
-  //a_Presentation
+  /*!
+  AEmittable and AXmlEmittable
+  */
   virtual void emit(AOutputBuffer&) const;
   virtual void emit(AXmlElement&) const;
 
-  //a_Clear header
+  /*!
+  Clear header
+  */
   virtual void clear();
 
-  //a_Access
-  inline int getStatusCode() const;
+  /*!
+  Gets reason phrase for a status code (as per RFC-2616)
+  Returns empty string if not found
+  */
+  static AString getStatusCodeReasonPhrase(int statusCode);
+  
+  /*!
+  Checks if status code is valid (as per RFC-2616)
+  */
+  static bool isValidStatusCode(int statusCode);
 
-  //a_Setting
-  inline void setStatusCode(AHTTPResponseHeader::STATUS_CODES eStatusCode);
+  /*!
+  Access
+  */
+  int getStatusCode() const;
 
-  //a_Access to cookies
-  inline const ACookies& getCookies() const;
-  inline ACookies& useCookies();
+  /*!
+  Set response code and optional description
+  */
+  void setStatusCode(AHTTPResponseHeader::STATUS_CODES eStatusCode);
+
+  /*!
+  Set response code and optional description
+  Checks validity amd if status code is not a valid one (as per RFC2616),
+    you MUST provide a reason
+  */
+  void setStatusCode(int statusCode, const AString& reason = AString::sstr_Empty);
+
+  /*!
+  Get current reason phrase (empty of default to be used)
+  */
+  const AString& getReasonPhrase() const;
+
+  /*!
+  Response status reason phrase
+  */
+  void setReasonPhrase(const AString& reason);
+
+  /*!
+  Access to cookies
+  */
+  const ACookies& getCookies() const;
+  ACookies& useCookies();
 
 protected:
   //a_First line handled by respnse
@@ -91,14 +129,8 @@ protected:
 
 private:
   int      mi_StatusCode;
-  AString  mstr_ExtensionDescription;
+  AString  mstr_ReasonPhrase;
   ACookies mcookies_Response;
-
-  //a_Internal helpers
-  AString _getStatusCodeDescription() const;
-  
-  //a_Response validation routines
-  bool _isValidStatusCode() const;
 
   void _copy(const AHTTPResponseHeader&);
 public:
