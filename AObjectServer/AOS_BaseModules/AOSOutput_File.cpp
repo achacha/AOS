@@ -48,8 +48,9 @@ bool AOSOutput_File::execute(AOSOutputContext& context)
 
   //a_Optional content type, if none, use text/html
   AString contentType;
-  if (context.getRequestParameterPairs().exists(ASW("/params/content-type", 20)))
-    context.getOutputParams().emitFromPath(ASW("/params/content-type", 20), contentType);
+  const AXmlNode *pType = context.getOutputParams().findNode(ASW("/params/content-type", 20));
+  if (pType)
+    pType->emitContent(contentType);
   else
     contentType.assign("text/html",9);
 

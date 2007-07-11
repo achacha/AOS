@@ -117,5 +117,12 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
         break;
     }
   }
+  else
+  {
+    //a_411 Length Required
+    context.useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_411_Length_Required);
+    return false;
+  }
+
   return true;
 }

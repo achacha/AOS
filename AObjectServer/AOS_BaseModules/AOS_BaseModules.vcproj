@@ -241,6 +241,7 @@
 			>
 			<Filter
 				Name="Header Files"
+				Filter="hpp;h;"
 				>
 				<File
 					RelativePath=".\AOSInput_HtmlForm.hpp"
@@ -257,6 +258,7 @@
 			</Filter>
 			<Filter
 				Name="Source Files"
+				Filter="cpp;c"
 				>
 				<File
 					RelativePath=".\AOSInput_HtmlForm.cpp"
@@ -277,7 +279,7 @@
 			>
 			<Filter
 				Name="Header Files"
-				Filter="hpp"
+				Filter="hpp;h;"
 				>
 				<File
 					RelativePath=".\AOSOutput_File.hpp"
@@ -302,7 +304,7 @@
 			</Filter>
 			<Filter
 				Name="Source Files"
-				Filter="cpp"
+				Filter="cpp;c;"
 				>
 				<File
 					RelativePath=".\AOSOutput_File.cpp"
@@ -331,7 +333,12 @@
 			>
 			<Filter
 				Name="Header Files"
+				Filter="hpp;h;"
 				>
+				<File
+					RelativePath=".\AOSModule_AlterContext.hpp"
+					>
+				</File>
 				<File
 					RelativePath=".\AOSModule_ExecuteQuery.hpp"
 					>
@@ -347,7 +354,12 @@
 			</Filter>
 			<Filter
 				Name="Source Files"
+				Filter="cpp;c;"
 				>
+				<File
+					RelativePath=".\AOSModule_AlterContext.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\AOSModule_ExecuteQuery.cpp"
 					>

@@ -193,7 +193,7 @@ AOSConfiguration::AOSConfiguration(
   m_AosBaseStaticDir.usePathNames().push_back("static");
   m_AdminBaseHttpDir.usePathNames().push_back("admin");
 
-  //a_TODO: parameter after ini is removed
+  //a_TODO: This needs to be a paremeter
   loadConfig("AObjectServer");
 
   //a_Configure server internals from config

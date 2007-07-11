@@ -30,10 +30,18 @@ bool AOSInput_HtmlForm::execute(AOSContext& context)
     context.useRequestParameterPairs().parse(strR);
     
     //a_Publish raw_data if dumping context in debug mode and when 'dumpContext' exists
-#ifdef __DEBUG_DUMP__
+    //a_The executor was supress all output if dumpContext is not enabled
     if (context.useRequestParameterPairs().exists(ASW("dumpContext",11)))
       context.useOutputRootXmlElement().addElement(ASW("/input/data", 11), str, AXmlData::CDataSafe);
-#endif
+  }
+  else
+  {
+    if (context.useRequestHeader().isPOST())
+    {
+      //a_411 Length Required if POST
+      context.useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_411_Length_Required);
+      return false;
+    }
   }
 
   return true;
