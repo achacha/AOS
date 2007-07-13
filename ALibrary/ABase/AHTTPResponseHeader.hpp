@@ -79,7 +79,7 @@ public:
   Gets reason phrase for a status code (as per RFC-2616)
   Returns empty string if not found
   */
-  static AString getStatusCodeReasonPhrase(int statusCode);
+  static const AString getStatusCodeReasonPhrase(int statusCode);
   
   /*!
   Checks if status code is valid (as per RFC-2616)

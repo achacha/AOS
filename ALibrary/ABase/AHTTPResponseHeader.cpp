@@ -261,7 +261,7 @@ bool AHTTPResponseHeader::isValidStatusCode(int statusCode)
   return false;
 }
 
-AString AHTTPResponseHeader::getStatusCodeReasonPhrase(int statusCode)
+const AString AHTTPResponseHeader::getStatusCodeReasonPhrase(int statusCode)
 {
   switch(statusCode)
   {
