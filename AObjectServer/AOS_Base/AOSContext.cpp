@@ -23,6 +23,15 @@ void AOSContext::debugDump(std::ostream& os, int indent) const
   if (mp_RequestFile)
     mp_RequestFile->debugDump(os, indent+2);
 
+  //a_Associated command
+  if (mp_Command)
+  {
+    ADebugDumpable::indent(os, indent+1) << "m_Command=" << std::endl;
+    mp_Command->debugDump(os, indent+2);
+  }
+  else
+    ADebugDumpable::indent(os, indent+1) << "mp_Command=NULL" << std::endl;
+
   //a_HTTP data
   ADebugDumpable::indent(os, indent+1) << "m_RequestHeader=" << std::endl;
   m_RequestHeader.debugDump(os, indent+2);
@@ -38,6 +47,11 @@ void AOSContext::debugDump(std::ostream& os, int indent) const
   else
     ADebugDumpable::indent(os, indent+1) << "mp_SessionObject=NULL" << std::endl;
   
+  //a_Event visitor
+  ADebugDumpable::indent(os, indent+1) << "m_EventVisitor={" << std::endl;
+  m_EventVisitor.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
   //a_Output buffer
   ADebugDumpable::indent(os, indent+1) << "m_OutputBuffer={" << std::endl;
   m_OutputBuffer.debugDump(os, indent+2);

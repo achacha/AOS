@@ -204,8 +204,8 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             }
             else if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
             {
-              //a_No error and pipelining, go to next state and continue
-              pThis->_goYes(pContext);
+              //a_No error and pipelining, we handled request, do not continue
+              pThis->_goNo(pContext);
               pContext = NULL;
             }
             else
