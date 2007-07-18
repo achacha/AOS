@@ -258,7 +258,6 @@ public:
   */
   static const AString CONTEXT;
   static const AString XML_ROOT;
-  static const AString XML_DOCUMENT;
 
 protected:
   //a_Read and parse Http header

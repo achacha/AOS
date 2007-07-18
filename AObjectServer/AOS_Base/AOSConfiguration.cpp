@@ -36,11 +36,13 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_AosDefaultOutptGenerator=" << m_AosDefaultOutputGenerator << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_AdminBaseHttpDir=" << m_AdminBaseHttpDir << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_Config=" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Config={" << std::endl;
   m_Config.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_ConfigBits=" << std::endl;
   m_ConfigBits.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_ReportedServer="  << m_ReportedServer << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ReportedHostname="  << m_ReportedHostname << std::endl;
