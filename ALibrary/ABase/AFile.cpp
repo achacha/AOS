@@ -314,6 +314,33 @@ size_t AFile::read(AString& str, size_t length)
   return bytesread;
 }
 
+size_t AFile::peek(AString& str, size_t length)
+{
+  size_t initialSize = str.getSize();
+  size_t bytesread = peek(str.startUsingCharPtr(length+initialSize)+initialSize, length);
+  AASSERT(this, AConstant::npos != bytesread);
+  str.stopUsingCharPtr(initialSize + bytesread);
+  return bytesread;
+}
+
+size_t AFile::skip(size_t length)
+{
+  char tempBuffer[128];
+  size_t bytesread;
+  size_t totalbytesread = 0;
+  while (length > 0)
+  {
+    bytesread = read(tempBuffer, (length > 128 ? 128 : length));
+    if (AConstant::npos == bytesread || !bytesread)
+      break;
+    
+    AASSERT(this, AConstant::npos != bytesread);
+    length -= bytesread;
+    totalbytesread += bytesread;
+  }
+  return totalbytesread;
+}
+
 size_t AFile::write(const AString& line)
 {
   return _write(line.data(), line.getSize());

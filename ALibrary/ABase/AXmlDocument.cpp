@@ -93,7 +93,9 @@ void AXmlDocument::emit(AOutputBuffer& target, int indent) const
   LIST_NODEPTR::const_iterator cit = m_Instructions.begin();
   while (cit != m_Instructions.end())
   {
+    for (int i=0; i<indent; ++i) target.append(AString::sstr_TwoSpaces);    //a_Indentation
     (*cit)->emit(target, indent);
+    target.append(AString::sstr_CRLF);
     ++cit;
   }
   m_Root.emit(target, indent);
@@ -107,6 +109,7 @@ void AXmlDocument::emitJSON(
   LIST_NODEPTR::const_iterator cit = m_Instructions.begin();
   while (cit != m_Instructions.end())
   {
+    for (int i=0; i<indent; ++i) target.append(AString::sstr_TwoSpaces);    //a_Indentation
     (*cit)->emitJSON(target, indent);
     if (indent >= 0)
       target.append(AString::sstr_CRLF);
@@ -151,6 +154,9 @@ AXmlInstruction& AXmlDocument::addComment(const AString& comment)
 
 void AXmlDocument::fromAFile(AFile& file)
 {
+  //a_Full clear since we are restoring from file
+  m_Instructions.clear();
+  
   AString str(256, 128);
   char c;
 
@@ -198,92 +204,11 @@ void AXmlDocument::fromAFile(AFile& file)
     else
     {
       file.putBack('<');     
-      _parseElement(m_Root, file);
+      m_Root.fromAFile(file);
     }
     
     str.clear();
   }
-}
-
-bool AXmlDocument::_parseElement(AXmlElement& parent, AFile& file)
-{
-  AString str(256, 128);
-  char c = ' ';
-
-  //a_Find <
-  if (AConstant::npos == file.skipUntilOneOf('<'))
-    return false;
-
-  file.skipOver();                  //a_Skip over whitespace between < and tagname
-
-  //a_Extract name and skip over whitespace
-  file.readUntilOneOf(str, sstr_EndOrWhitespace, false);
-  file.skipOver();
-  parent.useName().assign(str);
-  
-  //a_Find /> or >
-  str.clear();
-  file.readUntilOneOf(str, sstr_End);
-  if (!str.isEmpty() && str.at(str.getSize() - 1) == '/')
-  {
-    c = '/';  //a_Singular mode
-    str.setSize(str.getSize() - 1);
-  }
-  str.stripTrailing();
-
-  //a_Parse attributes
-  if (!str.isEmpty())
-    parent.useAttributes().parse(str);
-
-  bool boolEndTagFound = (c == '/');
-  while (!boolEndTagFound)
-  {
-    //a_Read data until next tag starts
-    if (AConstant::npos == file.skipOver())                //a_Skip over whitespace
-      ATHROW(this, AException::InvalidData);
-
-    str.clear();
-    if (AConstant::npos == file.readUntilOneOf(str, sstr_Start))
-      ATHROW_EX(this, AException::InvalidData, AString("Inside element: ")+parent.getName());
-
-    str.stripTrailing();
-    if (!str.isEmpty())
-    {
-      parent.addData(str);
-    }
-
-    //a_Skip over whitespace between < and start of the tag name
-    if (AConstant::npos == file.skipOver())
-      ATHROW_EX(this, AException::InvalidData, AString("Inside element: ")+parent.getName());
-
-    file.peek(c);
-    if (c == '/')
-    {
-      //a_End of tag found
-      file.read(c);
-      str.clear();
-      if (AConstant::npos == file.readUntilOneOf(str, sstr_EndOrWhitespace))
-        ATHROW_EX(this, AException::InvalidData, AString("Inside element: ")+parent.getName());
-      file.skipOver(sstr_EndOrWhitespace);                //a_Skip over whitespace and >
-      if (str != parent.getName())
-        ATHROW_EX(this, AException::InvalidData, AString("Close tag </")+str+"> does not match opened tag <"+parent.getName()+">");
-      
-      boolEndTagFound = true;
-    }
-    else
-    {
-      //a_Put the start tag back
-      file.putBack('<');
-
-      //a_Another element
-      AAutoPtr<AXmlElement> psubElement(new AXmlElement(&parent));
-      psubElement->fromAFile(file);
-      psubElement.setOwnership(false);
-      parent.addContent(psubElement.get());
-    }
-  }
-
-  return true;
 }
 
 void AXmlDocument::toAFile(AFile& afile) const

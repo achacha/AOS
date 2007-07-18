@@ -86,9 +86,6 @@ private:
   //a_There is only 1 root element
   AXmlElement m_Root;
 
-  //a_Helps with parsing of the XML document (return of false means that EOF was reached)
-  bool _parseElement(AXmlElement&, AFile&);
-
 public:
   //a_For convenience and efficiency
   static const AString sstr_Start;                         //a_ "<"

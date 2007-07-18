@@ -397,13 +397,15 @@ void AXmlElement::fromAFile(AFile& file)
   file.skipOver();
 
   //a_Extract name and skip over whitespace
+  m_Name.clear();
   file.readUntilOneOf(m_Name, AXmlDocument::sstr_EndOrWhitespace, false);
   file.skipOver();
   
   //a_Find /> or >
   char c = ' ';
-  if (m_Name.equals(ASW("!--",3)))
+  if (0 == m_Name.find(ASW("!--",3)))
   {
+    if (m_Name.rfind("--", 2) == m_Name.getSize() - 2)  //TODO:
     //a_Special case for comment, must end with '-->' and may contain '>' inside
     file.readUntil(str, AXmlDocument::sstr_EndComment);
     addComment(str);
@@ -463,28 +465,25 @@ void AXmlElement::fromAFile(AFile& file)
       {
         file.putBack('<');
         str.clear();
-        file.readUntil(str, AXmlDocument::sstr_End, true, false);
+        
+        file.peek(str, 9);    //a_ either "<!--*--"  or "<![CDATA["
         if (0 == str.findNoCase(AXmlData::sstr_StartCDATA))
         {
           //a_CDATA found
+          file.skip(AXmlData::sstr_StartCDATA.getSize());
+
           AString data;
-          str.peek(data, AXmlData::sstr_StartCDATA.getSize());
-          data.rremove(AXmlData::sstr_EndCDATA.getSize());
+          file.readUntil(data, AXmlData::sstr_EndCDATA, true, true);
           addData(data, AXmlData::CDataDirect);
         }
         else if (0 == str.findNoCase(AXmlDocument::sstr_StartComment))
         {
-          //a_Process a comment
-          if (str.getSize() - 3 != str.find(AXmlDocument::sstr_EndComment))
-          {
-            //a_Try reading more in case > was contained in the comment
-            if (AConstant::npos == file.readUntil(str, AXmlDocument::sstr_EndComment))
-              ATHROW_EX(this, AException::InvalidData, AString("Comment does not terminate with --> in ") +str);
-          }
+          //a_Comment (!--) found
+          file.skip(AXmlDocument::sstr_StartComment.getSize());
 
-          str.rremove(3);
-          str.remove(4);
-          addComment(str);
+          AString comment;
+          file.readUntil(comment, AXmlDocument::sstr_EndComment, true, true);
+          addComment(comment);
         }
         else
         {

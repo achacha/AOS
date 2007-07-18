@@ -194,7 +194,6 @@ void AXmlInstruction::emit(AOutputBuffer& target, int indent) const
   {
     case '?':
       target.append(AXmlDocument::sstr_EndInstruction);
-      target.append(AString::sstr_CRLF);
       break;
 
     case '!':

@@ -64,6 +64,11 @@ public:
   virtual size_t read(ARope&, size_t length);
 
   /*!
+  Peek
+  */
+  virtual size_t peek(AString&, size_t length);
+
+  /*!
   Write contents from one file to another to EOL of source
 
   returns: bytes written
@@ -160,6 +165,11 @@ public:
   */
   virtual size_t peek(void* pvData, size_t length);
   
+  /*!
+  Skip over some data
+  */
+  virtual size_t skip(size_t length);
+
   /*!
   Puts back the read data into the front of the lookahead buffer for next read to use
   Should be using peek to look ahead, this is only as a last resort

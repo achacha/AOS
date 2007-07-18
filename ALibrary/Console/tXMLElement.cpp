@@ -6,10 +6,19 @@
 #include "ARandomNumberGenerator.hpp"
 
 const char xml_data_small[] = "\
+<root>\
+  <!-- url>http://</url -->\
+  <!--0123456789-->\
+	<Empty/>\
+</root>\
+";
+
+const char xml_doc_small[] = "\
 <?xml version = \"1.0\"?>\
 <xml id=\"EQInterfaceDefinitionLanguage\">\
 	<Schema xmlns = \"EverQuestData\" xmlns:dt = \"EverQuestDataTypes\"/>\
-	<TextColor>\
+  <!--comment-->\
+  <TextColor>\
 		<R>240</R>\
 		<G>240</G>\
 		<B>240</B>\
@@ -19,7 +28,10 @@ const char xml_data_small[] = "\
 
 const char xml_data_big[] ="\
 <?xml version = \"1.0\"?>\
+<!-- root level comment -->\
+<?xml stylesheet=\"acb\"?>\
 <XML ID = \"EQInterfaceDefinitionLanguage\">\
+  <!-- first level comment -->\
 	<Schema xmlns = \"EverQuestData\" xmlns:dt = \"EverQuestDataTypes\"/>\
 	<Gauge item = \"Casting_Gauge\">\
 		<ScreenID>Gauge</ScreenID>\
@@ -89,21 +101,22 @@ const char xml_data_big[] ="\
 
 void testParse()
 {
-	AXmlElement exml;
-	AString str;
-	u4 pos = 0;
+  AFile_AString strfile;
 
+  //AXmlElement exml;
+  //strfile.useAString().assign(xml_data_small);
+  //exml.fromAFile(strfile);
+  //std::cout << exml << "\r\n" << std::endl;
 
-/*  exml.parse(xml_data_small, pos);
-	exml.recurseToString(str);
-	std::cout << str.c_str() << std::endl << std::endl;
-
-	pos = 0;
-	exml.clear();
-	exml.parse(xml_data_big, pos);
-	exml.recurseToString(str, 0);
-	std::cout << str.c_str() << std::endl << std::endl;
-*/
+	AXmlDocument xdoc("root");
+  strfile.useAString().assign(xml_data_big);
+  strfile.reset();
+  xdoc.fromAFile(strfile);
+  std::cout << xdoc << std::endl;
+  
+  ARope rope;
+  xdoc.emit(rope, 0);
+  std::cout << rope << std::endl;
 }
 
 void testPathAdd()
@@ -264,14 +277,14 @@ void testAppend()
 
 int main()
 {
-  //testParse();
+  testParse();
   //testPathAdd();
   //testOutput();
   //testRandomXml();
   //testMultiAdd();
   //testXmlEmit();
   //testClone();
-  testAppend();
+  //testAppend();
 
 	return 0;
 }
