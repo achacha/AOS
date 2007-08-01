@@ -227,12 +227,24 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
     catch(AException& e)
     {
       pContext->setExecutionState(e);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       _goError(pContext);
+      pContext = NULL;
+
+    }
+    catch(std::exception& e)
+    {
+      pContext->setExecutionState(ASWNL(e.what()), true);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
+      _goError(pContext);
+      pContext = NULL;
     }
     catch(...)
     {
       pContext->setExecutionState(ASW("Unknown exception caught in AOSContextQueue_Executor::threadproc",64), true);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       _goError(pContext);
+      pContext = NULL;
     }
   }
 

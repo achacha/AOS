@@ -304,6 +304,13 @@ int main(int argc, char **argv)
     traceMultiline(str, NULL);
     return -1;
   }
+  catch(std::exception& ex)
+  {
+    AString str("main: ");
+    str.append(ASWNL(ex.what()));
+    traceMultiline(str, NULL);
+    return -1;
+  }
   catch(...)
   {
     AOS_DEBUGTRACE("main: Unknown exception caught", NULL);

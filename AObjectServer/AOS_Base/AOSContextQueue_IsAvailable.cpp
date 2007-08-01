@@ -171,9 +171,13 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
     {
       pThis->m_Services.useLog().addException(e);
     }
+    catch(std::exception& e)
+    {
+      pThis->m_Services.useLog().addException(e);
+    }
     catch(...)
     {
-      pThis->m_Services.useLog().add(AString("Unknown exception caught in AOSContextQueue_IsAvailable::threadproc"), ALog::EXCEPTION);
+      pThis->m_Services.useLog().add(ASWNL("Unknown exception caught in AOSContextQueue_IsAvailable::threadproc"), ALog::EXCEPTION);
     }
   }
 
