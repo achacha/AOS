@@ -130,33 +130,26 @@ void ATextGenerator::generateRandomData(AOutputBuffer& target, size_t len)
   }
 }
 
-void ATextGenerator::generateUniqueId(AString& target, size_t maxSize /* = 32 */)
+void ATextGenerator::generateUniqueId(AOutputBuffer& target, size_t size /* = 32 */)
 {
-  if (target.getSize() >= maxSize)
-    return;
-
-  if (maxSize < 16)
+  if (size < 16)
     ATHROW(NULL, AException::InvalidParameter);
 
-  AString str(maxSize, 128);
-  
-  size_t bytesToAdd = ((maxSize - target.getSize()) >> 2) * 3;
-
+  ARope rope;
   size_t x = ATime::getTickCount();
-  str.append((const char *)&x, 4);
-  bytesToAdd -= 4;
-
+  rope.append((const char *)&x, 4);
+  
+  size_t bytesToAdd = size - 4;
   while(bytesToAdd >= 4)
   {
     x = ARandomNumberGenerator::get(ARandomNumberGenerator::Lecuyer).nextU4();
-    str.append((const char *)&x, 4);
+    rope.append((const char *)&x, 4);
     bytesToAdd -= 4;
   }
 
-  ATextConverter::encode64(str, target);
-  AASSERT(NULL, maxSize >= target.getSize());
-  if (maxSize > target.getSize())
-    ATextGenerator::generateRandomString(target, maxSize - target.getSize());
+  ATextConverter::encode64(rope, target);
+  if (size > rope.getSize())
+    ATextGenerator::generateRandomString(target, size - rope.getSize());
 }
 
 void ATextGenerator::generateRandomWord(AOutputBuffer& target, size_t len /* = 0x1 */)

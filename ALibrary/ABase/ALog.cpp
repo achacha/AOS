@@ -57,11 +57,11 @@ void ALog::_append(const char *pcc, size_t len)
 
 void ALog::add(
   const AEmittable& source0, 
-  u4 event_type //= ALog::MESSAGE
+  u4 eventType //= ALog::MESSAGE
 )
 {
   //a_Log event only if event type is not filtered out
-  if (m_EventMask & event_type)
+  if (m_EventMask & eventType)
   {
     ARope rope;
 
@@ -72,7 +72,7 @@ void ALog::add(
     //a_event type
     rope.append(':');
     AString strMask(16, 16);
-    strMask.parseU4(event_type, 16);
+    strMask.parseU4(eventType, 16);
     strMask.justifyRight(8, '0');
     rope.append(strMask);
 
@@ -84,7 +84,7 @@ void ALog::add(
     //Write to log
     {
       ALock localLock(mp_SynchObject);
-      _add(rope);
+      _add(rope, eventType);
     }
   }
 }
@@ -92,10 +92,10 @@ void ALog::add(
 void ALog::add(
   const AEmittable& source0, 
   const AEmittable& source1, 
-  u4 event_type // = ALog::MESSAGE
+  u4 eventType // = ALog::MESSAGE
 )
 {
-  if (m_EventMask & event_type)
+  if (m_EventMask & eventType)
   {
     ARope rope;
     
@@ -106,7 +106,7 @@ void ALog::add(
     //a_event type
     rope.append(':');
     AString strMask(16, 16);
-    strMask.parseU4(event_type, 16);
+    strMask.parseU4(eventType, 16);
     strMask.justifyRight(8, '0');
     rope.append(strMask);
 
@@ -119,7 +119,7 @@ void ALog::add(
 
     {
       ALock localLock(mp_SynchObject);
-      _add(rope);
+      _add(rope, eventType);
     }
   }
 }
@@ -128,10 +128,10 @@ void ALog::add(
   const AEmittable& source0,
   const AEmittable& source1,
   const AEmittable& source2,
-  u4 event_type //= ALog::MESSAGE
+  u4 eventType //= ALog::MESSAGE
 )
 {
-  if (m_EventMask & event_type)
+  if (m_EventMask & eventType)
   {
     ARope rope;
     ATime timeNow;
@@ -140,7 +140,7 @@ void ALog::add(
     //a_event type
     rope.append(':');
     AString strMask(16, 16);
-    strMask.parseU4(event_type, 16);
+    strMask.parseU4(eventType, 16);
     strMask.justifyRight(8, '0');
     rope.append(strMask);
 
@@ -155,7 +155,7 @@ void ALog::add(
 
     {
       ALock localLock(mp_SynchObject);
-      _add(rope);
+      _add(rope, eventType);
     }
   }
 }
@@ -165,10 +165,10 @@ void ALog::add(
   const AEmittable& source1,
   const AEmittable& source2,
   const AEmittable& source3,
-  u4 event_type //= ALog::MESSAGE
+  u4 eventType //= ALog::MESSAGE
 )
 {
-  if (m_EventMask & event_type)
+  if (m_EventMask & eventType)
   {
     ARope rope;
     ATime timeNow;
@@ -177,7 +177,7 @@ void ALog::add(
     //a_event type
     rope.append(':');
     AString strMask(16, 16);
-    strMask.parseU4(event_type, 16);
+    strMask.parseU4(eventType, 16);
     strMask.justifyRight(8, '0');
     rope.append(strMask);
 
@@ -194,7 +194,7 @@ void ALog::add(
 
     {
       ALock localLock(mp_SynchObject);
-      _add(rope);
+      _add(rope, eventType);
     }
   }
 }
@@ -233,4 +233,9 @@ void ALog::addException(const AException& ex)
 {
   const AEmittable& ee = ex;
   add(ee, ALog::EXCEPTION);
+}
+
+void ALog::addException(const std::exception& ex)
+{
+  add(ASWNL(ex.what()), ALog::EXCEPTION);
 }

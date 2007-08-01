@@ -12,6 +12,7 @@
 #include <deque>
 #include <list>
 #include <set>
+#include <exception>
 
 //a_Global helper operators
 class AEmittable;

@@ -34,9 +34,9 @@ public:
    * Not guaranteed to be unique across processes (but extremely likely to be)
    * For guaranteed results use machine specific GUID generator functions
    * maxSize must be >16 characters long
-   * Appends to target up to maxSize, does nothing if target.getSize() > maxSize
+   * Appends to target up to maxSize
   **/
-  static void generateUniqueId(AString& target, size_t maxSize = 32);
+  static void generateUniqueId(AOutputBuffer& target, size_t maxSize = 32);
 
   /**
    * Some useful helper functions

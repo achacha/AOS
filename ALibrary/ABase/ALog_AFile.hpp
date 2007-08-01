@@ -59,6 +59,11 @@ public:
   void emitCurrentFilename(AOutputBuffer&) const;
   
   /*!
+  If true will also write a separate semi-randomly named file for every error that occurs
+  */
+  void setWriteSeparateErrorFiles(bool b = true);
+
+  /*!
   Logger thread operational parameters
   */
   void setLoggerCycleSleep(u4 milliseconds);
@@ -80,7 +85,7 @@ protected:
   /*!
   ALog
   */
-  virtual void _add(const AEmittable& event);
+  virtual void _add(const AEmittable&, u4 eventType);
 
 private:
   //a_Worker thread that writes the data
@@ -88,6 +93,9 @@ private:
   static u4 threadprocLogger(AThread&);
   u4 m_CycleSleep;
   
+  //a_Special error handling
+  bool m_enableSeparateFilesForErrors;
+
   //a_Log rotation
   bool m_enableLogFileRotate;
   u4 m_logMaxFileSize;

@@ -7,6 +7,7 @@
 #include "AFileSystem.hpp"
 #include "ATime.hpp"
 #include "AXmlElement.hpp"
+#include "ATextGenerator.hpp"
 
 #define DEFAULT_CYCLE_SLEEP 10000
 #define DEFAULT_MAX_FILE_SIZE 1024 * 1024
@@ -17,6 +18,9 @@ void ALog_AFile::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ALog_AFile @ " << std::hex << this << std::dec << ") {" << std::endl;
   ALog::debugDump(os, indent+1);
+
+  ADebugDumpable::indent(os, indent+1) << "m_enableLogFileRotate=" << (m_enableLogFileRotate ? AString::sstr_True : AString::sstr_False) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_enableSeparateFilesForErrors=" << (m_enableSeparateFilesForErrors ? AString::sstr_True : AString::sstr_False) << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_filenameRotation=" << std::endl;
   m_filenameRotation.debugDump(os, indent+2);
@@ -53,7 +57,8 @@ ALog_AFile::ALog_AFile(
   m_LoggerThread(ALog_AFile::threadprocLogger, false),
   m_logMaxFileSize(DEFAULT_MAX_FILE_SIZE),
   m_enableLogFileRotate(true),
-  m_DeleteFileObject(true)
+  m_DeleteFileObject(true),
+  m_enableSeparateFilesForErrors(true)
 {
   //a_Base filename
   AFilename f(baseFilename);
@@ -241,10 +246,44 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
 }
 
 void ALog_AFile::_add(
-  const AEmittable& event
+  const AEmittable& evt,
+  u4 eventType
 )
 {
   LogBuffer *pBuffer = NULL;
+
+  if (
+       m_enableSeparateFilesForErrors 
+    && (eventType & ALog::ALL_ERRORS)
+  )
+  {
+    //a_Generate semi-random filename
+    AString str(1024, 256);
+    AFile_Physical *pPhysicalFile = dynamic_cast<AFile_Physical *>(mp_File);
+    if (pPhysicalFile)
+    {
+      pPhysicalFile->useFilename().emit(str);
+    }
+    else
+    {
+      m_filenameRotation.emit(str);
+    }
+    str.append('.');
+    ATextGenerator::generateRandomNumber(str, 16);
+    str.append(".error.txt",10);
+    
+    try
+    {
+      AFile_Physical errorFile(str, "at");
+      errorFile.open();
+      evt.emit(errorFile);
+      errorFile.close();
+    }
+    catch(...)
+    {
+      //a_Do nothing, if we are getting exception here we are probably in bad shape as it is 
+    }
+  }
 
   //a_Get log buffer
   ALock lock(mp_SynchObject);
@@ -260,7 +299,7 @@ void ALog_AFile::_add(
   m_BuffersToWrite.push_back(pBuffer);
 
   //a_Add first, emit later for accurate timing
-  event.emit(pBuffer->m_Buffer);
+  evt.emit(pBuffer->m_Buffer);
   pBuffer->m_ReadyToWrite = true;
 }
 
@@ -292,3 +331,7 @@ void ALog_AFile::setLoggerMaxFileSize(
   m_logMaxFileSize = bytes;
 }
 
+void ALog_AFile::setWriteSeparateErrorFiles(bool b)
+{
+  m_enableSeparateFilesForErrors = b;
+}

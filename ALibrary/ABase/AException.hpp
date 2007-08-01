@@ -7,8 +7,9 @@
 #include "AString.hpp"
 #include "ARope.hpp"
 #include "AStackWalker.hpp"
+#include <exception>
 #include <cassert>
- 
+
 /*!
 This is the base exception class.
 There are 2 important issues for creating your own exception:

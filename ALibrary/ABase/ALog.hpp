@@ -121,15 +121,16 @@ public:
 
   All AEmittables are appended together, separated by :
   */
-  void add(const AEmittable&, u4 event_type = ALog::MESSAGE);
-  void add(const AEmittable&, const AEmittable&, u4 event_type = ALog::MESSAGE);
-  void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 event_type = ALog::MESSAGE);
-  void add(const AEmittable&, const AEmittable&, const AEmittable&, const AEmittable&, u4 event_type = ALog::MESSAGE);
+  void add(const AEmittable&, u4 eventType = ALog::MESSAGE);
+  void add(const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
+  void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
+  void add(const AEmittable&, const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
 
   /*!
   Specialized events
   */
   void addException(const AException&);
+  void addException(const std::exception&);
 
   /*!
   AXmlEmittable
@@ -150,9 +151,9 @@ public:
     Events that occured within this scope
     All AEmittables are appended together, separated by :
     */
-    void add(const AEmittable&, u4 event_type = ALog::MESSAGE);
-    void add(const AEmittable&, const AEmittable&, u4 event_type = ALog::MESSAGE);
-    void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 event_type = ALog::MESSAGE);
+    void add(const AEmittable&, u4 eventType = ALog::MESSAGE);
+    void add(const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
+    void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
 
   protected:
     virtual void _append(const char *, size_t);  //AOutputBuffer required
@@ -201,7 +202,7 @@ protected:
   /*!
   The main log writing method that must be overridden by implementors
   */
-  virtual void _add(const AEmittable& event) = 0;
+  virtual void _add(const AEmittable&, u4 eventType) = 0;
 
   /*!
   Ability to log messages using AOutputBuffer interface (see AOutputBuffer.hpp)
