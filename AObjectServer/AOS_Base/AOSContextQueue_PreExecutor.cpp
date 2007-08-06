@@ -270,6 +270,13 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     httpFilename.join(pContext->useRequestUrl().getPathAndFilename());
   }
   
+  if (!httpFilename.isValid())
+  {
+    //a_Invalid filename
+    pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
+    return false;
+  }
+  
   AAutoPtr<AFile> pFile;
   size_t contentLenth = AConstant::npos;
   if (m_Services.useCacheManager().getStaticFile(*pContext, httpFilename, pFile))

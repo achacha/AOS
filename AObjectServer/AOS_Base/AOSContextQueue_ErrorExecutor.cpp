@@ -91,6 +91,9 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           //    .addAttribute(ASW("href",4), errorStylesheet);
           //}
 
+          //a_Add request header to result XML
+          pContext->useRequestHeader().emit(pContext->useOutputRootXmlElement().addElement("REQUEST"));
+
           //a_Emit HTTP result
           int dumpContext = 0;
           if (m_Services.useConfiguration().getBool("/config/server/debug/allow-dumpContext", false))
