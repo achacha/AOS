@@ -137,9 +137,9 @@ void ATextGenerator::generateUniqueId(AOutputBuffer& target, size_t size /* = 32
 
   ARope rope;
   size_t x = ATime::getTickCount();
-  rope.append((const char *)&x, 4);
+  rope.append((const char *)&x, sizeof(size_t));
   
-  size_t bytesToAdd = size - 4;
+  size_t bytesToAdd = size / 2 - sizeof(size_t);
   while(bytesToAdd >= 4)
   {
     x = ARandomNumberGenerator::get(ARandomNumberGenerator::Lecuyer).nextU4();

@@ -9,16 +9,21 @@
 #include <ctype.h>
 
 //a_Character map used for Base64 conversions
-const AString ATextConverter::sm__strBase64CharacterSet = 
+const AString ATextConverter::CHARSET_BASE64 = 
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 // 0000000000000000111111111111111122222222222222223333333333333333
 // 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
 
 //a_Character map used for Alphanum conversions
-const AString ATextConverter::sm__strAlphaNumCharacterSet = 
+const AString ATextConverter::CHARSET_ALPHANUM = 
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 // 0000000000000000111111111111111122222222222222223333333333333333
 // 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
+
+const AString ATextConverter::CHARSET_URL_RFC2396 = 
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789;/?:@&=+$,-_.!~*'()";
+// 000000000000000011111111111111112222222222222222333333333333333344444444444444445
+// 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0
 
 void ATextConverter::encodeBase64(const AString& strSource, AOutputBuffer& target)
 {
@@ -32,14 +37,14 @@ void ATextConverter::encodeBase64(const AString& strSource, AOutputBuffer& targe
     while( iBits >= 6 )
     {
       iBits -= 6;
-			target.append(sm__strBase64CharacterSet[ 0x3f & (iTemp >> iBits) ]);
+			target.append(CHARSET_BASE64[ 0x3f & (iTemp >> iBits) ]);
     }
   }
 	
 	if( iBits > 0 )
   {
     iTemp <<= 6 - iBits;
-    target.append(sm__strBase64CharacterSet[ 0x3f & iTemp ]);
+    target.append(CHARSET_BASE64[ 0x3f & iTemp ]);
     if ( iBits == 4 )
       target.append('=');
     else if ( iBits == 2 )
@@ -207,12 +212,12 @@ void ATextConverter::decodeHEX(const AString& strSource, AOutputBuffer& target)
 //a_Converts 2 digit hex to a value 0-0xFF
 u1 ATextConverter::convertHEXtoBYTE(char cHi, char cLo)
 {
-  if (isxdigit(cHi) && isxdigit(cLo))
+  if (isxdigit((u1)cHi) && isxdigit((u1)cLo))
   {
-    if (isdigit(cHi)) cHi -= '0';
+    if (isdigit((u1)cHi)) cHi -= '0';
     else cHi = tolower(cHi) - 'a' + '\xA';
 
-    if (isdigit(cLo)) cLo -= '0';
+    if (isdigit((u1)cLo)) cLo -= '0';
     else cLo = tolower(cLo) - 'a' + '\xA';
 
     return cHi * '\x10' + cLo; 
@@ -266,7 +271,14 @@ void ATextConverter::encodeURL(
     cX = strSource[i];
     
     //a_Determine if to encode or not
-    if (boolIsValue && (!isalnum(cX) || cX == ' '))
+    if (
+         boolIsValue
+         && 
+         (
+           ' ' == cX
+           || AConstant::npos == ATextConverter::CHARSET_URL_RFC2396.find(cX)
+         )
+       )
     {
       if (cX == ' ')
       {
@@ -510,7 +522,7 @@ void ATextConverter::makeAsciiPrintable(const AString& strSource, AOutputBuffer&
   for(size_t i=0; i<strSource.getSize(); ++i)
   {
     c = strSource.at(i);
-    if (isalnum(c))
+    if (isalnum((u1)c))
     {
       target.append(c);
     }

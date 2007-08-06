@@ -12,7 +12,7 @@ ASync_Event::ASync_Event(
 ):
   m_Timeout(timeout)
 {
-  ATextGenerator::generateUniqueId(mstr_Name);
+  ATextGenerator::generateUniqueId(mstr_Name, 32);
   m_handle = ::CreateEvent(NULL, autoReset, i == LOCKED, mstr_Name.c_str());
   if (!m_handle)
     ATHROW_LAST_OS_ERROR(this);

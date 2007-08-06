@@ -117,6 +117,16 @@ void testCompare(int& iRet)
   ASSERT_UNIT_TEST(fOne < fTwo, "AFilename operator <", "3", iRet);
 }
 
+void testValid(int& iRet)
+{
+  AFilename f("c:\\path0\\path1\\filename.ext");
+  ASSERT_UNIT_TEST(f.isValid(), "AFilename validity", "0", iRet);
+
+  f.clear();
+  f.useFilename().assign(")");
+  ASSERT_UNIT_TEST(f.isValid(), "AFilename validity", "1", iRet);
+}
+
 int ut_AFilename_General()
 {
   std::cerr << "ut_AFilename_General" << std::endl;
@@ -124,6 +134,7 @@ int ut_AFilename_General()
 
   testGeneric(iRet);
   testCompare(iRet);
+  testValid(iRet);
 
   return iRet;
 }

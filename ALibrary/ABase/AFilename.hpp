@@ -27,6 +27,9 @@ public:
     FTYPE_CYGWIN = 3    // separated by '/', drive letter replaced with /cygdrive/X/
   };
 
+  /*! Characters reserved by Windows and invalid in a filename */
+  static const AString RESERVED;  // |\?*<":>/
+
 public:
   /*!
   ctors
@@ -132,6 +135,11 @@ public:
   bool isRelativePath() const;
   bool hasExtension() const;
   
+  /*!
+  Check if any reserved characters exist
+  */
+  bool isValid() const;
+
   /*!
   Compare extension(s)
   */

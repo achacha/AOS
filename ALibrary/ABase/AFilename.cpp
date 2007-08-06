@@ -3,6 +3,8 @@
 #include "AFilename.hpp"
 #include "AXmlElement.hpp"
 
+const AString AFilename::RESERVED = "|\\?*<\":>/";
+
 #ifdef __DEBUG_DUMP__
 void AFilename::debugDump(std::ostream& os, int indent) const
 {
@@ -523,4 +525,24 @@ bool AFilename::operator ==(const AFilename& that) const
 
   //a_Equal paths at this point leaves it to the filename
   return (m_Filename == that.m_Filename);
+}
+
+bool AFilename::isValid() const
+{
+  if (AConstant::npos != m_Filename.findOneOf(RESERVED))
+    return false;
+
+  if ('\x0' != m_Drive && !isalnum((const u1)m_Drive))
+    return false;
+
+  LIST_AString::const_iterator cit = m_PathNames.begin();
+  while(cit != m_PathNames.end())
+  {
+    if (AConstant::npos != (*cit).findOneOf(RESERVED))
+      return false;
+
+    ++cit;
+  }
+
+  return true;
 }
