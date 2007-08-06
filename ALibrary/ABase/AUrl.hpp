@@ -105,10 +105,15 @@ public:
   inline AString getPathFileAndQueryString() const;
 
   /*!
-  Comparissons
+  Tests
   */
   bool isProtocol(AUrl::eProtocol e) const;
   bool isExtension(const AString&) const;
+ 
+  /*!
+  Check basic validity
+  */
+  bool isValid() const;
 
   /*!
   Modification methods

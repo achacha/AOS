@@ -178,7 +178,7 @@ void AHTTPRequestHeader::emitProxyHeader(AOutputBuffer& target) const
 void AHTTPRequestHeader::setMethod(const AString &strNewMethod)
 { 
   mstr_Method = strNewMethod;
-  if (!__isValidMethod())
+  if (!isValidMethod())
     ATHROW(this, AException::RequestInvalidMethod);
 }
 
@@ -203,7 +203,7 @@ bool AHTTPRequestHeader::_parseLineZero()
   else
     return false;
 
-  if (!__isValidMethod())
+  if (!isValidMethod())
     return false;
 
   size_t iP2 = mstr_LineZero.rfind(AString::sstr_Space);
@@ -254,7 +254,7 @@ bool AHTTPRequestHeader::_handledByChild(const ANameValuePair &nvHTTPPair)
     return false;
 }
 
-bool AHTTPRequestHeader::__isValidMethod()
+bool AHTTPRequestHeader::isValidMethod() const
 {
   //a_Methods are case sensitive upper case as per RFC-2616, not valid for extension types (yet?)
   switch(mstr_Method.at(0))
@@ -269,6 +269,11 @@ bool AHTTPRequestHeader::__isValidMethod()
   }
     
   return false;
+}
+
+bool AHTTPRequestHeader::isValidPath() const
+{
+  return murl_Request.isValid();
 }
 
 bool AHTTPRequestHeader::isHttpPipeliningEnabled() const

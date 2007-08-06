@@ -965,6 +965,17 @@ bool AUrl::isBase64Encoded() const
   return m_isBase64;
 }
 
+bool AUrl::isValid() const
+{
+  if (AConstant::npos != m_strPath.findOneOf(ATextConverter::CHARSET_URL_RFC2396))
+    return false;
+
+  if (AConstant::npos != m_strFilename.findOneOf(ATextConverter::CHARSET_URL_RFC2396))
+    return false;
+
+  return true;
+}
+
 void AUrl::setIsBase64Encoded(bool b)
 {
   m_isBase64 = b;

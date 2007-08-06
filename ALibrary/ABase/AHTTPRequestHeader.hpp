@@ -54,6 +54,16 @@ public:
   */
   bool isHttpPipeliningEnabled() const;
 
+  /*!
+  Is method valid
+  */
+  bool isValidMethod() const;
+
+  /*!
+  Is path valid
+  */
+  bool isValidPath() const;
+
 protected:
   //a_First line for request
   //a_[METHOD] [SP] [URI] [SP] [HTTPVERSION]
@@ -68,9 +78,6 @@ private:
   AString  mstr_Method;
   AUrl     murl_Request;
   ACookies mcookies_Request;
-  
-  //a_Validation routines
-  bool __isValidMethod();
 
 public:
 #ifdef __DEBUG_DUMP__
