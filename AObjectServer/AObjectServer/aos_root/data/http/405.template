@@ -1,0 +1,8 @@
+<html>
+<head>
+  <title>HTTP status code 405: Method not allowed</title>
+</head>
+<body>
+<font color="red">HTTP405: Method not allowed.</font>
+</body>
+</html>

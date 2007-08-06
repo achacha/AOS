@@ -510,6 +510,16 @@ AOSContext::Status AOSContext::_processHttpHeader()
   setExecutionState(ASW("AOSContext: Parsing HTTP header",31), false, 5000.0);
   m_RequestHeader.parse(str);
 
+  if (!m_RequestHeader.isValidMethod())
+  {
+    return AOSContext::STATUS_HTTP_UNKNOWN_METHOD;
+  }
+
+  if (!m_RequestHeader.isValidPath())
+  {
+    return AOSContext::STATUS_HTTP_INVALID_REQUEST_PATH;
+  }
+
   static bool isHttpPipeliningEnabled = m_Services.useConfiguration().getBool("/config/server/http/http11-pipelining-enabled", true);
   if (
        isHttpPipeliningEnabled

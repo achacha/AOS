@@ -88,23 +88,21 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             pContext = NULL;
           continue;
 
-          case AOSContext::STATUS_HTTP_INVALID_AFTER_METHOD_CHAR:
-          case AOSContext::STATUS_HTTP_INVALID_FIRST_CHAR:
+          case AOSContext::STATUS_HTTP_UNKNOWN_METHOD:
           {
             
-            ARope rope("AOSContextQueue_PreExecutor(Failed AOSContext::init)",52);
-  #ifdef __DEBUG_DUMP__
-            rope.append(AString::sstr_EOL);
-            pContext->debugDumpToAOutputBuffer(rope);
-  #endif
-            pContext->useEventVisitor().set(rope, true);
+            pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_405_Method_Not_Allowed);
+            pThis->_goError(pContext);
+            pContext = NULL;
+          }
+          continue;
 
-            //a_If already waited in the is available queue terminate, else have it a go
-            if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_AVAILABLE_SELECTED))
-              pThis->_goTerminate(pContext);
-            else
-              pThis->_goNo(pContext);
-
+          case AOSContext::STATUS_HTTP_INVALID_FIRST_CHAR:
+          case AOSContext::STATUS_HTTP_INVALID_AFTER_METHOD_CHAR:
+          case AOSContext::STATUS_HTTP_INVALID_REQUEST_PATH:
+          {
+            pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
+            pThis->_goError(pContext);
             pContext = NULL;
           }
           continue;
