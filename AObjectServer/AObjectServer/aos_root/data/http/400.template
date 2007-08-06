@@ -1,0 +1,9 @@
+<html>
+<head>
+  <title>HTTP status code 400: Bad request</title>
+</head>
+<body>
+<font color="red">HTTP400: Bad request.</font>
+<!-- <!--[print(/root/REQUEST/AUrl/url)]--> -->
+</body>
+</html>
