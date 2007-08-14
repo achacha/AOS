@@ -967,11 +967,12 @@ bool AUrl::isBase64Encoded() const
 
 bool AUrl::isValid() const
 {
-  if (AConstant::npos != m_strPath.findOneOf(ATextConverter::CHARSET_URL_RFC2396))
-    return false;
+//TODO:
+//  if (AConstant::npos != m_strPath.findOneOf(ATextConverter::CHARSET_URL_RFC2396))
+//    return false;
 
-  if (AConstant::npos != m_strFilename.findOneOf(ATextConverter::CHARSET_URL_RFC2396))
-    return false;
+//  if (AConstant::npos != m_strFilename.findOneOf(ATextConverter::CHARSET_URL_RFC2396))
+//    return false;
 
   return true;
 }
