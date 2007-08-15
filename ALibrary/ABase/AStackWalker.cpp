@@ -29,8 +29,9 @@
 #include "AStackWalker.hpp"
 #include "AString.hpp"
 #include "AXmlElement.hpp"
-#include "ASync_CriticalSection.hpp"
 #include "ALock.hpp"
+
+ASync_CriticalSection AStackWalker::sm_StackWalkLock;
 
 // The "ugly" assembler-implementation is needed for systems before XP
 // If you have a new PSDK and you only compile for XP and later, then you can use 
@@ -1001,8 +1002,7 @@ BOOL AStackWalker::ProcessCallstack(
   LPVOID pUserData                               // = NULL
 )
 {
-  static ASync_CriticalSection cs;
-  ALock lock(cs);
+  ALock lock(sm_StackWalkLock);
 
   //a_Clear the results since we are walking again
   _clearStackWalkResult();

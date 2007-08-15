@@ -62,7 +62,10 @@ void ASocketListener::open()
   sadd.sin_family         = AF_INET;
   sadd.sin_port           = (u_short)htons(m_SocketInfo.m_port);
   if (m_SocketInfo.m_address.isEmpty())
-    sadd.sin_addr.s_addr = INADDR_ANY;
+  {
+    hostent* pLocalHost = ::gethostbyname("");
+    sadd.sin_addr.s_addr = ((struct in_addr *)*pLocalHost->h_addr_list)->s_addr;
+  }
   else
     sadd.sin_addr.s_addr = inet_addr(m_SocketInfo.m_address.c_str());
   

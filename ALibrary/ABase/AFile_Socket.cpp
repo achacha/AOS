@@ -165,14 +165,11 @@ size_t AFile_Socket::_write(const void *buf, size_t size)
   {
     size_t bytesWritten = ::send(m_SocketInfo.m_handle, (const char *) buf + totalBytesWritten, bytesToWrite, 0);
 
-    if (bytesWritten == 0)
+    if (!bytesWritten && bytesToWrite)
       ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::WriteOperationFailed);
       
     if (bytesWritten == SOCKET_ERROR)
-    {
       ATHROW_LAST_SOCKET_ERROR(this);
-      return AConstant::npos;
-    }
 
     AASSERT(this, bytesToWrite >= bytesWritten);
     bytesToWrite -= bytesWritten;      //reduce bytes to write
@@ -196,7 +193,7 @@ size_t AFile_Socket::readBlocking(void *buf, size_t size)
   {
     size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf + totalBytesRead, bytesToRead, 0 );
 
-    if (bytesReceived == 0)
+    if (!bytesReceived)
       ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::ReadOperationFailed);
 
     if (bytesReceived == SOCKET_ERROR)

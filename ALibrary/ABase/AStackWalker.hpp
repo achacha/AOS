@@ -7,6 +7,7 @@
 #include "AXmlEmittable.hpp"
 #include "AString.hpp"
 #include "ARope.hpp"
+#include "ASync_CriticalSection.hpp"
 
 /**********************************************************************
  * 
@@ -178,6 +179,8 @@ protected:
 private:
   typedef std::list<ARope *> STACKLINES;
   STACKLINES m_StackWalkResult;
+
+  static ASync_CriticalSection sm_StackWalkLock;
 
   void _clearStackWalkResult();  //a_Clear and deallocate stack walk results
 };
