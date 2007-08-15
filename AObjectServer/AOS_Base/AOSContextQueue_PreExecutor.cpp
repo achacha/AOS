@@ -310,7 +310,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
 
     //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
     pContext->useOutputBuffer().clear();
-    pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
+    contentLenth = AConstant::npos;
   }
 
   //a_If output buffer is empty then emit output XML document into it unless output was read from file then contentLength != -1
