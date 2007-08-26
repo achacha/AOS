@@ -64,7 +64,7 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
         REQUESTS::iterator it = m_Queue.begin();
         while (count < FD_SETSIZE && it != m_Queue.end())
         {
-          FD_SET((*it)->useSocket().getSocketHandle(), &sockSet);
+          FD_SET((*it)->useSocket().getSocketInfo().m_handle, &sockSet);
           ++count;
           ++it;
         }
@@ -79,7 +79,7 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
             
             while (availCount > 0 && count2 <= count && it != m_Queue.end())
             {
-              if (FD_ISSET((*it)->useSocket().getSocketHandle(), &sockSet))
+              if (FD_ISSET((*it)->useSocket().getSocketInfo().m_handle, &sockSet))
               {
                 REQUESTS::iterator itMove = it;
                 ++it;

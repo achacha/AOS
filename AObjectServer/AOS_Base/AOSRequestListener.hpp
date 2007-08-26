@@ -43,7 +43,7 @@ private:
   
   struct LISTEN_DATA
   {
-    LISTEN_DATA() : port(80), host(ASocketLibrary::ANY_ADDRESS), pListener(NULL) {}
+    LISTEN_DATA() : port(80), pListener(NULL) {}
 
     int port;
     AString host;

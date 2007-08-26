@@ -121,9 +121,9 @@ void AOSContext::reset(AFile_Socket *pFile)
     mp_RequestFile = pFile;
     
     ARope rope("AOSContext[",11);
-    rope.append(mp_RequestFile->getAddress());
+    rope.append(mp_RequestFile->getSocketInfo().m_address);
     rope.append(':');
-    rope.append(AString::fromInt(mp_RequestFile->getPort()));
+    rope.append(AString::fromInt(mp_RequestFile->getSocketInfo().m_port));
     rope.append(']');
     m_EventVisitor.useName().assign(rope);
 

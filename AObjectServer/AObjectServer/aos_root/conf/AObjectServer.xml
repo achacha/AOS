@@ -35,19 +35,19 @@
 			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
 		</is_available>
 		<pre_executor>
-			<threads desc="Threads in the pre-executor queue manager">1</threads>
+			<threads desc="Threads in the pre-executor queue manager">10</threads>
 			<queues desc="Queues in the pre-executor queue manager">1</queues>
 			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
 		</pre_executor>
 		<executor>
-			<threads desc="Threads in the executor queue manager">1</threads>
+			<threads desc="Threads in the executor queue manager">10</threads>
 			<queues desc="Queues in the executor queue manager">1</queues>
 			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
 		</executor>
 		<error_executor>
-			<threads desc="Threads in the executor queue manager">1</threads>
+			<threads desc="Threads in the executor queue manager">2</threads>
 			<queues desc="Queues in the executor queue manager">1</queues>
-			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
+			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">50</sleep_delay>
 		</error_executor>
 	</context_queues>
 	<listen>

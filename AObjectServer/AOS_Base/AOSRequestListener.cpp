@@ -157,9 +157,9 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
     pThis->m_Services.useLog().add(ARope("AObjectServer started.  HTTP listening on ")+pData->host+ASW(":",1)+AString::fromInt(pData->port));
     {
       AString str("AObjectServer HTTP listening on ");
-      str.append(pData->host);
-      str.append(':');
-      str.append(AString::fromInt(pData->port));
+    str.append(listener.getSocketInfo().m_address);
+    str.append(':');
+    str.append(AString::fromInt(listener.getSocketInfo().m_port));
       AOS_DEBUGTRACE(str.c_str(), NULL);
     }
 
@@ -246,9 +246,9 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
   pThis->m_Services.useLog().add(ARope("AObjectServer started.  HTTPS listening on ")+pData->host+ASW(":",1)+AString::fromInt(pData->port));
   {
     AString str("AObjectServer HTTPS listening on ");
-    str.append(pData->host);
+    str.append(listener.getSocketInfo().m_address);
     str.append(':');
-    str.append(AString::fromInt(pData->port));
+    str.append(AString::fromInt(listener.getSocketInfo().m_port));
     AOS_DEBUGTRACE(str.c_str(), NULL);
   }
 
