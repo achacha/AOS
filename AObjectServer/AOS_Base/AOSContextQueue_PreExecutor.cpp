@@ -100,6 +100,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           case AOSContext::STATUS_HTTP_INVALID_FIRST_CHAR:
           case AOSContext::STATUS_HTTP_INVALID_AFTER_METHOD_CHAR:
           case AOSContext::STATUS_HTTP_INVALID_REQUEST_PATH:
+          case AOSContext::STATUS_HTTP_INVALID_HEADER:
           {
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
             pThis->_goError(pContext);
@@ -217,7 +218,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           continue;
         }
       }
-      AThread::sleep(3);  //a_Empty queue, avoid thrashing
+      AThread::sleep(pThis->m_SleepDelay);  //a_Empty queue, avoid thrashing
     }
     catch(AException& e)
     {

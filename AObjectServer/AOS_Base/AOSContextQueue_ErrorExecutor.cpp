@@ -149,7 +149,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
         //a_Proceed
         pThis->_goYes(pContext);
       }
-      AThread::sleep(20);  //a_Empty queue, avoid thrashing
+      AThread::sleep(pThis->m_SleepDelay);  //a_Empty queue, avoid thrashing
     }
     catch(AException& e)
     {

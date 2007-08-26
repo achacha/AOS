@@ -23,7 +23,8 @@ AOSAdmin::AOSAdmin(
   AOSServices& services
 ) :
   m_ClientSynch("AdminClient"),
-  m_Services(services)
+  m_Services(services),
+  m_IsShutdownRequested(false)
 {
 }
 
@@ -39,7 +40,7 @@ bool AOSAdmin::isRunning()
 
 void AOSAdmin::startAdminListener()
 {
-  if (m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_ADMIN_PORT, -1) > 0)
+  if (m_Services.useConfiguration().getInt(ASWNL("/config/server/listen/admin/port"), -1) > 0)
   {
     mthread_AdminListener.setProc(AOSAdmin::threadprocAdminListener);
     mthread_AdminListener.setParameter(this);
@@ -47,8 +48,7 @@ void AOSAdmin::startAdminListener()
   }
   else
   {
-    ALock lock(m_Services.useScreenSynch());
-    std::cout << "Admin server disabled, not listening." << std::endl;
+    AOS_DEBUGTRACE("Admin server disabled, not listening.", NULL);
   }
 
   return;
@@ -61,31 +61,44 @@ void AOSAdmin::stopAdminListener()
 
 u4 AOSAdmin::threadprocAdminListener(AThread& thread)
 {
-  thread.setRunning();
-
   AOSAdmin *pThis = (AOSAdmin *)thread.getParameter();
   AASSERT(NULL, pThis);
+  if (!pThis)
+    return -1;
 
-  AString str;
-  int admin_port = pThis->m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_ADMIN_PORT, 12345);
-  ASocketListener listener(admin_port);
+  int admin_port = pThis->m_Services.useConfiguration().getInt(ASWNL("/config/server/listen/admin/port"), 12345);
+  if (-1 != admin_port && !ASocketLibrary::canBindToPort(admin_port))
+  {
+    AString str("main: Unable to bind to admin port ");
+    str.append(AString::fromInt(admin_port));
+    str.append(" already in use.");
+    AOS_DEBUGTRACE(str.c_str(), NULL);
+    return -1;
+  }
+
+  AString hostname = pThis->m_Services.useConfiguration().getString(ASWNL("/config/server/listen/admin/host"), ASocketLibrary::LOCAL_LOOPBACK);
+  ASocketListener listener(admin_port, ASocketLibrary::getIPFromAddress(hostname));
   try
   {
     listener.open();
   }
   catch(AException& ex)
   {
-    std::cerr << ex.what() << std::endl;
-    thread.setRunning(false);
+    AOS_DEBUGTRACE(ex.what().toAString().c_str(), NULL);
     return -1;
   }
 
-  pThis->m_Services.useLog().add(ARope("HTTP admin listening on port ")+AString::fromInt(admin_port), ALog::MESSAGE);
   
-  {
-    ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer HTTP admin listening on port " << admin_port << std::endl;
-  }
+  AString str("AObjectServer HTTP admin listening on ");
+  str.append(hostname);
+  str.append(':');
+  str.append(AString::fromInt(admin_port));
+  pThis->m_Services.useLog().add(str, ALog::MESSAGE);
+  str.append(AString::sstr_CRLF);
+  AOS_DEBUGTRACE(str.c_str(), NULL);
+
+  str.clear();
+  thread.setRunning(true);
   while(thread.isRun())
   {
     try
@@ -140,11 +153,9 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
     }
   }
 
-  {
-    ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServerAdmin thread exiting." << std::endl;
-  }
   thread.setRunning(false);
+
+  AOS_DEBUGTRACE("AObjectServerAdmin thread exited.", NULL);
   return 0;
 }
 
@@ -321,45 +332,45 @@ void AOSAdmin::_processAdminCommand(
     else if (command.equalsNoCase(ASW("shutdown",8)))
     {
       //a_Shutdown
-      ALock lock(m_Services.useScreenSynch());
       m_Services.useLog().add(ASW("ADMIN: Shutdown",15), ALog::INFO);
-      std::cout << "Shutdown request received... initiating shutdown sequence." << std::endl;
+      AOS_DEBUGTRACE("Shutdown request received... initiating shutdown sequence.", NULL);
 
-      std::cout << "Trying to stop AOSRequestListener..." << std::flush;
+      AOS_DEBUGTRACE("Trying to stop AOSRequestListener...", NULL);
       AOSRequestListener *pListener = dynamic_cast<AOSRequestListener *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSRequestListener")));
       AASSERT(NULL, pListener);
       pListener->stopListening();
-      std::cout << "STOPPED." << std::endl;
+      AOS_DEBUGTRACE("AOSRequestListener stopped.", NULL);
 
-      std::cout << "Trying to stop AOSRequestQueue_IsAvailable..." << std::flush;
+      AOS_DEBUGTRACE("Trying to stop AOSRequestQueue_IsAvailable...", NULL);
       AOSContextQueue_IsAvailable *pcqIsAvailable = dynamic_cast<AOSContextQueue_IsAvailable *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_IsAvailable")));;
       AASSERT(NULL, pcqIsAvailable);
       pcqIsAvailable->useThreadPool().stop();
-      std::cout << "STOPPED." << std::endl;
+      AOS_DEBUGTRACE("AOSRequestQueue_IsAvailable stopped.", NULL);
 
-      std::cout << "Trying to stop AOSContextQueue_PreExecutor..." << std::flush;
+      AOS_DEBUGTRACE("Trying to stop AOSContextQueue_PreExecutor...", NULL);
       AOSContextQueue_PreExecutor *pcqPreExecutor = dynamic_cast<AOSContextQueue_PreExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_PreExecutor")));;
       AASSERT(NULL, pcqPreExecutor);
       pcqPreExecutor->useThreadPool().stop();
-      std::cout << "STOPPED." << std::endl;
+      AOS_DEBUGTRACE("stopped.", NULL);
 
-      std::cout << "Trying to stop AOSContextQueue_Executor..." << std::flush;
+      AOS_DEBUGTRACE("Trying to stop AOSContextQueue_Executor...", NULL);
       AOSContextQueue_Executor *pcqExecutor = dynamic_cast<AOSContextQueue_Executor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_Executor")));;
       AASSERT(NULL, pcqExecutor);
       pcqExecutor->useThreadPool().stop();
-      std::cout << "STOPPED." << std::endl;
+      AOS_DEBUGTRACE("AOSContextQueue_Executor stopped.", NULL);
 
-      std::cout << "Trying to stop AOSContextQueue_ErrorExecutor..." << std::flush;
+      AOS_DEBUGTRACE("Trying to stop AOSContextQueue_ErrorExecutor...", NULL);
       AOSContextQueue_ErrorExecutor *pcqErrorExecutor = dynamic_cast<AOSContextQueue_ErrorExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_ErrorExecutor")));;
       AASSERT(NULL, pcqErrorExecutor);
       pcqErrorExecutor->useThreadPool().stop();
-      std::cout << "STOPPED." << std::endl;
-
-      //a_Flag admin listener to stop
-      mthread_AdminListener.setRun(false);
+      AOS_DEBUGTRACE("AOSContextQueue_ErrorExecutor stopped.", NULL);
 
       //a_Emit result
       xmlDoc.useRoot().addElement(ASW("shutdown",8));
+
+      //a_Flag admin listener to stop
+      mthread_AdminListener.setRun(false);
+      m_IsShutdownRequested = true;
     }
     else
     {
@@ -439,4 +450,9 @@ void AOSAdmin::_prepareXmlDocument(
       }
     }
   }
+}
+
+bool AOSAdmin::isShutdownRequested() const
+{
+  return m_IsShutdownRequested;
 }

@@ -31,20 +31,33 @@
 		<module>AOS_Blog</module>
 	</load>
 	<context_queues>
+		<is_available>
+			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
+		</is_available>
 		<pre_executor>
-			<threads desc="Threads in the pre-executor queue manager">60</threads>
-			<queues desc="Queues in the pre-executor queue manager">4</queues>
+			<threads desc="Threads in the pre-executor queue manager">1</threads>
+			<queues desc="Queues in the pre-executor queue manager">1</queues>
+			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
 		</pre_executor>
 		<executor>
-			<threads desc="Threads in the executor queue manager">50</threads>
-			<queues desc="Queues in the executor queue manager">3</queues>
+			<threads desc="Threads in the executor queue manager">1</threads>
+			<queues desc="Queues in the executor queue manager">1</queues>
+			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
 		</executor>
+		<error_executor>
+			<threads desc="Threads in the executor queue manager">1</threads>
+			<queues desc="Queues in the executor queue manager">1</queues>
+			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
+		</error_executor>
 	</context_queues>
 	<listen>
 		<!-- Listener ports -->
 		<http>80</http>
 		<https>443</https>
-		<admin>12345</admin>
+		<admin>
+		  <host>localhost</host>
+			<port>12345</port>
+		</admin>
 	</listen>
 	<reported>
 		<!-- Reported overrides -->

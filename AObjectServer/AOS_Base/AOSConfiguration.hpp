@@ -32,11 +32,6 @@ public:
   */
   static void initializeStaticHostInfo(const AString& hostname, int http_port, int https_port, const AString& serverId);
 
-  /*! Listener constants */
-  static const AString LISTEN_ADMIN_PORT;    
-  static const AString LISTEN_HTTP_PORT;     
-  static const AString LISTEN_HTTPS_PORT;
-
   /*!
   Database
   */

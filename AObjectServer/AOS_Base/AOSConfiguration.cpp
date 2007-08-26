@@ -12,10 +12,6 @@
 #include "AOSServices.hpp"
 #include "AINIProfile.hpp"
 
-const AString AOSConfiguration::LISTEN_ADMIN_PORT("/config/server/listen/admin");
-const AString AOSConfiguration::LISTEN_HTTP_PORT("/config/server/listen/http");
-const AString AOSConfiguration::LISTEN_HTTPS_PORT("/config/server/listen/https");
-
 const AString AOSConfiguration::DATABASE_URL("/config/server/database/url");
 const AString AOSConfiguration::DATABASE_CONNECTIONS("/config/server/database/connections");
 

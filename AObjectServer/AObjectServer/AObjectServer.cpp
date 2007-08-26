@@ -58,51 +58,6 @@ int main(int argc, char **argv)
     //a_Initialize services
     AOSServices services(basePath);
 
-    //a_Admin port
-    int admin_port = services.useConfiguration().getInt(AOSConfiguration::LISTEN_ADMIN_PORT, -1);
-    if (-1 != admin_port && !ASocketLibrary::canBindToPort(admin_port))
-    {
-      AString str("main: Unable to bind to admin port ");
-      str.append(AString::fromInt(admin_port));
-      str.append(" already in use.\r\n");
-      services.useConfiguration().emit(str);
-      AOS_DEBUGTRACE(str.c_str(), NULL);
-      return -1;
-    }
-
-    //a_HTTP port
-    int http_port = services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTP_PORT, -1);
-    if (-1 != http_port && !ASocketLibrary::canBindToPort(http_port))
-    {
-      AString str("main: Unable to bind to http port ");
-      str.append(AString::fromInt(http_port));
-      str.append(" already in use.\r\n");
-      services.useConfiguration().emit(str);
-      AOS_DEBUGTRACE(str.c_str(), NULL);
-      return -1;
-    }
-
-    //a_HTTPS port
-    int https_port = services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTPS_PORT, -1);
-    if (-1 != https_port && !ASocketLibrary::canBindToPort(https_port))
-    {
-      AString str("main: Unable to bind to https port ");
-      str.append(AString::fromInt(https_port));
-      str.append(" already in use.\r\n");
-      services.useConfiguration().emit(str);
-      AOS_DEBUGTRACE(str.c_str(), NULL);
-      return -1;
-    }
-
-    if (-1 == admin_port && -1 == https_port && -1 == https_port)
-    {
-      //a_Nothing to listen to
-      AString str("main: Found no ports to listen to.\r\n");
-      services.useConfiguration().emit(str);
-      AOS_DEBUGTRACE(str.c_str(), NULL);
-      return -1;
-    }
-
     //a_Ready to start
     {
       AString str;
@@ -149,19 +104,44 @@ int main(int argc, char **argv)
     //a_Create and configure the queues
     //
     AOSContextQueue_IsAvailable cqIsAvailable(services);
-    AOSContextQueue_ErrorExecutor cqErrorExecutor(services);
+    int sleepDelay = services.useConfiguration().getInt(ASWNL("/config/server/context_queues/is_available/sleep_delay"), DEFAULT_SLEEP_DELAY);
+    if (sleepDelay > 0)
+      cqIsAvailable.setSleepDelay(sleepDelay);
+    else
+      AOS_DEBUGTRACE("Sleep delay for is_available/sleep_delay is invalid, using default", NULL);
+    
+    AOSContextQueue_ErrorExecutor cqErrorExecutor(
+      services,
+      services.useConfiguration().getSize_t("/config/server/context_queues/error_executor/threads", 16), 
+      services.useConfiguration().getSize_t("/config/server/context_queues/error_executor/queues", 4)
+    );
+    sleepDelay = services.useConfiguration().getInt(ASWNL("/config/server/context_queues/error_executor/sleep_delay"), DEFAULT_SLEEP_DELAY);
+    if (sleepDelay > 0)
+      cqErrorExecutor.setSleepDelay(sleepDelay);
+    else
+      AOS_DEBUGTRACE("Sleep delay for error_executor/sleep_delay is invalid, using default", NULL);
 
     AOSContextQueue_PreExecutor cqPreExecutor(
       services, 
-      services.useConfiguration().getSize_t("/config/server/context_queues/pre_executor/threads", 50), 
+      services.useConfiguration().getSize_t("/config/server/context_queues/pre_executor/threads", 16), 
       services.useConfiguration().getSize_t("/config/server/context_queues/pre_executor/queues", 4)
     );
+    sleepDelay = services.useConfiguration().getInt(ASWNL("/config/server/context_queues/pre_executor/sleep_delay"), DEFAULT_SLEEP_DELAY);
+    if (sleepDelay > 0)
+      cqPreExecutor.setSleepDelay(sleepDelay);
+    else
+      AOS_DEBUGTRACE("Sleep delay for pre_executor/sleep_delay is invalid, using default", NULL);
 
     AOSContextQueue_Executor cqExecutor(
       services, 
-      services.useConfiguration().getSize_t("/config/server/context_queues/executor/threads", 100), 
+      services.useConfiguration().getSize_t("/config/server/context_queues/executor/threads", 64), 
       services.useConfiguration().getSize_t("/config/server/context_queues/executor/queues", 3)
     );
+    sleepDelay = services.useConfiguration().getInt(ASWNL("/config/server/context_queues/executor/sleep_delay"), DEFAULT_SLEEP_DELAY);
+    if (sleepDelay > 0)
+      cqExecutor.setSleepDelay(sleepDelay);
+    else
+      AOS_DEBUGTRACE("Sleep delay for executor/sleep_delay is invalid, using default", NULL);
 
     //a_Connect queues to listener
     AOSRequestListener listener(services, &cqPreExecutor);
@@ -293,9 +273,9 @@ int main(int argc, char **argv)
     do
     {
       //a_This is the watcher for the main loop, when admin is not running the server has stopped
-      AThread::sleep(3000);
+      AThread::sleep(5000);
     }
-    while (admin.isRunning());
+    while(!admin.isShutdownRequested() || admin.isRunning());
   }
   catch(AException& ex)
   {

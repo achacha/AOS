@@ -50,28 +50,87 @@ void AOSRequestListener::startListening()
   if (mthread_Listener.isThreadActive() || mthread_SecureListener.isThreadActive())
     ATHROW(this, AException::ProgrammingError);
 
-  int http_port = m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTP_PORT, -1);
+  int http_port = m_Services.useConfiguration().getInt(ASWNL("/config/server/listen/http"), -1);
   if (http_port > 0)
   {
-    mthread_Listener.setThis(static_cast<void *>(this));
-    mthread_Listener.start();
+    if (!ASocketLibrary::canBindToPort(http_port))
+    {
+      AString str("Unable to bind to http port ");
+      str.append(AString::fromInt(http_port));
+      str.append(", already in use.");
+      m_Services.useConfiguration().emit(str);
+      AOS_DEBUGTRACE(str.c_str(), NULL);
+    }
+    else
+    {
+      LISTEN_DATA *p = new LISTEN_DATA();
+      p->port = http_port;
+      p->pListener = this;
+
+      mthread_Listener.setParameter(p);
+      mthread_Listener.start();
+    }
   }
   else
   {
-    ALock lock(m_Services.useScreenSynch());
-    std::cout << "HTTP disabled, not listening." << std::endl;
+    AOS_DEBUGTRACE("HTTP disabled, not listening.", NULL);
   }
 
-  int https_port = m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTPS_PORT, -1);
+  int https_port = m_Services.useConfiguration().getInt(ASWNL("/config/server/listen/https"), -1);
   if (https_port > 0)
   {
-    mthread_SecureListener.setThis(static_cast<void *>(this));
-    mthread_SecureListener.start();
+    AXmlNode *pNode = m_Services.useConfiguration().useConfigRoot().findNode(ASW("/config/server/crypto",21));
+    if (!pNode)
+    {
+      AOS_DEBUGTRACE("AObjectServer HTTPS element not found, secure socket not listening.", NULL);
+    }
+    else
+    {
+      LISTEN_DATA *p = new LISTEN_DATA();
+      p->port = https_port;
+      p->pListener = this;
+
+      pNode->emitFromPath(ASW("crypto/cert",11), p->cert); 
+      pNode->emitFromPath(ASW("crypto/pkey",11), p->pkey);
+
+      bool ready = true;
+      if (p->cert.isEmpty())
+      {
+        ready = false;
+        AString str("AObjectServer HTTPS on port ");
+        str.append(AString::fromInt(https_port));
+        str.append(" missing cert element, secure socket not listening.");
+        m_Services.useConfiguration().emit(str);
+        AOS_DEBUGTRACE(str.c_str(), NULL);
+      }
+      if (p->pkey.isEmpty())
+      {
+        ready = false;
+        AString str("AObjectServer HTTPS on port ");
+        str.append(AString::fromInt(https_port));
+        str.append(" missing pkey element, secure socket not listening.");
+        AOS_DEBUGTRACE(str.c_str(), NULL);
+      }
+
+      if (!ASocketLibrary::canBindToPort(https_port))
+      {
+        ready = false;
+        AString str("Unable to bind to https port ");
+        str.append(AString::fromInt(https_port));
+        str.append(", already in use.");
+        AOS_DEBUGTRACE(str.c_str(), NULL);
+      }
+
+      if (ready)
+      {
+        mthread_SecureListener.setParameter(p);
+        mthread_SecureListener.start();
+      }
+    }
   }
   else
   {
-    ALock lock(m_Services.useScreenSynch());
-    std::cout << "HTTPS disabled, not listening." << std::endl;
+    AOS_DEBUGTRACE("HTTPS disabled, not listening.", NULL);
   }
 }
 
@@ -83,21 +142,25 @@ void AOSRequestListener::stopListening()
 
 u4 AOSRequestListener::threadprocListener(AThread& thread)
 {
-  AOSRequestListener *pThis = static_cast<AOSRequestListener *>(thread.getThis());
+  AAutoPtr<LISTEN_DATA> pData(static_cast<LISTEN_DATA *>(thread.getParameter()));
+  AASSERT(NULL, pData.get());
+  AOSRequestListener *pThis = pData->pListener;
   AASSERT(NULL, pThis);
 
   thread.setRunning(true);
   AOSContext *pContext = NULL;
   try
   {
-    int http_port = pThis->m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTP_PORT, 80);
-    ASocketListener listener(http_port);
+    ASocketListener listener(pData->port, pData->host);
     listener.open();
 
-    pThis->m_Services.useLog().add(ASWNL("AObjectServer started.  HTTP listening on port ")+AString::fromInt(http_port));
+    pThis->m_Services.useLog().add(ARope("AObjectServer started.  HTTP listening on ")+pData->host+ASW(":",1)+AString::fromInt(pData->port));
     {
-      ALock lock(pThis->m_Services.useScreenSynch());
-      std::cout << "AObjectServer HTTP listening on port " << http_port << std::endl;
+      AString str("AObjectServer HTTP listening on ");
+      str.append(pData->host);
+      str.append(':');
+      str.append(AString::fromInt(pData->port));
+      AOS_DEBUGTRACE(str.c_str(), NULL);
     }
 
     while(thread.isRun())
@@ -147,20 +210,18 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
   }
   catch(AException& e)
   {
-    ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer HTTP listener thread caught an exception: " << e.what() << std::endl;
+    AString str("AObjectServer HTTP listener thread caught an exception: ");
+    str.append(e);
     pThis->m_Services.useLog().add(e);
+    AOS_DEBUGTRACE(str.c_str(), NULL);
     thread.setRunning(false);
     pThis->m_Services.useContextManager().deallocate(pContext);
-    throw;
   }
   catch(...)
   {
-    ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer HTTP listener thread caught an unknown exception." << std::endl;
+    AOS_DEBUGTRACE("AObjectServer HTTP listener thread caught an unknown exception.", NULL);
     thread.setRunning(false);
     pThis->m_Services.useContextManager().deallocate(pContext);
-    throw;
   }
 
   thread.setRunning(false);
@@ -169,34 +230,26 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
 
 u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
 {
-  AOSRequestListener *pThis = static_cast<AOSRequestListener *>(thread.getThis());
+  AAutoPtr<LISTEN_DATA> pData(static_cast<LISTEN_DATA *>(thread.getParameter()));
+  AASSERT(NULL, pData.get());
+  AOSRequestListener *pThis = pData->pListener;
   AASSERT(NULL, pThis);
 
-  if (!pThis->m_Services.useConfiguration().exists(ASW("/config/server/crypto/cert",26)))
-  {
-    ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer HTTPS missing /config/server/crypto/cert, secure socket not listening." << std::endl;
-    return -1;
-  }
-  if (!pThis->m_Services.useConfiguration().exists(ASW("/config/server/crypto/pkey",26)))
-  {
-    ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer HTTPS missing /config/server/crypto/pkey, secure socket not listening." << std::endl;
-    return -1;
-  }
-
-  int https_port = pThis->m_Services.useConfiguration().getInt(AOSConfiguration::LISTEN_HTTPS_PORT, 443);
   ASocketListener_SSL listener(
-    https_port, 
-    pThis->m_Services.useConfiguration().getString(ASW("/config/server/crypto/cert",26), AString::sstr_Empty), 
-    pThis->m_Services.useConfiguration().getString(ASW("/config/server/crypto/pkey",26), AString::sstr_Empty)
+    pData->port,
+    pData->cert,
+    pData->pkey,
+    pData->host
   );
   listener.open();
 
-  pThis->m_Services.useLog().add(ASWNL("AObjectServer started.  HTTPS listening on port ")+AString::fromInt(https_port));
+  pThis->m_Services.useLog().add(ARope("AObjectServer started.  HTTPS listening on ")+pData->host+ASW(":",1)+AString::fromInt(pData->port));
   {
-    ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer HTTPS listening on port " << https_port << std::endl;
+    AString str("AObjectServer HTTPS listening on ");
+    str.append(pData->host);
+    str.append(':');
+    str.append(AString::fromInt(pData->port));
+    AOS_DEBUGTRACE(str.c_str(), NULL);
   }
 
   thread.setRunning(true);
@@ -250,20 +303,18 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
   }
   catch(AException& e)
   {
-    ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer HTTPS listener thread caught an exception: " << e.what() << std::endl;
+    AString str("AObjectServer HTTPS listener thread caught an exception: ");
+    str.append(e);
     pThis->m_Services.useLog().add(e);
+    AOS_DEBUGTRACE(str.c_str(), NULL);
     thread.setRunning(false);
     pThis->m_Services.useContextManager().deallocate(pContext);
-    throw;
   }
   catch(...)
   {
-    ALock lock(pThis->m_Services.useScreenSynch());
-    std::cout << "AObjectServer listener thread caught an unknown exception." << std::endl;
+    AOS_DEBUGTRACE("AObjectServer HTTPS listener thread caught an unknown exception.", NULL);
     thread.setRunning(false);
     pThis->m_Services.useContextManager().deallocate(pContext);
-    throw;
   }
 
   thread.setRunning(false);

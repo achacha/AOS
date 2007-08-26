@@ -9,6 +9,9 @@ class AOSServices;
 class AOSContext;
 class AOSContextQueueSet;
 
+//a_Delay delay for loop sleep in milliseconds
+#define DEFAULT_SLEEP_DELAY 5
+
 class AOS_BASE_API AOSContextQueueThreadPool : public AOSContextQueueInterface
 {
 public:
@@ -26,7 +29,16 @@ public:
   );
   virtual ~AOSContextQueueThreadPool();
 
+  /*!
+  Access to the thread pool
+  */
   AThreadPool& useThreadPool() { return m_ThreadPool; }
+
+  /*!
+  Sleep delay
+  */
+  void setSleepDelay(int sleepDelay);
+  int getSleepDelay() const;
 
   /*!
   AOSAdminInterface
@@ -45,6 +57,9 @@ protected:
 
   // Main wrapper to the thread pool workers
   static u4 _threadprocWrapper(AThread&);
+
+  //a_Thread properties
+  int m_SleepDelay;
 };
 
 #endif // INCLUDED__AOSContextQueueThreadPool_HPP__

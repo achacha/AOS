@@ -31,6 +31,11 @@ public:
   bool isRun();
   bool isRunning();
 
+  /*!
+  Shutdown has been requested, main loop can exit when admin is done running
+  */
+  bool isShutdownRequested() const;
+
 protected:
   static u4 threadprocAdminListener(AThread& thread);
 
@@ -47,6 +52,9 @@ private:
   void _prepareXmlDocument(const AString&, AHTTPRequestHeader&, AXmlDocument&);
 
   AOSServices& m_Services;
+
+  //a_Shutdown requested
+  bool m_IsShutdownRequested;
 };
 
 #endif //INCLUDED__AOSAdmin_HPP__

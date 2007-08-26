@@ -12,7 +12,8 @@ AOSContextQueueThreadPool::AOSContextQueueThreadPool(
   AOSContextQueueInterface *pError    // = NULL
 ) :
   m_ThreadPool(AOSContextQueueThreadPool::_threadprocWrapper, threadCount),
-  AOSContextQueueInterface(services, pForward, pBack, pError)
+  AOSContextQueueInterface(services, pForward, pBack, pError),
+  m_SleepDelay(DEFAULT_SLEEP_DELAY)
 {
   m_ThreadPool.setThis(this);
 }
@@ -29,6 +30,15 @@ void AOSContextQueueThreadPool::addAdminXml(AXmlElement& eBase, const AHTTPReque
     eBase,
     ASW("ThreadPool.threadCount",22),
     AString::fromSize_t(m_ThreadPool.getThreadCount())
+  );
+
+  addPropertyWithAction(
+    eBase, 
+    ASW("ThreadPool.sleepDelay",21),
+    AString::fromInt(m_SleepDelay),
+    ASW("Update",6), 
+    ASW("Sleep delay",11),
+    ASW("newSleepDelay",13)
   );
 
   addPropertyWithAction(
@@ -50,6 +60,12 @@ void AOSContextQueueThreadPool::processAdminAction(AXmlElement& base, const AHTT
     if (newCount > 1)
       m_ThreadPool.setThreadCount((size_t)newCount);
   }
+  else if (request.getUrl().getParameterPairs().get(ASW("newSleepDelay",13), str))
+  {
+    int newDelay = str.toInt();
+    if (newDelay > 0)
+      m_SleepDelay = newDelay;
+  }
 }
 
 u4 AOSContextQueueThreadPool::_threadprocWrapper(AThread& thread)
@@ -61,3 +77,12 @@ u4 AOSContextQueueThreadPool::_threadprocWrapper(AThread& thread)
   return pThis->_threadproc(thread);
 }
 
+void AOSContextQueueThreadPool::setSleepDelay(int sleepDelay)
+{
+  m_SleepDelay = sleepDelay;
+}
+
+int AOSContextQueueThreadPool::getSleepDelay() const
+{
+  return m_SleepDelay;
+}

@@ -18,6 +18,16 @@ class AObjectContainer;
 class AOSServices;
 class ALog;
 
+#define ENABLE_AFILE_TRACER_DEBUG                      // This will enable it, comment it out to disable
+#ifdef __DEBUG_DUMP__
+#define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
+#endif
+#include <debugFileTracer.hpp>
+#define AOS_DEBUGTRACE(msg, ptr) do { \
+  AFILE_TRACER_DEBUG_MESSAGE(msg, ptr); \
+  std::cout << msg << std::endl; \
+} while(0)
+
 //a_Include api headers for other libararies which then import the appropriate LIBs
 #include <apiABase.hpp>
 
@@ -25,8 +35,8 @@ typedef int (PROC_AOS_Register)(AOSInputExecutor&, AOSModuleExecutor&, AOSOutput
 typedef int (PROC_AOS_Init)(AOSServices&);
 
 #ifdef WIN32
-#define AOS_SERVER_NAME "AsynchObjectServer/1.1.1.0"
-#define AOS_ADMIN_SERVER_NAME "AOSAdminServer/1.2.0.2"
+#define AOS_SERVER_NAME "AsynchObjectServer/1.2.0.0"
+#define AOS_ADMIN_SERVER_NAME "AOSAdminServer/1.2.0.0"
 #endif
 
 #endif //__apiAOS_Base_HPP__

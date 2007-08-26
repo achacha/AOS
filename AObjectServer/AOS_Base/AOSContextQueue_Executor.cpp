@@ -222,7 +222,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           pThis->_goNo(pContext);
         }
       }
-      AThread::sleep(3);  //a_Empty queue, avoid thrashing
+      AThread::sleep(pThis->m_SleepDelay);  //a_Empty queue, avoid thrashing
     }
     catch(AException& e)
     {
