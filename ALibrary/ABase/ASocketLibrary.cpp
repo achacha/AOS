@@ -4,8 +4,10 @@
 #include "ASocketException.hpp"
 #include "ALock.hpp"
 
-const AString ASocketLibrary::AnyAddress("AnyAddress");
-const AString ASocketLibrary::Broadcast("Broadcast");
+const AString ASocketLibrary::ANY_ADDRESS("AnyAddress");
+const AString ASocketLibrary::BROADCAST("Broadcast");
+
+const AString ASocketLibrary::LOCAL_LOOPBACK("127.0.0.1");
 
 #ifdef __DEBUG_DUMP__
 void ASocketLibrary::SocketInfo::debugDump(std::ostream& os, int indent) const

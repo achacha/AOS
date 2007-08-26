@@ -64,6 +64,11 @@ public:
   */
   bool isValidPath() const;
 
+  /*!
+  Is path valid
+  */
+  bool isValidHttp() const;
+
 protected:
   //a_First line for request
   //a_[METHOD] [SP] [URI] [SP] [HTTPVERSION]

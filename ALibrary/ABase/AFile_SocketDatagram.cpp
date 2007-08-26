@@ -67,7 +67,7 @@ size_t AFile_SocketDatagram::receiveFrom(int port, const AString& address)
   
   sadd.sin_port = htons(m_SocketInfo.m_port);
   
-  if (address == ASocketLibrary::AnyAddress)
+  if (address == ASocketLibrary::ANY_ADDRESS)
     sadd.sin_addr.s_addr = INADDR_ANY;
   else
     sadd.sin_addr.s_addr = inet_addr(address.c_str());
@@ -107,7 +107,7 @@ size_t AFile_SocketDatagram::sendTo(int port, const AString& address)
   memset(&sadd, 0, sizeof(sadd));
   sadd.sin_family = AF_INET;
   sadd.sin_port   = (u_short)htons(port);
-  if (address == ASocketLibrary::Broadcast)
+  if (address == ASocketLibrary::BROADCAST)
     sadd.sin_addr.s_addr = INADDR_BROADCAST;
   else
     sadd.sin_addr.s_addr = inet_addr(address.c_str());
@@ -160,7 +160,7 @@ void AFile_SocketDatagram::bind(int port, const AString& ipAddr)
     sadd.sin_family = AF_INET;
     sadd.sin_port   = (u_short)htons(port);
     
-    if (ipAddr==ASocketLibrary::AnyAddress)
+    if (ipAddr==ASocketLibrary::ANY_ADDRESS)
     	sadd.sin_addr.s_addr = INADDR_ANY;
     else
     	sadd.sin_addr.s_addr = inet_addr(ipAddr.c_str());

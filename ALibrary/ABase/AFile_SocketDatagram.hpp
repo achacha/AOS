@@ -36,7 +36,7 @@ public:
       listener.readLine(line);
       std::cout << line.c_str() << std::endl;
   */
-  void bind(int port=0, const AString& ipAddr = ASocketLibrary::AnyAddress);
+  void bind(int port=0, const AString& ipAddr = ASocketLibrary::ANY_ADDRESS);
 
   virtual void open() {}     //a_Does not apply to datagrams
   virtual void flush() {}    //a_Does not apply to datagrams
@@ -55,7 +55,7 @@ public:
     Receive ONE packet of max datagram size or less
     Will block if no data is present and wait
   */
-  size_t receiveFrom(int port = 0, const AString& address = ASocketLibrary::AnyAddress);
+  size_t receiveFrom(int port = 0, const AString& address = ASocketLibrary::ANY_ADDRESS);
 
   //a_Check socket
   bool isInputWaiting() const;

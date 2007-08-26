@@ -109,13 +109,6 @@ void AHTTPRequestHeader::emit(AXmlElement& target) const
   target.addElement(ASW("method",6), mstr_Method);
   target.addElement(ASW("version",7), mstr_HTTPVersion);
   
-  if (mstr_HTTPVersion.equalsNoCase("HTTP/1.1", 8))
-  {
-    //a_RFC2616 Section 14.23 requires Host: for HTTP/1.1
-    if (m_Pairs.find("Host") == m_Pairs.end())
-      ATHROW_EX(this, AException::InvalidObject, "HTTP/1.1 requires 'Host:' to contain server requested"); 
-  }
-
   //a_From parent
   MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
@@ -279,4 +272,14 @@ bool AHTTPRequestHeader::isValidPath() const
 bool AHTTPRequestHeader::isHttpPipeliningEnabled() const
 {
   return equals(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10)) && mstr_HTTPVersion.equals("HTTP/1.1");
+}
+
+bool AHTTPRequestHeader::isValidHttp() const
+{
+  if (mstr_HTTPVersion.equalsNoCase("HTTP/1.1", 8))
+  {
+    //a_RFC2616 Section 14.23 requires Host: for HTTP/1.1
+    if (m_Pairs.find("Host") == m_Pairs.end())
+      return false;
+  }
 }

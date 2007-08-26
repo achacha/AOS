@@ -13,8 +13,9 @@ Making it a global object in scope of application of shared object/dll will work
 class ABASE_API ASocketLibrary
 {
 public:
-  static const AString AnyAddress;
-  static const AString Broadcast;
+  static const AString ANY_ADDRESS;
+  static const AString BROADCAST;
+  static const AString LOCAL_LOOPBACK;
 
 public:
   ASocketLibrary();

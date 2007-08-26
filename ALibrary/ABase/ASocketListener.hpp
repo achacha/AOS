@@ -17,9 +17,10 @@ friend AFile_Socket;    //a_This class will use the accept method to connect its
 
 public:
   /*!
+  ip - This is the actual IP address, to convert hostname to ip use call in ASocketLibrary
   allowLocalReuse - when true socket can be bound to an address/port already in use
   backlog - listener socket backlog queue
-  if ip is empty, default interface is assumed
+  if ip is empty, default interface is assumed 
   */
   ASocketListener(int port, const AString& ip = AString::sstr_Empty, int backlog = 42, bool allowLocalReuse = false);
   virtual ~ASocketListener();
