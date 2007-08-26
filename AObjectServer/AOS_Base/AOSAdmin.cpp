@@ -94,7 +94,6 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
   str.append(':');
   str.append(AString::fromInt(admin_port));
   pThis->m_Services.useLog().add(str, ALog::MESSAGE);
-  str.append(AString::sstr_CRLF);
   AOS_DEBUGTRACE(str.c_str(), NULL);
 
   str.clear();

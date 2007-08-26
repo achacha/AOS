@@ -55,7 +55,6 @@
 		<http>80</http>
 		<https>443</https>
 		<admin>
-		  <host>localhost</host>
 			<port>12345</port>
 		</admin>
 	</listen>
