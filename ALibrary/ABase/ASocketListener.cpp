@@ -64,7 +64,9 @@ void ASocketListener::open()
   if (m_SocketInfo.m_address.isEmpty())
   {
     hostent* pLocalHost = ::gethostbyname("");
-    sadd.sin_addr.s_addr = ((struct in_addr *)*pLocalHost->h_addr_list)->s_addr;
+    struct in_addr *pInAddr = ((struct in_addr *)*pLocalHost->h_addr_list);
+    sadd.sin_addr.s_addr = pInAddr ->s_addr;
+    ASocketLibrary::convertIp4ToString(pInAddr->S_un.S_addr, m_SocketInfo.m_address);
   }
   else
     sadd.sin_addr.s_addr = inet_addr(m_SocketInfo.m_address.c_str());
@@ -138,4 +140,9 @@ bool ASocketListener::isAcceptWaiting()
   
   int ret = select(0, &sockSet, NULL, NULL, &timeout);
   return (ret > 0 ? true : false);
+}
+
+const ASocketLibrary::SocketInfo& ASocketListener::getSocketInfo() const
+{
+  return m_SocketInfo;
 }

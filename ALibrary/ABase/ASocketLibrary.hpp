@@ -27,6 +27,12 @@ public:
   static AString getDefaultIp();
   static AString getIPFromAddress(const AString &address);
   static bool canBindToPort(int port);
+  
+  /*!
+  Converting A.B.C.D to unsigned long byte version in network order DCBA and vice versa
+  */
+  static void convertIp4ToString(u4 ip, AOutputBuffer& );
+  static u4 convertStringToIp4(const AString& ip);
 
   //a_Class to store socket informatioon
   class ABASE_API SocketInfo : public ADebugDumpable

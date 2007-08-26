@@ -62,15 +62,20 @@ public:
 
   //a_Access the internal read/write buffer
   //a_Use the AFile based methods as usual, this is just a specialized way to get to the buffer
-  AString& useBuffer() { return m_Buffer; }
+  AString& useBuffer();
 
   //a_Set/get maximum datagram size
-  size_t getMaximumDatagramSize() const { return m_MaximumDatagramSize; }
-  void setMaximumDatagramSize(size_t size) { m_MaximumDatagramSize = size; }
+  size_t getMaximumDatagramSize() const;
+  void setMaximumDatagramSize(size_t size);
 
   //a_Datagram options for send and receive
   void setReceiveTimeout(size_t miliSec);
   void setSendTimeout(size_t miliSec);
+
+  /*!
+  SocketInfo
+  */
+  const ASocketLibrary::SocketInfo& getSocketInfo() const;
 
 protected:
 	virtual size_t _read(void *, size_t);

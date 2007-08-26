@@ -151,3 +151,24 @@ bool ASocketLibrary::canBindToPort(int port)
 
   return (result ? false : true);
 }
+
+void ASocketLibrary::convertIp4ToString(u4 ip, AOutputBuffer& target)
+{
+  target.append(AString::fromU1(GET_U4_3(ip)));
+  target.append('.');
+  target.append(AString::fromU1(GET_U4_2(ip)));
+  target.append('.');
+  target.append(AString::fromU1(GET_U4_1(ip)));
+  target.append('.');
+  target.append(AString::fromU1(GET_U4_0(ip)));
+}
+
+u4 ASocketLibrary::convertStringToIp4(const AString& ip)
+{
+  VECTOR_AString parts;
+  ip.split(parts, '.');
+  AASSERT(NULL, 4 == parts.size()); //a_ Only works with A.B.C.D
+
+  u4 ret = MAKE_U4((u1)parts.at(3).toU4(), (u1)parts.at(2).toU4(), (u1)parts.at(1).toU4(), (u1)parts.at(0).toU4());
+  return ret;
+}

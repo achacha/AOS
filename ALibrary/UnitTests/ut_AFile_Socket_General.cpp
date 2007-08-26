@@ -8,13 +8,14 @@
 ASocketLibrary g_SockerLibrary;
 
 #define UNIT_TEST_PORT 19997
+#define UNIT_TEST_HOST "127.0.0.1"
 #define UNIT_TEST_REQUEST "X-UnitTest-Id"
 #define UNIT_TEST_RESPONSE "X-UnitTest-Response"
 u4 threadprocServer(AThread& thread)
 {
   int& iRet = *(int *)thread.getParameter();
   
-  ASocketListener listener(UNIT_TEST_PORT);
+  ASocketListener listener(UNIT_TEST_PORT, UNIT_TEST_HOST);
   try
   {
     AHTTPRequestHeader requestHeader;
@@ -75,11 +76,24 @@ u4 threadprocServer(AThread& thread)
   return 0;
 }
 
+void testConversionIp4(int& iRet)
+{
+  AString strIp1("1.2.3.4");
+  u4 u4Ip = ASocketLibrary::convertStringToIp4(strIp1);
+
+  AString strIp2;
+  ASocketLibrary::convertIp4ToString(u4Ip, strIp2);
+
+  ASSERT_UNIT_TEST(strIp1.equals(strIp2), "ASocketLibrary IP4 convert", "0", iRet);
+}
+
 int ut_AFile_Socket_General()
 {
   std::cerr << "ut_AFile_Socket_General" << std::endl;
 
   int iRet = 0x0;
+
+  testConversionIp4(iRet);
 
   AThread server(threadprocServer, true, (void *)&iRet);
   int timeout = 10;
@@ -94,12 +108,12 @@ int ut_AFile_Socket_General()
     return iRet;
   }
 
-  AFile_Socket client("127.0.0.1", UNIT_TEST_PORT, true);
+  AFile_Socket client(UNIT_TEST_HOST, UNIT_TEST_PORT, true);
   client.open();
 
   AHTTPRequestHeader request;
   AHTTPResponseHeader response;
-  request.setPair(AHTTPHeader::HT_REQ_Host, "127.0.0.1");
+  request.setPair(AHTTPHeader::HT_REQ_Host, UNIT_TEST_HOST);
   request.setPair(UNIT_TEST_REQUEST, "1");
   request.toAFile(client);
   response.fromAFile(client);

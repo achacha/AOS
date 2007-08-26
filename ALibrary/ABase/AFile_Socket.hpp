@@ -60,9 +60,7 @@ public:
   /*!
   Socket info
   */
-  const AString &getAddress() const;
-  int getPort() const;
-  u8 getSocketHandle() const;
+  const ASocketLibrary::SocketInfo& getSocketInfo() const;
 
 protected :
   //a_Implement raw read/write methods that AFile will use via socket interface

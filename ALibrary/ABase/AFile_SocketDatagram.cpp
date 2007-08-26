@@ -192,3 +192,18 @@ bool AFile_SocketDatagram::_isNotEof()
   //a_For datagrams EOF doesn't make as much sense
   return true;
 }
+
+AString& AFile_SocketDatagram::useBuffer()
+{ 
+  return m_Buffer;
+}
+
+size_t AFile_SocketDatagram::getMaximumDatagramSize() const 
+{ 
+  return m_MaximumDatagramSize; 
+}
+
+void AFile_SocketDatagram::setMaximumDatagramSize(size_t size) 
+{ 
+  m_MaximumDatagramSize = size; 
+}

@@ -6,9 +6,7 @@ int ut_Macros()
   std::cerr << "ut_Macros" << std::endl;
 
   int iRet = 0;
-  u4 dw;
-  
-  MAKE_U4(0xCA, 0xFE, 0xBA, 0xBE);
+  u4 dw = MAKE_U4(0xCA, 0xFE, 0xBA, 0xBE);
   ASSERT_UNIT_TEST((dw == 0xCAFEBABE), "MAKE_U4", "0", iRet);
 
   SET_U4_0(dw, 0x0D);

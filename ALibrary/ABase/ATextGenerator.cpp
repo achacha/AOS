@@ -139,7 +139,7 @@ void ATextGenerator::generateUniqueId(AOutputBuffer& target, size_t size /* = 32
   size_t x = ATime::getTickCount();
   rope.append((const char *)&x, sizeof(size_t));
   
-  size_t bytesToAdd = size / 2 - sizeof(size_t);
+  size_t bytesToAdd = size - sizeof(size_t);
   while(bytesToAdd >= 4)
   {
     x = ARandomNumberGenerator::get(ARandomNumberGenerator::Lecuyer).nextU4();
@@ -147,9 +147,10 @@ void ATextGenerator::generateUniqueId(AOutputBuffer& target, size_t size /* = 32
     bytesToAdd -= 4;
   }
 
-  ATextConverter::encode64(rope, target);
-  if (size > rope.getSize())
-    ATextGenerator::generateRandomString(target, size - rope.getSize());
+  AString str(rope.getSize() * 2, 256);
+  ATextConverter::encode64(rope, str);
+  AASSERT(&str, str.getSize() >= size);
+  target.append(str, size);
 }
 
 void ATextGenerator::generateRandomWord(AOutputBuffer& target, size_t len /* = 0x1 */)

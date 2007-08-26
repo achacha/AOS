@@ -52,6 +52,11 @@ public:
   */
   void setWriteTimeout(s4 miliSec);
 
+  /*!
+  SocketInfo
+  */
+  const ASocketLibrary::SocketInfo& getSocketInfo() const;
+
 protected:
   ASocketLibrary::SocketInfo accept();
 

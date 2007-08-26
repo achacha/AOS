@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tXMLElement.cpp"
+			RelativePath=".\tIp4Conversion.cpp"
 			>
 		</File>
 	</Files>

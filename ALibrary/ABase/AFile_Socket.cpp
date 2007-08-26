@@ -108,19 +108,9 @@ void AFile_Socket::close()
   m_EOF = true;
 }
 
-const AString &AFile_Socket::getAddress() const
+const ASocketLibrary::SocketInfo& AFile_Socket::getSocketInfo() const
 {
-  return m_SocketInfo.m_address;
-}
-
-int AFile_Socket::getPort() const
-{
-  return m_SocketInfo.m_port;
-}
-
-u8 AFile_Socket::getSocketHandle() const
-{
-  return m_SocketInfo.m_handle;
+  return m_SocketInfo;
 }
 
 void AFile_Socket::setCloseTimeout(size_t miliSec)

@@ -45,7 +45,11 @@ typedef std::vector<size_t> VECTOR_size_t;
 #define SET_U4_1(dw, b) (dw = (dw & 0xffff00ff) | (u4(b) << 8));
 #define SET_U4_2(dw, b) (dw = (dw & 0xff00ffff) | (u4(b) << 16));
 #define SET_U4_3(dw, b) (dw = (dw & 0x00ffffff) | (u4(b) << 24));
-#define MAKE_U4(b3, b2, b1, b0) (dw = (b3 << 24) | (b2 << 16) | (b1 << 8) | b0)
+#define MAKE_U4(b3, b2, b1, b0) ((b3 << 24) | (b2 << 16) | (b1 << 8) | b0)
+#define GET_U4_0(dw) (((u1 *)&dw)[3])
+#define GET_U4_1(dw) (((u1 *)&dw)[2])
+#define GET_U4_2(dw) (((u1 *)&dw)[1])
+#define GET_U4_3(dw) (((u1 *)&dw)[0])
 
 #ifndef errno_t
   typedef int errno_t;
