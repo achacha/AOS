@@ -61,6 +61,7 @@
 	</listen>
 	<reported>
 		<!-- Reported overrides -->
+		<hostname desc="Hostname reported to clients">achacha.selfip.com</hostname>
 		<server>AObjectServer 1.2.0.0</server>
 		<http/>
 		<https/>
