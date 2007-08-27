@@ -55,12 +55,12 @@
 		<http>80</http>
 		<https>443</https>
 		<admin>
+			<hostname desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
 			<port>12345</port>
 		</admin>
 	</listen>
 	<reported>
 		<!-- Reported overrides -->
-		<hostname>localhost</hostname>
 		<server>AObjectServer 1.2.0.0</server>
 		<http/>
 		<https/>
