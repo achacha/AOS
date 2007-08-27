@@ -48,6 +48,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
   AASSERT(NULL, pThis);
   AOSContext *pContext = NULL;
 
+  const int iWaitForHttpDataTimeout = pThis->m_Services.useConfiguration().getInt("/config/server/", 1000);
   thread.setRunning(true);
   while(thread.isRun())
   {
@@ -79,6 +80,15 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         switch (pContext->init())
         {
           case AOSContext::STATUS_HTTP_INCOMPLETE_NODATA:
+            if (pContext->getRequestTimer().getInterval() > iWaitForHttpDataTimeout)
+            {
+              //a_Waited lost enough
+              pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, abandoning wait",70));
+              pThis->_goTerminate(pContext);
+              pContext = NULL;
+              continue;
+            }
+            //Fallthrough from above
           case AOSContext::STATUS_HTTP_INCOMPLETE_METHOD:
           case AOSContext::STATUS_HTTP_INCOMPLETE_LINEZERO:
           case AOSContext::STATUS_HTTP_INCOMPLETE_CRLFCRLF:

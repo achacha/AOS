@@ -30,26 +30,26 @@
 		<module>AOS_Forum</module>
 		<module>AOS_Blog</module>
 	</load>
-	<context_queues>
-		<is_available>
-			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
-		</is_available>
-		<pre_executor>
+	<context-queues>
+		<is-available>
+			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep-delay>
+		</is-available>
+		<pre-executor>
 			<threads desc="Threads in the pre-executor queue manager">10</threads>
 			<queues desc="Queues in the pre-executor queue manager">1</queues>
-			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
-		</pre_executor>
+			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep-delay>
+		</pre-executor>
 		<executor>
 			<threads desc="Threads in the executor queue manager">10</threads>
 			<queues desc="Queues in the executor queue manager">1</queues>
-			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep_delay>
+			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep-delay>
 		</executor>
-		<error_executor>
+		<error-executor>
 			<threads desc="Threads in the executor queue manager">2</threads>
 			<queues desc="Queues in the executor queue manager">1</queues>
-			<sleep_delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">50</sleep_delay>
-		</error_executor>
-	</context_queues>
+			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">50</sleep-delay>
+		</error-executor>
+	</context-queues>
 	<listen>
 		<!-- Listener ports -->
 		<http>80</http>
@@ -85,6 +85,7 @@
 	</crypto>
 	<http>
 		<first-char-read-tries>15</first-char-read-tries>
+		<wait-for-http-data-timeout>500</wait-for-http-data-timeout>
 		<http11-pipelining-enabled>true</http11-pipelining-enabled>
 	</http>
 </server>
