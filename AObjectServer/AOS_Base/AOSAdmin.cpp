@@ -76,7 +76,8 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
     return -1;
   }
 
-  AString hostname = pThis->m_Services.useConfiguration().getString(ASWNL("/config/server/listen/admin/host"), ASocketLibrary::LOCAL_LOOPBACK);
+  AString hostname;
+  pThis->m_Services.useConfiguration().emitString(ASWNL("/config/server/listen/admin/host"), hostname);
   ASocketListener listener(admin_port, ASocketLibrary::getIPFromAddress(hostname));
   try
   {
@@ -90,9 +91,9 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
 
   
   AString str("AObjectServer HTTP admin listening on ");
-  str.append(hostname);
+  str.append(listener.getSocketInfo().m_address);
   str.append(':');
-  str.append(AString::fromInt(admin_port));
+  str.append(AString::fromInt(listener.getSocketInfo().m_port));
   pThis->m_Services.useLog().add(str, ALog::MESSAGE);
   AOS_DEBUGTRACE(str.c_str(), NULL);
 

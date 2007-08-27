@@ -22,14 +22,18 @@ class ALog;
 #ifdef __DEBUG_DUMP__
 #define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
 #endif
-#include <debugFileTracer.hpp>
-#define AOS_DEBUGTRACE(msg, ptr) do { \
-  AFILE_TRACER_DEBUG_MESSAGE(msg, ptr); \
-  std::cout << msg << std::endl; \
-} while(0)
 
 //a_Include api headers for other libararies which then import the appropriate LIBs
 #include <apiABase.hpp>
+
+class ASync_CriticalSection;
+AOS_BASE_API extern ASync_CriticalSection g_DebugTraceSync; 
+#include <debugFileTracer.hpp>
+#define AOS_DEBUGTRACE(msg, ptr) do { \
+  ALock lock(g_DebugTraceSync); \
+  AFILE_TRACER_DEBUG_MESSAGE(msg, ptr); \
+  std::cout << msg << std::endl; \
+} while(0)
 
 typedef int (PROC_AOS_Register)(AOSInputExecutor&, AOSModuleExecutor&, AOSOutputExecutor&, ALog&);
 typedef int (PROC_AOS_Init)(AOSServices&);
