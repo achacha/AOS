@@ -172,16 +172,26 @@ AXmlNode *AXmlNode::findNode(const AString& xpath)
 
   if (xparts.size() > 0)
   {
-    if (m_Name.equals(xparts.front()))
+    if ('/' == xpath.at(0))
     {
-      xparts.pop_front();
+      if (m_Name.equals(xparts.front()))
+      {
+        xparts.pop_front();
+        if (xparts.size() > 0)
+          return _get(xparts);
+        else
+          return this;
+      }
+      else
+        return NULL;
+    }
+    else
+    {
       if (xparts.size() > 0)
         return _get(xparts);
       else
-        return this;
+        return NULL;
     }
-    else
-      return NULL;
   }
   else
   {
@@ -196,16 +206,26 @@ const AXmlNode *AXmlNode::findNode(const AString& xpath) const
 
   if (xparts.size() > 0)
   {
-    if (m_Name.equals(xparts.front()))
+    if ('/' == xpath.at(0))
     {
-      xparts.pop_front();
+      if (m_Name.equals(xparts.front()))
+      {
+        xparts.pop_front();
+        if (xparts.size() > 0)
+          return _get(xparts);
+        else
+          return this;
+      }
+      else
+        return NULL;
+    }
+    else
+    {
       if (xparts.size() > 0)
         return _get(xparts);
       else
-        return this;
+        return NULL;
     }
-    else
-      return NULL;
   }
   else
   {

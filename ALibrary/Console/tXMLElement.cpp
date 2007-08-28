@@ -16,7 +16,7 @@ const char xml_data_small[] = "\
 const char xml_doc_small[] = "\
 <?xml version = \"1.0\"?>\
 <xml id=\"EQInterfaceDefinitionLanguage\">\
-	<Schema xmlns = \"EverQuestData\" xmlns:dt = \"EverQuestDataTypes\"/>\
+  <Schema xmlns = \"EverQuestData\" xmlns:dt = \"EverQuestDataTypes\"/>\
   <!--comment-->\
   <TextColor>\
 		<R>240</R>\
@@ -24,6 +24,23 @@ const char xml_doc_small[] = "\
 		<B>240</B>\
 	</TextColor>\
 </xml>\
+";
+
+const char xml_config[]= "\
+<root>\
+  <http>\
+   <port>80</port>\
+   <host>one</host>\
+ </http>\
+  <http>\
+   <port>81</port>\
+   <host>two</host>\
+ </http>\
+  <http>\
+   <port>82</port>\
+   <host>three</host>\
+ </http>\
+</root>\
 ";
 
 const char xml_data_big[] ="\
@@ -275,9 +292,64 @@ void testAppend()
   std::cout << str << std::endl;
 }
 
+void testFind1()
+{
+  AFile_AString f;
+  f.useAString().assign(xml_doc_small);
+
+  AXmlDocument doc(f);
+
+  AXmlNode *pNode = doc.useRoot().findNode("/xml/TextColor");
+  if (pNode)
+  {
+    AString str;
+    pNode->emit(str,0);
+    std::cout << str << std::endl;
+
+    AXmlNode *pR = pNode->findNode("R");
+    if (pR)
+    {
+      str.clear();
+      pR->emit(str,0);
+      std::cout << str << std::endl;
+    }
+    else
+      std::cout << "Not found." << std::endl;
+  }
+  else
+    std::cout << "Not found." << std::endl;
+}
+
+void testFind2()
+{
+  AFile_AString f;
+  f.useAString().assign(xml_config);
+
+  AXmlDocument doc(f);
+
+  AXmlNode::ConstNodeContainer nodes;
+  doc.useRoot().find("/root/http", nodes);
+  if (nodes.size() > 0)
+  {
+    AString str;
+    AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin();
+    while (cit != nodes.end())
+    {
+      AString str("port=");
+      (*cit)->emitFromPath("port", str);
+      str.append("  host=");
+      (*cit)->emitFromPath("host", str);
+      std::cout << str << std::endl;
+      ++cit;
+    }
+  }
+  else
+    std::cout << "Not found." << std::endl;
+}
+
 int main()
 {
-  testParse();
+  //testParse();
   //testPathAdd();
   //testOutput();
   //testRandomXml();
@@ -285,6 +357,8 @@ int main()
   //testXmlEmit();
   //testClone();
   //testAppend();
+  //testFind1();
+  testFind2();
 
 	return 0;
 }
