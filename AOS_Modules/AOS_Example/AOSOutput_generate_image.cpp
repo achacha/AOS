@@ -17,14 +17,14 @@ bool AOSOutput_generate_image::execute(AOSOutputContext& context)
 {
   int x,y;
   AString str;
-  if (!context.getOutputParams().emitFromPath(ASW("/params/output/canvas/x", 23), str))
+  if (!context.getOutputParams().emitFromPath(ASW("output/canvas/x", 15), str))
   {
     m_Log.append("AOSOutput_generate_image: Unable to find '/params/output/canvas/x' parameter");
     ATHROW_EX(this, AException::InvalidParameter, "AOSOutput_generate_image requires '/params/output/canvas/x' parameter");
   }
   x = str.toInt();
   str.clear();
-  if (!context.getOutputParams().emitFromPath(ASW("/params/output/canvas/y", 23), str))
+  if (!context.getOutputParams().emitFromPath(ASW("output/canvas/y", 15), str))
   {
     m_Log.append("AOSOutput_generate_image: Unable to find '/params/output/canvas/y' parameter");
     ATHROW_EX(this, AException::InvalidParameter, "AOSOutput_generate_image requires '/params/output/canvas/y' parameter");
