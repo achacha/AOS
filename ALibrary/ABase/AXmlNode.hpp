@@ -49,6 +49,18 @@ public:
   AXmlNode *findNode(const AString& xpath);
   const AXmlNode *findNode(const AString& xpath) const;
 
+
+  /*!
+  Searching for path
+  If this element is 'a' and contains b/bb,c/cc@foo,d/dd
+  The '/a/c/cc@foo' will be found.  Current element must be first element of the path if absolute
+  If path is relative then c/cc will find 2nd child cc in child c
+  Adds const AXmlElement* to the result container, will not clear the result, will append
+
+  Returns elements found
+  */
+  size_t find(const AString& path, ConstNodeContainer& result) const;
+
   /*!
   AEmittable and other output methods
    indent >= 0 will make it human-readable by adding indent and CRLF
@@ -122,6 +134,9 @@ protected:
 
   //a_Indents with 2 spaces per indent
   inline void _indent(AOutputBuffer&, int) const;
+
+  /*! Internal find */
+  size_t _find(LIST_AString listPath, AXmlNode::ConstNodeContainer& result) const;
 
 public:
 #ifdef __DEBUG_DUMP__

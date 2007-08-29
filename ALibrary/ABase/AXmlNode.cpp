@@ -293,3 +293,107 @@ const AXmlNode::NodeContainer& AXmlNode::getContentContainer() const
 {
   return m_Content;
 }
+
+size_t AXmlNode::find(const AString& path, AXmlNode::ConstNodeContainer& result) const
+{
+  AString strAttribute;
+  AString strPath(path);
+  bool leadingSlash = false;
+
+  size_t pos = path.find('@');
+  if (AConstant::npos != pos)
+  {
+    //a_Extract attribute
+    strPath.get(strAttribute, pos);
+    strPath.setSize(strPath.getSize() - 1);  //a_Remove the trailing '@'
+  }
+
+  if ('/' == strPath.at(0))
+  {
+    leadingSlash = true;  //a_Signals that slash leads the path so much include current name
+  }
+
+  //a_Remove the leading name (which should be this element's name)
+  LIST_AString listPath;
+  strPath.split(listPath, '/');
+  if (leadingSlash)
+  {
+    if (0 == listPath.size())
+    {
+      //a_ "/" selects current node
+      result.push_back(this);
+      return 1;
+    }
+    else if (0 != listPath.front().compare(m_Name))
+    {
+      //a_First token MUST be the name of this element if / leads
+      ATHROW_EX(this, AException::ProgrammingError, ARope("Absolute path must start with the name of the current root element: root=/")+m_Name+" while path="+path);
+    }
+  }
+  else if (0 == listPath.size())
+  {
+    //a_ "/" selects current node
+    result.push_back(this);
+    return 1;
+  }
+  else
+  {
+    //a_Relative path implies this node is first
+    listPath.push_front(m_Name);
+  }
+
+  return _find(listPath, result);
+}
+
+size_t AXmlNode::_find(LIST_AString listPath, AXmlNode::ConstNodeContainer& result) const
+{
+  if (listPath.front().equals(m_Name))
+  {
+    listPath.pop_front();
+
+    size_t ret = 0;
+    switch(listPath.size())
+    {
+      case 0:
+        //a_This node is it
+        result.push_back(this);
+        ++ret;
+      break;
+      
+      case 1:
+      {
+        //a_Include immediate children nodes
+        NodeContainer::const_iterator cit = m_Content.begin();
+        while (cit != m_Content.end())
+        {
+          if ((*cit)->getName().equals(listPath.front()))
+          {
+            result.push_back(*cit);
+            ++ret;
+          }
+          ++cit;
+        }
+      }
+      break;
+      
+      default:
+      {
+        //a_Recurse deeper for each element
+        NodeContainer::const_iterator cit = m_Content.begin();
+        while (cit != m_Content.end())
+        {
+          if ((*cit)->getName().equals(listPath.front()))
+          {
+            ret += (*cit)->_find(listPath, result);
+          }
+          ++cit;
+        }
+      }
+      break;
+    }
+
+    return ret;
+  }
+  else
+    return 0;
+}

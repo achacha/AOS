@@ -1,6 +1,6 @@
 #!/bin/python
 import os,sys;
- 
+
 def makeSystemCall(param):
 	if (verbose == 1):
 		print param;
@@ -13,7 +13,8 @@ def makeSystemCall_mkdir(dirname):
 			print CMD;
 		os.system(CMD);
 
-EXEC_RSYNC_BASE=".\\rsync.py -tuC --exclude=CVS --exclude=pch*.hpp ";
+RSYNC_SCRIPT = os.getcwd()+"/rsync.py";
+EXEC_RSYNC_BASE=RSYNC_SCRIPT+" -tuC --exclude=CVS --exclude=pch*.hpp ";
 def syncPath(source_path, target_path):
 	CMD = EXEC_RSYNC_BASE + source_path + " " + target_path; 
 	if (verbose == 1):

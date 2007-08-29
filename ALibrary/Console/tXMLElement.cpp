@@ -347,6 +347,29 @@ void testFind2()
     std::cout << "Not found." << std::endl;
 }
 
+void testFind3()
+{
+  AFile_AString f;
+  f.useAString().assign(xml_config);
+
+  AXmlDocument doc(f);
+
+  AXmlNode::ConstNodeContainer nodes;
+  doc.useRoot().find("/root/http", nodes);
+  if (nodes.size() > 0)
+  {
+    AString str;
+    AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin();
+    while (cit != nodes.end())
+    {
+      std::cout << (*cit)->getName() << std::endl;
+      ++cit;
+    }
+  }
+  else
+    std::cout << "Not found." << std::endl;
+}
+
 int main()
 {
   //testParse();
@@ -359,6 +382,7 @@ int main()
   //testAppend();
   //testFind1();
   testFind2();
+  testFind3();
 
 	return 0;
 }
