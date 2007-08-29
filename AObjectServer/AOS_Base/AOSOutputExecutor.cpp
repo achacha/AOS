@@ -116,13 +116,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
     }
     else
     {
-      //a_Publish total execution time
-      if (!context.useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
-      {
-        context.setExecutionState(ASW("No output generator, defaulting to XML",38));
-        context.useOutputRootXmlElement().addElement(ASW("total_time",10), context.getContextTimer());
-      }
-      context.useEventVisitor().reset();
+      context.setExecutionState(ASW("No output generator, defaulting to XML",38));
       return;
     }
   }

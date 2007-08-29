@@ -342,16 +342,16 @@ void AOSConfiguration::_loadCommands()
         doc.fromAFile(configfile);
       }
       
-      AXmlElement::NodeContainer nodes;
+      AXmlElement::ConstNodeContainer nodes;
       doc.useRoot().find(ASW("/command",8), nodes);
       
       //a_Parse each /command/command type
-      AXmlElement::NodeContainer::const_iterator cit = nodes.begin();
+      AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
       AString strPath(1024, 512);
       AString dynamicDir(m_AosBaseDynamicDir.toAString());
       while(cit != nodes.end())
       {
-        AXmlElement *pElement = dynamic_cast<AXmlElement *>(*cit);
+        const AXmlElement *pElement = dynamic_cast<const AXmlElement *>(*cit);
         if (pElement)
         {
           //a_Get relative path
@@ -369,10 +369,10 @@ void AOSConfiguration::_loadCommands()
           p->registerAdminObject(m_Services.useAdminRegistry());
 
           {
-            ALock lock(m_ScreenSynch);
-            AString str;
+            AString str(strPath);
+            str.append('=');
             (*it).emit(str);
-            std::cout << strPath << "  =  " << str << std::endl;
+            AOS_DEBUGTRACE(str.c_str(), NULL);
           }  
           strPath.clear();
 
@@ -384,9 +384,11 @@ void AOSConfiguration::_loadCommands()
   }
   else
   {
-    ALock lock(m_ScreenSynch);
-    std::cerr << "WARNING: No command files found at: '" << m_AosBaseDynamicDir << "'" << std::endl;
-    m_Services.useLog().add(ASWNL("No command files found"), m_AosBaseDynamicDir, ALog::WARNING);
+    AString str("WARNING: No command files found at: '");
+    str.append(m_AosBaseDynamicDir);
+    str.append("'");
+    AOS_DEBUGTRACE(str.c_str(), NULL);
+    m_Services.useLog().add(str, m_AosBaseDynamicDir, ALog::WARNING);
   }
 }
 const AOSCommand * const AOSConfiguration::getCommand(const AUrl& commandUrl) const
@@ -590,38 +592,6 @@ const AString& AOSConfiguration::getAosDefaultOutputGenerator() const
 {
   return m_AosDefaultOutputGenerator;
 }
-
-//size_t AOSConfiguration::getAOSContextManagerHistoryMaxSize() const
-//{
-//  AString str;
-//  if (m_Ini.getValue(ASW("AOSContextManager",17), ASW("history_max_size",16), str))
-//    return str.toSize_t();
-//  else
-//    return DEFAULT_AOSCONTEXTMANAGER_HISTORY_MAX_SIZE;
-//}
-//
-//size_t AOSConfiguration::getAOSContextManagerFreestoreMaxSize() const
-//{
-//  AString str;
-//  if (m_Ini.getValue(ASW("AOSContextManager",17), ASW("freestore_max_size",18), str))
-//    return str.toSize_t();
-//  else
-//    return DEFAULT_AOSCONTEXTMANAGER_FREESTORE_MAX_SIZE;
-//}
-
-//int AOSConfiguration::isHttpPipeliningEnabled() const
-//{
-//  static int value = -1;
-//  if (-1 == value)
-//  {
-//    AString str;
-//    if (m_Ini.getValue(CONFIG, ASW("http11_pipelining_enabled",25), str))
-//      value = str.toInt();
-//    else
-//      value = 0;
-//  }
-//  return (0 != value);
-//}
 
 const AXmlElement& AOSConfiguration::getConfigRoot() const
 {

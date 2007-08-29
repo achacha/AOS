@@ -139,9 +139,9 @@ void AOSModuleExecutor::execute(AOSContext& context)
           //a_Start timer and execute module
           context.setExecutionState(ARope("Executing module: ",18)+(*cit).m_Class);
 
-          AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("/execute/module",15));
-          e.addAttribute(ASW("seq",3), AString::fromInt(i++));
-          e.addData((*cit).m_Class);
+          //AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("/execute/module",15));
+          //e.addAttribute(ASW("seq",3), AString::fromInt(i++));
+          //e.addData((*cit).m_Class);
           
           ATimer timer(true);
           if (!(*it).second->execute(context, (*cit).m_ModuleParams))
@@ -153,8 +153,8 @@ void AOSModuleExecutor::execute(AOSContext& context)
 
           //a_Update statistics
           double interval = timer.getInterval();
-          e.addAttribute(ASW("timer",5), AString::fromDouble(interval));
           (*it).second->addExecutionTimeSample(interval);
+          //e.addAttribute(ASW("timer",5), AString::fromDouble(interval));
 
           //a_Event over
           context.useEventVisitor().reset();

@@ -14,6 +14,7 @@ void AOSSessionManager::debugDump(std::ostream& os, int indent) const
   while(citHashMap != m_SessionHashMap.end())
   {
     SessionMapHolder *pSessionMapHolder = (*citHashMap).second;
+    ALock lock(pSessionMapHolder->mp_SynchObject);
     SESSION_MAP::const_iterator cit = pSessionMapHolder->m_SessionMap.begin();
     while (cit != pSessionMapHolder->m_SessionMap.end())
     {

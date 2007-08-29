@@ -52,10 +52,18 @@
 	</context-queues>
 	<listen>
 		<!-- Listener ports -->
-		<http>80</http>
-		<https>443</https>
+		<http>
+			<host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+			<port>80</port>
+		</http>
+		<https>
+			<host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+			<port>443</port>
+			<cert desc="Relative path from server base for the certificate file">aos_root/certs/aos_cert.pem</cert>
+			<pkey desc="Relative path from server base for the private key file">aos_root/certs/aos_pkey.pem</pkey>
+		</https>
 		<admin>
-			<hostname desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+			<host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
 			<port>12345</port>
 		</admin>
 	</listen>
@@ -79,10 +87,6 @@
 		<url>sqlite:///./aos_root/AObjectServer.db</url>
 		<connections>4</connections>
 	</database>
-	<crypto>
-		<cert>aos_root/certs/aos_cert.pem</cert>
-		<pkey>aos_root/certs/aos_pkey.pem</pkey>
-	</crypto>
 	<http>
 		<first-char-read-tries>15</first-char-read-tries>
 		<wait-for-http-data-timeout>500</wait-for-http-data-timeout>

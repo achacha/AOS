@@ -50,87 +50,113 @@ void AOSRequestListener::startListening()
   if (mthread_Listener.isThreadActive() || mthread_SecureListener.isThreadActive())
     ATHROW(this, AException::ProgrammingError);
 
-  int http_port = m_Services.useConfiguration().getInt(ASWNL("/config/server/listen/http"), -1);
-  if (http_port > 0)
+  //a_HTTP setup
+  AXmlNode *pNode = m_Services.useConfiguration().useConfigRoot().findNode(ASW("/config/server/listen/http",26));
+  
   {
-    if (!ASocketLibrary::canBindToPort(http_port))
+    int http_port = -1;
+    if (pNode->findNode(ASW("port",4)))
     {
-      AString str("Unable to bind to http port ");
-      str.append(AString::fromInt(http_port));
-      str.append(", already in use.");
-      m_Services.useConfiguration().emit(str);
-      AOS_DEBUGTRACE(str.c_str(), NULL);
+      AString str;
+      pNode->emitFromPath(ASW("port",4), str);
+      http_port = str.toInt();
     }
-    else
+    if (http_port > 0)
     {
-      LISTEN_DATA *p = new LISTEN_DATA();
-      p->port = http_port;
-      p->pListener = this;
-
-      mthread_Listener.setParameter(p);
-      mthread_Listener.start();
-    }
-  }
-  else
-  {
-    AOS_DEBUGTRACE("HTTP disabled, not listening.", NULL);
-  }
-
-  int https_port = m_Services.useConfiguration().getInt(ASWNL("/config/server/listen/https"), -1);
-  if (https_port > 0)
-  {
-    AXmlNode *pNode = m_Services.useConfiguration().useConfigRoot().findNode(ASW("/config/server/crypto",21));
-    if (!pNode)
-    {
-      AOS_DEBUGTRACE("AObjectServer HTTPS element not found, secure socket not listening.", NULL);
-    }
-    else
-    {
-      LISTEN_DATA *p = new LISTEN_DATA();
-      p->port = https_port;
-      p->pListener = this;
-
-      pNode->emitFromPath(ASW("crypto/cert",11), p->cert); 
-      pNode->emitFromPath(ASW("crypto/pkey",11), p->pkey);
-
-      bool ready = true;
-      if (p->cert.isEmpty())
+      if (!ASocketLibrary::canBindToPort(http_port))
       {
-        ready = false;
-        AString str("AObjectServer HTTPS on port ");
-        str.append(AString::fromInt(https_port));
-        str.append(" missing cert element, secure socket not listening.");
+        AString str("Unable to bind to http port ");
+        str.append(AString::fromInt(http_port));
+        str.append(", already in use.");
         m_Services.useConfiguration().emit(str);
         AOS_DEBUGTRACE(str.c_str(), NULL);
       }
-      if (p->pkey.isEmpty())
+      else
       {
-        ready = false;
-        AString str("AObjectServer HTTPS on port ");
-        str.append(AString::fromInt(https_port));
-        str.append(" missing pkey element, secure socket not listening.");
-        AOS_DEBUGTRACE(str.c_str(), NULL);
-      }
+        LISTEN_DATA *p = new LISTEN_DATA();
+        p->port = http_port;
+        p->pListener = this;
+        pNode->emitFromPath(ASW("host",4), p->host);
 
-      if (!ASocketLibrary::canBindToPort(https_port))
-      {
-        ready = false;
-        AString str("Unable to bind to https port ");
-        str.append(AString::fromInt(https_port));
-        str.append(", already in use.");
-        AOS_DEBUGTRACE(str.c_str(), NULL);
-      }
-
-      if (ready)
-      {
-        mthread_SecureListener.setParameter(p);
-        mthread_SecureListener.start();
+        mthread_Listener.setParameter(p);
+        mthread_Listener.start();
       }
     }
+    else
+    {
+      AString str("HTTP invalid port specified:");
+      str.append(AString::fromInt(http_port));
+      AOS_DEBUGTRACE(str.c_str(), NULL);
+    }
   }
-  else
+  
+  //a_HTTPS setup
+  pNode = m_Services.useConfiguration().useConfigRoot().findNode(ASW("/config/server/listen/https",27));
+  
   {
-    AOS_DEBUGTRACE("HTTPS disabled, not listening.", NULL);
+    int https_port = -1;
+    if (pNode->findNode(ASW("port",4)))
+    {
+      AString str;
+      pNode->emitFromPath(ASW("port",4), str);
+      https_port = str.toInt();
+    }
+    if (https_port > 0)
+    {
+      bool ready = true;
+      if (!pNode)
+      {
+        AOS_DEBUGTRACE("AObjectServer HTTPS element not found, secure socket not listening.", NULL);
+      }
+      else
+      {
+        LISTEN_DATA *p = new LISTEN_DATA();
+        p->port = https_port;
+        p->pListener = this;
+        pNode->emitFromPath(ASW("host",4), p->host);
+        pNode->emitFromPath(ASW("cert",4), p->cert); 
+        pNode->emitFromPath(ASW("pkey",4), p->pkey);
+
+        if (p->cert.isEmpty())
+        {
+          ready = false;
+          AString str("AObjectServer HTTPS on port ");
+          str.append(AString::fromInt(https_port));
+          str.append(" missing cert element, secure socket not listening.");
+          m_Services.useConfiguration().emit(str);
+          AOS_DEBUGTRACE(str.c_str(), NULL);
+        }
+        if (p->pkey.isEmpty())
+        {
+          ready = false;
+          AString str("AObjectServer HTTPS on port ");
+          str.append(AString::fromInt(https_port));
+          str.append(" missing pkey element, secure socket not listening.");
+          AOS_DEBUGTRACE(str.c_str(), NULL);
+        }
+
+        if (!ASocketLibrary::canBindToPort(https_port))
+        {
+          ready = false;
+          AString str("Unable to bind to https port ");
+          str.append(AString::fromInt(https_port));
+          str.append(", already in use.");
+          AOS_DEBUGTRACE(str.c_str(), NULL);
+        }
+
+        if (ready)
+        {
+          mthread_SecureListener.setParameter(p);
+          mthread_SecureListener.start();
+        }
+      }
+    }
+    else
+    {
+      AString str("HTTPS invalid port specified:");
+      str.append(AString::fromInt(https_port));
+      AOS_DEBUGTRACE(str.c_str(), NULL);
+    }
   }
 }
 
@@ -157,9 +183,9 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
     pThis->m_Services.useLog().add(ARope("AObjectServer started.  HTTP listening on ")+pData->host+ASW(":",1)+AString::fromInt(pData->port));
     {
       AString str("AObjectServer HTTP listening on ");
-    str.append(listener.getSocketInfo().m_address);
-    str.append(':');
-    str.append(AString::fromInt(listener.getSocketInfo().m_port));
+      str.append(listener.getSocketInfo().m_address);
+      str.append(':');
+      str.append(AString::fromInt(listener.getSocketInfo().m_port));
       AOS_DEBUGTRACE(str.c_str(), NULL);
     }
 
@@ -178,7 +204,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
         catch(ASocketException& e)
         {
           pThis->m_Services.useLog().add(e);
-          
+
           pSocket->close();
           if (pContext)
             pThis->m_Services.useContextManager().deallocate(pContext);
@@ -197,7 +223,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
 
           throw;
         }
-        
+
         if (pContext)
         {
           pThis->mp_FirstQueue->add(pContext);
@@ -240,7 +266,7 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
     pData->cert,
     pData->pkey,
     pData->host
-  );
+    );
   listener.open();
 
   pThis->m_Services.useLog().add(ARope("AObjectServer started.  HTTPS listening on ")+pData->host+ASW(":",1)+AString::fromInt(pData->port));
@@ -290,7 +316,7 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
 
           throw;
         }
-        
+
         if (pContext)
         {
           pThis->mp_FirstQueue->add(pContext);

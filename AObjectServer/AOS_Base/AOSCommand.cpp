@@ -224,7 +224,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   //a_Get input processor
   m_InputProcessor.clear();
   m_InputParams.clear();
-  const AXmlNode *pNode = element.findNode(ASW("command/input",13));
+  const AXmlNode *pNode = element.findNode(ASW("input",5));
   if (pNode)
   {
     pNode->getAttributes().get(CLASS, m_InputProcessor);
@@ -234,7 +234,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   //a_Get output generator
   m_OutputGenerator.clear();
   m_OutputParams.clear();
-  pNode = element.findNode(ASW("command/output",14));
+  pNode = element.findNode(ASW("output",6));
   if (pNode)
   {
     pNode->getAttributes().get(CLASS, m_OutputGenerator);
@@ -244,7 +244,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   //a_Get module names
   m_Modules.clear();
   AXmlNode::ConstNodeContainer nodes;
-  element.find(ASW("command/module",14), nodes);
+  element.find(ASW("module",6), nodes);
   AXmlNode::ConstNodeContainer::const_iterator citModule = nodes.begin();
   AString strClass, strName;
   while(citModule != nodes.end())
@@ -252,6 +252,8 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
     if ((*citModule)->getAttributes().get(CLASS, strClass) && !strClass.isEmpty())
     {
+      //a_NOTE: strName not being used at the moment
+      
       //a_Add new module info object
       m_Modules.push_back(AOSCommand::MODULE_INFO());
       AOSCommand::MODULE_INFO& info = m_Modules.back();
@@ -259,7 +261,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
       info.m_Name = strName;
 
       //a_Iterate and populate the params
-      pNode = element.findNode(ASW("command/module",14));
+      pNode = element.findNode(ASW("module",6));
       if (pNode)
         pNode->emit(info.m_ModuleParams);
 

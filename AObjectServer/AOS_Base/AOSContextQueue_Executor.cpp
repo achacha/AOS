@@ -121,6 +121,12 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           pContext->useOutputBuffer().clear();
         }
 
+        //a_Publish total execution time
+        if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
+        {
+          pContext->useOutputRootXmlElement().addElement(ASW("total_time",10), pContext->getContextTimer());
+        }
+
         //
         //a_Publish errors if any
         //

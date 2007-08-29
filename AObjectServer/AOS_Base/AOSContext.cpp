@@ -821,7 +821,9 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     writeOutputBuffer(ARope());
   }
   else
+  {
     writeOutputBuffer(m_OutputBuffer);
+  }
 }
 
 void AOSContext::writeOutputBuffer(const ARope& output)

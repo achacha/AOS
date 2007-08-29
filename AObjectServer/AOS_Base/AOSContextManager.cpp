@@ -8,6 +8,7 @@
 #ifdef __DEBUG_DUMP__
 void AOSContextManager::debugDump(std::ostream& os, int indent) const
 {
+  ALock lock(const_cast<ASync_CriticalSection *>(&m_InUseSync));
   ADebugDumpable::indent(os, indent) << "(AOSContextManager @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Freestore.size()=" << m_Freestore.size() << std::endl;
