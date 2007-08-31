@@ -82,7 +82,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           case AOSContext::STATUS_HTTP_INCOMPLETE_NODATA:
             if (pContext->getRequestTimer().getInterval() > iWaitForHttpDataTimeout)
             {
-              //a_Waited lost enough
+              //a_Waited long enough
               pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, abandoning wait",70));
               pThis->_goTerminate(pContext);
               pContext = NULL;
