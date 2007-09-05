@@ -112,7 +112,7 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
         AHTTPRequestHeader request;
         while (AConstant::npos == client.readLine(str))
         {
-          AThread::sleep(5);
+          AThread::sleep(50);
         }
         if (!request.parseLineZero(str))
         {
@@ -136,7 +136,7 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
           }
           else
           {
-            AThread::sleep(20);
+            AThread::sleep(50);
           }
         }
 
