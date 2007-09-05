@@ -863,6 +863,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AXmlParsable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\extABase.cpp"
 				>
 			</File>
@@ -1304,6 +1308,10 @@
 			</File>
 			<File
 				RelativePath=".\AXmlNode.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AXmlParsable.hpp"
 				>
 			</File>
 			<File

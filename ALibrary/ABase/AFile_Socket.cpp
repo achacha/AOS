@@ -5,6 +5,7 @@
 #include "ASocketException.hpp"
 #include "ASocketLibrary.hpp"
 #include "ASocketListener.hpp"
+#include "AHTTPRequestHeader.hpp"
 
 #ifdef __DEBUG_DUMP__
 void AFile_Socket::debugDump(std::ostream& os, int indent) const
@@ -18,16 +19,28 @@ void AFile_Socket::debugDump(std::ostream& os, int indent) const
 #endif
 
 AFile_Socket::AFile_Socket(
-  const AString &address, 
-  int port, 
+  const AString& ip, 
+  int port,      
   bool blocking // = false
 ) :
   mbool_Blocking(blocking),
   mp_Listener(NULL),
   m_EOF(true)
 {
-    m_SocketInfo.m_address = address;
-    m_SocketInfo.m_port = port;
+  m_SocketInfo.m_address = ip;
+  m_SocketInfo.m_port = port;
+}
+
+AFile_Socket::AFile_Socket(
+  const AHTTPRequestHeader& request, 
+  bool blocking // = false
+) :
+  mbool_Blocking(blocking),
+  mp_Listener(NULL),
+  m_EOF(true)
+{
+  m_SocketInfo.m_address = ASocketLibrary::getIPFromAddress(request.getUrl().getServer());
+  m_SocketInfo.m_port = request.getUrl().getPort();
 }
 
 AFile_Socket::AFile_Socket(

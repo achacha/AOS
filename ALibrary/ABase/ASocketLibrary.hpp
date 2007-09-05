@@ -26,7 +26,11 @@ public:
   static VECTOR_AString getHostAddresses(const AString &hostName);
   static AString getDefaultIp();
   static AString getIPFromAddress(const AString &address);
-  static bool canBindToPort(int port);
+  
+  /*!
+  Checks if port is available
+  */
+  static bool canBindToPort(int port, const AString& ip = AString::sstr_Empty);
   
   /*!
   Converting A.B.C.D to unsigned long byte version in network order DCBA and vice versa

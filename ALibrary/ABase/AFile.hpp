@@ -140,11 +140,10 @@ public:
   virtual size_t find(const AString& strPattern);
 
   /*!
-  Will write a line (strLine + AString::sstr_EOLDelimeters)
+  Will write a line (strLine + AString::sstr_EOL delimeter)
   Returns number of bytes written
   */  
-  virtual size_t writeLine(const AString& line, const AString& strEOL = AString::sstr_EOL);
-  virtual size_t writeEOL(const AString& strEOL = AString::sstr_EOL);
+  virtual size_t writeLine(const AString& line = AString::sstr_Empty, const AString& strEOL = AString::sstr_EOL);
 
   /*!
   Write buffer of given length

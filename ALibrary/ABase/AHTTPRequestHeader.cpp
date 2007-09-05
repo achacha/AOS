@@ -282,4 +282,5 @@ bool AHTTPRequestHeader::isValidHttp() const
     if (m_Pairs.find("Host") == m_Pairs.end())
       return false;
   }
+  return true;
 }

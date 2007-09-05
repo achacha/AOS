@@ -63,10 +63,8 @@ void ASocketListener::open()
   sadd.sin_port           = (u_short)htons(m_SocketInfo.m_port);
   if (m_SocketInfo.m_address.isEmpty())
   {
-    hostent* pLocalHost = ::gethostbyname("");
-    struct in_addr *pInAddr = ((struct in_addr *)*pLocalHost->h_addr_list);
-    sadd.sin_addr.s_addr = pInAddr ->s_addr;
-    ASocketLibrary::convertIp4ToString(pInAddr->S_un.S_addr, m_SocketInfo.m_address);
+    sadd.sin_addr.s_addr = INADDR_ANY;
+    m_SocketInfo.m_address.assign(ASW("0.0.0.0",7));
   }
   else
     sadd.sin_addr.s_addr = inet_addr(m_SocketInfo.m_address.c_str());

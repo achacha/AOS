@@ -135,7 +135,10 @@ bool ASocketLibrary::SocketInfo::isValid()
   return (m_handle == INVALID_SOCKET ? false : true);
 }
 
-bool ASocketLibrary::canBindToPort(int port)
+bool ASocketLibrary::canBindToPort(
+  int port, 
+  const AString& ip   // = AString::sstr_Empty
+)
 {
   SOCKET s = ::socket(PF_INET, SOCK_STREAM, 0);
   
@@ -143,7 +146,11 @@ bool ASocketLibrary::canBindToPort(int port)
   memset(&sadd, 0, sizeof(sadd));
   sadd.sin_family = AF_INET;
   sadd.sin_port   = (u_short)htons(port);
-  sadd.sin_addr.s_addr = INADDR_ANY;
+  
+  if (ip.isEmpty())
+    sadd.sin_addr.s_addr = INADDR_ANY;
+  else
+    sadd.sin_addr.s_addr = ::inet_addr(ip.c_str());
 
   int result = ::bind(s, (sockaddr *)&sadd, sizeof(sadd));
 

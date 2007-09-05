@@ -33,8 +33,9 @@ void AXmlDocument::debugDump(std::ostream& os /* = std::cerr */, int indent /* =
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_Root=";
+  ADebugDumpable::indent(os, indent+1) << "m_Root={" << std::endl;
   m_Root.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }

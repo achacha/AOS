@@ -7,6 +7,7 @@
 #include "ASocketLibrary.hpp"
 
 class ASocketListener;
+class AHTTPRequestHeader;
 
 /*!
  * AFile implementation using sockets
@@ -17,9 +18,32 @@ class ASocketListener;
 class ABASE_API AFile_Socket : public AFile
 {
 public:
-  // construction 
-  AFile_Socket(const AString& address, int portNum, bool blocking = false);
+  /*!
+  ctor
+  ip - actual string version of the IP, use ASocketLibrary utility functions to do lookup
+  portNum - port to connect to
+  blocking - if true, it will create a blocking socket
+  */
+  AFile_Socket(const AString& ip, int portNum, bool blocking = false);
+  
+  /*!
+  ctor
+  request - HTTP request object where address and port are contained, the ctor will do lookup to convert address to ip
+  blocking - if true, it will create a blocking socket
+  */
+  AFile_Socket(const AHTTPRequestHeader& request, bool blocking = false);
+
+  /*!
+  ctor
+  listener - create a new socket based on a listener which has accepted a connection (inbound connection)
+  blocking - if true, it will create a blocking socket
+  */
   AFile_Socket(ASocketListener& listener, bool blocking = false);
+
+  /*! 
+  dtor 
+  will close socket and release handle
+  */
   virtual ~AFile_Socket();
 
   virtual void open();

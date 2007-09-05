@@ -264,7 +264,10 @@ size_t AFile::find(const AString &strPattern)
   return ret;
 }
 
-size_t AFile::writeLine(const AString& line, const AString& strEOL /* = AString::sstr_EOL*/)
+size_t AFile::writeLine(
+  const AString& line,    // = AString::sstr_Empty
+  const AString& strEOL   // = AString::sstr_EOL
+)
 {
   size_t written = 0;
   if (line.getSize() > 0)
@@ -273,12 +276,6 @@ size_t AFile::writeLine(const AString& line, const AString& strEOL /* = AString:
   }
 
   written += _write(strEOL.data(), strEOL.getSize());
-  return written;
-}
-
-size_t AFile::writeEOL(const AString& strEOL /* = AString::sstr_EOL*/)
-{
-  size_t written = _write(strEOL.data(), strEOL.getSize());
   return written;
 }
 
