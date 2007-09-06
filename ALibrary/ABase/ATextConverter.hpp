@@ -3,6 +3,7 @@
 
 #include "apiABase.hpp"
 #include "AString.hpp"
+#include "AConstant.hpp"
 
 /*!
 Utility class for text conversion and processing
@@ -11,30 +12,6 @@ All calls involving AOutputBuffer are append based
 */
 class ABASE_API ATextConverter
 {
-public:
-  /*!
-  Character set to be used by Base64
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-   0000000000000000111111111111111122222222222222223333333333333333
-   0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
-  */
-  static const AString CHARSET_BASE64;
-
-  /*!
-  Character set to be used by AlphaNum
-  "9kB7CtIyE8FwGH-fKbL6MjNOPQRSTarUl3VcWvx5YZ_dD14ghiXm0noDspJquz2e";
-   0000000000000000111111111111111122222222222222223333333333333333
-   0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
-  */
-  static const AString CHARSET_ALPHANUM;
-
-  /*!
-  Valid URI characters that do not need to be encoded via URL %XX scheme
-  As per RFC-2396
-  */
-  static const AString CHARSET_URL_RFC2396;
-
-
 public:
   /*!
   Encoding and decoding Base64 (ratio input:output=3:4)
@@ -48,8 +25,8 @@ public:
   Encoding and decoding arbitrary 64 character set (ratio input:output=3:4)
   strCharSet MUST be 64 characters in size, default is database/URL friendly AlphaNum set
   */
-  static void encode64(const AString& strSource, AOutputBuffer&, const AString& strCharSet = CHARSET_ALPHANUM);
-  static void decode64(const AString& strSource, AOutputBuffer&, const AString& strCharSet = CHARSET_ALPHANUM);
+  static void encode64(const AString& strSource, AOutputBuffer&, const AString& strCharSet = AConstant::CHARSET_ALPHANUM64);
+  static void decode64(const AString& strSource, AOutputBuffer&, const AString& strCharSet = AConstant::CHARSET_ALPHANUM64);
 
   /*!
   URL encoding/decoding

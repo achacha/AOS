@@ -41,9 +41,9 @@ public:
   bool   get(const AString& strName, AString&, bool boolNoCase = true) const;     //a_NOTE: gets the first one it finds
   size_t get(const AString& strName, LIST_AString& result, bool boolNoCase = true) const;
   size_t count(const AString& strName, bool boolNoCase = true) const;
-  void   insert(const AString& strName, const AString &strValue = AString::sstr_Empty, ANameValuePair::NameValueType eType = ANameValuePair::XML);
-  size_t getDelimited(const AString& strName, AString& strValues, const AString& delimeter = AString::sstr_Comma, bool boolNoCase = true) const;     //a_Will generate a string "value1,value2,value3..."
-  void   remove(const AString& strName, const AString &strValue = AString::sstr_Empty, bool boolNoCase = true);  //no value specified means remove the key and all values
+  void   insert(const AString& strName, const AString &strValue = AConstant::ASTRING_EMPTY, ANameValuePair::NameValueType eType = ANameValuePair::XML);
+  size_t getDelimited(const AString& strName, AString& strValues, const AString& delimeter = AConstant::ASTRING_COMMA, bool boolNoCase = true) const;     //a_Will generate a string "value1,value2,value3..."
+  void   remove(const AString& strName, const AString &strValue = AConstant::ASTRING_EMPTY, bool boolNoCase = true);  //no value specified means remove the key and all values
   size_t size() const;
 
   /**

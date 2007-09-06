@@ -3,9 +3,6 @@
 #include "AException.hpp"
 #include "ATextGenerator.hpp"
 
-//a_Subset is only numbers (left to right)
-AString ATextOdometer::smstr_DefaultSubset("0123456789");
-
 #ifdef __DEBUG_DUMP__
 void ATextOdometer::debugDump(std::ostream& os, int indent) const
 {

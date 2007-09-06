@@ -33,10 +33,10 @@ public:
   name - object's name (if using AObjectContainer, you can specify object name from the path)
   */
   AObject(AXmlData::Encoding encoding = AXmlData::None)
-    : AObjectBase(AString::sstr_Empty), m_Encoding(encoding) {}
+    : AObjectBase(AConstant::ASTRING_EMPTY), m_Encoding(encoding) {}
 
   AObject(const _t& object, AXmlData::Encoding encoding = AXmlData::None)
-    : AObjectBase(AString::sstr_Empty), m_Object(object), m_Encoding(encoding) {}
+    : AObjectBase(AConstant::ASTRING_EMPTY), m_Object(object), m_Encoding(encoding) {}
   
   AObject(const _t& object, const AString& name, AXmlData::Encoding encoding = AXmlData::None)
     : AObjectBase(name), m_Object(object), m_Encoding(encoding) {}

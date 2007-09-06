@@ -109,9 +109,9 @@ public:
   
    NOTE: return AConstant::npos if EOF or not found, else length is successful
   */
-  virtual size_t readUntilOneOf(AString&, const AString& strDelimeters = AString::sstr_WhiteSpace, bool boolRemoveDelimiter = true, bool boolDiscardDelimiter = true);
-  virtual size_t peekUntilOneOf(AString&, const AString& strDelimeters = AString::sstr_WhiteSpace);
-  virtual size_t skipUntilOneOf(const AString& strDelimeters = AString::sstr_WhiteSpace, bool boolDiscardDelimeter = true);
+  virtual size_t readUntilOneOf(AString&, const AString& strDelimeters = AConstant::ASTRING_WHITESPACE, bool boolRemoveDelimiter = true, bool boolDiscardDelimiter = true);
+  virtual size_t peekUntilOneOf(AString&, const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  virtual size_t skipUntilOneOf(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE, bool boolDiscardDelimeter = true);
   virtual size_t skipUntilOneOf(char, bool boolDiscardDelimeter = true);
 
   /*!
@@ -132,7 +132,7 @@ public:
   Ability to skip over delimeters
   returns AConstant::npos if EOF, otherwise number of characters skipped over
   */
-  virtual size_t skipOver(const AString& strDelimeters = AString::sstr_WhiteSpace);
+  virtual size_t skipOver(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
 
   /*!
   Scan file for a pattern (possible to read to EOF if pattern not found)
@@ -140,10 +140,10 @@ public:
   virtual size_t find(const AString& strPattern);
 
   /*!
-  Will write a line (strLine + AString::sstr_EOL delimeter)
+  Will write a line (strLine + AConstant::ASTRING_EOL delimeter)
   Returns number of bytes written
   */  
-  virtual size_t writeLine(const AString& line = AString::sstr_Empty, const AString& strEOL = AString::sstr_EOL);
+  virtual size_t writeLine(const AString& line = AConstant::ASTRING_EMPTY, const AString& strEOL = AConstant::ASTRING_EOL);
 
   /*!
   Write buffer of given length

@@ -20,7 +20,7 @@ public:
   typedef std::pair<AString, AObjectBase *> MAP_PAIR;
 
 public:
-  AObjectContainer(const AString& name = AString::sstr_Empty);
+  AObjectContainer(const AString& name = AConstant::ASTRING_EMPTY);
   AObjectContainer(const AObjectContainer&);
   virtual ~AObjectContainer();
 
@@ -42,7 +42,7 @@ public:
   Value can be AObjectBase based object or AString (which will get wrapped in AObject<AString> object)
   insert() returns a reference to the AObjectBase that was just inserted
   */
-  AObjectBase& insert(const AString& path, const AString& value = AString::sstr_Empty, AXmlData::Encoding encoding = AXmlData::None);
+  AObjectBase& insert(const AString& path, const AString& value = AConstant::ASTRING_EMPTY, AXmlData::Encoding encoding = AXmlData::None);
   AObjectBase& insert(const AString& path, AObjectBase *);   //a_if pobject is NULL exception is thrown, object is owned by this container and deleted when done
   void remove(const AString& path);                          //a_Does nothing if path does not exist
   void clear();                                              //a_Removes everything

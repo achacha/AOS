@@ -30,7 +30,7 @@ public:
   /*!
   Checks if port is available
   */
-  static bool canBindToPort(int port, const AString& ip = AString::sstr_Empty);
+  static bool canBindToPort(int port, const AString& ip = AConstant::ASTRING_EMPTY);
   
   /*!
   Converting A.B.C.D to unsigned long byte version in network order DCBA and vice versa

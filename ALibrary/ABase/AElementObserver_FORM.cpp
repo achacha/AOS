@@ -174,7 +174,7 @@ void AElementObserver_FORM::__addTextAreaInput(AElement_HTML *pInputElement)
        strSentence.append(' ');
     }
 
-    strSentence += AString::sstr_CRLF;  //HTML 3.2 spec states that \r\n is needed when submitting TEXTAREA text
+    strSentence += AConstant::ASTRING_CRLF;  //HTML 3.2 spec states that \r\n is needed when submitting TEXTAREA text
   
     AString strName;
     pInputElement->getValue("NAME", strName);
@@ -189,8 +189,8 @@ void AElementObserver_FORM::__addImageInput(AElement_HTML *pInputElement)
   {
     AString strName;
     pInputElement->getValue("NAME", strName);
-    _getSubmitUrl().useParameterPairs().insert(strName + ".X", AString::sstr_Zero);
-    _getSubmitUrl().useParameterPairs().insert(strName + ".Y", AString::sstr_Zero);
+    _getSubmitUrl().useParameterPairs().insert(strName + ".X", AConstant::ASTRING_ZERO);
+    _getSubmitUrl().useParameterPairs().insert(strName + ".Y", AConstant::ASTRING_ZERO);
   }
 }
 
@@ -204,7 +204,7 @@ void AElementObserver_FORM::__addRadioInput(AElement_HTML *pInputElement)
     if (!_getSubmitUrl().useParameterPairs().count(strName))
     {
       //a_Add it, one doesn't exist (assumes at least one radio button must be selected)
-      AString strValue(AString::sstr_One);
+      AString strValue(AConstant::ASTRING_ONE);
       pInputElement->getValue("VALUE", strValue);
       _getSubmitUrl().useParameterPairs().insert(strName, strValue);
     }
@@ -214,7 +214,7 @@ void AElementObserver_FORM::__addRadioInput(AElement_HTML *pInputElement)
       if (ARandomNumberGenerator::get().nextRange(1000) > 666)
       {
         //a_33% chance of being added
-        AString strValue(AString::sstr_One);
+        AString strValue(AConstant::ASTRING_ONE);
         pInputElement->getValue("VALUE", strValue);
         _getSubmitUrl().useParameterPairs().insert(strName, strValue);
       }
@@ -228,7 +228,7 @@ void AElementObserver_FORM::__addCheckboxInput(AElement_HTML *pInputElement)
   if (pInputElement->isName("NAME"))
     if (ARandomNumberGenerator::get().nextRange(1000) > 500)
     {
-      AString strName, strValue(AString::sstr_One);
+      AString strName, strValue(AConstant::ASTRING_ONE);
       pInputElement->getValue("NAME", strName);
       pInputElement->getValue("VALUE", strValue);
       _getSubmitUrl().useParameterPairs().insert(strName, strValue);
@@ -257,7 +257,7 @@ void AElementObserver_FORM::__addSelectInput(AElement_HTML *pInputElement)
 
     if (peUse)
     {
-      AString strName, strValue(AString::sstr_Null);
+      AString strName, strValue(AConstant::ASTRING_NULL);
       pInputElement->getValue("NAME", strName);
       peUse->getValue("VALUE", strValue);
       _getSubmitUrl().useParameterPairs().insert(strName, strValue);

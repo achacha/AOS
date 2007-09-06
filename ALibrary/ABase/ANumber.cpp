@@ -88,7 +88,7 @@ void ANumber::forcePrecision(const int iP)
 
 void ANumber::_clearNumber(void)
 {
-  mstr__Number = AString::sstr_Zero;
+  mstr__Number = AConstant::ASTRING_ZERO;
   mc__Sign = '+';
   m__Precision = NUMBER_DEFAULT_PRECISION;
 }
@@ -110,11 +110,11 @@ void ANumber::_cleanString(AString& strR, bool boolSpaceOnly)
   if (!boolSpaceOnly)
   {
     if (strR.find('.') != AConstant::npos)
-      strR.stripTrailing(AString::sstr_Zero);
-    strR.stripTrailing(AString::sstr_Period);
+      strR.stripTrailing(AConstant::ASTRING_ZERO);
+    strR.stripTrailing(AConstant::ASTRING_PERIOD);
   }
 
-  if (strR.isEmpty()) strR = AString::sstr_Zero;       //a_A zero
+  if (strR.isEmpty()) strR = AConstant::ASTRING_ZERO;       //a_A zero
   else if (strR.peek(0) == '.')
     strR = AString('0') + strR;                //a_Convert .XXX to 0.XXX
 }
@@ -140,7 +140,7 @@ void ANumber::_fixPrecision(AString& strR, int iForce)
       strR.setSize(iNewSize, '0');
       if (cLast > '4')
       {
-        AString strAdd(AString::sstr_One);
+        AString strAdd(AConstant::ASTRING_ONE);
         int p = m__Precision;
 				_strPow10(strAdd, -p);
         _strAdd(AString(strR), strAdd, strR, false);
@@ -159,7 +159,7 @@ bool ANumber::isZero(void) const
   ANumber nTest(*this);
   nTest.cleanNumber();
 
-  return (nTest.mstr__Number == AString::sstr_Zero ? true : false);
+  return (nTest.mstr__Number == AConstant::ASTRING_ZERO ? true : false);
 }
 
 
@@ -236,8 +236,8 @@ ANumber& ANumber::operator=(const ANumber& nThat)
 void ANumber::setNumber(const AString& strSource, int iPrecision)
 {
   AString strWork(strSource);
-  strWork.stripTrailing(AString::sstr_WhiteSpace);
-  strWork.stripLeading(AString::sstr_WhiteSpace);
+  strWork.stripTrailing(AConstant::ASTRING_WHITESPACE);
+  strWork.stripLeading(AConstant::ASTRING_WHITESPACE);
 
   _clearNumber();
   if (strWork.isEmpty())
@@ -302,7 +302,7 @@ void ANumber::setNumber(const AString& strSource, int iPrecision)
   if (decimal == iStart && decimal >= 0)
   {
     //a_Now extract the number out
-    mstr__Number.assign(AString::sstr_Zero);
+    mstr__Number.assign(AConstant::ASTRING_ZERO);
     strSource.peek(mstr__Number, iStart, iEnd - iStart);
   }
   else
@@ -311,11 +311,11 @@ void ANumber::setNumber(const AString& strSource, int iPrecision)
     strSource.peek(mstr__Number, iStart, iEnd - iStart);
   }
 
-  AString strExponent(AString::sstr_Zero);
+  AString strExponent(AConstant::ASTRING_ZERO);
   //a_Extract exponent (to 10^exponent it)
   if (exponent > 0x0 && exponent < strSource.getSize())
   {
-    strExponent = (cExponentSign == '-' ? AString("-") : AString::sstr_Empty);
+    strExponent = (cExponentSign == '-' ? AString("-") : AConstant::ASTRING_EMPTY);
     strSource.peek(strExponent, exponent + 0x1);
   }
 
@@ -371,7 +371,7 @@ ANumber& ANumber::operator +=(const ANumber& nThat)
             mc__Sign = '+';
         break;
         
-        case  0 : mstr__Number = AString::sstr_Zero; mc__Sign = '+'; break;
+        case  0 : mstr__Number = AConstant::ASTRING_ZERO; mc__Sign = '+'; break;
 
         case  1 :
           if (_strSubtract(AString(mstr__Number), nThat.mstr__Number, mstr__Number))
@@ -398,7 +398,7 @@ ANumber& ANumber::operator +=(const ANumber& nThat)
             mc__Sign = '-';
         break;
 
-        case  0 : mstr__Number = AString::sstr_Zero; mc__Sign = '+'; break;
+        case  0 : mstr__Number = AConstant::ASTRING_ZERO; mc__Sign = '+'; break;
 
         case  1 : 
           if (_strSubtract(AString(mstr__Number), nThat.mstr__Number, mstr__Number))
@@ -458,7 +458,7 @@ ANumber& ANumber::operator -=(const ANumber& nThat)
             mc__Sign = '+';
         break;
 
-        case  0 : mstr__Number = AString::sstr_Zero; mc__Sign = '+'; break;
+        case  0 : mstr__Number = AConstant::ASTRING_ZERO; mc__Sign = '+'; break;
 
         case  1 : 
           if (_strSubtract(AString(mstr__Number), nThat.mstr__Number, mstr__Number))
@@ -495,7 +495,7 @@ ANumber& ANumber::operator -=(const ANumber& nThat)
             mc__Sign = '-';
         break;
 
-        case  0 : mstr__Number = AString::sstr_Zero; mc__Sign = '+'; break;
+        case  0 : mstr__Number = AConstant::ASTRING_ZERO; mc__Sign = '+'; break;
 
         case  1 : 
           if (_strSubtract(AString(mstr__Number), nThat.mstr__Number, mstr__Number))
@@ -526,9 +526,9 @@ ANumber& ANumber::operator *=(const ANumber& nThat)
     ATHROW(this, AException::InfinityTimesZero);
 
 	//a_Multiplication by zero
-  if (nThat.isZero() || mstr__Number  == AString::sstr_Zero)
+  if (nThat.isZero() || mstr__Number  == AConstant::ASTRING_ZERO)
   {
-    mstr__Number = AString::sstr_Zero;
+    mstr__Number = AConstant::ASTRING_ZERO;
     return *this;
   }
 
@@ -586,7 +586,7 @@ ANumber& ANumber::operator /=(const ANumber& nThat)
   //a_Zero divided by number
   if (isZero())
   {
-    mstr__Number = AString::sstr_Zero;
+    mstr__Number = AConstant::ASTRING_ZERO;
     return *this;
   }
 
@@ -599,7 +599,7 @@ ANumber& ANumber::operator /=(const ANumber& nThat)
   //a_Division by infinity
   if (nThat.isInfinite())
   {
-    mstr__Number = AString::sstr_Zero;
+    mstr__Number = AConstant::ASTRING_ZERO;
     return *this;
   }
 
@@ -633,14 +633,14 @@ ANumber& ANumber::power(const ANumber& nThat)
   //a_Power of zero
   if (isZero())
   {
-    mstr__Number = AString::sstr_Zero;
+    mstr__Number = AConstant::ASTRING_ZERO;
     return *this;
   }
 
   //a_To power zero
   if (nThat.isZero())
   {
-    mstr__Number = AString::sstr_One;
+    mstr__Number = AConstant::ASTRING_ONE;
     return *this;
   }
 
@@ -846,7 +846,7 @@ ANumber& ANumber::sqrt()
   if (isInfinite())
     ATHROW(this, AException::InfinityUnexpected);
   
-  if (isZero() || !_strCompare(mstr__Number, AString::sstr_One))
+  if (isZero() || !_strCompare(mstr__Number, AConstant::ASTRING_ONE))
     return *this;        //a_Square root of zero and one is zero and one
 
   static const AString sstrDoubleZero("00");
@@ -902,7 +902,7 @@ ANumber& ANumber::sqrt()
       {
         strAccAppendLast = strAccAppend;
         strTempAcc = strAcc;
-        _strAdd(strAccAppend, AString::sstr_One, strTemp);
+        _strAdd(strAccAppend, AConstant::ASTRING_ONE, strTemp);
         strTempAcc.append(strTemp);
         strAccAppend = strTemp;
         _strMultiply(strTempAcc, strAccAppend, strTemp);
@@ -917,7 +917,7 @@ ANumber& ANumber::sqrt()
       {
         strAccAppendLast = strAccAppend;
         strTempAcc = strAcc;
-        _strSubtract(strAccAppend, AString::sstr_One, strTemp);
+        _strSubtract(strAccAppend, AConstant::ASTRING_ONE, strTemp);
         strTempAcc.append(strTemp);
         strAccAppend = strTemp;
         _strMultiply(strTempAcc, strAccAppend, strTemp);
@@ -936,7 +936,7 @@ ANumber& ANumber::sqrt()
     //a_Breakout conditions
     if (currentPrecision > m__Precision+1)
       break;    //a_Break out if one over precision, so we can round
-    if (!_strCompare(strWork, AString::sstr_Zero) && strSource.getSize() == 0)
+    if (!_strCompare(strWork, AConstant::ASTRING_ZERO) && strSource.getSize() == 0)
       break;    //a_Perfect square, have result
 
     //a_Generate new Acc for testing in the loop ahead
@@ -954,7 +954,7 @@ ANumber& ANumber::sqrt()
         if (strSource.at(0) == '.')
         {
           boolPeriodAdded = true;
-          strResult.append(AString::sstr_Period);
+          strResult.append(AConstant::ASTRING_PERIOD);
           strSource.remove();
           if (strSource.getSize() & 0x1)
             strSource.append('0');       //a_Even # of digits
@@ -978,7 +978,7 @@ ANumber& ANumber::sqrt()
           else
             boolAddZeroToResult = true;
         }
-        strWork.stripLeading(AString::sstr_Zero);
+        strWork.stripLeading(AConstant::ASTRING_ZERO);
       }
       else
       {
@@ -1001,7 +1001,7 @@ ANumber& ANumber::sqrt()
           strTempAcc.append('1');
         }
 
-        strWork.stripLeading(AString::sstr_Zero);
+        strWork.stripLeading(AConstant::ASTRING_ZERO);
         if (!boolPeriodAdded)
         {
           if (strWork.isEmpty() && strSource.getSize() == 0)
@@ -1013,7 +1013,7 @@ ANumber& ANumber::sqrt()
           else
           {
             boolPeriodAdded = true;
-            strResult.append(AString::sstr_Period);
+            strResult.append(AConstant::ASTRING_PERIOD);
           }
         }
 
@@ -1050,8 +1050,8 @@ void ANumber::_strAdd(const AString& strA, const AString& strB, AString& strR, b
      a0  = (decimal_a == AConstant::npos ? strA.getSize() : decimal_a),
      b0  = (decimal_b == AConstant::npos ? strB.getSize() : decimal_b);
 
-  AString strXA((decimal_a == AConstant::npos ? strA + AString::sstr_Period : strA)),
-          strXB((decimal_b == AConstant::npos ? strB + AString::sstr_Period : strB));
+  AString strXA((decimal_a == AConstant::npos ? strA + AConstant::ASTRING_PERIOD : strA)),
+          strXB((decimal_b == AConstant::npos ? strB + AConstant::ASTRING_PERIOD : strB));
 
   //a_Determine the new needed size (1{decimal point} + 1{possible carry overflow} + max_integer_digits + max_decimal_digits)
   int iNewSize = 2 + (a0 > b0 ? a0 : b0) + (a1 > b1 ? a1 : b1);
@@ -1150,7 +1150,7 @@ int ANumber::_strSubtract(const AString& strA, const AString& strB, AString& str
   if (strXB.isEmpty())
   {
     if (strXA.peek(0x0) == '.')
-      strR = AString::sstr_Zero + strXA;
+      strR = AConstant::ASTRING_ZERO + strXA;
     else
       strR = strXA;
     return 0;
@@ -1178,8 +1178,8 @@ int ANumber::_strSubtract(const AString& strA, const AString& strB, AString& str
   //a_String conditioning
   if (decimal_a == AConstant::npos) strXA += '.';
   if (decimal_b == AConstant::npos) strXB += '.';
-  if (decimal_a == 0x0) strXA = AString::sstr_Zero + strXA;
-  if (decimal_b == 0x0) strXB = AString::sstr_Zero + strXB;
+  if (decimal_a == 0x0) strXA = AConstant::ASTRING_ZERO + strXA;
+  if (decimal_b == 0x0) strXB = AConstant::ASTRING_ZERO + strXB;
 
   //a_Determine the new needed size (Max of the pre/post decimal + 2 decimals)
   int iNewSize = (a0 > b0 ? a0 : b0) + (a1 > b1 ? a1 : b1) + 2;
@@ -1254,12 +1254,12 @@ void ANumber::_strMultiply(const AString& strA, const AString& strB, AString& st
   _cleanString(strXB);
 
   //a_Multiplication by 1
-  if (strXA == AString::sstr_One)
+  if (strXA == AConstant::ASTRING_ONE)
   { 
     strR = strXB;
     return; 
   }
-  if (strXB == AString::sstr_One)
+  if (strXB == AConstant::ASTRING_ONE)
   { 
     strR = strXA;
     return;
@@ -1335,12 +1335,12 @@ void ANumber::_strDivide(const AString& strA, const AString& strB, AString& strR
   //a_Special case to accelerate the division process A/A == 1
   if (_strCompare(strA, strB) == 0x0)
   {
-    strR = AString::sstr_One;
+    strR = AConstant::ASTRING_ONE;
     return;
   }
   
   //a_Division by 1
-  if (strB == AString::sstr_One)
+  if (strB == AConstant::ASTRING_ONE)
   {
      strR = strA;
      return;
@@ -1387,7 +1387,7 @@ void ANumber::_strDivide(const AString& strA, const AString& strB, AString& strR
     {
       if (uA < strXA.getSize())
       {
-        if (strWork == AString::sstr_Zero)  
+        if (strWork == AConstant::ASTRING_ZERO)  
         {
           if (strXA.peek(uA) == '0')
           {
@@ -1424,7 +1424,7 @@ void ANumber::_strDivide(const AString& strA, const AString& strB, AString& strR
       }
       else
       {
-        if (strWork == AString::sstr_Zero) break;  //a_We are done
+        if (strWork == AConstant::ASTRING_ZERO) break;  //a_We are done
 
         iCarried++;
 
@@ -1439,7 +1439,7 @@ void ANumber::_strDivide(const AString& strA, const AString& strB, AString& strR
     }
   
     //a_Pre division check
-    if (strWork == AString::sstr_Zero && uA >= strXA.getSize())
+    if (strWork == AConstant::ASTRING_ZERO && uA >= strXA.getSize())
     {
       boolDoNotRound = true;
       break;     //a_Found result
@@ -1459,14 +1459,14 @@ void ANumber::_strDivide(const AString& strA, const AString& strB, AString& strR
     strR += cR;
 
     //a_Post division check
-    if (strWork == AString::sstr_Zero && uA >= strXA.getSize())
+    if (strWork == AConstant::ASTRING_ZERO && uA >= strXA.getSize())
     {
       boolDoNotRound = true;
       break;     //a_Found result
     }
   }
 
-  strR.stripTrailing(AString::sstr_Space);
+  strR.stripTrailing(AConstant::ASTRING_SPACE);
 
   //a_Undo the shift
   if (iShift)
@@ -1483,10 +1483,10 @@ void ANumber::_strPower(const AString& strA, const AString& strB, AString& strR)
 {  
   strR = strA;
   AString strX, strXB(strB);
-  _strSubtract(strXB, AString::sstr_One, strXB);             //a_strR=strA is one order already
-  while (strXB != AString::sstr_Zero)
+  _strSubtract(strXB, AConstant::ASTRING_ONE, strXB);             //a_strR=strA is one order already
+  while (strXB != AConstant::ASTRING_ZERO)
   {
-    _strSubtract(strXB, AString::sstr_One, strXB);
+    _strSubtract(strXB, AConstant::ASTRING_ONE, strXB);
     strX = strR;
     _strMultiply(strA, strX, strR);
   }

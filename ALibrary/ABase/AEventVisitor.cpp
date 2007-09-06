@@ -57,7 +57,7 @@ void AEventVisitor::Event::debugDump(std::ostream& os, int indent) const
 
 AEventVisitor::AEventVisitor
 (
-  const AString& name // = AString::sstr_Empty
+  const AString& name // = AConstant::ASTRING_EMPTY
 ) :
   m_stateTimer(true),
   m_LifespanTimer(true),
@@ -156,7 +156,7 @@ void AEventVisitor::reset(
 void AEventVisitor::emit(AOutputBuffer& target) const
 {
   target.append("AEventVisitor {",15);
-  target.append(AString::sstr_EOL);
+  target.append(AConstant::ASTRING_EOL);
   if (!m_Name.isEmpty())
     target.append(m_Name);
   
@@ -172,9 +172,9 @@ void AEventVisitor::emit(AOutputBuffer& target) const
   target.append(" - Errors=",10);
   target.append(AString::fromSize_t(m_errorCount));
 
-  target.append(AString::sstr_EOL);
+  target.append(AConstant::ASTRING_EOL);
   target.append('{');
-  target.append(AString::sstr_EOL);
+  target.append(AConstant::ASTRING_EOL);
 
   EVENTS::const_iterator cit = m_Events.begin();
   while (cit != m_Events.end())
@@ -190,7 +190,7 @@ void AEventVisitor::emit(AOutputBuffer& target) const
   }
 
   target.append("}}",2);
-  target.append(AString::sstr_EOL);
+  target.append(AConstant::ASTRING_EOL);
 }
 
 void AEventVisitor::Event::emit(AOutputBuffer& target) const
@@ -203,7 +203,7 @@ void AEventVisitor::Event::emit(AOutputBuffer& target) const
   target.append(AString::fromDouble(m_interval));
   target.append("ms:",3);
   target.append(m_state);
-  target.append(AString::sstr_EOL);
+  target.append(AConstant::ASTRING_EOL);
 }
 
 void AEventVisitor::emit(AXmlElement& target) const
@@ -213,7 +213,7 @@ void AEventVisitor::emit(AXmlElement& target) const
   target.addAttribute(ASW("errors",6), AString::fromSize_t(m_errorCount));
 
   if (!m_isEnabled)
-    target.addAttribute(ASW("enabled",7), AString::sstr_False);
+    target.addAttribute(ASW("enabled",7), AConstant::ASTRING_FALSE);
 
   if (!m_Name.isEmpty())
     target.addElement(ASW("Name",4), m_Name, AXmlData::CDataDirect);
@@ -233,7 +233,7 @@ void AEventVisitor::emit(AXmlElement& target) const
   if (mp_CurrentEvent)
   {
     AXmlElement& e = events.addElement(ASW("Event",5));
-    e.addAttribute(ASW("active",6), AString::sstr_True);
+    e.addAttribute(ASW("active",6), AConstant::ASTRING_TRUE);
     mp_CurrentEvent->emit(e);
   }
   target.addElement(ASW("CurrentStateTimer",17), m_stateTimer);
@@ -245,7 +245,7 @@ void AEventVisitor::Event::emit(AXmlElement& target) const
 
   target.addAttribute(ASW("interval",8), m_interval);
   if (m_isError)
-    target.addAttribute(ASW("error",5), AString::sstr_True);
+    target.addAttribute(ASW("error",5), AConstant::ASTRING_TRUE);
   target.addData(m_state, AXmlData::CDataDirect);
 }
 
@@ -304,5 +304,5 @@ AString& AEventVisitor::useName()
 
 const AString &AEventVisitor::getCurrentState()
 {
-  return (mp_CurrentEvent ? mp_CurrentEvent->m_state : AString::sstr_Null);
+  return (mp_CurrentEvent ? mp_CurrentEvent->m_state : AConstant::ASTRING_NULL);
 }

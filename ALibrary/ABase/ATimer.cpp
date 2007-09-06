@@ -125,7 +125,7 @@ void ATimer::emit(AXmlElement& target) const
   AASSERT(this, !target.useName().isEmpty());
 
   if (mbool_Running)
-    target.addAttribute(ASW("running",7), AString::sstr_True);
+    target.addAttribute(ASW("running",7), AConstant::ASTRING_TRUE);
 
   target.addElement(ASW("interval",8), AString::fromDouble(getInterval()))
     .addAttribute(ASW("freq", 4), AString::fromDouble(sm_frequency, 6))

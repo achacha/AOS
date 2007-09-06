@@ -147,7 +147,7 @@ bool AQueryString::get(const AString& name, AString& target) const
     return false;
 }
 
-void AQueryString::remove(const AString& name, const AString &value /*= AString::sstr_Empty */)
+void AQueryString::remove(const AString& name, const AString &value /*= AConstant::ASTRING_EMPTY */)
 {
   AString str(name);
   str.makeLower();
@@ -248,7 +248,7 @@ size_t AQueryString::getNames(SET_AString& names) const
 size_t AQueryString::getDelimited(
   const AString& name, 
   AString& result, 
-  const AString& delimeter // = AString::sstr_Comma
+  const AString& delimeter // = AConstant::ASTRING_COMMA
 ) const
 {
   size_t ret = 0;

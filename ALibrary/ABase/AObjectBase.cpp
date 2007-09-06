@@ -18,7 +18,7 @@ AObjectBase::AObjectBase() :
 {
 }
 
-AObjectBase::AObjectBase(const AString& name /* = AString::sstr_Empty */) :
+AObjectBase::AObjectBase(const AString& name /* = AConstant::ASTRING_EMPTY */) :
   mp_SynchObject(NULL),
   m_Name(name)
 {

@@ -499,8 +499,8 @@ void ANameValuePair::parse(const AString& strInput, size_t& pos)
     {
       //a_Decode URL after parsing (as special characters could throw off parsing)
       AString name(m_name), value(m_value);
-      value.stripLeading(AString::sstr_DoubleQuote);
-      value.stripTrailing(AString::sstr_DoubleQuote);
+      value.stripLeading(AConstant::ASTRING_DOUBLEQUOTE);
+      value.stripTrailing(AConstant::ASTRING_DOUBLEQUOTE);
       m_name.clear();
       m_value.clear();
       ATextConverter::decodeURL(name, m_name);
@@ -937,8 +937,8 @@ void ANameValuePair::setValue(const AString &strValue)
     {
       //a_Decode URL after parsing (as special characters could throw off parsing)
       AString name(m_name), value(m_value);
-      value.stripLeading(AString::sstr_DoubleQuote);
-      value.stripTrailing(AString::sstr_DoubleQuote);
+      value.stripLeading(AConstant::ASTRING_DOUBLEQUOTE);
+      value.stripTrailing(AConstant::ASTRING_DOUBLEQUOTE);
       m_name.clear();
       m_value.clear();
       ATextConverter::decodeURL(name, m_name);

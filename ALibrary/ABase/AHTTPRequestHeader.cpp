@@ -125,11 +125,11 @@ void AHTTPRequestHeader::emit(AOutputBuffer& target) const
 {
   //a_The parent will output it as the initial line
   target.append(mstr_Method);
-  target.append(AString::sstr_Space);
+  target.append(AConstant::ASTRING_SPACE);
   target.append(murl_Request.getPathFileAndQueryString());
-  target.append(AString::sstr_Space);
+  target.append(AConstant::ASTRING_SPACE);
   target.append(mstr_HTTPVersion);
-  target.append(AString::sstr_CRLF);
+  target.append(AConstant::ASTRING_CRLF);
 
   //a_Parent class will do the body
   AHTTPHeader::emit(target);
@@ -141,7 +141,7 @@ void AHTTPRequestHeader::emit(AOutputBuffer& target) const
   }
 
   //a_Add the empty line to signify the end
-  target.append(AString::sstr_CRLF);
+  target.append(AConstant::ASTRING_CRLF);
 }
 
 void AHTTPRequestHeader::emitProxyHeader(AOutputBuffer& target) const
@@ -151,7 +151,7 @@ void AHTTPRequestHeader::emitProxyHeader(AOutputBuffer& target) const
   murl_Request.emit(target);
   target.append(' ');
   target.append(mstr_HTTPVersion);
-  target.append(AString::sstr_CRLF);
+  target.append(AConstant::ASTRING_CRLF);
 
   if (mstr_HTTPVersion.equalsNoCase("HTTP/1.1", 8))
   {
@@ -187,7 +187,7 @@ bool AHTTPRequestHeader::_parseLineZero()
     return false;
 
   //a_METHOD
-  size_t iP = mstr_LineZero.find(AString::sstr_Space);
+  size_t iP = mstr_LineZero.find(AConstant::ASTRING_SPACE);
   if (iP != AConstant::npos)
   {
     mstr_Method.clear();
@@ -199,7 +199,7 @@ bool AHTTPRequestHeader::_parseLineZero()
   if (!isValidMethod())
     return false;
 
-  size_t iP2 = mstr_LineZero.rfind(AString::sstr_Space);
+  size_t iP2 = mstr_LineZero.rfind(AConstant::ASTRING_SPACE);
   if (iP2 != AConstant::npos)
   {
     AString str;

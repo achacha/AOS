@@ -42,7 +42,7 @@ public:
 public:
   //a_ctor/dtor/etc
   //a_Parses the input (default to CGI type)
-  ANameValuePair(const AString& strName, const AString& strValue = AString::sstr_Empty, NameValueType eType = ANameValuePair::CGI);
+  ANameValuePair(const AString& strName, const AString& strValue = AConstant::ASTRING_EMPTY, NameValueType eType = ANameValuePair::CGI);
   ANameValuePair(NameValueType eType = ANameValuePair::CGI);
   ~ANameValuePair() {}     //a_No virtual methods, no virtula destructor
 
@@ -77,7 +77,7 @@ public:
     strOneOfTerminators is a list of characters that can mean an end of the NAME/VALUE pair
   */
   void setDelimeters(
-    const AString &strExactSeparator = AString::sstr_Empty, 
+    const AString &strExactSeparator = AConstant::ASTRING_EMPTY, 
     const AString &strOneOfTerminators = ASW("&\r\n",3)
   );
 

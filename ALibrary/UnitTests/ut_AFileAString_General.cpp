@@ -17,7 +17,7 @@ int ut_AFileAString_General()
 
   str.clear();
   strfile.write(AString("Line3"));
-  strfile.write(AString::sstr_LF);
+  strfile.write(AConstant::ASTRING_LF);
   ASSERT_UNIT_TEST(!strfile.useAString().compare("This is a test\nLine2\nLine3\n"), "AFile_AString::write", "0", iRet);
 
   str.clear();

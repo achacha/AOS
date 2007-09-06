@@ -482,7 +482,7 @@ void AUrl::__parseDataProtocol(const AString &strInput, size_t pos)
 {
   //a_Format should be <media type>;{name0=value0;name1=value1}{;base64,}<data>
   AString str;
-  pos = strInput.peekUntil(str, pos, AString::sstr_Comma);
+  pos = strInput.peekUntil(str, pos, AConstant::ASTRING_COMMA);
   if (AConstant::npos == pos)
   {
     _logError(ASWNL("data: protocol must have a , to delimit start of data"));
@@ -490,7 +490,7 @@ void AUrl::__parseDataProtocol(const AString &strInput, size_t pos)
   }
 
   //a_Get media type
-  size_t i = str.getUntil(m_strServer, AString::sstr_Semicolon);
+  size_t i = str.getUntil(m_strServer, AConstant::ASTRING_SEMICOLON);
   if (AConstant::npos == i)
   {
     _logError(ASWNL("data: media type unknown, defaulting to application/octet-stream"));
@@ -618,7 +618,7 @@ void AUrl::emit(AXmlElement& target) const
   if (m_strProtocol.equals("data:", 5))
   {
     target.addElement(ASW("mediaType",9), m_strServer);
-    target.addElement(m_isBase64 ? AString::sstr_True : AString::sstr_False);
+    target.addElement(m_isBase64 ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
     target.addElement(ASW("data",4), m_strFilename, AXmlData::CDataSafe);
   }
   else
@@ -659,7 +659,7 @@ void AUrl::emit(AOutputBuffer& result, bool boolFull, bool boolHidePassword /* =
   result.append(m_strProtocol);
   if ((!m_strProtocol.isEmpty()) &&          //a_No protocol, no //
       (m_strProtocol != "mailto:"))          //a_Mailto does not need the //
-      result.append(AString::sstr_DoubleSlash);
+      result.append(AConstant::ASTRING_DOUBLESLASH);
 
   //a_Username:Password
   if ((boolFull) && (!m_strUsername.isEmpty()))
@@ -700,7 +700,7 @@ void AUrl::__emitDataProtocol(AOutputBuffer& result) const
   result.append("data:",5);
   result.append(m_strServer);
   
-  m_QueryString.emitDelimeted(result, AString::sstr_Equals, AString::sstr_Semicolon, false);
+  m_QueryString.emitDelimeted(result, AConstant::ASTRING_EQUALS, AConstant::ASTRING_SEMICOLON, false);
 
   if (m_isBase64)
   {
@@ -846,12 +846,12 @@ void AUrl::setFilename(const AString &strFilename)
 
 void AUrl::setExtension(const AString &strExt)
 { 
-  m_strFilename = getFilenameNoExt() + AString::sstr_Period + strExt;
+  m_strFilename = getFilenameNoExt() + AConstant::ASTRING_PERIOD + strExt;
 }
 
 void AUrl::setFilenameNoExt(const AString &strName)
 { 
-  m_strFilename = strName + AString::sstr_Period + getExtension();
+  m_strFilename = strName + AConstant::ASTRING_PERIOD + getExtension();
 }
 
 void AUrl::setPathAndFilename(const AString &strPath)
@@ -935,7 +935,7 @@ AString AUrl::getExtension() const
     return str;
   }
   else
-    return AString::sstr_Empty;
+    return AConstant::ASTRING_EMPTY;
 }
 
 AString AUrl::toAString() const

@@ -37,7 +37,7 @@ void AResultSet::emit(AOutputBuffer& target) const
   target.append("{sql:", 5);
   target.append(m_SQL);
   target.append('}');
-  target.append(AString::sstr_CRLF);
+  target.append(AConstant::ASTRING_CRLF);
 
   RESULTSET::const_iterator citRow = m_ResultSet.begin();
   while(citRow != m_ResultSet.end())
@@ -56,7 +56,7 @@ void AResultSet::emit(AOutputBuffer& target) const
       target.append('}');
     }
     target.append('}');
-    target.append(AString::sstr_CRLF);
+    target.append(AConstant::ASTRING_CRLF);
     ++citRow;
   }
 }

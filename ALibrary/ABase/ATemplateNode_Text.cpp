@@ -13,7 +13,7 @@ void ATemplateNode_Text::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ATemplateNode_Text::ATemplateNode_Text(const AString& text /* = AString::sstr_Empty */) :
+ATemplateNode_Text::ATemplateNode_Text(const AString& text /* = AConstant::ASTRING_EMPTY */) :
   m_strText(text)
 {
 }

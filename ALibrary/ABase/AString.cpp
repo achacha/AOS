@@ -59,51 +59,6 @@ void AString::_deallocate(char **ppcBuffer)
 
 char AString::mc_Null = '\x0';
 
-const AString AString::sstr_UrlSafeAlphaNum("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz=_",64);
-const AString AString::sstr_AlphaNum("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",62);
-const AString AString::sstr_UpperCaseLetters("ABCDEFGHIJKLMNOPQRSTUVWXYZ",26);
-const AString AString::sstr_LowerCaseLetters("abcdefghijklmnopqrstuvwxyz",26);
-const AString AString::sstr_LowerCaseConsonants("bcdfghjklmnpqrstvwxyz",21);
-const AString AString::sstr_LowerCaseVowels("aeiou",5);
-const AString AString::sstr_Numbers("0123456789",10);
-
-const AString AString::sstr_Empty;
-const AString AString::sstr_Zero("0",1);
-const AString AString::sstr_One("1",1);
-const AString AString::sstr_Two("2",1);
-const AString AString::sstr_SingleQuote("'",1);
-const AString AString::sstr_DoubleQuote("\"",1);
-const AString AString::sstr_Tab("\t",1);
-const AString AString::sstr_Space(" ",1);
-const AString AString::sstr_TwoSpaces("  ",2);
-const AString AString::sstr_WhiteSpace(" \r\n\t",4);
-const AString AString::sstr_CR("\r",1);
-const AString AString::sstr_LF("\n",1);
-const AString AString::sstr_Null("(null)",6);
-const AString AString::sstr_Period(".",1);
-const AString AString::sstr_Colon(":",1);
-const AString AString::sstr_Semicolon(";",1);
-const AString AString::sstr_Comma(",",1);
-const AString AString::sstr_LessThan("<",1);
-const AString AString::sstr_GreaterThan(">",1);
-const AString AString::sstr_OpenBrace("{",1);
-const AString AString::sstr_CloseBrace("}",1);
-const AString AString::sstr_QuestionMark("?",1);
-const AString AString::sstr_Undefined("undefined",9);
-const AString AString::sstr_Equals("=",1);
-const AString AString::sstr_Slash("/",1);
-const AString AString::sstr_DoubleSlash("//",2);
-const AString AString::sstr_True("true",4);
-const AString AString::sstr_False("false",5);
-const AString AString::sstr_CRLF("\r\n",2);
-const AString AString::sstr_CRLFCRLF("\r\n\r\n",4);
-
-#if defined(__WINDOWS__)
-const AString AString::sstr_EOL("\r\n");
-#else
-const AString AString::sstr_EOL("\n");
-#endif
-
 //a_Static methods
 AString AString::fromInt(int iValue)
 {
@@ -121,7 +76,7 @@ AString AString::fromInt(int iValue)
 
 AString AString::fromBool(bool value)
 {
-  return (value ? sstr_True : sstr_False);
+  return (value ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
 }
 
 AString AString::fromS1(s1 value, int iBase)
@@ -455,7 +410,7 @@ const AString AString::wrap(
 )
 {
   if (!pccSource)
-    return AString::sstr_Empty;
+    return AConstant::ASTRING_EMPTY;
  
   //a_const_cast<> here is a temporary removal of constness
   //a_Used to construct the class, return is a const AString so pccSource is never changed
@@ -962,7 +917,7 @@ size_t AString::peek(AOutputBuffer& bufDestination, size_t sourceIndex, size_t b
 size_t AString::peekUntil(
   AOutputBuffer& target, 
   size_t sourceIndex, // = 0x0
-  const AString& delimeters // = AString::sstr_WhiteSpace
+  const AString& delimeters // = AConstant::ASTRING_WHITESPACE
 ) const
 {
   if (sourceIndex >= m_Length)
@@ -1047,7 +1002,7 @@ u1 AString::rget()
 
 size_t AString::getUntil(
   AString& target,
-  const AString& delimeters, // = AString::sstr_WhiteSpace
+  const AString& delimeters, // = AConstant::ASTRING_WHITESPACE
   bool removeDelimeters // = true
 )
 {
@@ -1106,7 +1061,7 @@ size_t AString::getUntil(
 }
 
 void AString::removeUntil(
-  const AString& delimeters, // = AString::sstr_WhiteSpace
+  const AString& delimeters, // = AConstant::ASTRING_WHITESPACE
   bool removeDelimeters // = true
 )
 {
@@ -1855,6 +1810,12 @@ void AString::assign(const AString& source, size_t length)
   }
 }
 
+void AString::assign(const AEmittable& source)
+{ 
+  clear();
+  source.emit(*this);
+}
+
 void AString::assignDoubleByte(const wchar_t* pwccSource, size_t wideCharCount)
 {
   if (!pwccSource)
@@ -2126,7 +2087,7 @@ void AString::emit(AXmlElement& target) const
 size_t AString::split(
   LIST_AString& slResult, 
   char delimeter,         // = ' '
-  const AString& strip,   // = AString::sstr_Empty
+  const AString& strip,   // = AConstant::ASTRING_EMPTY
   bool bKeepEmpty         // = false
 ) const
 {
@@ -2158,7 +2119,7 @@ size_t AString::split(
 size_t AString::split(
   VECTOR_AString& slResult,
   char delimeter,         // = ' '
-  const AString& strip,   // = AString::sstr_Empty
+  const AString& strip,   // = AConstant::ASTRING_EMPTY
   bool bKeepEmpty         // = false
 ) const
 {

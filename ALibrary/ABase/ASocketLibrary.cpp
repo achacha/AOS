@@ -137,7 +137,7 @@ bool ASocketLibrary::SocketInfo::isValid()
 
 bool ASocketLibrary::canBindToPort(
   int port, 
-  const AString& ip   // = AString::sstr_Empty
+  const AString& ip   // = AConstant::ASTRING_EMPTY
 )
 {
   SOCKET s = ::socket(PF_INET, SOCK_STREAM, 0);

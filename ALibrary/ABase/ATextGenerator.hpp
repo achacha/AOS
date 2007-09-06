@@ -22,7 +22,7 @@ public:
   /**
    * Random string based on a charset
   **/
-  static void generateRandomString(AOutputBuffer& target, size_t len, const AString& strCharSet = AString::sstr_UrlSafeAlphaNum);
+  static void generateRandomString(AOutputBuffer& target, size_t len, const AString& strCharSet = AConstant::CHARSET_URLSAFE_ALPHANUM);
 
   /**
    * Random string for [0,0xFF)  (everything including 0)

@@ -8,23 +8,6 @@
 #include "AException.hpp"
 #include <ctype.h>
 
-//a_Character map used for Base64 conversions
-const AString ATextConverter::CHARSET_BASE64 = 
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-// 0000000000000000111111111111111122222222222222223333333333333333
-// 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
-
-//a_Character map used for Alphanum conversions
-const AString ATextConverter::CHARSET_ALPHANUM = 
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-// 0000000000000000111111111111111122222222222222223333333333333333
-// 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF
-
-const AString ATextConverter::CHARSET_URL_RFC2396 = 
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789;/?:@&=+$,-_.!~*'()";
-// 000000000000000011111111111111112222222222222222333333333333333344444444444444445
-// 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0
-
 void ATextConverter::encodeBase64(const AString& strSource, AOutputBuffer& target)
 {
   int iOctet, iTemp = 0, iBits = 0;
@@ -37,14 +20,14 @@ void ATextConverter::encodeBase64(const AString& strSource, AOutputBuffer& targe
     while( iBits >= 6 )
     {
       iBits -= 6;
-			target.append(CHARSET_BASE64[ 0x3f & (iTemp >> iBits) ]);
+      target.append(AConstant::CHARSET_BASE64[ 0x3f & (iTemp >> iBits) ]);
     }
   }
 	
 	if( iBits > 0 )
   {
     iTemp <<= 6 - iBits;
-    target.append(CHARSET_BASE64[ 0x3f & iTemp ]);
+    target.append(AConstant::CHARSET_BASE64[ 0x3f & iTemp ]);
     if ( iBits == 4 )
       target.append('=');
     else if ( iBits == 2 )
@@ -276,7 +259,7 @@ void ATextConverter::encodeURL(
          && 
          (
            ' ' == cX
-           || AConstant::npos == ATextConverter::CHARSET_URL_RFC2396.find(cX)
+           || AConstant::npos == AConstant::CHARSET_URL_RFC2396.find(cX)
          )
        )
     {
@@ -435,7 +418,7 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
   target.append(" (", 2);
   target.append(AString::fromSize_t(size, 0xA));
   target.append(')');
-  target.append(AString::sstr_CRLF);
+  target.append(AConstant::ASTRING_CRLF);
   
   //a_Complete rows
   size_t y;
@@ -443,7 +426,7 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
   {
     //a_Skip a line every 8
     if (!(y % 0x8))
-      target.append(AString::sstr_CRLF);
+      target.append(AConstant::ASTRING_CRLF);
 
     //a_Get the offset
     strTemp = AString::fromSize_t(y * 0x10, 0x10);
@@ -472,7 +455,7 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
       target.append(convertBYTEtoHEX(source.at(y * 0x10 + i)));
     }
 
-    target.append(AString::sstr_CRLF);
+    target.append(AConstant::ASTRING_CRLF);
   }
   
   //a_Remaineder
@@ -511,7 +494,7 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
       target.append(convertBYTEtoHEX(source.at(y * 0x10 + i)));
     }
 
-    target.append(AString::sstr_CRLF);
+    target.append(AConstant::ASTRING_CRLF);
   }
 }
 

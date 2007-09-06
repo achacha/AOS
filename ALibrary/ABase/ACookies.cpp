@@ -262,7 +262,7 @@ void ACookies::emitResponseHeaderString(AOutputBuffer& target) const
     target.append("Set-Cookie: ", 12);
     
     mvector__Cookies[i]->emitResponseHeaderString(target);
-    target.append(AString::sstr_CRLF);
+    target.append(AConstant::ASTRING_CRLF);
   }
 }
 
@@ -276,7 +276,7 @@ void ACookies::emitRequestHeaderString(AOutputBuffer& target) const
   {
     mvector__Cookies[i]->emitRequestHeaderString(target);
   }
-  target.append(AString::sstr_CRLF);
+  target.append(AConstant::ASTRING_CRLF);
 }
 
 void ACookies::expireCookie(const AString& name)

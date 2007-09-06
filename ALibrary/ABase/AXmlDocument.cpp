@@ -94,9 +94,9 @@ void AXmlDocument::emit(AOutputBuffer& target, int indent) const
   LIST_NODEPTR::const_iterator cit = m_Instructions.begin();
   while (cit != m_Instructions.end())
   {
-    for (int i=0; i<indent; ++i) target.append(AString::sstr_TwoSpaces);    //a_Indentation
+    for (int i=0; i<indent; ++i) target.append(AConstant::ASTRING_TWOSPACES);    //a_Indentation
     (*cit)->emit(target, indent);
-    target.append(AString::sstr_CRLF);
+    target.append(AConstant::ASTRING_CRLF);
     ++cit;
   }
   m_Root.emit(target, indent);
@@ -110,10 +110,10 @@ void AXmlDocument::emitJSON(
   LIST_NODEPTR::const_iterator cit = m_Instructions.begin();
   while (cit != m_Instructions.end())
   {
-    for (int i=0; i<indent; ++i) target.append(AString::sstr_TwoSpaces);    //a_Indentation
+    for (int i=0; i<indent; ++i) target.append(AConstant::ASTRING_TWOSPACES);    //a_Indentation
     (*cit)->emitJSON(target, indent);
     if (indent >= 0)
-      target.append(AString::sstr_CRLF);
+      target.append(AConstant::ASTRING_CRLF);
 
     ++cit;
   }

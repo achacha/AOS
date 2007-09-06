@@ -20,8 +20,8 @@
 class ABASE_API ATextOdometer : public ADebugDumpable
 {
   public:
-    ATextOdometer(size_t iSize = 4, const AString& strSubset = smstr_DefaultSubset);
-    ATextOdometer(const AString& initial, size_t iSize = 4, const AString& strSubset = smstr_DefaultSubset);
+    ATextOdometer(size_t iSize = 4, const AString& strSubset = AConstant::CHARSET_BASE10);
+    ATextOdometer(const AString& initial, size_t iSize = 4, const AString& strSubset = AConstant::CHARSET_BASE10);
     ATextOdometer(const ATextOdometer&);
     virtual ~ATextOdometer();
 
@@ -34,6 +34,7 @@ class ABASE_API ATextOdometer : public ADebugDumpable
     Pre decrement
     */
     const ATextOdometer &operator --(void);
+
     /*!
     Post increment
     */
@@ -101,9 +102,6 @@ private:
     //a_Current odometer
     AString mstr_Odometer;
 
-    //a_Default subst
-    static AString smstr_DefaultSubset;          // "0123456789"
-    
     /**
      * Modifiers
     **/

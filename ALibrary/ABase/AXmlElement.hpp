@@ -30,7 +30,7 @@ public:
   **** NOTE: Add returns NEWLY added element (NOT 'this' as with the other methods) ****
   This is done to allow you to add an element and get a reference to the newly added element
   */
-  AXmlElement& addElement(const AString& xpath, const AString& value = AString::sstr_Empty, AXmlData::Encoding encoding = AXmlData::None, bool insert = true);
+  AXmlElement& addElement(const AString& xpath, const AString& value = AConstant::ASTRING_EMPTY, AXmlData::Encoding encoding = AXmlData::None, bool insert = true);
   AXmlElement& addElement(const AString& xpath, const ARope& value, AXmlData::Encoding encoding = AXmlData::None, bool insert = true);
   AXmlElement& addElement(const AString& xpath, const AEmittable& object, AXmlData::Encoding encoding, bool insert = true);
   AXmlElement& addElement(const AString& xpath, const AXmlEmittable& object, bool insert = true);
@@ -61,7 +61,7 @@ public:
   Returns this object
   */
   AXmlElement& addAttributes(const AAttributes& attrs);
-  AXmlElement& addAttribute(const AString& name, const AString& value = AString::sstr_Empty);
+  AXmlElement& addAttribute(const AString& name, const AString& value = AConstant::ASTRING_EMPTY);
   AXmlElement& addAttribute(const AString& name, const u4 value);
   AXmlElement& addAttribute(const AString& name, const u8 value);
   AXmlElement& addAttribute(const AString& name, const double value);
@@ -70,6 +70,27 @@ public:
   Checks if this element contains other elements
   */
   bool hasElements() const;
+
+  /*!
+  Saves value into DOM at path
+  */
+  void setString(const AString& path, const AString& value, AXmlData::Encoding encoding = AXmlData::None);
+
+  /*!
+  Saves value into DOM at path
+  */
+  void setInt(const AString& path, int value);
+
+  /*!
+  Saves value into DOM at path
+  */
+  void setSize_t(const AString& path, size_t value);
+
+  /*!
+  Saves value into DOM at path
+  Converts bool to "true" or "false"
+  */
+  void setBool(const AString& path, bool value);
 
   /*!
   Emit XML unformatted

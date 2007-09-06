@@ -50,7 +50,7 @@ public:
   AXmlInstruction() {}
   AXmlInstruction(const AXmlInstruction::TYPE type, AXmlNode *pParent = NULL);
   AXmlInstruction(const AString& name, AXmlNode *pParent = NULL);
-  AXmlInstruction(const AXmlInstruction::TYPE type, const AAttributes& attrs, const AString& data = AString::sstr_Empty, AXmlNode *pParent = NULL);
+  AXmlInstruction(const AXmlInstruction::TYPE type, const AAttributes& attrs, const AString& data = AConstant::ASTRING_EMPTY, AXmlNode *pParent = NULL);
   AXmlInstruction(const AXmlInstruction&);
   virtual ~AXmlInstruction() {}
 

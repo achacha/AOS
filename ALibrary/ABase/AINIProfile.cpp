@@ -584,7 +584,7 @@ void AINIProfile::_writeINIRecursiveLoop(_ININode* pNode, AOutputBuffer& target)
       target.append('[');
       target.append(strFullName);
       target.append(']');
-      target.append(AString::sstr_EOL);
+      target.append(AConstant::ASTRING_EOL);
 
       //a_Now the leafs
       _INILeaf* pLeaf = pNode->mp_Leaf;
@@ -592,7 +592,7 @@ void AINIProfile::_writeINIRecursiveLoop(_ININode* pNode, AOutputBuffer& target)
       {
         //a_Write each leaf
         pLeaf->mnv_Pair.emit(target);
-        target.append(AString::sstr_EOL);
+        target.append(AConstant::ASTRING_EOL);
 
         pLeaf = pLeaf->mp_Next;
       }

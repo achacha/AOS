@@ -25,7 +25,7 @@ public:
   ctor
   name - User defined name for this visitor that appears in the emit calls
   */
-  AEventVisitor(const AString& name = AString::sstr_Empty);
+  AEventVisitor(const AString& name = AConstant::ASTRING_EMPTY);
   
   /*! dtor */
   ~AEventVisitor();

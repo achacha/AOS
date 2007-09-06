@@ -44,7 +44,7 @@ public:
   bool getCookie(const AString& name, ACookie& cookieTarget) const;
 
   //a_Adds a cookie of given name and returns the reference of the new cookie object
-  ACookie &addCookie(const AString& name, const AString &strValue = AString::sstr_Empty);
+  ACookie &addCookie(const AString& name, const AString &strValue = AConstant::ASTRING_EMPTY);
 
   void expireCookie(const AString& name);     //a_Expires/Removes it on the client-side
   void removeCookie(const AString& name);     //a_Deletes locally

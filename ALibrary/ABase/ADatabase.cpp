@@ -8,7 +8,7 @@ void ADatabase::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "(ADatabase @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_urlConnection=" << std::endl;
   m_urlConnection.debugDump(os, indent+2);
-  ADebugDumpable::indent(os, indent+1) << "mbool_Initialized=" << (mbool_Initialized ? AString::sstr_True : AString::sstr_False) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mbool_Initialized=" << (mbool_Initialized ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif

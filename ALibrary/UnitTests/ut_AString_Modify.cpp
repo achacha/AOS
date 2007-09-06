@@ -31,7 +31,7 @@ int ut_AString_Modify()
   ASSERT_UNIT_TEST(!str.compare("Testing, of truncation"), "AString::truncateAt", "0", iRet);
 
   str.assign("Testing, of truncation, everything after 2nd comma will be removed!");
-  str.truncateAtOneOf(AString::sstr_Comma, 10);
+  str.truncateAtOneOf(AConstant::ASTRING_COMMA, 10);
   ASSERT_UNIT_TEST(!str.compare("Testing, of truncation"), "AString::truncateAtOneOf", "0", iRet);
 
   str.assign("Rest_and_test,,,,,");

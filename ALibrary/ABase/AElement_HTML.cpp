@@ -128,14 +128,14 @@ AString AElement_HTML::begin(size_t iDepth) const
 
   //a_Indent
   if (iDepth > 0)
-    for(iX = 0x0; iX < iDepth; ++iX) strReturn += AString::sstr_TwoSpaces;
+    for(iX = 0x0; iX < iDepth; ++iX) strReturn += AConstant::ASTRING_TWOSPACES;
   
   //a_Returns self (formatted in text or HTML)
   strReturn += beginElement();
 
   //a_Depth enable formatting
   if (iDepth >= 0)
-    strReturn += AString::sstr_CRLF;
+    strReturn += AConstant::ASTRING_CRLF;
 
   //a_Now display the children
   LIST_AElementInterface::const_iterator liElement = m_listChildElements.begin();
@@ -173,7 +173,7 @@ AString AElement_HTML::end(size_t iDepth) const
   
   //a_Indent
   if (iDepth > 0)
-    for (size_t iX = 0; iX < iDepth; ++iX) strReturn += AString::sstr_TwoSpaces;
+    for (size_t iX = 0; iX < iDepth; ++iX) strReturn += AConstant::ASTRING_TWOSPACES;
 
   if (!isSingular())
   {
@@ -183,7 +183,7 @@ AString AElement_HTML::end(size_t iDepth) const
 
     //a_Depth enables formatting
     if (AConstant::npos != iDepth)
-      strReturn += AString::sstr_CRLF;
+      strReturn += AConstant::ASTRING_CRLF;
   }
   
   return strReturn;
@@ -589,7 +589,7 @@ void AElement_HTML::__parseAdvanceToNextTag(const AString &strInput, size_t& pos
 
 void AElement_HTML::__parseSkipOverWhiteSpace(const AString &strInput, size_t& position)
 {
-  if ((position = strInput.findNotOneOf(AString::sstr_WhiteSpace, position)) == AConstant::npos)
+  if ((position = strInput.findNotOneOf(AConstant::ASTRING_WHITESPACE, position)) == AConstant::npos)
     position = strInput.getSize() + 1;    //a_We are at the end
 }
 
@@ -875,7 +875,7 @@ void AElement_HTML::recurseToString(AString& strReturn, int iIndentLevel) const
   if (boolElement)
   {
     //a_This is an HTML type
-    for (int iX = iIndentLevel; iX > 0x0; --iX) strReturn += AString::sstr_TwoSpaces;
+    for (int iX = iIndentLevel; iX > 0x0; --iX) strReturn += AConstant::ASTRING_TWOSPACES;
     strReturn += "<";
     strReturn += getType();
   }
@@ -905,7 +905,7 @@ void AElement_HTML::recurseToString(AString& strReturn, int iIndentLevel) const
 		strReturn.append('>');
 	}
 
-  if (iIndentLevel >= 0x0) strReturn += AString::sstr_CRLF;
+  if (iIndentLevel >= 0x0) strReturn += AConstant::ASTRING_CRLF;
 
   LIST_AElementInterface::const_iterator liElement = m_listChildElements.begin();
   while (liElement != m_listChildElements.end())
@@ -916,11 +916,11 @@ void AElement_HTML::recurseToString(AString& strReturn, int iIndentLevel) const
 
   if (boolElement && !isSingular())
   {
-    for (int iX = iIndentLevel; iX > 0x0; --iX) strReturn += AString::sstr_TwoSpaces;
+    for (int iX = iIndentLevel; iX > 0x0; --iX) strReturn += AConstant::ASTRING_TWOSPACES;
     strReturn.append("</", 2);
     strReturn.append(getType());
     strReturn.append('>');
     if (iIndentLevel >= 0x0)
-      strReturn.append(AString::sstr_CRLF);
+      strReturn.append(AConstant::ASTRING_CRLF);
   }
 }

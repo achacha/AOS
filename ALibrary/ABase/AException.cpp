@@ -9,7 +9,7 @@ AException::AException
   int iWhat,                           // = AException::Unknown
   const char* pccFilename,             // = ""
   int iLineNumber,                     // = 0
-  const AString& strExtra,             // = AString::sstr_Empty
+  const AString& strExtra,             // = AConstant::ASTRING_EMPTY
   errno_t errornum,                    // = 0
   bool walkStack                       // = false
 ) :
@@ -305,16 +305,16 @@ const ARope& AException::what() const throw()
     getErrnoMessage(mm_What, m_errno);
     mm_What.append(')');
   }
-  mm_What.append(AString::sstr_EOL);
+  mm_What.append(AConstant::ASTRING_EOL);
 
   m_StackWalker.emit(mm_What);
 
   if (!m_DebugDump.isEmpty())
   {
-    mm_What.append(AString::sstr_EOL);
+    mm_What.append(AConstant::ASTRING_EOL);
     mm_What.append(m_DebugDump);
   }
-  mm_What.append(AString::sstr_EOL);
+  mm_What.append(AConstant::ASTRING_EOL);
 
   return mm_What;
 }

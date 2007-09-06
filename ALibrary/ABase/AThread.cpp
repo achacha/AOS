@@ -9,8 +9,8 @@ void AThread::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "mp__ThreadProc=0x" << std::hex << (void *)mp__ThreadProc << std::dec << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mpv__This=0x" << std::hex << (void *)mpv__This << std::dec << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mpv__Parameter=0x" << std::hex << (void *)mpv__Parameter << std::dec << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mbool_Run=" << (mbool_Run ? AString::sstr_True : AString::sstr_False) << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mbool_Running=" << (mbool_Running ? AString::sstr_True : AString::sstr_False) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mbool_Run=" << (mbool_Run ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mbool_Running=" << (mbool_Running ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mu4__ThreadId=" << mu4__ThreadId << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mh__Thread=" << mh__Thread << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ExecutionState=" << m_ExecutionState << std::endl;

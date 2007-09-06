@@ -101,7 +101,7 @@ public:
   Checks validity amd if status code is not a valid one (as per RFC2616),
     you MUST provide a reason
   */
-  void setStatusCode(int statusCode, const AString& reason = AString::sstr_Empty);
+  void setStatusCode(int statusCode, const AString& reason = AConstant::ASTRING_EMPTY);
 
   /*!
   Get current reason phrase (empty of default to be used)

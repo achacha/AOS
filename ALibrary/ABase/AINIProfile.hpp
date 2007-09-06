@@ -79,9 +79,9 @@ public:
       std::cout << str << std::endl;
     }
   */
-  Iterator getIterator(const AString& key = AString::sstr_Empty) const;                   //a_next() iterates only within the given key
-  WindingIterator getWindingIterator(const AString& key = AString::sstr_Empty) const;     //a_next() iterates into subkeys as well and not to parent keys
-  UnwindingIterator getUnwindingIterator(const AString& key = AString::sstr_Empty) const; //a_next() iterates through all keys and moves up to parent until root is reached
+  Iterator getIterator(const AString& key = AConstant::ASTRING_EMPTY) const;                   //a_next() iterates only within the given key
+  WindingIterator getWindingIterator(const AString& key = AConstant::ASTRING_EMPTY) const;     //a_next() iterates into subkeys as well and not to parent keys
+  UnwindingIterator getUnwindingIterator(const AString& key = AConstant::ASTRING_EMPTY) const; //a_next() iterates through all keys and moves up to parent until root is reached
 
   /*!
   Access to filename

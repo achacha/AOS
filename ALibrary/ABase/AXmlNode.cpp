@@ -146,7 +146,7 @@ void AXmlNode::_indent(AOutputBuffer& target, int indent) const
 {
   while (indent > 0)
   {
-    target.append(AString::sstr_TwoSpaces);
+    target.append(AConstant::ASTRING_TWOSPACES);
     --indent;
   }
 }
@@ -396,4 +396,53 @@ size_t AXmlNode::_find(LIST_AString listPath, AXmlNode::ConstNodeContainer& resu
   }
   else
     return 0;
+}
+
+
+bool AXmlNode::exists(const AString& path) const
+{
+  return (NULL != findNode(path));
+}
+
+bool AXmlNode::emitString(const AString& path, AOutputBuffer& target) const
+{
+  return emitFromPath(path, target);
+}
+
+AString AXmlNode::getString(const AString& path, const AString& strDefault) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+    return str;
+  else
+    return strDefault;
+}          
+
+int AXmlNode::getInt(const AString& path, int iDefault) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+    return str.toInt();
+  else
+    return iDefault;
+}
+
+size_t AXmlNode::getSize_t(const AString& path, size_t iDefault) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+    return str.toSize_t();
+  else
+    return iDefault;
+}
+
+bool AXmlNode::getBool(const AString& path, bool boolDefault) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+  {
+    return str.equalsNoCase("true",4) || str.equals("1",1);
+  }
+  else
+    return boolDefault;
 }

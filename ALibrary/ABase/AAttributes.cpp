@@ -72,7 +72,7 @@ void AAttributes::emit(AOutputBuffer& target) const
     ++cit;
     while (cit != m_Pairs.end())
     {
-      target.append(AString::sstr_Space);
+      target.append(AConstant::ASTRING_SPACE);
       (*cit).emit(target);
       ++cit;
     }
@@ -164,7 +164,7 @@ size_t AAttributes::count(const AString& strName, bool boolNoCase /* = true */) 
   return ret;
 }
 
-size_t AAttributes::getDelimited(const AString& strName, AString& result, const AString& delimeter /* = AString::sstr_Comma */, bool boolNoCase /* = true */) const
+size_t AAttributes::getDelimited(const AString& strName, AString& result, const AString& delimeter /* = AConstant::ASTRING_COMMA */, bool boolNoCase /* = true */) const
 {
   size_t ret = 0;
 
@@ -202,7 +202,7 @@ size_t AAttributes::getDelimited(const AString& strName, AString& result, const 
   return ret;
 }
 
-void AAttributes::remove(const AString& strName, const AString &strValue /*= AString::sstr_Empty */, bool boolNoCase /* = true */)
+void AAttributes::remove(const AString& strName, const AString &strValue /*= AConstant::ASTRING_EMPTY */, bool boolNoCase /* = true */)
 {
   LIST_NVPair::iterator it = m_Pairs.begin();
   while (it != m_Pairs.end())
@@ -242,7 +242,7 @@ void AAttributes::remove(const AString& strName, const AString &strValue /*= ASt
   }
 }
 
-void AAttributes::insert(const AString& strName, const AString& strValue /* = AString::sstr_Empty */, ANameValuePair::NameValueType eType /* = ANameValuePair::XML */)
+void AAttributes::insert(const AString& strName, const AString& strValue /* = AConstant::ASTRING_EMPTY */, ANameValuePair::NameValueType eType /* = ANameValuePair::XML */)
 {
   m_Pairs.push_back(ANameValuePair(strName, strValue, eType));
 }

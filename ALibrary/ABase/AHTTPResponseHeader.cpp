@@ -146,7 +146,7 @@ void AHTTPResponseHeader::emit(AOutputBuffer& target) const
     target.append(getStatusCodeReasonPhrase(mi_StatusCode));
   else
     target.append(mstr_ReasonPhrase);
-  target.append(AString::sstr_CRLF);
+  target.append(AConstant::ASTRING_CRLF);
 
   //a_Parent class will do the body
   AHTTPHeader::emit(target);
@@ -156,7 +156,7 @@ void AHTTPResponseHeader::emit(AOutputBuffer& target) const
     mcookies_Response.emitResponseHeaderString(target);
 
   //a_Add the empty line to signify the end
-  target.append(AString::sstr_CRLF);
+  target.append(AConstant::ASTRING_CRLF);
 }
 
 bool AHTTPResponseHeader::_parseLineZero()
@@ -166,7 +166,7 @@ bool AHTTPResponseHeader::_parseLineZero()
     return false;
 
   //a_Version first
-  size_t iP = mstr_LineZero.find(AString::sstr_Space);
+  size_t iP = mstr_LineZero.find(AConstant::ASTRING_SPACE);
   if (iP != AConstant::npos)
   {
     mstr_HTTPVersion.clear();
@@ -179,7 +179,7 @@ bool AHTTPResponseHeader::_parseLineZero()
     ATHROW(this, AException::ResponseInvalidVersion);
 
   //a_Status code
-  size_t iP2 = mstr_LineZero.find(AString::sstr_Space, iP + 1);
+  size_t iP2 = mstr_LineZero.find(AConstant::ASTRING_SPACE, iP + 1);
   if (iP2 != AConstant::npos)
   {
     AString str;
@@ -307,6 +307,6 @@ const AString AHTTPResponseHeader::getStatusCodeReasonPhrase(int statusCode)
     case SC_505_HTTP_Version_Not_Supported      : return "HTTP Version not supported";
   }
   
-  return AString::sstr_Empty;
+  return AConstant::ASTRING_EMPTY;
 }
 

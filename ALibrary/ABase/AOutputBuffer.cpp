@@ -197,5 +197,5 @@ void AOutputBuffer::appendU8_LSB(u8 d)
 void AOutputBuffer::appendLine(const AEmittable& source)
 {
   source.emit(*this);
-  AString::sstr_EOL.emit(*this);
+  AConstant::ASTRING_EOL.emit(*this);
 }

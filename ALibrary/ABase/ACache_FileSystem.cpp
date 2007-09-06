@@ -153,7 +153,7 @@ void ACache_FileSystem::emit(AXmlElement& target) const
       AXmlElement& file = base.addElement(KEY, (*cit).first, AXmlData::None, false);  //a_Create new key instead of reusing
       file.addAttribute(HITS, AString::fromInt((*cit).second->hits));
       file.addAttribute(LAST, AString::fromS8((*cit).second->lastUsed));
-      file.addAttribute(FOUND, (NULL == (*cit).second->pData ? AString::sstr_False : AString::sstr_True));
+      file.addAttribute(FOUND, (NULL == (*cit).second->pData ? AConstant::ASTRING_FALSE : AConstant::ASTRING_TRUE));
     }
   }
 }
@@ -170,7 +170,7 @@ void ACache_FileSystem::emit(AOutputBuffer& target) const
   target.append(AString::fromSize_t(m_Miss));
   target.append("  timeNow=",10);
   target.append(AString::fromSize_t(ATime::getTickCount()));
-  target.append(AString::sstr_EOL);
+  target.append(AConstant::ASTRING_EOL);
 
   for (size_t i = 0; i < m_CacheArray.size(); ++i)
   {
@@ -196,7 +196,7 @@ void ACache_FileSystem::emit(AOutputBuffer& target) const
       target.append(']');
       target.append(" last=",6);
       target.append(AString::fromS8((*cit).second->lastUsed));
-      target.append(AString::sstr_EOL);
+      target.append(AConstant::ASTRING_EOL);
     }
   }
 }

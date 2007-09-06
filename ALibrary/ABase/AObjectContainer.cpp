@@ -24,7 +24,7 @@ void AObjectContainer::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-AObjectContainer::AObjectContainer(const AString& name /* = AString::sstr_Empty */) :
+AObjectContainer::AObjectContainer(const AString& name /* = AConstant::ASTRING_EMPTY */) :
   AObjectBase(name)
 {
 }
@@ -99,7 +99,7 @@ AObjectBase *AObjectContainer::getObject(const AString& path) const
   url.getPath().split(names, '/');
   
   const AObjectContainer *pObjects = (names.size() == 0 ? this : _getContainer(names));
-  if (pObjects && AString::sstr_Empty != url.getFilename())
+  if (pObjects && AConstant::ASTRING_EMPTY != url.getFilename())
   {
     MAP_STRING_OBJECTBASE::const_iterator cit = pObjects->m_Objects.find(url.getFilename());
     if (cit != pObjects->m_Objects.end())
@@ -127,7 +127,7 @@ AObjectBase &AObjectContainer::_insertObjectPtr(const AString& path, AObjectBase
   AObjectContainer *pObjects = _getContainer(names, true);
   
   //a_Name provided in path, rename object (path always overrides the object name)
-  if (AString::sstr_Empty != url.getFilename())
+  if (AConstant::ASTRING_EMPTY != url.getFilename())
     pobject->setName(url.getFilename());
 
   //a_Container path was created, but without an object nothing further needs to be done
@@ -242,12 +242,12 @@ bool AObjectContainer::getID(AString& target) const
 
 void AObjectContainer::emit(AOutputBuffer& target) const
 {
-  emit(target, AString::sstr_Empty);
+  emit(target, AConstant::ASTRING_EMPTY);
 }
 
 void AObjectContainer::emit(AXmlElement& target) const
 {
-  emit(target, AString::sstr_Empty);
+  emit(target, AConstant::ASTRING_EMPTY);
 }
 
 void AObjectContainer::emit(AOutputBuffer& target, const AString& strPath) const
@@ -261,7 +261,7 @@ void AObjectContainer::emit(AOutputBuffer& target, const AString& strPath) const
       (*cit).second->emit(target);
       ++cit;
       if (cit != m_Objects.end())
-        target.append(AString::sstr_Comma);
+        target.append(AConstant::ASTRING_COMMA);
     }
   }
   else

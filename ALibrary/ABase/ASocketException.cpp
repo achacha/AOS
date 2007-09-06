@@ -7,7 +7,7 @@ ASocketException::ASocketException
   ASocketException::SOCKET_EXCEPTION_TYPE type, // = ASocketException::LastOSSocketError
   const char* pccFilename,                      // = ""
   int iLineNumber,                              // = 0x0
-  const AString& strExtra                       // = AString::sstr_Empty
+  const AString& strExtra                       // = AConstant::ASTRING_EMPTY
 ) :
   AException(pObject, AException::SocketError, pccFilename, iLineNumber, strExtra),
   m_iLastSocketError(0)
@@ -19,7 +19,7 @@ ASocketException::ASocketException(
   const ADebugDumpable *const pObject, // = NULL
   const char* pccFilename,             // = ""
   int iLineNumber,                     // = 0x0 
-  const AString& strExtra              // = AString::sstr_Empty
+  const AString& strExtra              // = AConstant::ASTRING_EMPTY
 ) :
   AException(pObject, AException::SocketError, pccFilename, iLineNumber, strExtra),
   m_iLastSocketError(iLastSocketError)

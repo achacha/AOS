@@ -314,6 +314,7 @@ public:
   void assign(const char *pccSource, size_t length = AConstant::npos);
   void assign(const unsigned char *pccSource, size_t length = AConstant::npos);
   void assign(const AString& strSource, size_t length = AConstant::npos);
+  void assign(const AEmittable& source);
     
   /*!
   Append N times
@@ -350,12 +351,12 @@ public:
 
   /*!
   Splits the string based on a delimeter character, empty strings discarded (i.e. 2 delimeters next to each other, leading delimeter, or trailing delimeter)
-  strStrip will be used on each resulting string and stripped from front and back (AString::sstr_Empty means don't strip anything)
+  strStrip will be used on each resulting string and stripped from front and back (AConstant::ASTRING_EMPTY means don't strip anything)
   bKeepEmpty if true it will keep empty string (2 delimeters next to each other)
   NOTE: Does not clear the list, appends
   */
-  size_t split(LIST_AString& slResult, char delimeter = ' ', const AString& strStrip = AString::sstr_Empty, bool bKeepEmpty = false) const;
-  size_t split(VECTOR_AString& slResult, char delimeter = ' ', const AString& strStrip = AString::sstr_Empty, bool bKeepEmpty = false) const;
+  size_t split(LIST_AString& slResult, char delimeter = ' ', const AString& strStrip = AConstant::ASTRING_EMPTY, bool bKeepEmpty = false) const;
+  size_t split(VECTOR_AString& slResult, char delimeter = ' ', const AString& strStrip = AConstant::ASTRING_EMPTY, bool bKeepEmpty = false) const;
   
   /*!
   Truncate when a given character is found (inclusive, this character will be replaced by end-of-string)
@@ -413,9 +414,9 @@ public:
   /*!
   Cleaning methods
   */
-  AString& stripLeading(const AString& strDelimeters = AString::sstr_WhiteSpace);
-  AString& stripTrailing(const AString& strDelimeters = AString::sstr_WhiteSpace);
-  AString& stripEntire(const AString& strDelimeters = AString::sstr_WhiteSpace);
+  AString& stripLeading(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  AString& stripTrailing(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  AString& stripEntire(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
 
   /*!
   Internal helpers
@@ -436,7 +437,7 @@ public:
   */
   inline u1 peek(size_t index = 0) const;
   size_t peek(AOutputBuffer& bufDestination, size_t index = 0, size_t bytes = AConstant::npos) const;
-  size_t peekUntil(AOutputBuffer& bufDestination, size_t index = 0, const AString& delimeters = AString::sstr_WhiteSpace) const;
+  size_t peekUntil(AOutputBuffer& bufDestination, size_t index = 0, const AString& delimeters = AConstant::ASTRING_WHITESPACE) const;
   size_t peekUntil(AOutputBuffer& bufDestination, size_t sourceIndex, char delimeter) const;
 
   /*!
@@ -456,7 +457,7 @@ public:
   u1 get(size_t index = 0);
   u1 rget();                                                                                      //a_Gets and removes the last byte
   size_t get(AString& bufDestination, size_t sourceIndex = 0, size_t bytes = AConstant::npos);              //a_Return # of bytes moved
-  size_t getUntil(AString& bufDestination, const AString& delimeters = AString::sstr_WhiteSpace, bool removeDelimeters = true);     //a_Return # of bytes moved
+  size_t getUntil(AString& bufDestination, const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);     //a_Return # of bytes moved
   size_t getUntil(AString& bufDestination, char delimeter, bool removeDelimeter = true);                                            //a_Return # of bytes moved
 
   /*!
@@ -469,7 +470,7 @@ public:
   /*!
   Remove until a given delimeter
   */
-  void removeUntil(const AString& delimeters = AString::sstr_WhiteSpace, bool removeDelimeters = true);
+  void removeUntil(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
   void removeUntil(char delimeter, bool removeDelimeter = true);
 
   /*!
@@ -672,48 +673,6 @@ public:
 	virtual void toAFile(AFile& aFile) const;
   virtual void fromAFile(AFile& aFile);
 //!!!ASerializable }
-
-public:
-  //a_Constants
-  static const AString sstr_Empty;         //a_""  empty string
-  static const AString sstr_Zero;          //a_"0" zero
-  static const AString sstr_One;           //a_"1" one
-  static const AString sstr_Two;           //a_"2" two
-  static const AString sstr_Tab;           //a_"\t" one tab
-  static const AString sstr_Space;         //a_" " one space
-  static const AString sstr_TwoSpaces;     //a_"  " two spaces
-  static const AString sstr_SingleQuote;   //a_' single quote
-  static const AString sstr_DoubleQuote;   //a_" double quote
-  static const AString sstr_WhiteSpace;    //a_" \r\n\t" whitespace
-  static const AString sstr_CRLF;          //a_"\r\n" always
-  static const AString sstr_CRLFCRLF;      //a_"\r\n\r\n" always
-  static const AString sstr_CR;            //a_"\r" always
-  static const AString sstr_LF;            //a_"\n" always
-  static const AString sstr_EOL;           //a_"\r\n" on Windows, "\n" otherwise
-  static const AString sstr_Null;          //a_"(null)" something to denote null value
-  static const AString sstr_Colon;         //a_":" colon
-  static const AString sstr_Semicolon;     //a_";" semicolon
-  static const AString sstr_Period;        //a_"." period
-  static const AString sstr_Comma;         //a_"," comma
-  static const AString sstr_LessThan;      //a_"<"
-  static const AString sstr_GreaterThan;   //a_">"
-  static const AString sstr_OpenBrace;     //a_"{"
-  static const AString sstr_CloseBrace;    //a_"}"
-  static const AString sstr_QuestionMark;  //a_"?"
-  static const AString sstr_Undefined;     //a_"undefined"
-  static const AString sstr_Equals;        //a_"="
-  static const AString sstr_Slash;         //a_"/"
-  static const AString sstr_DoubleSlash;    //a_"//"
-  static const AString sstr_True;          //a_"true"
-  static const AString sstr_False;         //a_"false"
-
-  static const AString sstr_UrlSafeAlphaNum;      //a_"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz=_"
-  static const AString sstr_AlphaNum;             //a_"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-  static const AString sstr_UpperCaseLetters;     //a_"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  static const AString sstr_LowerCaseLetters;     //a_"abcdefghijklmnopqrstuvwxyz"
-  static const AString sstr_Numbers;              //a_"0123456789"
-  static const AString sstr_LowerCaseConsonants;  //a_"bcdfghjklmnpqrstvwxyz"
-  static const AString sstr_LowerCaseVowels;      //a_"aeiou"
 
 public:
 #ifdef __DEBUG_DUMP__

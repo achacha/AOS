@@ -9,7 +9,7 @@ class ABASE_API ANamePointerPair : public ADebugDumpable
 {
   public:
     //a_Creation of a simple name/value pair
-    ANamePointerPair(const AString& strName = AString::sstr_Empty, void *pValue = NULL);
+    ANamePointerPair(const AString& strName = AConstant::ASTRING_EMPTY, void *pValue = NULL);
     ANamePointerPair(const ANamePointerPair& nvSource);
     virtual ~ANamePointerPair() {}
 

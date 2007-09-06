@@ -22,7 +22,7 @@ public:
   backlog - listener socket backlog queue
   if ip is empty, default interface is assumed 
   */
-  ASocketListener(int port, const AString& ip = AString::sstr_Empty, int backlog = 42, bool allowLocalReuse = false);
+  ASocketListener(int port, const AString& ip = AConstant::ASTRING_EMPTY, int backlog = 42, bool allowLocalReuse = false);
   virtual ~ASocketListener();
   
   /*!

@@ -132,7 +132,7 @@ void ACookie::emitResponseHeaderString(AOutputBuffer& target) const
 {
   //a_First the NAME=VALUE must be set; "=" is actually optional, but netscape needs it (due to misimplementation)
   target.append(m__strName);
-  target.append(AString::sstr_Equals);
+  target.append(AConstant::ASTRING_EQUALS);
   target.append(m__strValue);
 
   //a_Now let's figure out the expiration
@@ -194,7 +194,7 @@ void ACookie::emitResponseHeaderString(AOutputBuffer& target) const
 void ACookie::emitRequestHeaderString(AOutputBuffer& target) const
 {
   target.append(m__strName);
-  target.append(AString::sstr_Equals);
+  target.append(AConstant::ASTRING_EQUALS);
   target.append(m__strValue);
   target.append("; ", 2);
 }

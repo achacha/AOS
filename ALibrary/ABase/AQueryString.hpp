@@ -64,13 +64,13 @@ public:
   /*!
   Insert name/value pair
   */
-  virtual void insert(const AString& name, const AString &value = AString::sstr_Empty);
+  virtual void insert(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);
   
   /*!
   Remove name and all of its values
   If value specified only that value is removed
   */
-  virtual void remove(const AString& name, const AString &value = AString::sstr_Empty);  //no value specified means remove the key and all values
+  virtual void remove(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);  //no value specified means remove the key and all values
   
   /*!
   Count how many of a given name exist
@@ -98,7 +98,7 @@ public:
   /*!
   Get values delimeted
   */
-  virtual size_t getDelimited(const AString& name, AString& values, const AString& delimeter = AString::sstr_Comma) const;     //a_Will generate a string "value1,value2,value3..."
+  virtual size_t getDelimited(const AString& name, AString& values, const AString& delimeter = AConstant::ASTRING_COMMA) const;     //a_Will generate a string "value1,value2,value3..."
 
   /*!
   Number of values

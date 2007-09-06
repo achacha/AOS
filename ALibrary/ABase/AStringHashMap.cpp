@@ -82,7 +82,7 @@ void AStringHashMap::set(const AString& name, const ARope& value)
     m_Container[hash] = pMap;
   }
 
-  (*pMap)[name] = AString::sstr_Empty;
+  (*pMap)[name] = AConstant::ASTRING_EMPTY;
   (*pMap)[name].setSize(value.getSize());
   value.emit((*pMap)[name]);
 }
@@ -98,7 +98,7 @@ void AStringHashMap::set(const AString& name, const AEmittable& value)
     m_Container[hash] = pMap;
   }
 
-  (*pMap)[name] = AString::sstr_Empty;
+  (*pMap)[name] = AConstant::ASTRING_EMPTY;
   ARope rope;
   value.emit(rope);
   (*pMap)[name].setSize(rope.getSize());

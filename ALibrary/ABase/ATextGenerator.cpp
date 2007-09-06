@@ -17,7 +17,7 @@ void ATextGenerator::generateRandomNumber(AOutputBuffer& target, size_t len /* =
 //a_Complely random number from sm__strNumber
 void ATextGenerator::generateRandomAlphanum(AOutputBuffer& target, size_t len /* = 0x1 */)
 {
-  generateRandomString(target, len, AString::sstr_AlphaNum);
+  generateRandomString(target, len, AConstant::CHARSET_ALPHANUM);
 }
 
 void ATextGenerator::generateFromTemplate(AOutputBuffer& target, const AString &strTemplate)
@@ -161,7 +161,7 @@ void ATextGenerator::generateRandomWord(AOutputBuffer& target, size_t len /* = 0
   //a_Lead with consonant
   --len;
   AString str, strLast("-", 1);
-  generateRandomString(str, 1, AString::sstr_LowerCaseConsonants);
+  generateRandomString(str, 1, AConstant::CHARSET_LOWERCASE_CONSONANTS);
   str.makeUpper();
   target.append(str);
 
@@ -174,7 +174,7 @@ void ATextGenerator::generateRandomWord(AOutputBuffer& target, size_t len /* = 0
       do
       {
         str.clear();
-        generateRandomString(str, 1, AString::sstr_LowerCaseConsonants);
+        generateRandomString(str, 1, AConstant::CHARSET_LOWERCASE_CONSONANTS);
       }
       while(str.at(0) == strLast.at(0) && ARandomNumberGenerator::get().nextU1() > 220);
 
@@ -192,7 +192,7 @@ void ATextGenerator::generateRandomWord(AOutputBuffer& target, size_t len /* = 0
         do
         {
           str.clear();
-          generateRandomString(str, 1, AString::sstr_LowerCaseVowels);
+          generateRandomString(str, 1, AConstant::CHARSET_LOWERCASE_VOWELS);
         }
         while(str.at(0) == strLast.at(0) && ARandomNumberGenerator::get().nextU1() > 130);
 

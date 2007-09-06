@@ -25,7 +25,7 @@ public:
   /*!
   Attributes
   */
-  AXmlNode& addAttribute(const AString& name, const AString& value = AString::sstr_Empty);
+  AXmlNode& addAttribute(const AString& name, const AString& value = AConstant::ASTRING_EMPTY);
   AXmlNode& addAttributes(const AAttributes& attrs);
   inline const AAttributes& getAttributes() const;
   inline AAttributes& useAttributes();
@@ -42,13 +42,50 @@ public:
   const AString& getName() const;
   AString& useName();
 
+   /*!
+  Returns true if exists
+  */
+  bool exists(const AString& path) const;
+
+  /*!
+  Emitted data corresponding to the path
+  Result is appended
+  Returns true if exists
+  */
+  bool emitString(const AString& path, AOutputBuffer& target) const;
+
+  /*!
+  String corresponding to the path
+  This is not the most efficient call due to temporary return object, but useful for initializing statics
+  Returns emitted data into a string for a path or default
+  */
+  AString getString(const AString& path, const AString& strDefault) const;
+
+  /*!
+  String corresponding to the path
+  Result is converted to int if does not exist default is returned
+  */
+  int getInt(const AString& path, int iDefault) const;
+
+  /*!
+  String corresponding to the path
+  Result is converted to size_t if does not exist default is returned
+  */
+  size_t getSize_t(const AString& path, size_t iDefault) const;
+
+  /*!
+  String corresponding to the path
+  Case insensitive "true" or "1" are true
+  Result is converted to bool if does not exist default is returned
+  */
+  bool getBool(const AString& path, bool boolDefault) const;
+
   /*!
   Find path based on this node as root
   Returns NULL if not found
   */
   AXmlNode *findNode(const AString& xpath);
   const AXmlNode *findNode(const AString& xpath) const;
-
 
   /*!
   Searching for path

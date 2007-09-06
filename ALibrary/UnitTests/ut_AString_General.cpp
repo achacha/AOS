@@ -192,7 +192,7 @@ int ut_AString_General()
   } else std::cerr << "." << std::flush;
 	
 	//a_Constants
-  if (!AString::sstr_Empty.isEmpty())
+  if (!AConstant::ASTRING_EMPTY.isEmpty())
   {
     iRet++;
     std::cerr << "Empty string is not empty" << std::endl;

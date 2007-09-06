@@ -52,7 +52,7 @@ public:
   int isRunningInServiceMode() { return m_iServiceMode; }  //a_non-zero if service manager is running this, else must be console mode
 
   //a_NT only: Service life-dependent
-  int installNTService(const AString &args = AString::sstr_Empty);          //a_Installs the current service
+  int installNTService(const AString &args = AConstant::ASTRING_EMPTY);          //a_Installs the current service
   int removeNTService();                                                    //a_Removes the current service
   int startNTService(int iArgCount = 0, const char **ppcArgValue = NULL);   //a_Starts the current service
 

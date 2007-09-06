@@ -392,7 +392,7 @@ void testGetUntilOneOf(int& iRet)
   ASSERT_UNIT_TEST(str.equals("On and on it's south of heaven"), "RopeDeque::peekFrontUntilOneOf", "5", iRet);
 
   str.clear();
-  ret = rd.peekFrontUntilOneOf(str, AString::sstr_Empty);
+  ret = rd.peekFrontUntilOneOf(str, AConstant::ASTRING_EMPTY);
   ASSERT_UNIT_TEST(ret == AConstant::npos, "RopeDeque::peekFrontUntilOneOf", "6", iRet);
 
   str.clear();

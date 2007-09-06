@@ -7,7 +7,7 @@
 class ATemplateNode_Text : public ATemplateNode
 {
 public:
-  ATemplateNode_Text(const AString& text = AString::sstr_Empty);
+  ATemplateNode_Text(const AString& text = AConstant::ASTRING_EMPTY);
   ATemplateNode_Text(const ATemplateNode_Text&);
 
   /*!

@@ -50,7 +50,7 @@ public:
   /*!
   Append string and EOL
   */
-  void appendLine(const AEmittable&);  //a_Appends the string and AString::sstr_EOL
+  void appendLine(const AEmittable&);  //a_Appends the string and AConstant::ASTRING_EOL
 
 protected:
   virtual void _append(const char *pccSource, size_t len) = 0;

@@ -22,7 +22,7 @@ public:
   virtual AString end(size_t iDepth = AConstant::npos)   const = 0;         //a_End of this tag
 
   //a_Utility functions
-  virtual bool isWhiteSpace(char cX) const { return ((AString::sstr_WhiteSpace.find(cX) == AConstant::npos) ? false : true); }
+  virtual bool isWhiteSpace(char cX) const { return ((AConstant::ASTRING_WHITESPACE.find(cX) == AConstant::npos) ? false : true); }
 
   //a_Singularity methods
   bool isSingular() const { return m__boolSingular; }

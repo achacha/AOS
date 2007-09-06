@@ -130,7 +130,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
       int iID = AException::Unknown, 
       const char* pccFilename = "", 
       int iLineNumber = 0, 
-      const AString& strExtra = AString::sstr_Empty,
+      const AString& strExtra = AConstant::ASTRING_EMPTY,
       errno_t errornum = 0,
       bool walkStack = false
     );
@@ -140,7 +140,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
       int iID = AException::Unknown, 
       const char* pccFilename = "", 
       int iLineNumber = 0, 
-      const AString& strExtra = AString::sstr_Empty,
+      const AString& strExtra = AConstant::ASTRING_EMPTY,
       errno_t errornum = 0,
       bool walkStack = true
     );
@@ -239,7 +239,7 @@ Necessary macro for throwing diffent types of exceptions
   throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__, _exceptionExtraText)
 
 #define ATHROW_ERRNO(debugdumpable, _exceptionID, errornum) \
-  throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__, AString::sstr_Empty, errornum)
+  throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__, AConstant::ASTRING_EMPTY, errornum)
 
 #define ATHROW_ERRNO_EX(debugdumpable, _exceptionID, _exceptionExtraText, errornum) \
   throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__, _exceptionExtraText, errornum)

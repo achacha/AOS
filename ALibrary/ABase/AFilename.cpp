@@ -106,7 +106,7 @@ void AFilename::set(
 
   AString temp(filepath);
   temp.replace('\\', '/');
-  temp.split(m_PathNames, '/', AString::sstr_Empty, true);
+  temp.split(m_PathNames, '/', AConstant::ASTRING_EMPTY, true);
 
   if (m_PathNames.empty())
   {

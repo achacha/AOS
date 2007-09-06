@@ -235,7 +235,7 @@ size_t AFile::skipUntil(const AString& strPattern, bool boolDiscardPattern /* = 
   return ret;
 }
 
-size_t AFile::skipOver(const AString& strDelimeters /* = AString::sstr_WhiteSpace */)
+size_t AFile::skipOver(const AString& strDelimeters /* = AConstant::ASTRING_WHITESPACE */)
 {
   char c;
   if (!peek(c))
@@ -265,8 +265,8 @@ size_t AFile::find(const AString &strPattern)
 }
 
 size_t AFile::writeLine(
-  const AString& line,    // = AString::sstr_Empty
-  const AString& strEOL   // = AString::sstr_EOL
+  const AString& line,    // = AConstant::ASTRING_EMPTY
+  const AString& strEOL   // = AConstant::ASTRING_EOL
 )
 {
   size_t written = 0;

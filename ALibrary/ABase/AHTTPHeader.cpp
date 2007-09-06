@@ -75,7 +75,7 @@ void AHTTPHeader::emit(AOutputBuffer& target) const
   while (cit != m_Pairs.end())
   {
     (*cit).second.emit(target);
-    target.append(AString::sstr_CRLF);
+    target.append(AConstant::ASTRING_CRLF);
     ++cit;
   }
 }
@@ -308,7 +308,7 @@ const AString AHTTPHeader::_mapTypeToString(AHTTPHeader::HEADER_TOKENS eToken) c
     case HT_ENT_Last_Modified       : return ASW("Last-Modified",13);
   }
 
-  return AString::sstr_Empty;
+  return AConstant::ASTRING_EMPTY;
 }
 
 AHTTPHeader::HEADER_TOKENS AHTTPHeader::_mapStringToType(const AString &strToken) const

@@ -5,7 +5,7 @@
 void AElementInterface::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m__boolSingular=" << (m__boolSingular ? AString::sstr_True : AString::sstr_False) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m__boolSingular=" << (m__boolSingular ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m__pelementParent=0x" << (void *)m__pelementParent << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }

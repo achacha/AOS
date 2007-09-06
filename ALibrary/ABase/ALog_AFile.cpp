@@ -19,8 +19,8 @@ void ALog_AFile::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "(ALog_AFile @ " << std::hex << this << std::dec << ") {" << std::endl;
   ALog::debugDump(os, indent+1);
 
-  ADebugDumpable::indent(os, indent+1) << "m_enableLogFileRotate=" << (m_enableLogFileRotate ? AString::sstr_True : AString::sstr_False) << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_enableSeparateFilesForErrors=" << (m_enableSeparateFilesForErrors ? AString::sstr_True : AString::sstr_False) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_enableLogFileRotate=" << (m_enableLogFileRotate ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_enableSeparateFilesForErrors=" << (m_enableSeparateFilesForErrors ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_filenameRotation=" << std::endl;
   m_filenameRotation.debugDump(os, indent+2);
@@ -176,7 +176,7 @@ void ALog_AFile::emit(AXmlElement& target) const
   ALog::emit(target);
   target.addElement(ASW("current_filename",16), m_filenameRotation, AXmlData::CDataDirect);
   target.addElement(ASW("cycle_sleep",11), m_CycleSleep);
-  target.addElement(ASW("file_rotation",13), (m_enableLogFileRotate ? AString::sstr_True : AString::sstr_False));
+  target.addElement(ASW("file_rotation",13), (m_enableLogFileRotate ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
   target.addElement(ASW("max_file_size",13), m_logMaxFileSize);
 
 }

@@ -46,7 +46,7 @@ AXmlInstruction::AXmlInstruction(const AString& name, AXmlNode *pParent /* = NUL
 AXmlInstruction::AXmlInstruction(
   AXmlInstruction::TYPE type, 
   const AAttributes& attrs, 
-  const AString& data,      // = AString::sstr_Empty
+  const AString& data,      // = AConstant::ASTRING_EMPTY
   AXmlNode *pParent         // = NULL
 ) :
   AXmlNode(attrs, pParent),
@@ -159,7 +159,7 @@ void AXmlInstruction::emitJSON(
       {
         target.append("//", 2);
         target.append(m_Data);
-        target.append(AString::sstr_CRLF);
+        target.append(AConstant::ASTRING_CRLF);
       }
       break;
   }

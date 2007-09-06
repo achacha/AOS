@@ -798,7 +798,7 @@ AStackWalker::AStackWalker(
 
 AStackWalker::AStackWalker(
   u4 options, 
-  const AString& symbolPath,   // = AString::sstr_Empty
+  const AString& symbolPath,   // = AConstant::ASTRING_EMPTY
   DWORD dwProcessId,           // = -1, 
   HANDLE hProcess              // = NULL
 ) :
@@ -1394,7 +1394,7 @@ void AStackWalker::emit(AOutputBuffer& target) const
   while(cit != m_StackWalkResult.end())
   {
     target.append(*(*cit));
-    target.append(AString::sstr_EOL);
+    target.append(AConstant::ASTRING_EOL);
     ++cit;
   }
 }

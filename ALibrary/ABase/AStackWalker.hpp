@@ -75,7 +75,7 @@ public:
   
   AStackWalker(
     u4 options = AStackWalker::SWO_SET_ALL,
-    const AString& symbolPath = AString::sstr_Empty, 
+    const AString& symbolPath = AConstant::ASTRING_EMPTY, 
     DWORD dwProcessId = -1, 
     HANDLE hProcess = NULL
   );

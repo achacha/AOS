@@ -240,7 +240,7 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const char value, boo
 
 AXmlElement& AXmlElement::addElement(const AString& xpath, const bool value, bool insert)
 {
-  return addElement(xpath, value ? AString::sstr_True : AString::sstr_False, AXmlData::None, insert);
+  return addElement(xpath, value ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE, AXmlData::None, insert);
 }
 
 AXmlElement& AXmlElement::addElement(
@@ -320,8 +320,8 @@ void AXmlElement::emit(AOutputBuffer& target, int indent) const
     if (indent >= 0)
     {
       if (indent)
-        target.append(AString::sstr_CRLF);                                    //a_End of line
-      for (int i=0; i<indent; ++i) target.append(AString::sstr_TwoSpaces);    //a_Indentation
+        target.append(AConstant::ASTRING_CRLF);                                    //a_End of line
+      for (int i=0; i<indent; ++i) target.append(AConstant::ASTRING_TWOSPACES);    //a_Indentation
     }
     target.append(AXmlDocument::sstr_Start);
     target.append(m_Name);
@@ -329,7 +329,7 @@ void AXmlElement::emit(AOutputBuffer& target, int indent) const
     //a_Display attributes of this element
     if (m_Attributes.size() > 0)
     {
-      target.append(AString::sstr_Space);
+      target.append(AConstant::ASTRING_SPACE);
       m_Attributes.emit(target);
     }
 
@@ -353,7 +353,7 @@ void AXmlElement::emit(AOutputBuffer& target, int indent) const
       }
       if (iSubElementCount > 0 && indent >= 0)
       {
-        target.append(AString::sstr_CRLF);                                      //a_End of line
+        target.append(AConstant::ASTRING_CRLF);                                      //a_End of line
         _indent(target, indent);
       }
       target.append(AXmlDocument::sstr_StartEnd);
@@ -527,4 +527,34 @@ bool AXmlElement::hasElements() const
     ++cit;
   }
   return false;
+}
+
+void AXmlElement::setString(const AString& path, const AString& value, AXmlData::Encoding encoding)
+{
+  addElement(path, value, encoding);
+}
+
+void AXmlElement::setInt(const AString& path, int value)
+{
+  addElement(path, AString::fromInt(value));
+}
+
+void AXmlElement::setSize_t(const AString& path, size_t value)
+{
+  addElement(path, value);
+}
+
+void AXmlElement::setBool(const AString& path, bool value)
+{
+  //a_TODO: Need a better way to set existing elements
+  AXmlNode *pNode = findNode(path);
+  if (pNode)
+  {
+    pNode->clear();
+    pNode->addContentNode(new AXmlData(AString::fromBool(value)));
+  }
+  else
+  {
+    addElement(path, AString::fromBool(value));
+  }
 }

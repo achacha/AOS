@@ -9,14 +9,14 @@
 void ASocketListener::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ASocketListener @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_AllowReuse=" << (m_AllowReuse ? AString::sstr_True : AString::sstr_False) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_AllowReuse=" << (m_AllowReuse ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
 
 ASocketListener::ASocketListener(
   int port, 
-  const AString& ip,      // = AString::sstr_Empty
+  const AString& ip,      // = AConstant::ASTRING_EMPTY
   int backlog,            // = 42
   bool allowLocalReuse    // = false
 ) :

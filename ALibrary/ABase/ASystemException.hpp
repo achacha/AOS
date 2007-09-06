@@ -15,7 +15,7 @@ public:
     int iID = AException::Unknown, 
     const char* pccFilename = "", 
     int iLineNumber = 0x0, 
-    const AString& strExtra = AString::sstr_Empty
+    const AString& strExtra = AConstant::ASTRING_EMPTY
   );
 	
 	/**
@@ -26,7 +26,7 @@ public:
     const ADebugDumpable *const pObject = NULL,
     const char* pccFilename = "", 
     int iLineNumber = 0x0, 
-    const AString& strExtra = AString::sstr_Empty
+    const AString& strExtra = AConstant::ASTRING_EMPTY
   );
 
   /**

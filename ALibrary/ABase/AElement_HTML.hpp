@@ -23,7 +23,7 @@ public:
   //a_Access to NAME=VALUE pairs
   bool isName(const AString& strName) const { return ((_findName(strName) != -1) ? TRUE : FALSE); }
   bool getValue(const AString& strName, AString& strValue) const;
-  void setNameValue(const AString& strName, const AString& strValue = AString::sstr_Empty);
+  void setNameValue(const AString& strName, const AString& strValue = AConstant::ASTRING_EMPTY);
   void changeName(const AString& strOldName, const AString& strNewName); 
   void removeName(const AString& strName);
 
