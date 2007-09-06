@@ -170,7 +170,7 @@ void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, const AS
 
     strType.peek(strControl, pos+1);
     strControl.makeLower();
-    strControl.split(listControlNames, ',', AString::sstr_WhiteSpace);
+    strControl.split(listControlNames, ',', AConstant::ASTRING_WHITESPACE);
   }
   else
   {
@@ -247,7 +247,7 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, const AS
 
     strType.peek(strControl, pos+1);
     strControl.makeLower();
-    strControl.split(listControlNames, ',', AString::sstr_WhiteSpace);
+    strControl.split(listControlNames, ',', AConstant::ASTRING_WHITESPACE);
   }
   else
   {
