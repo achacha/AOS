@@ -74,7 +74,7 @@ public:
 
 private:
   //a_No default ctor
-  AOSServices() : m_ConsoleSynch(AString::sstr_QuestionMark) {}
+  AOSServices() : m_ConsoleSynch(AConstant::ASTRING_QUESTIONMARK) {}
 
   //a_Physical log
   ALog_AFile *mp_Log;

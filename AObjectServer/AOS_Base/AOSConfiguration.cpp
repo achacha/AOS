@@ -127,7 +127,7 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
     while (cit != m_CommandPtrs.end())
     {
       rope.append((*cit).second->getCommandName());
-      rope.append(AString::sstr_CRLF);
+      rope.append(AConstant::ASTRING_CRLF);
       ++cit;
     }
     addProperty(eBase, ASWNL("Commands"), rope);
@@ -203,7 +203,7 @@ AOSConfiguration::AOSConfiguration(
   setReportedHttpPort("/config/server/reported/http");
   setReportedHttpsPort("/config/server/reported/https");
 
-  int logLevel = getInt("/config/server/log-level", -1);
+  int logLevel = m_Config.useRoot().getInt("/config/server/log-level", -1);
   if (-1 != logLevel)
   {
     m_Services.useLog().setEventMask(ALog::SILENT);
@@ -242,10 +242,10 @@ AOSConfiguration::~AOSConfiguration()
 
 void AOSConfiguration::_readMIMETypes()
 {
-  if (exists(ASWNL("/config/server/mime-types")))
+  if (m_Config.useRoot().exists(ASWNL("/config/server/mime-types")))
   {
     AString str;
-    emitString(ASWNL("/config/server/mime-types"), str);
+    m_Config.useRoot().emitString(ASWNL("/config/server/mime-types"), str);
 
     AFilename filename(m_BaseDir);
     AFilename fMime(str);
@@ -430,7 +430,7 @@ void AOSConfiguration::dumpCommands(AOutputBuffer& target) const
       target.append(" (",2);
       (*citModule).m_ModuleParams.emit(target);
       target.append(" )",2);
-      target.append(AString::sstr_EOL);
+      target.append(AConstant::ASTRING_EOL);
 
       ++citModule;
     }
@@ -506,10 +506,10 @@ const AString& AOSConfiguration::getReportedServer() const
 
 void AOSConfiguration::setReportedServer(const AString& configPath)
 {
-  if (exists(configPath))
+  if (m_Config.useRoot().exists(configPath))
   {
     m_ReportedServer.clear();
-    emitString(configPath, m_ReportedServer);
+    m_Config.useRoot().emitString(configPath, m_ReportedServer);
     m_Services.useLog().add(ARope("Setting reported server: ")+m_ReportedServer, ALog::DEBUG);
   }
   else
@@ -518,10 +518,10 @@ void AOSConfiguration::setReportedServer(const AString& configPath)
 
 void AOSConfiguration::setReportedHostname(const AString& configPath)
 {
-  if (exists(configPath))
+  if (m_Config.useRoot().exists(configPath))
   {
     m_ReportedHostname.clear();
-    emitString(configPath, m_ReportedHostname);
+    m_Config.useRoot().emitString(configPath, m_ReportedHostname);
     m_Services.useLog().add(ARope("Setting reported hostname: ")+m_ReportedHostname, ALog::DEBUG);
   }
   else
@@ -530,9 +530,9 @@ void AOSConfiguration::setReportedHostname(const AString& configPath)
 
 void AOSConfiguration::setReportedHttpPort(const AString& configPath)
 {
-  if (exists(configPath))
+  if (m_Config.useRoot().exists(configPath))
   {
-    m_ReportedHttpPort = getInt(configPath, 80);
+    m_ReportedHttpPort = m_Config.useRoot().getInt(configPath, 80);
     m_Services.useLog().add(ARope("Setting reported http port: ")+AString::fromInt(m_ReportedHttpPort), ALog::DEBUG);
   }
   else
@@ -541,9 +541,9 @@ void AOSConfiguration::setReportedHttpPort(const AString& configPath)
 
 void AOSConfiguration::setReportedHttpsPort(const AString& configPath)
 {
-  if (exists(configPath))
+  if (m_Config.useRoot().exists(configPath))
   {
-    m_ReportedHttpsPort = getInt(configPath, 443);
+    m_ReportedHttpsPort = m_Config.useRoot().getInt(configPath, 443);
     m_Services.useLog().add(ARope("Setting reported https port: ")+AString::fromInt(m_ReportedHttpsPort), ALog::DEBUG);
   }
   else
@@ -552,9 +552,9 @@ void AOSConfiguration::setReportedHttpsPort(const AString& configPath)
 
 void AOSConfiguration::setAosDefaultFilename(const AString& configPath)
 {
-  if (exists(configPath))
+  if (m_Config.useRoot().exists(configPath))
   {
-    emitString(configPath, m_AosDefaultFilename);
+    m_Config.useRoot().emitString(configPath, m_AosDefaultFilename);
     m_Services.useLog().add(ARope("Setting default filename: ")+m_AosDefaultFilename, ALog::DEBUG);
   }
   else
@@ -563,9 +563,9 @@ void AOSConfiguration::setAosDefaultFilename(const AString& configPath)
 
 void AOSConfiguration::setAosDefaultInputProcessor(const AString& configPath)
 {
-  if (exists(configPath))
+  if (m_Config.useRoot().exists(configPath))
   {
-    emitString(configPath, m_AosDefaultInputProcessor);
+    m_Config.useRoot().emitString(configPath, m_AosDefaultInputProcessor);
     m_Services.useLog().add(ARope("Setting default input processor: ")+m_AosDefaultInputProcessor, ALog::DEBUG);
   }
   else
@@ -574,9 +574,9 @@ void AOSConfiguration::setAosDefaultInputProcessor(const AString& configPath)
 
 void AOSConfiguration::setAosDefaultOutputGenerator(const AString& configPath)
 {
-  if (exists(configPath))
+  if (m_Config.useRoot().exists(configPath))
   {
-    emitString(configPath, m_AosDefaultOutputGenerator);
+    m_Config.useRoot().emitString(configPath, m_AosDefaultOutputGenerator);
     m_Services.useLog().add(ARope("Setting default output generator: ")+m_AosDefaultOutputGenerator, ALog::DEBUG);
   }
   else
@@ -596,84 +596,6 @@ const AString& AOSConfiguration::getAosDefaultOutputGenerator() const
 const AXmlElement& AOSConfiguration::getConfigRoot() const
 {
   return m_Config.getRoot();
-}
-
-bool AOSConfiguration::exists(const AString& path) const
-{
-  return (NULL != m_Config.getRoot().findNode(path));
-}
-
-bool AOSConfiguration::emitString(const AString& path, AOutputBuffer& target) const
-{
-  return m_Config.getRoot().emitFromPath(path, target);
-}
-
-AString AOSConfiguration::getString(const AString& path, const AString& strDefault) const
-{
-  AString str;
-  if (m_Config.getRoot().emitFromPath(path, str))
-    return str;
-  else
-    return strDefault;
-}          
-
-int AOSConfiguration::getInt(const AString& path, int iDefault) const
-{
-  AString str;
-  if (m_Config.getRoot().emitFromPath(path, str))
-    return str.toInt();
-  else
-    return iDefault;
-}
-
-size_t AOSConfiguration::getSize_t(const AString& path, size_t iDefault) const
-{
-  AString str;
-  if (m_Config.getRoot().emitFromPath(path, str))
-    return str.toSize_t();
-  else
-    return iDefault;
-}
-
-bool AOSConfiguration::getBool(const AString& path, bool boolDefault) const
-{
-  AString str;
-  if (m_Config.getRoot().emitFromPath(path, str))
-  {
-    return str.equalsNoCase("true") || str.equals("1");
-  }
-  else
-    return boolDefault;
-}
-
-void AOSConfiguration::setString(const AString& path, const AString& value, AXmlData::Encoding encoding)
-{
-  m_Config.useRoot().addElement(path, value, encoding);
-}
-
-void AOSConfiguration::setInt(const AString& path, int value)
-{
-  m_Config.useRoot().addElement(path, AString::fromInt(value));
-}
-
-void AOSConfiguration::setSize_t(const AString& path, size_t value)
-{
-  m_Config.useRoot().addElement(path, value);
-}
-
-void AOSConfiguration::setBool(const AString& path, bool value)
-{
-  //a_TODO: Need a better way to set existing elements
-  AXmlNode *pNode = m_Config.useRoot().findNode(path);
-  if (pNode)
-  {
-    pNode->clear();
-    pNode->addContentNode(new AXmlData(AString::fromBool(value)));
-  }
-  else
-  {
-    m_Config.useRoot().addElement(path, AString::fromBool(value));
-  }
 }
 
 AXmlElement& AOSConfiguration::useConfigRoot()

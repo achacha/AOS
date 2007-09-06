@@ -40,7 +40,7 @@ bool AOSAdmin::isRunning()
 
 void AOSAdmin::startAdminListener()
 {
-  if (m_Services.useConfiguration().getInt(ASWNL("/config/server/listen/admin/port"), -1) > 0)
+  if (m_Services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/listen/admin/port"), -1) > 0)
   {
     mthread_AdminListener.setProc(AOSAdmin::threadprocAdminListener);
     mthread_AdminListener.setParameter(this);
@@ -66,7 +66,7 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
   if (!pThis)
     return -1;
 
-  int admin_port = pThis->m_Services.useConfiguration().getInt(ASWNL("/config/server/listen/admin/port"), 12345);
+  int admin_port = pThis->m_Services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/listen/admin/port"), 12345);
   if (-1 != admin_port && !ASocketLibrary::canBindToPort(admin_port))
   {
     AString str("main: Unable to bind to admin port ");
@@ -77,7 +77,7 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
   }
 
   AString hostname;
-  pThis->m_Services.useConfiguration().emitString(ASWNL("/config/server/listen/admin/host"), hostname);
+  pThis->m_Services.useConfiguration().useConfigRoot().emitString(ASWNL("/config/server/listen/admin/host"), hostname);
   ASocketListener listener(admin_port, ASocketLibrary::getIPFromAddress(hostname));
   try
   {

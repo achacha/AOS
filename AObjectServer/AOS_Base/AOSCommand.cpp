@@ -164,9 +164,9 @@ void AOSCommand::emit(AXmlElement& target) const
   if (target.useName().isEmpty())
     target.useName().assign(ASW("AOSCommand",10));
 
-  target.addAttribute(ASW("enabled", 7), m_Enabled ? AString::sstr_One : AString::sstr_Zero);
-  target.addAttribute(ASW("session",7), m_Session ? AString::sstr_One : AString::sstr_Zero);
-  target.addAttribute(ASW("forceAJAX",9), m_ForceAjax ? AString::sstr_One : AString::sstr_Zero);
+  target.addAttribute(ASW("enabled", 7), m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
+  target.addAttribute(ASW("session",7), m_Session ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
+  target.addAttribute(ASW("forceAJAX",9), m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   
   //a_Input
   AXmlElement& eInput = target.addElement(ASW("input_processor",15));
@@ -202,21 +202,21 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
 
   //a_Enabled?
   element.getAttributes().get(ASW("enabled",7), str);
-  if (str.equals(AString::sstr_Zero) || str.equals(AString::sstr_False))
+  if (str.equals(AConstant::ASTRING_ZERO) || str.equals(AConstant::ASTRING_FALSE))
     m_Enabled = false;
   else
     m_Enabled = true;
 
   //a_Session based?
   element.getAttributes().get(ASW("session",7), str);
-  if (str.equals(AString::sstr_Zero) || str.equals(AString::sstr_False))
+  if (str.equals(AConstant::ASTRING_ZERO) || str.equals(AConstant::ASTRING_FALSE))
     m_Session = false;
   else
     m_Session = true;
 
   //a_Is Ajax call?
   element.getAttributes().get(ASW("forceAJAX",9), str);
-  if (str.equals(AString::sstr_One) || str.equals(AString::sstr_True))
+  if (str.equals(AConstant::ASTRING_ONE) || str.equals(AConstant::ASTRING_TRUE))
     m_ForceAjax = true;
   else
     m_ForceAjax = false;

@@ -210,7 +210,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   AString str(8188, 1024);
 
   // Sum( N * sleeptime, 0 to N-1)
-  static int s_firstCharReadRetries = m_Services.useConfiguration().getInt("/config/server/http/first-char-read-tries", 15);
+  static int s_firstCharReadRetries = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/http/first-char-read-tries", 15);
   int tries = 0;
   int sleeptime = 20;
   char c = '\x0';
@@ -482,14 +482,14 @@ AOSContext::Status AOSContext::_processHttpHeader()
 
     return AOSContext::STATUS_HTTP_INCOMPLETE_LINEZERO;
   }
-  str.append(AString::sstr_CRLF);
+  str.append(AConstant::ASTRING_CRLF);
 
   //a_Read until only 2 bytes (CR and LF) are read which signifies a blank line and end of http header
   setExecutionState(ASW("AOSContext: Reading HTTP header",31), false, 60000.0);  //a_Read header for 60 seconds
-  u4 headerBytes = mp_RequestFile->readUntil(str, AString::sstr_CRLF, true, false);
+  u4 headerBytes = mp_RequestFile->readUntil(str, AConstant::ASTRING_CRLF, true, false);
   while (2 != headerBytes && AConstant::npos != headerBytes)
   {
-    headerBytes = mp_RequestFile->readUntil(str, AString::sstr_CRLF, true, false);
+    headerBytes = mp_RequestFile->readUntil(str, AConstant::ASTRING_CRLF, true, false);
   }
   
   //a_Check if header not done
@@ -527,7 +527,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
     return AOSContext::STATUS_HTTP_INVALID_HEADER;
   }
 
-  static bool isHttpPipeliningEnabled = m_Services.useConfiguration().getBool("/config/server/http/http11-pipelining-enabled", true);
+  static bool isHttpPipeliningEnabled = m_Services.useConfiguration().useConfigRoot().getBool("/config/server/http/http11-pipelining-enabled", true);
   if (
        isHttpPipeliningEnabled
     && m_RequestHeader.isHttpPipeliningEnabled()
@@ -598,7 +598,7 @@ AString AOSContext::getOutputCommand() const
   if (mp_Command)
     return mp_Command->getOutputGeneratorName();
   else 
-    return AString::sstr_Empty;
+    return AConstant::ASTRING_EMPTY;
 }
 
 const AXmlElement& AOSContext::getInputParams() const

@@ -85,9 +85,9 @@ int main(int argc, char **argv)
       {
         str.clear();
         str.assign("Database connection pool connected ");
-        services.useConfiguration().emitString(AOSConfiguration::DATABASE_CONNECTIONS, str);
+        services.useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_CONNECTIONS, str);
         str.append("x to ");
-        services.useConfiguration().emitString(AOSConfiguration::DATABASE_URL, str);
+        services.useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_URL, str);
         AOS_DEBUGTRACE(str.c_str(), NULL);
         str.assign("Querying for global variables, processed ");
         str.append(AString::fromSize_t(rows));
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
     //a_Create and configure the queues
     //
     AOSContextQueue_IsAvailable cqIsAvailable(services);
-    int sleepDelay = services.useConfiguration().getInt(ASWNL("/config/server/context-queues/is-available/sleep-delay"), DEFAULT_SLEEP_DELAY);
+    int sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/is-available/sleep-delay"), DEFAULT_SLEEP_DELAY);
     if (sleepDelay > 0)
       cqIsAvailable.setSleepDelay(sleepDelay);
     else
@@ -112,10 +112,10 @@ int main(int argc, char **argv)
     
     AOSContextQueue_ErrorExecutor cqErrorExecutor(
       services,
-      services.useConfiguration().getSize_t("/config/server/context-queues/error-executor/threads", 16), 
-      services.useConfiguration().getSize_t("/config/server/context-queues/error-executor/queues", 4)
+      services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/threads", 16), 
+      services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/queues", 4)
     );
-    sleepDelay = services.useConfiguration().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+    sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
     if (sleepDelay > 0)
       cqErrorExecutor.setSleepDelay(sleepDelay);
     else
@@ -123,10 +123,10 @@ int main(int argc, char **argv)
 
     AOSContextQueue_PreExecutor cqPreExecutor(
       services, 
-      services.useConfiguration().getSize_t("/config/server/context-queues/pre-executor/threads", 16), 
-      services.useConfiguration().getSize_t("/config/server/context-queues/pre-executor/queues", 4)
+      services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/threads", 16), 
+      services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/queues", 4)
     );
-    sleepDelay = services.useConfiguration().getInt(ASWNL("/config/server/context-queues/pre-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+    sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/pre-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
     if (sleepDelay > 0)
       cqPreExecutor.setSleepDelay(sleepDelay);
     else
@@ -134,10 +134,10 @@ int main(int argc, char **argv)
 
     AOSContextQueue_Executor cqExecutor(
       services, 
-      services.useConfiguration().getSize_t("/config/server/context-queues/executor/threads", 64), 
-      services.useConfiguration().getSize_t("/config/server/context-queues/executor/queues", 3)
+      services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/threads", 64), 
+      services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/queues", 3)
     );
-    sleepDelay = services.useConfiguration().getInt(ASWNL("/config/server/context-queues/executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+    sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
     if (sleepDelay > 0)
       cqExecutor.setSleepDelay(sleepDelay);
     else

@@ -103,8 +103,8 @@ bool AOSServices::initDatabasePool()
 {
   mp_DatabaseConnPool = new AOSDatabaseConnectionPool(*this);
 
-  int iMaxConnections = mp_Configuration->getInt(AOSConfiguration::DATABASE_CONNECTIONS, 2);
-  AString strUrl = mp_Configuration->getString(AOSConfiguration::DATABASE_URL, AString::sstr_Empty);
+  int iMaxConnections = mp_Configuration->useConfigRoot().getInt(AOSConfiguration::DATABASE_CONNECTIONS, 2);
+  AString strUrl = mp_Configuration->useConfigRoot().getString(AOSConfiguration::DATABASE_URL, AConstant::ASTRING_EMPTY);
   if (iMaxConnections > 0 && !strUrl.isEmpty())
   {
     AUrl urlServer(strUrl);

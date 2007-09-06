@@ -21,10 +21,10 @@ void AOSRequestListener::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeade
 {
   AOSAdminInterface::addAdminXml(eBase, request);
 
-  addProperty(eBase, ASW("listener_running",16), (mthread_Listener.isRunning() ? AString::sstr_True : AString::sstr_False));
-  addProperty(eBase, ASW("secure_listener_running",23), (mthread_SecureListener.isRunning() ? AString::sstr_True : AString::sstr_False));
-  addProperty(eBase, ASW("listener_run",12), (mthread_Listener.isRun() ? AString::sstr_True : AString::sstr_False));
-  addProperty(eBase, ASW("secure_listener_run",19), (mthread_Listener.isRun() ? AString::sstr_True : AString::sstr_False));
+  addProperty(eBase, ASW("listener_running",16), (mthread_Listener.isRunning() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
+  addProperty(eBase, ASW("secure_listener_running",23), (mthread_SecureListener.isRunning() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
+  addProperty(eBase, ASW("listener_run",12), (mthread_Listener.isRun() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
+  addProperty(eBase, ASW("secure_listener_run",19), (mthread_Listener.isRun() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
 }
 
 AOSRequestListener::AOSRequestListener(

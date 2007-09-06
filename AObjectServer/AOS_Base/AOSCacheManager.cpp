@@ -41,7 +41,7 @@ void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& 
     addPropertyWithAction(
       elem, 
       ASW("enabled",7), 
-      AString::fromBool(m_Services.useConfiguration().getBool(STATIC_CACHE_ENABLED, false)),
+      AString::fromBool(m_Services.useConfiguration().useConfigRoot().getBool(STATIC_CACHE_ENABLED, false)),
       ASW("Update",6), 
       ASWNL("Enable static content caching(1) or disable and clear(0)"),
       ASW("Set",3)
@@ -75,13 +75,13 @@ void AOSCacheManager::processAdminAction(AXmlElement& eBase, const AHTTPRequestH
         if (str.equals("0"))
         {
           //a_Clear and disable
-          m_Services.useConfiguration().setBool(STATIC_CACHE_ENABLED, false);
+          m_Services.useConfiguration().useConfigRoot().setBool(STATIC_CACHE_ENABLED, false);
           mp_StaticFileCache->clear();
         }
         else
         {
           //a_Enable
-          m_Services.useConfiguration().setBool(STATIC_CACHE_ENABLED, true);
+          m_Services.useConfiguration().useConfigRoot().setBool(STATIC_CACHE_ENABLED, true);
         }
       }
     }
@@ -91,9 +91,9 @@ void AOSCacheManager::processAdminAction(AXmlElement& eBase, const AHTTPRequestH
 AOSCacheManager::AOSCacheManager(AOSServices& services) :
   m_Services(services)
 {
-  int maxItems = m_Services.useConfiguration().getInt("/config/server/cache/max_items", 20000);
-  int maxFileSizeInK = m_Services.useConfiguration().getInt("/config/server/cache/max_filesize", 512 * 1024);
-  int cacheCount = m_Services.useConfiguration().getInt("/config/server/cache/cache_count", 97);
+  int maxItems = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/max_items", 20000);
+  int maxFileSizeInK = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/max_filesize", 512 * 1024);
+  int cacheCount = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/cache_count", 97);
   mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
 
   mp_TemplateCache = new TEMPLATE_CACHE();
@@ -118,7 +118,7 @@ AOSCacheManager::~AOSCacheManager()
 bool AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filename, AAutoPtr<AFile>& pFile)
 {
   AASSERT(this, mp_StaticFileCache);
-  if (m_Services.useConfiguration().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))
+  if (m_Services.useConfiguration().useConfigRoot().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))
   {
     //a_Get from cache
     if (mp_StaticFileCache->get(filename, pFile))
@@ -159,7 +159,7 @@ bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTe
 
     AFilename filename(
       m_Services.useConfiguration().getAosBaseDataDirectory(),
-      m_Services.useConfiguration().getString(pathFilename, AString::sstr_Empty)
+      m_Services.useConfiguration().useConfigRoot().getString(pathFilename, AConstant::ASTRING_EMPTY)
     );
 
     if (AFileSystem::exists(filename))

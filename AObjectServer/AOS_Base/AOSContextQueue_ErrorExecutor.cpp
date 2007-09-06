@@ -96,7 +96,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
 
           //a_Emit HTTP result
           int dumpContext = 0;
-          if (m_Services.useConfiguration().getBool("/config/server/debug/allow-dumpContext", false))
+          if (m_Services.useConfiguration().useConfigRoot().getBool("/config/server/debug/allow-dumpContext", false))
           {
             AString str;
             if (pContext->useRequestParameterPairs().get(ASW("dumpContext", 11), str))

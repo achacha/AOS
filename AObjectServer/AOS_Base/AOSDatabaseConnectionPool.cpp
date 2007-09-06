@@ -32,7 +32,7 @@ void AOSDatabaseConnectionPool::addAdminXml(AXmlElement& eBase, const AHTTPReque
 { 
   AOSAdminInterface::addAdminXml(eBase, request);
 
-  addProperty(eBase, ASW("isInitialized",13), (m_isInitialized ? AString::sstr_True : AString::sstr_False));
+  addProperty(eBase, ASW("isInitialized",13), (m_isInitialized ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
   if (mp_DatabasePool)
     addProperty(eBase, ASW("DatabasePool",12), *mp_DatabasePool);
 }
