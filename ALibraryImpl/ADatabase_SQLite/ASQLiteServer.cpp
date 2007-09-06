@@ -146,7 +146,7 @@ int ASQLiteServer::_callbackExecuteSQL(void *pvParam, int fieldCount, char **pcD
   row.reserve(fieldCount);
   for(int i=0; i<fieldCount; i++)
   {
-    row.push_back(pcData[i] ? pcData[i] : AString::sstr_Null);
+    row.push_back(pcData[i] ? pcData[i] : AConstant::ASTRING_NULL);
   }
 
   return 0;

@@ -19,7 +19,7 @@ public:
   /*!
   allowLocalReuse - when true socket can be bound to an address/port already in use
   */
-  ASocketListener_SSL(int port, const AString& certFilename, const AString& keyFilename, const AString &ip = AString::sstr_Empty, int backlog = 5, bool allowLocalReuse = false);
+  ASocketListener_SSL(int port, const AString& certFilename, const AString& keyFilename, const AString &ip = AConstant::ASTRING_EMPTY, int backlog = 5, bool allowLocalReuse = false);
   virtual ~ASocketListener_SSL();
   
   /*!

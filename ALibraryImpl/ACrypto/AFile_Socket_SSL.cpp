@@ -307,7 +307,7 @@ on the application.");
         char errorString[1024];
         ERR_error_string(errorCode, errorString);
         strErrors.append(errorString);
-        strErrors.append(AString::sstr_EOL);
+        strErrors.append(AConstant::ASTRING_EOL);
       }
 
       ATHROW_EX(this, AException::APIFailure, strErrors);

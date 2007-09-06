@@ -39,7 +39,7 @@ ASocketListener_SSL::ASocketListener_SSL(
   int port,
   const AString& certFilename, 
   const AString& keyFilename, 
-  const AString& ip,              // = AString::sstr_Empty
+  const AString& ip,              // = AConstant::ASTRING_EMPTY
   int backlog,                    // = 5 
   bool allowLocalReuse            // = false
 ) :
@@ -257,7 +257,7 @@ on the application.");
         char errorString[1024];
         ERR_error_string(errorCode, errorString);
         strErrors.append(errorString);
-        strErrors.append(AString::sstr_EOL);
+        strErrors.append(AConstant::ASTRING_EOL);
       }
 
       ATHROW_EX(this, AException::APIFailure, strErrors);
