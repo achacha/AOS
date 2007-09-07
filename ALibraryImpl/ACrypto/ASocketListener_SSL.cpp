@@ -81,7 +81,7 @@ void ASocketListener_SSL::_initSSL()
   }
   
   int retCode;
-  if (!AFileSystem::exists(m_certFilename))
+  if (!AFileSystem::exists(AFilename(m_certFilename, false)))
     ATHROW_EX(this, AException::DoesNotExist, m_certFilename);
   if ((retCode = SSL_CTX_use_certificate_file(pServerData->ctx, m_certFilename.c_str(), SSL_FILETYPE_PEM)) <= 0) {
     AString strError(1024, 256);
@@ -90,7 +90,7 @@ void ASocketListener_SSL::_initSSL()
     ATHROW_EX(this, AException::APIFailure, strError);
   }
 
-  if (!AFileSystem::exists(m_keyFilename))
+  if (!AFileSystem::exists(AFilename(m_keyFilename, false)))
     ATHROW_EX(this, AException::DoesNotExist, m_keyFilename);
   if ((retCode = SSL_CTX_use_PrivateKey_file(pServerData->ctx, m_keyFilename.c_str(), SSL_FILETYPE_PEM)) <= 0) {
     AString strError(1024, 256);
