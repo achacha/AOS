@@ -104,7 +104,7 @@ void ADadaDataHolder::readData(
     it.getName(strName);
     it.getValue(strValue);
     AFilename filename(baseDataDir);
-    filename.join(strValue);
+    filename.join(strValue, false);
     _loadWords(strName, filename, alog);
   }
 
@@ -116,7 +116,7 @@ void ADadaDataHolder::readData(
     {
       it.getValue(strValue);
       AFilename filename(baseDataDir);
-      filename.join(strValue);
+      filename.join(strValue, false);
       _loadTemplate(strName, filename, alog);
     }
     else
@@ -136,7 +136,7 @@ void ADadaDataHolder::readData(AOSServices& services)
   {
     str.clear();
     (*it)->emitContent(str);
-    AFilename filename(services.useConfiguration().getAosBaseDataDirectory(), str);
+    AFilename filename(services.useConfiguration().getAosBaseDataDirectory(), str, false);
     
     str.clear();
     if ((*it)->getAttributes().get(ASW("type",4), str))
@@ -157,7 +157,7 @@ void ADadaDataHolder::readData(AOSServices& services)
   {
     str.clear();
     (*it)->emitContent(str);
-    AFilename filename(services.useConfiguration().getAosBaseDataDirectory(), str);
+    AFilename filename(services.useConfiguration().getAosBaseDataDirectory(), str, false);
     
     str.clear();
     if ((*it)->getAttributes().get(ASW("name",4), str))
