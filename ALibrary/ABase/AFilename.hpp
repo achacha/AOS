@@ -36,14 +36,15 @@ public:
     forceDirectory will force the path to be a directory even if it looks like there is a file at the end (missing trailing '/' et. al.)
   */
   AFilename();
-  AFilename(const AString& filepath, bool forceDirectory = false);
+  AFilename(const AFilename& filepath);
+  AFilename(const AEmittable& filepath, bool forceDirectory);
   
   /*!
   Create and join
     forceDirectory will force all parts to be treated as directories
   */
-  AFilename(const AString& filepath0, const AString& filepath1, bool forceDirectory = false);
-  AFilename(const AString& filepath0, const AString& filepath1, const AString& filepath2, bool forceDirectory = false);
+  AFilename(const AEmittable& filepath0, const AEmittable& filepath1, bool forceDirectory);
+  AFilename(const AEmittable& filepath0, const AEmittable& filepath1, const AEmittable& filepath2, bool forceDirectory);
   AFilename(const AFilename& filepath0, const AFilename& filepath1);
   AFilename(const AFilename& filepath0, const AFilename& filepath1, const AFilename& filepath2);
 
@@ -52,7 +53,7 @@ public:
   forceDirectory forces the path to be a directory regardless of trailing / or not
   */
   void set(const AFilename& filepath);
-  void set(const AString& filepath, bool forceDirectory = false);
+  void set(const AEmittable& filepath, bool forceDirectory);
 
   /*!
   Get/Set the type of the filename (determined the output format)
@@ -106,7 +107,7 @@ public:
     AFilename f1("c:/myfile");
     f0.join(f1);  // "c:/basepath/myfile"
   */
-  void join(const AString& that, bool forceDirectory = false);
+  void join(const AEmittable& that, bool forceDirectory);
   void join(const AFilename& that);
 
   /*!

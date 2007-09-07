@@ -5,7 +5,7 @@
 void testGeneric(int& iRet)
 {
   AString strOut(1024, 256);
-  AFilename fn("c:\\path0\\path1//filename.extension");
+  AFilename fn(ASWNL("c:\\path0\\path1//filename.extension"), false);
 
   //a_Emit based on format
   fn.emit(strOut);
@@ -35,7 +35,7 @@ void testGeneric(int& iRet)
   ASSERT_UNIT_TEST(strOut.equals("<root><AFilename type=\"0\"><drive>c</drive><path><dir>path0</dir><dir>path1</dir></path><filename>filename.extension</filename></AFilename></root>"), "AFilename XML emit", "0", iRet);
 
   //a_Copy
-  fn.set("c:/some/path/here/file.ext");
+  fn.set(ASWNL("c:/some/path/here/file.ext"), false);
   AFilename fn1(fn);
   AString str1;
   strOut.clear();
@@ -44,82 +44,82 @@ void testGeneric(int& iRet)
   ASSERT_UNIT_TEST(strOut.equals(str1), "AFilename copy", "0", iRet);
 
   //a_Extension
-  fn.set("c:/some/path/here/file.ext");
+  fn.set(ASWNL("c:/some/path/here/file.ext"), false);
   strOut.clear();
   fn.emitExtension(strOut);
   ASSERT_UNIT_TEST(!strOut.isEmpty(), "AFilename get extension", "0", iRet);
   ASSERT_UNIT_TEST(strOut.equals("ext"), "AFilename get extension", "1", iRet);
 
-  fn.setExtension("xml");
+  fn.setExtension(ASW("xml",3));
   strOut.clear();
   fn.emitExtension(strOut);
   ASSERT_UNIT_TEST(!strOut.isEmpty(), "AFilename get extension", "2", iRet);
   ASSERT_UNIT_TEST(strOut.equals("xml"), "AFilename get extension", "3", iRet);
 
-  fn.setExtension("ext");
+  fn.setExtension(ASW("ext",3));
   strOut.clear();
   fn.emitExtension(strOut);
   ASSERT_UNIT_TEST(!strOut.isEmpty(), "AFilename get extension", "4", iRet);
   ASSERT_UNIT_TEST(strOut.equals("ext"), "AFilename get extension", "5", iRet);
 
   //a_Join
-  fn.set("c:/some/path/here/file.ext");
-  fn1.set("d:my/path/new.new");
+  fn.set(ASWNL("c:/some/path/here/file.ext"), false);
+  fn1.set(ASWNL("d:my/path/new.new"), false);
   strOut.clear();
   fn.join(fn1);
   fn.emit(strOut);
   ASSERT_UNIT_TEST(strOut.equals("d:/some/path/here/my/path/new.new"), "AFilename join", "0", iRet);
 
-  fn.set("c:/some/path/here/");
-  fn1.set("new.new");
+  fn.set(ASWNL("c:/some/path/here/"), false);
+  fn1.set(ASWNL("new.new"), false);
   strOut.clear();
   fn.join(fn1);
   fn.emit(strOut);
   ASSERT_UNIT_TEST(strOut.equals("c:/some/path/here/new.new"), "AFilename join", "0", iRet);
 
   //a_Set
-  fn.set("c:\\path0\\path1//filename.extension");
+  fn.set(ASWNL("c:\\path0\\path1//filename.extension"), false);
   ASSERT_UNIT_TEST(!fn.isRelativePath(), "AFilename set", "0", iRet);
   ASSERT_UNIT_TEST(!fn.isDirectory(), "AFilename set", "1", iRet);
 
-  fn.set("/some/path", true);
+  fn.set(ASWNL("/some/path"), true);
   ASSERT_UNIT_TEST(!fn.isRelativePath(), "AFilename set", "2", iRet);
   ASSERT_UNIT_TEST(fn.isDirectory(), "AFilename set", "3", iRet);
 
-  fn.set("some/path.foo", true);
+  fn.set(ASWNL("some/path.foo"), true);
   ASSERT_UNIT_TEST(fn.isRelativePath(), "AFilename set", "2", iRet);
   ASSERT_UNIT_TEST(fn.isDirectory(), "AFilename set", "3", iRet);
 
-  fn.set("some/path.foo");
+  fn.set(ASWNL("some/path.foo"), false);
   ASSERT_UNIT_TEST(fn.isRelativePath(), "AFilename set", "2", iRet);
   ASSERT_UNIT_TEST(!fn.isDirectory(), "AFilename set", "3", iRet);
 }
 
 void testCompare(int& iRet)
 {
-  AFilename fOne("c:\\path0\\path1\\filename.ext");
-  AFilename fTwo("c:\\path0\\path1\\filename.ext");
+  AFilename fOne(ASWNL("c:\\path0\\path1\\filename.ext"), false);
+  AFilename fTwo(ASWNL("c:\\path0\\path1\\filename.ext"), false);
   ASSERT_UNIT_TEST(!(fOne < fTwo), "AFilename operator <", "0", iRet);
   ASSERT_UNIT_TEST(fOne == fTwo, "AFilename operator ==", "0", iRet);
 
-  fTwo.set("c:/path0/path1/filename.ext");
+  fTwo.set(ASWNL("c:/path0/path1/filename.ext"), false);
   ASSERT_UNIT_TEST(!(fOne < fTwo), "AFilename operator <", "1", iRet);
   ASSERT_UNIT_TEST(fOne == fTwo, "AFilename operator ==", "1", iRet);
 
-  fTwo.set("/relative");
+  fTwo.set(ASWNL("/relative"), false);
   ASSERT_UNIT_TEST(fTwo < fOne, "AFilename operator <", "2", iRet);
 
-  fOne.set("/relative");
+  fOne.set(ASWNL("/relative"), false);
   ASSERT_UNIT_TEST(fOne == fTwo, "AFilename operator ==", "2", iRet);
 
-  fOne.set("filename.ext0");
-  fTwo.set("filename.ext1");
+  fOne.set(ASWNL("filename.ext0"), false);
+  fTwo.set(ASWNL("filename.ext1"), false);
   ASSERT_UNIT_TEST(fOne < fTwo, "AFilename operator <", "3", iRet);
 }
 
 void testValid(int& iRet)
 {
-  AFilename f("c:\\path0\\path1\\filename.ext");
+  AFilename f(ASWNL("c:\\path0\\path1\\filename.ext"), false);
   ASSERT_UNIT_TEST(f.isValid(), "AFilename validity", "0", iRet);
 
   f.clear();

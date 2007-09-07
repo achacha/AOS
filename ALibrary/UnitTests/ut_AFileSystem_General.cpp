@@ -8,7 +8,7 @@ int ut_AFileSystem_General()
 
   int iRet = 0x0;
 
-  AFilename f("ut_AFileSystem_General.txt");
+  AFilename f(ASWNL("ut_AFileSystem_General.txt"), false);
   if (AFileSystem::exists(f))
   {
     AFileSystem::remove(f);
@@ -18,7 +18,7 @@ int ut_AFileSystem_General()
   AFileSystem::touch(f);
   ASSERT_UNIT_TEST(AFileSystem::exists(f), "AFileSystem::touch", "0", iRet);
 
-  AFilename f1("foo_testingrename.txt");
+  AFilename f1(ASWNL("foo_testingrename.txt"), false);
   AFileSystem::rename(f, f1);
   ASSERT_UNIT_TEST(!AFileSystem::exists(f), "AFileSystem::rename", "0", iRet);
   ASSERT_UNIT_TEST(AFileSystem::exists(f1), "AFileSystem::rename", "1", iRet);

@@ -53,7 +53,7 @@ public:
   If isError is true, the error count is incremented
   State time limit is used as a test mark when calling isStateOverTimeLimit() and is used controlled
   */
-  void set(const AString& state, bool isError = false, double stateTimeLimit = INVALID_TIME_INTERVAL);
+  void set(const AEmittable& state, bool isError = false, double stateTimeLimit = INVALID_TIME_INTERVAL);
   
   /*!
   Set exception state (error set by definition)
@@ -113,7 +113,7 @@ private:
   class Event : public ADebugDumpable, public AXmlEmittable
   {
   public:
-    Event(const AString& state, double interval, bool isError = false);
+    Event(const AEmittable& state, double interval, bool isError = false);
 
     /*!
     AEmittable

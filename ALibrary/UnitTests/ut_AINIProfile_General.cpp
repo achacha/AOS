@@ -10,7 +10,7 @@ int ut_AINIProfile_General()
 
   int iRet = 0x0;
 
-  AFilename f("ut_test.ini");
+  AFilename f(ASWNL("ut_test.ini"), false);
   if (AFileSystem::exists(f))
     AFileSystem::remove(f);
 

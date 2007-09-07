@@ -203,7 +203,7 @@ void AFileSystem::expand(const AFilename& relative, AFilename& absolute)
     ATHROW_LAST_OS_ERROR(NULL);
   
   buffer.stopUsingCharPtr();
-  absolute.set(buffer);
+  absolute.set(buffer, false);
 }
 
 void AFileSystem::touch(const AFilename& source)

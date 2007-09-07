@@ -70,7 +70,7 @@ AEventVisitor::AEventVisitor
 }
 
 AEventVisitor::Event::Event(
-  const AString& state, 
+  const AEmittable& state, 
   double interval,
   bool isError
 ) :
@@ -97,7 +97,7 @@ void AEventVisitor::set(const AException& ex)
 }
 
 void AEventVisitor::set(
-  const AString &state, 
+  const AEmittable &state, 
   bool isError,               // = false
   double stateTimeLimit       // = INVALID_TIME_INTERVAL
 )

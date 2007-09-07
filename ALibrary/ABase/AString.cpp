@@ -377,7 +377,7 @@ AString::AString
 
 AString::AString
 (
-  const ARope& rope
+  const AEmittable& source
 ) :
   mp_Buffer(NULL),
   m_Length(0),
@@ -385,7 +385,7 @@ AString::AString
   m_InternalBufferSize(0),
   m_BufferIncrement(AString::smi_DefaultBufferIncrement)
 {
-  rope.emit(*this);
+  source.emit(*this);
 }
 
 AString::AString(

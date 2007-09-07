@@ -32,8 +32,20 @@ AFilename::AFilename() :
 {
 }
 
+AFilename::AFilename(const AFilename& filepath) :
+  m_Type(filepath.m_Type),
+  m_Drive(filepath.m_Drive),
+  m_RelativePath(filepath.m_RelativePath),
+  m_Filename(filepath.m_Filename)
+{
+  for (LIST_AString::const_iterator cit = filepath.m_PathNames.begin(); cit != filepath.m_PathNames.end(); ++cit)
+  {
+    m_PathNames.push_back(*cit);
+  }
+}
+
 AFilename::AFilename(
-  const AString& filepath, 
+  const AEmittable& filepath, 
   bool forceDirectory // = false
 ) :
   m_Type(FTYPE_DEFAULT),
@@ -44,25 +56,25 @@ AFilename::AFilename(
 }
 
 AFilename::AFilename(
-  const AString& filepath0, 
-  const AString& filepath1, 
-  bool forceDirectory // = false
+  const AEmittable& filepath0, 
+  const AEmittable& filepath1, 
+  bool forceDirectory
 )
 {
   set(filepath0, true);
-  join(filepath1);
+  join(filepath1, forceDirectory);
 }
 
 AFilename::AFilename(
-  const AString& filepath0,
-  const AString& filepath1,
-  const AString& filepath2,
-  bool forceDirectory // = false
+  const AEmittable& filepath0,
+  const AEmittable& filepath1,
+  const AEmittable& filepath2,
+  bool forceDirectory
 )
 {
   set(filepath0, true);
-  join(filepath1);
-  join(filepath2);
+  join(filepath1, forceDirectory);
+  join(filepath2, forceDirectory);
 }
 
 AFilename::AFilename(
@@ -97,8 +109,8 @@ void AFilename::set(const AFilename& filepath)
 }
 
 void AFilename::set(
-  const AString& filepath,
-  bool forceDirectory // = false
+  const AEmittable& filepath,
+  bool forceDirectory
 )
 {
   m_PathNames.clear();
@@ -331,8 +343,8 @@ void AFilename::clearDrive()
 }
 
 void AFilename::join(
-  const AString& that,
-  bool forceDirectory // = false
+  const AEmittable& that,
+  bool forceDirectory
 )
 {
   AFilename fThat(that, forceDirectory);

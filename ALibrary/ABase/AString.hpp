@@ -73,12 +73,12 @@ public:
   /*!
   Constructed from a Rope
   */
-  AString(const ARope&);
+  AString(const AEmittable&);
 
   /*!
   Copy constructor
   */
-  AString(const AString&);
+  explicit AString(const AString&);
 
   /*!
   AString from a single character

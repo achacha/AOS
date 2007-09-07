@@ -21,7 +21,7 @@ AFile_Physical::AFile_Physical(
 ) :
   mp_file(NULL),
   m_fid(-1),
-  m_filename(filename),
+  m_filename(filename, false),
   m_openflags(openflags),
   m_shareflags(shareflags)
 {
