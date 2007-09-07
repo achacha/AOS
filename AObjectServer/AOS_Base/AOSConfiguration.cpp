@@ -248,7 +248,7 @@ void AOSConfiguration::_readMIMETypes()
     m_Config.useRoot().emitString(ASWNL("/config/server/mime-types"), str);
 
     AFilename filename(m_BaseDir);
-    AFilename fMime(str);
+    AFilename fMime(str, false);
     filename.join(fMime);
 
     AINIProfile mimeTypes(filename);

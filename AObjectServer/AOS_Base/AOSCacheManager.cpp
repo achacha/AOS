@@ -159,7 +159,8 @@ bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTe
 
     AFilename filename(
       m_Services.useConfiguration().getAosBaseDataDirectory(),
-      m_Services.useConfiguration().useConfigRoot().getString(pathFilename, AConstant::ASTRING_EMPTY)
+      m_Services.useConfiguration().useConfigRoot().getString(pathFilename, AConstant::ASTRING_EMPTY),
+      false
     );
 
     if (AFileSystem::exists(filename))

@@ -34,7 +34,7 @@ u4 AOSWatchDogDaemon::callbackMain(AThread& thread)
     thisPath.stopUsingCharPtr(dwRet);
   }
   
-  m_aosExecutablePath.set(thisPath);
+  m_aosExecutablePath.set(thisPath, false);
   m_aosExecutablePath.useFilename().assign("AObjectServer.exe");
   
   AFilename iniFilename(m_aosExecutablePath);

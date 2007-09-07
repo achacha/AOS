@@ -92,7 +92,7 @@ bool AOSOutput_MsXslt::execute(AOSOutputContext& context)
     m_Log.append("AOSOutput_MsXslt: Unable to find '/params/output/filename' parameter");
     ATHROW_EX(this, AException::InvalidParameter, "Xslt requires '/params/output/filename' parameter");
   }
-  xsltFile.join(xsltName);
+  xsltFile.join(xsltName, false);
 
   MSXML2::IXMLDOMDocument2Ptr *p = NULL;
   AString xsltPathName(xsltFile.toAString());

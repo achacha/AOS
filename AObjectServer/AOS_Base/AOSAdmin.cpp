@@ -169,7 +169,7 @@ void AOSAdmin::_processRequest(AFile_Socket& client, AHTTPRequestHeader& request
   {
     //a_Serve page
     AString strExt;
-    AFilename httpFileServe(m_Services.useConfiguration().getAdminBaseHttpDir(), request.useUrl().getPath());
+    AFilename httpFileServe(m_Services.useConfiguration().getAdminBaseHttpDir(), request.useUrl().getPath(), true);
     if (request.useUrl().getFilename().isEmpty())
     {
       httpFileServe.useFilename().assign("index.html", 10);

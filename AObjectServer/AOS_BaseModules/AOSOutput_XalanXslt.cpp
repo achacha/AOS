@@ -35,7 +35,7 @@ bool AOSOutput_XalanXslt::execute(AOSOutputContext& context)
     m_Log.append("AOSOutput_XalanXslt: Unable to find '/params/output/filename' parameter");
     ATHROW_EX(this, AException::InvalidParameter, "Xslt requires '/params/output/filename' parameter");
   }
-  xsltName.join(str);
+  xsltName.join(str, false);
 
 #ifdef __DEBUG_DUMP__
 //TODO    || context.getRequestQuery().exists(ASW("noCache", 7))

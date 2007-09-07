@@ -100,17 +100,19 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
 
           case AOSContext::STATUS_HTTP_UNKNOWN_METHOD:
           {
-            
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_405_Method_Not_Allowed);
+            pContext->useEventVisitor().set(pContext->useRequestHeader());
             pThis->_goError(pContext);
             pContext = NULL;
           }
           continue;
 
+          case AOSContext::STATUS_HTTP_INVALID_HEADER:
+          case AOSContext::STATUS_HTTP_INVALID_REQUEST_PATH:
+            pContext->useEventVisitor().set(pContext->useRequestHeader());
+          //a_Fallthrough
           case AOSContext::STATUS_HTTP_INVALID_FIRST_CHAR:
           case AOSContext::STATUS_HTTP_INVALID_AFTER_METHOD_CHAR:
-          case AOSContext::STATUS_HTTP_INVALID_REQUEST_PATH:
-          case AOSContext::STATUS_HTTP_INVALID_HEADER:
           {
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
             pThis->_goError(pContext);
@@ -276,7 +278,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   }
   else
   {
-    httpFilename.join(pContext->useRequestUrl().getPathAndFilename());
+    httpFilename.join(pContext->useRequestUrl().getPathAndFilename(), false);
   }
   
   if (!httpFilename.isValid())

@@ -29,16 +29,16 @@ bool AOSOutput_File::execute(AOSOutputContext& context)
   if (context.getOutputParams().emitFromPath(ASW("/params/base", 12), strBase))
   {
     if (strBase.equals(ASW("static",6)))
-      pFilename = new AFilename(context.getConfiguration().getAosBaseStaticDirectory(), str);
+      pFilename = new AFilename(context.getConfiguration().getAosBaseStaticDirectory(), str, false);
     else if (strBase.equals(ASW("dynamic",7)))
-      pFilename = new AFilename(context.getConfiguration().getAosBaseDynamicDirectory(), str);
+      pFilename = new AFilename(context.getConfiguration().getAosBaseDynamicDirectory(), str, false);
     else if (strBase.equals(ASW("absolute",8)))
-      pFilename = new AFilename(str);
+      pFilename = new AFilename(str, false);
   }
 
   //a_Data is the default
   if (!pFilename)
-    pFilename = new AFilename(context.getConfiguration().getAosBaseDataDirectory(), str);
+    pFilename = new AFilename(context.getConfiguration().getAosBaseDataDirectory(), str, false);
   
   if (!AFileSystem::exists(*pFilename))
   {
