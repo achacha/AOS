@@ -32,22 +32,22 @@
 	</load>
 	<context-queues>
 		<is-available>
-			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep-delay>
+			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
 		</is-available>
 		<pre-executor>
 			<threads desc="Threads in the pre-executor queue manager">10</threads>
-			<queues desc="Queues in the pre-executor queue manager">1</queues>
+			<queues desc="Queues in the pre-executor queue manager">3</queues>
 			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep-delay>
 		</pre-executor>
 		<executor>
 			<threads desc="Threads in the executor queue manager">10</threads>
-			<queues desc="Queues in the executor queue manager">1</queues>
+			<queues desc="Queues in the executor queue manager">2</queues>
 			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep-delay>
 		</executor>
 		<error-executor>
 			<threads desc="Threads in the executor queue manager">2</threads>
 			<queues desc="Queues in the executor queue manager">1</queues>
-			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">50</sleep-delay>
+			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">100</sleep-delay>
 		</error-executor>
 	</context-queues>
 	<listen>
