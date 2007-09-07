@@ -50,6 +50,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
       InvalidEncoding            = 0x00000012,  //a_Invalid encoding or character set used
       InvalidConfiguration       = 0x00000013,  //a_Invalid configuration
       InitializationFailure      = 0x00000014,  //a_Failed to initialize
+      NotFound                   = 0x00000015,  //a_Not found
 
       // String based
       ReadBeyondEndOfBuffer      = 0x00000100,  //a_Reading a buffer beyond the end

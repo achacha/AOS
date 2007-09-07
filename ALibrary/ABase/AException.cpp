@@ -121,6 +121,9 @@ void AException::getDescription(AOutputBuffer& target) const throw()
     case InitializationFailure:
       target.append("Initialization failed."); break;
 
+    case NotFound:
+      target.append("Not found."); break;
+    
     case InvalidData:
       target.append("Invalid data."); break;
 
