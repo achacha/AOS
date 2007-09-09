@@ -1,1 +1,3 @@
 Fix : in URL request to be treated as drive specification
+Database connection timeout should re-build connection in pool
+Add memory footprint to debugDump of objects that grow with time
