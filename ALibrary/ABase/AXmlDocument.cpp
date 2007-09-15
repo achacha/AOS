@@ -156,7 +156,7 @@ AXmlInstruction& AXmlDocument::addComment(const AString& comment)
 void AXmlDocument::fromAFile(AFile& file)
 {
   //a_Full clear since we are restoring from file
-  m_Instructions.clear();
+  clearAll();
   
   AString str(256, 128);
   char c;
