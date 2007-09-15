@@ -233,7 +233,7 @@ AOSConfiguration::~AOSConfiguration()
     MAP_ASTRING_COMMANDPTR::iterator it = m_CommandPtrs.begin();
     while (it != m_CommandPtrs.end())
     {
-      delete (*it).second;
+      delete it->second;
       ++it;
     }
   }
@@ -363,6 +363,7 @@ void AOSConfiguration::_loadCommands()
           //a_Parse command and associate to relative path
           AOSCommand *p = new AOSCommand(strPath, m_Services.useLog());
           p->fromAXmlElement(*pElement);
+          AASSERT(this, m_CommandPtrs.end() == m_CommandPtrs.find(strPath));
           m_CommandPtrs[strPath] = p;
 
           //a_Register the command with admin
