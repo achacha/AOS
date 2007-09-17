@@ -39,8 +39,8 @@ ASQLiteServer::~ASQLiteServer()
 
 bool ASQLiteServer::init(AString& error)
 {
-  AASSERT_EX(this, !mbool_Initialized, "SQLite already initialized.");
-  AASSERT_EX(this, !mp_db, "sqlite3 object already exists.");
+  AASSERT_EX(this, !mbool_Initialized, ASWNL("SQLite already initialized."));
+  AASSERT_EX(this, !mp_db, ASWNL("sqlite3 object already exists."));
 
   AString strPath;
   _getDBFilename(strPath);
@@ -94,7 +94,7 @@ void ASQLiteServer::emit(AXmlElement& target) const
 sqlite3 *ASQLiteServer::getDBHandle()
 {
   if (!isInitialized())
-    ATHROW_EX(this, AException::InvalidObject, "Database not initialized.");
+    ATHROW_EX(this, AException::InvalidObject, ASWNL("Database not initialized."));
 
   return mp_db;
 }
@@ -131,7 +131,7 @@ size_t ASQLiteServer::executeSQL(const AString& query, AResultSet& target, AStri
 int ASQLiteServer::_callbackExecuteSQL(void *pvParam, int fieldCount, char **pcData, char **pcColName)
 {
   AResultSet *pResultSet = (AResultSet *)pvParam;
-  AASSERT_EX(NULL, pResultSet, "AResultSet is NULL");
+  AASSERT_EX(NULL, pResultSet, ASWNL("AResultSet is NULL"));
 
   //a_Get metadata if not yet saved
   if (pResultSet->useFieldNames().size() == 0)

@@ -51,7 +51,7 @@ int gdIOCtx_AFile::seek(struct gdIOCtx *pThisBase, const int pos)
 
   AFile_Physical *pFile = dynamic_cast<AFile_Physical *>(&(pThis->m_File));
   if (!pFile)
-    ATHROW_EX(NULL, AException::TypeidMismatch, "AFile object does not support seek operation");
+    ATHROW_EX(NULL, AException::TypeidMismatch, ASWNL("AFile object does not support seek operation"));
 
   return (pFile->seek(pos) ? 1 : 0);
 }
@@ -62,7 +62,7 @@ long gdIOCtx_AFile::tell(struct gdIOCtx *pThisBase)
 
   AFile_Physical *pFile = dynamic_cast<AFile_Physical *>(&(pThis->m_File));
   if (!pFile)
-    ATHROW_EX(NULL, AException::TypeidMismatch, "AFile object does not support seek operation");
+    ATHROW_EX(NULL, AException::TypeidMismatch, ASWNL("AFile object does not support seek operation"));
 
   return pFile->tell();
 }

@@ -49,7 +49,7 @@ AODBCServer::ODBC_METADATA_FIELD::ODBC_METADATA_FIELD() :
 
 bool AODBCServer::init(AString& error)
 {
-  AASSERT_EX(this, !mbool_Initialized, "ODBC data source already initialized.");
+  AASSERT_EX(this, !mbool_Initialized, ASWNL("ODBC data source already initialized."));
 
   SQLRETURN   retcode;
   

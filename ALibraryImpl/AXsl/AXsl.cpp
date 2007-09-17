@@ -95,7 +95,7 @@ int AXsl::Transform(AEmittable& xml, const AString& xslFilename, AOutputBuffer& 
   {
     result = pInternalData->mp_xalanTransformer->compileStylesheet(xslFilename.c_str(), theCompiledStylesheet);
     if (result)
-      ATHROW_EX(NULL, AException::OperationFailed, pInternalData->mp_xalanTransformer->getLastError());
+      ATHROW_EX(NULL, AException::OperationFailed, AString(pInternalData->mp_xalanTransformer->getLastError()));
     
     pInternalData->m_CompiledStylesheets[xslFilename] = theCompiledStylesheet;
   }
@@ -109,7 +109,7 @@ int AXsl::Transform(AEmittable& xml, const AString& xslFilename, AOutputBuffer& 
   XALAN_CPP_NAMESPACE::XSLTResultTarget theResult(&theWriter);
   result = pInternalData->mp_xalanTransformer->transform(theWrapper, theCompiledStylesheet, theResult);
 	if(result)
-    ATHROW_EX(NULL, AException::OperationFailed, pInternalData->mp_xalanTransformer->getLastError());
+    ATHROW_EX(NULL, AException::OperationFailed, AString(pInternalData->mp_xalanTransformer->getLastError()));
 
   return result;
 }

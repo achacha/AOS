@@ -48,7 +48,7 @@ AMySQLServer::~AMySQLServer()
 
 bool AMySQLServer::init(AString& error)
 {
-  AASSERT_EX(this, !mp_mydata, "mp_mydata is not NULL, init must have been already called");
+  AASSERT_EX(this, !mp_mydata, ASWNL("mp_mydata is not NULL, init must have been already called"));
   mp_mydata = mysql_init((MYSQL*) 0);
   if (!mp_mydata)
   {
@@ -135,9 +135,12 @@ MYSQL_RES *AMySQLServer::executeSQL(const AString& query, AString& error)
   }
 
   if (mysql_real_query(mp_mydata, query.c_str(), query.getSize()))
-  {
+  {    
+    u4 u4Errno = mysql_errno(mp_mydata);
     error = "Error(";
     error += mysql_error(mp_mydata);
+    error += ":errno=";
+    error += AString::fromU4(u4Errno);
     error += ") for query(";
     error += query;
     error += ");";

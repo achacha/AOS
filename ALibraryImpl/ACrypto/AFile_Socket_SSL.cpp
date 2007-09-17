@@ -179,7 +179,7 @@ void AFile_Socket_SSL::_initSSL(bool isOutboundSocket)
   //a_Outbound sockets need SSL class, accepted ones will use context of the server to create it
   if (isOutboundSocket)
     if (NULL == (pData->ssl = SSL_new(pData->ctx)))
-      ATHROW_EX(this, ASocketException::APIFailure, "Unable to allocate SSL object");
+      ATHROW_EX(this, ASocketException::APIFailure, ASWNL("Unable to allocate SSL object"));
 }
 
 void AFile_Socket_SSL::_connectSSL()
@@ -194,7 +194,7 @@ void AFile_Socket_SSL::_connectSSL()
   BIO *bio = BIO_new_socket(m_SocketInfo.m_handle, BIO_NOCLOSE);
   if (!bio)
   {
-    ATHROW_EX(this, ASocketException::APIFailure, "Unable to bind socket descriptor to SSL");
+    ATHROW_EX(this, ASocketException::APIFailure, ASWNL("Unable to bind socket descriptor to SSL"));
   }
   SSL_set_bio(pData->ssl, bio, bio);
 
@@ -246,7 +246,7 @@ void AFile_Socket_SSL::throwSSLError(int sslErrorCode)
     case SSL_ERROR_WANT_READ:
     case SSL_ERROR_WANT_WRITE:
       ATHROW_EX(this, AException::APIFailure, 
-"The operation did not complete; the same TLS/SSL I/O function \
+ASWNL("The operation did not complete; the same TLS/SSL I/O function \
 should be called again later.  If, by then, the underlying BIO has \
 data available for reading (if the result code is \
 SSL_ERROR_WANT_READ) or allows writing data \
@@ -267,28 +267,28 @@ SSL_read() or SSL_peek() may want to write data and SSL_write() \
 may want to read data.  This is mainly because TLS/SSL handshakes \
 may occur at any time during the protocol (initiated by either the \
 client or the server); SSL_read(), SSL_peek(), and SSL_write() \
-will handle any pending handshakes.");
+will handle any pending handshakes."));
       break;
 
     case SSL_ERROR_WANT_CONNECT:
     case SSL_ERROR_WANT_ACCEPT:
       ATHROW_EX(this, AException::APIFailure, 
-"The operation did not complete; the same TLS/SSL I/O function \
+ASWNL("The operation did not complete; the same TLS/SSL I/O function \
 should be called again later. The underlying BIO was not connected \
 yet to the peer and the call would block in connect()/accept(). \
 The SSL function should be called again when the connection is \
 established. These messages can only appear with a BIO_s_connect() \
 or BIO_s_accept() BIO, respectively.  In order to find out, when \
 the connection has been successfully established, on many platforms \
-select() or poll() for writing on the socket file descriptor can be used.");
+select() or poll() for writing on the socket file descriptor can be used."));
       break;
 
     case SSL_ERROR_WANT_X509_LOOKUP:
       ATHROW_EX(this, AException::APIFailure, 
-"The operation did not complete because an application callback set \
+ASWNL("The operation did not complete because an application callback set \
 by SSL_CTX_set_client_cert_cb() has asked to be called again.  The \
 TLS/SSL I/O function should be called again later.  Details depend \
-on the application.");
+on the application."));
       break;
 
     case SSL_ERROR_SYSCALL:
