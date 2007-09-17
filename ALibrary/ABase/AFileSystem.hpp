@@ -3,6 +3,7 @@
 
 #include "apiABase.hpp"
 #include "AFilename.hpp"
+#include "ATime.hpp"
 
 class AString;
 
@@ -27,9 +28,13 @@ public:
   static void setCWD(const AFilename&);
 
   /*!
-  File system operations
+  Rename
   */
   static void rename(const AFilename& from, const AFilename& to);
+  
+  /*!
+  Remove
+  */
   static void remove(const AFilename&);
   
   /*!
@@ -37,6 +42,24 @@ public:
   */
   static s8 length(const AFilename&);
 
+  /*!
+  Creation time
+  Returns true if file exists and time was set
+  */
+  static bool getCreatedTime(const AFilename&, ATime&);
+
+  /*!
+  Last accessed time
+  Returns true if file exists and time was set
+  */
+  static bool getLastAccessedTime(const AFilename&, ATime&);
+
+  /*!
+  Last modified time
+  Returns true if file exists and time was set
+  */
+  static bool getLastModifiedTime(const AFilename&, ATime&);
+  
   /*!
   Expand relative to absolute path
   */

@@ -3,6 +3,8 @@
 #include "ASocketLibrary.hpp"
 #include "ASocketException.hpp"
 #include "ALock.hpp"
+#include "ATextConverter.hpp"
+#include <Iphlpapi.h>
 
 const AString ASocketLibrary::ANY_ADDRESS("AnyAddress");
 const AString ASocketLibrary::BROADCAST("Broadcast");
@@ -178,4 +180,54 @@ u4 ASocketLibrary::convertStringToIp4(const AString& ip)
 
   u4 ret = MAKE_U4((u1)parts.at(3).toU4(), (u1)parts.at(2).toU4(), (u1)parts.at(1).toU4(), (u1)parts.at(0).toU4());
   return ret;
+}
+
+AString ASocketLibrary::getMACfromIP(const AString& strIP)
+{
+  const int arraySize = 32;
+  AAutoArrayPtr<IP_ADAPTER_INFO> pInfo(new IP_ADAPTER_INFO[arraySize]);
+  DWORD dwLen = sizeof(IP_ADAPTER_INFO) * arraySize;
+
+  DWORD ret = GetAdaptersInfo(pInfo.get(), &dwLen);
+  switch (ret)
+  {
+    case ERROR_BUFFER_OVERFLOW:
+      ATHROW_EX(NULL, AException::APIFailure, ASWNL("Error allocating memory needed to call GetAdaptersinfo"));
+
+    case ERROR_SUCCESS:
+      break;
+
+    default:
+      ATHROW_LAST_SOCKET_ERROR(NULL);
+  }
+
+  IP_ADAPTER_INFO *p = pInfo.get();
+  while (p)
+  {
+    IP_ADDR_STRING *pIp = &(p->IpAddressList);
+    while (pIp)
+    {
+      if (strIP.equals(pIp->IpAddress.String))
+      {
+        //a_Build MAC
+        AString mac;
+        if (p->AddressLength > 1)
+        {
+          u4 i=0;
+          for (; i<p->AddressLength-1; ++i)
+          {
+            mac.append(ATextConverter::convertBYTEtoHEX(p->Address[i]));
+            mac.append('-');
+          }
+          mac.append(ATextConverter::convertBYTEtoHEX(p->Address[i]));
+        }
+        return mac;
+      }
+      pIp = pIp->Next;
+    }
+
+    p = p->Next;
+  }
+
+  return 0;
 }

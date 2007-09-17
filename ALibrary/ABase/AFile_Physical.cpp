@@ -55,7 +55,7 @@ void AFile_Physical::open()
   mp_file = ::_fsopen(filename.c_str(), pccOpenFlags, m_shareflags);
   if (!mp_file)
   {  
-    ATHROW_ERRNO_EX(this, AException::UnableToOpen, m_filename.toAString().c_str(), errno);
+    ATHROW_ERRNO_EX(this, AException::UnableToOpen, m_filename, errno);
   }
 
   m_fid = _fileno(mp_file);

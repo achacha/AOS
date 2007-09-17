@@ -78,6 +78,7 @@ ACache_FileSystem::~ACache_FileSystem()
 ACache_FileSystem::CACHE_ITEM::CACHE_ITEM():
   pData(NULL),
   hits(0),
+  lastModified(0),
   lastUsed(ATime::getTickCount())
 {
 }
@@ -201,7 +202,12 @@ void ACache_FileSystem::emit(AOutputBuffer& target) const
   }
 }
 
-bool ACache_FileSystem::get(const AFilename& key, AAutoPtr<AFile>& pFile)
+ACache_FileSystem::STATUS ACache_FileSystem::get(
+  const AFilename& key, 
+  AAutoPtr<AFile>& pFile, 
+  ATime& modified,
+  const ATime& ifModifiedSince   // = ATime::GENESIS
+)
 {
   const AString& strKey = key.toAString();
   size_t hash = strKey.getHash(m_CacheArray.size());
@@ -221,13 +227,17 @@ bool ACache_FileSystem::get(const AFilename& key, AAutoPtr<AFile>& pFile)
         //a_File too big to cache, create a physical object and return it with auto delete on
         pFile.reset(new AFile_Physical(key, "rb"));
         pFile->open();
-        return true;
+        modified.setToNow();
+        return ACacheInterface::FOUND_NOT_CACHED;
       }
       else
       {
         //a_File exists cache it
         AAutoPtr<CACHE_ITEM> p(new CACHE_ITEM());
         p->pData = new AFile_AString((size_t)AFileSystem::length(key), 256);
+        
+        if (!AFileSystem::getLastModifiedTime(key, p->lastModified))
+          ATHROW_EX(this, AException::NotFound, key);
 
         AFile_Physical file(key, "rb");
         file.open();
@@ -239,7 +249,8 @@ bool ACache_FileSystem::get(const AFilename& key, AAutoPtr<AFile>& pFile)
         p.setOwnership(false);
         
         pFile.reset(p->pData, false);
-        return true;
+        modified = p->lastModified;
+        return ACacheInterface::FOUND;
       }
     }
     else
@@ -249,7 +260,8 @@ bool ACache_FileSystem::get(const AFilename& key, AAutoPtr<AFile>& pFile)
       containerItem.m_Cache[strKey] = p;
 
       pFile.reset(NULL);
-      return false;
+      modified = ATime::GENESIS;
+      return ACacheInterface::NOT_FOUND;
     }
   }
   else
@@ -258,8 +270,13 @@ bool ACache_FileSystem::get(const AFilename& key, AAutoPtr<AFile>& pFile)
     ++m_Hit;
     (*it).second->hit();
     
-    pFile.reset((*it).second->pData, false);
-    return true;
+    pFile.reset(it->second->pData, false);
+    modified = it->second->lastModified;
+
+    if (modified > ifModifiedSince)
+      return ACacheInterface::FOUND;
+    else
+      return ACacheInterface::FOUND_NOT_MODIFIED;
   }
 }
 

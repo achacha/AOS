@@ -157,7 +157,7 @@ void AHTTPRequestHeader::emitProxyHeader(AOutputBuffer& target) const
   {
     //a_RFC2616 Section 14.23 requires Host: for HTTP/1.1
     if (m_Pairs.find("Host") == m_Pairs.end())
-      ATHROW_EX(this, AException::InvalidObject, "HTTP/1.1 requires 'Host:' to contain server requested"); 
+      ATHROW_EX(this, AException::InvalidObject, ASWNL("HTTP/1.1 requires 'Host:' to contain server requested")); 
   }
 
   //a_Parent class will do the body
@@ -271,7 +271,7 @@ bool AHTTPRequestHeader::isValidPath() const
 
 bool AHTTPRequestHeader::isHttpPipeliningEnabled() const
 {
-  return equals(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10)) && mstr_HTTPVersion.equals("HTTP/1.1");
+  return equals(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10)) && mstr_HTTPVersion.equals("HTTP/1.1", 8);
 }
 
 bool AHTTPRequestHeader::isValidHttp() const
@@ -279,8 +279,21 @@ bool AHTTPRequestHeader::isValidHttp() const
   if (mstr_HTTPVersion.equalsNoCase("HTTP/1.1", 8))
   {
     //a_RFC2616 Section 14.23 requires Host: for HTTP/1.1
-    if (m_Pairs.find("Host") == m_Pairs.end())
+    if (m_Pairs.find(ASW("Host",4)) == m_Pairs.end())
       return false;
   }
   return true;
+}
+
+ATime AHTTPRequestHeader::getIfModifiedSince() const
+{
+  AString str;
+  if (find(AHTTPHeader::HT_REQ_If_Modified_Since, str))
+  {
+    ATime ret;
+    ret.parseRFCtime(str);
+    return ret;
+  }
+  else
+    return ATime::GENESIS;
 }

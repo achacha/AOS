@@ -11,6 +11,8 @@
 
 #include <limits.h>
 
+const ATime ATime::GENESIS(0);
+
 //a_Date produced when time_t is zero
 #define STR_INVALID_TIME "Wed Dec 31 19:00:00 1969"
 
@@ -60,8 +62,7 @@ ATime::ATime(const ATime& that) :
 ATime::ATime(const time_t& tt, ATime::eType e) :
   me_Type(e),
   mt_Time(tt)
-{
-  
+{ 
 }
 
 void ATime::setToNow()
@@ -230,7 +231,7 @@ void ATime::emitRFCtime(AOutputBuffer& target) const
   if (me_Type == ATime::LOCAL)
   {
     ATime t(*this);
-    t.mt_Time += getTimeZone() * 3600;
+    t.mt_Time += getEffectiveTimeZone() * 3600;
     t.strftime(strRFC1036, target);
   }
   else
@@ -240,7 +241,7 @@ void ATime::emitRFCtime(AOutputBuffer& target) const
   switch(me_Type)
   {
     case LOCAL : 
-      iTZ = getTimeZone();
+      iTZ = getEffectiveTimeZone();
       if (iTZ >= 0x0)
       {
         if (iTZ < 0xA)
@@ -350,7 +351,7 @@ void ATime::parseRFCtime(const AString& strRFCTime)
     //a_Now the evils of the time zone
     strTime.remove(0x1);
     if (strTime.getSize() > 0)
-      fTZ = getTimezoneFromString(strTime) - getTimeZone();
+      fTZ = getTimeZoneFromString(strTime) - getEffectiveTimeZone();
   }
 
   set(tmNew);
@@ -360,7 +361,7 @@ void ATime::parseRFCtime(const AString& strRFCTime)
   mt_Time -= fTZ * 3600;
 }
 
-float ATime::getTimezoneFromString(const AString& strTimezone)
+float ATime::getTimeZoneFromString(const AString& strTimezone)
 {
   AString str(strTimezone);
   AString strTemp;
@@ -537,7 +538,7 @@ int ATime::getMonthFromString(const AString& strMonth)
   return -1;
 }
 
-int ATime::getTimeZone() const
+int ATime::getEffectiveTimeZone() const
 {
 	if (smi_TimeZone == 666)
   {
@@ -556,10 +557,8 @@ int ATime::getTimeZone() const
     AAutoPtr<tm> ptmLocal( new tm(*(::localtime(&mt_Time))) );     //a_Get Local
 #endif
 
-    int iDST = (ptmLocal->tm_isdst == 0x1 ? 0x1 : 0x0);          //a_-1 means DST is unknown, but this will screw up the zone calculation
-    int iDiff = ptmLocal->tm_hour - ptmGMT->tm_hour - iDST;      //a_Get difference
-	  
     //a_Account for a day change due to time difference
+    int iDiff = ptmLocal->tm_hour - ptmGMT->tm_hour;             //a_Get difference
     if (ptmGMT->tm_mday != ptmLocal->tm_mday)
 	  {
 		  if (iDiff < 12)
@@ -572,6 +571,15 @@ int ATime::getTimeZone() const
 
   AASSERT(this, smi_TimeZone < 100 && smi_TimeZone > -100);  //a_Sanity check
   return smi_TimeZone;
+}
+
+bool ATime::isDaylightSavingTime() const
+{
+  AAutoPtr<tm> ptmLocal( new tm());
+  errno_t errornum = ::localtime_s(ptmLocal.get(), &mt_Time);           //a_Get Local
+  if (errornum)
+    ATHROW_ERRNO(this, AException::APIFailure, errornum);
+  return (ptmLocal->tm_isdst == 0x1 ? true : false);
 }
 
 double ATime::difftime(const ATime& that) const
@@ -594,6 +602,26 @@ bool ATime::operator ==(const ATime& t) const
   return (0.0 == difftime(t) ? true : false);
 }
 
+bool ATime::operator >(const ATime& t) const 
+{ 
+  return !operator<=(t);
+}
+
+bool ATime::operator <(const ATime& t) const 
+{ 
+  return !operator>=(t);
+}
+
+bool ATime::operator !=(const ATime& t) const 
+{ 
+  return !operator==(t);
+}
+
+ATime::operator time_t()
+{ 
+  return mt_Time; 
+}
+
 void ATime::emit(AOutputBuffer& target) const
 {
   AString::fromSize_t(mt_Time).emit(target);
@@ -606,7 +634,7 @@ void ATime::emitYYYYMMDDHHMMSS(AOutputBuffer& target) const
   if (me_Type == ATime::LOCAL)
   {
     ATime t(*this);
-    t.mt_Time += getTimeZone() * 3600;
+    t.mt_Time += getEffectiveTimeZone() * 3600;
     t.strftime(LOGGABLE, target);
   }
   else
@@ -620,7 +648,7 @@ void ATime::emitYYYY_MM_DD_HHMMSS(AOutputBuffer& target) const
   if (me_Type == ATime::LOCAL)
   {
     ATime t(*this);
-    t.mt_Time += getTimeZone() * 3600;
+    t.mt_Time += getEffectiveTimeZone() * 3600;
     t.strftime(LOGGABLE, target);
   }
   else
@@ -634,9 +662,14 @@ void ATime::emitYYYYMMDD(AOutputBuffer& target) const
   if (me_Type == ATime::LOCAL)
   {
     ATime t(*this);
-    t.mt_Time += getTimeZone() * 3600;
+    t.mt_Time += getEffectiveTimeZone() * 3600;
     t.strftime(LOGGABLE, target);
   }
   else
     strftime(LOGGABLE, target);
+}
+
+void ATime::setType(eType e)
+{
+  me_Type = e; 
 }

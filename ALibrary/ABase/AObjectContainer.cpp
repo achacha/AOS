@@ -281,7 +281,7 @@ void AObjectContainer::emit(AXmlElement& element, const AString& strPath) const
   if (strPath.isEmpty())
   {
     if (m_Name.isEmpty())
-      ATHROW_EX(this, AException::ProgrammingError, "Either AObjectContainer or AXmlElement must have a name");
+      ATHROW_EX(this, AException::ProgrammingError, ASWNL("Either AObjectContainer or AXmlElement must have a name"));
 
     if (element.useName().isEmpty())
       element.useName().assign(m_Name);

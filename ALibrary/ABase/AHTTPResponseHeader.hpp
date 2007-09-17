@@ -119,6 +119,11 @@ public:
   const ACookies& getCookies() const;
   ACookies& useCookies();
 
+  /*!
+  Set the last modified time
+  */
+  void setLastModified(const ATime&);
+
 protected:
   //a_First line handled by respnse
   //a_Format: [HTTPVERSION] [SP] [STATUSCODE] [SP] [STATUSDESCRIPTION]

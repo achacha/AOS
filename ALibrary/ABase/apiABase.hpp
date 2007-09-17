@@ -20,6 +20,7 @@
 #      pragma comment(lib, "advapi32")
 #      pragma comment(lib, "wsock32")
 #      pragma comment(lib, "ws2_32")
+#      pragma comment(lib, "iphlpapi")
 #    else
 #      pragma message("ABase: IMPORT")
 #      define ABASE_API __declspec(dllimport)

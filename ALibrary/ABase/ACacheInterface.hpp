@@ -23,6 +23,17 @@ public:
   virtual ~ACacheInterface();
 
   /*!
+  Status
+  */
+  enum STATUS
+  {
+    NOT_FOUND = 0,
+    FOUND = 1,
+    FOUND_NOT_CACHED = 2,
+    FOUND_NOT_MODIFIED = 3
+  };
+
+  /*!
   Cache management function, should be called by cache manager thread/loop
   */
   virtual void manage() = 0; 

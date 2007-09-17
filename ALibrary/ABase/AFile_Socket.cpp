@@ -97,7 +97,7 @@ void AFile_Socket::open()
       if (mbool_Blocking || lastError != WSAEWOULDBLOCK)
       {
         m_SocketInfo.m_handle = INVALID_SOCKET;
-        ATHROW_LAST_SOCKET_ERROR_KNOWN(this, lastError);
+        ATHROW_LAST_SOCKET_ERROR_KNOWN_EX(this, lastError, m_SocketInfo);
       }
     }
   }
@@ -351,3 +351,13 @@ bool AFile_Socket::_isNotEof()
 {
   return !m_EOF;
 }
+
+void AFile_Socket::setNagleAlgorithm(bool mode /* = true */)
+{
+  AASSERT(this, INVALID_SOCKET != m_SocketInfo.m_handle);
+  BOOL bOptionVal = mode ? TRUE : FALSE;
+  int bOptionLen = sizeof(BOOL);
+  if (SOCKET_ERROR == setsockopt(m_SocketInfo.m_handle, IPPROTO_TCP, TCP_NODELAY, (char*)&bOptionVal, bOptionLen))
+    ATHROW_LAST_SOCKET_ERROR(this);
+}
+

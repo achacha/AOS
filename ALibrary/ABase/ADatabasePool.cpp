@@ -45,7 +45,7 @@ ADatabasePool::ADatabasePool(
   //a_Initialize first one (the template)
   if (!pDatabase->isInitialized())
     if (!pDatabase->init(error))
-      ATHROW_EX(this, AException::InitializationFailure, error.c_str());
+      ATHROW_EX(this, AException::InitializationFailure, error);
   
   //a_Create additional clones so the total is maxConnections
   m_FreeDatabases.push_back(new ADatabaseHolder(pDatabase));
@@ -53,7 +53,7 @@ ADatabasePool::ADatabasePool(
   {
     ADatabase *pClone = pDatabase->clone(error);
     if (!pClone)
-      ATHROW_EX(this, AException::InitializationFailure, error.c_str());
+      ATHROW_EX(this, AException::InitializationFailure, error);
     m_FreeDatabases.push_back(new ADatabaseHolder(pClone));
   }
 }
@@ -155,5 +155,5 @@ void ADatabasePool::_unlockDatabase(ADatabase *pDatabase)
     }
     ++it;
   }
-  ATHROW_EX(this, AException::InvalidObject, "Unable to find a locked database holder.");
+  ATHROW_EX(this, AException::InvalidObject, ASWNL("Unable to find a locked database holder"));
 }

@@ -819,6 +819,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AThread_NOP.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AThreadPool.cpp"
 				>
 			</File>
@@ -1264,6 +1268,10 @@
 			</File>
 			<File
 				RelativePath=".\AThread.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AThread_NOP.hpp"
 				>
 			</File>
 			<File

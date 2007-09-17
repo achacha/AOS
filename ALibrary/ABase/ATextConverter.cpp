@@ -54,7 +54,7 @@ void ATextConverter::decodeBase64(const AString& strSource, size_t startPos, AOu
         if (iCharacter != '=')
         {
           //a_Invalid Base 64 AString
-          ATHROW_EX(NULL, AException::InputSourceInvalid, "One of terminating '=' is missing");
+          ATHROW_EX(NULL, AException::InputSourceInvalid, ASWNL("One of terminating '=' is missing"));
           break;
         }
       }
@@ -146,7 +146,7 @@ void ATextConverter::decode64(
         if (iCharacter != '.')
         {
           //a_Invalid Base 64 AString
-          ATHROW_EX(NULL, AException::InputSourceInvalid, "One of terminating '.' is missing");
+          ATHROW_EX(NULL, AException::InputSourceInvalid, ASWNL("One of terminating '.' is missing"));
           break;
         }
       }

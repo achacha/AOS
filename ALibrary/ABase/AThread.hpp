@@ -48,8 +48,8 @@ public:
   Contains pointer to 'this' if the threadproc is a static member of a class and instance is needed by the thread
   Can be anything, AThread does not use this data in any way and is only here for convenience to the thread process
   */
-  void  setThis(void *pThis) { mpv__This = pThis; }
-  void* getThis() const      { return mpv__This; }
+  void  setThis(void *pThis);
+  void *getThis() const;
 
 
   /*!
@@ -57,8 +57,8 @@ public:
    use set before you start the thread to set the parameter
    use get from inside your function to retrieve the parameter
   */
-  void  setParameter(void *pParam) { mpv__Parameter = pParam; }
-  void* getParameter() const       { return mpv__Parameter; }
+  void  setParameter(void *pParam);
+  void *getParameter() const;
 
   /*!
   Access to thread ID (to differentiate between threads...)
@@ -115,15 +115,15 @@ public:
    setRun used by the client to signal a thread to stop
    
    Difference between Run and Running:
-     Run is what the cleint wants it to do
+     Run is what the client wants it to do
      Running is what the thread is actually doing at this moment
    
    NOTE: Run is set to whatever you have the start flag set as
   */
-  bool isRunning() const { return mbool_Running; }
-  void setRunning(bool boolRunning = true) { mbool_Running = boolRunning; }
-  bool isRun() const { return mbool_Run; }
-  void setRun(bool boolRun = true) { mbool_Run = boolRun; }
+  bool isRunning() const;
+  void setRunning(bool boolRunning = true);
+  bool isRun() const;
+  void setRun(bool boolRun = true);
 
   /*!
   Bit flags to be read by a running thread; simple ON/OFF messaging
@@ -184,7 +184,7 @@ public:
   */
   void emit(AOutputBuffer&) const;
 
-private:
+protected:
   /*
   Main thread function
   */

@@ -17,6 +17,25 @@ public:
   static const AString BROADCAST;
   static const AString LOCAL_LOOPBACK;
 
+  //a_Class to store socket informatioon
+  class ABASE_API SocketInfo : public ADebugDumpable
+  {
+  public:
+    AString m_address;
+    int     m_port;
+    u8      m_handle;
+
+    SocketInfo();
+    SocketInfo(const SocketInfo& that);
+    SocketInfo& operator=(const SocketInfo& that);
+    bool isValid();
+
+  public:
+  #ifdef __DEBUG_DUMP__
+    virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+  #endif
+  };
+
 public:
   ASocketLibrary();
   ~ASocketLibrary();
@@ -38,24 +57,10 @@ public:
   static void convertIp4ToString(u4 ip, AOutputBuffer& );
   static u4 convertStringToIp4(const AString& ip);
 
-  //a_Class to store socket informatioon
-  class ABASE_API SocketInfo : public ADebugDumpable
-  {
-  public:
-    AString m_address;
-    int     m_port;
-    u8      m_handle;
-
-    SocketInfo();
-    SocketInfo(const SocketInfo& that);
-    SocketInfo& operator=(const SocketInfo& that);
-    bool isValid();
-
-  public:
-  #ifdef __DEBUG_DUMP__
-    virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-  #endif
-  };
+  /*!
+  Get MAC address associated with an IP
+  */
+  static AString ASocketLibrary::getMACfromIP(const AString& strIP);
 };
 
 #endif

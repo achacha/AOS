@@ -1,8 +1,9 @@
 AAttributes
-ABase
 ABitArray
-ACache
+ACacheInterface
 ACache_FileSystem
+AConstant
+AChecksum
 AConstant
 AContentType_TextHtml
 AContentType_Binary
@@ -11,10 +12,13 @@ AContentTypeFactory
 AContentTypeInterface
 ACookie
 ACookies
+ADaemon
 ADatabase
+ADatabasePool
 ADebugDumpable
 ADigestInterface
 ADigest_MD5
+ADigest_SHA1
 ADynamicLibrary
 AElement_HTML
 AElementInterface
@@ -23,6 +27,7 @@ AElementObserver_FORM
 AElementObserver_SRC
 AElementObserverInterface
 AEmittable
+AEventVisitor
 ASync_Event
 ASync_EventVisitor
 AFile
@@ -32,6 +37,7 @@ AFile_IOStream
 AFile_Physical
 AFile_Socket
 AFile_SocketDatagram
+AFilename
 AFileSystem
 AFragmentString
 AHTTPHeader
@@ -41,12 +47,10 @@ AINIProfile
 ALock
 ALog
 ALog_AFile
-AMapOfPtrs
 AMovingAverage
 ANameValuePair
 ANamePointerPair
 ANumber
-AObject
 AObjectBase
 AObjectContainer
 AOutputBuffer
@@ -60,7 +64,6 @@ ARope
 ARopeDeque
 ASerializable
 ASingletonPattern
-ASocketException
 ASocketListener
 ASocketLibrary
 AString
@@ -70,6 +73,7 @@ ASync_CriticalSection
 ASync_CriticalSectionSpinLock
 ASync_Mutex
 ASync_Counter
+ASync_Event
 ASync_ReadWriteLock
 ASync_Semaphore
 ATemplate
@@ -80,18 +84,19 @@ ATextConverter
 ATextGenerator
 ATextOdometer
 AThread
+AThread_NOP
 AThreadPool
 ATime
 ATimer
+AUrl
+AWordUtility
 AXmlData
 AXmlDocument
 AXmlElement
 AXmlEmittable
 AXmlInstruction
 AXmlNode
-AUrl
-AVectorOfPtrs
-AWordUtility
+AXmlParsable
 
 ASW
 ASWNL
@@ -121,11 +126,11 @@ AAutoBasicArrayPtr
 ASingletonPattern
 AListOfPtrs
 AMapOfPtrs
+AVectorOfPtrs
 
 AException
 AStackWalker
-AWebException
-AObjectException
+ASocketException
 ASystemException
 
 AMySQLServer
@@ -149,6 +154,7 @@ ATHROW_LAST_OS_ERROR_KNOWN
 ATHROW_LAST_OS_ERROR_KNOWN_EX
 ATHROW_LAST_SOCKET_ERROR
 ATHROW_LAST_SOCKET_ERROR_KNOWN
+ATHROW_LAST_SOCKET_ERROR_KNOWN_EX
 AASSERT
 AASSERT_EX
 AVERIFY

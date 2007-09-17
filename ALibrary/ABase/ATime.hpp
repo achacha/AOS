@@ -26,6 +26,8 @@ public:
     UT = 0x1    //a_GMT and UT are same
   };
 
+  static const ATime GENESIS;   //a_Begining of time (time_t = 0)
+
 public:
   /*!
   By default it is initialized to the time this object was created
@@ -33,8 +35,8 @@ public:
     the releative offset can be used with math operators to get
     time differences and increment time as needed
   */
-  ATime(eType = ATime::GMT);
-  ATime(const time_t&, eType = ATime::GMT);
+  ATime(eType e = ATime::GMT);
+  ATime(const time_t&, eType e = ATime::GMT);
   ATime(const ATime&);
   ~ATime();
 
@@ -60,15 +62,24 @@ public:
   void setToNow();
   void set(time_t time);
   void set(tm& time);
-  operator time_t() { return mt_Time; }
+  operator time_t();
   void gmtime(tm& t);
   void localtime(tm& t);
-  int  getTimeZone() const;
+  
+  /*!
+  Current effective time zone with DST adjustment
+  */
+  int getEffectiveTimeZone() const;
+  
+  /*!
+  Is daylight saving time adjusting the current time zone
+  */
+  bool isDaylightSavingTime() const;
 
   /*!
   Changing display type
   */
-  void setType(eType e) { me_Type = e; }
+  void setType(eType e);
 
   /*!
   Output formatting function (just like ANSI)
@@ -131,16 +142,16 @@ public:
   bool operator >=(const ATime& t) const;
   bool operator <=(const ATime& t) const;
   bool operator ==(const ATime& t) const;
-  bool operator  >(const ATime& t) const { return !operator<=(t); }
-  bool operator  <(const ATime& t) const { return !operator>=(t); }
-  bool operator !=(const ATime& t) const { return !operator==(t); }
+  bool operator  >(const ATime& t) const;
+  bool operator  <(const ATime& t) const;
+  bool operator !=(const ATime& t) const;
 
   /*!
   Helpers functions
   */
   static int getMonthFromString(const AString&);        //a_Returns # for 3 day month (0=Jan, 11=Dec)
   static int getWeekdayFromString(const AString&);      //a_Returns # for day of week (0=Sun, 6=Sat)
-  static float getTimezoneFromString(const AString&);   //a_Returns the corrert offset from UT (and support non-integral offsets)
+  static float getTimeZoneFromString(const AString&);   //a_Returns the corrert offset from UT (and support non-integral offsets)
 
 private:
   tm* _getTM() const;

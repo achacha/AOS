@@ -131,7 +131,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
       int iID = AException::Unknown, 
       const char* pccFilename = "", 
       int iLineNumber = 0, 
-      const AString& strExtra = AConstant::ASTRING_EMPTY,
+      const AEmittable& extra = AConstant::ASTRING_EMPTY,
       errno_t errornum = 0,
       bool walkStack = false
     );
@@ -141,7 +141,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
       int iID = AException::Unknown, 
       const char* pccFilename = "", 
       int iLineNumber = 0, 
-      const AString& strExtra = AConstant::ASTRING_EMPTY,
+      const AEmittable& extra = AConstant::ASTRING_EMPTY,
       errno_t errornum = 0,
       bool walkStack = true
     );

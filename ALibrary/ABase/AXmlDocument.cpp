@@ -192,7 +192,7 @@ void AXmlDocument::fromAFile(AFile& file)
       
       str.clear();
       if (AConstant::npos == file.readUntil(str, p->getTypeTerminator()))
-        ATHROW_EX(&file, AException::InvalidData, (AString("Cannot find terminator for type: ")+p->getTypeTerminator()).c_str());
+        ATHROW_EX(&file, AException::InvalidData, AString("Cannot find terminator for type: ")+p->getTypeTerminator());
 
       if (AConstant::npos == file.skipOver())
         ATHROW(&file, AException::InvalidData);

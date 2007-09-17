@@ -9,14 +9,14 @@ AException::AException
   int iWhat,                           // = AException::Unknown
   const char* pccFilename,             // = ""
   int iLineNumber,                     // = 0
-  const AString& strExtra,             // = AConstant::ASTRING_EMPTY
+  const AEmittable& extra,             // = AConstant::ASTRING_EMPTY
   errno_t errornum,                    // = 0
   bool walkStack                       // = false
 ) :
   m_ID(iWhat), 
   mp_Filename(pccFilename), 
 	m_LineNumber(iLineNumber),
-  m_ExtraText(strExtra),
+  m_ExtraText(extra),
   m_StackWalker(AStackWalker::SWO_SET_STACKONLY),
   m_errno(errornum)
 {

@@ -69,6 +69,11 @@ public:
   */
   bool isValidHttp() const;
 
+  /*!
+  If-Modified-Since converted to ATime
+  */
+  ATime getIfModifiedSince() const;
+
 protected:
   //a_First line for request
   //a_[METHOD] [SP] [URI] [SP] [HTTPVERSION]

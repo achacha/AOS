@@ -69,7 +69,7 @@ public:
   virtual void emit(AXmlElement& element) const
   {
     if (m_Name.isEmpty())
-      ATHROW_EX(this, AException::ProgrammingError, "AObjectBase objects must have a name to be emit'd to AXmlElement");
+      ATHROW_EX(this, AException::ProgrammingError, ASWNL("AObjectBase objects must have a name to be emit'd to AXmlElement"));
 
     element.useName().assign(m_Name);
     element.useAttributes() = m_Attributes;
@@ -85,7 +85,7 @@ public:
     }
     else
     {
-      ATHROW_EX(this, AException::InvalidObject, AString("Object named '")+m_Name+"' is not derived from AEmittable");
+      ATHROW_EX(this, AException::InvalidObject, ARope("Object named '")+m_Name+"' is not derived from AEmittable");
     }
   }
 

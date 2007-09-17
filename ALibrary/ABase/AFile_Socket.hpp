@@ -65,6 +65,15 @@ public:
   void setBlocking();
 
   /*!
+  Set Nagle algorithm for send coalescing
+  When false, the data to be sent is not buffered and instead sent right away
+    this will affect efficiency but useful when writing socket based console apps
+  
+  Default is true (when socket is created)
+  */
+  void setNagleAlgorithm(bool mode = true);
+
+  /*!
   Reading of non-blocking sockets.
   */
   size_t readBlocking(void *, size_t size);

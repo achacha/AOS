@@ -149,7 +149,7 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const AString& value,
 AXmlElement& AXmlElement::addElement(const AString& xpath, const ARope& value, AXmlData::Encoding encoding, bool insert)
 {
   if (m_Name.isEmpty())
-    ATHROW_EX(this, AException::InvalidObject, "AXmlElement does not have a name");
+    ATHROW_EX(this, AException::InvalidObject, ASWNL("AXmlElement does not have a name"));
 
   LIST_AString xparts;
   xpath.split(xparts, '/');
@@ -169,7 +169,7 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const ARope& value, A
 AXmlElement& AXmlElement::addElement(const AString& xpath, const AEmittable& object, AXmlData::Encoding encoding, bool insert)
 {
   if (m_Name.isEmpty())
-    ATHROW_EX(this, AException::InvalidObject, "AXmlElement does not have a name");
+    ATHROW_EX(this, AException::InvalidObject, ASWNL("AXmlElement does not have a name"));
 
   LIST_AString xparts;
   xpath.split(xparts, '/');
@@ -194,7 +194,7 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const AEmittable& obj
 AXmlElement& AXmlElement::addElement(const AString& xpath, const AXmlEmittable& object, bool insert)
 {
   if (m_Name.isEmpty())
-    ATHROW_EX(this, AException::InvalidObject, "AXmlElement does not have a name");
+    ATHROW_EX(this, AException::InvalidObject, ASWNL("AXmlElement does not have a name"));
 
   LIST_AString xparts;
   xpath.split(xparts, '/');

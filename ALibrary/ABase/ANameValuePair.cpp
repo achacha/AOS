@@ -580,7 +580,7 @@ void ANameValuePair::_parseREGININame(const AString &strInput, size_t& pos, AStr
   //a_Find terminator (which is the delimeter of this type)
   size_t start = strInput.findNotOneOf(m_terminator, pos++);
   if (AConstant::npos == start)
-    ATHROW_EX(this, AException::InvalidData, "Did not find start of name");
+    ATHROW_EX(this, AException::InvalidData, ASWNL("Did not find start of name"));
 
   size_t end = strInput.find(m_separator, start+1);
   if (AConstant::npos == end)
@@ -717,7 +717,7 @@ void ANameValuePair::_parseHtmlValue(const AString &strInput, size_t& pos, AStri
     return;
   }
   if (pos >= length)
-    ATHROW_EX(this, AException::InvalidData, "Unable to find terminator scanning for value");
+    ATHROW_EX(this, AException::InvalidData, ASWNL("Unable to find terminator scanning for value"));
 
   char cInsideQuotes = ' ';  //a_Will be either ' or " if inside a quotes, empty otherwise
   bool boolSlash = false;

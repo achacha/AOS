@@ -5,7 +5,7 @@
 #ifdef __DEBUG_DUMP__
 void AThread::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(MyClass @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(AThread @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp__ThreadProc=0x" << std::hex << (void *)mp__ThreadProc << std::dec << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mpv__This=0x" << std::hex << (void *)mpv__This << std::dec << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mpv__Parameter=0x" << std::hex << (void *)mpv__Parameter << std::dec << std::endl;
@@ -289,4 +289,44 @@ HANDLE AThread::getHandle() const
 void AThread::emit(AOutputBuffer& target) const
 {
   target.append(m_ExecutionState);
+}
+
+void AThread::setThis(void *pThis)
+{ 
+  mpv__This = pThis; 
+}
+
+void *AThread::getThis() const
+{ 
+  return mpv__This; 
+}
+
+void AThread::setParameter(void *pParam)
+{ 
+  mpv__Parameter = pParam; 
+}
+
+void *AThread::getParameter() const
+{ 
+  return mpv__Parameter; 
+}
+
+bool AThread::isRunning() const 
+{ 
+  return mbool_Running; 
+}
+
+void AThread::setRunning(bool boolRunning /* = true */)
+{ 
+  mbool_Running = boolRunning; 
+}
+
+bool AThread::isRun() const
+{ 
+  return mbool_Run; 
+}
+
+void AThread::setRun(bool boolRun /* = true */)
+{ 
+  mbool_Run = boolRun;
 }

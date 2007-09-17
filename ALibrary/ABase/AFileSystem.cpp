@@ -232,5 +232,91 @@ s8 AFileSystem::length(const AFilename& source)
   ret <<= 32;
   ret |= findData.nFileSizeLow;
   return ret;
+#else
+#pragma error("Not implemented yet")
+#endif
+}
+
+bool AFileSystem::getCreatedTime(const AFilename& source, ATime& ftime)
+{
+#ifdef __WINDOWS__
+  AString str;
+  AFilename::FTYPE ftype = source.getType();
+  source.emit(str, AFilename::FTYPE_WIN32, true);
+  WIN32_FIND_DATA findData;
+  HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
+  if (INVALID_HANDLE_VALUE == hFind)
+    return false;
+
+  ::FindClose(hFind);
+
+  s8 ret = findData.ftCreationTime.dwHighDateTime;
+  ret <<= 32;
+  ret |= findData.ftCreationTime.dwLowDateTime;
+
+  //a_Microsoft magic conversion from FILEDATE to time_t
+  ret -= 116444736000000000L;
+  ret /= 10000000L;
+
+  ftime.set((time_t)ret);
+  return true;
+#else
+#pragma error("Not implemented yet")
+#endif
+}
+
+bool AFileSystem::getLastAccessedTime(const AFilename& source, ATime& ftime)
+{
+#ifdef __WINDOWS__
+  AString str;
+  AFilename::FTYPE ftype = source.getType();
+  source.emit(str, AFilename::FTYPE_WIN32, true);
+  WIN32_FIND_DATA findData;
+  HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
+  if (INVALID_HANDLE_VALUE == hFind)
+    return false;
+
+  ::FindClose(hFind);
+
+  s8 ret = findData.ftLastAccessTime.dwHighDateTime;
+  ret <<= 32;
+  ret |= findData.ftLastAccessTime.dwLowDateTime;
+
+  //a_Microsoft magic conversion from FILEDATE to time_t
+  ret -= 116444736000000000L;
+  ret /= 10000000L;
+
+  ftime.set((time_t)ret);
+  return true;
+#else
+#pragma error("Not implemented yet")
+#endif
+}
+
+bool AFileSystem::getLastModifiedTime(const AFilename& source, ATime& ftime)
+{
+#ifdef __WINDOWS__
+  AString str;
+  AFilename::FTYPE ftype = source.getType();
+  source.emit(str, AFilename::FTYPE_WIN32, true);
+  WIN32_FIND_DATA findData;
+  HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
+  if (INVALID_HANDLE_VALUE == hFind)
+    return false;
+
+  ::FindClose(hFind);
+
+  s8 ret = findData.ftLastWriteTime.dwHighDateTime;
+  ret <<= 32;
+  ret |= findData.ftLastWriteTime.dwLowDateTime;
+
+  //a_Microsoft magic conversion from FILEDATE to time_t
+  ret -= 116444736000000000L;
+  ret /= 10000000L;
+
+  ftime.set((time_t)ret);
+  return true;
+#else
+#pragma error("Not implemented yet")
 #endif
 }

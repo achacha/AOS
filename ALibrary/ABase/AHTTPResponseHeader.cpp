@@ -310,3 +310,9 @@ const AString AHTTPResponseHeader::getStatusCodeReasonPhrase(int statusCode)
   return AConstant::ASTRING_EMPTY;
 }
 
+void AHTTPResponseHeader::setLastModified(const ATime& modified)
+{
+  AString str;
+  modified.emitRFCtime(str);
+  setPair(ASW("Last-Modified",13), str);
+}

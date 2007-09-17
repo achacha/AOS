@@ -155,12 +155,12 @@ std::istream& AFile_IOStream::getIStream() {
   if (mp_IStream)
     return *mp_IStream;
   else
-    ATHROW_EX(this, AException::InvalidObject, "std::istream is NULL");
+    ATHROW_EX(this, AException::InvalidObject, ASWNL("std::istream is NULL"));
 }
 std::ostream& AFile_IOStream::getOStream()
 { 
   if(mp_OStream)
     return *mp_OStream;
   else
-    ATHROW_EX(this, AException::InvalidObject, "std::ostream is NULL");
+    ATHROW_EX(this, AException::InvalidObject, ASWNL("std::ostream is NULL"));
 }

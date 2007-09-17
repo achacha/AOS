@@ -5,6 +5,7 @@
 #include "AFile_AString.hpp"
 #include "ASync_CriticalSectionSpinLock.hpp"
 #include "templateAutoPtr.hpp"
+#include "ATime.hpp"
 
 class ABASE_API ACache_FileSystem : public ACacheInterface
 {
@@ -41,9 +42,13 @@ public:
   
   pFile is set to AFile * that is either a cached one or from disk if file is too large to cache
     auto-delete is set accordingly and item handles (or not) when AAutoPtr is out of scope
-  Returns true if file is found
   */
-  bool get(const AFilename& key, AAutoPtr<AFile>& pFile);
+  ACacheInterface::STATUS get(
+    const AFilename& key,                             // Filename to find
+    AAutoPtr<AFile>& pFile,                           // Set to AFile in the cache
+    ATime& modified,                                  // Set to modified date of the file (the one in cache)
+    const ATime& ifModifiedSince = ATime::GENESIS     // Controls the return status to include FOUND_NOT_MODIFIED if applies
+  );
 
   /*!
   Cache item count (total)
@@ -79,7 +84,8 @@ private:
   {
     AFile_AString *pData;
     int hits;
-    s8 lastUsed;
+    ATime lastUsed;
+    ATime lastModified;
 
     CACHE_ITEM();
     ~CACHE_ITEM();

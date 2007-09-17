@@ -441,7 +441,7 @@ void AHTTPHeader::fromAFile(AFile& aFile)
   {
     //a_Either first line is not valid or non-blokcing socket is used
     //a_For non-blocking sockets HTTP header reads must be written by used, this function assumes blocking
-    ATHROW_EX(this, AException::InsuffiecientData, "Unable to read first line of HTTP header, may be a result of using non-blocking socket");
+    ATHROW_EX(this, AException::InsuffiecientData, ASWNL("Unable to read first line of HTTP header, may be a result of using non-blocking socket"));
   }
 }
 

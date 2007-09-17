@@ -44,8 +44,8 @@ const AString AConstant::ASTRING_LF("\n",1);
 const AString AConstant::ASTRING_CRLF("\r\n",2);
 const AString AConstant::ASTRING_CRLFCRLF("\r\n\r\n",4);
 
-const AString AConstant::CHARSET_URLSAFE_ALPHANUM("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz=_",64);
-const AString AConstant::CHARSET_ALPHANUM("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",62);
+const AString AConstant::CHARSET_URLSAFE_ALPHANUM("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",64);
+const AString AConstant::CHARSET_ALPHANUM("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",62);
 const AString AConstant::CHARSET_UPPERCASE_LETTERS("ABCDEFGHIJKLMNOPQRSTUVWXYZ",26);
 const AString AConstant::CHARSET_LOWERCASE_LETTERS("abcdefghijklmnopqrstuvwxyz",26);
 const AString AConstant::CHARSET_LOWERCASE_CONSONANTS("bcdfghjklmnpqrstvwxyz",21);

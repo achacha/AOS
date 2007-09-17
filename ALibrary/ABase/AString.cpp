@@ -45,7 +45,7 @@ const u2 AString::smi_DefaultBufferIncrement = 256;
 
 char *AString::_allocate(size_t bytes)
 {
-  AASSERT_EX(this, !mbool_Wrapped, "AString::_allocate: Cannot resize a constant string wrapper");
+  AASSERT_EX(this, !mbool_Wrapped, ASWNL("AString::_allocate: Cannot resize a constant string wrapper"));
   AASSERT(this, bytes > m_Length);   //a_Should only allocate if we really need more
 
   return new char[bytes];

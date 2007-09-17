@@ -34,14 +34,14 @@ public:
     ASocketException::SOCKET_EXCEPTION_TYPE type = ASocketException::LastOSSocketError, 
     const char* pccFilename = "", 
     int iLineNumber = 0x0, 
-    const AString& strExtra = AConstant::ASTRING_EMPTY
+    const AEmittable& extra = AConstant::ASTRING_EMPTY
   );
   ASocketException(
     int iLastSocketError, 
     const ADebugDumpable *const pObject = NULL,
     const char* pccFilename = "", 
     int iLineNumber = 0x0, 
-    const AString& strExtra = AConstant::ASTRING_EMPTY
+    const AEmittable& extra = AConstant::ASTRING_EMPTY
   );
 	
   /**
@@ -66,6 +66,8 @@ Throws a socket exception based on the ::WSAGetLastError()
   do { throw ASocketException(::GetLastError(), debugdumpable, __FILE__, __LINE__, AConstant::ASTRING_EMPTY); } while(0x0)
 #define ATHROW_LAST_SOCKET_ERROR_KNOWN(debugdumpable, errornum) \
   do { throw ASocketException(errornum, debugdumpable, __FILE__, __LINE__, AConstant::ASTRING_EMPTY); } while(0x0)
+#define ATHROW_LAST_SOCKET_ERROR_KNOWN_EX(debugdumpable, errornum, extra) \
+  do { throw ASocketException(errornum, debugdumpable, __FILE__, __LINE__, extra); } while(0x0)
 
 #endif
 
