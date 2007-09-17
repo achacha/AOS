@@ -686,8 +686,8 @@ AStringHashMap& AOSContext::useSessionData()
   }
   else
   {
-    addError("AOSContext::useSessionObjects", "Session does not exist, falling back on context data.");
-    ATHROW_EX(this, AException::InvalidState, "Session object does not exist");
+    addError(ASWNL("AOSContext::useSessionObjects"), ASWNL("Session does not exist, falling back on context data."));
+    ATHROW_EX(this, AException::InvalidState, ASWNL("Session object does not exist"));
   }
 }
 
@@ -803,10 +803,10 @@ void AOSContext::writeResponseHeader()
   AASSERT(this, mp_RequestFile);
 
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT))
-    ATHROW_EX(this, AException::ProgrammingError, "Response header has already been sent");
+    ATHROW_EX(this, AException::ProgrammingError, ASWNL("Response header has already been sent"));
 
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
-    ATHROW_EX(this, AException::ProgrammingError, "Output has already been sent");
+    ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
 
   m_EventVisitor.set(ASW("Sending HTTP response header",28));
   m_ResponseHeader.emit(*mp_RequestFile);
@@ -831,7 +831,7 @@ void AOSContext::writeOutputBuffer(const ARope& output)
   AASSERT(this, mp_RequestFile);
 
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
-    ATHROW_EX(this, AException::ProgrammingError, "Output has already been sent");
+    ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
 
   //a_If output buffer is empty then emit output XML document into it
   //a_This allows override of XML emit by manually adding data to the output buffer in output generator

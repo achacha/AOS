@@ -23,10 +23,10 @@ public:
   Get static file from cache or try to load it into the cache
   If cache enabled will get item from cache and auto ptr will be set on no-delete
   If not caching or file too large then auto ptr will auto delete the item when out of scope
-
-  Returns true only if a file entry is found and exists on the file system, false otherwise
+  modified - returns the modified time for the file if found
+  ifModifiedSince - is If-Modified: HTTP request header time
   */
-  bool getStaticFile(AOSContext&, const AFilename&, AAutoPtr<AFile>&);
+  ACacheInterface::STATUS getStaticFile(AOSContext&, const AFilename&, AAutoPtr<AFile>&, ATime& modified, const ATime& ifModifiedSince);
 
   /*!
   Get status code template from cache or try to load into the cache

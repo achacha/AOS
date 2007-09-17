@@ -115,18 +115,13 @@ AOSCacheManager::~AOSCacheManager()
   catch(...) {}
 }
 
-bool AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filename, AAutoPtr<AFile>& pFile)
+ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filename, AAutoPtr<AFile>& pFile, ATime& modified, const ATime& ifModifiedSince)
 {
   AASSERT(this, mp_StaticFileCache);
   if (m_Services.useConfiguration().useConfigRoot().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))
   {
     //a_Get from cache
-    if (mp_StaticFileCache->get(filename, pFile))
-    {
-      return !pFile.isNull();
-    }
-    else
-      return false;
+    return mp_StaticFileCache->get(filename, pFile, modified, ifModifiedSince);
   }
   else
   {
@@ -136,12 +131,15 @@ bool AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filena
       context.setExecutionState(ARope("Reading physical file: ",25)+filename.toAString());
       pFile.reset(new AFile_Physical(filename, "rb"));
       pFile->open();
-      return true;
+      if (!AFileSystem::getLastModifiedTime(filename, modified))
+        ATHROW_EX(&context, AException::NotFound, filename);
+
+      return ACacheInterface::FOUND_NOT_CACHED;
     }
     else
     {
       pFile.reset(NULL);
-      return false;
+      return ACacheInterface::NOT_FOUND;
     }
   }
 }

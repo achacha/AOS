@@ -125,7 +125,7 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
   if(templateNames.size() == 0)
   {
     m_Log.add(ASWNL("AOSOutput_Template: Unable to find '/params/output/filename' parameter"), ALog::FAILURE);
-    ATHROW_EX(this, AException::InvalidParameter, "Template requires '/params/output/filename' parameter");
+    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Template requires '/params/output/filename' parameter"));
   }
 
   bool doNotAddToCache = false;

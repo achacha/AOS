@@ -33,7 +33,7 @@ bool AOSOutput_XalanXslt::execute(AOSOutputContext& context)
   if (!context.getOutputParams().emitFromPath(ASW("/params/output/filename", 23), str))
   {
     m_Log.append("AOSOutput_XalanXslt: Unable to find '/params/output/filename' parameter");
-    ATHROW_EX(this, AException::InvalidParameter, "Xslt requires '/params/output/filename' parameter");
+    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Xslt requires '/params/output/filename' parameter"));
   }
   xsltName.join(str, false);
 

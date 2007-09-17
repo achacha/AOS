@@ -64,7 +64,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         {
           AString error("AOSContextQueue_PreExecutor: AOSContext pointer is invalid: ");
           error.append(AString::fromPointer(pContext));
-          AASSERT_EX(NULL, false, error.c_str());
+          AASSERT_EX(NULL, false, error);
           pContext = NULL;
           continue;
         }
@@ -196,6 +196,14 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         }
         else
         {
+          //a_Add some common response header pairs
+          {
+            ATime timeNow;
+            AString str;
+            timeNow.emitRFCtime(str);
+            pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Date, str);
+          }
+
           //a_Serve page (static)
           bool processSuccess = _processStaticPage(pContext);
           
@@ -290,24 +298,38 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   
   AAutoPtr<AFile> pFile;
   size_t contentLenth = AConstant::npos;
-  if (m_Services.useCacheManager().getStaticFile(*pContext, httpFilename, pFile))
+  const ATime& ifModifiedSince = pContext->useRequestHeader().getIfModifiedSince();
+  ATime modified;
+  switch (m_Services.useCacheManager().getStaticFile(*pContext, httpFilename, pFile, modified, ifModifiedSince))
   {
-    //a_Send the file
-    AASSERT(pContext, !pFile.isNull());
-    pFile->emit(pContext->useOutputBuffer());
-    pContext->useEventVisitor().reset();
-    contentLenth = pContext->useOutputBuffer().getSize();
-  }
-  else
-  {
-    //a_Handle file not found
-    pContext->setExecutionState(ARope("File not found (HTTP static): ",30)+httpFilename);
-    pContext->useServices().useLog().add(ASWNL("File not found (HTTP static): "), httpFilename, ALog::INFO);
-    
-    //a_Set response status and return with failed
-    pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);
+    case ACache_FileSystem::NOT_FOUND:
+      //a_Handle file not found
+      pContext->setExecutionState(ARope("File not found (HTTP static): ",30)+httpFilename);
+      pContext->useServices().useLog().add(ASWNL("File not found (HTTP static): "), httpFilename, ALog::INFO);
+      
+      //a_Set response status and return with failed (display error template)
+      pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);
     return false;
+
+    case ACache_FileSystem::FOUND_NOT_MODIFIED:
+      pContext->setExecutionState(ARope("File not modified (HTTP-304): ",30)+httpFilename);
+      
+      //a_Set status 304 and return true (no need to display error template)
+      pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_304_Not_Modified);
+      pContext->useResponseHeader().emit(pContext->useSocket());
+    return true;
+
+    default:
+      //a_Send the file
+      AASSERT(pContext, !pFile.isNull());
+      pFile->emit(pContext->useOutputBuffer());
+      pContext->useEventVisitor().reset();
+      contentLenth = pContext->useOutputBuffer().getSize();
+    break;
   }
+
+  //a_Set modified date
+  pContext->useResponseHeader().setLastModified(modified);
 
   int dumpContext = 0;
   AString str;
@@ -338,12 +360,6 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
   }
   
-  //a_Add some common response header pairs
-  ATime timeNow;
-  str.clear();
-  timeNow.emitRFCtime(str);
-  pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Date, str);
-
   AString strDeflateLevel;
   str.clear();
   pContext->useRequestHeader().find(AHTTPHeader::HT_REQ_Accept_Encoding, str);

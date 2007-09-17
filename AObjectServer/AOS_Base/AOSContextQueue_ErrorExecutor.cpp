@@ -51,7 +51,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
         {
           AString error("AOSContext pointer is invalid: ");
           error.append(AString::fromPointer(pContext));
-          AASSERT_EX(NULL, false, error.c_str());
+          AASSERT_EX(NULL, false, error);
           continue;
         }
 #endif

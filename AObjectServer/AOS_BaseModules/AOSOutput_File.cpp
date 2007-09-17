@@ -21,7 +21,7 @@ bool AOSOutput_File::execute(AOSOutputContext& context)
   if (!context.getOutputParams().emitFromPath(ASW("/params/output/path", 19), str))
   {
     context.useEventVisitor().set(ASWNL("AOSOutput_File: Unable to find 'path' parameter"), true);
-    ATHROW_EX(this, AException::InvalidParameter, "StaticFile requires 'path' parameter");
+    ATHROW_EX(this, AException::InvalidParameter, ASWNL("StaticFile requires 'path' parameter"));
   }
   
   AFilename *pFilename = NULL;
