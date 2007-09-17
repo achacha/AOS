@@ -317,6 +317,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
       //a_Set status 304 and return true (no need to display error template)
       pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_304_Not_Modified);
       pContext->useResponseHeader().emit(pContext->useSocket());
+      pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
     return true;
 
     default:
@@ -387,7 +388,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     pContext->setExecutionState(ASW("Writing compressed",18));
 
     pContext->useResponseHeader().emit(pContext->useSocket());
-    
+    pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
     try
     {
       pContext->useSocket().write(compressed);
@@ -412,6 +413,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
 
     //a_The writing of the output
     pContext->useResponseHeader().emit(pContext->useSocket());
+    pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
     try
     {
       pContext->useSocket().write(pContext->useOutputBuffer());
