@@ -256,12 +256,17 @@ AXmlNode *AXmlNode::_get(LIST_AString& xparts) const
 
 void AXmlNode::addContentNode(AXmlNode *pNode)
 {
+  AASSERT(this, m_Content.size() < DEBUG_MAXSIZE_AXmlNode);  //Debug only limit
+  AASSERT(this, pNode);
+
   pNode->setParent(this);
   m_Content.push_back(pNode);
 }
 
 AXmlNode& AXmlNode::addComment(const AString& comment)
 {
+  AASSERT(this, m_Content.size() < DEBUG_MAXSIZE_AXmlNode);  //Debug only limit
+
   AXmlInstruction *p = new AXmlInstruction(AXmlInstruction::COMMENT, this);
   p->useData().assign(comment);
   m_Content.push_back(p);

@@ -105,6 +105,7 @@ void AResultSet::clear()
 
 VECTOR_AString& AResultSet::insertRow()
 {
+  AASSERT(this, m_ResultSet.size() < DEBUG_MAXSIZE_AResultSet);
   m_ResultSet.push_back(VECTOR_AString());
   return m_ResultSet.back();
 }

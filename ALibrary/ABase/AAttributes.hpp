@@ -20,6 +20,7 @@ class ABASE_API AAttributes : public ADebugDumpable
 public:
   //a_Ctors and dtor
   AAttributes();
+  AAttributes(const AAttributes&);
   AAttributes(const AString& strLineToParse);      //a_Of the form "a='something' b=1 b=3 b=6 c='Hello World'"
   virtual ~AAttributes();
 

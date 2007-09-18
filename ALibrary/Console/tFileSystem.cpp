@@ -116,13 +116,19 @@ void testTime()
 
   timeNow0.emitRFCtime(str);
   std::cout << "timeNow0=" << str << std::endl;
-  std::cout << "created time =" << AFileSystem::createdTime(f) << std::endl;
-  std::cout << "last accessed=" << AFileSystem::lastAccessedTime(f) << std::endl;
-  std::cout << "modified time=" << AFileSystem::lastModifiedTime(f) << std::endl;
+  ATime t;
+  AFileSystem::getCreatedTime(f, t);
+  std::cout << "created time =" << t << std::endl;
+  AFileSystem::getCreatedTime(f, t);
+  std::cout << "last accessed=" << t << std::endl;
+  AFileSystem::getCreatedTime(f, t);
+  std::cout << "modified time=" << t << std::endl;
 
   {
     str.clear();
-    ATime(AFileSystem::lastModifiedTime(f), ATime::LOCAL).emitRFCtime(str);
+    AFileSystem::getLastModifiedTime(f, t);
+    t.setType(ATime::LOCAL);
+    t.emitRFCtime(str);
     std::cout << "modified time=" << str << std::endl;
   }
 
@@ -134,13 +140,18 @@ void testTime()
   str.clear();
   timeNow1.emitRFCtime(str);
   std::cout << "timeNow1=" << str << std::endl;
-  std::cout << "created time =" << AFileSystem::createdTime(f) << std::endl;
-  std::cout << "last accessed=" << AFileSystem::lastAccessedTime(f) << std::endl;
-  std::cout << "modified time=" << AFileSystem::lastModifiedTime(f) << std::endl;
+  AFileSystem::getCreatedTime(f, t);
+  std::cout << "created time =" << t << std::endl;
+  AFileSystem::getCreatedTime(f, t);
+  std::cout << "last accessed=" << t << std::endl;
+  AFileSystem::getCreatedTime(f, t);
+  std::cout << "modified time=" << t << std::endl;
 
   {
     str.clear();
-    ATime(AFileSystem::lastModifiedTime(f), ATime::LOCAL).emitRFCtime(str);
+    AFileSystem::getLastModifiedTime(f, t);
+    t.setType(ATime::LOCAL);
+    t.emitRFCtime(str);
     std::cout << "modified time=" << str << std::endl;
   }
 

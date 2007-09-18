@@ -250,6 +250,8 @@ ACache_FileSystem::STATUS ACache_FileSystem::get(
         
         pFile.reset(p->pData, false);
         modified = p->lastModified;
+
+        AASSERT(this, containerItem.m_Cache.size() < DEBUG_MAXSIZE_ACache_FileSystem);  //Debug only limit
         return ACacheInterface::FOUND;
       }
     }
@@ -261,6 +263,8 @@ ACache_FileSystem::STATUS ACache_FileSystem::get(
 
       pFile.reset(NULL);
       modified = ATime::GENESIS;
+
+      AASSERT(this, containerItem.m_Cache.size() < DEBUG_MAXSIZE_ACache_FileSystem);  //Debug only limit
       return ACacheInterface::NOT_FOUND;
     }
   }

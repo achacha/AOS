@@ -13,7 +13,7 @@ def makeSystemCall_mkdir(dirname):
 			print CMD;
 		os.system(CMD);
 
-RSYNC_SCRIPT = os.getcwd()+"/rsync.py";
+RSYNC_SCRIPT = os.path.join(os.path.dirname(sys.argv[0]),"rsync.py");
 EXEC_RSYNC_BASE=RSYNC_SCRIPT+" -tuC --exclude=CVS --exclude=pch*.hpp ";
 def syncPath(source_path, target_path):
 	CMD = EXEC_RSYNC_BASE + source_path + " " + target_path; 

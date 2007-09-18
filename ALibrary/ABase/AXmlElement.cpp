@@ -285,15 +285,13 @@ AXmlElement& AXmlElement::addAttributes(const AAttributes& attrs)
 
 AXmlElement& AXmlElement::addData(const AEmittable& data, AXmlData::Encoding encoding)
 {
-  return addContent(new AXmlData(data, encoding));
+  addContentNode(new AXmlData(data, encoding));
+  return *this;
 }
 
 AXmlElement& AXmlElement::addContent(AXmlNode *pnode)
 {
-  AASSERT(this, pnode);
-  pnode->setParent(this);
-  m_Content.push_back(pnode);
-
+  addContentNode(pnode);
   return *this;
 }
 
@@ -307,8 +305,7 @@ AXmlElement& AXmlElement::addComment(const AString& comment)
 {
   AXmlInstruction *p = new AXmlInstruction(AXmlInstruction::COMMENT);
   p->useData().set(comment);
-  addContent(p);
-
+  addContentNode(p);
   return *this;
 }
 

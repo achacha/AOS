@@ -43,10 +43,155 @@ void AString::debugDump(std::ostream& os, int indent) const
 //a_The one and only NULL pos static!
 const u2 AString::smi_DefaultBufferIncrement = 256;
 
+AString::AString
+(
+) :
+  mp_Buffer(NULL),
+  m_Length(0),
+  mbool_Wrapped(false),
+  m_InternalBufferSize(0),
+  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
+{
+}
+
+AString::AString
+(
+  const char* pccSource, 
+  size_t length
+) :
+  mp_Buffer(NULL),
+  m_Length(0),
+  mbool_Wrapped(false),
+  m_InternalBufferSize(0),
+  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
+{
+  _assign(pccSource, length);
+}
+
+AString::AString
+(
+  const wchar_t* pwccSource,
+  size_t length
+) :
+  mp_Buffer(NULL),
+  m_Length(0x0),
+  mbool_Wrapped(false),
+  m_InternalBufferSize(0x0),
+  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
+{
+  assignDoubleByte(pwccSource, length);
+}
+
+AString::AString
+(
+  const char cSource
+) :
+  mp_Buffer(NULL),
+  m_Length(0),
+  mbool_Wrapped(false),
+  m_InternalBufferSize(0),
+  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
+{
+  _assign(&cSource, 1);
+}
+
+AString::AString
+(
+  size_t length,
+  u2 increment
+) :
+  mp_Buffer(NULL),
+  m_Length(0),
+  mbool_Wrapped(false),
+  m_InternalBufferSize(0),
+  m_BufferIncrement(increment)
+{
+  AASSERT(this, increment > 0);
+
+  //a_Adjust the size
+  _resize(length);   //a_Allocate space
+  m_Length = 0;      //a_No content
+}
+
+AString::AString
+(
+  const AString& source
+) :
+  mp_Buffer(NULL),
+  m_Length(0),
+  mbool_Wrapped(false),
+  m_InternalBufferSize(0),
+  m_BufferIncrement(source.m_BufferIncrement)
+{
+  //if (source.mbool_Wrapped)
+  //{
+  //  //a_Retain wrapping
+  //  mp_Buffer = source.mp_Buffer;
+  //  m_Length = source.m_Length;
+  //  mbool_Wrapped = source.mbool_Wrapped;
+  //  m_InternalBufferSize = source.m_InternalBufferSize;
+  //}
+  //else
+  //{
+    //a_Copy content (if any)
+    if (source.m_Length > 0)
+      _assign(source.mp_Buffer, source.m_Length);
+//  }
+}
+
+AString::AString
+(
+  const AEmittable& source
+) :
+  mp_Buffer(NULL),
+  m_Length(0),
+  mbool_Wrapped(false),
+  m_InternalBufferSize(0),
+  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
+{
+  source.emit(*this);
+}
+
+AString::AString(
+  char *pcSource, 
+  size_t length, 
+  bool
+) :
+  mp_Buffer(pcSource),
+  m_Length(length),
+  mbool_Wrapped(true),
+  m_InternalBufferSize(0),
+  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
+{
+  //a_Wrapped object, get length if AConstant::npos
+  if (AConstant::npos == length)
+    m_Length = strlen(mp_Buffer);
+}
+
+const AString AString::wrap(
+  const char *pccSource, 
+  size_t length // = AConstant::npos
+)
+{
+  if (!pccSource)
+    return AConstant::ASTRING_EMPTY;
+ 
+  //a_const_cast<> here is a temporary removal of constness
+  //a_Used to construct the class, return is a const AString so pccSource is never changed
+  return AString(const_cast<char *>(pccSource), length, true);
+}
+
+AString::~AString()
+{
+  if (!mbool_Wrapped)
+    _deallocate(&mp_Buffer);
+}
+
 char *AString::_allocate(size_t bytes)
 {
   AASSERT_EX(this, !mbool_Wrapped, ASWNL("AString::_allocate: Cannot resize a constant string wrapper"));
   AASSERT(this, bytes > m_Length);   //a_Should only allocate if we really need more
+  AASSERT(this, bytes < DEBUG_MAXSIZE_AString);  //a_Debug only limit
 
   return new char[bytes];
 }
@@ -288,139 +433,6 @@ void AString::parsePointer(const void* pValue)
 #endif
 
   _assign(pcBuffer, AConstant::npos);
-}
-
-AString::AString
-(
-) :
-  mp_Buffer(NULL),
-  m_Length(0),
-  mbool_Wrapped(false),
-  m_InternalBufferSize(0),
-  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
-{
-}
-
-AString::AString
-(
-  const char* pccSource, 
-  size_t length
-) :
-  mp_Buffer(NULL),
-  m_Length(0),
-  mbool_Wrapped(false),
-  m_InternalBufferSize(0),
-  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
-{
-  _assign(pccSource, length);
-}
-
-AString::AString
-(
-  const wchar_t* pwccSource,
-  size_t length
-) :
-  mp_Buffer(NULL),
-  m_Length(0x0),
-  mbool_Wrapped(false),
-  m_InternalBufferSize(0x0),
-  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
-{
-  assignDoubleByte(pwccSource, length);
-}
-
-AString::AString
-(
-  const char cSource
-) :
-  mp_Buffer(NULL),
-  m_Length(0),
-  mbool_Wrapped(false),
-  m_InternalBufferSize(0),
-  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
-{
-  _assign(&cSource, 1);
-}
-
-AString::AString
-(
-  size_t length,
-  u2 increment
-) :
-  mp_Buffer(NULL),
-  m_Length(0),
-  mbool_Wrapped(false),
-  m_InternalBufferSize(0),
-  m_BufferIncrement(increment)
-{
-  AASSERT(this, increment > 0);
-
-  //a_Adjust the size
-  _resize(length);   //a_Allocate space
-  m_Length = 0;      //a_No content
-}
-
-AString::AString
-(
-  const AString& source
-) :
-  mp_Buffer(NULL),
-  m_Length(0),
-  mbool_Wrapped(false),
-  m_InternalBufferSize(0),
-  m_BufferIncrement(source.m_BufferIncrement)
-{
-  //a_Copy content (if any)
-  if (source.m_Length > 0)
-    _assign(source.mp_Buffer, source.m_Length);
-}
-
-AString::AString
-(
-  const AEmittable& source
-) :
-  mp_Buffer(NULL),
-  m_Length(0),
-  mbool_Wrapped(false),
-  m_InternalBufferSize(0),
-  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
-{
-  source.emit(*this);
-}
-
-AString::AString(
-  char *pcSource, 
-  size_t length, 
-  bool
-) :
-  mp_Buffer(pcSource),
-  m_Length(length),
-  mbool_Wrapped(true),
-  m_InternalBufferSize(0),
-  m_BufferIncrement(AString::smi_DefaultBufferIncrement)
-{
-  //a_Wrapped object, get length if AConstant::npos
-  if (AConstant::npos == length)
-    m_Length = strlen(mp_Buffer);
-}
-
-const AString AString::wrap(
-  const char *pccSource, 
-  size_t length // = AConstant::npos
-)
-{
-  if (!pccSource)
-    return AConstant::ASTRING_EMPTY;
- 
-  //a_const_cast<> here is a temporary removal of constness
-  //a_Used to construct the class, return is a const AString so pccSource is never changed
-  return AString(const_cast<char *>(pccSource), length, true);
-}
-
-AString::~AString()
-{
-  if (!mbool_Wrapped)
-    _deallocate(&mp_Buffer);
 }
 
 AString& AString::operator= (const AString& source)

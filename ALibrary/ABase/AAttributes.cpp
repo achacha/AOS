@@ -30,6 +30,11 @@ AAttributes::AAttributes()
 {
 }
 
+AAttributes::AAttributes(const AAttributes& that)
+{
+  append(that);
+}
+
 AAttributes::AAttributes(const AString &strLine)
 {
   parse(strLine);
@@ -244,6 +249,8 @@ void AAttributes::remove(const AString& strName, const AString &strValue /*= ACo
 
 void AAttributes::insert(const AString& strName, const AString& strValue /* = AConstant::ASTRING_EMPTY */, ANameValuePair::NameValueType eType /* = ANameValuePair::XML */)
 {
+  AASSERT(this, m_Pairs.size() < DEBUG_MAXSIZE_AAttributes);  //Debug only limit
+
   m_Pairs.push_back(ANameValuePair(strName, strValue, eType));
 }
 
@@ -265,7 +272,10 @@ void AAttributes::parse(const AString &strLine, ANameValuePair::NameValueType eT
   {
     pair.parse(strLine, pos);
     if (!pair.getName().isEmpty())
+    {
+      AASSERT(this, m_Pairs.size() < DEBUG_MAXSIZE_AAttributes);  //Debug only limit
       m_Pairs.push_back(pair);
+    }
 
     pair.clear();
   }

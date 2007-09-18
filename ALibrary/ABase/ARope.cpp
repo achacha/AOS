@@ -181,6 +181,8 @@ void ARope::_append(const char *pSource, size_t bytesLeft)
 void ARope::__newBlock()
 {
   AASSERT(this, m_LastBlockFree == 0);
+  AASSERT(this, getSize() < DEBUG_MAXSIZE_ARope);  //a_Debug only limit
+
   if (mp_LastBlock)
     m_Blocks.push_back(mp_LastBlock);
   if (m_FreeStore.size() > 0)

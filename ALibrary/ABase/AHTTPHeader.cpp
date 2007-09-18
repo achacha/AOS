@@ -184,6 +184,7 @@ void AHTTPHeader::parse(const AString &strHeader)
 
         //a_Child did not handle it, we will
         m_Pairs[nvpair.getName()] = nvpair;
+        AASSERT(this, m_Pairs.size() < DEBUG_MAXSIZE_AHTTPHeader);  //a_Debug only limit
       }
     }
   }
@@ -197,6 +198,8 @@ bool AHTTPHeader::parseLineZero(const AString &strLine)
 
 void AHTTPHeader::parseTokenLine(const AString &strLine)
 {
+  AASSERT(this, m_Pairs.size() < DEBUG_MAXSIZE_AHTTPHeader);  //a_Debug only limit
+  
   ANameValuePair nvpair(ANameValuePair::HTTP);
   size_t u4Pos = 0;
   nvpair.parse(strLine, u4Pos);
@@ -225,6 +228,7 @@ void AHTTPHeader::setPair(const AString& strName, const AString& strValue)
   }
   else
   {
+    AASSERT(this, m_Pairs.size() < DEBUG_MAXSIZE_AHTTPHeader);
     ANameValuePair& nvpair = m_Pairs[strName];
     nvpair.setType(ANameValuePair::HTTP);
     nvpair.setName(strName);

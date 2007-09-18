@@ -78,7 +78,7 @@ public:
   /*!
   Copy constructor
   */
-  explicit AString(const AString&);
+  AString(const AString&);
 
   /*!
   AString from a single character

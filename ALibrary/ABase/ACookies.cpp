@@ -72,6 +72,8 @@ void ACookies::clear()
 
 ACookie &ACookies::addCookie(const AString& name, const AString &value)
 {
+  AASSERT(this, mvector__Cookies.size() < DEBUG_MAXSIZE_ACache_FileSystem);  //a_Debug only limit
+
   ACookie *pcookieNew = __findCookie(name);
   if (pcookieNew)
   {

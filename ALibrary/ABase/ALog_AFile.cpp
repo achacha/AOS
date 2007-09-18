@@ -122,8 +122,8 @@ ALog_AFile::~ALog_AFile()
   {
     //a_Stop logger thread
     m_LoggerThread.setRun(false);
-    int i=3;
-    while(m_LoggerThread.isRun() && i > 0)
+    int i=5;
+    while(m_LoggerThread.isRunning() && i > 0)
     {
       AThread::sleep(getLoggerCycleSleep());
       --i;

@@ -83,6 +83,7 @@ void ABitArray::setSize(size_t newsize)
   
   if (allocsize > m_physical)
   {
+    AASSERT(this, allocsize < DEBUG_MAXSIZE_ABitArray);
     pnew = new u1[allocsize];
     if (mp_bits)
       memcpy(pnew, mp_bits, m_physical);

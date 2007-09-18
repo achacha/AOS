@@ -740,6 +740,8 @@ size_t ARopeDeque::peekFront(char *pcTarget, size_t bytesLeft) const
 void ARopeDeque::_newFrontBlock()
 {
   AASSERT(this, m_FrontBlockFree == 0);
+  AASSERT(this, getSize() < DEBUG_MAXSIZE_ARopeDeque);  //a_Debug only limit
+
   if (m_FrontBlockFree == 0)
   {
     if (mp_FrontBlock)
@@ -760,6 +762,8 @@ void ARopeDeque::_newFrontBlock()
 void ARopeDeque::_newBackBlock()
 {
   AASSERT(this, m_BackBlockFree == 0);
+  AASSERT(this, getSize() < DEBUG_MAXSIZE_ARopeDeque);  //a_Debug only limit
+
   if (m_BackBlockFree == 0)
   {
     if (mp_BackBlock)

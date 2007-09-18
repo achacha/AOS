@@ -1,6 +1,6 @@
 #include "AString.hpp"
 
-int main()
+void testWrap0()
 {
   const AString& temp = AString::wrap("This,is,a,test"); 
   VECTOR_AString vec;
@@ -14,6 +14,21 @@ int main()
     std::cout << *it << std::endl;
     ++it;
   }
+}
+
+void testWrap1()
+{
+  const char *pcc = "test";
+  const AString& foo = AString::wrap(pcc);
+  AString *pstr = new AString(foo);
+
+  std::cout << "?" << std::endl;
+}
+
+int main()
+{
+  //testWrap0();
+  testWrap1();
 
   return 0;
 }

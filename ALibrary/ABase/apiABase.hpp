@@ -46,4 +46,35 @@
 //a_Constants
 #include "AConstant.hpp"
 
+//a_Used for debugging, this is the maximum sizes used
+//a_Only used when __DEBUG_DUMP__ is set
+#ifdef __DEBUG_DUMP__
+// Max size
+#define DEBUG_MAXSIZE_AString 1000000
+
+// Max size
+#define DEBUG_MAXSIZE_ARope 1000000
+
+// Max size
+#define DEBUG_MAXSIZE_ARopeDeque 1000000
+
+// Number of HTTP tokens
+#define DEBUG_MAXSIZE_AHTTPHeader 1000
+
+// Size of container
+#define DEBUG_MAXSIZE_AXmlNode 1000
+
+// Attributes items
+#define DEBUG_MAXSIZE_AAttributes 500
+
+// Items per cache
+#define DEBUG_MAXSIZE_ACache_FileSystem 100000
+
+// Max size (size * 8 = bits)
+#define DEBUG_MAXSIZE_ABitArray 10000
+
+// Max rows
+#define DEBUG_MAXSIZE_AResultSet 500000
+#endif
+
 #endif //INCLUDED__apiABase_HPP__
