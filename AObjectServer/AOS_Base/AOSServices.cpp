@@ -88,13 +88,13 @@ AOSServices::~AOSServices()
 {
   try
   {
+    delete mp_Log;
     delete mp_AdminRegistry;
     delete mp_SessionManager;
     delete mp_ContextManager;
     delete mp_CacheManager;
     delete mp_DatabaseConnPool;
     delete mp_Configuration;
-    delete mp_Log;
   }
   catch(...) {}
 }

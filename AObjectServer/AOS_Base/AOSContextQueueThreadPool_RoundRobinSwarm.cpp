@@ -21,13 +21,13 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::addAdminXml(AXmlElement& eBase, 
   addProperty(
     eBase,
     ASW("CurrentReadQueue",16),
-    AString::fromInt(m_currentReadQueue)
+    AString::fromInt(m_currentReadQueue % m_queueCount)
   );
 
   addProperty(
     eBase,
     ASW("CurrentWriteQueue",17),
-    AString::fromInt(m_currentWriteQueue)
+    AString::fromInt(m_currentWriteQueue % m_queueCount)
   );
 
   addProperty(

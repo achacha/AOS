@@ -13,7 +13,7 @@ void AOSSessionManager::debugDump(std::ostream& os, int indent) const
   SESSION_HASHMAP::const_iterator citHashMap = m_SessionHashMap.begin();
   while(citHashMap != m_SessionHashMap.end())
   {
-    SessionMapHolder *pSessionMapHolder = (*citHashMap).second;
+    SessionMapHolder *pSessionMapHolder = citHashMap->second;
     ALock lock(pSessionMapHolder->mp_SynchObject);
     SESSION_MAP::const_iterator cit = pSessionMapHolder->m_SessionMap.begin();
     while (cit != pSessionMapHolder->m_SessionMap.end())
@@ -42,9 +42,10 @@ void AOSSessionManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
   SESSION_HASHMAP::const_iterator citHashMap = m_SessionHashMap.begin();
   while(citHashMap != m_SessionHashMap.end())
   {
-    AXmlElement& eHashMap = eBase.addElement(ASW("SessionHashMap", 14));
-    eHashMap.addAttribute(ASW("hash", 4), AString::fromSize_t((*citHashMap).first));
-    SessionMapHolder *pSessionMapHolder = (*citHashMap).second;
+    SessionMapHolder *pSessionMapHolder = citHashMap->second;
+    ALock lock(pSessionMapHolder->mp_SynchObject);
+    AXmlElement& eHashMap = addProperty(eBase, ASW("SessionHashMap",14), AString::fromSize_t(pSessionMapHolder->m_SessionMap.size()));  
+    eHashMap.addAttribute(ASW("hash", 4), AString::fromSize_t(citHashMap->first));
     eHashMap.addElement(ASW("size", 4), AString::fromSize_t(pSessionMapHolder->m_SessionMap.size()));
     ++citHashMap;
   }
