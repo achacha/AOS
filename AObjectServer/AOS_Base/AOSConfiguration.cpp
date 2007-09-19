@@ -361,10 +361,11 @@ void AOSConfiguration::_loadCommands()
           strPath.rremove(EXT_SIZE);
 
           //a_Parse command and associate to relative path
-          AOSCommand *p = new AOSCommand(strPath, m_Services.useLog());
+          AAutoPtr<AOSCommand> p(new AOSCommand(strPath, m_Services.useLog()));
           p->fromAXmlElement(*pElement);
           AASSERT(this, m_CommandPtrs.end() == m_CommandPtrs.find(strPath));
           m_CommandPtrs[strPath] = p;
+          p.setOwnership(false);
 
           //a_Register the command with admin
           p->registerAdminObject(m_Services.useAdminRegistry());
