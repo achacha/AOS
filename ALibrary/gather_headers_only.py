@@ -13,7 +13,8 @@ def makeSystemCall_mkdir(dirname):
 			print CMD;
 		os.system(CMD);
 
-RSYNC_SCRIPT = os.path.join(os.path.dirname(sys.argv[0]),"rsync.py");
+BASE_ALIBRARY_PATH=os.path.dirname(sys.argv[0]);
+RSYNC_SCRIPT = os.path.join(BASE_ALIBRARY_PATH,"rsync.py");
 EXEC_RSYNC_BASE=RSYNC_SCRIPT+" -tuC --exclude=CVS --exclude=pch*.hpp ";
 def syncPath(source_path, target_path):
 	CMD = EXEC_RSYNC_BASE + source_path + " " + target_path; 
@@ -42,7 +43,7 @@ def showUsage():
 ########################## MAIN ######################################
 ######################################################################
 
-TARGET_PATH = "..\\";
+TARGET_BASE_PATH = os.path.split(BASE_ALIBRARY_PATH)[0];
 
 verbose = 0;
 clean = 0;
@@ -53,7 +54,7 @@ while (len(sys.argv) > argc):
 	elif (sys.argv[argc] == "verbose"):
 		verbose = 1;
 	elif (argc == 1):
-		TARGET_PATH = sys.argv[1];
+		TARGET_BASE_PATH = sys.argv[1];
 	else:
 		print "Unknown parameter: "+sys.argv[argc];
 		showUsage();
@@ -61,17 +62,14 @@ while (len(sys.argv) > argc):
 	
 	argc += 1;
 
-if (TARGET_PATH == "/?" or TARGET_PATH == "?"):
+if (TARGET_BASE_PATH == "/?" or TARGET_BASE_PATH == "?"):
 	showUsage();
 	sys.exit(0);
 
-TARGET_ALIBRARY_INCLUDE_PATH = os.path.join(TARGET_PATH, "ALibrary", "include");
-
-base_path = os.path.join(os.getcwd());
-base_path = os.path.split(base_path)[0];
+TARGET_ALIBRARY_INCLUDE_PATH = os.path.join(TARGET_BASE_PATH, "ALibrary", "include");
 
 # Target paths
-makeSystemCall_mkdir(TARGET_PATH);
+makeSystemCall_mkdir(TARGET_BASE_PATH);
 
 # Create or clean include path
 if (not os.path.exists(TARGET_ALIBRARY_INCLUDE_PATH)):
@@ -82,40 +80,40 @@ elif (clean == 1):
 # ALibrary include
 print "|----------HEADERS: ALibrary/ABase-------------------------|";
 if (clean == 1):
-	syncPathWithDelete(os.path.join(base_path, "ALibrary", "ABase", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+	syncPathWithDelete(os.path.join(TARGET_BASE_PATH, "ALibrary", "ABase", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
 else:
-	syncPath(os.path.join(base_path, "ALibrary", "ABase", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+	syncPath(os.path.join(TARGET_BASE_PATH, "ALibrary", "ABase", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # ADatabase_MySQL
 print "|----------HEADERS: ALibraryImpl/ADatabase_MySQL-----------|";
-syncPath(os.path.join(base_path, "ALibraryImpl", "ADatabase_MySQL", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ADatabase_MySQL", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # ADatabase_SQLite
 print "|----------HEADERS: ALibraryImpl/ADatabase_SQLite----------|";
-syncPath(os.path.join(base_path, "ALibraryImpl", "ADatabase_SQLite", "*.hpp"), TARGET_ALIBRARY_INCLUDE_PATH);
-syncPath(os.path.join(base_path, "ALibraryImpl", "ADatabase_SQLite", "sqlite3.h"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ADatabase_SQLite", "*.hpp"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ADatabase_SQLite", "sqlite3.h"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # ADatabase_ODBC
 print "|----------HEADERS: ALibraryImpl/ADatabase_ODBC------------|";
-syncPath(os.path.join(base_path, "ALibraryImpl", "ADatabase_ODBC", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ADatabase_ODBC", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # APythonEmbed
 print "|----------HEADERS: ALibraryImpl/APythonEmbed--------------|";
-syncPath(os.path.join(base_path, "ALibraryImpl", "APythonEmbed", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "APythonEmbed", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # AXsl
 print "|----------HEADERS: ALibraryImpl/AXsl----------------------|";
-syncPath(os.path.join(base_path, "ALibraryImpl", "AXsl", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "AXsl", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # AZlib
 print "|----------HEADERS: ALibraryImpl/AZlib---------------------|";
-syncPath(os.path.join(base_path, "ALibraryImpl", "AZlib", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "AZlib", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # ACrypto
 print "|----------HEADERS: ALibraryImpl/ACrypto-------------------|";
-syncPath(os.path.join(base_path, "ALibraryImpl", "ACrypto", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
-syncPath(os.path.join(base_path, "ALibraryImpl", "ACrypto", "openssl", "*.h*"), os.path.join(TARGET_ALIBRARY_INCLUDE_PATH, "openssl"));
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ACrypto", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ACrypto", "openssl", "*.h*"), os.path.join(TARGET_ALIBRARY_INCLUDE_PATH, "openssl"));
 
 # AGdLib
 print "|----------HEADERS: ALibraryImpl/AGdLib--------------------|";
-syncPath(os.path.join(base_path, "ALibraryImpl", "AGdLib", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "AGdLib", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
