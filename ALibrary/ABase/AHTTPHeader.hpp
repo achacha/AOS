@@ -135,6 +135,12 @@ public:
   void setVersion(const AString&);
 
   /*!
+  Utility functions used by both header types
+  Checks if HTTP/0.9 or HTTP/1.0 or HTTP/1.1
+  */
+  bool isValidVersion();
+
+  /*!
   Keep-Alive timeout value or AConstant::npos if none
   */
   size_t AHTTPHeader::getKeepAliveTimeout() const;
@@ -167,9 +173,6 @@ protected:
 
   //a_Status code description
   AString _getStatusCodeDescription(int iStatusCode);
-
-  //a_Utility functions used by both header types
-  bool _isValidVersion();
 
   void _copy(const AHTTPHeader&);
 

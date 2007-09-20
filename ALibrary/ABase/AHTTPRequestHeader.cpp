@@ -5,11 +5,21 @@
 #include "AXmlElement.hpp"
 #include "ATextConverter.hpp"
 
+const AString AHTTPRequestHeader::METHOD_CONNECT("CONNECT",7);
+const AString AHTTPRequestHeader::METHOD_GET("GET",3);
+const AString AHTTPRequestHeader::METHOD_HEAD("HEAD",4); 
+const AString AHTTPRequestHeader::METHOD_OPTIONS("OPTIONS",7);
+const AString AHTTPRequestHeader::METHOD_POST("POST",4);
+const AString AHTTPRequestHeader::METHOD_PUT("PUT",3);
+const AString AHTTPRequestHeader::METHOD_DELETE("DELETE",6); 
+const AString AHTTPRequestHeader::METHOD_TRACE("TRACE",5);
+
 #ifdef __DEBUG_DUMP__
 void AHTTPRequestHeader::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AHTTPRequestHeader @ " << std::hex << this << std::dec << ") { " << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mstr_Method=" << mstr_Method << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_MethodId=" << m_MethodId << std::endl;
   ADebugDumpable::indent(os, indent+1) << "murl_Request=" << std::endl;
   murl_Request.debugDump(os, indent+2);
 
@@ -23,13 +33,15 @@ void AHTTPRequestHeader::debugDump(std::ostream& os, int indent) const
 
 AHTTPRequestHeader::AHTTPRequestHeader() :
   AHTTPHeader(),
-  mstr_Method("GET",3)
+  mstr_Method(METHOD_GET),
+  m_MethodId(METHOD_ID_GET)
 {
 }
 
 AHTTPRequestHeader::AHTTPRequestHeader(const AString &strHeader) :
   AHTTPHeader(),
-  mstr_Method("GET",3)
+  mstr_Method(METHOD_GET),
+  m_MethodId(METHOD_ID_GET)
 {
   parse(strHeader);
 }
@@ -57,6 +69,7 @@ AHTTPRequestHeader::~AHTTPRequestHeader()
 void AHTTPRequestHeader::_copy(const AHTTPRequestHeader& that)
 {
   mstr_Method.assign(that.mstr_Method);
+  m_MethodId = that.m_MethodId;
   murl_Request = that.murl_Request;
   mcookies_Request = that.mcookies_Request;
 }
@@ -64,6 +77,7 @@ void AHTTPRequestHeader::_copy(const AHTTPRequestHeader& that)
 void AHTTPRequestHeader::clear()
 {
   mstr_Method.clear();
+  m_MethodId = METHOD_ID_UNKNOWN;
   murl_Request.clear();
   mcookies_Request.clear();
 
@@ -75,9 +89,9 @@ const AString& AHTTPRequestHeader::getMethod() const
   return mstr_Method;
 }
 
-bool AHTTPRequestHeader::isPOST() const 
+AHTTPRequestHeader::METHOD_ID AHTTPRequestHeader::getMethodId() const 
 { 
-  return mstr_Method.equals("POST",4);
+  return m_MethodId;
 }
 
 const AUrl &AHTTPRequestHeader::getUrl() const 
@@ -171,8 +185,7 @@ void AHTTPRequestHeader::emitProxyHeader(AOutputBuffer& target) const
 void AHTTPRequestHeader::setMethod(const AString &strNewMethod)
 { 
   mstr_Method = strNewMethod;
-  if (!isValidMethod())
-    ATHROW(this, AException::RequestInvalidMethod);
+  m_MethodId = _lookupMethodId(strNewMethod);
 }
 
 void AHTTPRequestHeader::parseCookie(const AString &strCookieLine)
@@ -187,11 +200,12 @@ bool AHTTPRequestHeader::_parseLineZero()
     return false;
 
   //a_METHOD
+  AString str;
   size_t iP = mstr_LineZero.find(AConstant::ASTRING_SPACE);
   if (iP != AConstant::npos)
   {
-    mstr_Method.clear();
-    mstr_LineZero.peek(mstr_Method, 0, iP);
+    mstr_LineZero.peek(str, 0, iP);
+    setMethod(str);
   }
   else
     return false;
@@ -202,7 +216,7 @@ bool AHTTPRequestHeader::_parseLineZero()
   size_t iP2 = mstr_LineZero.rfind(AConstant::ASTRING_SPACE);
   if (iP2 != AConstant::npos)
   {
-    AString str;
+    str.clear();
     mstr_LineZero.peek(str, iP + 1, iP2 - iP - 1);
     
     AString strDecoded(str.getSize() * 2, 256);
@@ -216,7 +230,7 @@ bool AHTTPRequestHeader::_parseLineZero()
   mstr_HTTPVersion.clear();
   mstr_LineZero.peek(mstr_HTTPVersion, iP2 + 1);
   mstr_HTTPVersion.stripTrailing();
-  if (!_isValidVersion())
+  if (!isValidVersion())
     return false;
 
   return true;
@@ -249,19 +263,43 @@ bool AHTTPRequestHeader::_handledByChild(const ANameValuePair &nvHTTPPair)
 
 bool AHTTPRequestHeader::isValidMethod() const
 {
-  //a_Methods are case sensitive upper case as per RFC-2616, not valid for extension types (yet?)
-  switch(mstr_Method.at(0))
+  return m_MethodId != METHOD_ID_UNKNOWN;
+}
+
+AHTTPRequestHeader::METHOD_ID AHTTPRequestHeader::_lookupMethodId(const AString& method) const
+{
+  //a_Methods are case sensitive upper case as per RFC-2616
+  switch(method.at(0))
   {
-    case 'C' : return (mstr_Method.compareNoCase(ASW("CONNECT",7)) ? false : true);
-    case 'G' : return (mstr_Method.compareNoCase(ASW("GET",3)) ? false : true);
-    case 'H' : return (mstr_Method.compareNoCase(ASW("HEAD",4)) ? false : true);
-    case 'O' : return (mstr_Method.compareNoCase(ASW("OPTIONS",7)) ? false : true);
-    case 'P' : return (mstr_Method.compareNoCase(ASW("POST",4)) && mstr_Method.compareNoCase(ASW("PUT",3)) ? false : true);
-    case 'D' : return (mstr_Method.compareNoCase(ASW("DELETE",6)) ? false : true);
-    case 'T' : return (mstr_Method.compareNoCase(ASW("TRACE",5)) ? false : true);
+    case 'C' : 
+      return (method.equals(METHOD_CONNECT) ? METHOD_ID_CONNECT : METHOD_ID_UNKNOWN);
+
+    case 'G' : 
+      return (method.equals(METHOD_GET) ? METHOD_ID_GET : METHOD_ID_UNKNOWN);
+
+    case 'H' : 
+      return (method.equals(METHOD_HEAD) ? METHOD_ID_HEAD : METHOD_ID_UNKNOWN);
+
+    case 'O' : 
+      return (method.equals(METHOD_OPTIONS) ? METHOD_ID_OPTIONS : METHOD_ID_UNKNOWN);
+
+    case 'P' : 
+      if (method.equals(METHOD_POST))
+        return METHOD_ID_POST;
+      else if (method.equals(METHOD_PUT))
+        return METHOD_ID_PUT;
+      else
+        return METHOD_ID_UNKNOWN;
+
+    case 'D' :
+      return (method.equals(METHOD_DELETE) ? METHOD_ID_DELETE : METHOD_ID_UNKNOWN);
+
+    case 'T' :
+      return (method.equals(METHOD_TRACE) ? METHOD_ID_TRACE : METHOD_ID_UNKNOWN);
+
+    default  :
+      return METHOD_ID_UNKNOWN;
   }
-    
-  return false;
 }
 
 bool AHTTPRequestHeader::isValidPath() const

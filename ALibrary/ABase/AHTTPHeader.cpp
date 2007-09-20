@@ -381,11 +381,11 @@ AHTTPHeader::HEADER_TOKENS AHTTPHeader::_mapStringToType(const AString &strToken
 void AHTTPHeader::setVersion(const AString& version)
 {
   mstr_HTTPVersion.assign(version);
-  if (!_isValidVersion())
+  if (!isValidVersion())
     ATHROW(this, AException::InvalidParameter);
 }
 
-bool AHTTPHeader::_isValidVersion()
+bool AHTTPHeader::isValidVersion()
 {
   //a_So far these 3 versions of HTTP are supported, RFC 2616 is for as of now latest HTTP/1.1
   //a_Case sensitive compare

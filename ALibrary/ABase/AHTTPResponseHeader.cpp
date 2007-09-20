@@ -175,7 +175,7 @@ bool AHTTPResponseHeader::_parseLineZero()
   else
     return false;
 
-  if (!_isValidVersion())
+  if (!isValidVersion())
     ATHROW(this, AException::ResponseInvalidVersion);
 
   //a_Status code

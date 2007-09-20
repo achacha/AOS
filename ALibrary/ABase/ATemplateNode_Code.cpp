@@ -123,12 +123,22 @@ void ATemplateNode_Code::_processLine(AOutputBuffer& output, const AString& line
     AXmlNode::ConstNodeContainer nodes;
     root.find(param, nodes);
 
+    //a_Check for attribute
+    size_t pos = param.rfind('@');
+    AString attrName;
+    if (AConstant::npos != pos)
+      param.peek(attrName, pos);
+
     AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin();
     while (cit != nodes.end())
     {
       if (cit != nodes.begin())
         output.append(',');
-      (*cit)->emitContent(output);
+      if (attrName.isEmpty())
+        (*cit)->emitContent(output);
+      else
+        (*cit)->getAttributes().get(attrName, output);
+      
       ++cit;
     }
   }

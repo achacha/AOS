@@ -39,7 +39,7 @@ public:
   virtual void emit(AOutputBuffer&) const;
 
   //a_Access based on name
-  bool   get(const AString& strName, AString&, bool boolNoCase = true) const;     //a_NOTE: gets the first one it finds
+  bool   get(const AString& strName, AOutputBuffer&, bool boolNoCase = true) const;     //a_NOTE: gets the first one it finds
   size_t get(const AString& strName, LIST_AString& result, bool boolNoCase = true) const;
   size_t count(const AString& strName, bool boolNoCase = true) const;
   void   insert(const AString& strName, const AString &strValue = AConstant::ASTRING_EMPTY, ANameValuePair::NameValueType eType = ANameValuePair::XML);

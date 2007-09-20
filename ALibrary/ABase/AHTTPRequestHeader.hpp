@@ -9,6 +9,35 @@
 class ABASE_API AHTTPRequestHeader : public AHTTPHeader
 {
 public:
+  /*!
+  HTTP request method string constants
+  */
+  static const AString METHOD_CONNECT;
+  static const AString METHOD_GET;
+  static const AString METHOD_HEAD; 
+  static const AString METHOD_OPTIONS;
+  static const AString METHOD_POST;
+  static const AString METHOD_PUT;
+  static const AString METHOD_DELETE; 
+  static const AString METHOD_TRACE;
+
+  /*!
+  Method enumeration used with getMethodId
+  */
+  enum METHOD_ID
+  {
+    METHOD_ID_CONNECT,
+    METHOD_ID_GET,
+    METHOD_ID_HEAD, 
+    METHOD_ID_OPTIONS,
+    METHOD_ID_POST,
+    METHOD_ID_PUT,
+    METHOD_ID_DELETE, 
+    METHOD_ID_TRACE,
+    METHOD_ID_UNKNOWN = -1
+  };
+
+public:
   AHTTPRequestHeader();
   AHTTPRequestHeader(const AString &strHeader);
   AHTTPRequestHeader(const AHTTPRequestHeader&);
@@ -31,23 +60,27 @@ public:
   */
   void emitProxyHeader(AOutputBuffer&) const;
 
-  //a_Access methods
-  inline const AString& getMethod() const;
+  /*!
+  Method string
+  Whatever was in the HTTP header
+  */
+  const AString& getMethod() const;
+
+  /*!
+  Method id
+  Maps into enum for all known types and METHOD_ID_UNKNOWN otherwise
+  */
+  AHTTPRequestHeader::METHOD_ID getMethodId() const;
 
   //a_Object access
-  inline const AUrl& getUrl() const;
-  inline const ACookies& getCookies() const;
-  inline AUrl& useUrl();
-  inline ACookies& useCookies();
+  const AUrl& getUrl() const;
+  const ACookies& getCookies() const;
+  AUrl& useUrl();
+  ACookies& useCookies();
 
   //a_Setting methods
   void setMethod(const AString& strNewMethod);
   void parseCookie(const AString& strCookieLine);
-
-  /*!
-  Is a POST
-  */
-  bool isPOST() const;
 
   /*!
   Helpers
@@ -84,9 +117,12 @@ protected:
 
   void _copy(const AHTTPRequestHeader&);
 
+  AHTTPRequestHeader::METHOD_ID _lookupMethodId(const AString&) const;
+
 private:
-  AString  mstr_Method;
-  AUrl     murl_Request;
+  AString mstr_Method;
+  AHTTPRequestHeader::METHOD_ID m_MethodId;
+  AUrl murl_Request;
   ACookies mcookies_Request;
 
 public:

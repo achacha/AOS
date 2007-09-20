@@ -84,10 +84,8 @@ void AAttributes::emit(AOutputBuffer& target) const
   }
 }
 
-bool AAttributes::get(const AString& strName, AString& target, bool boolNoCase /* = true */) const
+bool AAttributes::get(const AString& strName, AOutputBuffer& target, bool boolNoCase /* = true */) const
 {
-  target.clear();
-
   LIST_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
   {
@@ -95,7 +93,7 @@ bool AAttributes::get(const AString& strName, AString& target, bool boolNoCase /
     {
       if ((*cit).isNameNoCase(strName))
       {
-        target.assign((*cit).getValue());
+        target.append((*cit).getValue());
         return true;
       }
     }
@@ -103,7 +101,7 @@ bool AAttributes::get(const AString& strName, AString& target, bool boolNoCase /
     {
       if ((*cit).isName(strName))
       {
-        target.assign((*cit).getValue());
+        target.append((*cit).getValue());
         return true;
       }
     }
