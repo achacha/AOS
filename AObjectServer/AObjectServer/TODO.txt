@@ -1,0 +1,1 @@
+Handle OPTIONS (and other non-GET/POST requests)

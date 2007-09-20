@@ -161,30 +161,39 @@ bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTe
       false
     );
 
-    if (AFileSystem::exists(filename))
+    //a_Load the template file and cache it
+    if (!filename.useFilename().isEmpty() && AFileSystem::exists(filename))
     {
-      AFile_Physical file(filename);
-      file.open();
-
-      //a_Process error template
-      ATemplate *p = new ATemplate();
-      p->fromAFile(file);
-
-      (*mp_TemplateCache)[statusCode] = p;
-
-      pTemplate.reset(p);
-      pTemplate.setOwnership(false);
-
+      pTemplate.reset(_putFileIntoStatusTemplateCache(statusCode, filename), false);
       return true;
     }
     else
     {
-      //a_File not found
-      (*mp_TemplateCache)[statusCode] = NULL;
+      //a_Template for this error is not found (may not exist)
+      //a_Try to use default filee if available or use NULL if neither exists
+      filename.clear();
+      filename.set(m_Services.useConfiguration().getAosBaseDataDirectory(), true);
+      filename.join(
+        m_Services.useConfiguration().useConfigRoot().getString(
+          ASW("/config/server/error-templates/default",38), 
+          AConstant::ASTRING_EMPTY
+        ),
+        false
+      );
 
-      pTemplate.reset();
-
-      return false;
+      if (!filename.useFilename().isEmpty() && AFileSystem::exists(filename))
+      {
+        //a_Try to use default template
+        pTemplate.reset(_putFileIntoStatusTemplateCache(statusCode, filename), false);
+        return true;
+      }
+      else
+      {
+        //a_Really doesn't exist
+        (*mp_TemplateCache)[statusCode] = NULL;
+        pTemplate.reset();
+        return false;
+      }
     }
   }
   else
@@ -196,4 +205,19 @@ bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTe
     
     return (NULL != (*it).second);
   }
+}
+
+ATemplate* AOSCacheManager::_putFileIntoStatusTemplateCache(int key, const AString& filename)
+{
+  AFile_Physical file(filename);
+  file.open();
+
+  //a_Process error template
+  AAutoPtr<ATemplate> p(new ATemplate());
+  p->fromAFile(file);
+
+  (*mp_TemplateCache)[key] = p.get();
+  
+  p.setOwnership(false);
+  return p.get();
 }

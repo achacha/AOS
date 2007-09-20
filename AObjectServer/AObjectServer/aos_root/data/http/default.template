@@ -1,0 +1,8 @@
+<html>
+<head>
+  <title>HTTP Error <!--[print(/root/RESPONSE/status@code)]-->  <!--[print(/root/RESPONSE/status)]--></title>
+</head>
+<body>
+<font color="red">HTTP Error <!--[print(/root/RESPONSE/status@code)]-->  <!--[print(/root/RESPONSE/status)]--></font>
+</body>
+</html>

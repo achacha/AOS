@@ -36,7 +36,7 @@ bool AOSInput_HtmlForm::execute(AOSContext& context)
   }
   else
   {
-    if (context.useRequestHeader().isPOST())
+    if (AHTTPRequestHeader::METHOD_ID_POST == context.useRequestHeader().getMethodId())
     {
       //a_411 Length Required if POST
       context.useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_411_Length_Required);

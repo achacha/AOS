@@ -509,10 +509,36 @@ AOSContext::Status AOSContext::_processHttpHeader()
   setExecutionState(ASW("AOSContext: Parsing HTTP header",31), false, 5000.0);
   m_RequestHeader.parse(str);
 
-  if (!m_RequestHeader.isValidMethod())
+  //a_Check if valid HTTP version
+  if (m_RequestHeader.isValidVersion())
+    return AOSContext::STATUS_HTTP_VERSION_NOT_SUPPORTED;
+
+  //a_Check if valid HTTP method
+  switch (m_RequestHeader.getMethodId())
   {
-    setExecutionState(ASW("AOSContext: Invalid method",26), true);
-    return AOSContext::STATUS_HTTP_UNKNOWN_METHOD;
+    case AHTTPRequestHeader::METHOD_ID_OPTIONS:
+      setExecutionState(ASW("AOSContext: OPTIONS request",27), false);
+      return AOSContext::STATUS_HTTP_METHOD_OPTIONS;
+
+    case AHTTPRequestHeader::METHOD_ID_CONNECT:
+      setExecutionState(ASW("AOSContext: CONNECT not allowed",31), true);
+      return AOSContext::STATUS_HTTP_METHOD_NOT_ALLOWED;
+
+    case AHTTPRequestHeader::METHOD_ID_DELETE:
+      setExecutionState(ASW("AOSContext: DELETE not allowed",30), true);
+      return AOSContext::STATUS_HTTP_METHOD_NOT_ALLOWED;
+
+    case AHTTPRequestHeader::METHOD_ID_PUT:
+      setExecutionState(ASW("AOSContext: PUT not allowed",27), true);
+      return AOSContext::STATUS_HTTP_METHOD_NOT_ALLOWED;
+
+    case AHTTPRequestHeader::METHOD_ID_TRACE:
+      setExecutionState(ASW("AOSContext: TRACE not allowed",29), true);
+      return AOSContext::STATUS_HTTP_METHOD_NOT_ALLOWED;
+
+    case AHTTPRequestHeader::METHOD_ID_UNKNOWN:
+      setExecutionState(ASW("AOSContext: Unknown method",26), true);
+      return AOSContext::STATUS_HTTP_UNKNOWN_METHOD;
   }
 
   if (!m_RequestHeader.isValidPath())

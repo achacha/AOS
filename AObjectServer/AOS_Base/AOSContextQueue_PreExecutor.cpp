@@ -92,16 +92,63 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           case AOSContext::STATUS_HTTP_INCOMPLETE_METHOD:
           case AOSContext::STATUS_HTTP_INCOMPLETE_LINEZERO:
           case AOSContext::STATUS_HTTP_INCOMPLETE_CRLFCRLF:
+          {
             //a_Go into waiting queue
             pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, going into waiting queue",79));
             pThis->_goNo(pContext);
             pContext = NULL;
+          }
+          continue;
+
+          case AOSContext::STATUS_HTTP_METHOD_OPTIONS:
+          {
+            //a_Handle OPTIONS request
+            pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_200_Ok);
+            pContext->useResponseHeader().setPair(AHTTPHeader::HT_RES_Public, ASW("OPTIONS, GET, HEAD, POST",24));
+            pContext->useResponseHeader().setPair(ASW("Compliance",10), ASW("rfc=1945, rfc=2068",18));
+            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AConstant::ASTRING_ZERO);
+
+            //a_Send header and no body
+            pContext->setExecutionState(ASW("Writing OPTIONS response",24));
+            pContext->useResponseHeader().emit(pContext->useSocket());
+            
+            //a_Flag that all is done
+            pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT, true);
+            pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT, true);
+            pContext->useEventVisitor().reset();
+            
+            //a_Request is done
+            pContext->useEventVisitor().set(pContext->useRequestHeader());
+            pThis->_goTerminate(pContext);
+            pContext = NULL;
+          }
+          continue;
+
+          case AOSContext::STATUS_HTTP_METHOD_NOT_ALLOWED:
+          {
+            pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_405_Method_Not_Allowed);
+            pContext->useEventVisitor().set(pContext->useRequestHeader());
+            pContext->useEventVisitor().reset();
+            pThis->_goError(pContext);
+            pContext = NULL;
+          }
+          continue;
+
+          case AOSContext::STATUS_HTTP_VERSION_NOT_SUPPORTED:
+          {
+            pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_505_HTTP_Version_Not_Supported);
+            pContext->useEventVisitor().set(pContext->useRequestHeader());
+            pContext->useEventVisitor().reset();
+            pThis->_goError(pContext);
+            pContext = NULL;
+          }
           continue;
 
           case AOSContext::STATUS_HTTP_UNKNOWN_METHOD:
           {
-            pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_405_Method_Not_Allowed);
+            pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
             pContext->useEventVisitor().set(pContext->useRequestHeader());
+            pContext->useEventVisitor().reset();
             pThis->_goError(pContext);
             pContext = NULL;
           }
@@ -115,6 +162,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           case AOSContext::STATUS_HTTP_INVALID_AFTER_METHOD_CHAR:
           {
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
+            pContext->useEventVisitor().reset();
             pThis->_goError(pContext);
             pContext = NULL;
           }
@@ -124,6 +172,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           {
             //a_Socket was closed, terminate
             pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+            pContext->useEventVisitor().reset();
             pThis->_goTerminate(pContext);
             pContext = NULL;
           }

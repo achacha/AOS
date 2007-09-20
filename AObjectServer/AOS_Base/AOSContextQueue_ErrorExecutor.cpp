@@ -93,8 +93,9 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
 
           //a_Add request header to result XML
           pContext->useRequestHeader().emit(pContext->useOutputRootXmlElement().addElement("REQUEST"));
+          pContext->useResponseHeader().emit(pContext->useOutputRootXmlElement().addElement("RESPONSE"));
 
-          //a_Emit HTTP result
+          //a_Check if dumpContext is specified to override and emit XML
           int dumpContext = 0;
           if (m_Services.useConfiguration().useConfigRoot().getBool("/config/server/debug/allow-dumpContext", false))
           {
@@ -132,13 +133,23 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
 
             if (pContext->useOutputBuffer().isEmpty())
             {
+              AString strError(1024, 256);
+              strError.assign("Error ",6);
+              strError.append(AString::fromInt(pContext->useResponseHeader().getStatusCode()));
+              strError.append(": ", 2);
+              strError.append(pContext->useResponseHeader().getStatusCodeReasonPhrase(pContext->useResponseHeader().getStatusCode()));
+
               //a_Put some generic stuff since there is no error template
-              pContext->useOutputBuffer().append("<html><head><title>Error 500: Internal Server Error</title></head>");
-              pContext->useOutputBuffer().append("<body>Error 500: Internal Server Error</body></html>");
+              pContext->useOutputBuffer().append("<html><head><title>",19);
+              pContext->useOutputBuffer().append(strError);
+              pContext->useOutputBuffer().append("</title></head>",15);
+              pContext->useOutputBuffer().append("<body>",6);
+              pContext->useOutputBuffer().append(strError);
+              pContext->useOutputBuffer().append("</body></html>",14);
             }
 
             //a_Write output buffer
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/html");
+            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html",9));
             pContext->writeOutputBuffer();
           }
         }
