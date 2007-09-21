@@ -120,14 +120,17 @@ void ATemplateNode_Code::_processLine(AOutputBuffer& output, const AString& line
 
   if (command.equalsNoCase("print"))
   {
-    AXmlNode::ConstNodeContainer nodes;
-    root.find(param, nodes);
-
     //a_Check for attribute
     size_t pos = param.rfind('@');
     AString attrName;
     if (AConstant::npos != pos)
-      param.peek(attrName, pos);
+    {
+      param.peek(attrName, pos+1);
+      param.setSize(pos);
+    }
+
+    AXmlNode::ConstNodeContainer nodes;
+    root.find(param, nodes);
 
     AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin();
     while (cit != nodes.end())
