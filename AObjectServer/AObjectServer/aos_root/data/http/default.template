@@ -3,6 +3,6 @@
   <title>HTTP Error <!--[print(/root/RESPONSE/status@code)]-->  <!--[print(/root/RESPONSE/status)]--></title>
 </head>
 <body>
-<font color="red">HTTP Error <!--[print(/root/RESPONSE/status@code)]-->  <!--[print(/root/RESPONSE/status)]--></font>
+<font color="red"><b>HTTP Error <!--[print(/root/RESPONSE/status@code)]--></b> - <!--[print(/root/RESPONSE/status)]--></font>
 </body>
 </html>

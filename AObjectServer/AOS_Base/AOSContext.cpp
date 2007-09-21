@@ -510,7 +510,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   m_RequestHeader.parse(str);
 
   //a_Check if valid HTTP version
-  if (m_RequestHeader.isValidVersion())
+  if (!m_RequestHeader.isValidVersion())
     return AOSContext::STATUS_HTTP_VERSION_NOT_SUPPORTED;
 
   //a_Check if valid HTTP method
