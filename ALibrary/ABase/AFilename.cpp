@@ -558,3 +558,31 @@ bool AFilename::isValid() const
 
   return true;
 }
+
+void AFilename::removeBasePath(
+  const AFilename& base, 
+  bool makeResultAbsolute // = false
+)
+{
+  //a_Verify that base is actually in this
+  LIST_AString::iterator it = m_PathNames.begin();
+  for (LIST_AString::const_iterator cit = base.m_PathNames.begin(); cit != base.m_PathNames.end(); ++cit, ++it)
+  {
+    if (it == m_PathNames.end() || !(*it).equals(*cit))
+      ATHROW_EX(this, AException::InvalidData, *cit);
+  }
+  
+  for (size_t i = base.m_PathNames.size(); i > 0; --i)
+    m_PathNames.pop_front();
+
+  m_RelativePath = !makeResultAbsolute;
+}
+
+void AFilename::removeExtension(int count)
+{
+  for (int i=0; i<count; ++i)
+  {
+    m_Filename.rremoveUntil('.');
+  }
+}
+

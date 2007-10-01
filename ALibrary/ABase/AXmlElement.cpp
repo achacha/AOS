@@ -139,10 +139,12 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const AString& value,
   else
     pParent = this;
 
-  AXmlElement *pNew = new AXmlElement(strName);
-  pNew->addData(value, encoding);
-
+  AAutoPtr<AXmlElement>pNew(new AXmlElement(strName));
+  if (!value.isEmpty())
+    pNew->addData(value, encoding);
   pParent->addContent(pNew);
+  pNew.setOwnership(false);
+
   return *pNew;
 }
 
@@ -382,6 +384,96 @@ void AXmlElement::emit(AOutputBuffer& target) const
   emit(target,-1);
 }
 
+void AXmlElement::emitJSON(
+  AOutputBuffer& target,
+  int indent // = -1
+) const
+{
+  if (indent >=0) _indent(target, indent);
+  target.append(m_Name);
+  if (m_Content.size() + m_Attributes.size() == 0)
+  {
+    target.append(":''",4);
+    if (indent >=0) target.append(AConstant::ASTRING_CRLF);
+    return;
+  }
+  
+  bool needsBraces = hasElements();
+  target.append(':');
+  if (needsBraces)
+  {
+    target.append('{');
+    if (indent >=0) target.append(AConstant::ASTRING_CRLF);
+  }
+
+  //a_Add content
+  size_t attrSize = m_Attributes.size();
+  if (m_Content.size() > 0)
+  {
+    NodeContainer::const_iterator cit = m_Content.begin();
+    while(cit != m_Content.end())
+    {
+      AXmlElement *pElement = dynamic_cast<AXmlElement *>(*cit);
+      if (pElement)
+      {
+        (*cit)->emitJSON(target, (indent >= 0 ? indent+1 : indent));
+        ++cit;
+        if (cit != m_Content.end() || attrSize > 0)
+        {
+          target.append(',');
+          if (indent >=0) target.append(AConstant::ASTRING_CRLF);
+        }
+      }
+      else
+      {
+        target.append('\'');
+        emitContent(target);
+        target.append('\'');
+        ++cit;
+        if (cit != m_Content.end() || attrSize > 0)
+        {
+          target.append(',');
+          if (indent >=0) target.append(AConstant::ASTRING_CRLF);
+        }
+      }
+    }
+  }
+
+  //a_Attributes become name:value pairs
+  if (attrSize > 0)
+  {
+    SET_AString names;
+    m_Attributes.getNames(names);
+    LIST_NVPair::const_iterator cit = m_Attributes.getAttributeContainer().begin();
+    const LIST_NVPair& container = m_Attributes.getAttributeContainer();
+    while(cit != container.end())
+    {
+      if (indent >=0) _indent(target, indent+1);
+      target.append(cit->getName());
+      target.append(":'",2);
+      target.append(cit->getValue());
+      target.append('\'');
+      ++cit;
+      if (cit != container.end())
+      {
+        target.append(',');
+        if (indent >= 0) target.append(AConstant::ASTRING_CRLF);
+      }
+    }
+  }
+
+  if (needsBraces)
+  {
+    
+    if (indent >=0)
+    {
+      target.append(AConstant::ASTRING_CRLF);
+      _indent(target, indent);
+    }
+    target.append('}');
+  }
+}
+
 void AXmlElement::fromAFile(AFile& file)
 {
   AString str(1024, 256);
@@ -512,20 +604,6 @@ void AXmlElement::toAFile(AFile& file) const
   rope.toAFile(file);
 }
 
-bool AXmlElement::hasElements() const
-{
-  NodeContainer::const_iterator cit = m_Content.begin();
-  while (cit != m_Content.end())
-  {
-    //a_Stop when first instance is encountered
-    if (NULL != dynamic_cast<const AXmlElement *>(*cit))
-      return true;
-
-    ++cit;
-  }
-  return false;
-}
-
 void AXmlElement::setString(const AString& path, const AString& value, AXmlData::Encoding encoding)
 {
   addElement(path, value, encoding);
@@ -554,4 +632,19 @@ void AXmlElement::setBool(const AString& path, bool value)
   {
     addElement(path, AString::fromBool(value));
   }
+}
+
+bool AXmlElement::isElement() const
+{
+  return true;
+}
+
+bool AXmlElement::isData() const
+{
+  return false;
+}
+
+bool AXmlElement::isInstruction() const
+{
+  return false;
 }

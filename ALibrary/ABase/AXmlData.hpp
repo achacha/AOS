@@ -54,6 +54,21 @@ public:
   virtual void emitContent(AOutputBuffer&) const;
   
   /*!
+  Checks if element type
+  */
+  virtual bool isElement() const;
+
+  /*!
+  Checks if data type
+  */
+  virtual bool isData() const;
+
+  /*!
+  Checks if instruction
+  */
+  virtual bool isInstruction() const;
+
+  /*!
   Data access
   */
   AString& useData();

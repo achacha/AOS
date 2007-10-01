@@ -350,6 +350,12 @@ public:
   size_t findNotOneOf(const AString& strSet, size_t startIndex = 0) const;
 
   /*!
+  Reverse finding an offset to the first element in or not in a given set
+  */
+  size_t rfindOneOf(const AString& strSet) const;
+  size_t rfindNotOneOf(const AString& strSet) const;
+
+  /*!
   Splits the string based on a delimeter character, empty strings discarded (i.e. 2 delimeters next to each other, leading delimeter, or trailing delimeter)
   strStrip will be used on each resulting string and stripped from front and back (AConstant::ASTRING_EMPTY means don't strip anything)
   bKeepEmpty if true it will keep empty string (2 delimeters next to each other)
@@ -457,7 +463,8 @@ public:
   u1 get(size_t index = 0);
   u1 rget();                                                                                      //a_Gets and removes the last byte
   size_t get(AString& bufDestination, size_t sourceIndex = 0, size_t bytes = AConstant::npos);              //a_Return # of bytes moved
-  size_t getUntil(AString& bufDestination, const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);     //a_Return # of bytes moved
+  size_t getUntilOneOf(AString& bufDestination, const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);     //a_Return # of bytes moved
+  size_t getUntil(AString& bufDestination, const AString& pattern);     //a_Return # of bytes moved
   size_t getUntil(AString& bufDestination, char delimeter, bool removeDelimeter = true);                                            //a_Return # of bytes moved
 
   /*!
@@ -470,8 +477,14 @@ public:
   /*!
   Remove until a given delimeter
   */
-  void removeUntil(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
+  void removeUntilOneOf(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
   void removeUntil(char delimeter, bool removeDelimeter = true);
+
+  /*!
+  Reverse remove until a given delimeter
+  */
+  void rremoveUntilOneOf(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
+  void rremoveUntil(char delimeter, bool removeDelimeter = true);
 
   /*!
   set(u1,size_t) will set 1 byte at an index (yes, its really a poke! :)

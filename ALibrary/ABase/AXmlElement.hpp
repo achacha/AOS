@@ -67,11 +67,6 @@ public:
   AXmlElement& addAttribute(const AString& name, const double value);
 
   /*!
-  Checks if this element contains other elements
-  */
-  bool hasElements() const;
-
-  /*!
   Saves value into DOM at path
   */
   void setString(const AString& path, const AString& value, AXmlData::Encoding encoding = AXmlData::None);
@@ -93,6 +88,21 @@ public:
   void setBool(const AString& path, bool value);
 
   /*!
+  Checks if element type
+  */
+  virtual bool isElement() const;
+
+  /*!
+  Checks if data type
+  */
+  virtual bool isData() const;
+
+  /*!
+  Checks if instruction
+  */
+  virtual bool isInstruction() const;
+
+  /*!
   Emit XML unformatted
   */
   virtual void emit(AOutputBuffer&) const;
@@ -102,6 +112,11 @@ public:
   indent >=0 will add 2 spaces per indent and make it human-readable
   */
   virtual void emit(AOutputBuffer&, int indent) const;
+
+  /*!
+   Emit as JavaScript Object Notation (JSON)
+  */
+  virtual void emitJSON(AOutputBuffer&, int indent = -1) const;
 
   /*!
   Clear the contents and release sub-elements

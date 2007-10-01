@@ -117,10 +117,18 @@ public:
   const AString& getFilename() const;
 
   /*!
-  Modify access
+  Drive if any
   */
   char& useDrive();
+  
+  /*!
+  List of directory names
+  */
   LIST_AString& usePathNames();
+  
+  /*!
+  Filename
+  */
   AString& useFilename();
 
   /*!
@@ -130,10 +138,18 @@ public:
   void setExtension(const AString&);
 
   /*!
-  AFilename properties
+  Checks if it's a directory
   */
   bool isDirectory() const;
+  
+  /*!
+  Checks if path is relative
+  */
   bool isRelativePath() const;
+  
+  /*!
+  Checks if filename has an extension
+  */
   bool hasExtension() const;
   
   /*!
@@ -146,6 +162,22 @@ public:
   */
   bool equalsExtension(const AString&) const;                  //a_Compare to extension
   bool equalsExtension(const AString&, const AString&) const;  //a_2 extensions  filename.ext1.ext2
+
+  /*!
+  Removes base path from given path
+  this: /foo/bar/baz/filename.ext
+  base: /foo/bar
+  result if relative=baz/filename.ext
+  result if absolute=/baz/filename.ext
+
+  makeResultAbsolute - if set the result path will be absolute, else relative
+  */
+  void removeBasePath(const AFilename& base, bool makeResultAbsolute = false);
+
+  /*!
+  Remove extension(s)
+  */
+  void removeExtension(int count = 1);
 
   /*!
   Operators

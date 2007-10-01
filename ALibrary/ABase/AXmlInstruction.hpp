@@ -88,6 +88,21 @@ public:
   virtual void emitJSON(AOutputBuffer&, int indent = -1) const;
 
   /*!
+  Checks if element type
+  */
+  virtual bool isElement() const;
+
+  /*!
+  Checks if data type
+  */
+  virtual bool isData() const;
+
+  /*!
+  Checks if instruction
+  */
+  virtual bool isInstruction() const;
+
+  /*!
   Clear
   NOTE: Does not clear the name (i.e. the type of this instruction)
   */

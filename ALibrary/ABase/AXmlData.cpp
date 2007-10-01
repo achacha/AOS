@@ -64,9 +64,13 @@ void AXmlData::setEncoding(AXmlData::Encoding encoding)
   m_Encoding = encoding;
 }
 
-void AXmlData::emitJSON(AOutputBuffer& target, int) const
+void AXmlData::emitJSON(AOutputBuffer& target, int indent) const
 {
+  target.append(AConstant::ASTRING_CRLF);
+  if (indent >=0) _indent(target, indent);
+  target.append("data:\'",6);
   target.append(m_Data);
+  target.append('\'');
 }
 
 void AXmlData::emitContent(AOutputBuffer& target) const
@@ -121,4 +125,19 @@ void AXmlData::emit(AOutputBuffer& target, int) const
     default:
       ATHROW(this, AException::ProgrammingError);
   }
+}
+
+bool AXmlData::isElement() const
+{
+  return false;
+}
+
+bool AXmlData::isData() const
+{
+  return true;
+}
+
+bool AXmlData::isInstruction() const
+{
+  return false;
 }

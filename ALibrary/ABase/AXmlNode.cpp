@@ -113,11 +113,44 @@ void AXmlNode::emitJSON(
   int indent // = -1
 ) const
 {
-  NodeContainer::const_iterator cit = m_Content.begin();
-  while (cit != m_Content.end())
+  bool needsBraces = (m_Content.size() > 0 || m_Attributes.size() > 0);
+  if (needsBraces)
   {
-    (*cit)->emitJSON(target, -1);
-    ++cit;
+    target.append('{');
+  }
+
+  //a_Attributes become name:value pairs
+  if (m_Attributes.size() > 0)
+  {
+    SET_AString names;
+    m_Attributes.getNames(names);
+    for(LIST_NVPair::const_iterator cit = m_Attributes.getAttributeContainer().begin(); cit != m_Attributes.getAttributeContainer().end(); ++cit)
+    {
+      if (indent >=0) _indent(target, indent+1);
+      target.append(cit->getName());
+      target.append(':');
+      target.append(cit->getValue());
+      if (indent >=0) target.append(AConstant::ASTRING_CRLF);
+    }
+  }
+
+  //a_Add content
+  if (m_Content.size() > 0)
+  {
+    if (indent >=0) _indent(target, indent+1);
+    target.append(m_Name);
+    target.append(':');
+    for (NodeContainer::const_iterator cit = m_Content.begin(); cit != m_Content.end(); ++cit)
+    {
+      (*cit)->emitJSON(target, (indent >= 0 ? indent+1 : indent));
+    }
+  }
+
+  if (needsBraces)
+  {
+    if (indent >=0) _indent(target, indent);
+    target.append('}');
+    if (indent >=0) target.append(AConstant::ASTRING_CRLF);
   }
 }
 
@@ -451,3 +484,18 @@ bool AXmlNode::getBool(const AString& path, bool boolDefault) const
   else
     return boolDefault;
 }
+
+bool AXmlNode::hasElements() const
+{
+  NodeContainer::const_iterator cit = m_Content.begin();
+  while (cit != m_Content.end())
+  {
+    //a_Stop when first instance is encountered
+    if ((*cit)->isElement())
+      return true;
+
+    ++cit;
+  }
+  return false;
+}
+

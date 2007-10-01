@@ -42,10 +42,30 @@ public:
   const AString& getName() const;
   AString& useName();
 
-   /*!
+  /*!
   Returns true if exists
   */
   bool exists(const AString& path) const;
+
+  /*!
+  Checks if this node contains elements
+  */
+  bool hasElements() const;
+
+  /*!
+  Checks if an element type
+  */
+  virtual bool isElement() const = 0;
+
+  /*!
+  Checks if data type
+  */
+  virtual bool isData() const = 0;
+
+  /*!
+  Checks if instruction
+  */
+  virtual bool isInstruction() const = 0;
 
   /*!
   Emitted data corresponding to the path
@@ -105,6 +125,7 @@ public:
   */
   virtual void emit(AOutputBuffer&) const;
   virtual void emit(AOutputBuffer&, int indent) const;
+
   /*!
    Emit as JavaScript Object Notation (JSON)
   */

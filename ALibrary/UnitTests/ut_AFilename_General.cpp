@@ -127,6 +127,20 @@ void testValid(int& iRet)
   ASSERT_UNIT_TEST(f.isValid(), "AFilename validity", "1", iRet);
 }
 
+void testManipulate(int& iRet)
+{
+  AFilename f(ASWNL("/foo/bar/baz/filename.ext0.ext1.ext2.ext3"), false);
+  f.removeExtension(4);
+  ASSERT_UNIT_TEST(f.useFilename().equals(ASWNL("filename")), "AFilename::removeExtension", "0", iRet);
+
+  AString str;
+  AFilename fBase(ASWNL("/foo/bar"), true);
+  f.removeBasePath(fBase);
+  f.emit(str);
+  ASSERT_UNIT_TEST(str.equals(ASWNL("baz/filename")), "AFilename::removeBasePath", "0", iRet);
+  ASSERT_UNIT_TEST(f.isRelativePath(), "AFilename::removeBasePath", "1", iRet);
+}
+
 int ut_AFilename_General()
 {
   std::cerr << "ut_AFilename_General" << std::endl;
@@ -135,6 +149,7 @@ int ut_AFilename_General()
   testGeneric(iRet);
   testCompare(iRet);
   testValid(iRet);
+  testManipulate(iRet);
 
   return iRet;
 }

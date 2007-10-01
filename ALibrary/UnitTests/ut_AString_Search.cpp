@@ -1,11 +1,7 @@
 #include "pchUnitTests.hpp"
 
-int ut_AString_Search()
+void testSearchBasic(int& iRet)
 {
-  std::cerr << "ut_AString_Search" << std::endl;
-
-  int iRet = 0x0;
-
   AString str0 = "This is my test!";
 
   //a_Forward finds
@@ -209,6 +205,35 @@ int ut_AString_Search()
     iRet++;
     std::cerr << str0 << "does contain " << str1 << " at position " << iPos << std::endl;
   } else std::cerr << "." << std::flush;
+}
+
+void testReverse(int& iRet)
+{
+  AString str("somefile.ext..ext1.ext2");
+  size_t pos = str.rfind('.');
+  ASSERT_UNIT_TEST(pos == 18, "AString::rfind", "0", iRet);
+
+  pos = str.rfind(':');
+  ASSERT_UNIT_TEST(pos == AConstant::npos, "AString::rfind", "1", iRet);
+
+  str.rremoveUntil('.');
+  ASSERT_UNIT_TEST(str.equals(ASWNL("somefile.ext..ext1")), "AString::rremoveUntil", "0", iRet);
+
+  str.rremoveUntilOneOf(ASW(".;:",3));
+  ASSERT_UNIT_TEST(str.equals(ASWNL("somefile.ext")), "AString::rremoveUntilOneOf", "0", iRet);
+
+  str.rremove(4);
+  ASSERT_UNIT_TEST(str.equals(ASWNL("somefile")), "AString::rremove", "0", iRet);
+}
+
+int ut_AString_Search()
+{
+  std::cerr << "ut_AString_Search" << std::endl;
+
+  int iRet = 0x0;
+
+  testSearchBasic(iRet);
+  testReverse(iRet);
 
   return iRet;
 }

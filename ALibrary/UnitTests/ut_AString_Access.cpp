@@ -106,8 +106,13 @@ int ut_AString_Access()
   ASSERT_UNIT_TEST((!str1.compare("find") && !str0.compare("file_1")), "AString::getUntil", "0", iRet);
 
   str0="find_file_1";
-  str0.getUntil(str1, "_", false);
+  str0.getUntilOneOf(str1, ASW("_",1), false);
   ASSERT_UNIT_TEST((!str1.compare("find") && !str0.compare("_file_1")), "AString::getUntil", "1", iRet);
+
+  str0.remove(1);
+  str1.clear();
+  str0.getUntil(str1, ASW("_",1));
+  ASSERT_UNIT_TEST((!str1.compare("file") && !str0.compare("_1")), "AString::getUntil", "1", iRet);
 
   return iRet;
 }

@@ -1012,7 +1012,7 @@ u1 AString::rget()
   return uRet;
 }
 
-size_t AString::getUntil(
+size_t AString::getUntilOneOf(
   AString& target,
   const AString& delimeters, // = AConstant::ASTRING_WHITESPACE
   bool removeDelimeters // = true
@@ -1038,6 +1038,33 @@ size_t AString::getUntil(
     get(target, 0, p);
     if (removeDelimeters)
       stripLeading(delimeters);
+  }
+  return target.getSize();
+}
+
+size_t AString::getUntil(
+  AString& target,
+  const AString& pattern
+)
+{
+  if (isEmpty())
+  {
+    //a_Nothing left, result should be cleared also
+    target.clear();
+    return 0;
+  }
+  
+  size_t p = find(pattern);
+  if (AConstant::npos == p) 
+  {
+    //a_No delimeters found
+    target.assign(*this);
+    clear();
+    return AConstant::npos;
+  }
+  else
+  {
+    get(target, 0, p);
   }
   return target.getSize();
 }
@@ -1072,7 +1099,7 @@ size_t AString::getUntil(
   return target.getSize();
 }
 
-void AString::removeUntil(
+void AString::removeUntilOneOf(
   const AString& delimeters, // = AConstant::ASTRING_WHITESPACE
   bool removeDelimeters // = true
 )
@@ -1430,6 +1457,50 @@ size_t AString::findNotOneOf(const AString& strSet, size_t startIndex) const
 
   //a_pos is where the first non matching character is
   if (pos != m_Length)
+    return pos;
+  else
+    return AConstant::npos;
+}
+
+size_t AString::rfindOneOf(const AString& strSet) const
+{
+  //a_Nothing to do first character is not found in delimeters, or empty source
+  if (m_Length == 0x0)
+    return AConstant::npos;
+
+  //a_Scan the original to see where to clip
+  size_t pos = m_Length-1;
+  while (
+          (pos > 0) &&
+          (strSet._find(peek(pos)) == AConstant::npos)
+        )
+  {
+    --pos;
+  }
+
+  if (pos)
+    return pos;
+  else
+    return AConstant::npos;
+}
+
+size_t AString::rfindNotOneOf(const AString& strSet) const
+{
+  //a_Nothing to do first character is not found in delimeters, or empty source
+  if (!m_Length)
+    return AConstant::npos;
+
+  //a_Scan the original to see where to clip
+  size_t pos = m_Length - 1;
+  while (
+          (pos > 0) &&
+          (strSet._find(peek(pos)) != AConstant::npos)
+        )
+  {
+    --pos;
+  }
+
+  if (pos)
     return pos;
   else
     return AConstant::npos;
@@ -2205,10 +2276,34 @@ void AString::rremove(
   size_t length // = 0x1
 )
 {
-  if (length > m_Length)
-    ATHROW(this, AException::InvalidLength);
-
+  AASSERT(this, length <= m_Length);
   setSize(m_Length - length);
+}
+
+void AString::rremoveUntilOneOf(
+  const AString& delimeters, //= AConstant::ASTRING_WHITESPACE
+  bool removeDelimeters      //= true
+)
+{
+  size_t pos = rfindOneOf(delimeters);
+  if (AConstant::npos != pos)
+  {
+    AASSERT(this, pos - (removeDelimeters ? 1 : 0) >= 0);
+    setSize(pos - (removeDelimeters ? 1 : 0));
+  }
+}
+
+void AString::rremoveUntil(
+  char delimeter, 
+  bool removeDelimeter       // = true
+)
+{
+  size_t pos = rfind(delimeter);
+  if (AConstant::npos != pos)
+  {
+    AASSERT(this, pos - (removeDelimeter ? 0 : -1) >= 0);
+    setSize(pos - (removeDelimeter ? 0 : -1));
+  }
 }
 
 int AString::compare(char cSource) const

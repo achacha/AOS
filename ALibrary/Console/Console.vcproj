@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tAStringWrap.cpp"
+			RelativePath=".\tJSON.cpp"
 			>
 		</File>
 	</Files>

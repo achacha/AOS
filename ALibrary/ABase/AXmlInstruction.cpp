@@ -161,7 +161,7 @@ void AXmlInstruction::emitJSON(
         target.append(m_Data);
         target.append(AConstant::ASTRING_CRLF);
       }
-      break;
+    break;
   }
 }
 
@@ -208,3 +208,17 @@ void AXmlInstruction::emit(AOutputBuffer& target, int indent) const
   }
 }
 
+bool AXmlInstruction::isElement() const
+{
+  return false;
+}
+
+bool AXmlInstruction::isData() const
+{
+  return false;
+}
+
+bool AXmlInstruction::isInstruction() const
+{
+  return true;
+}

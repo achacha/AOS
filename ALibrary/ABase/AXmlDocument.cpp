@@ -107,17 +107,28 @@ void AXmlDocument::emitJSON(
   int indent // = -1
 ) const
 {
-  LIST_NODEPTR::const_iterator cit = m_Instructions.begin();
-  while (cit != m_Instructions.end())
+  if (m_Instructions.size() > 0)
   {
-    for (int i=0; i<indent; ++i) target.append(AConstant::ASTRING_TWOSPACES);    //a_Indentation
-    (*cit)->emitJSON(target, indent);
-    if (indent >= 0)
-      target.append(AConstant::ASTRING_CRLF);
+    for (int i=0; i<indent; ++i) target.append(AConstant::ASTRING_TWOSPACES);
+    target.append('{');
+    if (indent >=0) target.append(AConstant::ASTRING_CRLF);
 
-    ++cit;
+    LIST_NODEPTR::const_iterator cit = m_Instructions.begin();
+    while (cit != m_Instructions.end())
+    {
+      (*cit)->emitJSON(target, (indent >= 0 ? indent+1 : indent));
+      ++cit;
+    }
+    m_Root.emitJSON(target, (indent >= 0 ? indent+1 : indent));
+    if (indent >= 0) target.append(AConstant::ASTRING_CRLF);
+    for (int i=0; i<indent; ++i) target.append(AConstant::ASTRING_TWOSPACES);
+    target.append('}');
   }
-  m_Root.emitJSON(target, indent);
+  else
+  {
+    //a_Each node will emit {} around 'object'
+    m_Root.emitJSON(target, indent);
+  }
 }
 
 void AXmlDocument::clearAll()
