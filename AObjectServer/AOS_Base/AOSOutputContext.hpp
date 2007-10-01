@@ -29,7 +29,7 @@ public:
   Response header and sub-object helpers (read/write)
   */
   AHTTPResponseHeader& useResponseHeader();
-  ACookies& AOSOutputContext::useResponseCookies();
+  ACookies& useResponseCookies();
   void setResponseMimeTypeFromRequestExtension();     //a_Uses request header to determine which MIME type the response header will use
 
   /*!

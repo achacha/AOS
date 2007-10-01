@@ -89,7 +89,7 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
         if (AConstant::npos != (pos = str.findNoCase(ASW("Content-Type:", 13))))
         {
           //a_Content type for this block
-          str.removeUntil();
+          str.removeUntilOneOf();
           context.useOutputRootXmlElement().addElement(xpath+ASW("/content-type",13), str);
         }
         else if (AConstant::npos != (pos = str.findNoCase(ASW("Content-Disposition:", 20))))
@@ -108,7 +108,7 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             }
           }
 
-          str.removeUntil();
+          str.removeUntilOneOf();
           context.useOutputRootXmlElement().addElement(xpath+ASW("/content-disposition",20), str);
         }
         str.clear();

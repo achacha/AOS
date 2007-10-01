@@ -147,6 +147,7 @@ public:
   virtual const AString& getClass() const;
 
 private:
+  //TODO: Will go away soon if I don't forget
   ASynchronization& m_ScreenSynch;
   
   //a_Services
@@ -158,10 +159,22 @@ private:
   //a_Configuration bits and Ini profile
   ABitArray m_ConfigBits;
 
+  //a_Commands
+  typedef std::map<AString, AOSCommand *> MAP_ASTRING_COMMANDPTR;
+  MAP_ASTRING_COMMANDPTR m_CommandPtrs;
+  
+  //a_Directory configs
+  //a_Maps absolute path (relative to dynamic root) to AXmlDocument with config
+  typedef std::map<AString, AXmlDocument *> MAP_ASTRING_AXMLDOCUMENTPTR;
+  MAP_ASTRING_AXMLDOCUMENTPTR m_DirectoryConfigs;
+
   /*!
   Load commands
   */
   void _loadCommands();
+  void _readCommand(AFilename&);               //a_May alter the passed filename
+  void _readDirectoryConfig(AFilename&);       //a_May alter the passed filename
+  void _postProcessCommandAndConfig(LIST_AFilename&);
 
   //a_MIME type lookup
   MAP_AString_AString m_ExtToMimeType;
@@ -189,10 +202,6 @@ private:
   AString m_ReportedHostname;
   int m_ReportedHttpPort;
   int m_ReportedHttpsPort;
-
-  //a_Commands
-  typedef std::map<AString, AOSCommand *> MAP_ASTRING_COMMANDPTR;
-  MAP_ASTRING_COMMANDPTR m_CommandPtrs;
 
 public:
 #ifdef __DEBUG_DUMP__

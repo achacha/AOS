@@ -45,17 +45,34 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_ReportedHttpPort="  << m_ReportedHttpPort << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ReportedHttpsPort=" << m_ReportedHttpsPort << std::endl;
 
-  //a_Commands
-  ADebugDumpable::indent(os, indent+1) << "m_CommandPtrs={" << std::endl;
-  MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.begin();
-  while (cit != m_CommandPtrs.end())
   {
-    ADebugDumpable::indent(os, indent+2) << (*cit).first << "={" << std::endl;
-    (*cit).second->debugDump(os, indent+3);
-    ++cit;
-    ADebugDumpable::indent(os, indent+2) << "}" << std::endl;
+    //a_Commands
+    ADebugDumpable::indent(os, indent+1) << "m_CommandPtrs={" << std::endl;
+    MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.begin();
+    while (cit != m_CommandPtrs.end())
+    {
+      ADebugDumpable::indent(os, indent+2) << (*cit).first << "={" << std::endl;
+      (*cit).second->debugDump(os, indent+3);
+      ++cit;
+      ADebugDumpable::indent(os, indent+2) << "}" << std::endl;
+    }
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   }
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  {
+    //a_Directory configs
+    ADebugDumpable::indent(os, indent+1) << "m_DirectoryConfigs={" << std::endl;
+    MAP_ASTRING_AXMLDOCUMENTPTR::const_iterator cit = m_DirectoryConfigs.begin();
+    while (cit != m_DirectoryConfigs.end())
+    {
+      ADebugDumpable::indent(os, indent+2) << (*cit).first << "={" << std::endl;
+      (*cit).second->debugDump(os, indent+3);
+      ++cit;
+      ADebugDumpable::indent(os, indent+2) << "}" << std::endl;
+    }
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  }
+
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
@@ -230,11 +247,21 @@ AOSConfiguration::~AOSConfiguration()
 {
   try
   {
-    MAP_ASTRING_COMMANDPTR::iterator it = m_CommandPtrs.begin();
-    while (it != m_CommandPtrs.end())
     {
-      delete it->second;
-      ++it;
+      MAP_ASTRING_COMMANDPTR::iterator it = m_CommandPtrs.begin();
+      while (it != m_CommandPtrs.end())
+      {
+        delete it->second;
+        ++it;
+      }
+    }
+    {
+      MAP_ASTRING_AXMLDOCUMENTPTR::iterator it = m_DirectoryConfigs.begin();
+      while (it != m_DirectoryConfigs.end())
+      {
+        delete it->second;
+        ++it;
+      }
     }
   }
   catch(...) {}
@@ -318,71 +345,29 @@ void AOSConfiguration::loadConfig(const AString& name)
 
 void AOSConfiguration::_loadCommands()
 {
-  LIST_AFilename fileList;
+  LIST_AFilename fileList, directoryConfigs;
   const AString& EXT1 = ASW("aos",3);
   const AString& EXT2 = ASW("xml",3);
-  const u4 EXT_SIZE = 8;  // ".aos.xml" size to remove
   if (AFileSystem::dir(m_AosBaseDynamicDir, fileList, true, true) > 0)
   {
-    LIST_AFilename::iterator it = fileList.begin();
-    while(it != fileList.end())
+    for(LIST_AFilename::iterator it = fileList.begin(); it != fileList.end(); ++it)
     {
       if (!(*it).equalsExtension(EXT1, EXT2))
       {
-        ++it;
         continue;
       }
       
-      AXmlDocument doc(ASW("root",4));
-      { 
-        AFile_Physical configfile(*it);
-        configfile.open();
-              
-        //a_Load from all XML command files
-        doc.fromAFile(configfile);
-      }
-      
-      AXmlElement::ConstNodeContainer nodes;
-      doc.useRoot().find(ASW("/command",8), nodes);
-      
-      //a_Parse each /command/command type
-      AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
-      AString strPath(1024, 512);
-      AString dynamicDir(m_AosBaseDynamicDir.toAString());
-      while(cit != nodes.end())
+      if (it->useFilename().equals(ASW("__this__.aos.xml",16)))
       {
-        const AXmlElement *pElement = dynamic_cast<const AXmlElement *>(*cit);
-        if (pElement)
-        {
-          //a_Get relative path
-          (*it).emit(strPath);
-          AASSERT(this, strPath.getSize() >= dynamicDir.getSize());
-          strPath.remove(dynamicDir.getSize()-1);
-          strPath.rremove(EXT_SIZE);
-
-          //a_Parse command and associate to relative path
-          AAutoPtr<AOSCommand> p(new AOSCommand(strPath, m_Services.useLog()));
-          p->fromAXmlElement(*pElement);
-          AASSERT(this, m_CommandPtrs.end() == m_CommandPtrs.find(strPath));
-          m_CommandPtrs[strPath] = p;
-          p.setOwnership(false);
-
-          //a_Register the command with admin
-          p->registerAdminObject(m_Services.useAdminRegistry());
-
-          {
-            AString str(strPath);
-            str.append('=');
-            (*it).emit(str);
-            AOS_DEBUGTRACE(str.c_str(), NULL);
-          }  
-          strPath.clear();
-
-        }
-        ++cit;
+        _readDirectoryConfig(*it);
       }
-      ++it;
+      else
+      {
+        _readCommand(*it);
+      }
     }
+
+    _postProcessCommandAndConfig(directoryConfigs);
   }
   else
   {
@@ -393,6 +378,84 @@ void AOSConfiguration::_loadCommands()
     m_Services.useLog().add(str, m_AosBaseDynamicDir, ALog::WARNING);
   }
 }
+
+void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
+{
+  //a_Open config file before mangling the path
+  AFile_Physical configFile(filename);
+  AString strPath(1536, 512);
+
+  //a_Add directory config to map
+  filename.removeBasePath(m_AosBaseDynamicDir, true);   //a_Remove dynamic dir
+  filename.emitPath(strPath);                           //a_Path only for map key
+  AASSERT_EX(this, m_DirectoryConfigs.find(strPath) == m_DirectoryConfigs.end(), filename);
+  
+  //a_Create and parse XML document
+  configFile.open();
+  m_DirectoryConfigs[strPath] = new AXmlDocument(configFile);
+  configFile.close();
+
+  strPath.clear();
+}
+
+void AOSConfiguration::_readCommand(AFilename& filename)
+{
+  //a_Load from all XML command files
+  AFile_Physical commandFile(filename);
+  commandFile.open();
+  AXmlDocument doc(commandFile);
+  commandFile.close();
+
+  AXmlElement::ConstNodeContainer nodes;
+  doc.useRoot().find(ASW("/command",8), nodes);
+  
+  //a_Parse each /command/command type
+  AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
+  AString strPath(1536, 512);
+  AString dynamicDir(m_AosBaseDynamicDir.toAString());
+  while(cit != nodes.end())
+  {
+    const AXmlElement *pElement = dynamic_cast<const AXmlElement *>(*cit);
+    if (pElement)
+    {
+      //a_Get relative path
+      filename.emit(strPath);
+      AASSERT(this, strPath.getSize() >= dynamicDir.getSize());
+      strPath.remove(dynamicDir.getSize()-1);
+      strPath.rremove(8);   //a_.aos.xml to be removed
+
+      //a_Parse command and associate to relative path
+      AAutoPtr<AOSCommand> p(new AOSCommand(strPath, m_Services.useLog()));
+      p->fromAXmlElement(*pElement);
+      AASSERT(this, m_CommandPtrs.end() == m_CommandPtrs.find(strPath));
+      m_CommandPtrs[strPath] = p;
+      p.setOwnership(false);
+
+      //a_Register the command with admin
+      p->registerAdminObject(m_Services.useAdminRegistry());
+
+      {
+        AString str(strPath);
+        str.append('=');
+        filename.emit(str);
+        AOS_DEBUGTRACE(str.c_str(), NULL);
+      }  
+      strPath.clear();
+
+    }
+    ++cit;
+  }
+}
+
+void AOSConfiguration::_postProcessCommandAndConfig(LIST_AFilename& directoryConfigs)
+{
+  AString strPath(1536, 512);
+  for (LIST_AFilename::iterator it = directoryConfigs.begin(); it != directoryConfigs.end(); ++it)
+  {
+    std::cout << "-=-=-=-=-=-=:directory config: " << *it << std::endl;
+  }
+}
+
 const AOSCommand * const AOSConfiguration::getCommand(const AUrl& commandUrl) const
 {
   AString command(commandUrl.getPathAndFilename());

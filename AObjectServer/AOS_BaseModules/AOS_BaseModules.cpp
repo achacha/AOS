@@ -17,6 +17,7 @@
 
 //a_Output generators
 #include "AOSOutput_NOP.hpp"
+#include "AOSOutput_JSON.hpp"
 #include "AOSOutput_MsXslt.hpp"
 #include "AOSOutput_XalanXslt.hpp"
 #include "AOSOutput_Template.hpp"
@@ -69,6 +70,7 @@ extern "C" AOS_BASEMODULES_API int aos_register(
   
   //Register output generators
   outputExecutor.registerOutputGenerator(new AOSOutput_NOP(alog));
+  outputExecutor.registerOutputGenerator(new AOSOutput_JSON(alog));
 #ifdef AOS__USE_MSXML4__
   outputExecutor.registerOutputGenerator(new AOSOutput_MsXslt(alog));
 #endif

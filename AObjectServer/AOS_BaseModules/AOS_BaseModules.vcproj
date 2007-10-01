@@ -286,6 +286,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\AOSOutput_JSON.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\AOSOutput_MsXslt.hpp"
 					>
 				</File>
@@ -308,6 +312,10 @@
 				>
 				<File
 					RelativePath=".\AOSOutput_File.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSOutput_JSON.cpp"
 					>
 				</File>
 				<File
