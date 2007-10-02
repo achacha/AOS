@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tJSON.cpp"
+			RelativePath=".\tXMLElement.cpp"
 			>
 		</File>
 	</Files>

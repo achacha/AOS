@@ -370,6 +370,44 @@ void testFind3()
     std::cout << "Not found." << std::endl;
 }
 
+void testInsertWithPath()
+{
+  AXmlElement element("root");
+  element.addElement("level-0").addElement("level-1").addAttribute("foo","bar");
+
+  {
+    AString str;
+    AXmlElement base("base");
+    base.addContent(element.clone());
+    base.emit(str, 0);
+    std::cout << str << std::endl;
+  }
+
+  {
+    AString str;
+    AXmlElement base("base");
+    base.addContent(element.clone(), "/");
+    base.emit(str, 0);
+    std::cout << str << std::endl;
+  }
+
+  {
+    AString str;
+    AXmlElement base("base");
+    base.addContent(element.clone(), "some/new/path");
+    base.emit(str, 0);
+    std::cout << str << std::endl;
+  }
+
+  {
+    AString str;
+    AXmlElement base("base");
+    base.addContent(element.clone(), "/some/new/path/");
+    base.emit(str, 0);
+    std::cout << str << std::endl;
+  }
+}
+
 int main()
 {
   //testParse();
@@ -381,8 +419,9 @@ int main()
   //testClone();
   //testAppend();
   //testFind1();
-  testFind2();
-  testFind3();
+  //testFind2();
+  //testFind3();
+  testInsertWithPath();
 
 	return 0;
 }

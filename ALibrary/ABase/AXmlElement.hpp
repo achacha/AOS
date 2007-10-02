@@ -49,11 +49,26 @@ public:
   AXmlElement& addComment(const AString&);
 
   /*!
-  Adds content
-  Return this element
+  Adds content node pointer
+    this object will OWN the passed content pointer and release it when done
+
+  If path is empty or "/", current element is used as base
+  For valid path, elements will be added to this one to extend the path
+
+  Returns this element
   */
-  AXmlElement& addContent(AXmlNode *);
+  AXmlElement& addContent(AXmlNode *, const AString& path = AConstant::ASTRING_EMPTY);
+  
+  /*!
+  Adds XML emittable as content to the element
+  Returns this element
+  */
   AXmlElement& addContent(const AXmlEmittable&);
+  
+  /*!
+  Adds data (depending on encoding)
+  Returns this element
+  */
   AXmlElement& addData(const AEmittable&, AXmlData::Encoding encoding = AXmlData::None);
 
   /*!

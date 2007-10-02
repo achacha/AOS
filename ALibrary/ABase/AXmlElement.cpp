@@ -291,9 +291,26 @@ AXmlElement& AXmlElement::addData(const AEmittable& data, AXmlData::Encoding enc
   return *this;
 }
 
-AXmlElement& AXmlElement::addContent(AXmlNode *pnode)
+AXmlElement& AXmlElement::addContent(
+  AXmlNode *pnode, 
+  const AString& path // = AConstant::ASTRING_EMPTY
+)
 {
-  addContentNode(pnode);
+  if (path.isEmpty() || path.equals(AConstant::ASTRING_SLASH))
+  {
+    addContentNode(pnode);
+  }
+  else
+  {
+    LIST_AString parts;
+    path.split(parts, '/');
+    if (!parts.size())
+      ATHROW(this, AException::InvalidParameter);
+
+    AXmlElement *pNewParent = _createAndAppend(parts,this);
+    AASSERT_EX(this, pNewParent, path);
+    pNewParent->addContentNode(pnode);
+  }
   return *this;
 }
 

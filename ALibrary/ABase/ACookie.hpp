@@ -36,8 +36,15 @@ public:
   void setPath(const AString &strPath)       { m__strPath     = strPath;    }
   void setSecure(bool boolSecure = true)     { m__boolSecure  = boolSecure; }
 
-  //a_RFC-2109 specific
+  /*!
+  Cookie version
+  0 = old style netscape cookie without a version attribute
+  */
   void setVersion(int iVersion)             { m__iVersion    = iVersion;   }
+  
+  /*!
+  Either can be used to set expiry
+  */
   void setExpires(const ATime &timeExpires);
   void setMaxAge(long lMaxAge);
 
@@ -58,13 +65,11 @@ public:
   const AString &getComment() const { return m__strComment; }
 
   //a_Response is sent by the server and contains all fields (one per SET-COOKIE: lines)
-//  AString toResponseHeaderString() const;
   void emitResponseHeaderString(AOutputBuffer&) const;
   virtual void emit(AOutputBuffer& target) const;            //a_Default is a server response cookie
   virtual void emit(AXmlElement&) const;
 
   //a_Request is sent by the browser and only contains name=value pairs (many on COOKIE: line)
-//  AString toRequestHeaderString() const;
   void emitRequestHeaderString(AOutputBuffer&) const;
 
   //a_Comparisson returns 0 if equal

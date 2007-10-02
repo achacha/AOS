@@ -275,8 +275,10 @@ ACache_FileSystem::STATUS ACache_FileSystem::get(
     (*it).second->hit();
     
     pFile.reset(it->second->pData, false);
-    modified = it->second->lastModified;
+    if (pFile.isNull())
+      return ACacheInterface::NOT_FOUND;
 
+    modified = it->second->lastModified;
     if (modified > ifModifiedSince)
       return ACacheInterface::FOUND;
     else
