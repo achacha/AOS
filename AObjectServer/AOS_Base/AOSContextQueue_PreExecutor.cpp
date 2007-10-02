@@ -353,8 +353,8 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   {
     case ACache_FileSystem::NOT_FOUND:
       //a_Handle file not found
-      pContext->setExecutionState(ARope("File not found (HTTP static): ",30)+httpFilename);
-      pContext->useServices().useLog().add(ASWNL("File not found (HTTP static): "), httpFilename, ALog::INFO);
+      pContext->setExecutionState(ARope("File not found (HTTP-404 static): ",34)+httpFilename);
+      pContext->useServices().useLog().add(ASW("File not found (HTTP-404 static): ",34), httpFilename, ALog::INFO);
       
       //a_Set response status and return with failed (display error template)
       pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);

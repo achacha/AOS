@@ -14,6 +14,7 @@
 #include "AOSModule_PublishInput.hpp"
 #include "AOSModule_ExecuteQuery.hpp"
 #include "AOSModule_AlterContext.hpp"
+#include "AOSModule_InsertIntoModel.hpp"
 
 //a_Output generators
 #include "AOSOutput_NOP.hpp"
@@ -67,6 +68,7 @@ extern "C" AOS_BASEMODULES_API int aos_register(
   moduleExecutor.registerModule(new AOSModule_PublishInput(alog));
   moduleExecutor.registerModule(new AOSModule_ExecuteQuery(alog));
   moduleExecutor.registerModule(new AOSModule_AlterContext(alog));
+  moduleExecutor.registerModule(new AOSModule_InsertIntoModel(alog));
   
   //Register output generators
   outputExecutor.registerOutputGenerator(new AOSOutput_NOP(alog));

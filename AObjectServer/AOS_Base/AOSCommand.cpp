@@ -260,10 +260,8 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
       info.m_Class = strClass;
       info.m_Name = strName;
 
-      //a_Iterate and populate the params
-      pNode = element.findNode(ASW("module",6));
-      if (pNode)
-        pNode->emit(info.m_ModuleParams);
+      //a_Populate the params
+      (*citModule)->emit(info.m_ModuleParams);
 
       strName.clear();
       strClass.clear();

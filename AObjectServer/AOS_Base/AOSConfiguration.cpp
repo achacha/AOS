@@ -441,7 +441,6 @@ void AOSConfiguration::_readCommand(AFilename& filename)
         AOS_DEBUGTRACE(str.c_str(), NULL);
       }  
       strPath.clear();
-
     }
     ++cit;
   }

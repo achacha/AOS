@@ -14,6 +14,10 @@ public:
   AOSAdminInterface
   */
   virtual const AString& getClass() const;
+
+private:
+  //Set a cookie from element
+  void _processSetCookie(ACookies&, AXmlNode::ConstNodeContainer&);
 };
 
 #endif //INCLUDED__AOSModule_AlterContext_HPP__

@@ -40,7 +40,7 @@ bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& par
   }
   else
   {
-    context.addError("AOSModule_ExecuteQuery::execute", "/params/sql not found");
+    context.addError("AOSModule_ExecuteQuery::execute", "/module/sql not found");
     context.useOutputRootXmlElement().addElement("error").addElement(getClass()).addElement("params").addContent(params);
   }
 
