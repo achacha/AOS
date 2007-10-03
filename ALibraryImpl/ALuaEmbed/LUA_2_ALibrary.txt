@@ -1,10 +1,5 @@
-lua.h
------
+Modify the following lua source files:
 
-Add:
-#include "AOutputBuffer.hpp"
-
-==================================
 lstate.h:
 ---------
 Add to:
