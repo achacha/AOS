@@ -32,7 +32,7 @@ public:
   /*!
   Execute Python code
   */
-  void execute(const AString&);
+  void execute(const AEmittable&);
 
   /*!
   AObjectContainer helper functions that can be called from the python exported ones

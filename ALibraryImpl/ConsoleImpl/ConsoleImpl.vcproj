@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib"
+				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib;../ALuaEmbed"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -125,7 +125,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib"
+				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib;../ALuaEmbed"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -188,7 +188,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tJSON_DB.cpp"
+			RelativePath=".\tLua.cpp"
 			>
 		</File>
 	</Files>

@@ -133,6 +133,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AGdLib", "AGdLib\AGdLib.vcp
 		{1AEE01DF-B02A-4B19-8A4D-256157FE0320} = {1AEE01DF-B02A-4B19-8A4D-256157FE0320}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALuaEmbed", "ALuaEmbed\ALuaEmbed.vcproj", "{A7384BC9-F875-4EB3-BF09-3581C16291BA}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{1AEE01DF-B02A-4B19-8A4D-256157FE0320} = {1AEE01DF-B02A-4B19-8A4D-256157FE0320}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -187,6 +196,10 @@ Global
 		{5F6550FC-321B-47A4-B2BA-B04506110ED0}.Debug|Win32.Build.0 = Debug|Win32
 		{5F6550FC-321B-47A4-B2BA-B04506110ED0}.Release|Win32.ActiveCfg = Release|Win32
 		{5F6550FC-321B-47A4-B2BA-B04506110ED0}.Release|Win32.Build.0 = Release|Win32
+		{A7384BC9-F875-4EB3-BF09-3581C16291BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A7384BC9-F875-4EB3-BF09-3581C16291BA}.Debug|Win32.Build.0 = Debug|Win32
+		{A7384BC9-F875-4EB3-BF09-3581C16291BA}.Release|Win32.ActiveCfg = Release|Win32
+		{A7384BC9-F875-4EB3-BF09-3581C16291BA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

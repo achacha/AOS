@@ -41,9 +41,11 @@ bool APythonEmbed::initialize(char *this_executable)
   return true;
 }
 
-void APythonEmbed::execute(const AString& code)
+void APythonEmbed::execute(const AEmittable& code)
 {
-  PyRun_SimpleString(code.c_str());
+  AString str(10240, 10240);
+  code.emit(str);
+  PyRun_SimpleString(str.c_str());
 }
 
 void APythonEmbed::registerObjectContainer(const AString& name, AObjectContainer& ns)
