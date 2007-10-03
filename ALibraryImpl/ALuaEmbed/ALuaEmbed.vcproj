@@ -198,15 +198,15 @@
 			UniqueIdentifier="{4FC737F1-C7B5-4376-A166-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\ALibraryFunctions.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ALuaEmbed.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ALuaEmbedMain.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ALuaExportFunctions.cpp"
 				>
 			</File>
 			<File
@@ -236,11 +236,11 @@
 			UniqueIdentifier="{93995380-89CD-4b94-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\ALuaEmbed.hpp"
+				RelativePath=".\ALibraryFunctions.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ALuaExportFunctions.hpp"
+				RelativePath=".\ALuaEmbed.hpp"
 				>
 			</File>
 			<File
@@ -712,6 +712,10 @@
 				</FileConfiguration>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\LUA_2_ALibrary.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

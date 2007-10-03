@@ -6,9 +6,4 @@
 #include "AException.hpp"
 #include "ARope.hpp"
 
-extern "C"
-{
-#include "lua.h"
-#include "lauxlib.h"
-#include "lualib.h"
-}
+#include "ALibraryFunctions.hpp"
