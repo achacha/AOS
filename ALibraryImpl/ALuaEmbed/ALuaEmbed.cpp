@@ -16,18 +16,21 @@ ALuaEmbed::ALuaEmbed(u4 maskLibrariesToLoad):
   AASSERT(NULL, mp_LuaState);
   mp_LuaState->mythis = this;  //a_Attach out output buffer
 
-  //a_Load ALibrary functions first
-  luaopen_alibrary(mp_LuaState);
-
+  //a_Explicit NONE selected, no libraries loaded
   if (LUALIB_NONE == maskLibrariesToLoad)
     return;
 
-  if (LUALIB_BASE & maskLibrariesToLoad)    luaopen_base(mp_LuaState);             // opens the basic library
+  //a_Load ALibrary functions first
+  luaopen_alibrary(mp_LuaState);
+  luaopen_base(mp_LuaState);             // opens the basic library required by ALibrary
+
   if (LUALIB_TABLE & maskLibrariesToLoad)   luaopen_table(mp_LuaState);            // opens the table library
   if (LUALIB_STRING & maskLibrariesToLoad)  luaopen_string(mp_LuaState);           // opens the string lib
   if (LUALIB_MATH & maskLibrariesToLoad)    luaopen_math(mp_LuaState);             // opens the math lib
-  if (LUALIB_OS & maskLibrariesToLoad)      luaopen_os(mp_LuaState);               // opens the OS lib
   if (LUALIB_DEBUG & maskLibrariesToLoad)   luaopen_debug(mp_LuaState);            // opens the debug lib
+
+//a_Following are not supported due to security concerns while being embedded, but can be uncommented if needed at your own risk  
+//  if (LUALIB_OS & maskLibrariesToLoad)      luaopen_os(mp_LuaState);               // opens the OS lib
 //  if (LUALIB_PACKAGE & maskLibrariesToLoad) luaopen_package(mp_LuaState);          // opens the package lib
 //  if (LUALIB_IO & maskLibrariesToLoad)      luaopen_io(mp_LuaState);               // opens the I/O library
 }
@@ -38,7 +41,7 @@ ALuaEmbed::~ALuaEmbed()
     lua_close(mp_LuaState);
 }
 
-void ALuaEmbed::execute(const AEmittable& code)
+bool ALuaEmbed::execute(const AEmittable& code, AOutputBuffer& scriptError)
 {
   AASSERT(NULL, mp_LuaState);
   ARope rope;
@@ -49,7 +52,8 @@ void ALuaEmbed::execute(const AEmittable& code)
   {
     AString strError(lua_tostring(mp_LuaState, -1));
     lua_pop(mp_LuaState, 1);  // pop error message from the stack
-    ATHROW_EX(&buffer, AException::APIFailure, strError);
+    scriptError.append(strError);
+    return false;
   }
 
   //a_Execute LUA code
@@ -60,7 +64,8 @@ void ALuaEmbed::execute(const AEmittable& code)
       AString strError("Runtime Error: ");
       strError.append(lua_tostring(mp_LuaState, -1));
       lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      ATHROW_EX(&buffer, AException::APIFailure, strError);
+      scriptError.append(strError);
+      return false;
     } 
     break;
     
@@ -69,7 +74,8 @@ void ALuaEmbed::execute(const AEmittable& code)
       AString strError("Memory Allocation Error: ");
       strError.append(lua_tostring(mp_LuaState, -1));
       lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      ATHROW_EX(&buffer, AException::APIFailure, strError);
+      scriptError.append(strError);
+      return false;
     } 
     break;
 
@@ -78,7 +84,8 @@ void ALuaEmbed::execute(const AEmittable& code)
       AString strError("Error in error handler: ");
       strError.append(lua_tostring(mp_LuaState, -1));
       lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      ATHROW_EX(&buffer, AException::APIFailure, strError);
+      scriptError.append(strError);
+      return false;
     }
     break;
   }
@@ -87,5 +94,10 @@ void ALuaEmbed::execute(const AEmittable& code)
 AOutputBuffer& ALuaEmbed::useOutputBuffer()
 {
   return m_OutputBuffer;
+}
+
+AObjectContainer& ALuaEmbed::useObjects()
+{
+  return m_Objects;
 }
 

@@ -17,4 +17,5 @@ LUA_API void (luaA_stringappender)(lua_State *L, const char *s);   /* appends a 
 #include "lualib.h"
 
 } //extern "C"
+
 #endif //INCLUDED__ALibraryFunctions_hpp__

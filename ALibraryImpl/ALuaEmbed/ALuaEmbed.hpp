@@ -3,6 +3,7 @@
 
 #include "apiALuaEmbed.hpp"
 #include "ARope.hpp"
+#include "AObjectContainer.hpp"
 
 class AEmittable;
 struct lua_State;
@@ -23,10 +24,10 @@ public:
     LUALIB_TABLE   = 0x0002,
     LUALIB_STRING  = 0x0004,
     LUALIB_MATH    = 0x0008,
-    LUALIB_OS      = 0x0010,
-    LUALIB_DEBUG   = 0x0020,
-    //LUALIB_PACKAGE = 0x0100,     //Not supported
-    //LUALIB_IO      = 0x0200,     //Not supported
+    LUALIB_DEBUG   = 0x0010,
+    //LUALIB_OS      = 0x0020,     //Not supported (security)
+    //LUALIB_PACKAGE = 0x0100,     //Not supported (security)
+    //LUALIB_IO      = 0x0200,     //Not supported (security)
     LUALIB_ALL     = 0xffff        // Mask to load all libraries
   };
 
@@ -36,7 +37,7 @@ public:
   Load libraries into this instance
     Can use LUALIB_CORE|LUALIB_MATH|etc to load some
   */
-  ALuaEmbed(u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_NONE);
+  ALuaEmbed(u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE);
   
   /*!
   De-initialize and unload the Lua interpreter
@@ -45,8 +46,9 @@ public:
 
   /*!
   Execute Lua code
+  Returns true if all is well, false if error occured (written to scriptError)
   */
-  void execute(const AEmittable&);
+  bool execute(const AEmittable& script, AOutputBuffer& scriptError);
 
   /*!
   Output buffer used by lua print command when LUALIB_BASE is loaded
@@ -54,7 +56,15 @@ public:
   */
   AOutputBuffer& useOutputBuffer();
 
+  /*!
+  AObjectContainer helper functions that can be called from the python exported ones
+  */
+  AObjectContainer& useObjects();
+
 private:
+  AObjectContainer m_Objects;
+
+  //a_The Lua state pointer
   struct lua_State *mp_LuaState;
 
   ARope m_OutputBuffer;
