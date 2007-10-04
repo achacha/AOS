@@ -43,9 +43,23 @@ public:
   insert() returns a reference to the AObjectBase that was just inserted
   */
   AObjectBase& insert(const AString& path, const AString& value = AConstant::ASTRING_EMPTY, AXmlData::Encoding encoding = AXmlData::None);
-  AObjectBase& insert(const AString& path, AObjectBase *);   //a_if pobject is NULL exception is thrown, object is owned by this container and deleted when done
-  void remove(const AString& path);                          //a_Does nothing if path does not exist
-  void clear();                                              //a_Removes everything
+  
+  /*!
+  Insert AObjectBase type into a given path
+  If pobject is NULL exception is thrown
+  Object is OWNED by this container and will be deleted when done
+  */
+  AObjectBase& insert(const AString& path, AObjectBase *);
+  
+  /*!
+  Remove object at path
+  */
+  void remove(const AString& path);
+  
+  /*!
+  Clear container
+  */
+  void clear();
 
   /*!
   If ID exists, then this object has already been saved and unique id assigned during save()
@@ -72,11 +86,22 @@ public:
     AObjectBase *ptr = getObject(path);
     if (ptr)
     {
-      AObject<_type> *pup = dynamic_cast< AObject<_type> *>(ptr);
-      if (pup) return &(pup->use());
-      else return NULL;   //a_Type mismatch
+      //a_First try AObjectBase types in cast
+      {
+        _type *pup = dynamic_cast<_type *>(ptr);
+        if (pup)
+          return pup;
+      }
+
+      //a_Now objects wrapped by AObject template
+      {
+        AObject<_type> *pup = dynamic_cast< AObject<_type> *>(ptr);
+        if (pup)
+          return &(pup->use());
+      }
     }
-    else return NULL;
+    
+    return NULL;  //a_Either type mismatched or it was not found
   }
 
   /*!

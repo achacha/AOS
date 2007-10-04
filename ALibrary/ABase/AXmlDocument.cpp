@@ -70,6 +70,17 @@ AXmlDocument::AXmlDocument(AFile& file)
   fromAFile(file);
 }
 
+AXmlDocument::AXmlDocument(const AXmlDocument& that) :
+  AObjectBase(that),
+  m_Root(that.m_Root)
+{
+  for (LIST_NODEPTR::const_iterator cit = that.m_Instructions.begin(); cit != that.m_Instructions.end(); ++cit)
+  {
+    AXmlNode *pClone = (*cit)->clone();
+    m_Instructions.push_back(dynamic_cast<AXmlInstruction *>(pClone));
+  }
+}
+
 AXmlDocument::~AXmlDocument()
 {
   try
@@ -242,4 +253,19 @@ AXmlElement& AXmlDocument::useRoot()
 const AXmlElement& AXmlDocument::getRoot() const
 {
   return m_Root;
+}
+
+void AXmlDocument::emit(AXmlElement& base) const
+{
+  m_Root.emit(base);
+}
+
+AObjectBase* AXmlDocument::clone() const
+{ 
+  return new AXmlDocument(*this);
+}
+
+void AXmlDocument::emitFromPath(const AString& path, AOutputBuffer& output, int indent) const
+{
+  m_Root.emitFromPath(path, output, indent);
 }

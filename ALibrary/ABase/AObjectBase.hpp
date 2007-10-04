@@ -22,7 +22,7 @@ public:
 	virtual void debugDump(std::ostream&, int iIndentLevel = 0x0) const;
 
 //REQUIRED: can use this as is without change, will use copy ctor to clone, just put your class name instead of MYCLASS
-  AObjectBase* clone() const { return new MYCLASS(*this); }  //a_Clone self using copy ctor (this can just be copied as is)
+  virtual AObjectBase* clone() const { return new MYCLASS(*this); }  //a_Clone self using copy ctor (this can just be copied as is)
 
 */
 class ABASE_API AObjectBase : 

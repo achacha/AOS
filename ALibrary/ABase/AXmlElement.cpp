@@ -328,6 +328,11 @@ AXmlElement& AXmlElement::addComment(const AString& comment)
   return *this;
 }
 
+void AXmlElement::emit(AXmlElement& target) const
+{
+  AXmlNode::emit(target);
+}
+
 void AXmlElement::emit(AOutputBuffer& target, int indent) const
 {
   if (!m_Name.isEmpty())

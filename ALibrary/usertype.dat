@@ -51,6 +51,7 @@ AMovingAverage
 ANameValuePair
 ANamePointerPair
 ANumber
+AObject
 AObjectBase
 AObjectContainer
 AOutputBuffer
@@ -139,6 +140,9 @@ ASQLiteServer
 AZlib
 AXsl
 ACrypto
+
+ALuaEmbed
+APythonEmbed
 
 AFile_Socket_SSL
 ASocketLibrary_SSL

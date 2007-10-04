@@ -1390,6 +1390,16 @@
 		<File
 			RelativePath="..\usertype.dat"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Copying usertype.dat to MSDev home"
+					CommandLine="copy &quot;$(InputPath)&quot; &quot;$(DevEnvDir)&quot;"
+					Outputs="$(DevEnvDir)\$(InputFileName)"
+				/>
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

@@ -118,6 +118,11 @@ public:
   virtual bool isInstruction() const;
 
   /*!
+  AXmlEmittable
+  */
+  virtual void emit(AXmlElement&) const;
+
+  /*!
   Emit XML unformatted
   */
   virtual void emit(AOutputBuffer&) const;

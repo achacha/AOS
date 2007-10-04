@@ -3,18 +3,18 @@
 
 #include "apiABase.hpp"
 #include "AXmlNode.hpp"
-#include "ADebugDumpable.hpp"
 #include "ASerializable.hpp"
 #include "AString.hpp"
 #include "AXmlElement.hpp"
 #include "AXmlInstruction.hpp"
+#include "AObjectBase.hpp"
 
 /*!
 Wrapper to an XML document
 
 To access the XML use useRoot() call to get the root AXmlElement object
 */
-class ABASE_API AXmlDocument : public ADebugDumpable, public ASerializable
+class ABASE_API AXmlDocument : public AObjectBase, public ASerializable
 {
 public:
   /*!
@@ -24,6 +24,7 @@ public:
   */
   AXmlDocument(const AString& rootName, AXmlInstruction *pXmlHeader = NULL);
   AXmlDocument(AFile&);
+  AXmlDocument(const AXmlDocument&);
   virtual ~AXmlDocument();
   
   /*!
@@ -57,11 +58,23 @@ public:
   */
   virtual void emit(AOutputBuffer&) const;
   virtual void emit(AOutputBuffer&, int indent) const;
+  
+  /*!
+  Emits XML nodes in this document
+  Does NOT emit the instructions
+  */
+  virtual void emit(AXmlElement&) const;
 
   /*!
   Emit JSON format
   */
   virtual void emitJSON(AOutputBuffer&, int indent = -1) const;
+
+  /*!
+  Emit content from path
+  Uses root node's emitFromPath call
+  */
+  void emitFromPath(const AString& path, AOutputBuffer& output, int indent = -1) const;
 
   /*! 
   clearAll - clears root element name, data and instructions (must manually re-add XML_HEADER and set root element name)
@@ -75,7 +88,12 @@ public:
   */
   virtual void fromAFile(AFile&);
   virtual void toAFile(AFile&) const;
-  
+
+  /*!
+  Clone the document
+  */
+  virtual AObjectBase* clone() const;
+
 private:
   AXmlDocument() {}  //a_No default dtor, must have root element name
 
