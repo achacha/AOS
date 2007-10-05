@@ -132,7 +132,7 @@ static int alibrary_emitJson(lua_State *L)
   if (p)
   {
     AString str;
-    p->emitJSON(str, indent);
+    p->emitJson(str, indent);
 
     lua_pushlstring(L, str.c_str(), str.getSize());
     return 1;

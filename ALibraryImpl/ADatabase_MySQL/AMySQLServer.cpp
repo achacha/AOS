@@ -108,7 +108,7 @@ void AMySQLServer::emit(AXmlElement& target) const
   if (target.useName().isEmpty())
     target.useName().assign("AMySQLServer", 12);
 
-  ADatabase::emit(target);
+  ADatabase::emitXml(target);
 
   target.addElement(ASW("client",6), mysql_get_client_info());
   if (mp_mydata)

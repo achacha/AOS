@@ -84,7 +84,7 @@ void ASQLiteServer::emit(AXmlElement& target) const
   if (target.useName().isEmpty())
     target.useName().assign("ASQLiteServer",11);
 
-  ADatabase::emit(target);
+  ADatabase::emitXml(target);
 
   AString strPath;
   _getDBFilename(strPath);

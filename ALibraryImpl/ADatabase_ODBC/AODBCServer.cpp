@@ -175,7 +175,7 @@ void AODBCServer::emit(AXmlElement& target) const
   if (target.useName().isEmpty())
     target.useName().assign("AODBCServer",11);
 
-  ADatabase::emit(target);
+  ADatabase::emitXml(target);
 }
 
 bool AODBCServer::getTables(VECTOR_AString& sv, AString& error)
