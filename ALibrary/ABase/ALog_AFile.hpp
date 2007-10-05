@@ -79,7 +79,7 @@ public:
   AXmlEmittable
   */
   void emit(AOutputBuffer&) const;
-  void emit(AXmlElement&) const;
+  void emitXml(AXmlElement&) const;
 
 protected:
   /*!

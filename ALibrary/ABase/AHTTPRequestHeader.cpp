@@ -114,7 +114,7 @@ ACookies &AHTTPRequestHeader::useCookies()
   return mcookies_Request;
 }
 
-void AHTTPRequestHeader::emit(AXmlElement& target) const
+void AHTTPRequestHeader::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("AHTTPRequestHeader",18);
@@ -131,8 +131,8 @@ void AHTTPRequestHeader::emit(AXmlElement& target) const
     ++cit;
   }
 
-  murl_Request.emit(target.addElement(ASW("AUrl",4)));
-  mcookies_Request.emit(target.addElement(ASW("ACookies",8)));
+  murl_Request.emitXml(target.addElement(ASW("AUrl",4)));
+  mcookies_Request.emitXml(target.addElement(ASW("ACookies",8)));
 }
 
 void AHTTPRequestHeader::emit(AOutputBuffer& target) const

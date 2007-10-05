@@ -120,7 +120,7 @@ void ATimer::emit(AOutputBuffer& target) const
   target.append("ms",2);
 }
 
-void ATimer::emit(AXmlElement& target) const
+void ATimer::emitXml(AXmlElement& target) const
 {
   AASSERT(this, !target.useName().isEmpty());
 

@@ -35,7 +35,7 @@ public:
   AXmlEmittable
   */
   void emit(AOutputBuffer&) const;
-  void emit(AXmlElement&) const;
+  void emitXml(AXmlElement&) const;
 
   /*!
   The name of this event visitor
@@ -120,7 +120,7 @@ private:
     AXmlEmittable
     */
     void emit(AOutputBuffer&) const;
-    void emit(AXmlElement&) const;
+    void emitXml(AXmlElement&) const;
 
     double m_interval;
     AString m_state;

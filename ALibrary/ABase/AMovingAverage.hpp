@@ -68,7 +68,7 @@ public:
   AXmlEmittable
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
 private:
   double m_Average;

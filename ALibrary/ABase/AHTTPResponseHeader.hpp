@@ -68,7 +68,7 @@ public:
   AEmittable and AXmlEmittable
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   Clear header

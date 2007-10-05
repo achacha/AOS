@@ -8,13 +8,14 @@
 #include "AXmlElement.hpp"
 #include "AXmlInstruction.hpp"
 #include "AObjectBase.hpp"
+#include "AJsonEmittable.hpp"
 
 /*!
 Wrapper to an XML document
 
 To access the XML use useRoot() call to get the root AXmlElement object
 */
-class ABASE_API AXmlDocument : public AObjectBase, public ASerializable
+class ABASE_API AXmlDocument : public AObjectBase, public ASerializable, public AJsonEmittable
 {
 public:
   /*!
@@ -63,12 +64,13 @@ public:
   Emits XML nodes in this document
   Does NOT emit the instructions
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
+  AJsonEmittable
   Emit JSON format
   */
-  virtual void emitJSON(AOutputBuffer&, int indent = -1) const;
+  virtual void emitJson(AOutputBuffer&, int indent = -1) const;
 
   /*!
   Emit content from path

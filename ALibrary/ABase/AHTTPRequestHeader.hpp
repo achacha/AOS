@@ -46,7 +46,7 @@ public:
 
   //a_Presentation
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   //a_Clear header
   virtual void clear();

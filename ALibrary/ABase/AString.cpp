@@ -2161,7 +2161,7 @@ void AString::emit(AOutputBuffer& target) const
     target.append(mp_Buffer, m_Length);
 }
 
-void AString::emit(AXmlElement& target) const
+void AString::emitXml(AXmlElement& target) const
 {
   target.addAttribute(ASW("class",5), ASW("AString",7));
   target.addData(*this, AXmlData::CDataDirect);

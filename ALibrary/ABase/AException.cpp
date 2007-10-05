@@ -327,7 +327,7 @@ void AException::emit(AOutputBuffer& target) const
   what().emit(target);
 }
 
-void AException::emit(AXmlElement& target) const
+void AException::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign(ASW("AException",10));

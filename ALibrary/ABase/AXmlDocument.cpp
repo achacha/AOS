@@ -113,7 +113,7 @@ void AXmlDocument::emit(AOutputBuffer& target, int indent) const
   m_Root.emit(target, indent);
 }
 
-void AXmlDocument::emitJSON(
+void AXmlDocument::emitJson(
   AOutputBuffer& target, 
   int indent // = -1
 ) const
@@ -127,10 +127,10 @@ void AXmlDocument::emitJSON(
     LIST_NODEPTR::const_iterator cit = m_Instructions.begin();
     while (cit != m_Instructions.end())
     {
-      (*cit)->emitJSON(target, (indent >= 0 ? indent+1 : indent));
+      (*cit)->emitJson(target, (indent >= 0 ? indent+1 : indent));
       ++cit;
     }
-    m_Root.emitJSON(target, (indent >= 0 ? indent+1 : indent));
+    m_Root.emitJson(target, (indent >= 0 ? indent+1 : indent));
     if (indent >= 0) target.append(AConstant::ASTRING_CRLF);
     for (int i=0; i<indent; ++i) target.append(AConstant::ASTRING_TWOSPACES);
     target.append('}');
@@ -138,7 +138,7 @@ void AXmlDocument::emitJSON(
   else
   {
     //a_Each node will emit {} around 'object'
-    m_Root.emitJSON(target, indent);
+    m_Root.emitJson(target, indent);
   }
 }
 
@@ -255,9 +255,9 @@ const AXmlElement& AXmlDocument::getRoot() const
   return m_Root;
 }
 
-void AXmlDocument::emit(AXmlElement& base) const
+void AXmlDocument::emitXml(AXmlElement& base) const
 {
-  m_Root.emit(base);
+  m_Root.emitXml(base);
 }
 
 AObjectBase* AXmlDocument::clone() const

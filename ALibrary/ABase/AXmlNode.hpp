@@ -5,12 +5,13 @@
 #include "ADebugDumpable.hpp"
 #include "AAttributes.hpp"
 #include "AXmlEmittable.hpp"
+#include "AJsonEmittable.hpp"
 
 /*!
 Base class that represents an XML node from which AElement, AData and such are derived
 Pure virtual class not meant to be instanciated
 */
-class ABASE_API AXmlNode : public ADebugDumpable, public AXmlEmittable
+class ABASE_API AXmlNode : public ADebugDumpable, public AXmlEmittable, public AJsonEmittable
 {
 public:
   typedef std::list<AXmlNode *> NodeContainer;
@@ -127,9 +128,9 @@ public:
   virtual void emit(AOutputBuffer&, int indent) const;
 
   /*!
-   Emit as JavaScript Object Notation (JSON)
+  AJsonEmittable
   */
-  virtual void emitJSON(AOutputBuffer&, int indent = -1) const;
+  virtual void emitJson(AOutputBuffer&, int indent = -1) const;
   
   /*!
   Emit content only, unecoded raw data
@@ -145,7 +146,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   Clear the object and release sub-elements

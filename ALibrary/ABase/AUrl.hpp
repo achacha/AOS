@@ -164,7 +164,7 @@ public:
   AXmlEmittable
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   Return as AString, calls emit internally

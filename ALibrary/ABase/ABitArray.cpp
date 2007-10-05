@@ -230,7 +230,7 @@ void ABitArray::emit(AOutputBuffer& target) const
   target.append(rope);
 }
 
-void ABitArray::emit(AXmlElement& target) const
+void ABitArray::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("ABitArray", 9);

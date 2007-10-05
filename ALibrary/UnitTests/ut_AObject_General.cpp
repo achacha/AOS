@@ -17,7 +17,7 @@ int utAObjectUrl()
   ns.insert("/path1/object0", new AObject<ANumber>(ANumber("3.14")));
   ns.insert("/path0/object1", new AObject<AUrl>(AUrl("http://www.achacha.org/")));
   AXmlElement element;
-  ns.emit(element);
+  ns.emitXml(element);
   element.emit(rope);
 //  std::cout << rope << std::endl;
   if (rope.toAString().compare("<root><path0><object0>value0</object0><object1>http://www.achacha.org/</object1></path0><path1><object0>3.14</object0></path1></root>"))

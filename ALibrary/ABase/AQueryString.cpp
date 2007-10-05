@@ -96,7 +96,7 @@ void AQueryString::emit(AOutputBuffer& target) const
   }
 }
 
-void AQueryString::emit(AXmlElement& target) const
+void AQueryString::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("AQueryString",12);

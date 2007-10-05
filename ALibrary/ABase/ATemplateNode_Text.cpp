@@ -8,55 +8,56 @@
 void ATemplateNode_Text::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ATemplateNode_Text @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_strText='" << m_strText << "'" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Text='" << m_Text << "'" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
 
 ATemplateNode_Text::ATemplateNode_Text(const AString& text /* = AConstant::ASTRING_EMPTY */) :
-  m_strText(text)
+  m_Text(text)
 {
 }
 
 ATemplateNode_Text::ATemplateNode_Text(const ATemplateNode_Text& that) :
-  m_strText(that.m_strText)
+  m_Text(that.m_Text)
 {
 }
 
-void ATemplateNode_Text::emit(AXmlElement& target) const
+void ATemplateNode_Text::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign(ASW("ATemplateNode_Text",18));
 
-  target.addElement(ASW("text",4), m_strText, AXmlData::CDataSafe);
+  target.addElement(ASW("text",4), m_Text, AXmlData::CDataSafe);
 }
 
 void ATemplateNode_Text::emit(AOutputBuffer& target) const
 {
-  target.append(m_strText);
+  target.append(m_Text);
 }
 
 void ATemplateNode_Text::process(AOutputBuffer& output, const AXmlElement&)
 {
-  output.append(m_strText);
+  output.append(m_Text);
 }
 
 void ATemplateNode_Text::toAFile(AFile& aFile) const
 {
-  aFile.write(m_strText);
+  aFile.write(m_Text);
 }
 
 void ATemplateNode_Text::fromAFile(AFile& aFile)
 {
-  if (AConstant::npos == aFile.readUntil(m_strText, ATemplate::sstr_CodeStart, true, true))
+  //a_Read until TAG_WRAPPER
+  if (AConstant::npos == aFile.readUntil(m_Text, ATemplate::TAG_WRAPPER, false, false))
   {
     //a_No more delimeters
-    aFile.readUntilEOF(m_strText);
+    aFile.readUntilEOF(m_Text);
   }
 }
 
 AString& ATemplateNode_Text::useText()
 {
-  return m_strText;
+  return m_Text;
 }
 

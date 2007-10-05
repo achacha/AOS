@@ -10,7 +10,7 @@ class AXmlElement;
 
 -------------------START: HPP cup/past----------------------
 public:
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 -------------------STOP: HPP cup/past-----------------------
 */
 class ABASE_API AXmlEmittable
@@ -21,7 +21,7 @@ public:
   /*!
   Ability to emit self as XML tree
   */
-  virtual void emit(AXmlElement&) const = 0;
+  virtual void emitXml(AXmlElement&) const = 0;
 };
 
 #endif //INCLUDED__AXmlEmittable_HPP_

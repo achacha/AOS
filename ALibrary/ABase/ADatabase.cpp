@@ -33,7 +33,7 @@ bool ADatabase::isInitialized() const
   return mbool_Initialized;
 }
 
-void ADatabase::emit(AXmlElement& target) const
+void ADatabase::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("ADatabase", 9);

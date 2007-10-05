@@ -17,7 +17,7 @@ public:
   AXmlEmittable
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   //a_Timer control
   void start();           //a_Resets(clears) the timer and starts it again

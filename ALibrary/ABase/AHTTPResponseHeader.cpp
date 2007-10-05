@@ -110,7 +110,7 @@ void AHTTPResponseHeader::setReasonPhrase(const AString& reason)
   mstr_ReasonPhrase.assign(reason);
 }
 
-void AHTTPResponseHeader::emit(AXmlElement& target) const
+void AHTTPResponseHeader::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("AHTTPResponseHeader",19);
@@ -132,7 +132,7 @@ void AHTTPResponseHeader::emit(AXmlElement& target) const
   }
 
   //a_Cookies if any
-  mcookies_Response.emit(target.addElement(ASW("ACookies",8)));
+  mcookies_Response.emitXml(target.addElement(ASW("ACookies",8)));
 }
 
 void AHTTPResponseHeader::emit(AOutputBuffer& target) const

@@ -135,7 +135,7 @@ public:
   /*!
   AXmlEmittable
   */
-  void emit(AXmlElement&) const;
+  void emitXml(AXmlElement&) const;
 
 public:
   /*!

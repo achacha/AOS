@@ -4,6 +4,11 @@
 #include "ATemplate.hpp"
 #include "AXmlElement.hpp"
 
+#define TAGNAME ASW("CODE",4)
+
+//a_Register with ATemplate
+ATEMPLATE_REGISTER_NODE(TAGNAME, ATemplateNode_Code);
+
 const AString ATemplateNode_Code::sstr_LineDelimeter(";");
 
 #ifdef __DEBUG_DUMP__
@@ -20,16 +25,19 @@ void ATemplateNode_Code::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ATemplateNode_Code::ATemplateNode_Code()
-{
-}
-
 ATemplateNode_Code::ATemplateNode_Code(const ATemplateNode_Code& that) :
   m_Lines(that.m_Lines)
 {
 }
 
-void ATemplateNode_Code::emit(AXmlElement& target) const
+ATemplateNode* ATemplateNode_Code::create(AFile& file)
+{
+  ATemplateNode_Code *p = new ATemplateNode_Code();
+  p->fromAFile(file);
+  return p;
+}
+
+void ATemplateNode_Code::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign(ASW("ATemplateNode_Code",18));
@@ -44,34 +52,55 @@ void ATemplateNode_Code::emit(AXmlElement& target) const
 
 void ATemplateNode_Code::emit(AOutputBuffer& target) const
 {
-  target.append(ATemplate::sstr_CodeStart);
+  target.append(ATemplate::TAG_WRAPPER);
+  target.append(TAGNAME);
+  target.append(ATemplate::BLOCK_START);
+  target.append(AConstant::ASTRING_CRLF);
+
   LIST_AString::const_iterator cit = m_Lines.begin();
   while (cit != m_Lines.end())
   {
     target.append(*cit);
     target.append(';');
+    target.append(AConstant::ASTRING_CRLF);
     ++cit;
   }
-  target.append(ATemplate::sstr_CodeEnd);
+
+  target.append(ATemplate::BLOCK_END);
+  target.append(TAGNAME);
+  target.append(ATemplate::TAG_WRAPPER);
 }
 
 void ATemplateNode_Code::toAFile(AFile& aFile) const
 {
-  aFile.writeLine(ATemplate::sstr_CodeStart);
+  aFile.write(ATemplate::TAG_WRAPPER);
+  aFile.write(TAGNAME);
+  aFile.writeLine(ATemplate::BLOCK_START);
+
   LIST_AString::const_iterator cit = m_Lines.begin();
   while (cit != m_Lines.end())
   {
-    aFile.writeLine(*cit);
-    aFile.write(ATemplateNode_Code::sstr_LineDelimeter);
+    aFile.write(*cit);
+    aFile.writeLine(ATemplateNode_Code::sstr_LineDelimeter);
     ++cit;
   }
-  aFile.write(ATemplate::sstr_CodeEnd);
+
+  aFile.write(ATemplate::BLOCK_END);
+  aFile.write(TAGNAME);
+  aFile.write(ATemplate::TAG_WRAPPER);
 }
 
 void ATemplateNode_Code::fromAFile(AFile& aFile)
 {
   AFile_AString strfile(2048, 2048);
-  if (AConstant::npos != aFile.readUntil(strfile.useAString(), ATemplate::sstr_CodeEnd, true, true))
+
+  //a_End tag delimiter is }%%CODE%%
+  AString endToken(ATemplate::BLOCK_END);
+  endToken.append(TAGNAME);
+  endToken.append(ATemplate::TAG_WRAPPER);
+  
+  //a_Read until end token into a string file which is parsed on per-line basis
+  if (AConstant::npos != aFile.readUntil(strfile.useAString(), endToken, true, true))
   {
     AString strLine(512,512);
     while (AConstant::npos != strfile.readUntil(strLine, ATemplateNode_Code::sstr_LineDelimeter, true, true))

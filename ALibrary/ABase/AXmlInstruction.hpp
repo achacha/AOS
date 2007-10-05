@@ -85,7 +85,11 @@ public:
   */
   virtual void emit(AOutputBuffer&) const;
   virtual void emit(AOutputBuffer&, int indent) const;
-  virtual void emitJSON(AOutputBuffer&, int indent = -1) const;
+
+  /*!
+  AJsonEmittable
+  */
+  virtual void emitJson(AOutputBuffer&, int indent = -1) const;
 
   /*!
   Checks if element type

@@ -501,6 +501,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\AJsonEmittable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ALock.cpp"
 				>
 			</File>
@@ -1099,6 +1103,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AJsonEmittable.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ALock.hpp"
 				>
 			</File>
@@ -1396,7 +1404,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Copying usertype.dat to MSDev home"
-					CommandLine="copy &quot;$(InputPath)&quot; &quot;$(DevEnvDir)&quot;"
+					CommandLine="copy &quot;$(InputPath)&quot; &quot;$(DevEnvDir)&quot;&#x0D;&#x0A;"
 					Outputs="$(DevEnvDir)\$(InputFileName)"
 				/>
 			</FileConfiguration>

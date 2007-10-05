@@ -108,7 +108,7 @@ void ACookie::emit(AOutputBuffer& target) const
   emitResponseHeaderString(target);
 }
 
-void ACookie::emit(AXmlElement& target) const
+void ACookie::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("ACookie",7);

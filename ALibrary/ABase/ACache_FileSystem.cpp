@@ -123,7 +123,7 @@ void ACache_FileSystem::manage()
 {
 }
 
-void ACache_FileSystem::emit(AXmlElement& target) const
+void ACache_FileSystem::emitXml(AXmlElement& target) const
 {
   const AString KEY("key", 3);
   const AString HITS("hits", 4);

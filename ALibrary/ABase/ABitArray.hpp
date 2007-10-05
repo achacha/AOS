@@ -73,7 +73,7 @@ public:
   AEmittable and AXmlEmittable and output mode
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
   void setOutputMode(Mode Mode = ABitArray::Hexadecimal);
 
 private:

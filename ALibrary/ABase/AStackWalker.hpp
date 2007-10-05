@@ -126,7 +126,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
 ////////////////////// INTERNAL STUFF BELOW THIS LINE/////////////////////////
 

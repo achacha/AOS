@@ -161,7 +161,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
     Emit exception
     */
     virtual void emit(AOutputBuffer&) const;
-    virtual void emit(AXmlElement&) const;
+    virtual void emitXml(AXmlElement&) const;
 
     /*!
     General method for retrieving the exception description and location

@@ -168,12 +168,12 @@ void ALog_AFile::emit(AOutputBuffer& target) const
   emitCurrentFilename(target);
 }
 
-void ALog_AFile::emit(AXmlElement& target) const
+void ALog_AFile::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("ALog_AFile",10);
 
-  ALog::emit(target);
+  ALog::emitXml(target);
   target.addElement(ASW("current_filename",16), m_filenameRotation, AXmlData::CDataDirect);
   target.addElement(ASW("cycle_sleep",11), m_CycleSleep);
   target.addElement(ASW("file_rotation",13), (m_enableLogFileRotate ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));

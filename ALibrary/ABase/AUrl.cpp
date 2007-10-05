@@ -609,7 +609,7 @@ AString AUrl::getPathFileAndQueryString() const
   return strReturn;
 }
 
-void AUrl::emit(AXmlElement& target) const
+void AUrl::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("AUrl",4);
@@ -636,7 +636,7 @@ void AUrl::emit(AXmlElement& target) const
   emit(rope);
   target.addElement(ASW("url",3), rope, AXmlData::CDataSafe);
 
-  m_QueryString.emit(target.addElement(ASW("AQueryString",12)));
+  m_QueryString.emitXml(target.addElement(ASW("AQueryString",12)));
 }
 
 void AUrl::emit(AOutputBuffer& target) const

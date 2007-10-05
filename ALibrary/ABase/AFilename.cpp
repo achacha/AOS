@@ -221,7 +221,7 @@ void AFilename::emit(
   }
 }
 
-void AFilename::emit(AXmlElement& target) const
+void AFilename::emitXml(AXmlElement& target) const
 {
   AXmlElement& element = target.addElement(ASW("AFilename", 9));
   element.addAttribute(ASW("type", 4), AString::fromInt(m_Type));

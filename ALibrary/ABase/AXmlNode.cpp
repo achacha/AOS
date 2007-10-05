@@ -108,7 +108,7 @@ bool AXmlNode::emitFromPath(
     return false;
 }
 
-void AXmlNode::emitJSON(
+void AXmlNode::emitJson(
   AOutputBuffer& target,
   int indent // = -1
 ) const
@@ -142,7 +142,7 @@ void AXmlNode::emitJSON(
     target.append(':');
     for (NodeContainer::const_iterator cit = m_Content.begin(); cit != m_Content.end(); ++cit)
     {
-      (*cit)->emitJSON(target, (indent >= 0 ? indent+1 : indent));
+      (*cit)->emitJson(target, (indent >= 0 ? indent+1 : indent));
     }
   }
 
@@ -154,7 +154,7 @@ void AXmlNode::emitJSON(
   }
 }
 
-void AXmlNode::emit(AXmlElement& target) const
+void AXmlNode::emitXml(AXmlElement& target) const
 {
   AXmlElement& base = target.addElement(m_Name);
   NodeContainer::const_iterator cit = m_Content.begin();

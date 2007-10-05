@@ -35,7 +35,7 @@ public:
   /*!
   AXmlElement
   */
-  void emit(AXmlElement& target) const;
+  void emitXml(AXmlElement& target) const;
 
   /*!
   Add a database to the pool, this will be OWNED and DELETED by this class

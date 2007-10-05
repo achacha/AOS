@@ -27,7 +27,7 @@ public:
 
   //a_Default output is request header one line
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   //a_Specialized method used to parse 'Set-Cookie' token in the response header
   //a_This line contains cookie name=value and parameters (which are for that cookie)

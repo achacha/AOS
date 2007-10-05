@@ -61,7 +61,7 @@ public:
   AXmlEmittable
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
 protected:
   typedef std::vector<MAP_AString_AString *> HASH_MAP;

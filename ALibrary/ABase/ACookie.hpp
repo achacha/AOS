@@ -67,7 +67,7 @@ public:
   //a_Response is sent by the server and contains all fields (one per SET-COOKIE: lines)
   void emitResponseHeaderString(AOutputBuffer&) const;
   virtual void emit(AOutputBuffer& target) const;            //a_Default is a server response cookie
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   //a_Request is sent by the browser and only contains name=value pairs (many on COOKIE: line)
   void emitRequestHeaderString(AOutputBuffer&) const;

@@ -120,7 +120,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   Emit XML unformatted
@@ -134,9 +134,10 @@ public:
   virtual void emit(AOutputBuffer&, int indent) const;
 
   /*!
+  AJsonEmittable
    Emit as JavaScript Object Notation (JSON)
   */
-  virtual void emitJSON(AOutputBuffer&, int indent = -1) const;
+  virtual void emitJson(AOutputBuffer&, int indent = -1) const;
 
   /*!
   Clear the contents and release sub-elements

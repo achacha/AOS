@@ -173,7 +173,7 @@ void AStringHashMap::emit(AOutputBuffer& target) const
   }
 }
 
-void AStringHashMap::emit(AXmlElement& target) const
+void AStringHashMap::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("AStringHashMap",14);

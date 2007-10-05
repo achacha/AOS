@@ -213,7 +213,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\Console\tFileSystem.cpp"
+			RelativePath=".\labAnything.cpp"
 			>
 		</File>
 	</Files>

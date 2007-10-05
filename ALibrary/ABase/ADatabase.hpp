@@ -18,7 +18,7 @@ public:
   virtual bool init(AString& error);
   virtual void deinit();
   virtual u4 executeSQL(const AString& query, AResultSet&, AString& error);
-  virtual emit(AXmlElement& target) const;
+  virtual emitXml(AXmlElement& target) const;
   virtual ADatabase *clone() const;
 
 //OPTIONAL  
@@ -35,7 +35,7 @@ public:
   /*!
   AXmlElement
   */
-  void emit(AXmlElement& target) const;
+  void emitXml(AXmlElement& target) const;
 
   /*!
   Initialization and deinitialization

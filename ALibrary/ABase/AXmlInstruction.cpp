@@ -145,7 +145,7 @@ void AXmlInstruction::parse(const AString& contents)
   }
 }
 
-void AXmlInstruction::emitJSON(
+void AXmlInstruction::emitJson(
   AOutputBuffer& target, 
   int // indent = -1
 ) const

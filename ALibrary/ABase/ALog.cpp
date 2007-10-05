@@ -41,7 +41,7 @@ ALog::~ALog()
   catch(...) {}
 }
 
-void ALog::emit(AXmlElement& target) const
+void ALog::emitXml(AXmlElement& target) const
 {
   AASSERT(this, !target.useName().isEmpty());
 

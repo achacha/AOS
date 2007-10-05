@@ -206,7 +206,7 @@ void AEventVisitor::Event::emit(AOutputBuffer& target) const
   target.append(AConstant::ASTRING_EOL);
 }
 
-void AEventVisitor::emit(AXmlElement& target) const
+void AEventVisitor::emitXml(AXmlElement& target) const
 {
   AASSERT(this, !target.getName().isEmpty());
 
@@ -227,19 +227,19 @@ void AEventVisitor::emit(AXmlElement& target) const
   u8 firstTick = 0;
   while (cit != m_Events.end())
   {
-    (*cit)->emit(events.addElement(ASW("Event",5)));
+    (*cit)->emitXml(events.addElement(ASW("Event",5)));
     ++cit;
   }
   if (mp_CurrentEvent)
   {
     AXmlElement& e = events.addElement(ASW("Event",5));
     e.addAttribute(ASW("active",6), AConstant::ASTRING_TRUE);
-    mp_CurrentEvent->emit(e);
+    mp_CurrentEvent->emitXml(e);
   }
   target.addElement(ASW("CurrentStateTimer",17), m_stateTimer);
 }
 
-void AEventVisitor::Event::emit(AXmlElement& target) const
+void AEventVisitor::Event::emitXml(AXmlElement& target) const
 {
   AASSERT(this, !target.getName().isEmpty());
 

@@ -16,7 +16,7 @@ class AFile;
 public:
 //REQUIRED: AEmittable and AXmlEmittable
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
 //OPTIONAL: Debugging to ostream (optional, but nice to have)
 	virtual void debugDump(std::ostream&, int iIndentLevel = 0x0) const;
@@ -44,7 +44,7 @@ public:
   AXmlEmittable and AEmittable
   */
   virtual void emit(AOutputBuffer&) const = 0;
-  virtual void emit(AXmlElement&) const = 0;
+  virtual void emitXml(AXmlElement&) const = 0;
   
   /*!
   Clone self

@@ -4,10 +4,21 @@
 #include "ATemplateNode.hpp"
 #include "AString.hpp"
 
+/*!
+Special node that used to hold text between tags
+Does NOT need to be registered
+*/
 class ATemplateNode_Text : public ATemplateNode
 {
 public:
+  /*!
+  ctor
+  */
   ATemplateNode_Text(const AString& text = AConstant::ASTRING_EMPTY);
+  
+  /*!
+  Copy ctor
+  */
   ATemplateNode_Text(const ATemplateNode_Text&);
 
   /*!
@@ -23,7 +34,7 @@ public:
   /*!
   AXmlEmittable, emits the template
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   AEmittable, emits the template
@@ -37,7 +48,7 @@ public:
   virtual void fromAFile(AFile& aFile);
 
 private:
-  AString m_strText;
+  AString m_Text;
 
 public:
 #ifdef __DEBUG_DUMP__

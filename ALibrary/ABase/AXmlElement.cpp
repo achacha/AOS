@@ -211,7 +211,7 @@ AXmlElement& AXmlElement::addElement(const AString& xpath, const AXmlEmittable& 
   else
     p = _createAndAppend(xparts, this);
 
-  object.emit(*p);
+  object.emitXml(*p);
   return *p;
 }
 
@@ -316,7 +316,7 @@ AXmlElement& AXmlElement::addContent(
 
 AXmlElement& AXmlElement::addContent(const AXmlEmittable& data)
 {
-  data.emit(*this);  
+  data.emitXml(*this);  
   return *this;
 }
 
@@ -328,9 +328,9 @@ AXmlElement& AXmlElement::addComment(const AString& comment)
   return *this;
 }
 
-void AXmlElement::emit(AXmlElement& target) const
+void AXmlElement::emitXml(AXmlElement& target) const
 {
-  AXmlNode::emit(target);
+  AXmlNode::emitXml(target);
 }
 
 void AXmlElement::emit(AOutputBuffer& target, int indent) const
@@ -406,7 +406,7 @@ void AXmlElement::emit(AOutputBuffer& target) const
   emit(target,-1);
 }
 
-void AXmlElement::emitJSON(
+void AXmlElement::emitJson(
   AOutputBuffer& target,
   int indent // = -1
 ) const
@@ -420,7 +420,7 @@ void AXmlElement::emitJSON(
     return;
   }
   
-  bool needsBraces = hasElements();
+  bool needsBraces = hasElements(); // || m_Attributes.size() > 0;
   target.append(':');
   if (needsBraces)
   {
@@ -438,7 +438,7 @@ void AXmlElement::emitJSON(
       AXmlElement *pElement = dynamic_cast<AXmlElement *>(*cit);
       if (pElement)
       {
-        (*cit)->emitJSON(target, (indent >= 0 ? indent+1 : indent));
+        (*cit)->emitJson(target, (indent >= 0 ? indent+1 : indent));
         ++cit;
         if (cit != m_Content.end() || attrSize > 0)
         {

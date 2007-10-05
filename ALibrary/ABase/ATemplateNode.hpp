@@ -8,14 +8,19 @@
 class ATemplateNode : public ASerializable, public ADebugDumpable, public AXmlEmittable
 {
 public:
-  virtual void process(AOutputBuffer&, const AXmlElement&) = 0;
-
   /*!
-  AXmlEmittable
-  AEmittable
+  Creator method signature
+
+  static ATemplateNode* create(AFile&);
   */
-  void emit(AOutputBuffer&) const = 0;
-  void emit(AXmlElement&) const = 0;
+  typedef ATemplateNode *(CreatorMethod)(AFile&);
+  typedef CreatorMethod* CreatorMethodPtr;
+
+public:
+  /*!
+  Process the template node against the data model
+  */
+  virtual void process(AOutputBuffer&, const AXmlElement&) = 0;
 };
 
 #endif //INCLUDED_ATemplateNode_HPP_

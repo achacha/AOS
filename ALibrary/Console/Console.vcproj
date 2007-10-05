@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tXMLElement.cpp"
+			RelativePath=".\tTemplateParse.cpp"
 			>
 		</File>
 	</Files>

@@ -66,7 +66,7 @@ public:
   XML publish, simple object does not handle path
   If an object is wrapped with this template AEmittable MUST be implemented
   */
-  virtual void emit(AXmlElement& element) const
+  virtual void emitXml(AXmlElement& element) const
   {
     if (m_Name.isEmpty())
       ATHROW_EX(this, AException::ProgrammingError, ASWNL("AObjectBase objects must have a name to be emit'd to AXmlElement"));

@@ -4,11 +4,15 @@
 #include "ATemplateNode.hpp"
 #include "AFile_AString.hpp"
 
+/*!
+Handles %%CODE%%{ code goes here }%%CODE%% tag
+*/
 class ATemplateNode_Code : public ATemplateNode
 {
 public:
-  ATemplateNode_Code();
-  ATemplateNode_Code(const AString& path);
+  /*!
+  Copy ctor
+  */
   ATemplateNode_Code(const ATemplateNode_Code&);
 
   /*!
@@ -24,7 +28,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   AEmittable, emits the template
@@ -36,6 +40,15 @@ public:
   */
   virtual void toAFile(AFile& aFile) const;
   virtual void fromAFile(AFile& aFile);
+
+  /*!
+  Creator method
+  */
+  static ATemplateNode* create(AFile&);
+
+protected:
+  //a_No default ctor, use create()
+  ATemplateNode_Code() {}
 
 private:
   LIST_AString m_Lines;

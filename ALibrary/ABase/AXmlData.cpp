@@ -64,7 +64,7 @@ void AXmlData::setEncoding(AXmlData::Encoding encoding)
   m_Encoding = encoding;
 }
 
-void AXmlData::emitJSON(AOutputBuffer& target, int indent) const
+void AXmlData::emitJson(AOutputBuffer& target, int indent) const
 {
   target.append(AConstant::ASTRING_CRLF);
   if (indent >=0) _indent(target, indent);

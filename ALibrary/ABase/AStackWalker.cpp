@@ -1399,7 +1399,7 @@ void AStackWalker::emit(AOutputBuffer& target) const
   }
 }
 
-void AStackWalker::emit(AXmlElement& target) const
+void AStackWalker::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("AStackWalker", 12);

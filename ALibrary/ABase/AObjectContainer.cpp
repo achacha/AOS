@@ -245,9 +245,9 @@ void AObjectContainer::emit(AOutputBuffer& target) const
   emit(target, AConstant::ASTRING_EMPTY);
 }
 
-void AObjectContainer::emit(AXmlElement& target) const
+void AObjectContainer::emitXml(AXmlElement& target) const
 {
-  emit(target, AConstant::ASTRING_EMPTY);
+  emitXml(target, AConstant::ASTRING_EMPTY);
 }
 
 void AObjectContainer::emit(AOutputBuffer& target, const AString& strPath) const
@@ -276,7 +276,7 @@ void AObjectContainer::emit(AOutputBuffer& target, const AString& strPath) const
   }
 }
 
-void AObjectContainer::emit(AXmlElement& element, const AString& strPath) const
+void AObjectContainer::emitXml(AXmlElement& element, const AString& strPath) const
 {
   if (strPath.isEmpty())
   {
@@ -292,7 +292,7 @@ void AObjectContainer::emit(AXmlElement& element, const AString& strPath) const
     while (cit != m_Objects.end())
     {
       AAutoPtr<AXmlElement> pself(new AXmlElement((*cit).first));     //a_Create a child
-      (*cit).second->emit(*pself);
+      (*cit).second->emitXml(*pself);
       element.addContent(pself);
       pself.setOwnership(false);
       ++cit;
@@ -303,7 +303,7 @@ void AObjectContainer::emit(AXmlElement& element, const AString& strPath) const
     AObjectBase *pObj = getObject(strPath);
     if (pObj)
     {
-      pObj->emit(element);
+      pObj->emitXml(element);
     }
     else
       ATHROW_EX(this, AException::DoesNotExist, AString("path specified does not exist:")+strPath);

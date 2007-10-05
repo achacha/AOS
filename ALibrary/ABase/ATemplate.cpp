@@ -5,15 +5,18 @@
 #include "templateAutoPtr.hpp"
 #include "AFile.hpp"
 
-const AString ATemplate::sstr_CodeStart("<!--[");
-const AString ATemplate::sstr_CodeEnd("]-->");
+const AString ATemplate::TAG_WRAPPER("%%",2);
+const AString ATemplate::BLOCK_START("%%{",3);
+const AString ATemplate::BLOCK_END("}%%",3);
+
+ATemplate::MAP_CREATORS ATemplate::m_Creators;
 
 #ifdef __DEBUG_DUMP__
 void ATemplate::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ATemplate @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_Nodes {" << std::endl;
-  ADebugDumpable::indent(os, indent+2) << "size=" << (u4)m_Nodes.size() << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Nodes={" << std::endl;
+  ADebugDumpable::indent(os, indent+2) << "size=" << m_Nodes.size() << std::endl;
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
   {
@@ -21,6 +24,17 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
     ++cit;
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  
+  ADebugDumpable::indent(os, indent+1) << "m_Creators={" << std::endl;
+  ADebugDumpable::indent(os, indent+2) << "size=" << m_Creators.size() << std::endl;
+  MAP_CREATORS::const_iterator cit2 = m_Creators.begin();
+  while (cit2 != m_Creators.end())
+  {
+    ADebugDumpable::indent(os, indent+2) << (*cit2).first << std::endl;
+    ++cit2;
+  }
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
@@ -42,6 +56,21 @@ ATemplate::~ATemplate()
   } catch(...) {}
 }
 
+ATemplate::RegisterWithTemplateParser::RegisterWithTemplateParser(const AString& tagName, ATemplateNode::CreatorMethodPtr pMethod)
+{
+  ATemplate::_registerCreator(tagName, pMethod);
+}
+
+void ATemplate::_registerCreator(const AString& tagName, ATemplateNode::CreatorMethodPtr ptr)
+{
+  if (m_Creators.find(tagName) == m_Creators.end())
+  {
+    m_Creators[tagName] = ptr;
+  }
+  else
+    ATHROW_EX(NULL, AException::DataConflict, tagName);
+}
+
 void ATemplate::toAFile(AFile& aFile) const
 {
   NODES::const_iterator cit = m_Nodes.begin();
@@ -54,32 +83,51 @@ void ATemplate::toAFile(AFile& aFile) const
 
 void ATemplate::fromAFile(AFile& aFile)
 {
+  AString tagName;
   AAutoPtr<ATemplateNode_Text> pText(new ATemplateNode_Text());
-  AAutoPtr<ATemplateNode_Code> pCode(new ATemplateNode_Code());
-  while (aFile.isNotEof())
+  size_t ret;
+  while(AConstant::npos != (ret = aFile.readUntil(pText->useText(), ATemplate::TAG_WRAPPER)))
   {
-    //a_Read text until start is found
-    pText->fromAFile(aFile);
+    aFile.readUntil(tagName, ATemplate::BLOCK_START);
+
+    //a_Check if this tag is registered
+    MAP_CREATORS::iterator it = m_Creators.find(tagName);
+    if (m_Creators.end() == it)
+    {
+      //a_No such tag, add to the current text node and keep going
+      pText->useText().append(ATemplate::TAG_WRAPPER);
+      pText->useText().append(tagName);
+      pText->useText().append(ATemplate::BLOCK_START);
+    }
+    else
+    {
+      //a_Add text first
+      m_Nodes.push_back(pText.get());
+      pText.setOwnership(false);
+
+      //a_Create new active text node
+      pText.reset(new ATemplateNode_Text());
+
+      //a_Create the tag specific node and parse it
+      ATemplateNode::CreatorMethodPtr methodptr = (*it).second;
+      ATemplateNode *pNode = methodptr(aFile);
+      
+      //a_Add parsed node
+      m_Nodes.push_back(pNode);
+    }
+    tagName.clear();
+  }
+  if (AConstant::npos == ret)
+  {
+    //a_Read to EOF
+    aFile.readUntilEOF(pText->useText());
+
+    //a_Leftover text added if not empty
     if (!pText->useText().isEmpty())
     {
       m_Nodes.push_back(pText.get());
       pText.setOwnership(false);
-      pText.reset(new ATemplateNode_Text());
     }
-
-    if (aFile.isNotEof())
-    {
-      //a_Code delimeter found
-      pCode->fromAFile(aFile);
-      if (!pCode->isEmpty())
-      {
-        m_Nodes.push_back(pCode.get());
-        pCode.setOwnership(false);
-        pCode.reset(new ATemplateNode_Code());
-      }
-    }
-    else
-      break;
   }
 }
 
@@ -93,12 +141,12 @@ void ATemplate::process(AOutputBuffer& target, const AXmlElement& root)
   }
 }
 
-void ATemplate::emit(AXmlElement& target) const
+void ATemplate::emitXml(AXmlElement& target) const
 {
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
   {
-    (*cit)->emit(target);
+    (*cit)->emitXml(target);
     ++cit;
   }
 }

@@ -160,7 +160,7 @@ void AMovingAverage::emit(AOutputBuffer& target) const
   num.emit(target);
 }
 
-void AMovingAverage::emit(AXmlElement& target) const
+void AMovingAverage::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign("AMovingAverage", 14);

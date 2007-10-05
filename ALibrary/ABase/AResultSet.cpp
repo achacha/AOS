@@ -61,7 +61,7 @@ void AResultSet::emit(AOutputBuffer& target) const
   }
 }
 
-void AResultSet::emit(AXmlElement& target) const
+void AResultSet::emitXml(AXmlElement& target) const
 {
   AXmlElement& element = target.addElement(m_Name.isEmpty() ? "AResultSet" : m_Name);
   element.addElement("sql", m_SQL, AXmlData::CDataDirect);

@@ -28,13 +28,13 @@ public:
   AEmittable and AXmlEmittable
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   Emit XML based on a subpath
   */
   virtual void emit(AOutputBuffer&, const AString& path) const;
-  virtual void emit(AXmlElement&, const AString& path) const;
+  virtual void emitXml(AXmlElement&, const AString& path) const;
 
   /*!
   Insertion of objects
