@@ -60,7 +60,7 @@ void ADadaDataHolder::emit(AOutputBuffer& target) const
   }
 }
 
-void ADadaDataHolder::emit(AXmlElement& element) const
+void ADadaDataHolder::emitXml(AXmlElement& element) const
 {
   WORDMAP::const_iterator cit = m_wordmap.begin();
   while (m_wordmap.end() != cit)

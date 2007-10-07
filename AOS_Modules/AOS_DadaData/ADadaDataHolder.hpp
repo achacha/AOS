@@ -30,7 +30,7 @@ public:
   AObjectBase guarantees
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
   AObjectBase* clone() const { return new ADadaDataHolder(*this); }  //a_Clone self using copy ctor
 
 private:

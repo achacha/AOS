@@ -28,7 +28,7 @@ bool AOSModule_BlogView::execute(AOSContext& context, const AXmlElement& moduleP
   size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, error);
   if (rows > 0 && error.isEmpty())
   {
-    result.emit(xmlBlog);
+    result.emitXml(xmlBlog);
   }
   else
   {
