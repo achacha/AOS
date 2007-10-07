@@ -18,14 +18,14 @@ static void luaA_stringappender(lua_State *L, const char *s)
 }
 
 /*!
-thisfunction("<object path of the AXmlDocument type>", "<path to the AXmlNode to emit>")
+thisfunction("<object name of the AXmlDocument type>", "<path to the AXmlNode to emit>")
 returns: content at the node path
 */
-static int alibrary_emitXmlDocumentFromPath(lua_State *L)
+static int alibrary_Objects_AXmlDocument_emitFromPath(lua_State *L)
 {
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
-  const AString& objpath = AString::wrap(s, len);
+  const AString& objectName = AString::wrap(s, len);
 
   s = luaL_checklstring(L, 2, &len);
   const AString& xmlpath = AString::wrap(s, len);
@@ -33,7 +33,7 @@ static int alibrary_emitXmlDocumentFromPath(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlDocument *pDoc = pLuaEmbed->useObjects().getAsPtr<AXmlDocument>(objpath);
+  AXmlDocument *pDoc = pLuaEmbed->useObjectHolder().getAsPtr<AXmlDocument>(objectName);
   AASSERT(NULL, pDoc);
   AString str;
 
@@ -45,23 +45,23 @@ static int alibrary_emitXmlDocumentFromPath(lua_State *L)
     lua_pushlstring(L, str.c_str(), str.getSize());
     str.clear();
   }
-  return ret;
+  return (int)ret;
 }
 
 /*!
-thisfunction("<object path of AEmittable type>"")
+thisfunction("<object name of AEmittable type>")
 returns: content at the node path
 */
-static int alibrary_emit(lua_State *L)
+static int alibrary_Objects_emit(lua_State *L)
 {
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
-  const AString& objpath = AString::wrap(s, len);
+  const AString& objectName = AString::wrap(s, len);
 
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AObjectBase *pObj = pLuaEmbed->useObjects().getObject(objpath);
+  AObjectBase *pObj = pLuaEmbed->useObjectHolder().get(objectName);
   if (pObj)
   {
     AString str;
@@ -74,14 +74,14 @@ static int alibrary_emit(lua_State *L)
 }
 
 /*!
-thisfunction("<object path of AXmlElement type>", [indent = -1])
+thisfunction("<object name of AXmlElement type>", [indent = -1])
 returns: XML string of the object assuming it implements AXmlEmittable interface
 */
-static int alibrary_emitXml(lua_State *L)
+static int alibrary_Objects_AXmlElement_emitXml(lua_State *L)
 {
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
-  const AString& objpath = AString::wrap(s, len);
+  const AString& objectName = AString::wrap(s, len);
   lua_pop(L, 1);
 
   int indent = -1;
@@ -94,7 +94,7 @@ static int alibrary_emitXml(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlElement *p = pLuaEmbed->useObjects().getAsPtr<AXmlElement>(objpath);
+  AXmlElement *p = pLuaEmbed->useObjectHolder().getAsPtr<AXmlElement>(objectName);
   if (p)
   {
     AString str;
@@ -108,14 +108,14 @@ static int alibrary_emitXml(lua_State *L)
 }
 
 /*!
-thisfunction("<object path of AXmlElement type>", [indent = -1])
+thisfunction("<object name of AXmlElement type>", [indent = -1])
 returns: JSON string of the object assuming it implements AXmlEmittable interface
 */
-static int alibrary_emitJson(lua_State *L)
+static int alibrary_Objects_AXmlElement_emitJson(lua_State *L)
 {
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
-  const AString& objpath = AString::wrap(s, len);
+  const AString& objectName = AString::wrap(s, len);
   lua_pop(L, 1);
 
   int indent = -1;
@@ -128,7 +128,7 @@ static int alibrary_emitJson(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlElement *p = pLuaEmbed->useObjects().getAsPtr<AXmlElement>(objpath);
+  AXmlElement *p = pLuaEmbed->useObjectHolder().getAsPtr<AXmlElement>(objectName);
   if (p)
   {
     AString str;
@@ -170,10 +170,10 @@ static int alibrary_print(lua_State *L)
 
 static const luaL_Reg alibrary_funcs[] = {
   {"print", alibrary_print},
-  {"emit", alibrary_emit},
-  {"emitXml", alibrary_emitXml},
-  {"emitJson", alibrary_emitJson},
-  {"emitXmlDocumentFromPath", alibrary_emitXmlDocumentFromPath},
+  {"emit", alibrary_Objects_emit},
+  {"AsAXmlElement_emitXml", alibrary_Objects_AXmlElement_emitXml},
+  {"AsAXmlElement_emitJson", alibrary_Objects_AXmlElement_emitJson},
+  {"AsAXmlDocument_emitFromPath", alibrary_Objects_AXmlDocument_emitFromPath},
   {NULL, NULL}
 };
 

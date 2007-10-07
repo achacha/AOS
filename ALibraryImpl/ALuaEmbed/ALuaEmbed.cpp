@@ -3,15 +3,23 @@
 
 #include "pchALuaEmbed.hpp"
 #include "ALuaEmbed.hpp"
+#include "ARope.hpp"
 #include "ALibraryFunctions.hpp"
 extern "C"
 {
 #include "lstate.h"
 }
 
-ALuaEmbed::ALuaEmbed(u4 maskLibrariesToLoad):
-  mp_LuaState(NULL)
+ALuaEmbed::ALuaEmbed(
+  u4 maskLibrariesToLoad,
+  AOutputBuffer *pOutputBuffer // = NULL
+):
+  mp_LuaState(NULL),
+  mp_OutputBuffer(pOutputBuffer)
 {
+  if (!mp_OutputBuffer)
+    mp_OutputBuffer = new ARope();
+  
   mp_LuaState = lua_open();
   AASSERT(NULL, mp_LuaState);
   mp_LuaState->mythis = this;  //a_Attach out output buffer
@@ -37,11 +45,20 @@ ALuaEmbed::ALuaEmbed(u4 maskLibrariesToLoad):
 
 ALuaEmbed::~ALuaEmbed()
 {
-  if (mp_LuaState)
-    lua_close(mp_LuaState);
+  try
+  {
+    if (mp_LuaState)
+      lua_close(mp_LuaState);
+    delete mp_OutputBuffer;
+  } catch(...) {}
 }
 
-bool ALuaEmbed::execute(const AEmittable& code, AOutputBuffer& scriptError)
+void ALuaEmbed::loadUserLibrary(LUA_OPENLIBRARY_FPTR fptr)
+{
+  fptr(mp_LuaState);
+}
+
+bool ALuaEmbed::execute(const AEmittable& code)
 {
   AASSERT(NULL, mp_LuaState);
   ARope rope;
@@ -52,7 +69,7 @@ bool ALuaEmbed::execute(const AEmittable& code, AOutputBuffer& scriptError)
   {
     AString strError(lua_tostring(mp_LuaState, -1));
     lua_pop(mp_LuaState, 1);  // pop error message from the stack
-    scriptError.append(strError);
+    mp_OutputBuffer->append(strError);
     return false;
   }
 
@@ -64,7 +81,7 @@ bool ALuaEmbed::execute(const AEmittable& code, AOutputBuffer& scriptError)
       AString strError("Runtime Error: ");
       strError.append(lua_tostring(mp_LuaState, -1));
       lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      scriptError.append(strError);
+      mp_OutputBuffer->append(strError);
       return false;
     } 
     break;
@@ -74,7 +91,7 @@ bool ALuaEmbed::execute(const AEmittable& code, AOutputBuffer& scriptError)
       AString strError("Memory Allocation Error: ");
       strError.append(lua_tostring(mp_LuaState, -1));
       lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      scriptError.append(strError);
+      mp_OutputBuffer->append(strError);
       return false;
     } 
     break;
@@ -84,19 +101,20 @@ bool ALuaEmbed::execute(const AEmittable& code, AOutputBuffer& scriptError)
       AString strError("Error in error handler: ");
       strError.append(lua_tostring(mp_LuaState, -1));
       lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      scriptError.append(strError);
+      mp_OutputBuffer->append(strError);
       return false;
     }
     break;
   }
+  return true;
 }
 
 AOutputBuffer& ALuaEmbed::useOutputBuffer()
 {
-  return m_OutputBuffer;
+  return *mp_OutputBuffer;
 }
 
-AObjectContainer& ALuaEmbed::useObjects()
+AObjectPtrHolder& ALuaEmbed::useObjectHolder()
 {
   return m_Objects;
 }

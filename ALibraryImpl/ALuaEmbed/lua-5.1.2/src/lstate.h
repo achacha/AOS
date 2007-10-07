@@ -122,7 +122,6 @@ struct lua_State {
   struct lua_longjmp *errorJmp;  /* current error recover point */
   ptrdiff_t errfunc;  /* current error handling function (stack index) */
   void *mythis;  /* (ALuaEmbed *) if not NULL */
-  void *myparam; /* Pointer to a user defined object */
 };
 
 

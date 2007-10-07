@@ -210,6 +210,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ATemplateNode_Lua.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pchALuaEmbed.cpp"
 				>
 				<FileConfiguration
@@ -245,6 +249,10 @@
 			</File>
 			<File
 				RelativePath=".\apiALuaEmbed.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ATemplateNode_Lua.hpp"
 				>
 			</File>
 			<File

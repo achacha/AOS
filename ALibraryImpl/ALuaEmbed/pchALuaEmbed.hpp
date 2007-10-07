@@ -5,5 +5,7 @@
 #include "AString.hpp"
 #include "AException.hpp"
 #include "ARope.hpp"
+#include "AXmlElement.hpp"
+#include "AFile.hpp"
 
 #include "ALibraryFunctions.hpp"
