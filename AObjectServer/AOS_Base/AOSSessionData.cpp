@@ -22,13 +22,13 @@ AOSSessionData::AOSSessionData(const AString& sessionId) :
   m_Data.set(ASW("id",2), sessionId);
 }
 
-void AOSSessionData::emit(AXmlElement& target) const
+void AOSSessionData::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign(ASW("AOSSessionData",14));
 
-  m_AgeTimer.emit(target.addElement(ASW("age",3)));
-  m_Data.emit(target.addElement(ASW("data",4)));
+  m_AgeTimer.emitXml(target.addElement(ASW("age",3)));
+  m_Data.emitXml(target.addElement(ASW("data",4)));
 }
 
 double AOSSessionData::getAge()

@@ -92,8 +92,8 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           //}
 
           //a_Add request header to result XML
-          pContext->useRequestHeader().emit(pContext->useOutputRootXmlElement().addElement("REQUEST"));
-          pContext->useResponseHeader().emit(pContext->useOutputRootXmlElement().addElement("RESPONSE"));
+          pContext->useRequestHeader().emitXml(pContext->useOutputRootXmlElement().addElement("REQUEST"));
+          pContext->useResponseHeader().emitXml(pContext->useOutputRootXmlElement().addElement("RESPONSE"));
 
           //a_Check if dumpContext is specified to override and emit XML
           int dumpContext = 0;
@@ -109,7 +109,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           {
             //a_Process and display error as XML
             AXmlElement& eError = pContext->useOutputRootXmlElement().addElement(ASW("error", 5));
-            pContext->useEventVisitor().emit(eError);
+            pContext->useEventVisitor().emitXml(eError);
             
             //a_Write contents of the output XML instead of output buffer
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");

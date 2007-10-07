@@ -570,7 +570,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   return AOSContext::STATUS_OK;
 }
 
-void AOSContext::emit(AXmlElement& target) const
+void AOSContext::emitXml(AXmlElement& target) const
 {  
   AASSERT(this, !target.useName().isEmpty());
 
@@ -578,20 +578,20 @@ void AOSContext::emit(AXmlElement& target) const
   target.useAttributes().insert(ASW("request_timer",13), AString::fromDouble(m_RequestTimer.getInterval()));
   target.useAttributes().insert(ASW("context_timer",13), AString::fromDouble(m_ContextTimer.getInterval()));
 
-  m_EventVisitor.emit(target.addElement(ASW("Events",6)));
-  m_Services.useGlobalObjects().emit(target.addElement(ASW("GlobalObjects",13)));
-  m_ContextObjects.emit(target.addElement(ASW("ContextObjects",14)));
-  m_RequestHeader.emit(target.addElement(ASW("RequestHeader",13)));
-  m_ResponseHeader.emit(target.addElement(ASW("ResponseHeader",14)));
-  m_ConnectionFlags.emit(target.addElement(ASW("ConnectionFlags",15)));
-  m_ContextFlags.emit(target.addElement(ASW("ContextFlags",12)));
+  m_EventVisitor.emitXml(target.addElement(ASW("Events",6)));
+  m_Services.useGlobalObjects().emitXml(target.addElement(ASW("GlobalObjects",13)));
+  m_ContextObjects.emitXml(target.addElement(ASW("ContextObjects",14)));
+  m_RequestHeader.emitXml(target.addElement(ASW("RequestHeader",13)));
+  m_ResponseHeader.emitXml(target.addElement(ASW("ResponseHeader",14)));
+  m_ConnectionFlags.emitXml(target.addElement(ASW("ConnectionFlags",15)));
+  m_ContextFlags.emitXml(target.addElement(ASW("ContextFlags",12)));
 
   if (mp_SessionObject)
-    mp_SessionObject->emit(target.addElement(ASW("Session",7)));
+    mp_SessionObject->emitXml(target.addElement(ASW("Session",7)));
 
   //a_Check if command exists, if not it could be static content
   if (mp_Command)
-    mp_Command->emit(target.addElement(ASW("Command",7)));
+    mp_Command->emitXml(target.addElement(ASW("Command",7)));
   else
     target.addElement(ASW("Command",7), ASW("NULL",4));
 }

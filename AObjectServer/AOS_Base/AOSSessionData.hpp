@@ -15,7 +15,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   Data is all AString->AString map

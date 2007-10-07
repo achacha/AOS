@@ -159,7 +159,7 @@ void AOSCommand::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader
   }
 }
 
-void AOSCommand::emit(AXmlElement& target) const
+void AOSCommand::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
     target.useName().assign(ASW("AOSCommand",10));
@@ -228,7 +228,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   if (pNode)
   {
     pNode->getAttributes().get(CLASS, m_InputProcessor);
-    pNode->emit(m_InputParams);
+    pNode->emitXml(m_InputParams);
   }
 
   //a_Get output generator
@@ -238,7 +238,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   if (pNode)
   {
     pNode->getAttributes().get(CLASS, m_OutputGenerator);
-    pNode->emit(m_OutputParams);
+    pNode->emitXml(m_OutputParams);
   }
 
   //a_Get module names
@@ -261,7 +261,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
       info.m_Name = strName;
 
       //a_Populate the params
-      (*citModule)->emit(info.m_ModuleParams);
+      (*citModule)->emitXml(info.m_ModuleParams);
 
       strName.clear();
       strClass.clear();

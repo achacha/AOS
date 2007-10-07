@@ -2,10 +2,24 @@
 <body bgcolor="#f0f0ff">
 
 <h2>Content found under /root/inserted/data/insert-root/item</h2>
-<b><!--[print(/root/inserted/data/insert-root/item)]--></b>
+<b>%%CODE%%{print(/root/inserted/data/insert-root/item)}%%CODE%%</b>
 <br/>
 <br/>
-<small><font color="blue">Request time: <!--[print(/root/request_time)]--> milliseconds</font></small><br/>
-<small><font color="blue">Context time: <!--[print(/root/context_time)]--> milliseconds</font></small><br/>
+<small><font color="blue">Request time: %%CODE%%{print(/root/request_time)}%%CODE%% milliseconds</font></small><br/>
+<small><font color="blue">Context time: %%CODE%%{print(/root/context_time)}%%CODE%% milliseconds</font></small><br/>
+<br/>
+<h2>Embedded Lua script</h2>
+<code>
+local var x=5;
+x = x+2;
+print(x);
+</code>
+<table border='1'><tr><td>
+%%LUA%%{
+local var x=5;
+x = x+2;
+print(x);
+}%%LUA%%
+</td></tr></table>
 </body>
 </html>

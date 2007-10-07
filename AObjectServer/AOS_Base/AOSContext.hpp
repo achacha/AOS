@@ -153,7 +153,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   Context specific data used to contain data for the duration of the request

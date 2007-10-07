@@ -33,7 +33,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
    Access to command data

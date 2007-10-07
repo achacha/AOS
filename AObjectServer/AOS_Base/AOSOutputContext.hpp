@@ -10,7 +10,7 @@ class AOSConfiguration;
 /*!
  High level wrapper to AOSContext that is configured for output only
 */
-class AOS_BASE_API AOSOutputContext : public ADebugDumpable
+class AOS_BASE_API AOSOutputContext : public ADebugDumpable, public AXmlEmittable
 {
 public:
   /*!
@@ -23,7 +23,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emit(AXmlElement&) const;
+  virtual void emitXml(AXmlElement&) const;
   
   /*!
   Response header and sub-object helpers (read/write)

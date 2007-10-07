@@ -22,9 +22,9 @@ AOSOutputContext::~AOSOutputContext()
 {
 }
 
-void AOSOutputContext::emit(AXmlElement& target) const
+void AOSOutputContext::emitXml(AXmlElement& target) const
 {
-  m_Context.emit(target);
+  m_Context.emitXml(target);
 }
 
 const AObjectContainer& AOSOutputContext::getContextObjects() const

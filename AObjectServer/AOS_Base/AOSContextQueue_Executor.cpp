@@ -135,7 +135,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           pContext->setExecutionState(ASW("Emitting event visitor",22));
           if (pContext->useEventVisitor().getErrorCount() > 0)
           {
-            pContext->useEventVisitor().emit(pContext->useOutputRootXmlElement().addElement("AEventVisitor"));
+            pContext->useEventVisitor().emitXml(pContext->useOutputRootXmlElement().addElement("AEventVisitor"));
           }
         }
 
