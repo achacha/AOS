@@ -55,6 +55,7 @@ ANumber
 AObject
 AObjectBase
 AObjectContainer
+AObjectPtrHolder
 AOutputBuffer
 AQueryString
 ARandomNumberGenerator

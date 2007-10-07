@@ -637,6 +637,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AObjectPtrHolder.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOutputBuffer.cpp"
 				>
 			</File>
@@ -1144,6 +1148,10 @@
 			</File>
 			<File
 				RelativePath=".\AObjectContainer.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AObjectPtrHolder.hpp"
 				>
 			</File>
 			<File

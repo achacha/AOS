@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tTemplateParse.cpp"
+			RelativePath=".\tObjectPtrHolder.cpp"
 			>
 		</File>
 	</Files>

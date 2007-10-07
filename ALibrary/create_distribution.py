@@ -178,6 +178,8 @@ if (os.path.join(target_bin_path_DEBUG, "foo") != os.path.join(DEBUG_INPUT_PATH,
 	syncPath(os.path.join(DEBUG_INPUT_PATH, "ADatabase_SQLite.lib"), target_bin_path_DEBUG);
 	syncPath(os.path.join(DEBUG_INPUT_PATH, "AGdLib.dll"), target_bin_path_DEBUG);
 	syncPath(os.path.join(DEBUG_INPUT_PATH, "AGdLib.lib"), target_bin_path_DEBUG);
+	syncPath(os.path.join(DEBUG_INPUT_PATH, "ALuaEmbed.dll"), target_bin_path_DEBUG);
+	syncPath(os.path.join(DEBUG_INPUT_PATH, "ALuaEmbed.lib"), target_bin_path_DEBUG);
 	syncPath(os.path.join(DEBUG_INPUT_PATH, "APythonEmbed.dll"), target_bin_path_DEBUG);
 	syncPath(os.path.join(DEBUG_INPUT_PATH, "APythonEmbed.lib"), target_bin_path_DEBUG);
 	syncPath(os.path.join(DEBUG_INPUT_PATH, "AXsl.lib"), target_bin_path_DEBUG);
@@ -202,6 +204,8 @@ if (os.path.join(target_bin_path_DEBUG, "foo") != os.path.join(DEBUG_INPUT_PATH,
 	syncPath(os.path.join(RELEASE_INPUT_PATH, "ADatabase_SQLite.lib"), target_bin_path_RELEASE);
 	syncPath(os.path.join(DEBUG_INPUT_PATH, "AGdLib.dll"), target_bin_path_RELEASE);
 	syncPath(os.path.join(DEBUG_INPUT_PATH, "AGdLib.lib"), target_bin_path_RELEASE);
+	syncPath(os.path.join(RELEASE_INPUT_PATH, "ALuaEmbed.dll"), target_bin_path_RELEASE);
+	syncPath(os.path.join(RELEASE_INPUT_PATH, "ALuaEmbed.lib"), target_bin_path_RELEASE);
 	syncPath(os.path.join(RELEASE_INPUT_PATH, "APythonEmbed.dll"), target_bin_path_RELEASE);
 	syncPath(os.path.join(RELEASE_INPUT_PATH, "APythonEmbed.lib"), target_bin_path_RELEASE);
 	syncPath(os.path.join(RELEASE_INPUT_PATH, "AXsl.lib"), target_bin_path_RELEASE);

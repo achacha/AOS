@@ -420,7 +420,7 @@ void AXmlElement::emitJson(
     return;
   }
   
-  bool needsBraces = hasElements(); // || m_Attributes.size() > 0;
+  bool needsBraces = m_Content.size() > 0 || m_Attributes.size() > 0;
   target.append(':');
   if (needsBraces)
   {
@@ -435,28 +435,12 @@ void AXmlElement::emitJson(
     NodeContainer::const_iterator cit = m_Content.begin();
     while(cit != m_Content.end())
     {
-      AXmlElement *pElement = dynamic_cast<AXmlElement *>(*cit);
-      if (pElement)
+      (*cit)->emitJson(target, (indent >= 0 ? indent+1 : indent));
+      ++cit;
+      if (cit != m_Content.end() || attrSize > 0)
       {
-        (*cit)->emitJson(target, (indent >= 0 ? indent+1 : indent));
-        ++cit;
-        if (cit != m_Content.end() || attrSize > 0)
-        {
-          target.append(',');
-          if (indent >=0) target.append(AConstant::ASTRING_CRLF);
-        }
-      }
-      else
-      {
-        target.append('\'');
-        emitContent(target);
-        target.append('\'');
-        ++cit;
-        if (cit != m_Content.end() || attrSize > 0)
-        {
-          target.append(',');
-          if (indent >=0) target.append(AConstant::ASTRING_CRLF);
-        }
+        target.append(',');
+        if (indent >=0) target.append(AConstant::ASTRING_CRLF);
       }
     }
   }

@@ -1,7 +1,19 @@
 #include "AFile_AString.hpp"
 #include "AXmlDocument.hpp"
 #include "AFile_IOStream.hpp"
-int main()
+
+void test0()
+{
+  AXmlElement root("root");
+  root.addElement("swiper").addAttribute("id", "1").addData(ASWNL("no swiping"));
+  root.addElement("swiper").addAttribute("id", "2").addData(ASWNL("No swiping"));
+  root.addElement("swiper").addAttribute("id", "3").addData(ASWNL("No Swiping"));
+
+  AFile_IOStream io;
+  root.emitJson(io, 0);
+}
+
+void test1()
 {
   AFile_AString strf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
 <root><data><user><AResultSet><sql><![CDATA[select * from user]]></sql><row><id>1</id><password>(null)</password><username>achacha</username></row></AResultSet><AResultSet><sql><![CDATA[select * from user]]></sql><row><id>1</id><password>(null)</password><username>achacha</username></row></AResultSet></user></data>\
@@ -23,10 +35,17 @@ int main()
   
   AFile_IOStream io;
   //AString str;
-  doc.emitJSON(io, 0);
+  doc.emitJson(io, 0);
   //doc.emitJSON(io);
 
   //std::cout << str << std::endl;
+
+}
+
+int main()
+{
+  test0();
+  //test1();
 
   return 0;
 }

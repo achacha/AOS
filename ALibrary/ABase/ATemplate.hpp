@@ -53,7 +53,7 @@ public:
   /*!
   Class used as a static global to register a creator with template
   */
-  class RegisterWithTemplateParser
+  class ABASE_API RegisterWithTemplateParser
   {
   public:
     RegisterWithTemplateParser(const AString& tagName, ATemplateNode::CreatorMethodPtr);
