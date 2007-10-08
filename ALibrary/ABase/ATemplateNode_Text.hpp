@@ -23,6 +23,12 @@ public:
   ATemplateNode_Text(const ATemplateNode_Text&);
 
   /*!
+  Tag name accessor
+  Not really applicable for this node type, returns empty string
+  */
+  virtual const AString& getTagName() const;
+
+  /*!
   Generate output
   */
   virtual void process();

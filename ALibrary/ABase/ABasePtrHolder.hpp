@@ -18,7 +18,6 @@ public:
 
 public:
   ABasePtrHolder();
-  ABasePtrHolder(const ABasePtrHolder&);
   virtual ~ABasePtrHolder();
 
   /*!
@@ -86,6 +85,9 @@ protected:
   //a_List of objects to delete when done
   typedef std::map<ABase *, bool> MAP_ABASE_PTRS;
   MAP_ABASE_PTRS m_OwnedPtrs;
+
+private:
+  ABasePtrHolder(const ABasePtrHolder&) {} // no copy allowed
 
 public:
 #ifdef __DEBUG_DUMP__

@@ -7,9 +7,10 @@
 
 const AString ATemplate::OBJECTNAME_MODEL("_AXmlDocument_Model_");     // AXmlDocument that acts as a model for template lookup
 
-const AString ATemplate::TAG_WRAPPER("%%",2);
-const AString ATemplate::BLOCK_START("%%{",3);
-const AString ATemplate::BLOCK_END("}%%",3);
+const AString ATemplate::TAG_START("#[",2);
+const AString ATemplate::BLOCK_START("]!{",3);
+const AString ATemplate::BLOCK_END("}![",3);
+const AString ATemplate::TAG_END("]#",2);
 
 #ifdef __DEBUG_DUMP__
 void ATemplate::debugDump(std::ostream& os, int indent) const
@@ -35,6 +36,10 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
+  ADebugDumpable::indent(os, indent+1) << "m_Creators={";
+  m_Objects.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
@@ -88,11 +93,11 @@ void ATemplate::fromAFile(AFile& aFile)
   AString tagName;
   AAutoPtr<ATemplateNode_Text> pText(new ATemplateNode_Text(*this));
   size_t ret = AConstant::npos;
-  while(AConstant::npos != (ret = aFile.readUntil(pText->useText(), ATemplate::TAG_WRAPPER)))
+  while(AConstant::npos != (ret = aFile.readUntil(pText->useText(), ATemplate::TAG_START)))
   {
     if (AConstant::npos == (ret = aFile.readUntil(tagName, ATemplate::BLOCK_START)))
     {
-      pText->useText().append(ATemplate::TAG_WRAPPER);
+      pText->useText().append(ATemplate::TAG_START);
       break;  //a_No more
     }
 
@@ -101,7 +106,7 @@ void ATemplate::fromAFile(AFile& aFile)
     if (m_Creators.end() == it)
     {
       //a_No such tag, add to the current text node and keep going
-      pText->useText().append(ATemplate::TAG_WRAPPER);
+      pText->useText().append(ATemplate::TAG_START);
       pText->useText().append(tagName);
       pText->useText().append(ATemplate::BLOCK_START);
     }

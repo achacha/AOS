@@ -12,35 +12,41 @@ void ABasePtrHolder::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ABasePtrHolder @ " << std::hex << this << std::dec << ") {" << std::endl;
 
-  MAP_ASTRING_ABASE::const_iterator cit = m_BasePtrs.begin();
-  while (cit != m_BasePtrs.end())
   {
-    ADebugDumpable::indent(os, indent+1) << 
-      (*cit).first << 
-      "=[" << 
-      typeid(*((*cit).second)).name() << 
-      "]:0x" << 
-      std::hex << AString::fromPointer((*cit).second) << std::dec << 
-      std::endl;
-    ++cit;
+    ADebugDumpable::indent(os, indent+1) << "m_BasePtrs={" << std::endl;
+    MAP_ASTRING_ABASE::const_iterator cit = m_BasePtrs.begin();
+    while (cit != m_BasePtrs.end())
+    {
+      ADebugDumpable::indent(os, indent+2) << 
+        (*cit).first << 
+        "=[" << 
+        typeid(*((*cit).second)).name() << 
+        "]:" << 
+        AString::fromPointer((*cit).second) << 
+        std::endl;
+      ++cit;
+    }
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   }
-
-  ADebugDumpable::indent(os, indent) << "}" << std::endl;
+  
+  {
+    ADebugDumpable::indent(os, indent+1) << "m_OwnedPtrs={" << std::endl;
+    for (MAP_ABASE_PTRS::const_iterator cit = m_OwnedPtrs.begin(); cit != m_OwnedPtrs.end(); ++cit)
+    {
+      ADebugDumpable::indent(os, indent+2) << 
+        AString::fromPointer(cit->first) <<
+        "=" <<
+        AString::fromBool(cit->second) <<
+        std::endl;
+    }
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  }
+   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
 
 ABasePtrHolder::ABasePtrHolder()
 {
-}
-
-ABasePtrHolder::ABasePtrHolder(const ABasePtrHolder& that)
-{
-  MAP_ASTRING_ABASE::const_iterator cit = that.m_BasePtrs.begin();
-  while (cit != that.m_BasePtrs.end())
-  {
-    m_BasePtrs[(*cit).first] = (*cit).second;
-    ++cit;
-  }
 }
 
 ABasePtrHolder::~ABasePtrHolder()
@@ -50,8 +56,10 @@ ABasePtrHolder::~ABasePtrHolder()
     //a_Release owned pointers
     for (MAP_ABASE_PTRS::iterator it = m_OwnedPtrs.begin(); it != m_OwnedPtrs.end(); ++it)
     {
-      delete it->first;
+      if (it->second)
+        delete it->first;
     }
+    m_OwnedPtrs.clear();
   }
   catch(...) {}
 

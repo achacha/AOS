@@ -47,10 +47,10 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
   #pragma once
 #endif
   
-  #pragma warning(disable:4706)  //a_assignment within conditional expression
+  #pragma warning (disable:4706)  //a_assignment within conditional expression
   #pragma warning (disable:4786)  //a_identifier was truncated to '255' characters in the debug information
   #pragma warning (disable:4251)  //a_class 'xxx' needs to have dll-interface to be used by clients of class 'xxx'
-  #pragma warning (disable:6011)  //a_Dereferencing NULL pointer (STL deque warning)
+//  #pragma warning (disable:6011)  //a_Dereferencing NULL pointer (STL deque warning)
 
 #elif defined(_WIN64)
   //Win64 environment

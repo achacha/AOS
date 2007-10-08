@@ -25,6 +25,11 @@ ATemplateNode_Text::ATemplateNode_Text(const ATemplateNode_Text& that) :
 {
 }
 
+const AString& ATemplateNode_Text::getTagName() const
+{
+  return AConstant::ASTRING_EMPTY;
+}
+
 void ATemplateNode_Text::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
@@ -51,7 +56,7 @@ void ATemplateNode_Text::toAFile(AFile& aFile) const
 void ATemplateNode_Text::fromAFile(AFile& aFile)
 {
   //a_Read until TAG_WRAPPER
-  if (AConstant::npos == aFile.readUntil(m_Text, ATemplate::TAG_WRAPPER, false, false))
+  if (AConstant::npos == aFile.readUntil(m_Text, ATemplate::TAG_START, false, false))
   {
     //a_No more delimeters
     aFile.readUntilEOF(m_Text);

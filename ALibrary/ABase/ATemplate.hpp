@@ -15,8 +15,8 @@
 /*!
 Generic template parser/processor
 
-Tag format: {TAG_WRAPPER}{TAG}{TAR_WRAPPER}{BLOCK_START} .. tag body .. {BLOCK_END}{TAG_WRAPPER}{TAG}{TAR_WRAPPER}
-Example:    %%CODE%%{ print(/foo); }%%CODE%%
+Tag format: {START_TAG}{TAG}{BLOCK_START} .. tag body .. {BLOCK_END}{TAG}{TAR_END}
+Example:    #[CODE]!{ print(/foo); }![CODE]#
 */
 class ABASE_API ATemplate : public ADebugDumpable, public ASerializable, public AXmlEmittable
 {
@@ -29,9 +29,10 @@ public:
   /*!
   Delimiters
   */
-  static const AString TAG_WRAPPER;   //a_ "%%"
-  static const AString BLOCK_START;   //a_ "{"
-  static const AString BLOCK_END;     //a_ "}"
+  static const AString TAG_START;     //a_ "#["
+  static const AString BLOCK_START;   //a_ "]!{"
+  static const AString BLOCK_END;     //a_ "}!["
+  static const AString TAG_END;       //a_ "]#"
 
 public:
   /*!

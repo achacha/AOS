@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tObjectPtrHolder.cpp"
+			RelativePath=".\cHttpTimerClient.cpp"
 			>
 		</File>
 	</Files>

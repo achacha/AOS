@@ -38,7 +38,7 @@ Hello %%CODE%%{\r\n print(/root/user/name); print(/root/user/loc); \r\n}%%CODE%%
   std::cout << templt.useOutput() << std::endl;
 
 */
-class ATemplateNode_Code : public ATemplateNode
+class ABASE_API ATemplateNode_Code : public ATemplateNode
 {
 public:
   static const AString TAGNAME; //a_ "CODE"
@@ -48,6 +48,11 @@ public:
   Copy ctor
   */
   ATemplateNode_Code(const ATemplateNode_Code&);
+
+  /*!
+  Tag name accessor
+  */
+  virtual const AString& getTagName() const;
 
   /*!
   Generate output evaluated against AObjectContainer

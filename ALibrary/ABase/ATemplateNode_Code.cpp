@@ -32,6 +32,11 @@ ATemplateNode_Code::ATemplateNode_Code(const ATemplateNode_Code& that) :
 {
 }
 
+const AString& ATemplateNode_Code::getTagName() const
+{
+  return TAGNAME;
+}
+
 ATemplateNode* ATemplateNode_Code::create(ATemplate& t, AFile& file)
 {
   ATemplateNode_Code *p = new ATemplateNode_Code(t);
@@ -54,7 +59,7 @@ void ATemplateNode_Code::emitXml(AXmlElement& target) const
 
 void ATemplateNode_Code::emit(AOutputBuffer& target) const
 {
-  target.append(ATemplate::TAG_WRAPPER);
+  target.append(ATemplate::TAG_START);
   target.append(TAGNAME);
   target.append(ATemplate::BLOCK_START);
   target.append(AConstant::ASTRING_CRLF);
@@ -70,12 +75,12 @@ void ATemplateNode_Code::emit(AOutputBuffer& target) const
 
   target.append(ATemplate::BLOCK_END);
   target.append(TAGNAME);
-  target.append(ATemplate::TAG_WRAPPER);
+  target.append(ATemplate::TAG_END);
 }
 
 void ATemplateNode_Code::toAFile(AFile& aFile) const
 {
-  aFile.write(ATemplate::TAG_WRAPPER);
+  aFile.write(ATemplate::TAG_START);
   aFile.write(TAGNAME);
   aFile.writeLine(ATemplate::BLOCK_START);
 
@@ -89,17 +94,17 @@ void ATemplateNode_Code::toAFile(AFile& aFile) const
 
   aFile.write(ATemplate::BLOCK_END);
   aFile.write(TAGNAME);
-  aFile.write(ATemplate::TAG_WRAPPER);
+  aFile.write(ATemplate::TAG_END);
 }
 
 void ATemplateNode_Code::fromAFile(AFile& aFile)
 {
   AFile_AString strfile(2048, 2048);
 
-  //a_End tag delimiter is }%%CODE%%
+  //a_End tag delimiter
   AString endToken(ATemplate::BLOCK_END);
   endToken.append(TAGNAME);
-  endToken.append(ATemplate::TAG_WRAPPER);
+  endToken.append(ATemplate::TAG_END);
   
   //a_Read until end token into a string file which is parsed on per-line basis
   if (AConstant::npos != aFile.readUntil(strfile.useAString(), endToken, true, true))
