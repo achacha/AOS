@@ -7,5 +7,5 @@
 #include "ARope.hpp"
 #include "AXmlElement.hpp"
 #include "AFile.hpp"
-
+#include "templateAutoPtr.hpp"
 #include "ALibraryFunctions.hpp"

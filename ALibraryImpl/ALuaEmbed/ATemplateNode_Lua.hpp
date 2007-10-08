@@ -2,12 +2,16 @@
 #define INCLUDED_ATemplateNode_Lua_HPP_
 
 #include "ATemplateNode.hpp"
+#include "ATemplate.hpp"
 
 /*!
-Handles %%LUA%%{ code goes here }%%LUA%% tag
+Handles %%LUA%%{ code goes here }%%LUA%% tagname
 */
-class ATemplateNode_Lua : public ATemplateNode
+class ALuaEMBED_API ATemplateNode_Lua : public ATemplateNode
 {
+public:
+  static const AString TAGNAME; //a_ "LUA" used when parsing tokens in a template
+
 public:
   /*!
   Copy ctor
@@ -15,9 +19,14 @@ public:
   ATemplateNode_Lua(const ATemplateNode_Lua&);
 
   /*!
+  dtor
+  */
+  virtual ~ATemplateNode_Lua();
+
+  /*!
   Generate output evaluated against TODO: MAP_AObjectBase
   */
-  virtual void process(AOutputBuffer&, const AXmlElement&);
+  virtual void process();
 
   /*
   String buffer that holds the script
@@ -43,14 +52,21 @@ public:
   /*!
   Creator method
   */
-  static ATemplateNode* create(AFile&);
+  static ATemplateNode* create(ATemplate&, AFile&);
 
 protected:
-  //a_No default ctor, use create()
-  ATemplateNode_Lua() {}
+  /*!
+  Ctor
+  */
+  ATemplateNode_Lua(ATemplate&);
 
 private:
+  //a_Script to execute
   AString m_Script;
+  
+  //a_Name of the object that will be inserted into the object holder of the parent template
+  //a_ that will contain an instance of Lua interpreter
+  static const AString ATemplateNode_Lua::OBJECTNAME_LUA;
 
 public:
 #ifdef __DEBUG_DUMP__

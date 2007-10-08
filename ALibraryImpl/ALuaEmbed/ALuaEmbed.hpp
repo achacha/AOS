@@ -2,16 +2,18 @@
 #define INCLUDED__ALuaEmbed_HPP__
 
 #include "apiALuaEmbed.hpp"
-#include "AObjectPtrHolder.hpp"
+#include "ABase.hpp"
+#include "ABasePtrHolder.hpp"
+#include "templateAutoPtr.hpp"
 
 class AOutputBuffer;
 class AEmittable;
 struct lua_State;
 
 /*!
-This object is meant to be global and called as needed
+Lua interpreter
 */
-class ALuaEMBED_API ALuaEmbed
+class ALuaEMBED_API ALuaEmbed : public ABase
 {
 public:
   /*!
@@ -41,9 +43,26 @@ public:
     Can use LUALIB_CORE|LUALIB_MATH|etc to load some
   
   NOTE: AOutputBuffer pointer is OWNED and DELETED by this class
-  If none is specified, it will create one
+  If none is specified, this object will create one
+  
+  If AObjectPtrHolder is specified, it will be used as data
+  Else new internal one will be
+  "ALuaEmbed" object in the container will point to this class in ctor and removed in dtor
+
+  NOTE: Make sure the AObjectPtrHolder scope outlives this obect (i.e. do not deallocate it until this object is)
   */
-  ALuaEmbed(u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE, AOutputBuffer *pOutputBuffer = NULL);
+  ALuaEmbed(
+    u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE
+  );
+  ALuaEmbed(
+    ABasePtrHolder& basePointers,
+    u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE
+  );
+  ALuaEmbed(
+    ABasePtrHolder& basePointers,
+    AOutputBuffer& output,
+    u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE
+  );
   
   /*!
   De-initialize and unload the Lua interpreter
@@ -82,19 +101,23 @@ public:
   AOutputBuffer& useOutputBuffer();
 
   /*!
-  AObjectPtrHolder helper functions that can be called from the python exported ones
+  ABasePtrHolder helper functions that can be called from the python exported ones
   */
-  AObjectPtrHolder& useObjectHolder();
+  ABasePtrHolder& useBasePtrHolder();
 
 private:
   //a_Simple AString -> AObjectBase map
-  AObjectPtrHolder m_Objects;
+  //a_If not provided a new one is created
+  AAutoPtr<ABasePtrHolder> mp_Objects;
 
   //a_The Lua state pointer
   struct lua_State *mp_LuaState;
 
   //a_Output buffer if not provided by creator, one will be allocated
-  AOutputBuffer *mp_OutputBuffer;
+  AAutoPtr<AOutputBuffer> mp_OutputBuffer;
+
+  //a_Init Lua interpreter and load libraries
+  void _init(u4 maskLibrariesToLoad);
 };
 
 #endif //INCLUDED__ALuaEmbed_HPP__

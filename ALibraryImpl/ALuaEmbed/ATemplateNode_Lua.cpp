@@ -2,11 +2,10 @@
 #include "ATemplateNode_Lua.hpp"
 #include "AObjectContainer.hpp"
 #include "ATemplate.hpp"
+#include "ALuaEmbed.hpp"
 
-#define TAGNAME ASW("LUA",3)
-
-//a_Register with ATemplate
-ATEMPLATE_REGISTER_NODE(TAGNAME, ATemplateNode_Lua);
+const AString ATemplateNode_Lua::TAGNAME("LUA",3);
+const AString ATemplateNode_Lua::OBJECTNAME_LUA("_GLOBAL_ALuaEmbed_");
 
 #ifdef __DEBUG_DUMP__
 void ATemplateNode_Lua::debugDump(std::ostream& os, int indent) const
@@ -17,14 +16,34 @@ void ATemplateNode_Lua::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
+ATemplateNode_Lua::ATemplateNode_Lua(ATemplate& t) :
+  ATemplateNode(t)
+{
+  ABase *p = t.useObjects().get(ATemplateNode_Lua::OBJECTNAME_LUA);
+  if (!p)
+  {
+    ALuaEmbed *pLua = new ALuaEmbed(t.useObjects(), t.useOutput(), ALuaEmbed::LUALIB_BASE);
+    t.useObjects().insertWithOwnership(ATemplateNode_Lua::OBJECTNAME_LUA, pLua);
+  }
+  else
+  {
+    AASSERT(this, NULL != dynamic_cast<ALuaEmbed *>(p));
+  }
+}
+
 ATemplateNode_Lua::ATemplateNode_Lua(const ATemplateNode_Lua& that) :
+  ATemplateNode(that),
   m_Script(that.m_Script)
 {
 }
 
-ATemplateNode* ATemplateNode_Lua::create(AFile& file)
+ATemplateNode_Lua::~ATemplateNode_Lua()
 {
-  ATemplateNode_Lua *p = new ATemplateNode_Lua();
+}
+
+ATemplateNode* ATemplateNode_Lua::create(ATemplate& t, AFile& file)
+{
+  ATemplateNode_Lua *p = new ATemplateNode_Lua(t);
   p->fromAFile(file);
   return p;
 }
@@ -72,7 +91,7 @@ void ATemplateNode_Lua::fromAFile(AFile& aFile)
   endToken.append(ATemplate::TAG_WRAPPER);
   
   //a_Read until end token into a string file which is parsed on per-line basis
-  if (AConstant::npos != aFile.readUntil(m_Script, endToken, true, true))
+  if (AConstant::npos == aFile.readUntil(m_Script, endToken, true, true))
     ATHROW(this, AException::EndOfBuffer);
 }
 
@@ -81,7 +100,12 @@ const AString& ATemplateNode_Lua::getScript() const
   return m_Script;
 }
 
-void ATemplateNode_Lua::process(AOutputBuffer& output, const AXmlElement& root)
+void ATemplateNode_Lua::process()
 {
-  //TODO: Execute Lua script
+  ALuaEmbed *pLua = m_ParentTemplate.useObjects().getAsPtr<ALuaEmbed>(ATemplateNode_Lua::OBJECTNAME_LUA);
+  AASSERT(this, pLua);
+  if (pLua)
+  {
+    pLua->execute(m_Script);
+  }
 }

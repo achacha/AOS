@@ -11,15 +11,71 @@ extern "C"
 }
 
 ALuaEmbed::ALuaEmbed(
-  u4 maskLibrariesToLoad,
-  AOutputBuffer *pOutputBuffer // = NULL
+  u4 maskLibrariesToLoad
 ):
-  mp_LuaState(NULL),
-  mp_OutputBuffer(pOutputBuffer)
+  mp_LuaState(NULL)
 {
-  if (!mp_OutputBuffer)
-    mp_OutputBuffer = new ARope();
+  mp_OutputBuffer.reset(new ARope());
   
+  //a_Use the provided objects and delete on exit
+  mp_Objects.reset(new ABasePtrHolder());
+
+  //a_Initialize Lua
+  _init(maskLibrariesToLoad);
+}
+
+ALuaEmbed::ALuaEmbed(
+  ABasePtrHolder& basePtrs,
+  u4 maskLibrariesToLoad
+):
+  mp_LuaState(NULL)
+{
+  mp_OutputBuffer.reset(new ARope());
+  
+  //a_Use the provided objects and do not delete on exit
+  mp_Objects.reset(&basePtrs);
+  mp_Objects.setOwnership(false);
+
+  //a_Initialize Lua
+  _init(maskLibrariesToLoad);
+}
+
+ALuaEmbed::ALuaEmbed(
+  ABasePtrHolder& basePtrs,
+  AOutputBuffer& outputBuffer,
+  u4 maskLibrariesToLoad
+):
+  mp_LuaState(NULL)
+{
+  //a_Use provided output buffer
+  mp_OutputBuffer.reset(&outputBuffer, false);
+  
+  //a_Use the provided objects and do not delete on exit
+  mp_Objects.reset(&basePtrs);
+  mp_Objects.setOwnership(false);
+
+  //a_Initialize Lua
+  _init(maskLibrariesToLoad);
+}
+
+ALuaEmbed::~ALuaEmbed()
+{
+  try
+  {
+    if (mp_LuaState)
+      lua_close(mp_LuaState);
+    
+    //a_Remove reference of this from object holder
+    mp_Objects->remove(ASW("ALuaEmbed",9)); 
+  }
+  catch(...) {}
+}
+
+void ALuaEmbed::_init(u4 maskLibrariesToLoad)
+{
+  //a_Insert this into the object holder
+  mp_Objects->insert(ASW("ALuaEmbed",9), this); 
+
   mp_LuaState = lua_open();
   AASSERT(NULL, mp_LuaState);
   mp_LuaState->mythis = this;  //a_Attach out output buffer
@@ -41,16 +97,6 @@ ALuaEmbed::ALuaEmbed(
 //  if (LUALIB_OS & maskLibrariesToLoad)      luaopen_os(mp_LuaState);               // opens the OS lib
 //  if (LUALIB_PACKAGE & maskLibrariesToLoad) luaopen_package(mp_LuaState);          // opens the package lib
 //  if (LUALIB_IO & maskLibrariesToLoad)      luaopen_io(mp_LuaState);               // opens the I/O library
-}
-
-ALuaEmbed::~ALuaEmbed()
-{
-  try
-  {
-    if (mp_LuaState)
-      lua_close(mp_LuaState);
-    delete mp_OutputBuffer;
-  } catch(...) {}
 }
 
 void ALuaEmbed::loadUserLibrary(LUA_OPENLIBRARY_FPTR fptr)
@@ -114,8 +160,8 @@ AOutputBuffer& ALuaEmbed::useOutputBuffer()
   return *mp_OutputBuffer;
 }
 
-AObjectPtrHolder& ALuaEmbed::useObjectHolder()
+ABasePtrHolder& ALuaEmbed::useBasePtrHolder()
 {
-  return m_Objects;
+  return *mp_Objects.get();
 }
 

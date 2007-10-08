@@ -33,7 +33,7 @@ static int alibrary_Objects_AXmlDocument_emitFromPath(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlDocument *pDoc = pLuaEmbed->useObjectHolder().getAsPtr<AXmlDocument>(objectName);
+  AXmlDocument *pDoc = pLuaEmbed->useBasePtrHolder().getAsPtr<AXmlDocument>(objectName);
   AASSERT(NULL, pDoc);
   AString str;
 
@@ -61,11 +61,11 @@ static int alibrary_Objects_emit(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AObjectBase *pObj = pLuaEmbed->useObjectHolder().get(objectName);
-  if (pObj)
+  AEmittable *p = pLuaEmbed->useBasePtrHolder().getAsPtr<AEmittable>(objectName);
+  if (p)
   {
     AString str;
-    pObj->emit(str);
+    p->emit(str);
     lua_pushlstring(L, str.c_str(), str.getSize());
     return 1;
   }
@@ -94,7 +94,7 @@ static int alibrary_Objects_AXmlElement_emitXml(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlElement *p = pLuaEmbed->useObjectHolder().getAsPtr<AXmlElement>(objectName);
+  AXmlElement *p = pLuaEmbed->useBasePtrHolder().getAsPtr<AXmlElement>(objectName);
   if (p)
   {
     AString str;
@@ -128,7 +128,7 @@ static int alibrary_Objects_AXmlElement_emitJson(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlElement *p = pLuaEmbed->useObjectHolder().getAsPtr<AXmlElement>(objectName);
+  AXmlElement *p = pLuaEmbed->useBasePtrHolder().getAsPtr<AXmlElement>(objectName);
   if (p)
   {
     AString str;
