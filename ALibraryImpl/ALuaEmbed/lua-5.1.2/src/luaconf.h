@@ -32,6 +32,7 @@
 #if !defined(LUA_ANSI) && defined(_WIN32)
 #define LUA_WIN
 #pragma message("Lua Windows mode.")
+#pragma warning (disable:4996) // Deprecated stdio calls
 #endif
 
 #if defined(LUA_USE_LINUX)

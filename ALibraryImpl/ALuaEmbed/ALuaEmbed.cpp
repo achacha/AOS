@@ -64,21 +64,16 @@ ALuaEmbed::~ALuaEmbed()
   {
     if (mp_LuaState)
       lua_close(mp_LuaState);
-    
-    //a_Remove reference of this from object holder
-    mp_Objects->remove(ASW("ALuaEmbed",9)); 
   }
   catch(...) {}
 }
 
 void ALuaEmbed::_init(u4 maskLibrariesToLoad)
 {
-  //a_Insert this into the object holder
-  mp_Objects->insert(ASW("ALuaEmbed",9), this); 
-
   mp_LuaState = lua_open();
   AASSERT(NULL, mp_LuaState);
   mp_LuaState->mythis = this;  //a_Attach out output buffer
+  lua_atpanic(mp_LuaState, ALuaEmbed::callbackPanic);
 
   //a_Explicit NONE selected, no libraries loaded
   if (LUALIB_NONE == maskLibrariesToLoad)
@@ -103,6 +98,13 @@ void ALuaEmbed::loadUserLibrary(LUA_OPENLIBRARY_FPTR fptr)
 {
   fptr(mp_LuaState);
 }
+
+int ALuaEmbed::callbackPanic(lua_State *L)
+{
+  //a_We are here because Lua has paniced
+  ATHROW_EX(NULL, AException::OperationFailed, ASWNL("Lua has had a panic attack."));
+}
+
 
 bool ALuaEmbed::execute(const AEmittable& code)
 {

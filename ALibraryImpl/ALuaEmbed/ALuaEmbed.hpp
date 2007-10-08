@@ -105,6 +105,12 @@ public:
   */
   ABasePtrHolder& useBasePtrHolder();
 
+  /*!
+  Lua panic function
+  Throws AException instead of calling exit()
+  */
+  static int callbackPanic(lua_State *);
+
 private:
   //a_Simple AString -> AObjectBase map
   //a_If not provided a new one is created
