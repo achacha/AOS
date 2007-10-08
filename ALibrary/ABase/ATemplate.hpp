@@ -7,6 +7,10 @@
 #include "AString.hpp"
 #include "AXmlEmittable.hpp"
 #include "ATemplateNode.hpp"
+#include "AOutputBuffer.hpp"
+#include "AXmlDocument.hpp"
+#include "ABasePtrHolder.hpp"
+#include "templateAutoPtr.hpp"
 
 /*!
 Generic template parser/processor
@@ -18,6 +22,11 @@ class ABASE_API ATemplate : public ADebugDumpable, public ASerializable, public 
 {
 public:
   /*!
+  Object names used to lookup ABase* types
+  */
+  static const AString OBJECTNAME_MODEL;   // AXmlDocument that acts as a model for template lookup
+
+  /*!
   Delimiters
   */
   static const AString TAG_WRAPPER;   //a_ "%%"
@@ -25,13 +34,39 @@ public:
   static const AString BLOCK_END;     //a_ "}"
 
 public:
-  ATemplate();
+  /*!
+  Ctor with optional AXmlDocument and AOutputBuffer to be used as a model for this template expansion
+  If output is NULL, the default internal one is used
+
+  NOTE: Objects passed to ctor are NOT owned and will NOT be deleted
+  */
+  ATemplate(AXmlDocument *pModel, AOutputBuffer *pOutput = NULL);
+  
+  /*!
+  dtor
+  */
   virtual ~ATemplate();
 
   /*!
   Output based on a given source XML root element
   */
-  virtual void process(AOutputBuffer&, const AXmlElement&);
+  virtual void process();
+
+  /*!
+  Access to the data model objects used in evaluation
+  OBJECTNAME_MODEL is where the AXmlDocument used for evaluation is stored
+  */
+  ABasePtrHolder& useObjects();
+
+  /*!
+  Data model
+  */
+  AXmlDocument& useModel();
+
+  /*!
+  Output buffer stored in the holder
+  */
+  AOutputBuffer& useOutput();
 
   /*!
   AXmlEmittable, emits the template
@@ -61,17 +96,25 @@ public:
     RegisterWithTemplateParser() {}
   };
 
-protected:
   /*!
   Register tag creator methods
   ATemplateNode_Text is a special case and does not need to be registered
   */
-  static void _registerCreator(const AString& tagName, ATemplateNode::CreatorMethodPtr);
+  void registerCreator(const AString& tagName, ATemplateNode::CreatorMethodPtr);
 
 private:
+  // No default ctor
+  ATemplate();
+
+  //a_Object pointers used during template evaluation
+  ABasePtrHolder m_Objects;
+
+  //a_Output buffer
+  AAutoPtr<AOutputBuffer> mp_Output;
+
   //a_Creator method map
   typedef std::map<AString, ATemplateNode::CreatorMethodPtr> MAP_CREATORS;
-  static MAP_CREATORS m_Creators;
+  MAP_CREATORS m_Creators;
   
   //a_Parsed nodes
   typedef std::list<ATemplateNode *> NODES;
@@ -83,6 +126,9 @@ public:
 #endif
 };
 
-#define ATEMPLATE_REGISTER_NODE(tagname, classname) static ATemplate::RegisterWithTemplateParser s_classname(AString(tagname), classname::create);
+#define ATEMPLATE_USE_NODE(templt, classname) do {\
+  templt.registerCreator(classname::TAGNAME, classname::create);\
+} while(0)
+
 
 #endif //INCLUDED__ATemplate_HPP__

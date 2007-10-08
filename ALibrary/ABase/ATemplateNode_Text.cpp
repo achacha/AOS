@@ -13,12 +13,14 @@ void ATemplateNode_Text::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ATemplateNode_Text::ATemplateNode_Text(const AString& text /* = AConstant::ASTRING_EMPTY */) :
+ATemplateNode_Text::ATemplateNode_Text(ATemplate& t, const AString& text /* = AConstant::ASTRING_EMPTY */) :
+  ATemplateNode(t),  
   m_Text(text)
 {
 }
 
 ATemplateNode_Text::ATemplateNode_Text(const ATemplateNode_Text& that) :
+  ATemplateNode(that),
   m_Text(that.m_Text)
 {
 }
@@ -36,9 +38,9 @@ void ATemplateNode_Text::emit(AOutputBuffer& target) const
   target.append(m_Text);
 }
 
-void ATemplateNode_Text::process(AOutputBuffer& output, const AXmlElement&)
+void ATemplateNode_Text::process()
 {
-  output.append(m_Text);
+  m_ParentTemplate.useOutput().append(m_Text);
 }
 
 void ATemplateNode_Text::toAFile(AFile& aFile) const

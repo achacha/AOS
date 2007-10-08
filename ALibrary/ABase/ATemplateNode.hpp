@@ -5,22 +5,43 @@
 #include "ADebugDumpable.hpp"
 #include "AXmlEmittable.hpp"
 
-class ATemplateNode : public ASerializable, public ADebugDumpable, public AXmlEmittable
+class ATemplate;
+
+class ABASE_API ATemplateNode : public ASerializable, public ADebugDumpable, public AXmlEmittable
 {
 public:
+  /*!
+  Ctor
+  */
+  ATemplateNode(ATemplate&);
+  
+  /*!
+  Copy ctor
+  */
+  ATemplateNode(const ATemplateNode&);
+
+  /*!
+  dtor
+  */
+  virtual ~ATemplateNode();
+
   /*!
   Creator method signature
 
   static ATemplateNode* create(AFile&);
   */
-  typedef ATemplateNode *(CreatorMethod)(AFile&);
+  typedef ATemplateNode *(CreatorMethod)(ATemplate&, AFile&);
   typedef CreatorMethod* CreatorMethodPtr;
 
 public:
   /*!
-  Process the template node against the data model
+  Process the template node against the data model in the ATemplate
+  Output should go to the output buffer in ATemplate
   */
-  virtual void process(AOutputBuffer&, const AXmlElement&) = 0;
+  virtual void process() = 0;
+
+protected:
+  ATemplate& m_ParentTemplate;
 };
 
 #endif //INCLUDED_ATemplateNode_HPP_

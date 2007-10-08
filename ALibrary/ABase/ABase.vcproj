@@ -229,6 +229,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ABase.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ABaseMain.cpp"
 				>
 				<FileConfiguration
@@ -253,6 +257,10 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ABasePtrHolder.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\ABitArray.cpp"
@@ -637,10 +645,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AObjectPtrHolder.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AOutputBuffer.cpp"
 				>
 			</File>
@@ -781,6 +785,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ATemplateNode.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ATemplateNode_Code.cpp"
 				>
 			</File>
@@ -916,6 +924,14 @@
 			>
 			<File
 				RelativePath=".\AAttributes.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ABase.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ABasePtrHolder.hpp"
 				>
 			</File>
 			<File
@@ -1148,10 +1164,6 @@
 			</File>
 			<File
 				RelativePath=".\AObjectContainer.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AObjectPtrHolder.hpp"
 				>
 			</File>
 			<File

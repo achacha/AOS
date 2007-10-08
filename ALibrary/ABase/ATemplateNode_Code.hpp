@@ -5,10 +5,44 @@
 #include "AFile_AString.hpp"
 
 /*!
+Simple example template node
+
 Handles %%CODE%%{ code goes here }%%CODE%% tag
+
+Evaluates ATemplate::OBJECTNAME_MODEL object which contains AXmlDocument
+
+Supports:
+  print(<xml path>) - displays content for the goven path
+  count(<xml path>) - counts elements under the immediate given path
+
+One instruction per line and terminated by ;
+
+Example of a CODE block:
+%%CODE%%{
+print(/root/myelement/data);
+count(/root);
+}%%CODE%%
+
+Sample code:
+  AFile_AString strfile("\
+Hello %%CODE%%{\r\n print(/root/user/name); print(/root/user/loc); \r\n}%%CODE%%!\
+");
+
+  AAutoPtr<AXmlDocument> pdoc(new AXmlDocument("root"));  // Some xml model document (add data here or this may already exist)
+  ARope rope;  // Something to get the output
+
+  ATemplate templt(pdoc, &rope);
+  ATEMPLATE_USE_NODE(templt, ATemplateNode_Code);  //a_Tells this instance that it can handle %%CODE%% types
+  templt.fromAFile(strfile);
+  templt.process();
+  std::cout << templt.useOutput() << std::endl;
+
 */
 class ATemplateNode_Code : public ATemplateNode
 {
+public:
+  static const AString TAGNAME; //a_ "CODE"
+
 public:
   /*!
   Copy ctor
@@ -18,7 +52,7 @@ public:
   /*!
   Generate output evaluated against AObjectContainer
   */
-  virtual void process(AOutputBuffer&, const AXmlElement&);
+  virtual void process();
 
   /*
   true if some code in here, else false
@@ -44,17 +78,17 @@ public:
   /*!
   Creator method
   */
-  static ATemplateNode* create(AFile&);
+  static ATemplateNode* create(ATemplate&, AFile&);
 
 protected:
-  //a_No default ctor, use create()
-  ATemplateNode_Code() {}
+  //a_Use create()
+  ATemplateNode_Code(ATemplate&);
 
 private:
   LIST_AString m_Lines;
 
   //a_Process helpers
-  void _processLine(AOutputBuffer&, const AString&, const AXmlElement&);
+  void _processLine(const AString&);
 
   //a_Delimeter
   static const AString sstr_LineDelimeter; //a_ ";"

@@ -1467,7 +1467,7 @@ size_t ARopeDeque::find(char c, size_t startPos /* = 0 */) const
   //a_Check back block
   if (mp_BackBlock && m_BackBlockFree < m_BlockSize)
   {
-    AASSERT(this, startPos + m_BackBlockFree < m_BlockSize);
+    AASSERT(this, startPos + m_BackBlockFree <= m_BlockSize);
     pos += startPos;
     for(size_t i = startPos; i + m_BackBlockFree < m_BlockSize; ++i, ++pos)
     {

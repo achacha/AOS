@@ -13,13 +13,14 @@ void testSimpleParse()
 Hello %%CODE%%{\r\n print(/root/user/name); print(/root/user/loc); \r\n}%%CODE%%!\
 ");
 
-  AXmlElement ns("root");
-  ns.addElement("/user/name", "Alex");
-  ns.addElement("/user/loc", "(0,0)");
-//    ns.debugDump();
+  AXmlDocument doc("root");
+  doc.useRoot().addElement("/user/name", "Alex");
+  doc.useRoot().addElement("/user/loc", "(0,0)");
+//    doc.debugDump();
 
   //a_Read template
-  ATemplate tm;
+  ARope rope;
+  ATemplate tm(&doc, &rope);
   tm.fromAFile(strfile);
 
   //a_Write it to cout

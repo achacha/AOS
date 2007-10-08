@@ -5,17 +5,17 @@
 #include "templateAutoPtr.hpp"
 #include "AFile.hpp"
 
+const AString ATemplate::OBJECTNAME_MODEL("_AXmlDocument_Model_");     // AXmlDocument that acts as a model for template lookup
+
 const AString ATemplate::TAG_WRAPPER("%%",2);
 const AString ATemplate::BLOCK_START("%%{",3);
 const AString ATemplate::BLOCK_END("}%%",3);
-
-ATemplate::MAP_CREATORS ATemplate::m_Creators;
 
 #ifdef __DEBUG_DUMP__
 void ATemplate::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ATemplate @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_Nodes={" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Nodes={  ";
   ADebugDumpable::indent(os, indent+2) << "size=" << m_Nodes.size() << std::endl;
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
@@ -25,7 +25,7 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   
-  ADebugDumpable::indent(os, indent+1) << "m_Creators={" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Creators={  ";
   ADebugDumpable::indent(os, indent+2) << "size=" << m_Creators.size() << std::endl;
   MAP_CREATORS::const_iterator cit2 = m_Creators.begin();
   while (cit2 != m_Creators.end())
@@ -39,8 +39,15 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ATemplate::ATemplate()
+ATemplate::ATemplate(AXmlDocument* pModel, AOutputBuffer* pOutput)
 {
+  AASSERT_EX(this, pModel, ASWNL("Must provide AXmlDocument type as a model used for template expansion"));
+  m_Objects.insert(ATemplate::OBJECTNAME_MODEL, pModel);
+  
+  if (pOutput)
+    mp_Output.reset(pOutput, false);   //a_Do not own the passed output
+  else
+    mp_Output.reset(new ARope());      //a_Own the created one
 }
 
 ATemplate::~ATemplate()
@@ -56,12 +63,7 @@ ATemplate::~ATemplate()
   } catch(...) {}
 }
 
-ATemplate::RegisterWithTemplateParser::RegisterWithTemplateParser(const AString& tagName, ATemplateNode::CreatorMethodPtr pMethod)
-{
-  ATemplate::_registerCreator(tagName, pMethod);
-}
-
-void ATemplate::_registerCreator(const AString& tagName, ATemplateNode::CreatorMethodPtr ptr)
+void ATemplate::registerCreator(const AString& tagName, ATemplateNode::CreatorMethodPtr ptr)
 {
   if (m_Creators.find(tagName) == m_Creators.end())
   {
@@ -84,11 +86,15 @@ void ATemplate::toAFile(AFile& aFile) const
 void ATemplate::fromAFile(AFile& aFile)
 {
   AString tagName;
-  AAutoPtr<ATemplateNode_Text> pText(new ATemplateNode_Text());
-  size_t ret;
+  AAutoPtr<ATemplateNode_Text> pText(new ATemplateNode_Text(*this));
+  size_t ret = AConstant::npos;
   while(AConstant::npos != (ret = aFile.readUntil(pText->useText(), ATemplate::TAG_WRAPPER)))
   {
-    aFile.readUntil(tagName, ATemplate::BLOCK_START);
+    if (AConstant::npos == (ret = aFile.readUntil(tagName, ATemplate::BLOCK_START)))
+    {
+      pText->useText().append(ATemplate::TAG_WRAPPER);
+      break;  //a_No more
+    }
 
     //a_Check if this tag is registered
     MAP_CREATORS::iterator it = m_Creators.find(tagName);
@@ -106,11 +112,11 @@ void ATemplate::fromAFile(AFile& aFile)
       pText.setOwnership(false);
 
       //a_Create new active text node
-      pText.reset(new ATemplateNode_Text());
+      pText.reset(new ATemplateNode_Text(*this));
 
       //a_Create the tag specific node and parse it
       ATemplateNode::CreatorMethodPtr methodptr = (*it).second;
-      ATemplateNode *pNode = methodptr(aFile);
+      ATemplateNode *pNode = methodptr(*this, aFile);
       
       //a_Add parsed node
       m_Nodes.push_back(pNode);
@@ -131,12 +137,16 @@ void ATemplate::fromAFile(AFile& aFile)
   }
 }
 
-void ATemplate::process(AOutputBuffer& target, const AXmlElement& root)
+void ATemplate::process()
 {
+  //a_If this assert failed, theis object was not constructed correctly
+  if (!m_Objects.getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL))
+    ATHROW_EX(this, AException::InvalidObject, ASWNL("Must have AXmlDocument type to be used as a model"));
+  
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
   {
-    (*cit)->process(target, root);
+    (*cit)->process();
     ++cit;
   }
 }
@@ -159,4 +169,23 @@ void ATemplate::emit(AOutputBuffer& target) const
     (*cit)->emit(target);
     ++cit;
   }
+}
+
+ABasePtrHolder& ATemplate::useObjects()
+{
+  return m_Objects;
+}
+
+AOutputBuffer& ATemplate::useOutput()
+{
+  return *mp_Output.get();
+}
+
+AXmlDocument& ATemplate::useModel()
+{
+  AXmlDocument *pDoc = m_Objects.getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
+  if (!pDoc)
+    ATHROW_EX(this, AException::InvalidObject, ASWNL("Must have AXmlDocument type to be used as a model"));
+  else
+    return *pDoc;
 }

@@ -13,8 +13,9 @@ class ATemplateNode_Text : public ATemplateNode
 public:
   /*!
   ctor
+  Special case: this node class is used by ATemplate directly and thus not registered
   */
-  ATemplateNode_Text(const AString& text = AConstant::ASTRING_EMPTY);
+  ATemplateNode_Text(ATemplate&, const AString& text = AConstant::ASTRING_EMPTY);
   
   /*!
   Copy ctor
@@ -22,9 +23,9 @@ public:
   ATemplateNode_Text(const ATemplateNode_Text&);
 
   /*!
-  Generate output evaluated against AObjectContainer
+  Generate output
   */
-  virtual void process(AOutputBuffer&, const AXmlElement&);
+  virtual void process();
 
   /*!
   Access to the test

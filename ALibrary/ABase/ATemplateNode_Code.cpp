@@ -4,11 +4,7 @@
 #include "ATemplate.hpp"
 #include "AXmlElement.hpp"
 
-#define TAGNAME ASW("CODE",4)
-
-//a_Register with ATemplate
-ATEMPLATE_REGISTER_NODE(TAGNAME, ATemplateNode_Code);
-
+const AString ATemplateNode_Code::TAGNAME("CODE",4);
 const AString ATemplateNode_Code::sstr_LineDelimeter(";");
 
 #ifdef __DEBUG_DUMP__
@@ -25,14 +21,20 @@ void ATemplateNode_Code::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
+ATemplateNode_Code::ATemplateNode_Code(ATemplate& t) :
+  ATemplateNode(t)
+{
+}
+
 ATemplateNode_Code::ATemplateNode_Code(const ATemplateNode_Code& that) :
+  ATemplateNode(that),
   m_Lines(that.m_Lines)
 {
 }
 
-ATemplateNode* ATemplateNode_Code::create(AFile& file)
+ATemplateNode* ATemplateNode_Code::create(ATemplate& t, AFile& file)
 {
-  ATemplateNode_Code *p = new ATemplateNode_Code();
+  ATemplateNode_Code *p = new ATemplateNode_Code(t);
   p->fromAFile(file);
   return p;
 }
@@ -122,18 +124,21 @@ bool ATemplateNode_Code::isEmpty() const
   return (m_Lines.size() == 0);
 }
 
-void ATemplateNode_Code::process(AOutputBuffer& output, const AXmlElement& root)
+void ATemplateNode_Code::process()
 {
   LIST_AString::const_iterator cit = m_Lines.begin();
   while (cit != m_Lines.end())
   {
-    _processLine(output, *cit, root);
+    _processLine(*cit);
     ++cit;
   }
 }
 
-void ATemplateNode_Code::_processLine(AOutputBuffer& output, const AString& line, const AXmlElement& root)
+void ATemplateNode_Code::_processLine(const AString& line)
 {
+  AOutputBuffer& output = m_ParentTemplate.useOutput();
+  AXmlElement& root = m_ParentTemplate.useModel().useRoot();
+  
   //a_First find '(' and ')'
   size_t start = line.find('(');
   size_t end = line.rfind(')');

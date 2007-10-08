@@ -2,6 +2,7 @@
 #define INCLUDED__AEmittable_HPP_
 
 #include "apiABase.hpp"
+#include "ABase.hpp"
 
 class AOutputBuffer;
 
@@ -13,7 +14,7 @@ public:
   virtual void emit(AOutputBuffer&) const;
 -------------------STOP: HPP cup/past-----------------------
 */
-class ABASE_API AEmittable
+class ABASE_API AEmittable : public ABase
 {
 public:
   virtual ~AEmittable();
