@@ -789,11 +789,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ATemplateNode_Code.cpp"
+				RelativePath=".\ATemplateNodeHandler.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ATemplateNode_Text.cpp"
+				RelativePath=".\ATemplateNodeHandler_CODE.cpp"
 				>
 			</File>
 			<File
@@ -1275,11 +1275,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ATemplateNode_Code.hpp"
+				RelativePath=".\ATemplateNodeHandler.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ATemplateNode_Text.hpp"
+				RelativePath=".\ATemplateNodeHandler_CODE.hpp"
 				>
 			</File>
 			<File

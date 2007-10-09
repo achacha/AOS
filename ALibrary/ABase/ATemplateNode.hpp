@@ -1,20 +1,27 @@
-#ifndef INCLUDED_ATemplateNode_HPP_
-#define INCLUDED_ATemplateNode_HPP_
+#ifndef INCLUDED__ATemplateNode_HPP__
+#define INCLUDED__ATemplateNode_HPP__
 
+#include "apiABase.hpp"
 #include "ASerializable.hpp"
 #include "ADebugDumpable.hpp"
 #include "AXmlEmittable.hpp"
 #include "AString.hpp"
 
 class ATemplate;
+class ATemplateNodeHandler;
+class ABasePtrHolder;
 
+/*!
+Base template node
+*/
 class ABASE_API ATemplateNode : public ASerializable, public ADebugDumpable, public AXmlEmittable
 {
 public:
   /*!
   Ctor
+  Assign a handler to this node, if NULL then it will do nothing when processed (handler 
   */
-  ATemplateNode(ATemplate&);
+  ATemplateNode(ATemplateNodeHandler *pHandler = NULL);
   
   /*!
   Copy ctor
@@ -27,14 +34,14 @@ public:
   virtual ~ATemplateNode();
 
   /*!
-  Name of the tag that this node handles
+  Name of the tag that this node handles, empty string if no handler
   */
-  virtual const AString& getTagName() const = 0;
+  const AString& getTagName() const;
   
   /*
   String buffer that holds the script
   */
-  const AString& getBlockData() const;
+  AString& useBlockData();
 
   /*!
   AXmlEmittable
@@ -53,25 +60,17 @@ public:
   virtual void fromAFile(AFile& aFile);
 
   /*!
-  Process the template node against the data model in the ATemplate
+  Process the template node that contains the data for this tag to handle
   Output should go to the output buffer in ATemplate
   */
-  virtual void process() = 0;
-
-  /*!
-  Creator method signature
-
-  static ATemplateNode* create(AFile&);
-  */
-  typedef ATemplateNode *(CreatorMethod)(ATemplate&, AFile&);
-  typedef CreatorMethod* CreatorMethodPtr;
+  virtual void process(ABasePtrHolder& objects, AOutputBuffer& output);
 
 protected:
-  //a_Parent template
-  ATemplate& m_ParentTemplate;
-
   //a_Block data
   AString m_BlockData;
+
+  //a_Handler of this node
+  ATemplateNodeHandler *mp_Handler;
 
 public:
 #ifdef __DEBUG_DUMP__
@@ -79,4 +78,4 @@ public:
 #endif
 };
 
-#endif //INCLUDED_ATemplateNode_HPP_
+#endif //INCLUDED__ATemplateNode_HPP__

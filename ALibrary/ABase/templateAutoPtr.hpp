@@ -102,7 +102,7 @@ public:
   //a_Pointer access and tests
   T* get()                    { return m__Pointer; }
   const T* const get() const  { return m__Pointer; }
-  bool isNull()               { return (m__Pointer == NULL); }
+  bool isNull() const         { return (m__Pointer == NULL); }
 
   //a_Change of ownership
   void setOwnership(bool boolOwns) { mbool__Owns = boolOwns; }

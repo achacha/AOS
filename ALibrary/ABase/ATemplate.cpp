@@ -1,9 +1,8 @@
 #include "pchABase.hpp"
 #include "ATemplate.hpp"
-#include "ATemplateNode_Code.hpp"
-#include "ATemplateNode_Text.hpp"
-#include "templateAutoPtr.hpp"
+#include "ABasePtrHolder.hpp"
 #include "AFile.hpp"
+#include "AXmlDocument.hpp"
 
 const AString ATemplate::OBJECTNAME_MODEL("_AXmlDocument_Model_");     // AXmlDocument that acts as a model for template lookup
 
@@ -26,56 +25,34 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   
-  ADebugDumpable::indent(os, indent+1) << "m_Creators={  ";
-  ADebugDumpable::indent(os, indent+2) << "size=" << m_Creators.size() << std::endl;
-  MAP_CREATORS::const_iterator cit2 = m_Creators.begin();
-  while (cit2 != m_Creators.end())
-  {
-    ADebugDumpable::indent(os, indent+2) << (*cit2).first << std::endl;
-    ++cit2;
-  }
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-
-  ADebugDumpable::indent(os, indent+1) << "m_Creators={";
-  m_Objects.debugDump(os, indent+2);
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-  
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
 
-ATemplate::ATemplate(AXmlDocument* pModel, AOutputBuffer* pOutput)
+ATemplate::ATemplate()
 {
-  AASSERT_EX(this, pModel, ASWNL("Must provide AXmlDocument type as a model used for template expansion"));
-  m_Objects.insert(ATemplate::OBJECTNAME_MODEL, pModel);
-  
-  if (pOutput)
-    mp_Output.reset(pOutput, false);   //a_Do not own the passed output
-  else
-    mp_Output.reset(new ARope());      //a_Own the created one
+  mp_Output.reset(new ARope());      //a_Own the created one
 }
 
 ATemplate::~ATemplate()
 {
   try
   {
-    NODES::iterator it = m_Nodes.begin();
-    while (it != m_Nodes.end())
-    {
+    //a_Delete nodes
+    for (NODES::iterator it = m_Nodes.begin(); it != m_Nodes.end(); ++it)
       delete (*it);
-      ++it;
-    }
+    
+    //a_Delete handlers
+    for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
+      delete it->second;
+
   } catch(...) {}
 }
 
-void ATemplate::registerCreator(const AString& tagName, ATemplateNode::CreatorMethodPtr ptr)
+void ATemplate::addHandler(ATemplateNodeHandler *pHandler)
 {
-  if (m_Creators.find(tagName) == m_Creators.end())
-  {
-    m_Creators[tagName] = ptr;
-  }
-  else
-    ATHROW_EX(NULL, AException::DataConflict, tagName);
+  AASSERT_EX(this, m_Handlers.end() == m_Handlers.find(pHandler->getTagName()), ARope("Dupliate tag handler detected: ")+pHandler->getTagName());
+  m_Handlers[pHandler->getTagName()] = pHandler;
 }
 
 void ATemplate::toAFile(AFile& aFile) const
@@ -91,24 +68,24 @@ void ATemplate::toAFile(AFile& aFile) const
 void ATemplate::fromAFile(AFile& aFile)
 {
   AString tagName;
-  AAutoPtr<ATemplateNode_Text> pText(new ATemplateNode_Text(*this));
+  AAutoPtr<ATemplateNode> pText(new ATemplateNode());  //a_Text block accumulator
   size_t ret = AConstant::npos;
-  while(AConstant::npos != (ret = aFile.readUntil(pText->useText(), ATemplate::TAG_START)))
+  while(AConstant::npos != (ret = aFile.readUntil(pText->useBlockData(), ATemplate::TAG_START)))
   {
     if (AConstant::npos == (ret = aFile.readUntil(tagName, ATemplate::BLOCK_START)))
     {
-      pText->useText().append(ATemplate::TAG_START);
+      pText->useBlockData().append(ATemplate::TAG_START);
       break;  //a_No more
     }
 
-    //a_Check if this tag is registered
-    MAP_CREATORS::iterator it = m_Creators.find(tagName);
-    if (m_Creators.end() == it)
+    //a_Get the handler 
+    HANDLERS::iterator it = m_Handlers.find(tagName);
+    if (m_Handlers.end() == it)
     {
       //a_No such tag, add to the current text node and keep going
-      pText->useText().append(ATemplate::TAG_START);
-      pText->useText().append(tagName);
-      pText->useText().append(ATemplate::BLOCK_START);
+      pText->useBlockData().append(ATemplate::TAG_START);
+      pText->useBlockData().append(tagName);
+      pText->useBlockData().append(ATemplate::BLOCK_START);
     }
     else
     {
@@ -117,12 +94,11 @@ void ATemplate::fromAFile(AFile& aFile)
       pText.setOwnership(false);
 
       //a_Create new active text node
-      pText.reset(new ATemplateNode_Text(*this));
+      pText.reset(new ATemplateNode());
 
-      //a_Create the tag specific node and parse it
-      ATemplateNode::CreatorMethodPtr methodptr = (*it).second;
-      ATemplateNode *pNode = methodptr(*this, aFile);
-      
+      //a_Handle the node
+      ATemplateNode *pNode = it->second->create(aFile);
+
       //a_Add parsed node
       m_Nodes.push_back(pNode);
     }
@@ -131,10 +107,10 @@ void ATemplate::fromAFile(AFile& aFile)
   if (AConstant::npos == ret)
   {
     //a_Read to EOF
-    aFile.readUntilEOF(pText->useText());
+    aFile.readUntilEOF(pText->useBlockData());
 
     //a_Leftover text added if not empty
-    if (!pText->useText().isEmpty())
+    if (!pText->useBlockData().isEmpty())
     {
       m_Nodes.push_back(pText.get());
       pText.setOwnership(false);
@@ -142,16 +118,19 @@ void ATemplate::fromAFile(AFile& aFile)
   }
 }
 
-void ATemplate::process()
+void ATemplate::process(
+  ABasePtrHolder& objects, 
+  AOutputBuffer *pOutput // = NULL
+)
 {
-  //a_If this assert failed, theis object was not constructed correctly
-  if (!m_Objects.getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL))
-    ATHROW_EX(this, AException::InvalidObject, ASWNL("Must have AXmlDocument type to be used as a model"));
-  
+  if (!pOutput)
+    pOutput = mp_Output.get();
+
+  AASSERT(this, pOutput);
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
   {
-    (*cit)->process();
+    (*cit)->process(objects, *pOutput);
     ++cit;
   }
 }
@@ -176,21 +155,7 @@ void ATemplate::emit(AOutputBuffer& target) const
   }
 }
 
-ABasePtrHolder& ATemplate::useObjects()
-{
-  return m_Objects;
-}
-
 AOutputBuffer& ATemplate::useOutput()
 {
   return *mp_Output.get();
-}
-
-AXmlDocument& ATemplate::useModel()
-{
-  AXmlDocument *pDoc = m_Objects.getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
-  if (!pDoc)
-    ATHROW_EX(this, AException::InvalidObject, ASWNL("Must have AXmlDocument type to be used as a model"));
-  else
-    return *pDoc;
 }

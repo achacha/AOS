@@ -1,6 +1,7 @@
 #include "pchABase.hpp"
 #include "ATemplateNode.hpp"
 #include "ATemplate.hpp"
+#include "ATemplateNodeHandler.hpp"
 #include "AXmlElement.hpp"
 #include "AFile.hpp"
 
@@ -8,6 +9,15 @@
 void ATemplateNode::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
+  if (mp_Handler)
+  {
+    ADebugDumpable::indent(os, indent+1) << "mp_Handler={"<< std::endl;
+    mp_Handler->debugDump(os, indent+2);
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  }
+  else
+    ADebugDumpable::indent(os, indent+1) << "mp_Handler=NULL" << std::endl;
+
   ADebugDumpable::indent(os, indent+1) << "m_BlockData={" << std::endl;
   m_BlockData.debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
@@ -16,13 +26,13 @@ void ATemplateNode::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ATemplateNode::ATemplateNode(ATemplate& t) :
-  m_ParentTemplate(t)
+ATemplateNode::ATemplateNode(ATemplateNodeHandler *pHandler) :
+  mp_Handler(pHandler)
 {
 }
 
 ATemplateNode::ATemplateNode(const ATemplateNode& that) :
-  m_ParentTemplate(that.m_ParentTemplate),
+  mp_Handler(that.mp_Handler),
   m_BlockData(that.m_BlockData)
 {
 }
@@ -34,50 +44,96 @@ ATemplateNode::~ATemplateNode()
 void ATemplateNode::emitXml(AXmlElement& target) const
 {
   AASSERT(this, !target.useName().isEmpty());
-  target.addElement(ASW("script",6)).addData(m_BlockData, AXmlData::CDataDirect);
+  target.addElement(ASW("data",6)).addData(m_BlockData, AXmlData::CDataDirect);
 }
 
 void ATemplateNode::emit(AOutputBuffer& target) const
 {
-  target.append(ATemplate::TAG_START);
-  target.append(getTagName());
-  target.append(ATemplate::BLOCK_START);
-  target.append(AConstant::ASTRING_CRLF);
+  const AString& tag = getTagName();
+  if (tag.isEmpty())
+  {
+    //a_No tag, just output the body
+    target.append(m_BlockData);
+  }
+  else
+  {
+    //a_Tag name exists
+    target.append(ATemplate::TAG_START);
+    target.append(tag);
+    target.append(ATemplate::BLOCK_START);
+    target.append(AConstant::ASTRING_CRLF);
 
-  target.append(m_BlockData);
+    target.append(m_BlockData);
 
-  target.append(ATemplate::BLOCK_END);
-  target.append(getTagName());
-  target.append(ATemplate::TAG_END);
+    target.append(ATemplate::BLOCK_END);
+    target.append(tag);
+    target.append(ATemplate::TAG_END);
+  }
 }
 
 void ATemplateNode::toAFile(AFile& aFile) const
 {
-  aFile.write(ATemplate::TAG_START);
-  aFile.write(getTagName());
-  aFile.writeLine(ATemplate::BLOCK_START);
+  const AString& tag = getTagName();
+  if (tag.isEmpty())
+  {
+    //a_No tag, just output the body
+    aFile.write(m_BlockData);
+  }
+  else
+  {
+    //a_Tag name exists
+    aFile.write(ATemplate::TAG_START);
+    aFile.write(tag);
+    aFile.writeLine(ATemplate::BLOCK_START);
 
-  aFile.write(m_BlockData);
+    aFile.write(m_BlockData);
 
-  aFile.write(ATemplate::BLOCK_END);
-  aFile.write(getTagName());
-  aFile.write(ATemplate::TAG_END);
+    aFile.write(ATemplate::BLOCK_END);
+    aFile.write(tag);
+    aFile.write(ATemplate::TAG_END);
+  }
 }
 
 void ATemplateNode::fromAFile(AFile& aFile)
 {
-  //a_End tag delimiter
-  AString endToken(ATemplate::BLOCK_END);
-  endToken.append(getTagName());
-  endToken.append(ATemplate::TAG_END);
-  
-  //a_Read until end token into a string file which is parsed on per-line basis
+  const AString& tag = getTagName();
+
   m_BlockData.clear();
-  if (AConstant::npos == aFile.readUntil(m_BlockData, endToken, true, true))
-    ATHROW(this, AException::EndOfBuffer);
+
+  AString endToken;
+  if (tag.isEmpty())
+  {
+    //a_No tag name, read until next tag starts
+    endToken.assign(ATemplate::BLOCK_START);
+
+    //a_Read until TAG_START
+    if (AConstant::npos == aFile.readUntil(m_BlockData, ATemplate::TAG_START, false, false))
+      aFile.readUntilEOF(m_BlockData);  //a_No more delimeters, read to EOF
+  }
+  else
+  {
+    //a_End tag delimiter
+    endToken.assign(ATemplate::BLOCK_END);
+    endToken.append(getTagName());
+    endToken.append(ATemplate::TAG_END);
+
+    //a_Read until end token into a string file which is parsed on per-line basis
+    if (AConstant::npos == aFile.readUntil(m_BlockData, endToken, true, true))
+      ATHROW(this, AException::EndOfBuffer);
+  }
 }
 
-const AString& ATemplateNode::getBlockData() const
+AString& ATemplateNode::useBlockData()
 {
   return m_BlockData;
+}
+
+const AString& ATemplateNode::getTagName() const
+{
+  return (mp_Handler ? mp_Handler->getTagName() : AConstant::ASTRING_EMPTY);
+}
+
+void ATemplateNode::process(ABasePtrHolder&, AOutputBuffer& output)
+{
+  m_BlockData.emit(output);
 }
