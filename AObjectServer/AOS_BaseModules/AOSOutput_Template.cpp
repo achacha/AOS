@@ -5,6 +5,8 @@
 #include "AException.hpp"
 #include "ASync_Mutex.hpp"
 #include "ALock.hpp"
+#include "ATemplateNode_Code.hpp"
+#include "ATemplateNode_Lua.hpp"
 
 #ifdef __DEBUG_DUMP__
 void AOSOutput_Template::debugDump(std::ostream& os, int indent) const
@@ -145,10 +147,12 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
     AOSOutput_Template::TEMPLATES::iterator it = mp_Templates->find(filenamePart);
     if (it == mp_Templates->end() || doNotAddToCache)
     {
+      //a_Create new template and register nodes that it an handle
+      pTemplate = new ATemplate();
+      
       //a_Load and parse
       AFile_Physical tFile(filename);
       tFile.open();
-      pTemplate = new ATemplate();
       pTemplate->fromAFile(tFile);
     }
     else

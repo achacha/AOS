@@ -117,13 +117,17 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           }
           else
           {
+            //a_Set the current content type as text/html
+            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html",9));
+
             int statusCode = pContext->useResponseHeader().getStatusCode();
-            AAutoPtr<ATemplate> pTemplate;
-            if (m_Services.useCacheManager().getStatusTemplate(statusCode, pTemplate))
+            
+            AAutoPtr<ATemplate> pTemplate;  //a_Call to cache manager will set a template
+            pContext->useOutputBuffer().clear();
+            if (m_Services.useCacheManager().getStatusTemplate(statusCode, pTemplate, &pContext->useOutputXmlDocument(), &pContext->useOutputBuffer()))
             {
               //a_Template for this status code is found, so process and emit into output buffer
-              pContext->useOutputBuffer().clear();
-              pTemplate->process(pContext->useOutputBuffer(), pContext->useOutputRootXmlElement());
+              pTemplate->process();
               pContext->setExecutionState(ARope("Using error template for status ")+AString::fromInt(statusCode));
             }
             else
@@ -149,7 +153,6 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
             }
 
             //a_Write output buffer
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html",9));
             pContext->writeOutputBuffer();
           }
         }

@@ -8,6 +8,8 @@
 #include "AFile_Physical.hpp"
 #include "AFileSystem.hpp"
 #include "ATextOdometer.hpp"
+#include "ATemplateNode_Code.hpp"
+#include "ATemplateNode_Lua.hpp"
 
 const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/cache/enabled");
 
@@ -214,6 +216,8 @@ ATemplate* AOSCacheManager::_putFileIntoStatusTemplateCache(int key, const AStri
 
   //a_Process error template
   AAutoPtr<ATemplate> p(new ATemplate());
+  ATEMPLATE_USE_NODE(*pTemplate, ATemplateNode_Code);
+  ATEMPLATE_USE_NODE(*pTemplate, ATemplateNode_Lua);
   p->fromAFile(file);
 
   (*mp_TemplateCache)[key] = p.get();
