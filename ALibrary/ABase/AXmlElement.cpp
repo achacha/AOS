@@ -596,7 +596,7 @@ void AXmlElement::fromAFile(AFile& file)
         AAutoPtr<AXmlElement> psubElement(new AXmlElement());
         psubElement->fromAFile(file);
         psubElement.setOwnership(false);
-        addContent(psubElement.get());
+        addContent(psubElement.use());
       }
       break;
     }

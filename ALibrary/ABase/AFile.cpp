@@ -56,16 +56,24 @@ size_t AFile::readLine(
         return AConstant::npos;
     }
     ret = m_LookaheadBuffer.popFrontUntil(strRead, '\n', true, true, maxBytes);
+  }
+  
+  //a_EOF encountered before finding EOL
+  if (AConstant::npos == ret && !_isNotEof())
+  {
+    if (treatEofAsEol)
+    {
+      //a_Read to end and return
+      ret = m_LookaheadBuffer.getSize();
+      if (!ret)
+        return AConstant::npos;       //a_No more data
 
-    //a_Lookahead is empty, wait short time and try reading again
-    //if (0 == ret)
-    //{
-    //  //a_No delimeter, get rest of data
-    //  m_LookaheadBuffer.emit(strRead);
-    //  m_LookaheadBuffer.clear();
-
-    //  return strRead.getSize();
-    //}
+      m_LookaheadBuffer.emit(strRead);
+      m_LookaheadBuffer.clear();
+      return ret;
+    }
+    else
+      return AConstant::npos;       //a_No end of line found
   }
 
   if (

@@ -72,14 +72,8 @@ public:
   /*!
   Output based on a given source XML root element and output buffer
   Evaluate template against a model and objects
-  If output is NULL, the default internal one is used
   */
-  virtual void process(ABasePtrHolder& objects, AOutputBuffer *pOutput = NULL);
-
-  /*!
-  Output buffer stored in the holder
-  */
-  AOutputBuffer& useOutput();
+  virtual void process(ABasePtrHolder& objects, AOutputBuffer& output);
 
   /*!
   AXmlEmittable, emits the template
@@ -105,9 +99,6 @@ public:
   void addHandler(ATemplateNodeHandler *);
 
 private:
-  //a_Output buffer
-  AAutoPtr<AOutputBuffer> mp_Output;
-
   //a_Parsed nodes
   typedef std::list<ATemplateNode *> NODES;
   NODES m_Nodes;

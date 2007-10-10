@@ -2,6 +2,7 @@
 #define INCLUDED__templateAutoPtr_HPP__
 
 #include "apiABase.hpp"
+#include "ADebugDumpable.hpp"
 
 // Automatic Scope-Lifetime pointer wrapper templates
 //---------------------------------------------------
@@ -62,15 +63,18 @@
 //     delete objectArray[i];
 //   delete []objectArray;
 
-//a_Pointer to an object (NOT to be used with arrays, see below)
+/*!
+Pointer to an object (NOT to be used with arrays, see below)
+*/
 template <class T>
-class AAutoPtr
+class AAutoPtr : public ADebugDumpable
 {
 public:
-	explicit AAutoPtr(T* pointer = NULL) : m__Pointer(pointer), mbool__Owns(true) {}
+	explicit AAutoPtr(T* pointer = NULL) : m_Pointer(pointer), m_Ownership(true) {}
 	~AAutoPtr()
   { 
-    if (mbool__Owns) delete m__Pointer;
+    if (m_Ownership)
+      delete m_Pointer;
   }
  
   /*!
@@ -83,122 +87,284 @@ public:
   }
 
   /*!
-  Assign to pointer and take ownership by default
-  If previous pointer is owned, it is deleted
+  Reset the pointer and delete the old pointer if owned
   */
-  void reset(T* pointer = NULL, bool owns = true)
+  void reset(T* pointer = NULL, bool ownership = true)
+  { 
+    if (m_Ownership)
+      delete m_Pointer;
+    m_Pointer = pointer;
+    m_Ownership = ownership;
+  }
+	
+  /*!
+  Pointer operator
+  */
+  T* operator ->() { return m_Pointer; }
+
+  /*!
+  Const pointer operator
+  */
+  const T* operator ->() const { return m_Pointer; }
+
+  /*!
+  Cast operator
+  */
+  operator T* () { return m_Pointer; }
+  
+  /*!
+  Const cast operator
+  */
+  operator const T* () const { return m_Pointer; }
+
+  /*!
+  Use pointer
+  */
+  T* use() { return m_Pointer; }
+
+  /*!
+  Get const pointer
+  */
+  const T* const get() const { return m_Pointer; }
+
+  /*!
+  Derefencing operator
+  */
+  T& operator *() { return *m_Pointer; }
+
+  /*!
+  Checks if contained pointer is NULL
+  */
+  bool isNull() const { return (m_Pointer == NULL); }
+
+  /*!
+  Change of ownership
+  */
+  void setOwnership(bool ownership = true) { m_Ownership = ownership;}
+
+  /*!
+  AEmittable
+  */
+  void emit(AOutputBuffer& target) const
   {
-    if (mbool__Owns) delete m__Pointer;
-    m__Pointer = pointer;
-    mbool__Owns = owns;
+    target.append('{');
+    target.append(AString::fromPointer(m_Pointer));
+    if (m_Ownership)
+      target.append(";owned",6);
+    target.append('}');
   }
 
-  //a_Cast and access
-        T* operator->()       { return m__Pointer; }
-  const T* operator->() const { return m__Pointer; }
-  operator       T*  ()        { return m__Pointer; }
-  operator const T*  () const  { return m__Pointer; }
-  
-  //a_Pointer access and tests
-  T* get()                    { return m__Pointer; }
-  const T* const get() const  { return m__Pointer; }
-  bool isNull() const         { return (m__Pointer == NULL); }
-
-  //a_Change of ownership
-  void setOwnership(bool boolOwns) { mbool__Owns = boolOwns; }
-
 private:
-	T*   m__Pointer;
-	bool mbool__Owns;
+	T*   m_Pointer;
+	bool m_Ownership;
+
+public:
+#ifdef __DEBUG_DUMP__
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const
+  {
+    ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership);
+  }
+#endif
 };
 
 
-//a_AAutoArrayPtr class ABASE_API is meant for pointers to arrays of classes
+/*!
+AAutoArrayPtr class ABASE_API is meant for pointers to arrays of classes
+*/
 template <class T>
-class AAutoArrayPtr
+class AAutoArrayPtr : public ADebugDumpable
 {
 public:
-	explicit AAutoArrayPtr(T* pointer = NULL) : m__Pointer(pointer), mbool__Owns(true) {}
+	explicit AAutoArrayPtr(T* pointer = NULL) : m_Pointer(pointer), m_Ownership(true) {}
 	~AAutoArrayPtr()
   { 
-    if (mbool__Owns) delete []m__Pointer;
+    if (m_Ownership) delete []m_Pointer;
   }
 
-	//a_Set
+  /*!
+  Assign to a pointer and take ownership
+  */
   AAutoArrayPtr& operator=(T* pointer)
-  { 
+  {
     reset(pointer);
     return *this;
   }
-  void reset(T* pointer = NULL)
+
+  /*!
+  Reset the pointer and delete the old pointer if owned
+  */
+  void reset(T* pointer = NULL, bool ownership = true)
   { 
-    if (mbool__Owns) delete []m__Pointer;
-    m__Pointer = pointer;
-    mbool__Owns = true;
+    if (m_Ownership)
+      delete[] m_Pointer;
+    m_Pointer = pointer;
+    m_Ownership = ownership;
   }
 	
-  //a_Cast and access
-	operator T* ()              {return m__Pointer;}
-  T* operator->()             {return m__Pointer;}
-  operator const T* ()  const { return m__Pointer; }
-	const T* operator->() const { return m__Pointer; }
+  /*!
+  Cast operator
+  */
+  operator T* () { return m_Pointer; }
+  
+  /*!
+  Const cast operator
+  */
+  operator const T* () const { return m_Pointer; }
 
-  T* get()                    { return m__Pointer; }
-  const T* const get() const  { return m__Pointer; }
+  /*!
+  Use pointer
+  */
+  T* use() { return m_Pointer; }
 
-	//a_Array access operators
-  T &operator [](int iOffset) { return m__Pointer[iOffset]; }
+  /*!
+  Get const pointer
+  */
+  const T* const get() const { return m_Pointer; }
 
-	//a_Change of ownership
-  void setOwnership(bool boolOwns) {mbool__Owns=boolOwns;}
+  /*!
+  Derefencing operator
+  */
+  T& operator *() { return *m_Pointer; }
+
+  /*!
+  Array access operators
+  */
+  T &operator [](int iOffset) { return m_Pointer[iOffset]; }
+
+  /*!
+  Checks if contained pointer is NULL
+  */
+  bool isNull() const { return (m_Pointer == NULL); }
+
+  /*!
+  Change of ownership
+  */
+  void setOwnership(bool ownership = true) { m_Ownership = ownership;}
+
+  /*!
+  AEmittable
+  */
+  void emit(AOutputBuffer& target) const
+  {
+    target.append('{');
+    target.append(AString::fromPointer(m_Pointer));
+    if (m_Ownership)
+      target.append(";owned",6);
+    target.append('}');
+  }
 
 private:
-	T*   m__Pointer;
-	bool mbool__Owns;
+	T*   m_Pointer;
+	bool m_Ownership;
+
+public:
+#ifdef __DEBUG_DUMP__
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const
+  {
+    ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership);
+  }
+#endif
 };
 
 
-//a_AAutoBasicArrayPtr class is meant for pointers to arrays of basic types (ie. char *)
+/*!
+AAutoBasicArrayPtr class is meant for pointers to arrays of basic types (ie. char *)
+*/
 template <class T>
-class AAutoBasicArrayPtr
+class AAutoBasicArrayPtr : public ADebugDumpable
 {
 public:
-  explicit AAutoBasicArrayPtr(T* pointer = NULL) : m__Pointer(pointer), mbool__Owns(true) {}
+  explicit AAutoBasicArrayPtr(T* pointer = NULL) : m_Pointer(pointer), m_Ownership(true) {}
   ~AAutoBasicArrayPtr()
   { 
-    if (mbool__Owns) delete []m__Pointer;
+    if (m_Ownership)
+      delete[] m_Pointer;
   }
  
+  /*!
+  Equals operator with ownership
+  */
   AAutoBasicArrayPtr& operator=(T* pointer)
   {
     reset(pointer);
     return *this;
   }
-  void reset(T* pointer = NULL)
+
+  /*!
+  Reset the pointer and delete the old pointer if owned
+  */
+  void reset(T* pointer = NULL, bool ownership = true)
   {
-    if (mbool__Owns) delete []m__Pointer;
-    m__Pointer = pointer; 
-    mbool__Owns = true;
+    if (m_Ownership) 
+      delete[] m_Pointer;
+    
+    m_Pointer = pointer; 
+    m_Ownership = ownership;
   }
 
-  //a_Access
-  operator       T* ()       { return m__Pointer; }
-  operator const T* () const { return m__Pointer; }
+  /*!
+  Cast operator
+  */
+  operator       T* ()       { return m_Pointer; }
+  
+  /*!
+  Const cast operator
+  */
+  operator const T* () const { return m_Pointer; }
 
-  T* get()                   { return m__Pointer; }
-  const T* const get() const  { return m__Pointer; }
+  /*!
+  Use pointer
+  */
+  T* use()                    { return m_Pointer; }
 
-  T& operator *()            { return *m__Pointer; }
+  /*!
+  Get const pointer
+  */
+  const T* const get() const  { return m_Pointer; }
 
-  //a_Array access operators
-  T& operator [](int iOffset) { return m__Pointer[iOffset]; }
+  /*!
+  Derefencing operator
+  */
+  T& operator *()             { return *m_Pointer; }
 
-	//a_Change of ownership
-  void setOwnership(bool boolOwns) {mbool__Owns=boolOwns;}
+  /*!
+  Array access operators
+  */
+  T& operator [](int iOffset) { return m_Pointer[iOffset]; }
+
+  /*!
+  Checks if contained pointer is NULL
+  */
+  bool isNull() const { return (m_Pointer == NULL); }
+
+  /*!
+  Change of ownership
+  */
+  void setOwnership(bool ownership = true) { m_Ownership = ownership;}
+
+  /*!
+  AEmittable
+  */
+  void emit(AOutputBuffer& target) const
+  {
+    target.append('{');
+    target.append(AString::fromPointer(m_Pointer));
+    if (m_Ownership)
+      target.append(";owned",6);
+    target.append('}');
+  }
 
 private:
-  T*   m__Pointer;
-  bool mbool__Owns;
+  T*   m_Pointer;
+  bool m_Ownership;
+
+public:
+#ifdef __DEBUG_DUMP__
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const
+  {
+    ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership);
+  }
+#endif
 };
 
 #endif

@@ -104,8 +104,8 @@ bool ARopeDeque::isEmpty() const
 {
   if (
     0 == m_Blocks.size()
-    && (!mp_FrontBlock || (mp_FrontBlock && m_BackBlockFree == m_BlockSize))
-    && (!mp_BackBlock || (mp_BackBlock && m_Blocks.size() == m_BlockSize))
+    && (!mp_FrontBlock || (mp_FrontBlock && m_FrontBlockFree == m_BlockSize))
+    && (!mp_BackBlock || (mp_BackBlock && m_BackBlockFree == m_BlockSize))
   )
     return true;
   else

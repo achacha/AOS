@@ -1,6 +1,8 @@
 #ifndef INCLUDED__ABase_hpp__
 #define INCLUDED__ABase_hpp__
 
+#include "apiABase.hpp"
+
 /*!
 Simple common base class
 

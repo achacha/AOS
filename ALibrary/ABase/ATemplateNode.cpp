@@ -64,7 +64,6 @@ void ATemplateNode::emit(AOutputBuffer& target) const
     target.append(ATemplate::TAG_START);
     target.append(tag);
     target.append(ATemplate::BLOCK_START);
-    target.append(AConstant::ASTRING_CRLF);
 
     target.append(m_BlockData);
 

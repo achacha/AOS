@@ -4,17 +4,17 @@
 #include "apiABase.hpp"
 #include "ADebugDumpable.hpp"
 #include "AException.hpp"
-#include "templateAObject.hpp"
+#include "templateAutoPtr.hpp"
 
 /*!
-A way to associate a name to an object pointer
+A way to associate a name to an ABase auto pointer
 
 NOTE: ABasePtrHolder only holds pointers to ABase types, it does NOT delete and may point to stale data, caveat emptor
 */
 class ABASE_API ABasePtrHolder : public ADebugDumpable
 {
 public:
-  typedef std::map<AString, ABase *> MAP_ASTRING_ABASE;
+  typedef std::map< AString, AAutoPtr<ABase> > HOLDER;
 
 public:
   ABasePtrHolder();
@@ -29,41 +29,64 @@ public:
   Insertion of objects
   Associates AObjectBase pointer with name
   
-  NOTE: Will NOT delete this object
+  If ownership is true then the pointer will be deleted in the dtor
+  If overwrite is false then exception will be thrown if object already exists
+    if ptr is owned and overwritten, the old one will be deleted
   */
-  void insert(const AString& name, ABase *, bool overwrite = true);
+  void insert(const AString& name, ABase *, bool ownership = false, bool overwrite = true);
   
   /*!
-  Insertion of objects
-  Associates AObjectBase pointer with name
-
-  NOTE: Will DELETE this object
+  Change ownership of an item
+  owned items get deleted in the dtor
   */
-  void insertWithOwnership(const AString& name, ABase *, bool overwrite = true);
+  void setOwnership(const AString& name, bool ownership = true);
 
   /*!
-  Remove object at path
+  Remove pointer, if owned it will be deleted
   */
   void remove(const AString& name);
   
   /*!
-  Clear container
+  Clear container and delete owned items
   */
   void clear();
 
   /*!
   Get pointer stored, NULL if not found
   */
-  ABase *get(const AString& name) const;
+  const ABase *get(const AString& name) const;
+
+  /*!
+  Use pointer stored, NULL if not found
+  */
+  ABase *use(const AString& name);
+
+  /*!
+  Usage: const AXmlDocument *pDoc = objects.getAsPtr<AXmlDocument>("xmldoc");
+    if xmldoc exists, it will be dynamically cast to AXmlDocument* (in this example) and if types match it will be non-NULL
+    NULL returns means either it doesn't exist or it is not of a specified pointer type
+  */
+  template<typename _type> const _type *getAsPtr(const AString& name) const
+  {
+    const ABase *ptr = get(name);
+    if (ptr)
+    {
+      _type *pup = dynamic_cast<const _type *>(ptr);
+      if (pup)
+        return pup;
+    }
+    
+    return NULL;  //a_Either type mismatched or it was not found
+  }
 
   /*!
   Usage: AXmlDocument *pDoc = ns.getAs<AXmlDocument>("xmldoc");
     if xmldoc exists, it will be dynamically cast to AXmlDocument (in this example) and if types match it will be non-NULL
     NULL returns means either it doesn't exist or it is not of a specified pointer type
   */
-  template<typename _type> _type *getAsPtr(const AString& name) const
+  template<typename _type> _type *useAsPtr(const AString& name)
   {
-    ABase *ptr = get(name);
+    ABase *ptr = use(name);
     if (ptr)
     {
       _type *pup = dynamic_cast<_type *>(ptr);
@@ -77,14 +100,10 @@ public:
   /*!
   Access to the actual container (for convenience)
   */
-  MAP_ASTRING_ABASE& useContainer() { return m_BasePtrs; }
+  HOLDER& useContainer();
 
 protected:
-  MAP_ASTRING_ABASE m_BasePtrs;
-
-  //a_List of objects to delete when done
-  typedef std::map<ABase *, bool> MAP_ABASE_PTRS;
-  MAP_ABASE_PTRS m_OwnedPtrs;
+  HOLDER m_BasePtrs;
 
 private:
   ABasePtrHolder(const ABasePtrHolder&) {} // no copy allowed

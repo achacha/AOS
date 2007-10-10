@@ -1400,6 +1400,12 @@ AString& AString::stripTrailing(const AString& strDelimeters)
   return *this;
 }
 
+AString& AString::stripLeadingAndTrailing(const AString& strDelimeters)
+{
+  stripLeading();
+  return stripTrailing();
+}
+
 AString& AString::stripEntire(const AString& strDelimeters)
 {
   size_t pos = 0;
@@ -1537,8 +1543,8 @@ void AString::fromAFile(AFile& aFile)
   if (length > 0x0)
   {  
     AAutoBasicArrayPtr<char> pBuffer(new char[length + 1]);
-    aFile.read(pBuffer.get(), length);
-    *(pBuffer.get() + length) = '\x0';
+    aFile.read(pBuffer.use(), length);
+    *(pBuffer.use() + length) = '\x0';
     assign(pBuffer.get(), length);
   }
 }
@@ -1565,8 +1571,8 @@ void AString::peekFromFile(AFile& aFile)
   if (length > 0)
   {  
     AAutoBasicArrayPtr<char> pBuffer(new char[length + 1]);
-    aFile.peek(pBuffer.get(), length);
-    *(pBuffer.get() + length) = '\x0';
+    aFile.peek(pBuffer.use(), length);
+    *(pBuffer.use() + length) = '\x0';
     assign(pBuffer.get(), length);
   }
 }

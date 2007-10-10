@@ -244,8 +244,8 @@ ACache_FileSystem::STATUS ACache_FileSystem::get(
         file.readUntilEOF(p->pData->useAString());
 
         //a_Add/set new data and add to byte count
-        containerItem.m_Cache[strKey] = p.get();
-        containerItem.m_ByteSize += p.get()->pData->getAString().getSize();
+        containerItem.m_Cache[strKey] = p.use();
+        containerItem.m_ByteSize += p.use()->pData->getAString().getSize();
         p.setOwnership(false);
         
         pFile.reset(p->pData, false);

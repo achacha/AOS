@@ -12,36 +12,22 @@ void ABasePtrHolder::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ABasePtrHolder @ " << std::hex << this << std::dec << ") {" << std::endl;
 
+  ADebugDumpable::indent(os, indent+1) << "m_BasePtrs={" << std::endl;
+  HOLDER::const_iterator cit = m_BasePtrs.begin();
+  while (cit != m_BasePtrs.end())
   {
-    ADebugDumpable::indent(os, indent+1) << "m_BasePtrs={" << std::endl;
-    MAP_ASTRING_ABASE::const_iterator cit = m_BasePtrs.begin();
-    while (cit != m_BasePtrs.end())
-    {
-      ADebugDumpable::indent(os, indent+2) << 
-        (*cit).first << 
-        "=[" << 
-        typeid(*((*cit).second)).name() << 
-        "]:" << 
-        AString::fromPointer((*cit).second) << 
-        std::endl;
-      ++cit;
-    }
-    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+    ADebugDumpable::indent(os, indent+2) << 
+      (*cit).first << 
+      "=[" << 
+      typeid(*((*cit).second)).name() << 
+      "]:";
+    cit->second.debugDump(os, 0);
+    os << std::endl;
+    ++cit;
   }
-  
-  {
-    ADebugDumpable::indent(os, indent+1) << "m_OwnedPtrs={" << std::endl;
-    for (MAP_ABASE_PTRS::const_iterator cit = m_OwnedPtrs.begin(); cit != m_OwnedPtrs.end(); ++cit)
-    {
-      ADebugDumpable::indent(os, indent+2) << 
-        AString::fromPointer(cit->first) <<
-        "=" <<
-        AString::fromBool(cit->second) <<
-        std::endl;
-    }
-    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-  }
-   ADebugDumpable::indent(os, indent) << "}" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
 
@@ -53,75 +39,75 @@ ABasePtrHolder::~ABasePtrHolder()
 {
   try
   {
-    //a_Release owned pointers
-    for (MAP_ABASE_PTRS::iterator it = m_OwnedPtrs.begin(); it != m_OwnedPtrs.end(); ++it)
-    {
-      if (it->second)
-        delete it->first;
-    }
-    m_OwnedPtrs.clear();
+    m_BasePtrs.clear();  //a_Explicit
   }
   catch(...) {}
-
 }
 
-void ABasePtrHolder::insert(const AString& name, ABase *pBase, bool overwrite)
+ABasePtrHolder::HOLDER& ABasePtrHolder::useContainer()
+{ 
+  return m_BasePtrs; 
+}
+
+void ABasePtrHolder::insert(
+  const AString& name, 
+  ABase *pBase, 
+  bool ownership, // = false
+  bool overwrite  // = true
+)
 {
   if (!pBase)
     ATHROW(this, AException::InvalidParameter);
 
-  if (!overwrite)
+  if (m_BasePtrs.find(name) != m_BasePtrs.end())
   {
-    if (m_BasePtrs.find(name) != m_BasePtrs.end())
-      ATHROW(this, AException::ObjectContainerCollision);
-  }
-
-  m_BasePtrs[name] = pBase;
-}
-
-void ABasePtrHolder::insertWithOwnership(const AString& name, ABase *pBase, bool overwrite)
-{
-  if (!pBase)
-    ATHROW(this, AException::InvalidParameter);
-
-  if (!overwrite)
-  {
-    if (m_BasePtrs.find(name) != m_BasePtrs.end())
+    //a_Exists
+    if (overwrite)
+      m_BasePtrs[name].reset(pBase, ownership);  //a_Replace
+    else
       ATHROW(this, AException::ObjectContainerCollision);
   }
   else
-    AASSERT(this, m_OwnedPtrs.end() == m_OwnedPtrs.find(pBase));
-
-  m_BasePtrs[name] = pBase;
-  m_OwnedPtrs[pBase] = true;
+    m_BasePtrs[name].reset(pBase, ownership);  //a_Insert new item
 }
 
-ABase *ABasePtrHolder::get(const AString& name) const
+void ABasePtrHolder::setOwnership(
+  const AString& name, 
+  bool ownership  // = true
+)
 {
-  MAP_ASTRING_ABASE::const_iterator cit = m_BasePtrs.find(name);
+  HOLDER::iterator it = m_BasePtrs.find(name);
+  if (it != m_BasePtrs.end())
+    m_BasePtrs[name].setOwnership(ownership);
+  else
+    ATHROW_EX(this, AException::NotFound, name);
+}
+
+const ABase *ABasePtrHolder::get(const AString& name) const
+{
+  HOLDER::const_iterator cit = m_BasePtrs.find(name);
   if (cit != m_BasePtrs.end())
-    return cit->second;
+    return cit->second.get();
+  else
+    return NULL;
+}
+
+ABase *ABasePtrHolder::use(const AString& name)
+{
+  HOLDER::iterator it = m_BasePtrs.find(name);
+  if (it != m_BasePtrs.end())
+    return it->second.use();
   else
     return NULL;
 }
 
 void ABasePtrHolder::remove(const AString& name)
 {
-  MAP_ASTRING_ABASE::iterator it = m_BasePtrs.find(name);
+  HOLDER::iterator it = m_BasePtrs.find(name);
   if (it != m_BasePtrs.end())
-  {
-    //a_Remove from ownership and delete if owned
-    MAP_ABASE_PTRS::iterator itOwned = m_OwnedPtrs.find(it->second);
-    if (itOwned != m_OwnedPtrs.end())
-    {
-      if (itOwned->second)
-        delete itOwned->first;
-      m_OwnedPtrs.erase(itOwned);
-    }
-
-    //a_Remove from object base
-    m_BasePtrs.erase(it);
-  }
+    m_BasePtrs.erase(it);  //a_Remove from object base
+  else
+    ATHROW_EX(this, AException::NotFound, name);
 }
 
 void ABasePtrHolder::clear()
@@ -131,6 +117,16 @@ void ABasePtrHolder::clear()
 
 void ABasePtrHolder::emit(AOutputBuffer& target) const
 {
-//TODO:
-#pragma message("ABasePtrHolder::emit: TODO")
+  target.append('{');
+  HOLDER::const_iterator cit = m_BasePtrs.begin();
+  while (cit != m_BasePtrs.end())
+  {
+    target.append((*cit).first);
+    target.append('=');
+    target.append(AString::fromPointer((*cit).second));
+    ++cit;
+    if (cit != m_BasePtrs.end())
+      target.append(',');
+  }
+  target.append('}');
 }

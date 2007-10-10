@@ -418,10 +418,22 @@ public:
   void makeUpper();
 
   /*!
-  Cleaning methods
+  Strip leading
   */
   AString& stripLeading(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  /*!
+  Strip trailing
+  */
   AString& stripTrailing(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  
+  /*!
+  Strip leading and trailing only
+  */
+  AString& stripLeadingAndTrailing(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+
+  /*!
+  Strip entire string
+  */
   AString& stripEntire(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
 
   /*!
@@ -453,13 +465,20 @@ public:
   u1& use(size_t index);
 
   /*!
-  get functions (unlike peek) will get the content and remove it
-  get(size_t) will return the byte at a given index
-  get(AString&,size_t,size_t) will copy and remove bytes from a given index into another buffer
+  get() Gets and removes byte at a given index
   */
   u1 get(size_t index = 0);
-  u1 rget();                                                                                      //a_Gets and removes the last byte
-  size_t get(AString& bufDestination, size_t sourceIndex = 0, size_t bytes = AConstant::npos);              //a_Return # of bytes moved
+
+  /*!
+  rget() Gets and removes last byte
+  */
+  u1 rget();
+  
+  /*!
+  get functions (unlike peek) will get the content and remove it
+  get(AString&,size_t,size_t) will copy and remove bytes from a given index into another buffer
+  */
+  size_t get(AString& bufDestination, size_t sourceIndex = 0, size_t bytes = AConstant::npos);                                                //a_Return # of bytes moved
   size_t getUntilOneOf(AString& bufDestination, const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);     //a_Return # of bytes moved
   
   /*!
@@ -467,8 +486,8 @@ public:
   removeDelimeter determines if it is removed
   Returs # of bytes moved
   */
-  size_t getUntil(AString& bufDestination, const AString& pattern, bool removeDelimeter = true);
-  size_t getUntil(AString& bufDestination, char delimeter, bool removeDelimeter = true);                                            //a_Return # of bytes moved
+  size_t getUntil(AString& bufDestination, const AString& pattern, bool removeDelimeter = true);  //a_Return # of bytes moved
+  size_t getUntil(AString& bufDestination, char delimeter, bool removeDelimeter = true);          //a_Return # of bytes moved
 
   /*!
   remove - Pop removes count at a position

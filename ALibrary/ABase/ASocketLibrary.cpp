@@ -188,7 +188,7 @@ AString ASocketLibrary::getMACfromIP(const AString& strIP)
   AAutoArrayPtr<IP_ADAPTER_INFO> pInfo(new IP_ADAPTER_INFO[arraySize]);
   DWORD dwLen = sizeof(IP_ADAPTER_INFO) * arraySize;
 
-  DWORD ret = GetAdaptersInfo(pInfo.get(), &dwLen);
+  DWORD ret = GetAdaptersInfo(pInfo.use(), &dwLen);
   switch (ret)
   {
     case ERROR_BUFFER_OVERFLOW:
@@ -201,7 +201,7 @@ AString ASocketLibrary::getMACfromIP(const AString& strIP)
       ATHROW_LAST_SOCKET_ERROR(NULL);
   }
 
-  IP_ADAPTER_INFO *p = pInfo.get();
+  IP_ADAPTER_INFO *p = pInfo.use();
   while (p)
   {
     IP_ADDR_STRING *pIp = &(p->IpAddressList);

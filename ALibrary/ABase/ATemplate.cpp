@@ -31,7 +31,6 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
 
 ATemplate::ATemplate()
 {
-  mp_Output.reset(new ARope());      //a_Own the created one
 }
 
 ATemplate::~ATemplate()
@@ -84,12 +83,15 @@ void ATemplate::fromAFile(AFile& aFile)
     }
     else
     {
-      //a_Add text first
-      m_Nodes.push_back(pText.get());
-      pText.setOwnership(false);
+      //a_Add text first if not empty
+      if (!pText->useBlockData().isEmpty())
+      {
+        m_Nodes.push_back(pText.use());
+        pText.setOwnership(false);
 
-      //a_Create new active text node
-      pText.reset(new ATemplateNode());
+        //a_Create new active text node
+        pText.reset(new ATemplateNode());
+      }
 
       //a_Handle the node
       ATemplateNode *pNode = it->second->create(aFile);
@@ -99,33 +101,27 @@ void ATemplate::fromAFile(AFile& aFile)
     }
     tagName.clear();
   }
-  if (AConstant::npos == ret)
-  {
-    //a_Read to EOF
-    aFile.readUntilEOF(pText->useBlockData());
 
-    //a_Leftover text added if not empty
-    if (!pText->useBlockData().isEmpty())
-    {
-      m_Nodes.push_back(pText.get());
-      pText.setOwnership(false);
-    }
+  //a_Read to EOF
+  aFile.readUntilEOF(pText->useBlockData());
+
+  //a_Leftover text added if not empty
+  if (!pText->useBlockData().isEmpty())
+  {
+    m_Nodes.push_back(pText.use());
+    pText.setOwnership(false);
   }
 }
 
 void ATemplate::process(
   ABasePtrHolder& objects, 
-  AOutputBuffer *pOutput // = NULL
+  AOutputBuffer& output
 )
 {
-  if (!pOutput)
-    pOutput = mp_Output.get();
-
-  AASSERT(this, pOutput);
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
   {
-    (*cit)->process(objects, *pOutput);
+    (*cit)->process(objects, output);
     ++cit;
   }
 }
@@ -151,9 +147,4 @@ void ATemplate::emit(AOutputBuffer& target) const
     (*cit)->emit(target);
     ++cit;
   }
-}
-
-AOutputBuffer& ATemplate::useOutput()
-{
-  return *mp_Output.get();
 }

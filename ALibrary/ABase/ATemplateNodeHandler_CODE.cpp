@@ -55,7 +55,7 @@ ATemplateNodeHandler_CODE::Node::~Node()
 void ATemplateNodeHandler_CODE::Node::process(ABasePtrHolder& objects, AOutputBuffer& output)
 {
   //a_If this assert failed, theis object was not constructed correctly
-  AXmlDocument *pDoc = objects.getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
+  AXmlDocument *pDoc = objects.useAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
   if (!pDoc)
     ATHROW_EX(this, AException::InvalidObject, ARope("Must have AXmlDocument model object named: ")+ATemplate::OBJECTNAME_MODEL);
 
@@ -73,10 +73,6 @@ void ATemplateNodeHandler_CODE::Node::process(ABasePtrHolder& objects, AOutputBu
 
 void ATemplateNodeHandler_CODE::Node::_processLine(const AString& line, AXmlElement& root, AOutputBuffer& output)
 {
-  std::cout << "\r\n--------processing-----" << std::endl;
-  line.debugDump(std::cout, 0);
-  std::cout << "\r\n--------processing-----" << std::endl;
-
   //a_First find '(' and ')'
   size_t start = line.find('(');
   size_t end = line.rfind(')');
@@ -88,7 +84,8 @@ void ATemplateNodeHandler_CODE::Node::_processLine(const AString& line, AXmlElem
   AString command, param;
   line.peek(command, 0, start);
   line.peek(param, start+1, end-start-1);
-  param.stripEntire();
+  command.stripLeadingAndTrailing();
+  param.stripLeadingAndTrailing();
 
   if (command.equalsNoCase("print"))
   {

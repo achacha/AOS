@@ -20,7 +20,7 @@ void testSimpleParse()
   pDoc->useRoot().addElement("/user/name", "Alex");
   pDoc->useRoot().addElement("/user/loc", "(0,0)");
 //    doc.debugDump();
-  objects.insertWithOwnership(ATemplate::OBJECTNAME_MODEL, pDoc);
+  objects.insert(ATemplate::OBJECTNAME_MODEL, pDoc, true);
 
   //a_Read template
   ATemplate tm;
@@ -69,7 +69,7 @@ void testTemplateParse()
   pDoc->useRoot().addElement("/user/cpu", "x6502");
   pDoc->useRoot().addElement("/user/url", "http://www.achacha.org:8888/home/index.html");
 //    ns.debugDump();
-  objects.insertWithOwnership(ATemplate::OBJECTNAME_MODEL, pDoc);
+  objects.insert(ATemplate::OBJECTNAME_MODEL, pDoc, true);
 
   //a_Read template
   ATemplate tm;
@@ -80,24 +80,24 @@ void testTemplateParse()
   AFile_IOStream iosfile;
   std::cout << "---------------------debugDump---------------------" << std::endl;
   tm.debugDump();
-  std::cout << "---------------------debugDump---------------------" << std::endl;
-  std::cout << "\r\n---------------------toAFile-----------------------" << std::endl;
-  tm.toAFile(iosfile);
+  std::cout << "\r\n---------------------debugDump---------------------" << std::endl;
   std::cout << "---------------------toAFile-----------------------" << std::endl;
-  std::cout << "\r\n---------------------emit-----------------------" << std::endl;
-  tm.emit(iosfile);
+  tm.toAFile(iosfile);
+  std::cout << "\r\n---------------------toAFile-----------------------" << std::endl;
   std::cout << "---------------------emit-----------------------" << std::endl;
-  std::cout << "\r\n---------------------emitXml-----------------------" << std::endl;
+  tm.emit(iosfile);
+  std::cout << "\r\n---------------------emit-----------------------" << std::endl;
+  std::cout << "---------------------emitXml-----------------------" << std::endl;
   AXmlElement xml;
   tm.emitXml(xml);
   xml.emit(iosfile,0);
-  std::cout << "---------------------emitXml-----------------------" << std::endl;
+  std::cout << "\r\n---------------------emitXml-----------------------" << std::endl;
 
   //a_Evaluate and emit to cout
   tm.process(objects);
-  std::cout << "\r\n---------------------process---------------------" << std::endl;
-  tm.useOutput().emit(iosfile);
   std::cout << "---------------------process---------------------" << std::endl;
+  tm.useOutput().emit(iosfile);
+  std::cout << "\r\n---------------------process---------------------" << std::endl;
 }
 
 void testHtmlTemplate()
@@ -112,7 +112,7 @@ void testHtmlTemplate()
   AXmlDocument *pDoc = new AXmlDocument("root");
   pDoc->useRoot().addElement("/user/name", "Alex");
   pDoc->useRoot().addElement("/user/cpu", "iX86");
-  objects.insertWithOwnership(ATemplate::OBJECTNAME_MODEL, pDoc);
+  objects.insert(ATemplate::OBJECTNAME_MODEL, pDoc, true);
 
   ATemplate tm;
   tm.addHandler(new ATemplateNodeHandler_CODE());
