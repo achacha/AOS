@@ -16,8 +16,8 @@ void testSimpleParse()
 
   ABasePtrHolder objects;
   AXmlDocument *pDoc = new AXmlDocument("root");
-  doc.useRoot().addElement("/user/name", "Alex");
-  doc.useRoot().addElement("/user/loc", "(0,0)");
+  pDoc->useRoot().addElement("/user/name", "Alex");
+  pDoc->useRoot().addElement("/user/loc", "(0,0)");
 //    doc.debugDump();
   objects.insertWithOwnership(ATemplate::OBJECTNAME_MODEL, pDoc);
 
@@ -60,12 +60,12 @@ void testTemplateParse()
 
   ABasePtrHolder objects;
   AXmlDocument *pDoc = new AXmlDocument("root");
-  ns.addElement("/user/name", "Alex");
-  ns.addElement("/user/loc", "(0,0)");
-  ns.addElement("/user/cpu", "iX86");
-  ns.addElement("/user/cpu", "x68000");
-  ns.addElement("/user/cpu", "x6502");
-  ns.addElement("/user/url", "http://www.achacha.org:8888/home/index.html");
+  pDoc->useRoot().addElement("/user/name", "Alex");
+  pDoc->useRoot().addElement("/user/loc", "(0,0)");
+  pDoc->useRoot().addElement("/user/cpu", "iX86");
+  pDoc->useRoot().addElement("/user/cpu", "x68000");
+  pDoc->useRoot().addElement("/user/cpu", "x6502");
+  pDoc->useRoot().addElement("/user/url", "http://www.achacha.org:8888/home/index.html");
 //    ns.debugDump();
   objects.insertWithOwnership(ATemplate::OBJECTNAME_MODEL, pDoc);
 
@@ -93,7 +93,7 @@ void testTemplateParse()
   //a_Evaluate and emit to cout
   tm.process(objects);
   std::cout << "\r\n---------------------process---------------------" << std::endl;
-  tm.useOutput().toAFile(iosfile);
+  tm.useOutput().emit(iosfile);
   std::cout << "---------------------process---------------------" << std::endl;
 }
 
@@ -107,8 +107,8 @@ void testHtmlTemplate()
 
   ABasePtrHolder objects;
   AXmlDocument *pDoc = new AXmlDocument("root");
-  eRoot.addElement("/user/name", "Alex");
-  eRoot.addElement("/user/cpu", "iX86");
+  pDoc->useRoot().addElement("/user/name", "Alex");
+  pDoc->useRoot().addElement("/user/cpu", "iX86");
   objects.insertWithOwnership(ATemplate::OBJECTNAME_MODEL, pDoc);
 
   ATemplate tm;

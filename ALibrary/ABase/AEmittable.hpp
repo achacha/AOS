@@ -14,7 +14,7 @@ public:
   virtual void emit(AOutputBuffer&) const;
 -------------------STOP: HPP cup/past-----------------------
 */
-class ABASE_API AEmittable : virtual public ABase
+class ABASE_API AEmittable : public ABase
 {
 public:
   virtual ~AEmittable();

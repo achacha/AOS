@@ -2,7 +2,6 @@
 #define __ASerializable_HPP__
 
 #include "apiABase.hpp"
-#include "ABase.hpp"
 
 class AFile;
 
@@ -15,7 +14,7 @@ public:
   virtual void fromAFile(AFile&);
 -------------------STOP: HPP cup/past-----------------------
 */
-class ABASE_API ASerializable : virtual public ABase
+class ABASE_API ASerializable
 {
   public:
     virtual ~ASerializable() {}

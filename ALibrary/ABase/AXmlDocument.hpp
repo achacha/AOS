@@ -15,7 +15,7 @@ Wrapper to an XML document
 
 To access the XML use useRoot() call to get the root AXmlElement object
 */
-class ABASE_API AXmlDocument : public AObjectBase, public ASerializable, public AJsonEmittable
+class ABASE_API AXmlDocument : virtual public AObjectBase, virtual public ASerializable, virtual public AJsonEmittable
 {
 public:
   /*!

@@ -13,7 +13,7 @@ public:
   virtual void emitXml(AXmlElement&) const;
 -------------------STOP: HPP cup/past-----------------------
 */
-class ABASE_API AXmlEmittable : virtual public ABase
+class ABASE_API AXmlEmittable
 {
 public:
   virtual ~AXmlEmittable();

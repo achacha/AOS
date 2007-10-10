@@ -15,7 +15,7 @@ typedef std::vector<ANameValuePair *>                VECTOR_NVPairPtr;
 typedef std::map<const AString, ANameValuePair>      MAP_AString_NVPair;
 typedef std::multimap<const AString, ANameValuePair> MMAP_AString_NVPair;
 
-class ABASE_API ANameValuePair : public ASerializable, public ADebugDumpable
+class ABASE_API ANameValuePair : virtual public ASerializable, virtual public ADebugDumpable
 {
 public:
   //a_ "=" and " " or "/>"  or ">" for HTML/XML attributes (special case)

@@ -877,8 +877,8 @@ ADaemon::ServiceDatabaseSynch::~ServiceDatabaseSynch()
 
 void ADaemon::ServiceDatabaseSynch::lock()
 {
-  AASSERT(this, !m_scLock);
-  AASSERT(this, m_hSCManager);
+  AASSERT(NULL, !m_scLock);
+  AASSERT(NULL, m_hSCManager);
   if(!islocked())
   {
     m_scLock = LockServiceDatabase(m_hSCManager);
@@ -887,20 +887,20 @@ void ADaemon::ServiceDatabaseSynch::lock()
 
 bool ADaemon::ServiceDatabaseSynch::islocked()
 {
-  AASSERT(this, m_hSCManager);
+  AASSERT(NULL, m_hSCManager);
 
   QUERY_SERVICE_LOCK_STATUS qslStatus;
   DWORD dwBytesNeeded;
   if(!QueryServiceLockStatus(m_hSCManager,&qslStatus,sizeof(QUERY_SERVICE_LOCK_STATUS),&dwBytesNeeded))
     return (qslStatus.fIsLocked ? true : false);
   else
-    ATHROW_LAST_OS_ERROR(this);
+    ATHROW_LAST_OS_ERROR(NULL);
 }
 
 bool ADaemon::ServiceDatabaseSynch::trylock()
 {
-  AASSERT(this, !m_scLock);
-  AASSERT(this, m_hSCManager);
+  AASSERT(NULL, !m_scLock);
+  AASSERT(NULL, m_hSCManager);
   if(!islocked())
   {
     m_scLock = LockServiceDatabase(m_hSCManager);
@@ -912,7 +912,7 @@ bool ADaemon::ServiceDatabaseSynch::trylock()
 
 void ADaemon::ServiceDatabaseSynch::unlock()
 {
-  AASSERT(this, m_scLock);
+  AASSERT(NULL, m_scLock);
   UnlockServiceDatabase(m_scLock);
   m_scLock = NULL;
 }
