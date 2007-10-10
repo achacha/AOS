@@ -6,10 +6,10 @@
 
 const AString ATemplate::OBJECTNAME_MODEL("_AXmlDocument_Model_");     // AXmlDocument that acts as a model for template lookup
 
-const AString ATemplate::TAG_START("#[",2);
-const AString ATemplate::BLOCK_START("]!{",3);
-const AString ATemplate::BLOCK_END("}![",3);
-const AString ATemplate::TAG_END("]#",2);
+const AString ATemplate::TAG_START("%[",2);
+const AString ATemplate::BLOCK_START("]{{{",4);
+const AString ATemplate::BLOCK_END("}}}[",4);
+const AString ATemplate::TAG_END("]%",2);
 
 #ifdef __DEBUG_DUMP__
 void ATemplate::debugDump(std::ostream& os, int indent) const
@@ -41,11 +41,6 @@ ATemplate::~ATemplate()
     //a_Delete nodes
     for (NODES::iterator it = m_Nodes.begin(); it != m_Nodes.end(); ++it)
       delete (*it);
-    
-    //a_Delete handlers
-    for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
-      delete it->second;
-
   } catch(...) {}
 }
 
@@ -137,10 +132,13 @@ void ATemplate::process(
 
 void ATemplate::emitXml(AXmlElement& target) const
 {
+  if (target.useName().isEmpty())
+    target.useName().assign("ATemplate",9);
+
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
   {
-    (*cit)->emitXml(target);
+    (*cit)->emitXml(target.addElement(ASW("ATemplateNode",13)));
     ++cit;
   }
 }

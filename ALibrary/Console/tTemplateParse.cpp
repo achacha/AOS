@@ -1,4 +1,5 @@
 #include "ATemplate.hpp"
+#include "ATemplateNodehandler_CODE.hpp"
 #include "AFile_AString.hpp"
 #include "AFile_IOStream.hpp"
 #include "AEventVisitor.hpp"
@@ -11,7 +12,7 @@
 void testSimpleParse()
 {
   AFile_AString strfile(
-"Hello %[CODE]%{{{\r\n print(/root/user/name); print(/root/user/loc); \r\n}}}%[CODE]%!\
+"Hello %[CODE]{{{\r\n print(/root/user/name); \r\n print(/root/user/loc); \r\n}}}[CODE]%!\
 ");
 
   ABasePtrHolder objects;
@@ -23,6 +24,7 @@ void testSimpleParse()
 
   //a_Read template
   ATemplate tm;
+  tm.addHandler(new ATemplateNodeHandler_CODE());
   tm.fromAFile(strfile);
 
   //a_Write it to cout
@@ -53,9 +55,9 @@ void testSimpleParse()
 void testTemplateParse()
 {
   AFile_AString strfile(
-    "Hello %[CODE]%{{{\r\n print(/root/user/name); print(/root/user/loc); \r\n}}}%[CODE]%, welcome to %[CODE]%{{{\t print(/root/user/url);  }}}%[CODE]%!!11!!1\r\n\
-    print='%[CODE]%{{{print(/root/user/cpu)}}}%[CODE]%'\r\n\
-    count='%[CODE]%{{{count(/root/user/cpu)}}}%[CODE]%'\r\n\
+    "Hello %[CODE]{{{\r\n print(/root/user/name); \r\n print(/root/user/loc); \r\n}}}[CODE]%, welcome to %[CODE]{{{\t print(/root/user/url);  }}}[CODE]%!!11!!1\r\n\
+    print='%[CODE]{{{print(/root/user/cpu)}}}[CODE]%'\r\n\
+    count='%[CODE]{{{count(/root/user/cpu)}}}[CODE]%'\r\n\
 ");
 
   ABasePtrHolder objects;
@@ -71,6 +73,7 @@ void testTemplateParse()
 
   //a_Read template
   ATemplate tm;
+  tm.addHandler(new ATemplateNodeHandler_CODE());
   tm.fromAFile(strfile);
 
   //a_Write it to cout
@@ -101,7 +104,7 @@ void testHtmlTemplate()
 {
   AFile_AString strfile("<html>\
 <body>\
-%[CODE]%{{{print(/root)}}}%[CODE]%<br/>\
+%[CODE]{{{print(/root)}}}[CODE]%<br/>\
 </body>\
 </html>");
 
@@ -112,8 +115,9 @@ void testHtmlTemplate()
   objects.insertWithOwnership(ATemplate::OBJECTNAME_MODEL, pDoc);
 
   ATemplate tm;
+  tm.addHandler(new ATemplateNodeHandler_CODE());
   tm.fromAFile(strfile);
-
+  
   //a_Evaluate and emit to cout
   tm.process(objects);
   std::cout << "\r\n\r\n" << tm.useOutput() << std::endl;
@@ -123,8 +127,8 @@ int main()
 {
   try
   {
-    testSimpleParse();
-    //testTemplateParse();
+    //testSimpleParse();
+    testTemplateParse();
     //testHtmlTemplate();
   }
   catch(AException& ex)

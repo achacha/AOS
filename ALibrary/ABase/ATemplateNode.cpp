@@ -43,8 +43,11 @@ ATemplateNode::~ATemplateNode()
 
 void ATemplateNode::emitXml(AXmlElement& target) const
 {
-  AASSERT(this, !target.useName().isEmpty());
-  target.addElement(ASW("data",6)).addData(m_BlockData, AXmlData::CDataDirect);
+  if (target.useName().isEmpty())
+    target.useName().assign("ATemplateNode",13);
+
+  target.addAttribute(ASW("tag",3), getTagName());
+  target.addElement(ASW("data",4)).addData(m_BlockData, AXmlData::CDataDirect);
 }
 
 void ATemplateNode::emit(AOutputBuffer& target) const
@@ -84,7 +87,7 @@ void ATemplateNode::toAFile(AFile& aFile) const
     //a_Tag name exists
     aFile.write(ATemplate::TAG_START);
     aFile.write(tag);
-    aFile.writeLine(ATemplate::BLOCK_START);
+    aFile.write(ATemplate::BLOCK_START);
 
     aFile.write(m_BlockData);
 

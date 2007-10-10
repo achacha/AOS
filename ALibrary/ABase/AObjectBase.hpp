@@ -26,9 +26,8 @@ public:
 
 */
 class ABASE_API AObjectBase : 
-  virtual public ASynchronization, 
-  virtual public AXmlEmittable,
-  virtual public ADebugDumpable
+  public ASynchronization, 
+  public AXmlEmittable
 {
 public:
   /*!

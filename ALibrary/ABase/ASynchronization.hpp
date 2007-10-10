@@ -29,11 +29,6 @@ public:
   virtual void lock()    = 0;       //a_Lock this object
   virtual bool trylock() = 0;       //a_Try and lock, return status
   virtual void unlock()  = 0;       //a_Unlock this object
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

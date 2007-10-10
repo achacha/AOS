@@ -82,9 +82,10 @@ ASync_Event
 ASync_ReadWriteLock
 ASync_Semaphore
 ATemplate
-ATemplate_Code
-ATemplate_Text
 ATemplateNode
+ATemplateNodeHandler
+ATemplateNodeHandler_CODE
+ATemplateNodeHandler_LUA
 ATextConverter
 ATextGenerator
 ATextOdometer

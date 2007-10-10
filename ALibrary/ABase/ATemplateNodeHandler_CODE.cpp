@@ -11,14 +11,7 @@ const AString ATemplateNodeHandler_CODE::TAGNAME("CODE",4);
 void ATemplateNodeHandler_CODE::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent) << "}" << std::endl;
-}
-#endif
-
-#ifdef __DEBUG_DUMP__
-void ATemplateNodeHandler_CODE::Node::debugDump(std::ostream& os, int indent) const
-{
-  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "TAGNAME=" << getTagName() << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
@@ -69,6 +62,11 @@ void ATemplateNodeHandler_CODE::Node::process(ABasePtrHolder& objects, AOutputBu
   AFile_AString strf(m_BlockData);
   AString strLine(1024, 1024);
   while (AConstant::npos != strf.readLine(strLine))
+  {
+    _processLine(strLine, pDoc->useRoot(), output);
+    strLine.clear();
+  }
+  if (AConstant::npos != strf.readUntilEOF(strLine))
   {
     _processLine(strLine, pDoc->useRoot(), output);
   }
