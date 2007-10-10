@@ -119,7 +119,7 @@ bool AOSOutput_MsXslt::execute(AOSOutputContext& context)
 
   //a_Emit the context XML document
   ARope rope;
-  context.getOutputXmlDocument().emit(rope);
+  context.useOutputXmlDocument().emit(rope);
 
   //a_Force XML to file
 #ifdef __DEBUG_DUMP__

@@ -47,8 +47,6 @@ public:
   const AObjectContainer&   getContextObjects() const;
   const AStringHashMap&     getSessionData() const;
   const AXmlElement&        getOutputParams() const;
-  const AXmlDocument&       getOutputXmlDocument() const;
-  const AXmlElement&        getOutputRootXmlElement() const;
   const AOSConfiguration&   getConfiguration() const;
 
   /*!
@@ -73,6 +71,15 @@ public:
     will override it, you should emit the XML document here if you don't want to throw it away
   */
   ARope& useOutputBuffer();
+  
+  /*!
+  Access to the XML document
+
+  Allows changes but everything that needs to be done should have been done on AOSContext
+  The only reason it is not read-only is tp allow external scripts access without lots of const aware code in C linkage
+  */
+  AXmlDocument& useOutputXmlDocument();
+  AXmlElement& useOutputRootXmlElement();
 
   /*!
     Error logging

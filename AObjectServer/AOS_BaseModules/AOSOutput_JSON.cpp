@@ -14,7 +14,7 @@ AOSOutput_JSON::AOSOutput_JSON(ALog& alog) :
 
 bool AOSOutput_JSON::execute(AOSOutputContext& context)
 {
-  context.getOutputRootXmlElement().emitJson(context.useOutputBuffer(),0);
+  context.useOutputRootXmlElement().emitJson(context.useOutputBuffer(),0);
   context.useResponseHeader().setPair(AHTTPResponseHeader::HT_ENT_Content_Type, ASW("text/plain",10));
 
   return true;

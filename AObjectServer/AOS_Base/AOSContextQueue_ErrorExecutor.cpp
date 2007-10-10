@@ -124,10 +124,12 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
             
             AAutoPtr<ATemplate> pTemplate;  //a_Call to cache manager will set a template
             pContext->useOutputBuffer().clear();
-            if (m_Services.useCacheManager().getStatusTemplate(statusCode, pTemplate, &pContext->useOutputXmlDocument(), &pContext->useOutputBuffer()))
+            if (m_Services.useCacheManager().getStatusTemplate(statusCode, pTemplate))
             {
               //a_Template for this status code is found, so process and emit into output buffer
-              pTemplate->process();
+              ABasePtrHolder objects;
+              objects.insert(ATemplate::OBJECTNAME_MODEL, &pContext->useOutputXmlDocument());
+              pTemplate->process(objects, pContext->useOutputBuffer());
               pContext->setExecutionState(ARope("Using error template for status ")+AString::fromInt(statusCode));
             }
             else

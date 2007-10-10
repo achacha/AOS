@@ -198,7 +198,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
         {
           pSocket.reset(new AFile_Socket(listener, true));
           pSocket->open();
-          pContext = pThis->m_Services.useContextManager().allocate(pSocket.get());
+          pContext = pThis->m_Services.useContextManager().allocate(pSocket.use());
           pSocket.setOwnership(false);
         }
         catch(ASocketException& e)
@@ -291,7 +291,7 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
         {
           pSocket.reset(new AFile_Socket_SSL(listener));
           pSocket->open();
-          pContext = pThis->m_Services.useContextManager().allocate(pSocket.get());
+          pContext = pThis->m_Services.useContextManager().allocate(pSocket.use());
           pSocket.setOwnership(false);
           pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_HTTPS);
         }

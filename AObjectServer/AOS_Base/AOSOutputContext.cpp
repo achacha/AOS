@@ -37,12 +37,12 @@ ARope& AOSOutputContext::useOutputBuffer()
   return m_Context.useOutputBuffer();
 }
 
-const AXmlDocument& AOSOutputContext::getOutputXmlDocument()const
+AXmlDocument& AOSOutputContext::useOutputXmlDocument()
 {
   return m_Context.useOutputXmlDocument();
 }
 
-const AXmlElement& AOSOutputContext::getOutputRootXmlElement() const
+AXmlElement& AOSOutputContext::useOutputRootXmlElement()
 {
   return m_Context.useOutputXmlDocument().useRoot();
 }

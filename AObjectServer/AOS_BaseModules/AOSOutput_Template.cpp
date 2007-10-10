@@ -5,8 +5,8 @@
 #include "AException.hpp"
 #include "ASync_Mutex.hpp"
 #include "ALock.hpp"
-#include "ATemplateNode_Code.hpp"
-#include "ATemplateNode_Lua.hpp"
+#include "ATemplateNodeHandler_CODE.hpp"
+#include "ATemplateNodeHandler_LUA.hpp"
 
 #ifdef __DEBUG_DUMP__
 void AOSOutput_Template::debugDump(std::ostream& os, int indent) const
@@ -149,6 +149,8 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
     {
       //a_Create new template and register nodes that it an handle
       pTemplate = new ATemplate();
+      pTemplate->addHandler(new ATemplateNodeHandler_LUA());
+      pTemplate->addHandler(new ATemplateNodeHandler_CODE());
       
       //a_Load and parse
       AFile_Physical tFile(filename);
@@ -160,7 +162,9 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
 
     //a_Process template
     AASSERT(this, pTemplate);
-    pTemplate->process(context.useOutputBuffer(), context.getOutputRootXmlElement());
+    ABasePtrHolder objects;
+    objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useOutputXmlDocument());
+    pTemplate->process(objects, context.useOutputBuffer());
 
     //a_Cache template if needed
     if (!doNotAddToCache)
