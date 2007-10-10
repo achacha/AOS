@@ -103,13 +103,13 @@ ARopeDeque::~ARopeDeque()
 bool ARopeDeque::isEmpty() const
 {
   if (
-    m_FrontBlockFree > 0
-    || m_BackBlockFree > 0
-    || m_Blocks.size() > 0
+    0 == m_Blocks.size()
+    && (!mp_FrontBlock || (mp_FrontBlock && m_BackBlockFree == m_BlockSize))
+    && (!mp_BackBlock || (mp_BackBlock && m_Blocks.size() == m_BlockSize))
   )
-    return false;
-  else
     return true;
+  else
+    return false;
 }
 
 size_t ARopeDeque::getSize() const

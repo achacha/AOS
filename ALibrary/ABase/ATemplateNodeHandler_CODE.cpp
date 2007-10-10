@@ -63,17 +63,20 @@ void ATemplateNodeHandler_CODE::Node::process(ABasePtrHolder& objects, AOutputBu
   AString strLine(1024, 1024);
   while (AConstant::npos != strf.readLine(strLine))
   {
-    _processLine(strLine, pDoc->useRoot(), output);
-    strLine.clear();
-  }
-  if (AConstant::npos != strf.readUntilEOF(strLine))
-  {
-    _processLine(strLine, pDoc->useRoot(), output);
+    if (!strLine.isEmpty())
+    {
+      _processLine(strLine, pDoc->useRoot(), output);
+      strLine.clear();
+    }
   }
 }
 
 void ATemplateNodeHandler_CODE::Node::_processLine(const AString& line, AXmlElement& root, AOutputBuffer& output)
 {
+  std::cout << "\r\n--------processing-----" << std::endl;
+  line.debugDump(std::cout, 0);
+  std::cout << "\r\n--------processing-----" << std::endl;
+
   //a_First find '(' and ')'
   size_t start = line.find('(');
   size_t end = line.rfind(')');

@@ -1044,7 +1044,8 @@ size_t AString::getUntilOneOf(
 
 size_t AString::getUntil(
   AString& target,
-  const AString& pattern
+  const AString& pattern,
+  bool removeDelimeters // = true
 )
 {
   if (isEmpty())
@@ -1065,6 +1066,8 @@ size_t AString::getUntil(
   else
   {
     get(target, 0, p);
+    if (removeDelimeters)
+      remove(pattern.getSize());
   }
   return target.getSize();
 }

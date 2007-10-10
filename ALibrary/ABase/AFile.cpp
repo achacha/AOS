@@ -85,7 +85,7 @@ size_t AFile::readLine(
     return 0;
   }
 
-  if (originalSize == strRead.getSize() && !_isNotEof())
+  if (originalSize == strRead.getSize() && !_isNotEof() && m_LookaheadBuffer.isEmpty())
     return AConstant::npos;
   else
     return strRead.getSize();

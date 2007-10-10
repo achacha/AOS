@@ -90,12 +90,12 @@ ARope::~ARope()
 bool ARope::isEmpty() const
 {
   if (
-    m_LastBlockFree > 0
-    || m_Blocks.size() > 0
+    0 == m_Blocks.size()
+    && (!mp_LastBlock || mp_LastBlock && m_LastBlockFree == m_BlockSize)
   )
-    return false;
-  else
     return true;
+  else
+    return false;
 }
 
 size_t ARope::getSize() const

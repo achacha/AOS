@@ -223,6 +223,5 @@ int ut_AString_General()
     std::cerr << "CompareNoCase or fromU4 did not convert correctly" << std::endl;
   } else std::cerr << "." << std::flush;
 
-
   return iRet;
 }

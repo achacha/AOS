@@ -456,15 +456,18 @@ public:
   get functions (unlike peek) will get the content and remove it
   get(size_t) will return the byte at a given index
   get(AString&,size_t,size_t) will copy and remove bytes from a given index into another buffer
-  getUntil(AString&,size_t,const AString&,bool) will copy and remove bytes until one of the delimeters is found;
-     removeDelimeters flag means that the delimeter that was first found is removed ("Hello World" will return "Hello" and leave "World", if false " World" is left
-     returns bytes copied or AConstant::npos if delimeter not found
   */
   u1 get(size_t index = 0);
   u1 rget();                                                                                      //a_Gets and removes the last byte
   size_t get(AString& bufDestination, size_t sourceIndex = 0, size_t bytes = AConstant::npos);              //a_Return # of bytes moved
   size_t getUntilOneOf(AString& bufDestination, const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);     //a_Return # of bytes moved
-  size_t getUntil(AString& bufDestination, const AString& pattern);     //a_Return # of bytes moved
+  
+  /*!
+  Copy and remove bytes delimeter is found, delimeter is not part of the result
+  removeDelimeter determines if it is removed
+  Returs # of bytes moved
+  */
+  size_t getUntil(AString& bufDestination, const AString& pattern, bool removeDelimeter = true);
   size_t getUntil(AString& bufDestination, char delimeter, bool removeDelimeter = true);                                            //a_Return # of bytes moved
 
   /*!

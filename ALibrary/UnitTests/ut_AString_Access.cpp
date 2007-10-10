@@ -102,17 +102,17 @@ int ut_AString_Access()
   str0.peekUntil(str1, 2, "1");
   ASSERT_UNIT_TEST(!str1.compare("nd_file_"), "AString::peekUntil", "0", iRet);
 
-  str0.getUntil(str1, "_");
-  ASSERT_UNIT_TEST((!str1.compare("find") && !str0.compare("file_1")), "AString::getUntil", "0", iRet);
+  str0.getUntil(str1, "_", true);
+  ASSERT_UNIT_TEST((!str1.compare("find") && !str0.compare("file_1")), "AString::getUntil", "4", iRet);
 
   str0="find_file_1";
   str0.getUntilOneOf(str1, ASW("_",1), false);
-  ASSERT_UNIT_TEST((!str1.compare("find") && !str0.compare("_file_1")), "AString::getUntil", "1", iRet);
+  ASSERT_UNIT_TEST((!str1.compare("find") && !str0.compare("_file_1")), "AString::getUntil", "5", iRet);
 
   str0.remove(1);
   str1.clear();
   str0.getUntil(str1, ASW("_",1));
-  ASSERT_UNIT_TEST((!str1.compare("file") && !str0.compare("_1")), "AString::getUntil", "1", iRet);
+  ASSERT_UNIT_TEST((!str1.compare("file") && !str0.compare("_1")), "AString::getUntil", "6", iRet);
 
   return iRet;
 }
