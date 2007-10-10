@@ -2,9 +2,10 @@
 #define INCLUDED__ALuaEmbed_HPP__
 
 #include "apiALuaEmbed.hpp"
-#include "ABase.hpp"
+#include "ADebugDumpable.hpp"
 #include "ABasePtrHolder.hpp"
 #include "templateAutoPtr.hpp"
+#include "AXmlDocument.hpp"
 
 class AOutputBuffer;
 class AEmittable;
@@ -13,7 +14,7 @@ struct lua_State;
 /*!
 Lua interpreter
 */
-class ALuaEMBED_API ALuaEmbed : public ABase
+class ALuaEMBED_API ALuaEmbed : public ADebugDumpable
 {
 public:
   /*!
@@ -42,24 +43,23 @@ public:
   Load libraries into this instance
     Can use LUALIB_CORE|LUALIB_MATH|etc to load some
   
-  NOTE: AOutputBuffer pointer is OWNED and DELETED by this class
-  If none is specified, this object will create one
-  
-  If AObjectPtrHolder is specified, it will be used as data
-  Else new internal one will be
-  "ALuaEmbed" object in the container will point to this class in ctor and removed in dtor
-
-  NOTE: Make sure the AObjectPtrHolder scope outlives this obect (i.e. do not deallocate it until this object is)
+  AXmlDocument at ATemplate::OBJECTNAME_MODEL will be added by default with single /root
   */
   ALuaEmbed(
     u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE
   );
+  
+  /*!
+  Initialize Lua interpreter
+  Load libraries into this instance
+    Can use LUALIB_CORE|LUALIB_MATH|etc to load some
+
+  Configure to use external objects and output buffer
+
+  objects provided MUST include the model AXmlDocument at ATemplate::OBJECTNAME_MODEL
+  */
   ALuaEmbed(
-    ABasePtrHolder& basePointers,
-    u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE
-  );
-  ALuaEmbed(
-    ABasePtrHolder& basePointers,
+    ABasePtrHolder& objects,
     AOutputBuffer& output,
     u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE
   );
@@ -90,20 +90,36 @@ public:
   
   /*!
   Execute Lua code
+  If you provided objects and output durig creation they will be used
+  If default ctor was used then there were defaults created and will be used
+
   Returns true if all is well, false if error occured (written to outputbuffer)
   */
-  bool execute(const AEmittable& script);
+  bool ALuaEmbed::execute(const AEmittable& code);
+
+  /*!
+  Execute Lua code
+  Use objects and output provided
+  
+  Returns true if all is well, false if error occured (written to outputbuffer)
+  */
+  bool ALuaEmbed::execute(const AEmittable& code, ABasePtrHolder& objects, AOutputBuffer& output);
 
   /*!
   Output buffer used by lua print command when LUALIB_BASE is loaded
   This can be accssed from Lua via lua_State::outputbuffer
   */
-  AOutputBuffer& useOutputBuffer();
+  AOutputBuffer& useOutput();
 
   /*!
   ABasePtrHolder helper functions that can be called from the python exported ones
   */
-  ABasePtrHolder& useBasePtrHolder();
+  ABasePtrHolder& useObjects();
+
+  /*!
+  AXmlDocument at ATemplate::OBJECTNAME_MODEL
+  */
+  AXmlDocument& useModel();
 
   /*!
   Lua panic function
@@ -111,19 +127,31 @@ public:
   */
   static int callbackPanic(lua_State *);
 
+  /*!
+  AEmittable
+  */
+  virtual void emit(AOutputBuffer&) const;
+
 private:
-  //a_Simple AString -> AObjectBase map
-  //a_If not provided a new one is created
+  //a_Simple AString -> ABase map
   AAutoPtr<ABasePtrHolder> mp_Objects;
+
+  //a_Output buffer
+  AAutoPtr<AOutputBuffer> mp_Output;
 
   //a_The Lua state pointer
   struct lua_State *mp_LuaState;
 
-  //a_Output buffer if not provided by creator, one will be allocated
-  AAutoPtr<AOutputBuffer> mp_OutputBuffer;
-
   //a_Init Lua interpreter and load libraries
   void _init(u4 maskLibrariesToLoad);
+
+  //a_Execute Lua code 
+  bool _execute(const AEmittable& code);
+
+public:
+#ifdef __DEBUG_DUMP__
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+#endif
 };
 
 #endif //INCLUDED__ALuaEmbed_HPP__

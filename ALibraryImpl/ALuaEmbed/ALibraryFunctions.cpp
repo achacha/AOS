@@ -14,7 +14,7 @@ static void luaA_stringappender(lua_State *L, const char *s)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   if (pLuaEmbed)
   {
-    pLuaEmbed->useOutputBuffer().append(s);
+    pLuaEmbed->useOutput().append(s);
   }
 }
 
@@ -32,12 +32,9 @@ static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlDocument *pDoc = pLuaEmbed->useBasePtrHolder().getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
-  AASSERT(NULL, pDoc);
   AString str;
-
   AXmlNode::ConstNodeContainer nodes;
-  size_t ret = pDoc->useRoot().find(xmlpath, nodes);
+  size_t ret = pLuaEmbed->useModel().useRoot().find(xmlpath, nodes);
   for (AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
   {
     (*cit)->emitContent(str);
@@ -61,7 +58,7 @@ static int alibrary_Objects_emit(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AEmittable *p = pLuaEmbed->useBasePtrHolder().getAsPtr<AEmittable>(objectName);
+  AEmittable *p = pLuaEmbed->useObjects().getAsPtr<AEmittable>(objectName);
   if (p)
   {
     AString str;
@@ -89,18 +86,11 @@ static int alibrary_Objects_Model_emitXml(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlDocument *pDoc = pLuaEmbed->useBasePtrHolder().getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
-  AASSERT(NULL, pDoc);
-  if (pDoc)
-  {
-    AString str;
-    pDoc->useRoot().emit(str, indent);
+  AString str;
+  pLuaEmbed->useModel().useRoot().emit(str, indent);
 
-    lua_pushlstring(L, str.c_str(), str.getSize());
-    return 1;
-  }
-  else
-    return 0;
+  lua_pushlstring(L, str.c_str(), str.getSize());
+  return 1;
 }
 
 /*!
@@ -119,17 +109,11 @@ static int alibrary_Objects_Model_emitJson(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlDocument *pDoc = pLuaEmbed->useBasePtrHolder().getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
-  if (pDoc)
-  {
-    AString str;
-    pDoc->useRoot().emitJson(str, indent);
+  AString str;
+  pLuaEmbed->useModel().useRoot().emitJson(str, indent);
 
-    lua_pushlstring(L, str.c_str(), str.getSize());
-    return 1;
-  }
-  else
-    return 0;
+  lua_pushlstring(L, str.c_str(), str.getSize());
+  return 1;
 }
 
 /*!
@@ -148,14 +132,8 @@ static int alibrary_Objects_Model_addElementText(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AXmlDocument *pDoc = pLuaEmbed->useBasePtrHolder().getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
-  if (pDoc)
-  {
-    pDoc->useRoot().addElement(xmlpath, value);
-    return 1;
-  }
-  else
-    return 0;
+  pLuaEmbed->useModel().useRoot().addElement(xmlpath, value);
+  return 0;
 }
 
 /*!

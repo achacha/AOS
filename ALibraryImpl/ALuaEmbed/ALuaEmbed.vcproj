@@ -210,7 +210,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ATemplateNode_Lua.cpp"
+				RelativePath=".\ATemplateNodeHandler_LUA.cpp"
 				>
 			</File>
 			<File
@@ -252,7 +252,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ATemplateNode_Lua.hpp"
+				RelativePath=".\ATemplateNodeHandler_LUA.hpp"
 				>
 			</File>
 			<File
