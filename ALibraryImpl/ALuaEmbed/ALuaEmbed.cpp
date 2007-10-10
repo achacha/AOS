@@ -46,7 +46,7 @@ ALuaEmbed::ALuaEmbed(
   mp_LuaState(NULL)
 {
   mp_Objects.reset(new ABasePtrHolder());
-  mp_Objects->insertWithOwnership(ATemplate::OBJECTNAME_MODEL, new AXmlDocument(ASW("root",4)));
+  mp_Objects->insert(ATemplate::OBJECTNAME_MODEL, new AXmlDocument(ASW("root",4)), true);
   
   mp_Output.reset(new ARope());
 
@@ -205,7 +205,7 @@ ABasePtrHolder& ALuaEmbed::useObjects()
 AXmlDocument& ALuaEmbed::useModel()
 {
   AASSERT(this, !mp_Objects.isNull());
-  AXmlDocument *pDoc = mp_Objects->getAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
+  AXmlDocument *pDoc = mp_Objects->useAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
   if (pDoc)
     return *pDoc;
   else

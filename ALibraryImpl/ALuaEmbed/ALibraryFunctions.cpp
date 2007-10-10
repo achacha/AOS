@@ -58,7 +58,7 @@ static int alibrary_Objects_emit(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AEmittable *p = pLuaEmbed->useObjects().getAsPtr<AEmittable>(objectName);
+  AEmittable *p = pLuaEmbed->useObjects().useAsPtr<AEmittable>(objectName);
   if (p)
   {
     AString str;

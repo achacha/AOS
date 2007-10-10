@@ -6,58 +6,50 @@
 #include "AXmlDocument.hpp"
 #include "AXmlElement.hpp"
 #include "ATemplate.hpp"
-#include "ATemplateNode_Lua.hpp"
-#include "ATemplateNode_Code.hpp"
+#include "ATemplateNodeHandler_LUA.hpp"
+#include "ATemplateNodeHandler_CODE.hpp"
 
 int main()
 {
-//  AFile_AString strf(
-//"\
-//#%LUA%#{\
-//alibrary.print(alibrary.emit(\"simplestring\")); \n\
-//alibrary.print(alibrary.Model_emitXml(0)); \n\
-//alibrary.print(alibrary.Model_emitJson(0)); \n\
-//alibrary.Model_addElementText(\"/newElement/item\",\"somevalue\"); \n\
-//alibrary.print(alibrary.Model_emitXml(0)); \n\
-//}#%LUA%#\
-//");
-
   AFile_AString strf(
 "\
-#%LUA%!{\
+%[LUA]{{{\
 local val = alibrary.Model_emitContentFromPath(\"/root/data\"); \n\
 val = val + 3; \n\
 val = val .. \" and more\"; \n\
 alibrary.Model_addElementText(\"/newElement/item\", val); \n\
 alibrary.print(alibrary.Model_emitXml(0)); \n\
-}!%LUA%##%CODE%!{print(/root)}!%CODE%#\
+}}}[LUA]%%[CODE]{{{print(/root);}}}[CODE]%\
 ");
 
+  ABasePtrHolder objects;
   AXmlDocument *pdoc = new AXmlDocument(ASW("root",4));
   pdoc->useRoot().addElement("swiper").addData(ASWNL("swiper no swiping! 0"));
   pdoc->useRoot().addElement("swiper").addData(ASWNL("swiper No swiping! 1"));
   pdoc->useRoot().addElement("swiper").addData(ASWNL("Swiper NO Swiping! 2"));
   pdoc->useRoot().addElement("data").addData(ASWNL("5"));
+  objects.insert(ATemplate::OBJECTNAME_MODEL, pdoc, true);
 
-  ARope rope;
-  ATemplate t(pdoc, &rope);
-  ATEMPLATE_USE_NODE(t, ATemplateNode_Lua);
-  ATEMPLATE_USE_NODE(t, ATemplateNode_Code);
+  ATemplate t;
+  t.addHandler(new ATemplateNodeHandler_LUA());
+  t.addHandler(new ATemplateNodeHandler_CODE());
 
   {
     AXmlElement *pElement = new AXmlElement(ASW("root",4));
     pElement->addElement("sub0").addAttribute("attr", "zero");
-    t.useObjects().insert("rootelem", new AObject<AXmlElement>(*pElement));
+    objects.insert("rootelem", new AXmlElement(*pElement), true);
   }
-
-  t.useObjects().insert("simplestring", new AObject<AString>("Simple string I added"));
+  
+  objects.insert("simplestring", new AString("Simple string I added"), true);
   
   t.fromAFile(strf);
-//  t.debugDump(); 
+  std::cout << "\r\n------------------------------------ debugDump -----------------------------------------" << std::endl;
+  t.debugDump(); 
+  std::cout << "\r\n------------------------------------ debugDump -----------------------------------------" << std::endl;
   
   try
   {
-    t.process();
+    t.process(objects);
   }
   catch(AException& ex)
   {
@@ -67,8 +59,10 @@ alibrary.print(alibrary.Model_emitXml(0)); \n\
   {
     std::cout << "Unknown exception." << std::endl;
   }
-  std::cout << t.useOutput() << std::endl;
 
-  delete pdoc;
+  std::cout << "\r\n------------------------------------ output -----------------------------------------" << std::endl;
+  std::cout << t.useOutput() << std::endl;
+  std::cout << "\r\n------------------------------------ output -----------------------------------------" << std::endl;
+
   return 1;
 }
