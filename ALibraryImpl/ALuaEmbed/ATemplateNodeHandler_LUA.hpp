@@ -5,6 +5,7 @@
 #include "ALuaEmbed.hpp"
 #include "ATemplateNode.hpp"
 #include "ATemplateNodeHandler.hpp"
+#include "templateAutoPtr.hpp"
 
 class AOutputBuffer;
 class AXmlElement;
@@ -28,6 +29,19 @@ public:
   virtual ~ATemplateNodeHandler_LUA();
 
   /*!
+  Initialize internal resources
+  Called by ATemplate::init()
+  */
+  virtual void init();
+  
+  /*!
+  Release resources before caching/storing ATemplate to minimize on memory/resources used
+  Will be reallocated as they are needed
+  Called by ATemplate::deinit()
+  */
+  virtual void deinit();
+
+  /*!
   Name of the tag that this node can handle
   */
   virtual const AString& getTagName() const;
@@ -49,9 +63,14 @@ protected:
   static const AString TAGNAME;
 
   /*!
+  Libraries to load when ALuaEmbed is created\
+  */
+  u4 m_LibrariesToLoad;
+
+  /*!
   Lua embedded interpreter
   */
-  ALuaEmbed m_Lua;
+  AAutoPtr<ALuaEmbed> mp_Lua;
 
 public:
   /*!

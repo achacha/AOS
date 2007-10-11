@@ -12,7 +12,10 @@ void ATemplateNodeHandler_LUA::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Lua={" << std::endl;
-  m_Lua.debugDump(os, indent+2);
+  if (mp_Lua.isNull())
+    mp_Lua->debugDump(os, indent+2);
+  else
+    mp_Lua.debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
@@ -27,12 +30,22 @@ void ATemplateNodeHandler_LUA::Node::debugDump(std::ostream& os, int indent) con
 #endif
 
 ATemplateNodeHandler_LUA::ATemplateNodeHandler_LUA(u4 maskLibrariesToLoad) :
-  m_Lua(maskLibrariesToLoad)
+  m_LibrariesToLoad(maskLibrariesToLoad)
 {
 }
 
 ATemplateNodeHandler_LUA::~ATemplateNodeHandler_LUA()
 {
+}
+
+void ATemplateNodeHandler_LUA::init()
+{
+  mp_Lua.reset(new ALuaEmbed(m_LibrariesToLoad));
+}
+
+void ATemplateNodeHandler_LUA::deinit()
+{
+  mp_Lua.reset(NULL);
 }
 
 const AString& ATemplateNodeHandler_LUA::getTagName() const
@@ -49,7 +62,8 @@ ATemplateNode *ATemplateNodeHandler_LUA::create(AFile& file)
 
 ALuaEmbed& ATemplateNodeHandler_LUA::useLua()
 {
-  return m_Lua;
+  AASSERT_EX(this, !mp_Lua.isNull(), ASWNL("Lua object not initialized or deinitialized."));
+  return *mp_Lua;
 }
 
 ///////////////////////////////////////// ATemplateNodeHandler_LUA::Node ///////////////////////////////////////////////////////////////////////////
