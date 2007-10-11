@@ -30,7 +30,8 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ATemplate::ATemplate()
+ATemplate::ATemplate() :
+  m_Initialized(false)
 {
 }
 
