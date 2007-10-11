@@ -176,6 +176,7 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
         if (mp_Templates->find(filenamePart) == mp_Templates->end())
         {
           (*mp_Templates)[filenamePart] = pTemplate;
+          pTemplate->hibernate();
           m_Log.add(ASWNL("AOSOutput_Template: Adding parsed template"), filename, ALog::INFO);
         }
         else
