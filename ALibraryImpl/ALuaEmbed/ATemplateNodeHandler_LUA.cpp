@@ -13,9 +13,9 @@ void ATemplateNodeHandler_LUA::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Lua={" << std::endl;
   if (mp_Lua.isNull())
-    mp_Lua->debugDump(os, indent+2);
-  else
     mp_Lua.debugDump(os, indent+2);
+  else
+    mp_Lua->debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
