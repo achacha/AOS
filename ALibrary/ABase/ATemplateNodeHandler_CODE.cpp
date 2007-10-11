@@ -24,6 +24,14 @@ ATemplateNodeHandler_CODE::~ATemplateNodeHandler_CODE()
 {
 }
 
+void ATemplateNodeHandler_CODE::init()
+{
+}
+
+void ATemplateNodeHandler_CODE::deinit()
+{
+}
+
 const AString& ATemplateNodeHandler_CODE::getTagName() const
 {
   return ATemplateNodeHandler_CODE::TAGNAME;

@@ -26,6 +26,16 @@ public:
   virtual ~ATemplateNodeHandler_CODE();
 
   /*!
+  Initialize internal resources
+  */
+  virtual void init();
+
+  /*!
+  Release resources
+  */
+  virtual void deinit();
+
+  /*!
   Name of the tag that this node can handle
   */
   virtual const AString& getTagName() const;

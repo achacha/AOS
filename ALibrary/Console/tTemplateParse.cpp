@@ -46,7 +46,7 @@ void testSimpleParse()
 
   //a_Evaluate and emit to cout
   ARope rope;
-  tm.process(objects, &rope);
+  tm.process(objects, rope);
   std::cout << "\r\n---------------------process---------------------" << std::endl;
   rope.toAFile(iosfile);
   std::cout << "---------------------process---------------------" << std::endl;
@@ -94,9 +94,10 @@ void testTemplateParse()
   std::cout << "\r\n---------------------emitXml-----------------------" << std::endl;
 
   //a_Evaluate and emit to cout
-  tm.process(objects);
+  ARope rope;
+  tm.process(objects, rope);
   std::cout << "---------------------process---------------------" << std::endl;
-  tm.useOutput().emit(iosfile);
+  rope.emit(iosfile);
   std::cout << "\r\n---------------------process---------------------" << std::endl;
 }
 
@@ -119,8 +120,9 @@ void testHtmlTemplate()
   tm.fromAFile(strfile);
   
   //a_Evaluate and emit to cout
-  tm.process(objects);
-  std::cout << "\r\n\r\n" << tm.useOutput() << std::endl;
+  ARope rope;
+  tm.process(objects, rope);
+  std::cout << "\r\n\r\n" << rope << std::endl;
 }
 
 int main()

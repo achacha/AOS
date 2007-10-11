@@ -70,10 +70,23 @@ public:
   virtual ~ATemplate();
 
   /*!
+  Initializes handlers if they are hibernated
   Output based on a given source XML root element and output buffer
   Evaluate template against a model and objects
+
+  If hibernateHandlersWhenDone is true, hibernate is called when done with processing
   */
-  virtual void process(ABasePtrHolder& objects, AOutputBuffer& output);
+  virtual void process(
+    ABasePtrHolder& objects, 
+    AOutputBuffer& output,   
+    bool hibernateHandlersWhenDone = false
+  );
+
+  /*!
+  De-initialize and release handler based resources
+  Useul for conserving memory if template is going into cache, etc
+  */
+  virtual void hibernate();
 
   /*!
   AXmlEmittable, emits the template
@@ -99,6 +112,9 @@ public:
   void addHandler(ATemplateNodeHandler *);
 
 private:
+  //a_Initialization state
+  bool m_Initialized;
+  
   //a_Parsed nodes
   typedef std::list<ATemplateNode *> NODES;
   NODES m_Nodes;

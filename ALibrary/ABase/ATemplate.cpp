@@ -15,6 +15,7 @@ const AString ATemplate::TAG_END("]%",2);
 void ATemplate::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ATemplate @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Initialized=" << AString::fromBool(m_Initialized) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Nodes={  ";
   ADebugDumpable::indent(os, indent+2) << "size=" << m_Nodes.size() << std::endl;
   NODES::const_iterator cit = m_Nodes.begin();
@@ -115,14 +116,39 @@ void ATemplate::fromAFile(AFile& aFile)
 
 void ATemplate::process(
   ABasePtrHolder& objects, 
-  AOutputBuffer& output
+  AOutputBuffer& output,
+  bool hibernateHandlersWhenDone  // = false
 )
 {
+  if (!m_Initialized)
+  {
+    //a_Initialize handlers
+    for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
+      (*it).second->init();
+
+    m_Initialized = true;
+  }
+
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
   {
     (*cit)->process(objects, output);
     ++cit;
+  }
+
+  if (hibernateHandlersWhenDone)
+    hibernate();
+}
+
+void ATemplate::hibernate()
+{
+  if (m_Initialized)
+  {
+    //a_De-initialize handlers
+    for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
+      (*it).second->deinit();
+
+    m_Initialized = false;
   }
 }
 
