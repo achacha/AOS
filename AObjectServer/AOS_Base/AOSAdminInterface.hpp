@@ -43,7 +43,7 @@ void MyClass::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 -----CUT: Add in your inherited class implementation-----
 
 */
-class AOS_BASE_API AOSAdminInterface : virtual public ADebugDumpable
+class AOS_BASE_API AOSAdminInterface : public ADebugDumpable
 {
 public:
   AOSAdminInterface() {}

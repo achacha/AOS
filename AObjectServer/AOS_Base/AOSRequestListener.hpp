@@ -41,9 +41,10 @@ private:
   AThread mthread_Listener;
   AThread mthread_SecureListener;
   
-  struct LISTEN_DATA
+  class LISTEN_DATA : public ABase
   {
-    LISTEN_DATA() : port(80), pListener(NULL) {}
+  public:
+    LISTEN_DATA() : port(-1) {}
 
     int port;
     AString host;
@@ -51,13 +52,7 @@ private:
     //a_Used for HTTPS connections, empty otherwise
     AString cert;
     AString pkey;
-
-    //a_Owner
-    AOSRequestListener *pListener;
   };
-
-  //a_Listeners
-  
   
   //a_Queues
   ASync_CriticalSection m_QueueAdd;

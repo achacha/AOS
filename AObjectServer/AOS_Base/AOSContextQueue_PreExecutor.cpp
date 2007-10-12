@@ -34,7 +34,7 @@ AOSContextQueue_PreExecutor::AOSContextQueue_PreExecutor(
 ) :
   BASECLASS_AOSContextQueue_PreExecutor(services, threadCount, queueCount, pYes, pNo)
 {
-  useThreadPool().setParameter(this);
+  useThreadPool().setThis(this);
   registerAdminObject(m_Services.useAdminRegistry());
 }
 
@@ -44,7 +44,7 @@ AOSContextQueue_PreExecutor::~AOSContextQueue_PreExecutor()
 
 u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
 {
-  AOSContextQueue_PreExecutor *pThis = static_cast<AOSContextQueue_PreExecutor *>(thread.getParameter());
+  AOSContextQueue_PreExecutor *pThis = dynamic_cast<AOSContextQueue_PreExecutor *>(thread.getThis());
   AASSERT(NULL, pThis);
   AOSContext *pContext = NULL;
 

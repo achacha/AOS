@@ -43,7 +43,7 @@ void AOSAdmin::startAdminListener()
   if (m_Services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/listen/admin/port"), -1) > 0)
   {
     mthread_AdminListener.setProc(AOSAdmin::threadprocAdminListener);
-    mthread_AdminListener.setParameter(this);
+    mthread_AdminListener.setThis(this);
     mthread_AdminListener.start();
   }
   else
@@ -61,7 +61,7 @@ void AOSAdmin::stopAdminListener()
 
 u4 AOSAdmin::threadprocAdminListener(AThread& thread)
 {
-  AOSAdmin *pThis = (AOSAdmin *)thread.getParameter();
+  AOSAdmin *pThis = dynamic_cast<AOSAdmin *>(thread.getThis());
   AASSERT(NULL, pThis);
   if (!pThis)
     return -1;

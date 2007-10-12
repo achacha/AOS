@@ -70,7 +70,7 @@ void AOSContextQueueThreadPool::processAdminAction(AXmlElement& base, const AHTT
 
 u4 AOSContextQueueThreadPool::_threadprocWrapper(AThread& thread)
 {
-  AOSContextQueueThreadPool *pThis = static_cast<AOSContextQueueThreadPool *>(thread.getThis());
+  AOSContextQueueThreadPool *pThis = dynamic_cast<AOSContextQueueThreadPool *>(thread.getThis());
   AASSERT(pThis, pThis);
   AASSERT(pThis, ADebugDumpable::isPointerValid(pThis));
 

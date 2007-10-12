@@ -75,9 +75,9 @@ void AOSRequestListener::startListening()
       {
         LISTEN_DATA *p = new LISTEN_DATA();
         p->port = http_port;
-        p->pListener = this;
         pNode->emitFromPath(ASW("host",4), p->host);
 
+        mthread_Listener.setThis(this);
         mthread_Listener.setParameter(p);
         mthread_Listener.start();
       }
@@ -112,7 +112,6 @@ void AOSRequestListener::startListening()
       {
         LISTEN_DATA *p = new LISTEN_DATA();
         p->port = https_port;
-        p->pListener = this;
         pNode->emitFromPath(ASW("host",4), p->host);
         pNode->emitFromPath(ASW("cert",4), p->cert); 
         pNode->emitFromPath(ASW("pkey",4), p->pkey);
@@ -146,6 +145,7 @@ void AOSRequestListener::startListening()
 
         if (ready)
         {
+          mthread_SecureListener.setThis(this);
           mthread_SecureListener.setParameter(p);
           mthread_SecureListener.start();
         }
@@ -168,10 +168,11 @@ void AOSRequestListener::stopListening()
 
 u4 AOSRequestListener::threadprocListener(AThread& thread)
 {
-  AAutoPtr<LISTEN_DATA> pData(static_cast<LISTEN_DATA *>(thread.getParameter()));
-  AASSERT(NULL, pData.get());
-  AOSRequestListener *pThis = pData->pListener;
+  AOSRequestListener *pThis = dynamic_cast<AOSRequestListener *>(thread.getThis());
+  AAutoPtr<LISTEN_DATA> pData(dynamic_cast<LISTEN_DATA *>(thread.getParameter()));
+
   AASSERT(NULL, pThis);
+  AASSERT(NULL, pData.get());
 
   thread.setRunning(true);
   AOSContext *pContext = NULL;
@@ -256,10 +257,10 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
 
 u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
 {
-  AAutoPtr<LISTEN_DATA> pData(static_cast<LISTEN_DATA *>(thread.getParameter()));
-  AASSERT(NULL, pData.get());
-  AOSRequestListener *pThis = pData->pListener;
+  AOSRequestListener *pThis = dynamic_cast<AOSRequestListener *>(thread.getThis());
+  AAutoPtr<LISTEN_DATA> pData(dynamic_cast<LISTEN_DATA *>(thread.getParameter()));
   AASSERT(NULL, pThis);
+  AASSERT(NULL, pData.get());
 
   ASocketListener_SSL listener(
     pData->port,

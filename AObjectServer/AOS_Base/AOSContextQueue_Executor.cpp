@@ -33,13 +33,13 @@ AOSContextQueue_Executor::AOSContextQueue_Executor(
   m_ModuleExecutor(services),
   m_OutputExecutor(services)
 {
-  useThreadPool().setParameter(this);
+  useThreadPool().setThis(this);
   registerAdminObject(m_Services.useAdminRegistry());
 }
 
 u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 {
-  AOSContextQueue_Executor *pThis = static_cast<AOSContextQueue_Executor *>(thread.getParameter());
+  AOSContextQueue_Executor *pThis = dynamic_cast<AOSContextQueue_Executor *>(thread.getThis());
   AASSERT(NULL, pThis);
   AOSContext *pContext = NULL;
 

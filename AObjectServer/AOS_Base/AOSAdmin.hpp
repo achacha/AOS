@@ -2,6 +2,7 @@
 #define INCLUDED__AOSAdmin_HPP__
 
 #include "apiAOS_Base.hpp"
+#include "ABase.hpp"
 #include "AThread.hpp"
 #include "ASync_Mutex.hpp"
 
@@ -13,7 +14,7 @@ class AOSServices;
 /*!
 Administration
 */
-class AOS_BASE_API AOSAdmin
+class AOS_BASE_API AOSAdmin : public ABase
 {
 public:
   AOSAdmin(AOSServices&);

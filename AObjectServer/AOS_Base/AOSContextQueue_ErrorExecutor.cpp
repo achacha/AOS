@@ -29,13 +29,13 @@ AOSContextQueue_ErrorExecutor::AOSContextQueue_ErrorExecutor(
 ) :
   BASECLASS_AOSContextQueue_ErrorExecutor(services, threadCount, queueCount, pYes, pNo, pError)
 {
-  useThreadPool().setParameter(this);
+  useThreadPool().setThis(this);
   registerAdminObject(m_Services.useAdminRegistry());
 }
 
 u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
 {
-  AOSContextQueue_ErrorExecutor *pThis = static_cast<AOSContextQueue_ErrorExecutor *>(thread.getParameter());
+  AOSContextQueue_ErrorExecutor *pThis = dynamic_cast<AOSContextQueue_ErrorExecutor *>(thread.getThis());
   AASSERT(NULL, pThis);
   AOSContext *pContext = NULL;
 
