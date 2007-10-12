@@ -17,7 +17,7 @@
 	<data type="location">dada/data/locations.dat</data>
 	<data type="html">dada/data/html.dat</data>
 	
-	<template name="test">dada/data/test.ddt</template>
-	<template name="FreeFlow">dada/data/FreeFlow.ddt</template>
-	<template name="TheRaven">dada/data/TheRaven.ddt</template>
+	<template name="test">dada/ddt/test.ddt</template>
+	<template name="FreeFlow">dada/ddt/FreeFlow.ddt</template>
+	<template name="TheRaven">dada/ddt/TheRaven.ddt</template>
 </dada>
