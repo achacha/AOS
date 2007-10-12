@@ -351,7 +351,7 @@ void AOSAdmin::_processAdminCommand(
       AOSContextQueue_PreExecutor *pcqPreExecutor = dynamic_cast<AOSContextQueue_PreExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_PreExecutor")));;
       AASSERT(NULL, pcqPreExecutor);
       pcqPreExecutor->useThreadPool().stop();
-      AOS_DEBUGTRACE("stopped.", NULL);
+      AOS_DEBUGTRACE("AOSContextQueue_PreExecutor stopped.", NULL);
 
       AOS_DEBUGTRACE("Trying to stop AOSContextQueue_Executor...", NULL);
       AOSContextQueue_Executor *pcqExecutor = dynamic_cast<AOSContextQueue_Executor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_Executor")));;
