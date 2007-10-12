@@ -183,7 +183,7 @@ void ALog_AFile::emitXml(AXmlElement& target) const
 
 u4 ALog_AFile::threadprocLogger(AThread& thread)
 {
-  ALog_AFile *pThis = (ALog_AFile *)thread.getThis();
+  ALog_AFile *pThis = dynamic_cast<ALog_AFile *>(thread.getThis());
   AASSERT(NULL, pThis);
   AASSERT(NULL, pThis->mp_File);
 

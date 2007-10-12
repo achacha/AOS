@@ -31,8 +31,10 @@ public:
   if boolStart == true then thread will start upon creation
   pThis is available via getThis()/setThis()  - doesn't have to be 'this' but makes it easier
   pParameter is available via getParameter()/setParameter() - this is anything you want to pass to the thread process
+  
+  Reason for ABase * instead of void * is to allow the use of dynamic_cast<> to verify that you got what you expected
   */
-  AThread(ATHREAD_PROC *pThreadProc, bool boolStart = false, void *pThis = NULL, void *pParameter = NULL);
+  AThread(ATHREAD_PROC *pThreadProc, bool boolStart = false, ABase *pThis = NULL, ABase *pParameter = NULL);
   
   /*!
   dtor
@@ -48,8 +50,8 @@ public:
   Contains pointer to 'this' if the threadproc is a static member of a class and instance is needed by the thread
   Can be anything, AThread does not use this data in any way and is only here for convenience to the thread process
   */
-  void  setThis(void *pThis);
-  void *getThis() const;
+  void setThis(ABase *pThis);
+  ABase *getThis() const;
 
 
   /*!
@@ -57,8 +59,8 @@ public:
    use set before you start the thread to set the parameter
    use get from inside your function to retrieve the parameter
   */
-  void  setParameter(void *pParam);
-  void *getParameter() const;
+  void setParameter(ABase *pParam);
+  ABase *getParameter() const;
 
   /*!
   Access to thread ID (to differentiate between threads...)
@@ -193,8 +195,8 @@ protected:
   /*
   Parameter that will be stored in this object for the user
   */
-  void *mpv__This;
-  void *mpv__Parameter;
+  ABase *mpv__This;
+  ABase *mpv__Parameter;
 
   /*
   Flags that threads will use for querying

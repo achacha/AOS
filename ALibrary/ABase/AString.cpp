@@ -2346,7 +2346,7 @@ bool AString::equals(
 ) const
 {
   if (!pccSource)
-    ATHROW(this, AException::InvalidParameter);
+    ATHROW_EX(this, AException::InvalidParameter, AString::fromPointer(pccSource));
 
   if (AConstant::npos == length)
     length = strlen(pccSource);
@@ -2360,7 +2360,7 @@ bool AString::equalsNoCase(
 ) const
 {
   if (!pccSource)
-    ATHROW(this, AException::InvalidParameter);
+    ATHROW_EX(this, AException::InvalidParameter, AString::fromPointer(pccSource));
 
   if (AConstant::npos == length)
     length = strlen(pccSource);

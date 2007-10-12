@@ -14,7 +14,7 @@ public:
   /*!
   Create pool based on a threadproc (which becomes threadproc of the template thread)
   */
-  AThreadPool(AThread::ATHREAD_PROC threadproc, int threadCount = 1, void *pThis = NULL, void *pParameter = NULL);
+  AThreadPool(AThread::ATHREAD_PROC threadproc, int threadCount = 1, ABase *pThis = NULL, ABase *pParameter = NULL);
   
   /*!
   dtor will signal threads to stop and after a short wait terminate them
@@ -41,8 +41,15 @@ public:
   AThread this pointer and parameter for getThis() and getParameter()
   All newly created threads get these values, does not affect already running threads
   */
-  void setThis(void *);
-  void setParameter(void *);
+  void setThis(ABase *);
+  void setParameter(ABase *);
+
+  /*!
+  AThread this pointer and parameter for getThis() and getParameter()
+  All newly created threads get these values
+  */
+  ABase *getThis();
+  ABase *getParameter();
 
 protected:
   //Thread container
@@ -64,8 +71,8 @@ private:
   Parameters needed for creating new threads
   */
   AThread::ATHREAD_PROC *mp_threadproc;
-  void *mp_This;
-  void *mp_Parameter;
+  ABase *mp_This;
+  ABase *mp_Parameter;
 
   ASync_CriticalSection m_SynchObjectThreadPool;
 

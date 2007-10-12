@@ -19,7 +19,7 @@ AThread_NOP::AThread_NOP() :
 {
 }
 
-AThread_NOP::AThread_NOP(ATHREAD_PROC *pThreadProc, bool boolStart, void * pThis, void *pParameter) :
+AThread_NOP::AThread_NOP(ATHREAD_PROC *pThreadProc, bool boolStart, ABase *pThis, ABase *pParameter) :
   AThread(pThreadProc, false, pThis, pParameter),
   m_Ret(0)
 {

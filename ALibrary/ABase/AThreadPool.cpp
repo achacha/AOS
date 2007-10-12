@@ -11,9 +11,9 @@ void AThreadPool::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "(AThreadPool @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_monitorCycleSleep=" << m_monitorCycleSleep << std::endl;
   
-  ADebugDumpable::indent(os, indent+1) << "mp_threadproc=0x" << (void *)mp_threadproc << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mp_This=0x" << mp_This << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mp_Parameter=0x" << mp_Parameter << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mp_threadproc=" << AString::fromPointer(mp_threadproc) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mp_This=" << AString::fromPointer(mp_This) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mp_Parameter=" << AString::fromPointer(mp_Parameter) << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Threads={" << std::endl;
   ADebugDumpable::indent(os, indent+2) << "size()=" << m_Threads.size() << std::endl;
@@ -31,8 +31,8 @@ void AThreadPool::debugDump(std::ostream& os, int indent) const
 AThreadPool::AThreadPool(
   AThread::ATHREAD_PROC *threadproc,
   int threadCount,   // = 1
-  void *pThis,       // = NULL
-  void *pParameter   // = NULL
+  ABase *pThis,       // = NULL
+  ABase *pParameter   // = NULL
 ) :
   mp_threadproc(threadproc),
   mp_This(pThis),
@@ -203,14 +203,24 @@ void AThreadPool::setThreadCount(size_t count)
   m_threadCount = count;
 }
 
-void AThreadPool::setThis(void *p)
+void AThreadPool::setThis(ABase *p)
 {
   mp_This = p;
 }
 
-void AThreadPool::setParameter(void *p)
+void AThreadPool::setParameter(ABase *p)
 {
   mp_Parameter = p;
+}
+
+ABase *AThreadPool::getThis()
+{
+  return mp_This;
+}
+
+ABase *AThreadPool::getParameter()
+{
+  return mp_Parameter;
 }
 
 size_t AThreadPool::getRunningThreadCount()

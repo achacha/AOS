@@ -24,7 +24,7 @@ public:
   pThis is available via getThis()/setThis()  - doesn't have to be 'this' but makes it easier
   pParameter is available via getParameter()/setParameter() - this is anything you want to pass to the thread process
   */
-  AThread_NOP(ATHREAD_PROC *pThreadProc, bool boolStart = false, void *pThis = NULL, void *pParameter = NULL);
+  AThread_NOP(ATHREAD_PROC *pThreadProc, bool boolStart = false, ABase *pThis = NULL, ABase *pParameter = NULL);
   
   /*!
   dtor

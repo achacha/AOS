@@ -6,9 +6,9 @@
 void AThread::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AThread @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mp__ThreadProc=0x" << std::hex << (void *)mp__ThreadProc << std::dec << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mpv__This=0x" << std::hex << (void *)mpv__This << std::dec << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mpv__Parameter=0x" << std::hex << (void *)mpv__Parameter << std::dec << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mp__ThreadProc=0x" << AString::fromPointer(mp__ThreadProc) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mpv__This=0x" << std::hex << AString::fromPointer(mpv__This) << std::dec << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mpv__Parameter=0x" << std::hex << AString::fromPointer(mpv__Parameter) << std::dec << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mbool_Run=" << (mbool_Run ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mbool_Running=" << (mbool_Running ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mu4__ThreadId=" << mu4__ThreadId << std::endl;
@@ -56,7 +56,7 @@ AThread::AThread() :
 {
 }
 
-AThread::AThread(ATHREAD_PROC *pThreadProc, bool boolStart, void * pThis, void *pParameter) :
+AThread::AThread(ATHREAD_PROC *pThreadProc, bool boolStart, ABase *pThis, ABase *pParameter) :
   mp__ThreadProc(pThreadProc),
   mpv__This(pThis),
   mpv__Parameter(pParameter),
@@ -291,22 +291,22 @@ void AThread::emit(AOutputBuffer& target) const
   target.append(m_ExecutionState);
 }
 
-void AThread::setThis(void *pThis)
+void AThread::setThis(ABase *pThis)
 { 
   mpv__This = pThis; 
 }
 
-void *AThread::getThis() const
+ABase *AThread::getThis() const
 { 
   return mpv__This; 
 }
 
-void AThread::setParameter(void *pParam)
+void AThread::setParameter(ABase *pParam)
 { 
   mpv__Parameter = pParam; 
 }
 
-void *AThread::getParameter() const
+ABase *AThread::getParameter() const
 { 
   return mpv__Parameter; 
 }

@@ -133,9 +133,19 @@ public:
   T& operator *() { return *m_Pointer; }
 
   /*!
+  Checks if contained pointer is not obviously invalid
+  */
+  bool isPointerValid() const { return ADebugDumpable::isPointerValid(m_Pointer); }
+
+  /*!
   Checks if contained pointer is NULL
   */
-  bool isNull() const { return (m_Pointer == NULL); }
+  bool isNull() const { return (NULL == m_Pointer); }
+
+  /*!
+  Checks if contained pointer is not NULL
+  */
+  bool isNotNull() const { return (NULL != m_Pointer); }
 
   /*!
   Change of ownership
@@ -232,9 +242,19 @@ public:
   T &operator [](int iOffset) { return m_Pointer[iOffset]; }
 
   /*!
+  Checks if contained pointer is not obviously invalid
+  */
+  bool isPointerValid() const { return ADebugDumpable::isPointerValid(m_Pointer); }
+
+  /*!
   Checks if contained pointer is NULL
   */
-  bool isNull() const { return (m_Pointer == NULL); }
+  bool isNull() const { return (NULL == m_Pointer); }
+
+  /*!
+  Checks if contained pointer is not NULL
+  */
+  bool isNotNull() const { return (NULL != m_Pointer); }
 
   /*!
   Change of ownership
@@ -333,9 +353,19 @@ public:
   T& operator [](int iOffset) { return m_Pointer[iOffset]; }
 
   /*!
+  Checks if contained pointer is not obviously invalid
+  */
+  bool isPointerValid() const { return ADebugDumpable::isPointerValid(m_Pointer); }
+
+  /*!
   Checks if contained pointer is NULL
   */
-  bool isNull() const { return (m_Pointer == NULL); }
+  bool isNull() const { return (NULL == m_Pointer); }
+
+  /*!
+  Checks if contained pointer is not NULL
+  */
+  bool isNotNull() const { return (NULL != m_Pointer); }
 
   /*!
   Change of ownership

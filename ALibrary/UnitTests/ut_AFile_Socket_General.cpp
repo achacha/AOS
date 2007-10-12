@@ -7,13 +7,20 @@
 
 ASocketLibrary g_SockerLibrary;
 
+class Params : public ABase
+{
+public:
+  Params(int& iRet) : iRet(iRet) {}
+  int& iRet;
+};
+
 #define UNIT_TEST_PORT 19997
 #define UNIT_TEST_HOST "127.0.0.1"
 #define UNIT_TEST_REQUEST "X-UnitTest-Id"
 #define UNIT_TEST_RESPONSE "X-UnitTest-Response"
 u4 threadprocServer(AThread& thread)
 {
-  int& iRet = *(int *)thread.getParameter();
+  int& iRet = dynamic_cast<Params *>(thread.getParameter())->iRet;
   
   ASocketListener listener(UNIT_TEST_PORT, UNIT_TEST_HOST);
   try
@@ -95,7 +102,8 @@ int ut_AFile_Socket_General()
 
   testConversionIp4(iRet);
 
-  AThread server(threadprocServer, true, (void *)&iRet);
+  Params params(iRet);
+  AThread server(threadprocServer, true, &params);
   int timeout = 10;
   while (!server.isRunning() && timeout > 0)
   {
