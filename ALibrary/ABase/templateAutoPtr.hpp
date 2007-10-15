@@ -4,72 +4,73 @@
 #include "apiABase.hpp"
 #include "ADebugDumpable.hpp"
 
-// Automatic Scope-Lifetime pointer wrapper templates
-//---------------------------------------------------
-// AAutoPtr           - for single object types
-// AAutoArrayPtr      - for an array of object
-// AAutoBasicArrayPtr - for an array of basic types
-
-// Example AutoPtr:
-//   AAutoPtr<MyObject> pOb(new MyObject);    //Single object deleted when leaves scope
-//
-// Equals to:
-//   MyObject* pOb = new MyObject;
-//   delete pOb;
-
-
-// Example AutoPtr:
-//   AAutoArrayPtr<MyObject> pOb[3];           //Array of objects deleted when leaves scope
-//   pOb[0] = new MyObject;
-//   pOb[1] = new MyObject;
-//   pOb[2] = new MyObject;
-//
-// Equals to:
-//   MyObject* pOb = new MyObject;
-//   pOb[0] = new MyObject;
-//   pOb[1] = new MyObject;
-//   pOb[2] = new MyObject;
-//   delete[] pOb;
-
-// Example AutoPtr:
-//   AAutoBasicArrayPtr<char> pcBuf(new char[128]);   //Array of basic types deleted when leaves scope
-//   strcpy(pcBuf, "HelloWorld");
-//
-// Equals to:
-//   char* pcBuf = new char[128];
-//   strcpy(pcBuf, "HelloWorld");
-//   delete[] pcBuf;
-//
-
-// Using AutoArrayPtr<> as a dynamic array of AAutoPtr<>
-// This will automatically deallocate the array and all of its members when it leaves scope
-//   int COUNT = 6;
-//   AAutoArrayPtr< AAutoPtr<MyObject> > objectArray;
-//   objectArray = new AutoStatPtr[COUNT];
-//   for(int i=0; i < COUNT; ++i)
-//     objectArray[i] = new MyObject;
-//   ...
-//   objectArray[i]->callSomething();
-//
-// Equals to:
-//   int COUNT = 6;
-//   MyObject *objectArray = new MyObject[COUNT];
-//   for(int i=0; i < COUNT; ++i)
-//     objectArray[i] = new MyObject;
-//   ...
-//   objectArray[i]->callSomething();
-//   ...
-//   for(int i=0; i < COUNT; ++i)
-//     delete objectArray[i];
-//   delete []objectArray;
-
 /*!
-Pointer to an object (NOT to be used with arrays, see below)
+Automatic Scope-Lifetime pointer wrapper templates
+---------------------------------------------------
+ AAutoPtr           - for single object types
+ AAutoArrayPtr      - for an array of object
+ AAutoBasicArrayPtr - for an array of basic types
+
+ Example AutoPtr:
+   AAutoPtr<MyObject> pOb(new MyObject);    //Single object deleted when leaves scope
+
+ Equals to:
+   MyObject* pOb = new MyObject;
+   delete pOb;
+
+
+ Example AutoPtr:
+   AAutoArrayPtr<MyObject> pOb[3];           //Array of objects deleted when leaves scope
+   pOb[0] = new MyObject;
+   pOb[1] = new MyObject;
+   pOb[2] = new MyObject;
+
+ Equals to:
+   MyObject* pOb = new MyObject;
+   pOb[0] = new MyObject;
+   pOb[1] = new MyObject;
+   pOb[2] = new MyObject;
+   delete[] pOb;
+
+ Example AutoPtr:
+   AAutoBasicArrayPtr<char> pcBuf(new char[128]);   //Array of basic types deleted when leaves scope
+   strcpy(pcBuf, "HelloWorld");
+
+ Equals to:
+   char* pcBuf = new char[128];
+   strcpy(pcBuf, "HelloWorld");
+   delete[] pcBuf;
+
+
+ Using AutoArrayPtr<> as a dynamic array of AAutoPtr<>
+ This will automatically deallocate the array and all of its members when it leaves scope
+   int COUNT = 6;
+   AAutoArrayPtr< AAutoPtr<MyObject> > objectArray;
+   objectArray = new AutoStatPtr[COUNT];
+   for(int i=0; i < COUNT; ++i)
+     objectArray[i] = new MyObject;
+   ...
+   objectArray[i]->callSomething();
+
+ Equals to:
+   int COUNT = 6;
+   MyObject *objectArray = new MyObject[COUNT];
+   for(int i=0; i < COUNT; ++i)
+     objectArray[i] = new MyObject;
+   ...
+   objectArray[i]->callSomething();
+   ...
+   for(int i=0; i < COUNT; ++i)
+     delete objectArray[i];
+   delete []objectArray;
 */
 template <class T>
 class AAutoPtr : public ADebugDumpable
 {
 public:
+  /*!
+  Pointer to an object (NOT to be used with arrays, see below templates)
+  */
 	explicit AAutoPtr(T* pointer = NULL) : m_Pointer(pointer), m_Ownership(true) {}
 	~AAutoPtr()
   { 
