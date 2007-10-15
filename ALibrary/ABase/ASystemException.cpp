@@ -78,7 +78,7 @@ void ASystemException::__getLastOSError(AOutputBuffer& target, u4 lastOSError) c
   LocalFree(lpMsgBuf);
 }
 #else
-void ASystemException::__getLastOSError(AOutputBuffer& target) const throw()
+void ASystemException::__getLastOSError(AOutputBuffer& target, u4 lastOSError) const throw()
 {
   target.append(ASW("errno=",6));
   target.append(AString::fromLong(errno));

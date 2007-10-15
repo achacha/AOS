@@ -14,10 +14,14 @@ NOTE: ABasePtrHolder only holds pointers to ABase types, it does NOT delete and 
 class ABASE_API ABasePtrHolder : public ADebugDumpable
 {
 public:
+  //! Holder of AString -> ABase *
   typedef std::map< AString, AAutoPtr<ABase> > HOLDER;
 
 public:
+  //! ctor
   ABasePtrHolder();
+  
+  //! virtual dtor
   virtual ~ABasePtrHolder();
 
   /*!
@@ -106,7 +110,8 @@ protected:
   HOLDER m_BasePtrs;
 
 private:
-  ABasePtrHolder(const ABasePtrHolder&) {} // no copy allowed
+  //! No copy ctor
+  ABasePtrHolder(const ABasePtrHolder&) {}
 
 public:
 #ifdef __DEBUG_DUMP__

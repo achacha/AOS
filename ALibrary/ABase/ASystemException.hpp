@@ -42,10 +42,10 @@ public:
   /*!
   AException
   */
-  virtual void getDescription(AOutputBuffer&) const throw();
+  virtual void getDescription(AOutputBuffer& target) const throw();
 
 private:
-  void __getLastOSError(AOutputBuffer&, u4) const throw();
+  void __getLastOSError(AOutputBuffer& target, u4 error) const throw();
   u4 m_lastOSError;
 };
 

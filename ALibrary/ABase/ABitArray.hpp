@@ -6,22 +6,24 @@
 #include "AString.hpp"
 #include "AXmlEmittable.hpp"
 
-//a_USAGE: ABitArray ar(8);
-//         ar.set(0,1);
-//         ar.set(1,1);
-//         ar.set(3,1);
-//         ar.get(str, ABitArray::Hexadecimal);
-//         str => "000B"
-//         ar.get(str, ABitArray::Binary);
-//         str => "00000000 00000000 00000000 00001011"  (no spaces)
-//
-//         ar.set("cafe");
-//         ar.set(0,1);
-//         ar.get(str, ABitArray::Hexadecimal);
-//         ar => "caff"
-//
-//a_NOTE: If you start off as Binary Mode, then get as hex and set it back as hex (i.e. save/restore via hex)
-//        you will increase the size to the next highest boundary of 8
+/*!
+USAGE: ABitArray ar(8);
+   ar.set(0,1);
+   ar.set(1,1);
+   ar.set(3,1);
+   ar.get(str, ABitArray::Hexadecimal);
+   str => "000B"
+   ar.get(str, ABitArray::Binary);
+   str => "00000000 00000000 00000000 00001011"  (no spaces)
+
+   ar.set("cafe");
+   ar.set(0,1);
+   ar.get(str, ABitArray::Hexadecimal);
+   ar => "caff"
+
+NOTE: If you start off as Binary Mode, then get as hex and set it back as hex (i.e. save/restore via hex)
+        you will increase the size to the next highest boundary of 8
+*/
 class ABASE_API ABitArray : public ADebugDumpable, public AXmlEmittable
 {
 public:
@@ -32,10 +34,23 @@ public:
   };
 
 public:
+  //! ctor
   ABitArray();
+  
+  //! ctor with initial size allocation in bits
   ABitArray(size_t size);
+
+  /*!
+  ctor that parses a string bitset
+  hex is "7b2cca130..."
+  binary is "10011100011..."
+  */
   ABitArray(const AString& strBitset, ABitArray::Mode mode = ABitArray::Hexadecimal);
+  
+  //! copy ctor
   ABitArray(const ABitArray&);
+  
+  //! virtual dtor
   virtual ~ABitArray();
 
   /*!
@@ -69,11 +84,16 @@ public:
   void get(AOutputBuffer&, ABitArray::Mode mode = ABitArray::Hexadecimal) const;
   void set(const AString& strBitset, ABitArray::Mode mode = ABitArray::Hexadecimal);
   
-  /*!
-  AEmittable and AXmlEmittable and output mode
-  */
+  //! AEmittable
   virtual void emit(AOutputBuffer&) const;
+  
+  //! AXmlEmittable
   virtual void emitXml(AXmlElement&) const;
+  
+  /*!
+  Set output method to be used wne emitting
+  You can parse a binary string, then output it as hex, et. al
+  */
   void setOutputMode(Mode Mode = ABitArray::Hexadecimal);
 
 private:

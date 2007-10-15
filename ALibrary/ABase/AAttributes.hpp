@@ -57,10 +57,11 @@ public:
   */
   const LIST_NVPair& getAttributeContainer() const;
 
-//!!!ASerializable {
+  /*!
+  ASerializable
+  */
 	virtual void toAFile(AFile& aFile) const;
   virtual void fromAFile(AFile& aFile);
-//!!!ASerializable }
 
 private:
   LIST_NVPair m_Pairs;      //a_Order is important in some cases for attributes and name can map to more than one value

@@ -110,8 +110,8 @@ public:
 
   /*!
   Searching for path
-  If this element is 'a' and contains b/bb,c/cc@foo,d/dd
-  The '/a/c/cc@foo' will be found.  Current element must be first element of the path if absolute
+  If this element is 'a' and contains "b/bb,c/cc@foo",d/dd
+  The "/a/c/cc@foo" will be found.  Current element must be first element of the path if absolute
   If path is relative then c/cc will find 2nd child cc in child c
   Adds const AXmlElement* to the result container, will not clear the result, will append
 

@@ -93,9 +93,12 @@ public:
 
 public:
   /*!
+  ctor with optional synchronization object to use, NULL implies unsynchronized
   ALog will OWN this synch object and will delete it when done with it
   */
   ALog(ASynchronization *, ALog::EVENT_MASK mask = ALog::DEFAULT);
+  
+  //! virtual dtor
   virtual ~ALog();
 
   /*!
@@ -107,11 +110,11 @@ public:
   myLog.removeEventMask(ALog::SCOPE);         //now log errors, TIMING, SCOPE_START and SCOPE_END
 
   */
-  void setEventMask(u4 mask);             // =          (sets a logging mask)
-  void addEventMask(u4 mask);             // OR         (adds bits specified by mask)
-  void removeEventMask(u4 mask);          // AND ~mask  (removed bits specified by mask)
-  bool isEventMask(u4 mask);              // AND        (checks if mask is present)
-  u4   getEventMask() const;              // Access to the mask
+  void setEventMask(u4 mask);             //!< =          (sets a logging mask)
+  void addEventMask(u4 mask);             //!< OR         (adds bits specified by mask)
+  void removeEventMask(u4 mask);          //!< AND ~mask  (removed bits specified by mask)
+  bool isEventMask(u4 mask);              //!< AND        (checks if mask is present)
+  u4   getEventMask() const;              //!< Access to the mask
 
   /*!
   Basic log method for adding events
@@ -156,7 +159,10 @@ public:
     void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
 
   protected:
-    virtual void _append(const char *, size_t);  //AOutputBuffer required
+    /*!
+    AOutputBuffer
+    */
+    virtual void _append(const char *, size_t);
 
   private:
     ALog& m_ParentLog;
@@ -209,6 +215,7 @@ protected:
   */
   virtual void _append(const char *, size_t);
 
+  //! Internal synchronization object used when logging
   ASynchronization *mp_SynchObject;
 
 private:

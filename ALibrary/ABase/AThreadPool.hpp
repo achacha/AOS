@@ -14,7 +14,7 @@ public:
   /*!
   Create pool based on a threadproc (which becomes threadproc of the template thread)
   */
-  AThreadPool(AThread::ATHREAD_PROC threadproc, int threadCount = 1, ABase *pThis = NULL, ABase *pParameter = NULL);
+  AThreadPool(AThread::ATHREAD_PROC *threadproc, int threadCount = 1, ABase *pThis = NULL, ABase *pParameter = NULL);
   
   /*!
   dtor will signal threads to stop and after a short wait terminate them

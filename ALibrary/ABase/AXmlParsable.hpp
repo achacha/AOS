@@ -10,7 +10,7 @@ class AXmlNode;
 
 -------------------START: HPP cup/past----------------------
 public:
-  virtual void parse(const AXmlNode&);
+  virtual void fromXml(const AXmlNode&);
 -------------------STOP: HPP cup/past-----------------------
 */
 class ABASE_API AXmlParsable
@@ -21,7 +21,7 @@ public:
   /*!
   Ability to parse self from XML element
   */
-  virtual void parse(const AXmlNode&) = 0;
+  virtual void fromXml(const AXmlElement&) = 0;
 };
 
 #endif //INCLUDED__AXmlParsable_HPP_

@@ -11,6 +11,7 @@ Allows use of dynamic_cast<> since void* is not allowed then
 class ABASE_API ABase
 {
 public:
+  //! dtor
   virtual ~ABase();
 };
 
