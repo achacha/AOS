@@ -22,6 +22,7 @@ class ACookies;
 class AOSServices;
 class AOSCommand;
 class AThread;
+class AOSDirectoryConfig;
 
 class AOS_BASE_API AOSContext : public ADebugDumpable, public AXmlEmittable
 {
@@ -177,6 +178,11 @@ public:
   AEventVisitor& useEventVisitor();
     
   /*!
+  Directrory config object (NULL if does not exist)
+  */
+  const AOSDirectoryConfig *getDirConfig() const;
+
+  /*!
   Command object (NULL if does not exist)
   */
   const AOSCommand *getCommand() const;
@@ -293,10 +299,15 @@ protected:
   AOSSessionData *mp_SessionObject;
 
   /*!
-  Command of this context (cache to prevent constant lookup in AOSConfiguration)
+  Command of this context (cached to prevent constant lookup in AOSConfiguration)
   */
   const AOSCommand *mp_Command;
   
+  /*!
+  Directory config of this context (cached to prevent constant lookup in AOSConfiguration)
+  */
+  const AOSDirectoryConfig *mp_DirConfig;
+
   /*!
   See ConnectionFlag
   */

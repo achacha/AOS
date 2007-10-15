@@ -3,6 +3,7 @@
 
 #include "apiAOS_Base.hpp"
 #include "AOSAdminInterface.hpp"
+#include "AOSDirectoryConfig.hpp"
 #include "ABitArray.hpp"
 #include "AFilename.hpp"
 #include "AXmlDocument.hpp"
@@ -21,7 +22,7 @@ Global configuration
 class AOS_BASE_API AOSConfiguration : public AOSAdminInterface
 {
 public:
-  AOSConfiguration(const AFilename& baseDir, AOSServices&, ASynchronization&);
+  AOSConfiguration(const AFilename& baseDir, AOSServices&);
   virtual ~AOSConfiguration();
 
   /*!
@@ -130,7 +131,11 @@ public:
   Commands
   */
   const AOSCommand* const getCommand(const AUrl&) const;
-  void dumpCommands(AOutputBuffer&) const;                      //TODO: temporary until AOSAdmin is better
+
+  /*!
+  Directory config
+  */
+  const AOSDirectoryConfig* const getDirectoryConfig(const AUrl&) const;
 
   /*!
   Context manager parameters
@@ -147,9 +152,6 @@ public:
   virtual const AString& getClass() const;
 
 private:
-  //TODO: Will go away soon if I don't forget
-  ASynchronization& m_ScreenSynch;
-  
   //a_Services
   AOSServices& m_Services;
 
@@ -165,8 +167,8 @@ private:
   
   //a_Directory configs
   //a_Maps absolute path (relative to dynamic root) to AXmlDocument with config
-  typedef std::map<AString, AXmlDocument *> MAP_ASTRING_AXMLDOCUMENTPTR;
-  MAP_ASTRING_AXMLDOCUMENTPTR m_DirectoryConfigs;
+  typedef std::map<AString, AOSDirectoryConfig *> MAP_ASTRING_CONFIG;
+  MAP_ASTRING_CONFIG m_DirectoryConfigs;
 
   /*!
   Load commands

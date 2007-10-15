@@ -4,10 +4,12 @@
 #include "apiAOS_Base.hpp"
 #include "AString.hpp"
 #include "AOSAdminInterface.hpp"
+#include "AOSCommand.hpp"
 
 class AOSServices;
 class AOSModuleInterface;
 class AOSContext;
+class AOSModules;
 
 class AOS_BASE_API AOSModuleExecutor : public AOSAdminInterface
 {
@@ -16,9 +18,9 @@ public:
   virtual ~AOSModuleExecutor();
 
   /*!
-  Executes appropriate modules based on AContext::getCommand()
+  Executes appropriate modules based on AOSContext::getCommand() or AOSContext::getDirectoryConfig()
   */
-  virtual void execute(AOSContext&);
+  virtual void execute(AOSContext&, const AOSModules& modules);
 
   /*!
   Register command to a module, the module will report its name (AModuleInterface::getName) and must be unique

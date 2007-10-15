@@ -5,22 +5,14 @@
 #include "AString.hpp"
 #include "AXmlEmittable.hpp"
 #include "AOSAdminInterface.hpp"
+#include "AOSModuleInfo.hpp"
+#include "AOSModules.hpp"
 
 class AFile;
 class ALog;
 
 class AOS_BASE_API AOSCommand : public AXmlEmittable, public AOSAdminInterface
 {
-public:
-  struct MODULE_INFO
-  {
-    MODULE_INFO() : m_ModuleParams(ASW("params",6)) {}
-    AString m_Name;
-    AString m_Class;
-    AXmlElement m_ModuleParams;
-  };
-  typedef std::list<MODULE_INFO> MODULES;
-
 public:
   AOSCommand(const AString& name, ALog&);
   virtual ~AOSCommand();
@@ -55,7 +47,7 @@ public:
   /*!
   Get module container
   */
-  const MODULES& getModuleInfoContainer() const;
+  const AOSModules& getModules() const;
 
   /*!
   Command name
@@ -65,11 +57,10 @@ public:
   /*!
   AOSAdminInterface
   */
+  virtual void registerAdminObject(AOSAdminRegistry& registry);
   virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
-
-  //a_String constants
   static const AString CLASS;
 
 private:
@@ -85,7 +76,7 @@ private:
   AXmlElement m_OutputParams;
 
   //a_Associated modules and the parameters
-  MODULES m_Modules;
+  AOSModules m_Modules;
   
   //a_Attributes
   bool m_Enabled;            //a_Command state, if disabled, static XML will be attempted instead

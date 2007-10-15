@@ -5,7 +5,6 @@
 #include "AOSAdminInterface.hpp"
 #include "ALog_AFile.hpp"
 #include "AOSAdminRegistry.hpp"
-#include "ASync_Mutex.hpp"
 #include "AOSSessionManager.hpp"
 #include "AOSContextManager.hpp"
 #include "AOSCacheManager.hpp"
@@ -67,14 +66,9 @@ public:
   virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
 
-  /*!
-  Used to synchronize console output using ALock class
-  */
-  ASynchronization& useScreenSynch() { return m_ConsoleSynch; }
-
 private:
   //a_No default ctor
-  AOSServices() : m_ConsoleSynch(AConstant::ASTRING_QUESTIONMARK) {}
+  AOSServices() {}
 
   //a_Physical log
   ALog_AFile *mp_Log;
@@ -99,9 +93,6 @@ private:
 
   //a_Cache manager
   AOSCacheManager *mp_CacheManager;
-
-  //a_Screen output synchronization
-  ASync_Mutex m_ConsoleSynch;
 
 public:
 #ifdef __DEBUG_DUMP__

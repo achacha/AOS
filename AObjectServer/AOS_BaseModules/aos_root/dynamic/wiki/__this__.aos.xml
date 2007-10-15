@@ -1,1 +1,10 @@
-<config/>
+<config>
+	<module class="InsertIntoModel">
+		<path>/inserted-by-root-dir-config</path>
+		<data>
+			<insert-root>
+				<dc0>foobie blech!</dc0>
+			</insert-root>
+		</data>
+	</module>
+</config>

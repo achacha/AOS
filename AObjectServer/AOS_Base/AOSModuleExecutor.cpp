@@ -95,22 +95,19 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
   pModule->registerAdminObject(m_Services.useAdminRegistry(), ASW("AOSModuleExecutor",17));
 }
 
-void AOSModuleExecutor::execute(AOSContext& context)
+void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
 {
-  AASSERT(this, context.getCommand());
-  
-  const AOSCommand::MODULES& modules = context.getCommand()->getModuleInfoContainer();
-  AOSCommand::MODULES::const_iterator cit = modules.begin();
+  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = modules.get().begin();
   int i = 0;
-  while(cit != modules.end())
+  while(cit != modules.get().end())
   {
     try
     {
-      ModuleContainer::iterator it = m_Modules.find((*cit).m_Class);
+      ModuleContainer::iterator it = m_Modules.find((*cit)->getModuleClass());
       if (it == m_Modules.end())
       {
-        context.setExecutionState(ARope("Skipping unknown module: ",25)+(*cit).m_Class);
-        m_Services.useLog().add(AString("AOSModuleExecutor::execute:Skipping unknown module"), (*cit).m_Class, ALog::WARNING);
+        context.setExecutionState(ARope("Skipping unknown module: ",25)+(*cit)->getModuleClass());
+        m_Services.useLog().add(AString("AOSModuleExecutor::execute:Skipping unknown module"), (*cit)->getModuleClass(), ALog::WARNING);
       }
       else
       {
@@ -118,13 +115,13 @@ void AOSModuleExecutor::execute(AOSContext& context)
         if (context.useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
         {
           //a_Start timer and execute module
-          context.setExecutionState(ARope("Executing AJAX module: ",23)+(*cit).m_Class);
+          context.setExecutionState(ARope("Executing AJAX module: ",23)+(*cit)->getModuleClass());
 
           ATimer timer(true);
-          if (!(*it).second->execute(context, (*cit).m_ModuleParams))
+          if (!(*it).second->execute(context, (*cit)->useParams()))
           {
             //a_Error occured
-            context.addError((*cit).m_Class+"::execute", "Returned false");
+            context.addError((*cit)->getModuleClass()+"::execute", "Returned false");
             return;
           }
           
@@ -137,17 +134,17 @@ void AOSModuleExecutor::execute(AOSContext& context)
         else
         {
           //a_Start timer and execute module
-          context.setExecutionState(ARope("Executing module: ",18)+(*cit).m_Class);
+          context.setExecutionState(ARope("Executing module: ",18)+(*cit)->getModuleClass());
 
           //AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("/execute/module",15));
           //e.addAttribute(ASW("seq",3), AString::fromInt(i++));
-          //e.addData((*cit).m_Class);
+          //e.addData((*cit)->getModuleClass());
           
           ATimer timer(true);
-          if (!(*it).second->execute(context, (*cit).m_ModuleParams))
+          if (!(*it).second->execute(context, (*cit)->useParams()))
           {
             //a_Error occured
-            context.addError((*cit).m_Class+"::execute", "Returned false");
+            context.addError((*cit)->getModuleClass()+"::execute", "Returned false");
             return;
           }
 
@@ -164,14 +161,20 @@ void AOSModuleExecutor::execute(AOSContext& context)
     catch(AException& ex)
     {
       AString strWhere("AOSModuleExecutor::execute(", 27);
-      strWhere.append((*cit).m_Name);
+      if (*cit)
+        strWhere.append((*cit)->getModuleClass());
+      else
+        strWhere.append("NULL",4);
       strWhere.append(')');
       context.addError(strWhere, ex.what());   //a_This will log it also
     }
     catch(...)
     {
       AString strWhere("AOSModuleExecutor::execute(", 27);
-      strWhere.append((*cit).m_Name);
+      if (*cit)
+        strWhere.append((*cit)->getModuleClass());
+      else
+        strWhere.append("NULL",4);
       strWhere.append(')');
       context.addError(strWhere, "UnknownException");    //a_This will og it also
     }

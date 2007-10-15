@@ -3,13 +3,17 @@
 #include "AOSCommand.hpp"
 #include "AXmlDocument.hpp"
 #include "ALog.hpp"
+#include "AOSAdminRegistry.hpp"
+#include "AOSModules.hpp"
 
-const AString AOSCommand::CLASS("class");
+const AString AOSCommand::CLASS("AOSCommand");
 
 #ifdef __DEBUG_DUMP__
 void AOSCommand::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSCommand @ " << std::hex << this << std::dec << ") {" << std::endl;
+  AOSAdminInterface::debugDump(os, indent+1);
+
   ADebugDumpable::indent(os, indent+1) << "m_Enabled=" << (m_Enabled ? "true" : "false") << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Session=" << (m_Session ? "true" : "false") << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ForceAjax=" << (m_ForceAjax ? "true" : "false") << std::endl;
@@ -36,22 +40,7 @@ void AOSCommand::debugDump(std::ostream& os, int indent) const
   else
     ADebugDumpable::indent(os, indent+1) << "m_OutputParams={}" << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_ModuleNames={" << std::endl;
-  MODULES::const_iterator cit = m_Modules.begin();
-  while (cit != m_Modules.end())
-  {
-    if ((*cit).m_ModuleParams.hasElements())
-    {
-      ADebugDumpable::indent(os, indent+2) << (*cit).m_Class << " {" << std::endl;
-      (*cit).m_ModuleParams.debugDump(os, indent+3);
-      ADebugDumpable::indent(os, indent+2) << "}" << std::endl;
-    }
-    else
-      ADebugDumpable::indent(os, indent+2) << (*cit).m_Class << std::endl;
-
-    ++cit;
-  }
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  m_Modules.debugDump(os, indent+1);
  
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
@@ -74,7 +63,7 @@ AOSCommand::~AOSCommand()
 
 const AString& AOSCommand::getClass() const
 {
-  return m_Command;
+  return CLASS;
 }
 
 void AOSCommand::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
@@ -90,17 +79,17 @@ void AOSCommand::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& reque
     addProperty(eBase, ASW("inputProcessor.params",21), rope, AXmlData::CDataSafe);
   }
 
-  MODULES::const_iterator cit = m_Modules.begin();
+  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.use().begin();
   int i=0;
-  while (cit != m_Modules.end())
+  while (cit != m_Modules.use().end())
   {
     ARope ropeName("module.", 7);
     ropeName.append(AString::fromInt(i));
-    addProperty(eBase, ropeName, (*cit).m_Class);
+    addProperty(eBase, ropeName, (*cit)->getModuleClass());
     ropeName.append(".params",7);
 
     rope.clear();
-    (*cit).m_ModuleParams.emit(rope, 0);
+    (*cit)->useParams().emit(rope, 0);
     
     addProperty(eBase, ropeName, rope, AXmlData::CDataSafe);
     ++cit;
@@ -170,24 +159,24 @@ void AOSCommand::emitXml(AXmlElement& target) const
   
   //a_Input
   AXmlElement& eInput = target.addElement(ASW("input_processor",15));
-  eInput.addAttribute(CLASS, m_InputProcessor);
+  eInput.addAttribute(ASW("class",5), m_InputProcessor);
   if (m_InputParams.hasElements()) 
     eInput.addContent(m_InputParams.clone());
   
   //a_Modules
-  MODULES::const_iterator cit = m_Modules.begin();
-  while (cit != m_Modules.end())
+  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.get().begin();
+  while (cit != m_Modules.get().end())
   {
     AXmlElement& eModule = target.addElement(ASW("module",6));
-    eModule.addAttribute(CLASS, (*cit).m_Class);
-    if ((*cit).m_ModuleParams.hasElements())
-      eModule.addContent((*cit).m_ModuleParams.clone());
+    eModule.addAttribute(ASW("class",5), (*cit)->getModuleClass());
+    if ((*cit)->getParams().hasElements())
+      eModule.addContent((*cit)->getParams().clone());
     ++cit;
   }
 
   //a_Output
   AXmlElement& eOutput = target.addElement(ASW("output_generator",16));
-  eOutput.addAttribute(CLASS, m_OutputGenerator);
+  eOutput.addAttribute(ASW("class",5), m_OutputGenerator);
   if (m_OutputParams.hasElements())
     eOutput.addContent(m_OutputParams.clone());
 }
@@ -227,7 +216,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   const AXmlNode *pNode = element.findNode(ASW("input",5));
   if (pNode)
   {
-    pNode->getAttributes().get(CLASS, m_InputProcessor);
+    pNode->getAttributes().get(ASW("class",5), m_InputProcessor);
     pNode->emitXml(m_InputParams);
   }
 
@@ -237,40 +226,39 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   pNode = element.findNode(ASW("output",6));
   if (pNode)
   {
-    pNode->getAttributes().get(CLASS, m_OutputGenerator);
+    pNode->getAttributes().get(ASW("class",5), m_OutputGenerator);
     pNode->emitXml(m_OutputParams);
   }
 
   //a_Get module names
-  m_Modules.clear();
+  m_Modules.use().clear();
   AXmlNode::ConstNodeContainer nodes;
   element.find(ASW("module",6), nodes);
   AXmlNode::ConstNodeContainer::const_iterator citModule = nodes.begin();
-  AString strClass, strName;
+  AString strClass;
   while(citModule != nodes.end())
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
-    if ((*citModule)->getAttributes().get(CLASS, strClass) && !strClass.isEmpty())
+    if ((*citModule)->getAttributes().get(ASW("class",5), strClass) && !strClass.isEmpty())
     {
-      //a_NOTE: strName not being used at the moment
-      
       //a_Add new module info object
-      m_Modules.push_back(AOSCommand::MODULE_INFO());
-      AOSCommand::MODULE_INFO& info = m_Modules.back();
-      info.m_Class = strClass;
-      info.m_Name = strName;
-
-      //a_Populate the params
-      (*citModule)->emitXml(info.m_ModuleParams);
-
-      strName.clear();
-      strClass.clear();
+      const AXmlElement *pBase = dynamic_cast<const AXmlElement *>(*citModule);
+      AASSERT(*citModule, pBase);
+      m_Modules.use().push_back(new AOSModuleInfo(strClass, *pBase));
     }
     ++citModule;
   }
 }
 
-const AOSCommand::MODULES& AOSCommand::getModuleInfoContainer() const
+void AOSCommand::registerAdminObject(AOSAdminRegistry& registry)
+{
+  AString str(getClass());
+  str.append(':');
+  str.append(m_Command);
+  registry.insert(str, *this);
+}
+
+const AOSModules& AOSCommand::getModules() const
 {
   return m_Modules;
 }

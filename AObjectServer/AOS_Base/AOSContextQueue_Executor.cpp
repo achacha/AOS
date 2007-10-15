@@ -62,15 +62,24 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         //
         //a_Process directory config
         //
-        //TODO:
-        //pThis->m_ModuleExecutor.executeDirectoryConfig(*pContext);
+        if (pContext->getDirConfig())
+          pThis->m_ModuleExecutor.execute(*pContext, pContext->getDirConfig()->getModules());
+        else
+          pContext->useEventVisitor().set(ASW("No directory config for this path, skipping.",44));
 
+        //a_If error is logged stop and go to error handler
+        if (pContext->useEventVisitor().getErrorCount() > 0)
+        {
+          pThis->_goError(pContext);
+          continue;
+        }
 
         //
         //a_Process input
         //
         pThis->m_InputExecutor.execute(*pContext);
 
+        //a_If error is logged stop and go to error handler
         if (pContext->useEventVisitor().getErrorCount() > 0)
         {
           pThis->_goError(pContext);
@@ -80,8 +89,12 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         //
         //a_Process modules
         //
-        pThis->m_ModuleExecutor.execute(*pContext);
+        if (pContext->getCommand())
+          pThis->m_ModuleExecutor.execute(*pContext, pContext->getCommand()->getModules());
+        else
+          pContext->useEventVisitor().set(ASW("Command not found, skipping module execution.",45), true);
 
+        //a_If error is logged stop and go to error handler
         if (pContext->useEventVisitor().getErrorCount() > 0)
         {
           pThis->_goError(pContext);

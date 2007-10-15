@@ -283,7 +283,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSModuleInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSModuleInterface.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSModules.cpp"
 				>
 			</File>
 			<File
@@ -425,7 +433,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSModuleInfo.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSModuleInterface.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSModules.hpp"
 				>
 			</File>
 			<File

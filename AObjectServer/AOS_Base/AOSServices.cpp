@@ -60,7 +60,6 @@ void AOSServices::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& requ
 }
 
 AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
-  m_ConsoleSynch("Console_cout"),
   m_GlobalObjects(ASW("global",6)),
   mp_Configuration(NULL),
   mp_DatabaseConnPool(NULL),
@@ -78,7 +77,7 @@ AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
   mp_Log = new ALog_AFile(new ASync_Mutex(mutexfile.toAString()), logfile, mask);
 
   mp_AdminRegistry = new AOSAdminRegistry(*mp_Log);
-  mp_Configuration = new AOSConfiguration(basePath, *this, m_ConsoleSynch);
+  mp_Configuration = new AOSConfiguration(basePath, *this);
   mp_SessionManager = new AOSSessionManager(*this);
   mp_ContextManager = new AOSContextManager(*this);
   mp_CacheManager = new AOSCacheManager(*this);

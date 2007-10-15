@@ -62,7 +62,7 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
   {
     //a_Directory configs
     ADebugDumpable::indent(os, indent+1) << "m_DirectoryConfigs={" << std::endl;
-    MAP_ASTRING_AXMLDOCUMENTPTR::const_iterator cit = m_DirectoryConfigs.begin();
+    MAP_ASTRING_CONFIG::const_iterator cit = m_DirectoryConfigs.begin();
     while (cit != m_DirectoryConfigs.end())
     {
       ADebugDumpable::indent(os, indent+2) << (*cit).first << "={" << std::endl;
@@ -183,8 +183,7 @@ void AOSConfiguration::processAdminAction(AXmlElement& eBase, const AHTTPRequest
 
 AOSConfiguration::AOSConfiguration(
   const AFilename& baseDir,
-  AOSServices& services,
-  ASynchronization& screenSynch
+  AOSServices& services
 ) :
   m_BaseDir(baseDir),
   m_AosBaseConfigDir(baseDir),
@@ -193,7 +192,6 @@ AOSConfiguration::AOSConfiguration(
   m_AosBaseDynamicDir(baseDir),
   m_AdminBaseHttpDir(baseDir),
   m_Services(services),
-  m_ScreenSynch(screenSynch),
   m_Config(ASW("config",6)),
   m_ReportedServer(AOS_SERVER_NAME),
   m_ReportedHostname("localhost"),
@@ -256,7 +254,7 @@ AOSConfiguration::~AOSConfiguration()
       }
     }
     {
-      MAP_ASTRING_AXMLDOCUMENTPTR::iterator it = m_DirectoryConfigs.begin();
+      MAP_ASTRING_CONFIG::iterator it = m_DirectoryConfigs.begin();
       while (it != m_DirectoryConfigs.end())
       {
         delete it->second;
@@ -390,12 +388,18 @@ void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
   filename.emitPath(strPath);                           //a_Path only for map key
   AASSERT_EX(this, m_DirectoryConfigs.find(strPath) == m_DirectoryConfigs.end(), filename);
   
-  //a_Create and parse XML document
+  //a_Parse XML document
   configFile.open();
-  m_DirectoryConfigs[strPath] = new AXmlDocument(configFile);
+  AAutoPtr<AXmlDocument> pDoc(new AXmlDocument(configFile));
   configFile.close();
+  AASSERT_EX(pDoc, pDoc->useRoot().getName().equals(ASW("config",6)), ARope("Expected <config> as a root element: ")+filename);
+  
+  //a_Add directory config
+  AOSDirectoryConfig *p =  new AOSDirectoryConfig(strPath, pDoc->useRoot(), m_Services.useLog());
+  m_DirectoryConfigs[strPath] = p;
 
-  strPath.clear();
+  //a_Register the command with admin
+  p->registerAdminObject(m_Services.useAdminRegistry());
 }
 
 void AOSConfiguration::_readCommand(AFilename& filename)
@@ -468,39 +472,14 @@ const AOSCommand * const AOSConfiguration::getCommand(const AUrl& commandUrl) co
     return NULL;
 }
 
-void AOSConfiguration::dumpCommands(AOutputBuffer& target) const
+const AOSDirectoryConfig * const AOSConfiguration::getDirectoryConfig(const AUrl& commandUrl) const
 {
-  MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.begin();
-  while (cit != m_CommandPtrs.end())
-  {
-    target.append(" NAME    : ", 12);
-    target.append((*cit).second->getCommandName());
-
-    target.append("\r\n INPUT  : ", 12);
-    target.append((*cit).second->getInputProcessorName());
-    (*cit).second->getInputParams().emit(target);
-
-    target.append("\r\n OUTPUT : ", 12);
-    target.append((*cit).second->getOutputGeneratorName());
-    (*cit).second->getOutputParams().emit(target);
-
-    target.append("\r\n MODULES: ", 12);
-
-    const AOSCommand::MODULES& modules = (*cit).second->getModuleInfoContainer();
-    AOSCommand::MODULES::const_iterator citModule = modules.begin();
-    while (citModule != modules.end())
-    {
-      target.append((*citModule).m_Name);
-      target.append(" (",2);
-      (*citModule).m_ModuleParams.emit(target);
-      target.append(" )",2);
-      target.append(AConstant::ASTRING_EOL);
-
-      ++citModule;
-    }
-    ++cit;
-    target.append("\r\n\r\n", 4);
-  }
+  AString dir(commandUrl.getPath());
+  MAP_ASTRING_CONFIG::const_iterator cit = m_DirectoryConfigs.find(dir);
+  if (cit != m_DirectoryConfigs.end())
+    return (*cit).second;
+  else
+    return NULL;
 }
 
 const AFilename& AOSConfiguration::getAosBaseConfigDirectory() const

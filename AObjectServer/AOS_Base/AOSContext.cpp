@@ -22,6 +22,15 @@ void AOSContext::debugDump(std::ostream& os, int indent) const
   if (mp_RequestFile)
     mp_RequestFile->debugDump(os, indent+2);
 
+  //a_Associated directory config
+  if (mp_DirConfig)
+  {
+    ADebugDumpable::indent(os, indent+1) << "m_DirConfig=" << std::endl;
+    mp_DirConfig->debugDump(os, indent+2);
+  }
+  else
+    ADebugDumpable::indent(os, indent+1) << "mp_DirConfig=NULL" << std::endl;
+
   //a_Associated command
   if (mp_Command)
   {
@@ -97,6 +106,7 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   m_ContextObjects(CONTEXT),
   m_OutputXmlDocument(XML_ROOT),
   mp_Command(NULL),
+  mp_DirConfig(NULL),
   mp_RequestFile(NULL),
   m_ConnectionFlags(AOSContext::CONFLAG_LAST),
   m_ContextFlags(AOSContext::CTXFLAG_LAST)
@@ -188,6 +198,9 @@ AOSContext::Status AOSContext::init()
 
   //a_Get the new command
   mp_Command = m_Services.useConfiguration().getCommand(m_RequestHeader.getUrl());
+
+  //a_Get associated directory config
+  mp_DirConfig = m_Services.useConfiguration().getDirectoryConfig(m_RequestHeader.getUrl());
 
   //a_AJAX style output (terse)
   if (
@@ -643,6 +656,11 @@ const AXmlElement& AOSContext::getOutputParams() const
   return mp_Command->getOutputParams();
 }
 
+const AOSDirectoryConfig *AOSContext::getDirConfig() const
+{
+  return mp_DirConfig;
+}
+
 const AOSCommand *AOSContext::getCommand() const
 {
   return mp_Command;
@@ -780,13 +798,13 @@ void AOSContext::setExecutionState(const AException& ex)
 size_t AOSContext::getModuleNames(LIST_AString& names) const
 {
   if (!mp_Command)
-    ATHROW(this, AException::DoesNotExist);
+    ATHROW_EX(this, AException::DoesNotExist, ASWNL("Command does not exist"));
 
   size_t ret = 0;
-  AOSCommand::MODULES::const_iterator cit = mp_Command->getModuleInfoContainer().begin();
-  while (cit != mp_Command->getModuleInfoContainer().end())
+  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = mp_Command->getModules().get().begin();
+  while (cit != mp_Command->getModules().get().end())
   {
-    names.push_back((*cit).m_Name);
+    names.push_back((*cit)->getModuleClass());
     ++ret;
     ++cit;
   }
@@ -796,13 +814,13 @@ size_t AOSContext::getModuleNames(LIST_AString& names) const
 const AXmlElement& AOSContext::getModuleParams(const AString& moduleName) const
 {
   if (!mp_Command)
-    ATHROW_EX(this, AException::DoesNotExist, ARope("Command does not exist"));
+    ATHROW_EX(this, AException::DoesNotExist, ASWNL("Command does not exist"));
 
-  AOSCommand::MODULES::const_iterator cit = mp_Command->getModuleInfoContainer().begin();
-  while (cit != mp_Command->getModuleInfoContainer().end())
+  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = mp_Command->getModules().get().begin();
+  while (cit != mp_Command->getModules().get().end())
   {
-    if (moduleName.equals((*cit).m_Name))
-      return (*cit).m_ModuleParams;
+    if (moduleName.equals((*cit)->getModuleClass()))
+      return (*cit)->getParams();
 
     ++cit;
   }
