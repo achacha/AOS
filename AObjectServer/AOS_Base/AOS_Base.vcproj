@@ -267,6 +267,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSDirectoryConfig.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSInputExecutor.cpp"
 				>
 			</File>
@@ -402,6 +406,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSDatabaseConnectionPool.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSDirectoryConfig.hpp"
 				>
 			</File>
 			<File

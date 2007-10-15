@@ -59,6 +59,12 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           continue;
         }
 #endif
+        //
+        //a_Process directory config
+        //
+        //TODO:
+        //pThis->m_ModuleExecutor.executeDirectoryConfig(*pContext);
+
 
         //
         //a_Process input
