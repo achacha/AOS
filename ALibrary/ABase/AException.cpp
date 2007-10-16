@@ -334,14 +334,14 @@ void AException::emitXml(AXmlElement& target) const
   
   ARope rope;
   getDescription(rope);
-  target.addElement(ASW("desc",4), rope, AXmlData::CDataSafe);
+  target.addElement(ASW("desc",4), rope, AXmlData::CDataDirect);
   target.addElement(ASW("id",2), (u4)m_ID);
   target.addElement(ASW("filename",8), ASWNL(mp_Filename), AXmlData::CDataDirect);
   target.addElement(ASW("linenum",7), (u4)m_LineNumber);
-  target.addElement(ASW("extra",5), m_ExtraText, AXmlData::CDataSafe);
+  target.addElement(ASW("extra",5), m_ExtraText, AXmlData::CDataDirect);
   target.addElement(ASW("errno",5), (u4)m_errno);
   target.addElement(ASW("stacktrace",10), m_StackWalker);
-  target.addElement(ASW("debugdump",9), m_DebugDump);
+  target.addElement(ASW("debugdump",9), m_DebugDump, AXmlData::CDataDirect);
 }
 
 const char* AException::getFilename() const throw()

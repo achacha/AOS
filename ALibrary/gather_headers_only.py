@@ -104,6 +104,7 @@ syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "APythonEmbed", "*.h*"),
 # ALuaEmbed
 print "|----------HEADERS: ALibraryImpl/ALuaEmbed-----------------|";
 syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ALuaEmbed", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ALuaEmbed", "lua-5.1.2", "src", "*.h"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # AXsl
 print "|----------HEADERS: ALibraryImpl/AXsl----------------------|";
