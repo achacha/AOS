@@ -87,7 +87,7 @@ void AOSOutputExecutor::registerOutputGenerator(AOSOutputGeneratorInterface *pGe
   }
 
   //a_Initialize it
-  pGenerator->init(m_Services);
+  pGenerator->init();
 
   //a_Register the module's admin interface
   pGenerator->registerAdminObject(m_Services.useAdminRegistry(), ASW("AOSOutputExecutor",17));

@@ -7,12 +7,11 @@
 #include "AOSContext.hpp"
 
 class AOSServices;
-class ALog;
 
 class AOS_BASE_API AOSModuleInterface : public AOSAdminInterface
 {
 public:
-  AOSModuleInterface(ALog&);
+  AOSModuleInterface(AOSServices&);
   virtual ~AOSModuleInterface() {}
 
   /*!
@@ -20,7 +19,7 @@ public:
   This is called when the module is registered by the executor
   This is where the controls get added
   */
-  virtual void init(AOSServices&) {}
+  virtual void init() {}
 
   /*!
   Process input and manupulate the request and module objects as needed
@@ -39,7 +38,10 @@ public:
   virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
 
 protected:
-  ALog& m_Log;
+  /*!
+  AOS services
+  */
+  AOSServices& m_Services;
 
   /*!
   Every module will have their own object container that is shared by all calls to this module

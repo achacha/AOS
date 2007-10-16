@@ -6,7 +6,7 @@
 class AOS_BASEMODULES_API AOSModule_ExecuteQuery : public AOSModuleInterface
 {
 public:
-  AOSModule_ExecuteQuery(ALog&);
+  AOSModule_ExecuteQuery(AOSServices&);
   virtual bool execute(AOSContext& context, const AXmlElement& moduleParams);
 
   /*!

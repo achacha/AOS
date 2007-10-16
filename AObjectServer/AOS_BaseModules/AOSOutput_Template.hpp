@@ -8,9 +8,12 @@ class ATemplate;
 class AOS_BASEMODULES_API AOSOutput_Template : public AOSOutputGeneratorInterface
 {
 public:
-  AOSOutput_Template(ALog&);
+  AOSOutput_Template(AOSServices&);
   virtual ~AOSOutput_Template();
 
+  /*!
+  Generate output
+  */
   virtual bool execute(AOSOutputContext&);
   
   /*!

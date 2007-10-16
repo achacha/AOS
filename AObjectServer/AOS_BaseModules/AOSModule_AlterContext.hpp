@@ -6,8 +6,11 @@
 class AOS_BASEMODULES_API AOSModule_AlterContext : public AOSModuleInterface
 {
 public:
-  AOSModule_AlterContext(ALog&);
+  AOSModule_AlterContext(AOSServices&);
 
+  /*!
+  Execute module
+  */
   virtual bool execute(AOSContext& context, const AXmlElement& moduleParams);
 
   /*!

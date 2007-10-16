@@ -8,6 +8,8 @@
 
 const AString AOSContext::CONTEXT("context");
 const AString AOSContext::XML_ROOT("root");
+const AString AOSContext::OBJECTNAME("__AOSContext__");
+
 
 #ifdef __DEBUG_DUMP__
 void AOSContext::debugDump(std::ostream& os, int indent) const

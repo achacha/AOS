@@ -86,7 +86,7 @@ void AOSInputExecutor::registerInputProcessor(AOSInputProcessorInterface *pProce
   }
 
   //a_Initialize it
-  pProcessor->init(m_Services);
+  pProcessor->init();
 
   //a_Register the module's admin interface
   pProcessor->registerAdminObject(m_Services.useAdminRegistry(), ASW("AOSInputExecutor",16));

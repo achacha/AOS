@@ -5,12 +5,12 @@
 #include "AOSContext.hpp"
 #include "AOSAdminInterface.hpp"
 
-class ALog;
+class AOSServices;
 
 class AOS_BASE_API AOSInputProcessorInterface : public AOSAdminInterface
 {
 public:
-  AOSInputProcessorInterface(ALog&);
+  AOSInputProcessorInterface(AOSServices&);
   virtual ~AOSInputProcessorInterface() {}
 
   /*!
@@ -18,7 +18,7 @@ public:
   This is called when the module is registered by the executor
   This is where the controls get added
   */
-  virtual void init(AOSServices&) {}
+  virtual void init() {}
 
   /*!
   Process input and manupulate the request and module namespace as needed
@@ -38,7 +38,10 @@ public:
   virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
 
 protected:
-  ALog& m_Log;
+  /*!
+  AOS services
+  */
+  AOSServices& m_Services;
 
 public:
 #ifdef __DEBUG_DUMP__

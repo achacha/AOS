@@ -7,8 +7,8 @@ const AString& AOSModule_NOP::getClass() const
   return MODULE_CLASS;
 }
 
-AOSModule_NOP::AOSModule_NOP(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_NOP::AOSModule_NOP(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

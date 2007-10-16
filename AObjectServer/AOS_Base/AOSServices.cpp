@@ -4,6 +4,11 @@
 #include "AOSConfiguration.hpp"
 #include "ASync_Mutex.hpp"
 #include "AResultSet.hpp"
+#include "ATemplate.hpp"
+#include "ATemplateNodeHandler_LUA.hpp"
+#include "ATemplateNodeHandler_CODE.hpp"
+
+extern "C" int luaopen_aos(lua_State *L);
 
 #ifdef __DEBUG_DUMP__
 void AOSServices::debugDump(std::ostream& os, int indent) const
@@ -138,6 +143,21 @@ AOSDatabaseConnectionPool& AOSServices::useDatabaseConnectionPool()
 {
   AASSERT(this, mp_DatabaseConnPool);
   return *mp_DatabaseConnPool;
+}
+
+ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
+{
+  ATemplate *pTemplate = new ATemplate();
+  
+  //a_Add Lua handler
+  ATemplateNodeHandler_LUA *pLuaHandler = new ATemplateNodeHandler_LUA(defaultLuaLibraries);
+  pLuaHandler->addUserDefinedLibrary(luaopen_aos);  //a_Add AOS function library loader
+  pTemplate->addHandler(pLuaHandler);
+
+  //a_Add CODE handler
+  pTemplate->addHandler(new ATemplateNodeHandler_CODE());
+
+  return pTemplate;
 }
 
 size_t AOSServices::loadGlobalObjects(AString& strError)

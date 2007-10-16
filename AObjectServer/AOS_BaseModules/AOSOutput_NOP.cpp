@@ -7,8 +7,8 @@ const AString& AOSOutput_NOP::getClass() const
   return CLASS;
 }
 
-AOSOutput_NOP::AOSOutput_NOP(ALog& alog) :
-  AOSOutputGeneratorInterface(alog)
+AOSOutput_NOP::AOSOutput_NOP(AOSServices& services) :
+  AOSOutputGeneratorInterface(services)
 {
 }
 

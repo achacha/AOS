@@ -16,8 +16,8 @@ const AString& AOSOutput_MsXslt::getClass() const
   return CLASS;
 }
 
-AOSOutput_MsXslt::AOSOutput_MsXslt(ALog& alog) :
-  AOSOutputGeneratorInterface(alog)
+AOSOutput_MsXslt::AOSOutput_MsXslt(AOSServices& services) :
+  AOSOutputGeneratorInterface(services)
 {
 	CoInitialize(NULL);
 }
@@ -34,7 +34,7 @@ AOSOutput_MsXslt::~AOSOutput_MsXslt()
   CoUninitialize();
 }
 
-void AOSOutput_MsXslt::init(AOSServices& services)
+void AOSOutput_MsXslt::init()
 {
 #pragma message("FIX: AOSOutput_MsXslt::init: XSLT loading hardcoded")
 //  addXslDocument(ASW("aos", 3), ASW("q:/aos.xsl", 10));
@@ -76,7 +76,7 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& fi
   holder.m_filename = filename;
 
   m_Dox[filename] = holder;
-  m_Log.append(AString("AOSOutput_MsXslt::addXslDocument: '")+filename+ "'");
+  m_Services.useLog().append(AString("AOSOutput_MsXslt::addXslDocument: '")+filename+ "'");
 
   return &(m_Dox[filename]);
 }
@@ -89,7 +89,7 @@ bool AOSOutput_MsXslt::execute(AOSOutputContext& context)
   AString xsltName;
   if (!context.getOutputParams().emitFromPath(ASW("/params/output/filename", 23), xsltName))
   {
-    m_Log.append("AOSOutput_MsXslt: Unable to find '/params/output/filename' parameter");
+    m_Services.useLog().append("AOSOutput_MsXslt: Unable to find '/params/output/filename' parameter");
     ATHROW_EX(this, AException::InvalidParameter, ASWNL("Xslt requires '/params/output/filename' parameter"));
   }
   xsltFile.join(xsltName, false);

@@ -129,6 +129,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
               //a_Template for this status code is found, so process and emit into output buffer
               ABasePtrHolder objects;
               objects.insert(ATemplate::OBJECTNAME_MODEL, &pContext->useOutputXmlDocument());
+              objects.insert(AOSContext::OBJECTNAME, pContext);
               pTemplate->process(objects, pContext->useOutputBuffer(), true);
               pContext->setExecutionState(ARope("Using error template for status ")+AString::fromInt(statusCode));
             }

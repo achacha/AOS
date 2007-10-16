@@ -272,6 +272,11 @@ public:
   static const AString CONTEXT;
   static const AString XML_ROOT;
 
+  /*!
+  Object name used when inserting into ABasePtrHolder in scripting
+  */
+  static const AString OBJECTNAME;
+
 protected:
   //a_Read and parse Http header
   AOSContext::Status _processHttpHeader();

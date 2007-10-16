@@ -6,7 +6,7 @@
 class AOS_BASEMODULES_API AOSInput_NOP : public AOSInputProcessorInterface
 {
 public:
-  AOSInput_NOP(ALog&);
+  AOSInput_NOP(AOSServices&);
   virtual bool execute(AOSContext&);
 
   /*!

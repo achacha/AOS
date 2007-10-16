@@ -7,8 +7,8 @@ const AString& AOSInput_HtmlForm::getClass() const
   return CLASS;
 }
 
-AOSInput_HtmlForm::AOSInput_HtmlForm(ALog& alog) :
-  AOSInputProcessorInterface(alog)
+AOSInput_HtmlForm::AOSInput_HtmlForm(AOSServices& services) :
+  AOSInputProcessorInterface(services)
 {
 }
 

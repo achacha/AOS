@@ -5,12 +5,12 @@
 #include "AOSOutputContext.hpp"
 #include "AOSAdminInterface.hpp"
 
-class ALog;
+class AOSServices;
 
 class AOS_BASE_API AOSOutputGeneratorInterface : public AOSAdminInterface
 {
 public:
-  AOSOutputGeneratorInterface(ALog&);
+  AOSOutputGeneratorInterface(AOSServices&);
   virtual ~AOSOutputGeneratorInterface() {}
 
   /*!
@@ -18,7 +18,7 @@ public:
   This is called when the module is registered by the executor
   This is where the controls get added
   */
-  virtual void init(AOSServices&) {}
+  virtual void init() {}
 
   /*!
   Generate output based on AContext
@@ -37,7 +37,10 @@ public:
   virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
 
 protected:
-  ALog& m_Log;
+  /*!
+  AOS services
+  */
+  AOSServices& m_Services;
 
 public:
 #ifdef __DEBUG_DUMP__

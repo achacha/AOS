@@ -9,8 +9,8 @@ const AString& AOSOutput_File::getClass() const
   return CLASS;
 }
 
-AOSOutput_File::AOSOutput_File(ALog& alog) :
-  AOSOutputGeneratorInterface(alog)
+AOSOutput_File::AOSOutput_File(AOSServices& services) :
+  AOSOutputGeneratorInterface(services)
 {
 }
 

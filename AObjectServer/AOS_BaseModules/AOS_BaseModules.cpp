@@ -42,43 +42,36 @@ BOOL APIENTRY DllMain(
     return TRUE;
 }
 
-extern "C" AOS_BASEMODULES_API int aos_init(AOSServices& services)
-{
-  services.useLog().add(ASWNL("AOS_BaseModules: aos_init"), ALog::INFO);
-
-  return 0;
-}
-
 extern "C" AOS_BASEMODULES_API int aos_register(
   AOSInputExecutor& inputExecutor, 
   AOSModuleExecutor& moduleExecutor, 
   AOSOutputExecutor& outputExecutor, 
-  ALog& alog
+  AOSServices& services
 )
 {
-  alog.add(ASWNL("AOS_BaseModules: aos_register"), ALog::INFO);
+  services.useLog().add(ASWNL("AOS_BaseModules: aos_register"), ALog::INFO);
 
   //Register input processors
-  inputExecutor.registerInputProcessor(new AOSInput_HtmlForm(alog));
-  inputExecutor.registerInputProcessor(new AOSInput_NOP(alog));
-  inputExecutor.registerInputProcessor(new AOSInput_HtmlFormMultiPart(alog));
+  inputExecutor.registerInputProcessor(new AOSInput_HtmlForm(services));
+  inputExecutor.registerInputProcessor(new AOSInput_NOP(services));
+  inputExecutor.registerInputProcessor(new AOSInput_HtmlFormMultiPart(services));
 
   //Register modules
-  moduleExecutor.registerModule(new AOSModule_NOP(alog));
-  moduleExecutor.registerModule(new AOSModule_PublishInput(alog));
-  moduleExecutor.registerModule(new AOSModule_ExecuteQuery(alog));
-  moduleExecutor.registerModule(new AOSModule_AlterContext(alog));
-  moduleExecutor.registerModule(new AOSModule_InsertIntoModel(alog));
+  moduleExecutor.registerModule(new AOSModule_NOP(services));
+  moduleExecutor.registerModule(new AOSModule_PublishInput(services));
+  moduleExecutor.registerModule(new AOSModule_ExecuteQuery(services));
+  moduleExecutor.registerModule(new AOSModule_AlterContext(services));
+  moduleExecutor.registerModule(new AOSModule_InsertIntoModel(services));
   
   //Register output generators
-  outputExecutor.registerOutputGenerator(new AOSOutput_NOP(alog));
-  outputExecutor.registerOutputGenerator(new AOSOutput_JSON(alog));
+  outputExecutor.registerOutputGenerator(new AOSOutput_NOP(services));
+  outputExecutor.registerOutputGenerator(new AOSOutput_JSON(services));
 #ifdef AOS__USE_MSXML4__
-  outputExecutor.registerOutputGenerator(new AOSOutput_MsXslt(alog));
+  outputExecutor.registerOutputGenerator(new AOSOutput_MsXslt(services));
 #endif
-  outputExecutor.registerOutputGenerator(new AOSOutput_XalanXslt(alog));
-  outputExecutor.registerOutputGenerator(new AOSOutput_Template(alog));
-  outputExecutor.registerOutputGenerator(new AOSOutput_File(alog));
+  outputExecutor.registerOutputGenerator(new AOSOutput_XalanXslt(services));
+  outputExecutor.registerOutputGenerator(new AOSOutput_Template(services));
+  outputExecutor.registerOutputGenerator(new AOSOutput_File(services));
 
   return 0;
 }

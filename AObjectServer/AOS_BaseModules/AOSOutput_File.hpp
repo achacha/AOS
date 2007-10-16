@@ -20,7 +20,11 @@
 class AOS_BASEMODULES_API AOSOutput_File : public AOSOutputGeneratorInterface
 {
 public:
-  AOSOutput_File(ALog&);
+  AOSOutput_File(AOSServices&);
+
+  /*!
+  Generate output
+  */
   virtual bool execute(AOSOutputContext&);
   
   /*!

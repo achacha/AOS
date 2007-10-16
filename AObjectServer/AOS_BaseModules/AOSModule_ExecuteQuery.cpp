@@ -10,8 +10,8 @@ const AString& AOSModule_ExecuteQuery::getClass() const
   return CLASS;
 }
 
-AOSModule_ExecuteQuery::AOSModule_ExecuteQuery(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_ExecuteQuery::AOSModule_ExecuteQuery(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

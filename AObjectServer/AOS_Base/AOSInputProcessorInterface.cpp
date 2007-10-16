@@ -13,8 +13,8 @@ void AOSInputProcessorInterface::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-AOSInputProcessorInterface::AOSInputProcessorInterface(ALog& log) :
-  m_Log(log)
+AOSInputProcessorInterface::AOSInputProcessorInterface(AOSServices& services) :
+  m_Services(services)
 {
 }
 

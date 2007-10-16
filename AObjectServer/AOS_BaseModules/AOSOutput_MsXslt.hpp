@@ -7,8 +7,12 @@
 class AOS_BASEMODULES_API AOSOutput_MsXslt : public AOSOutputGeneratorInterface
 {
 public:
-  AOSOutput_MsXslt(ALog&);
+  AOSOutput_MsXslt(AOSServices&);
   virtual ~AOSOutput_MsXslt();
+
+  /*!
+  Generate output
+  */
   virtual bool execute(AOSOutputContext&);
   
   /*!
@@ -16,8 +20,10 @@ public:
   */
   virtual const AString& getClass() const;
 
-  //a_Initialization and deinitialization
-  virtual void init(AOSServices&);
+  //!Initialization
+  virtual void init();
+  
+  //! Deinitialization
   virtual void deinit();
 
 private:

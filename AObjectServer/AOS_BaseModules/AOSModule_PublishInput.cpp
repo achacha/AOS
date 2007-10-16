@@ -8,8 +8,8 @@ const AString& AOSModule_PublishInput::getClass() const
   return CLASS;
 }
 
-AOSModule_PublishInput::AOSModule_PublishInput(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_PublishInput::AOSModule_PublishInput(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

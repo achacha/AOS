@@ -8,8 +8,8 @@ const AString& AOSModule_InsertIntoModel::getClass() const
   return CLASS;
 }
 
-AOSModule_InsertIntoModel::AOSModule_InsertIntoModel(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_InsertIntoModel::AOSModule_InsertIntoModel(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

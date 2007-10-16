@@ -10,6 +10,7 @@
 #include "AOSCacheManager.hpp"
 #include "AOSDatabaseConnectionPool.hpp"
 #include "AOSConfiguration.hpp"
+#include "ALuaEmbed.hpp"
 
 class AFilename;
 
@@ -41,6 +42,16 @@ public:
   AOSContext manager
   */
   AOSCacheManager& useCacheManager();
+
+  /*!
+  Create an instance of ATemplate with CODE and LUA processor with AOS specific LUA library loaded 
+  
+  @see AOSLuaFunctions.hpp
+  @see ALuaEmbed.hpp
+
+  NOTE: OWNED and DELETED by caller
+  */
+  ATemplate* createTemplate(u4 deafultLuaLibraries = ALuaEmbed::LUALIB_ALL);
 
   /*!
   Initialize database pool

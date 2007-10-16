@@ -6,7 +6,7 @@
 class AOS_BASEMODULES_API AOSModule_NOP : public AOSModuleInterface
 {
 public:
-  AOSModule_NOP(ALog&);
+  AOSModule_NOP(AOSServices&);
   virtual bool execute(AOSContext& context, const AXmlElement& moduleParams);
   
   /*!

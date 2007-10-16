@@ -35,8 +35,7 @@ AOS_BASE_API extern ASync_CriticalSection g_DebugTraceSync;
   std::cout << msg << std::endl; \
 } while(0)
 
-typedef int (PROC_AOS_Register)(AOSInputExecutor&, AOSModuleExecutor&, AOSOutputExecutor&, ALog&);
-typedef int (PROC_AOS_Init)(AOSServices&);
+typedef int (PROC_AOS_Register)(AOSInputExecutor&, AOSModuleExecutor&, AOSOutputExecutor&, AOSServices&);
 
 #ifdef WIN32
 #define AOS_SERVER_NAME "AsynchObjectServer/1.2.0.0"

@@ -7,8 +7,8 @@ const AString& AOSInput_NOP::getClass() const
   return CLASS;
 }
 
-AOSInput_NOP::AOSInput_NOP(ALog& alog) :
-  AOSInputProcessorInterface(alog)
+AOSInput_NOP::AOSInput_NOP(AOSServices& services) :
+  AOSInputProcessorInterface(services)
 {
 }
 

@@ -7,8 +7,8 @@ const AString& AOSOutput_JSON::getClass() const
   return CLASS;
 }
 
-AOSOutput_JSON::AOSOutput_JSON(ALog& alog) :
-  AOSOutputGeneratorInterface(alog)
+AOSOutput_JSON::AOSOutput_JSON(AOSServices& services) :
+  AOSOutputGeneratorInterface(services)
 {
 }
 

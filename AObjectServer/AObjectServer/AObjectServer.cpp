@@ -156,7 +156,7 @@ int main(int argc, char **argv)
     cqExecutor.setErrorContextQueue(&cqErrorExecutor);
 
     //
-    //a_Load the processors, modules, generators dynamically from DLL
+    //a_Load the processors, modules, generators dynamically from DLLs
     //
     LIST_AString listModules;
     services.useConfiguration().getDynamicModuleLibraries(listModules);
@@ -191,7 +191,7 @@ int main(int argc, char **argv)
             cqExecutor.useAOSInputExecutor(), 
             cqExecutor.useAOSModuleExecutor(), 
             cqExecutor.useAOSOutputExecutor(), 
-            services.useLog()
+            services
           )
         )
         {
@@ -213,33 +213,6 @@ int main(int argc, char **argv)
         AString strDebug("  Module: '");
         strDebug.append(*cit);
         strDebug.append("': unable to find proc symbol: aos_register");
-        AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-      }
-
-      //a_Initialize against global object container
-      PROC_AOS_Init *procInit = static_cast<PROC_AOS_Init *>(dllModules.getEntryPoint(*cit, "aos_init"));
-      if (procInit)
-      {
-        if (procInit(services))
-        {
-          AString strDebug("  FAILED to initialize module: '");
-          strDebug.append(*cit);
-          strDebug.append('\'');
-          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-        else
-        {
-          AString strDebug("  Initialized: '");
-          strDebug.append(*cit);
-          strDebug.append("'");
-          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-      }
-      else
-      {
-        AString strDebug("  Module: '");
-        strDebug.append(*cit);
-        strDebug.append("': unable to find proc symbol: aos_init");
         AOS_DEBUGTRACE(strDebug.c_str(), NULL);
       }
 

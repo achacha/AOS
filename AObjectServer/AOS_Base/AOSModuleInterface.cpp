@@ -17,8 +17,8 @@ void AOSModuleInterface::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-AOSModuleInterface::AOSModuleInterface(ALog& log) :
-  m_Log(log),
+AOSModuleInterface::AOSModuleInterface(AOSServices& services) :
+  m_Services(services),
   m_Objects("module")
 {
 }

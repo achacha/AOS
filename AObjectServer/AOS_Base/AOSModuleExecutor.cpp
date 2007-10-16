@@ -89,7 +89,7 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
   }
 
   //a_Initialize it
-  pModule->init(m_Services);
+  pModule->init();
 
   //a_Register the module's admin interface
   pModule->registerAdminObject(m_Services.useAdminRegistry(), ASW("AOSModuleExecutor",17));

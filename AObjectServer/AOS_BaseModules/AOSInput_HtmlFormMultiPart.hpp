@@ -6,7 +6,7 @@
 class AOS_BASEMODULES_API AOSInput_HtmlFormMultiPart : public AOSInputProcessorInterface
 {
 public:
-  AOSInput_HtmlFormMultiPart(ALog&);
+  AOSInput_HtmlFormMultiPart(AOSServices&);
   virtual bool execute(AOSContext&);
 
   /*!

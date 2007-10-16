@@ -7,8 +7,8 @@ const AString& AOSInput_HtmlFormMultiPart::getClass() const
   return CLASS;
 }
 
-AOSInput_HtmlFormMultiPart::AOSInput_HtmlFormMultiPart(ALog& alog) :
-  AOSInputProcessorInterface(alog)
+AOSInput_HtmlFormMultiPart::AOSInput_HtmlFormMultiPart(AOSServices& services) :
+  AOSInputProcessorInterface(services)
 {
 }
 

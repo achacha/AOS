@@ -6,7 +6,11 @@
 class AOS_BASEMODULES_API AOSOutput_NOP : public AOSOutputGeneratorInterface
 {
 public:
-  AOSOutput_NOP(ALog&);
+  AOSOutput_NOP(AOSServices&);
+
+  /*!
+  Generate output
+  */
   virtual bool execute(AOSOutputContext&);
   
   /*!

@@ -12,8 +12,8 @@ const AString& AOSOutput_XalanXslt::getClass() const
   return CLASS;
 }
 
-AOSOutput_XalanXslt::AOSOutput_XalanXslt(ALog& alog) :
-  AOSOutputGeneratorInterface(alog)
+AOSOutput_XalanXslt::AOSOutput_XalanXslt(AOSServices& services) :
+  AOSOutputGeneratorInterface(services)
 {
 }
 
@@ -21,7 +21,7 @@ AOSOutput_XalanXslt::~AOSOutput_XalanXslt()
 {
 }
 
-void AOSOutput_XalanXslt::init(AOSServices& services)
+void AOSOutput_XalanXslt::init()
 {
 #pragma message("FIX: AOSOutput_XalanXslt::init: XSLT loading hardcoded")
 }
@@ -32,7 +32,7 @@ bool AOSOutput_XalanXslt::execute(AOSOutputContext& context)
   AString str;
   if (!context.getOutputParams().emitFromPath(ASW("/params/output/filename", 23), str))
   {
-    m_Log.append("AOSOutput_XalanXslt: Unable to find '/params/output/filename' parameter");
+    m_Services.useLog().append("AOSOutput_XalanXslt: Unable to find '/params/output/filename' parameter");
     ATHROW_EX(this, AException::InvalidParameter, ASWNL("Xslt requires '/params/output/filename' parameter"));
   }
   xsltName.join(str, false);

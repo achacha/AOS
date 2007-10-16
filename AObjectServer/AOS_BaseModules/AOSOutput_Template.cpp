@@ -83,7 +83,7 @@ void AOSOutput_Template::processAdminAction(AXmlElement& eBase, const AHTTPReque
         ++it;
       }
       delete pOldTemplates;
-      m_Log.add(ASWNL("AOSOutput_Template: Template cache cleared"), ALog::MESSAGE);
+      m_Services.useLog().add(ASWNL("AOSOutput_Template: Template cache cleared"), ALog::MESSAGE);
     }
   }
   else
@@ -96,8 +96,8 @@ const AString& AOSOutput_Template::getClass() const
   return CLASS;
 }
 
-AOSOutput_Template::AOSOutput_Template(ALog& alog) :
-  AOSOutputGeneratorInterface(alog),
+AOSOutput_Template::AOSOutput_Template(AOSServices& services) :
+  AOSOutputGeneratorInterface(services),
   mp_Templates(new AOSOutput_Template::TEMPLATES()),
   mp_TemplatesGuard(new ASync_Mutex("AOSOutput_Template"))
 {
@@ -126,7 +126,7 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
   context.getOutputParams().find(ASW("/params/output/filename", 23), templateNames);
   if(templateNames.size() == 0)
   {
-    m_Log.add(ASWNL("AOSOutput_Template: Unable to find '/params/output/filename' parameter"), ALog::FAILURE);
+    m_Services.useLog().add(ASWNL("AOSOutput_Template: Unable to find '/params/output/filename' parameter"), ALog::FAILURE);
     ATHROW_EX(this, AException::InvalidParameter, ASWNL("Template requires '/params/output/filename' parameter"));
   }
 
@@ -148,10 +148,8 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
     if (it == mp_Templates->end() || doNotAddToCache)
     {
       //a_Create new template and register nodes that it an handle
-      pTemplate = new ATemplate();
-      pTemplate->addHandler(new ATemplateNodeHandler_LUA());
-      pTemplate->addHandler(new ATemplateNodeHandler_CODE());
-      
+      pTemplate = m_Services.createTemplate();
+
       //a_Load and parse
       AFile_Physical tFile(filename);
       tFile.open();
@@ -164,6 +162,7 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
     AASSERT(this, pTemplate);
     ABasePtrHolder objects;
     objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useOutputXmlDocument());
+    objects.insert(AOSContext::OBJECTNAME, &context);
     pTemplate->process(objects, context.useOutputBuffer());
 
     //a_Cache template if needed
@@ -177,7 +176,7 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
         {
           (*mp_Templates)[filenamePart] = pTemplate;
           pTemplate->hibernate();
-          m_Log.add(ASWNL("AOSOutput_Template: Adding parsed template"), filename, ALog::INFO);
+          m_Services.useLog().add(ASWNL("AOSOutput_Template: Adding parsed template"), filename, ALog::INFO);
         }
         else
           delete pTemplate;

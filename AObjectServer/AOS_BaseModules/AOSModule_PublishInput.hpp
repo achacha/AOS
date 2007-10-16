@@ -6,7 +6,11 @@
 class AOS_BASEMODULES_API AOSModule_PublishInput : public AOSModuleInterface
 {
 public:
-  AOSModule_PublishInput(ALog&);
+  AOSModule_PublishInput(AOSServices&);
+
+  /*!
+  Execute module
+  */
   virtual bool execute(AOSContext& context, const AXmlElement& moduleParams);
 
   /*!

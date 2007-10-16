@@ -7,8 +7,8 @@ const AString& AOSModule_AlterContext::getClass() const
   return CLASS;
 }
 
-AOSModule_AlterContext::AOSModule_AlterContext(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_AlterContext::AOSModule_AlterContext(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

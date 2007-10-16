@@ -13,8 +13,8 @@ void AOSOutputGeneratorInterface::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-AOSOutputGeneratorInterface::AOSOutputGeneratorInterface(ALog& log) :
-  m_Log(log)
+AOSOutputGeneratorInterface::AOSOutputGeneratorInterface(AOSServices& services) :
+  m_Services(services)
 {
 }
 

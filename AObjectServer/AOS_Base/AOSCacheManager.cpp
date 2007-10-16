@@ -215,9 +215,7 @@ ATemplate* AOSCacheManager::_putFileIntoStatusTemplateCache(int key, const AStri
   file.open();
 
   //a_Process error template
-  AAutoPtr<ATemplate> p(new ATemplate());
-  p->addHandler(new ATemplateNodeHandler_LUA());
-  p->addHandler(new ATemplateNodeHandler_CODE());
+  AAutoPtr<ATemplate> p(m_Services.createTemplate());
   p->fromAFile(file);
 
   (*mp_TemplateCache)[key] = p.use();

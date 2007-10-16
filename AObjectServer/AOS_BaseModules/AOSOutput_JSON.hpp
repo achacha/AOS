@@ -6,7 +6,11 @@
 class AOS_BASEMODULES_API AOSOutput_JSON : public AOSOutputGeneratorInterface
 {
 public:
-  AOSOutput_JSON(ALog&);
+  AOSOutput_JSON(AOSServices&);
+
+  /*!
+  Generate output
+  */
   virtual bool execute(AOSOutputContext&);
   
   /*!
