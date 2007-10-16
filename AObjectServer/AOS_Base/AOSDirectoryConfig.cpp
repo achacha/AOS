@@ -97,9 +97,9 @@ void AOSDirectoryConfig::fromXml(const AXmlElement& element)
   m_Modules.use().clear();
   AXmlNode::ConstNodeContainer nodes;
   element.find(ASW("module",6), nodes);
-  AXmlNode::ConstNodeContainer::const_iterator citModule = nodes.begin();
+  
   AString strClass, strName;
-  while(citModule != nodes.end())
+  for(AXmlNode::ConstNodeContainer::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
     if ((*citModule)->getAttributes().get(ASW("class",5), strClass) && !strClass.isEmpty())
@@ -109,7 +109,7 @@ void AOSDirectoryConfig::fromXml(const AXmlElement& element)
       AASSERT(*citModule, pBase);
       m_Modules.use().push_back(new AOSModuleInfo(strClass, *pBase));
     }
-    ++citModule;
+    strClass.clear();
   }
 }
 
