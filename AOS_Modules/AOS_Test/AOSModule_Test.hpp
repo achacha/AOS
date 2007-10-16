@@ -6,7 +6,8 @@
 class AOS_TEST_API AOSModule_Test : public AOSModuleInterface
 {
 public:
-  AOSModule_Test(ALog&);
+  AOSModule_Test(AOSServices&);
+
   virtual bool execute(AOSContext&, const AXmlElement&);
   
   /*!

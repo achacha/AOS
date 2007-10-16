@@ -7,7 +7,8 @@
 class AOS_EXAMPLE_API AOSOutput_generate_image : public AOSOutputGeneratorInterface
 {
 public:
-  AOSOutput_generate_image(ALog&);
+  AOSOutput_generate_image(AOSServices&);
+  
   virtual bool execute(AOSOutputContext&);
   
   /*!

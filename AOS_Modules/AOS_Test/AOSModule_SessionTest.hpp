@@ -6,7 +6,8 @@
 class AOS_TEST_API AOSModule_SessionTest : public AOSModuleInterface
 {
 public:
-  AOSModule_SessionTest(ALog&);
+  AOSModule_SessionTest(AOSServices&);
+
   virtual bool execute(AOSContext&, const AXmlElement&);
   
   /*!

@@ -9,8 +9,8 @@ const AString& AOSModule_classified_list::getClass() const
   return CLASS;
 }
 
-AOSModule_classified_list::AOSModule_classified_list(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_classified_list::AOSModule_classified_list(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

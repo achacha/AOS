@@ -30,8 +30,8 @@ void AOSModule_DadaDataTemplate::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-AOSModule_DadaDataTemplate::AOSModule_DadaDataTemplate(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_DadaDataTemplate::AOSModule_DadaDataTemplate(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 
@@ -43,10 +43,10 @@ void AOSModule_DadaDataTemplate::addAdminXml(
   AOSModuleInterface::addAdminXml(eBase, request);
 }
 
-void AOSModule_DadaDataTemplate::init(AOSServices& services)
+void AOSModule_DadaDataTemplate::init()
 {
   ADadaDataHolder *pddh = new ADadaDataHolder();
-  pddh->readData(services);
+  pddh->readData(m_Services);
   m_Objects.insert(PATH_DADADATA, pddh);
 }
 
@@ -143,7 +143,7 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, const AStr
             target.append("{ERROR:", 7);
             target.append(strType);
             target.append('}');
-            m_Log.append(AString("AOSModule_DadaDataTemplate::_generateLine: unknown type:")+strType);
+            m_Services.useLog().append(AString("AOSModule_DadaDataTemplate::_generateLine: unknown type:")+strType);
           break;
         }
         strType.clear(); 

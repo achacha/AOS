@@ -6,7 +6,11 @@
 class AOS_BLOG_API AOSModule_BlogView : public AOSModuleInterface
 {
 public:
-  AOSModule_BlogView(ALog&);
+  AOSModule_BlogView(AOSServices&);
+  
+  /*!
+  Execute module
+  */
   virtual bool execute(AOSContext&, const AXmlElement&);
   
   /*!

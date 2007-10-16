@@ -11,8 +11,9 @@ class AXmlElement;
 class AOS_DADADATA_API AOSModule_DadaDataTemplate : public AOSModuleInterface
 {
 public:
-  AOSModule_DadaDataTemplate(ALog&);
-  virtual void init(AOSServices&);
+  AOSModule_DadaDataTemplate(AOSServices&);
+  
+  virtual void init();
   virtual bool execute(AOSContext&, const AXmlElement&);
   virtual void deinit();
 

@@ -7,8 +7,8 @@ const AString& AOSModule_classified_input::getClass() const
   return CLASS;
 }
 
-AOSModule_classified_input::AOSModule_classified_input(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_classified_input::AOSModule_classified_input(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

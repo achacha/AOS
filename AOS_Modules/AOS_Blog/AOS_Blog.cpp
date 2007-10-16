@@ -24,20 +24,13 @@ extern "C" AOS_BLOG_API int aos_register(
   AOSInputExecutor& inputExecutor, 
   AOSModuleExecutor& moduleExecutor, 
   AOSOutputExecutor& outputExecutor, 
-  ALog& alog
+  AOSServices& services
 )
 {
-  alog.add(ASWNL("AOS_Blog: aos_register"), ALog::INFO);
+  services.useLog().add(ASWNL("AOS_Blog: aos_register"), ALog::INFO);
 
   //Register modules
-  moduleExecutor.registerModule(new AOSModule_BlogView(alog));
+  moduleExecutor.registerModule(new AOSModule_BlogView(services));
   
-  return 0;
-}
-
-extern "C" AOS_BLOG_API int aos_init(AOSServices& services)
-{
-  services.useLog().add(ASWNL("AOS_Blog: aos_init"), ALog::INFO);
-
   return 0;
 }

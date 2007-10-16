@@ -7,8 +7,8 @@ const AString& AOSModule_SessionTest::getClass() const
   return CLASS;
 }
 
-AOSModule_SessionTest::AOSModule_SessionTest(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_SessionTest::AOSModule_SessionTest(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

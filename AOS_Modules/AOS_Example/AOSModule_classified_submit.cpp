@@ -10,8 +10,8 @@ const AString& AOSModule_classified_submit::getClass() const
   return CLASS;
 }
 
-AOSModule_classified_submit::AOSModule_classified_submit(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_classified_submit::AOSModule_classified_submit(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

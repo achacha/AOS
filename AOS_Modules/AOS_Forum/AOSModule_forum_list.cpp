@@ -7,8 +7,8 @@ const AString& AOSModule_forum_list::getClass() const
   return CLASS;
 }
 
-AOSModule_forum_list::AOSModule_forum_list(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_forum_list::AOSModule_forum_list(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

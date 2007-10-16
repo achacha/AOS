@@ -6,7 +6,8 @@
 class AOS_EXAMPLE_API AOSModule_classified_submit : public AOSModuleInterface
 {
 public:
-  AOSModule_classified_submit(ALog&);
+  AOSModule_classified_submit(AOSServices&);
+  
   virtual bool execute(AOSContext&, const AXmlElement&);
   
   /*!

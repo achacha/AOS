@@ -29,26 +29,19 @@ extern "C" AOS_EXAMPLE_API int aos_register(
   AOSInputExecutor& inputExecutor, 
   AOSModuleExecutor& moduleExecutor, 
   AOSOutputExecutor& outputExecutor, 
-  ALog& alog
+  AOSServices& services
 )
 {
-  alog.add(ASWNL("AOS_Example: aos_register"), ALog::INFO);
+  services.useLog().add(ASWNL("AOS_Example: aos_register"), ALog::INFO);
 
   //Register modules
-  moduleExecutor.registerModule(new AOSModule_classified_input(alog));
-  moduleExecutor.registerModule(new AOSModule_classified_submit(alog));
-  moduleExecutor.registerModule(new AOSModule_classified_list(alog));
-  moduleExecutor.registerModule(new AOSModule_rss20(alog));
+  moduleExecutor.registerModule(new AOSModule_classified_input(services));
+  moduleExecutor.registerModule(new AOSModule_classified_submit(services));
+  moduleExecutor.registerModule(new AOSModule_classified_list(services));
+  moduleExecutor.registerModule(new AOSModule_rss20(services));
   
   //Register output generators
-  outputExecutor.registerOutputGenerator(new AOSOutput_generate_image(alog));
-
-  return 0;
-}
-
-extern "C" AOS_EXAMPLE_API int aos_init(AOSServices& services)
-{
-  services.useLog().add(ASWNL("AOS_Example: aos_init"), ALog::INFO);
+  outputExecutor.registerOutputGenerator(new AOSOutput_generate_image(services));
 
   return 0;
 }

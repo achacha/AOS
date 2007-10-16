@@ -9,8 +9,8 @@ const AString& AOSModule_BlogView::getClass() const
   return CLASS;
 }
 
-AOSModule_BlogView::AOSModule_BlogView(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_BlogView::AOSModule_BlogView(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

@@ -27,22 +27,15 @@ extern "C" AOS_TEST_API int aos_register(
   AOSInputExecutor& inputExecutor, 
   AOSModuleExecutor& moduleExecutor, 
   AOSOutputExecutor& outputExecutor, 
-  ALog& alog
+  AOSServices& services
 )
 {
-  alog.add(ASWNL("AOS_Test: aos_register"), ALog::INFO);
+  services.useLog().add(ASWNL("AOS_Test: aos_register"), ALog::INFO);
 
   //Register modules
-  moduleExecutor.registerModule(new AOSModule_Test(alog));
-  moduleExecutor.registerModule(new AOSModule_TestFail(alog));
-  moduleExecutor.registerModule(new AOSModule_SessionTest(alog));
+  moduleExecutor.registerModule(new AOSModule_Test(services));
+  moduleExecutor.registerModule(new AOSModule_TestFail(services));
+  moduleExecutor.registerModule(new AOSModule_SessionTest(services));
   
-  return 0;
-}
-
-extern "C" AOS_TEST_API int aos_init(AOSServices& services)
-{
-  services.useLog().add(ASWNL("AOS_Test: aos_init"), ALog::INFO);
-
   return 0;
 }

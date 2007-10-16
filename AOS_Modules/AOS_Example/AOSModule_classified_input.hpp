@@ -6,7 +6,8 @@
 class AOS_EXAMPLE_API AOSModule_classified_input : public AOSModuleInterface
 {
 public:
-  AOSModule_classified_input(ALog&);
+  AOSModule_classified_input(AOSServices&);
+  
   virtual bool execute(AOSContext&, const AXmlElement&);
   
   /*!

@@ -8,8 +8,8 @@ const AString& AOSOutput_generate_image::getClass() const
   return CLASS;
 }
 
-AOSOutput_generate_image::AOSOutput_generate_image(ALog& alog) :
-  AOSOutputGeneratorInterface(alog)
+AOSOutput_generate_image::AOSOutput_generate_image(AOSServices& services) :
+  AOSOutputGeneratorInterface(services)
 {
 }
 
@@ -19,14 +19,14 @@ bool AOSOutput_generate_image::execute(AOSOutputContext& context)
   AString str;
   if (!context.getOutputParams().emitFromPath(ASW("output/canvas/x", 15), str))
   {
-    m_Log.append("AOSOutput_generate_image: Unable to find '/params/output/canvas/x' parameter");
+    m_Services.useLog().append("AOSOutput_generate_image: Unable to find '/params/output/canvas/x' parameter");
     ATHROW_EX(this, AException::InvalidParameter, ASWNL("AOSOutput_generate_image requires '/params/output/canvas/x' parameter"));
   }
   x = str.toInt();
   str.clear();
   if (!context.getOutputParams().emitFromPath(ASW("output/canvas/y", 15), str))
   {
-    m_Log.append("AOSOutput_generate_image: Unable to find '/params/output/canvas/y' parameter");
+    m_Services.useLog().append("AOSOutput_generate_image: Unable to find '/params/output/canvas/y' parameter");
     ATHROW_EX(this, AException::InvalidParameter, ASWNL("AOSOutput_generate_image requires '/params/output/canvas/y' parameter"));
   }
   y = str.toInt();

@@ -6,7 +6,8 @@
 class AOS_EXAMPLE_API AOSModule_rss20 : public AOSModuleInterface
 {
 public:
-  AOSModule_rss20(ALog&);
+  AOSModule_rss20(AOSServices&);
+  
   virtual bool execute(AOSContext&, const AXmlElement&);
   
   /*!

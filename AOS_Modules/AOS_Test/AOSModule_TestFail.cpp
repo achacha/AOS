@@ -7,8 +7,8 @@ const AString& AOSModule_TestFail::getClass() const
   return CLASS;
 }
 
-AOSModule_TestFail::AOSModule_TestFail(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_TestFail::AOSModule_TestFail(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

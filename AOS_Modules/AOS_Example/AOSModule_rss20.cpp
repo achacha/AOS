@@ -9,8 +9,8 @@ const AString& AOSModule_rss20::getClass() const
   return CLASS;
 }
 
-AOSModule_rss20::AOSModule_rss20(ALog& alog) :
-  AOSModuleInterface(alog)
+AOSModule_rss20::AOSModule_rss20(AOSServices& services) :
+  AOSModuleInterface(services)
 {
 }
 

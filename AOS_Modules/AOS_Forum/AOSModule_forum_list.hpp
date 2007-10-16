@@ -6,7 +6,7 @@
 class AOS_FORUM_API AOSModule_forum_list : public AOSModuleInterface
 {
 public:
-  AOSModule_forum_list(ALog&);
+  AOSModule_forum_list(AOSServices&);
   virtual ~AOSModule_forum_list();
 
   virtual bool execute(AOSContext&, const AXmlElement&);

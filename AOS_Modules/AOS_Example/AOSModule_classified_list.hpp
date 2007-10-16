@@ -6,7 +6,8 @@
 class AOS_EXAMPLE_API AOSModule_classified_list : public AOSModuleInterface
 {
 public:
-  AOSModule_classified_list(ALog&);
+  AOSModule_classified_list(AOSServices&);
+  
   virtual bool execute(AOSContext&, const AXmlElement&);
   
   /*!

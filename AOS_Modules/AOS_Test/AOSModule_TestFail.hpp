@@ -6,7 +6,8 @@
 class AOS_TEST_API AOSModule_TestFail : public AOSModuleInterface
 {
 public:
-  AOSModule_TestFail(ALog&);
+  AOSModule_TestFail(AOSServices&);
+  \
   virtual bool execute(AOSContext&, const AXmlElement&);
   
   /*!
