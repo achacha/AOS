@@ -47,9 +47,10 @@ alibrary.print(alibrary.Model_emitXml(0)); \n\
   t.debugDump(); 
   std::cout << "\r\n------------------------------------ debugDump -----------------------------------------" << std::endl;
   
+  ARope rope;
   try
   {
-    t.process(objects);
+    t.process(objects, rope);
   }
   catch(AException& ex)
   {
@@ -61,7 +62,7 @@ alibrary.print(alibrary.Model_emitXml(0)); \n\
   }
 
   std::cout << "\r\n------------------------------------ output -----------------------------------------" << std::endl;
-  std::cout << t.useOutput() << std::endl;
+  std::cout << rope << std::endl;
   std::cout << "\r\n------------------------------------ output -----------------------------------------" << std::endl;
 
   return 1;

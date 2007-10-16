@@ -38,13 +38,27 @@ ATemplateNodeHandler_LUA::~ATemplateNodeHandler_LUA()
 {
 }
 
+void ATemplateNodeHandler_LUA::addUserDefinedLibrary(ALuaEmbed::LUA_OPENLIBRARY_FPTR fptr)
+{
+  m_UserDefinedLibFunctions.push_back(fptr);
+}
+
 void ATemplateNodeHandler_LUA::init()
 {
-  mp_Lua.reset(new ALuaEmbed(m_LibrariesToLoad));
+  ALock lock(m_LuaCreateSync);
+  if (mp_Lua.isNull())
+  {
+    mp_Lua.reset(new ALuaEmbed(m_LibrariesToLoad));
+  }
+
+  //a_Load queued up user defined libraries
+  for (USER_DEFINED_FPTRS::iterator it = m_UserDefinedLibFunctions.begin(); it != m_UserDefinedLibFunctions.end(); ++it)
+    mp_Lua.use()->loadUserLibrary(*it);
 }
 
 void ATemplateNodeHandler_LUA::deinit()
 {
+  ALock lock(m_LuaCreateSync);
   mp_Lua.reset(NULL);
 }
 
@@ -62,7 +76,12 @@ ATemplateNode *ATemplateNodeHandler_LUA::create(AFile& file)
 
 ALuaEmbed& ATemplateNodeHandler_LUA::useLua()
 {
-  AASSERT_EX(this, !mp_Lua.isNull(), ASWNL("Lua object not initialized or deinitialized."));
+  ALock lock(m_LuaCreateSync);
+  if (mp_Lua.isNull())
+  {
+    mp_Lua.reset(new ALuaEmbed(m_LibrariesToLoad));
+  }
+
   return *mp_Lua;
 }
 

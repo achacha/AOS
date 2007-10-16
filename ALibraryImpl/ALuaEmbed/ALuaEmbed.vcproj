@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\ALibrary\ABase,.\lua-5.1.2\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ALuaEMBED_EXPORTS;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ALuaEMBED_EXPORTS;LUA_BUILD_AS_DLL;LUA_LIB;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -128,7 +128,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\ALibrary\ABase,.\lua-5.1.2\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ALuaEMBED_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ALuaEMBED_EXPORTS;LUA_BUILD_AS_DLL;LUA_LIB;"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"

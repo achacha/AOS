@@ -6,6 +6,7 @@
 #include "ATemplateNode.hpp"
 #include "ATemplateNodeHandler.hpp"
 #include "templateAutoPtr.hpp"
+#include "ASync_CriticalSection.hpp"
 
 class AOutputBuffer;
 class AXmlElement;
@@ -28,6 +29,11 @@ public:
   */
   virtual ~ATemplateNodeHandler_LUA();
 
+  /*!
+  Add external (user-defined) library to load when Lua is initialized
+  */
+  void addUserDefinedLibrary(ALuaEmbed::LUA_OPENLIBRARY_FPTR fptr);
+  
   /*!
   Initialize internal resources
   Called by ATemplate::init()
@@ -72,6 +78,12 @@ protected:
   */
   AAutoPtr<ALuaEmbed> mp_Lua;
 
+  /*!
+  Queue up the library methods to call when Lua is initialized
+  */
+  typedef std::list<ALuaEmbed::LUA_OPENLIBRARY_FPTR> USER_DEFINED_FPTRS;
+  USER_DEFINED_FPTRS m_UserDefinedLibFunctions;
+
 public:
   /*!
   Node class that handles CODE tag
@@ -87,7 +99,7 @@ public:
     /*!
     Copy ctor
     */
-    Node(const ATemplateNodeHandler_LUA::Node&);
+    Node(const ATemplateNodeHandler_LUA::Node&);    
 
     /*!
     dtor
@@ -105,6 +117,9 @@ public:
     virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
   #endif
   };
+
+private:
+  ASync_CriticalSection m_LuaCreateSync;
 
 public:
 #ifdef __DEBUG_DUMP__
