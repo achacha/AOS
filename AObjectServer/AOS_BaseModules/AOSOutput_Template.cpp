@@ -49,7 +49,7 @@ void AOSOutput_Template::addAdminXml(
   {
     AXmlElement& eObject = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("ATemplate",9));
     addProperty(eObject, ASW("filename",8), (*cit).first);
-    addProperty(eObject, ASW("template",8), *(*cit).second, AXmlData::CDataSafe);
+    addProperty(eObject, ASW("template",8), *(*cit).second, AXmlElement::ENC_CDATASAFE);
     ++cit;
   }
 
@@ -122,12 +122,12 @@ AOSOutput_Template::~AOSOutput_Template()
 bool AOSOutput_Template::execute(AOSOutputContext& context)
 {
   AFilename filenameBase(context.getConfiguration().getAosBaseDataDirectory());
-  AXmlNode::ConstNodeContainer templateNames;
-  context.getOutputParams().find(ASW("/params/output/filename", 23), templateNames);
+  AXmlElement::ConstNodeContainer templateNames;
+  context.getOutputParams().find(ASW("filename", 8), templateNames);
   if(templateNames.size() == 0)
   {
-    m_Services.useLog().add(ASWNL("AOSOutput_Template: Unable to find '/params/output/filename' parameter"), ALog::FAILURE);
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Template requires '/params/output/filename' parameter"));
+    m_Services.useLog().add(ASWNL("AOSOutput_Template: Unable to find '/output/filename' parameter"), ALog::FAILURE);
+    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Template requires '/output/filename' parameter"));
   }
 
   bool doNotAddToCache = false;
@@ -135,7 +135,7 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
     doNotAddToCache = true;
 
   AString filename(1024, 256);
-  AXmlNode::ConstNodeContainer::const_iterator cit = templateNames.begin();
+  AXmlElement::ConstNodeContainer::const_iterator cit = templateNames.begin();
   while (cit != templateNames.end())
   {
     filename.clear();

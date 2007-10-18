@@ -15,11 +15,11 @@ AOSModule_AlterContext::AOSModule_AlterContext(AOSServices& services) :
 bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   //a_Adding parameters
-  AXmlNode::ConstNodeContainer nodes;
-  if (moduleParams.find(ASW("/params/module/add-parameter",28), nodes) > 0)
+  AXmlElement::ConstNodeContainer nodes;
+  if (moduleParams.find(ASW("add-parameter",13), nodes) > 0)
   {
     //a_Request parameters
-    for (AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+    for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
     {
       AString strName;
       AString strValue;
@@ -34,22 +34,22 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
   }
 
   nodes.clear();
-  if (moduleParams.find(ASW("/params/module/add-cookie",25), nodes) > 0)
+  if (moduleParams.find(ASW("add-cookie",10), nodes) > 0)
   {
     _processSetCookie(context.useRequestCookies(), nodes);
   }
 
   nodes.clear();
-  if (moduleParams.find(ASW("/params/module/add-set-cookie",29), nodes) > 0)
+  if (moduleParams.find(ASW("add-set-cookie",14), nodes) > 0)
   {
     _processSetCookie(context.useResponseCookies(), nodes);
   }
 
   nodes.clear();
-  if (moduleParams.find(ASW("/params/module/add-request-header",33), nodes) > 0)
+  if (moduleParams.find(ASW("add-request-header",18), nodes) > 0)
   {
     //a_Request header
-    for (AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+    for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
     {
       AString strName;
       AString strValue;
@@ -64,10 +64,10 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
   }
 
   nodes.clear();
-  if (moduleParams.find(ASW("/params/module/add-response-header",34), nodes) > 0)
+  if (moduleParams.find(ASW("add-response-header",19), nodes) > 0)
   {
     //a_Response header
-    for (AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+    for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
     {
       AString strName;
       AString strValue;
@@ -84,10 +84,10 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
   return true;
 }
 
-void AOSModule_AlterContext::_processSetCookie(ACookies& cookies, AXmlNode::ConstNodeContainer& nodes)
+void AOSModule_AlterContext::_processSetCookie(ACookies& cookies, AXmlElement::ConstNodeContainer& nodes)
 {
   //a_Request parameters
-  for (AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+  for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
   {
     AString strName;
     AString str;

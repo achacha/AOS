@@ -157,6 +157,14 @@ public:
   virtual void emitXml(AXmlElement&) const;
 
   /*!
+  Checks if dumpContext is specified and is allowed
+
+  returns: 0 - not specified or not allowed
+           >0 - level value requested
+  */
+  int getDumpContextLevel() const;
+  
+  /*!
   Context specific data used to contain data for the duration of the request
   Also usable as inter-module communication
   */

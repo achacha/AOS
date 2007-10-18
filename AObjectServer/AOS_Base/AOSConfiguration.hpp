@@ -7,7 +7,7 @@
 #include "ABitArray.hpp"
 #include "AFilename.hpp"
 #include "AXmlDocument.hpp"
-#include "AXmlData.hpp"
+#include "AXmlElement.hpp"
 
 class AUrl;
 class AFile_Socket;
@@ -121,6 +121,16 @@ public:
   const AFilename& getAosBaseDynamicDirectory() const;   // Commands
   const AFilename& getAosBaseDataDirectory() const;      // Data dir that is base for all command filename parameters
   const AFilename& getAosBaseStaticDirectory() const;    // Filesystem (fallback if command not found)
+
+  /*!
+  Check is dumpContext is allowed
+  */
+  bool isDumpContextAllowed() const;
+  
+  /*!
+  Check if outputOverride is allowed
+  */
+  bool isOutputOverrideAllowed() const;
 
   /*!
   Dynamic module libraries

@@ -48,8 +48,8 @@ void AOSCommand::debugDump(std::ostream& os, int indent) const
 
 AOSCommand::AOSCommand(const AString& name, ALog& log) :
   m_Command(name),
-  m_InputParams(ASW("params",6)),
-  m_OutputParams(ASW("params",6)),
+  m_InputParams(ASW("input",5)),
+  m_OutputParams(ASW("output",6)),
   m_Enabled(true),
   m_Session(false),
   m_ForceAjax(false),
@@ -76,7 +76,7 @@ void AOSCommand::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& reque
   {
     addProperty(eBase, ASW("inputProcessor",14), m_InputProcessor);
     m_InputParams.emit(rope, 0);
-    addProperty(eBase, ASW("inputProcessor.params",21), rope, AXmlData::CDataSafe);
+    addProperty(eBase, ASW("inputProcessor.params",21), rope, AXmlElement::ENC_CDATASAFE);
   }
 
   AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.use().begin();
@@ -91,7 +91,7 @@ void AOSCommand::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& reque
     rope.clear();
     (*cit)->useParams().emit(rope, 0);
     
-    addProperty(eBase, ropeName, rope, AXmlData::CDataSafe);
+    addProperty(eBase, ropeName, rope, AXmlElement::ENC_CDATASAFE);
     ++cit;
     ++i;
   }
@@ -101,7 +101,7 @@ void AOSCommand::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& reque
     addProperty(eBase, ASW("outputGenerator",15), m_OutputGenerator);
     rope.clear();
     m_OutputParams.emit(rope, 0);
-    addProperty(eBase, ASW("outputGenerator.params",22), rope, AXmlData::CDataSafe);
+    addProperty(eBase, ASW("outputGenerator.params",22), rope, AXmlElement::ENC_CDATASAFE);
   }
 
   addPropertyWithAction(
@@ -213,11 +213,11 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   //a_Get input processor
   m_InputProcessor.clear();
   m_InputParams.clear();
-  const AXmlNode *pNode = element.findNode(ASW("input",5));
+  const AXmlElement *pNode = element.findNode(ASW("input",5));
   if (pNode)
   {
     pNode->getAttributes().get(ASW("class",5), m_InputProcessor);
-    pNode->emitXml(m_InputParams);
+    pNode->emitXmlContent(m_InputParams);
   }
 
   //a_Get output generator
@@ -227,24 +227,22 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   if (pNode)
   {
     pNode->getAttributes().get(ASW("class",5), m_OutputGenerator);
-    pNode->emitXml(m_OutputParams);
+    pNode->emitXmlContent(m_OutputParams);
   }
 
   //a_Get module names
   m_Modules.use().clear();
-  AXmlNode::ConstNodeContainer nodes;
+  AXmlElement::ConstNodeContainer nodes;
   element.find(ASW("module",6), nodes);
   
   AString strClass;
-  for (AXmlNode::ConstNodeContainer::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
+  for (AXmlElement::ConstNodeContainer::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
     if ((*citModule)->getAttributes().get(ASW("class",5), strClass) && !strClass.isEmpty())
     {
       //a_Add new module info object
-      const AXmlElement *pBase = dynamic_cast<const AXmlElement *>(*citModule);
-      AASSERT(*citModule, pBase);
-      m_Modules.use().push_back(new AOSModuleInfo(strClass, *pBase));
+      m_Modules.use().push_back(new AOSModuleInfo(strClass, *(*citModule)));
     }
     strClass.clear();
   }

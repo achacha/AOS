@@ -171,7 +171,7 @@ size_t AOSServices::loadGlobalObjects(AString& strError)
       size_t nValue = resultSet.getFieldIndex(ASW("value", 5));
       for (size_t u=0; u<resultSet.getRowCount(); ++u)
       {
-        m_GlobalObjects.insert(resultSet.getData(u, nName), resultSet.getData(u, nValue), AXmlData::CDataSafe);
+        m_GlobalObjects.insert(resultSet.getData(u, nName), resultSet.getData(u, nValue), AXmlElement::ENC_CDATASAFE);
       }
     }
   }

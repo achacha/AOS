@@ -49,11 +49,13 @@ private:
 
   //a_Static file cache
   ACache_FileSystem *mp_StaticFileCache;
-  ATemplate *_putFileIntoStatusTemplateCache(int key, const AString& filename);
 
   //a_Template cache
   typedef std::map<int, ATemplate *> TEMPLATE_CACHE;
   TEMPLATE_CACHE *mp_TemplateCache;
+
+  //a_Put file into status template cache
+  ATemplate *_putFileIntoStatusTemplateCache(int key, const AString& filename);
 
 public:
 #ifdef __DEBUG_DUMP__

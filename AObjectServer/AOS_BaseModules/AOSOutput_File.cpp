@@ -18,7 +18,7 @@ bool AOSOutput_File::execute(AOSOutputContext& context)
 {
  
   AString str(1536, 1024);
-  if (!context.getOutputParams().emitFromPath(ASW("/params/output/path", 19), str))
+  if (!context.getOutputParams().emitFromPath(ASW("path", 4), str))
   {
     context.useEventVisitor().set(ASWNL("AOSOutput_File: Unable to find 'path' parameter"), true);
     ATHROW_EX(this, AException::InvalidParameter, ASWNL("StaticFile requires 'path' parameter"));
@@ -26,7 +26,7 @@ bool AOSOutput_File::execute(AOSOutputContext& context)
   
   AFilename *pFilename = NULL;
   AString strBase;
-  if (context.getOutputParams().emitFromPath(ASW("/params/base", 12), strBase))
+  if (context.getOutputParams().emitFromPath(ASW("base", 4), strBase))
   {
     if (strBase.equals(ASW("static",6)))
       pFilename = new AFilename(context.getConfiguration().getAosBaseStaticDirectory(), str, false);
@@ -48,7 +48,7 @@ bool AOSOutput_File::execute(AOSOutputContext& context)
 
   //a_Optional content type, if none, use text/html
   AString contentType;
-  const AXmlNode *pType = context.getOutputParams().findNode(ASW("/params/content-type", 20));
+  const AXmlElement *pType = context.getOutputParams().findNode(ASW("content-type", 12));
   if (pType)
     pType->emitContent(contentType);
   else

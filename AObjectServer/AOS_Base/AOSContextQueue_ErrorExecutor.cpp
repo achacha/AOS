@@ -96,15 +96,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           pContext->useResponseHeader().emitXml(pContext->useOutputRootXmlElement().addElement("RESPONSE"));
 
           //a_Check if dumpContext is specified to override and emit XML
-          int dumpContext = 0;
-          if (m_Services.useConfiguration().useConfigRoot().getBool("/config/server/debug/allow-dumpContext", false))
-          {
-            AString str;
-            if (pContext->useRequestParameterPairs().get(ASW("dumpContext", 11), str))
-            {
-              dumpContext = str.toInt();
-            }
-          }
+          int dumpContext = pContext->getDumpContextLevel();
           if (dumpContext > 0)
           {
             //a_Process and display error as XML

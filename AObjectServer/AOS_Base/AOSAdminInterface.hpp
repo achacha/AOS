@@ -6,8 +6,8 @@
 #include "AString.hpp"
 #include "AEmittable.hpp"
 #include "AMovingAverage.hpp"
+#include "AXmlElement.hpp"
 
-class AXmlElement;
 class AHTTPRequestHeader;
 class AOSAdminRegistry;
 
@@ -116,7 +116,7 @@ protected:
   /*!
   Admin XML helpers
 
-  Encoding for propertyValue is assumed AXmlData::None, use addProperty(...) helper to use a different one
+  Encoding for propertyValue is assumed AXmlElement::None, use addProperty(...) helper to use a different one
   if the propertyValue is not XML content safe and requires some CDATA wrapping/encoding
 
   Returns newly created <property> element
@@ -153,7 +153,7 @@ protected:
   AXmlElement& addError(
     AXmlElement& eBase, 
     const AString& adminError,
-    AXmlData::Encoding adminErrorEncoding = AXmlData::CDataDirect
+    AXmlElement::Encoding adminErrorEncoding = AXmlElement::ENC_CDATADIRECT
   ) const;
 
   /*!
@@ -162,7 +162,7 @@ protected:
   AXmlElement& addMessage(
     AXmlElement& eBase, 
     const AString& adminMessage,
-    AXmlData::Encoding adminMessageEncoding = AXmlData::CDataDirect
+    AXmlElement::Encoding adminMessageEncoding = AXmlElement::ENC_CDATADIRECT
   ) const;
 
   /*!
@@ -173,7 +173,7 @@ protected:
     AXmlElement& eBase, 
     const AString& propertyName, 
     const AEmittable& propertyValue, 
-    AXmlData::Encoding propertyValueEncoding = AXmlData::None
+    AXmlElement::Encoding propertyValueEncoding = AXmlElement::ENC_NONE
   ) const;
 
   //a_Finer grain helper: returns <action> element attached to the property

@@ -30,10 +30,10 @@ bool AOSOutput_XalanXslt::execute(AOSOutputContext& context)
 {
   AFilename xsltName(context.getConfiguration().getAosBaseDataDirectory());
   AString str;
-  if (!context.getOutputParams().emitFromPath(ASW("/params/output/filename", 23), str))
+  if (!context.getOutputParams().emitFromPath(ASW("filename", 8), str))
   {
-    m_Services.useLog().append("AOSOutput_XalanXslt: Unable to find '/params/output/filename' parameter");
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Xslt requires '/params/output/filename' parameter"));
+    m_Services.useLog().append("AOSOutput_XalanXslt: Unable to find '/output/filename' parameter");
+    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Xslt requires '/output/filename' parameter"));
   }
   xsltName.join(str, false);
 

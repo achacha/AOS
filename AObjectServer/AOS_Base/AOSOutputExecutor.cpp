@@ -96,9 +96,12 @@ void AOSOutputExecutor::registerOutputGenerator(AOSOutputGeneratorInterface *pGe
 void AOSOutputExecutor::execute(AOSContext& context)
 {
   static const AString OVERRIDE_OUTPUT("overrideOutput",14);
-  
+
   AString command;
-  if (!context.useRequestHeader().useUrl().getParameterPairs().get(OVERRIDE_OUTPUT, command))
+  if (
+    !context.useRequestHeader().useUrl().getParameterPairs().get(OVERRIDE_OUTPUT, command) &&
+     m_Services.useConfiguration().isOutputOverrideAllowed()
+  )
   {
     command = context.getOutputCommand();
   }

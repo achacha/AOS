@@ -15,11 +15,11 @@ AOSModule_InsertIntoModel::AOSModule_InsertIntoModel(AOSServices& services) :
 
 bool AOSModule_InsertIntoModel::execute(AOSContext& context, const AXmlElement& params)
 {
-  const AXmlNode *pDataNode = params.findNode(ASW("/params/module/data",19));
+  const AXmlElement *pDataNode = params.findNode(ASW("data",4));
   if (pDataNode)
   {
     AString strPath;
-    params.emitFromPath(ASW("/params/module/path",19), strPath);
+    params.emitFromPath(ASW("path",4), strPath);
     context.useOutputRootXmlElement().addContent(pDataNode->clone(), strPath);
   }
   else

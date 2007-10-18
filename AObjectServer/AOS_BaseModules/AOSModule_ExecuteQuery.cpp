@@ -19,8 +19,8 @@ bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& par
 {
 #pragma message("AOSModule_ExecuteQuery::execute: needs work")
   AString sql, path;
-  params.emitFromPath(ASW("/params/module/sql", 18), sql);
-  params.emitFromPath(ASW("/params/module/path", 19), path);
+  params.emitFromPath(ASW("sql", 3), sql);
+  params.emitFromPath(ASW("path", 4), path);
   
   if (path.isEmpty())
     path.assign(ASW("/ExecuteQuery/query", 19));

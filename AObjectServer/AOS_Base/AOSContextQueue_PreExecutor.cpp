@@ -381,17 +381,13 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   //a_Set modified date
   pContext->useResponseHeader().setLastModified(modified);
 
-  int dumpContext = 0;
+  int dumpContext = pContext->getDumpContextLevel();
   AString str;
-  if (pContext->useRequestParameterPairs().get(ASW("dumpContext", 11), str))
-  {
-    dumpContext = str.toInt();
-  }
   if (dumpContext > 0)
   {
     //a_Dump context as XML instead of usual output
     pContext->useOutputRootXmlElement().addElement(ASW("/context/dump",13), *pContext);
-    pContext->useOutputRootXmlElement().addElement(ASW("/context/buffer",15), pContext->useOutputBuffer(), AXmlData::CDataHexDump);
+    pContext->useOutputRootXmlElement().addElement(ASW("/context/buffer",15), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP);
 
     //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
     pContext->useOutputBuffer().clear();

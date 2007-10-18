@@ -910,3 +910,16 @@ void AOSContext::writeOutputBuffer(const ARope& output)
 
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
 }
+
+int AOSContext::getDumpContextLevel() const
+{
+  AString str;
+  if (
+    m_Services.useConfiguration().isDumpContextAllowed() &&
+    m_RequestHeader.getUrl().getParameterPairs().get(ASW("dumpContext", 11), str)
+  )
+  {
+    return str.toInt();
+  }
+  return 0;
+}

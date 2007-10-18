@@ -158,7 +158,7 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
       eBase,
       ASW("config",6),
       rope,
-      AXmlData::CDataSafe
+      AXmlElement::ENC_CDATASAFE
     );
   }
 }
@@ -237,8 +237,17 @@ AOSConfiguration::AOSConfiguration(
     }
   }
 
-  _readMIMETypes();
-  _loadCommands();
+  try
+  {
+    _readMIMETypes();
+    _loadCommands();
+  }
+  catch(AException& ex)
+  {
+    //a_Log any exception and re-throw since we just created the log
+    services.useLog().addException(ex);
+    throw;
+  }
 }
 
 AOSConfiguration::~AOSConfiguration()
@@ -515,9 +524,9 @@ const AFilename& AOSConfiguration::getAdminBaseHttpDir() const
 u4 AOSConfiguration::getDynamicModuleLibraries(LIST_AString& target) const
 {
   u4 ret = 0;
-  AXmlNode::ConstNodeContainer nodes;
+  AXmlElement::ConstNodeContainer nodes;
   m_Config.getRoot().find("/config/server/load/module", nodes);
-  for(AXmlNode::ConstNodeContainer::iterator it = nodes.begin(); it != nodes.end(); ++it)
+  for(AXmlElement::ConstNodeContainer::iterator it = nodes.begin(); it != nodes.end(); ++it)
   {
     AString str;
     (*it)->emitContent(str);
@@ -646,3 +655,12 @@ AXmlElement& AOSConfiguration::useConfigRoot()
   return m_Config.useRoot();
 }
 
+bool AOSConfiguration::isDumpContextAllowed() const
+{
+  return m_Config.getRoot().getBool(ASW("/config/server/debug/allow-dumpContext",38), false);
+}
+
+bool AOSConfiguration::isOutputOverrideAllowed() const
+{
+  return m_Config.getRoot().getBool(ASW("/config/server/debug/allow-outputOverride",41), false);
+}

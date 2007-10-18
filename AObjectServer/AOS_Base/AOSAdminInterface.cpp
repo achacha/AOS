@@ -16,7 +16,7 @@ AXmlElement& AOSAdminInterface::addProperty(
   AXmlElement& eBase,
   const AString& propertyName,
   const AEmittable& propertyValue,
-  AXmlData::Encoding propertyValueEncoding // = AXmlData::None
+  AXmlElement::Encoding propertyValueEncoding // = AXmlElement::ENC_NONE
 ) const
 {
   AXmlElement& eProperty = eBase.addElement(PROPERTY).addAttribute(NAME, propertyName);
@@ -106,7 +106,7 @@ AXmlElement& AOSAdminInterface::addPropertyWithAction(
 AXmlElement& AOSAdminInterface::addError(
   AXmlElement& eBase, 
   const AString& adminError,
-  AXmlData::Encoding adminErrorEncoding //= AXmlData::CDataDirect
+  AXmlElement::Encoding adminErrorEncoding //= AXmlElement::CDataDirect
 ) const
 {
   return eBase.addElement(ADMIN_ERROR, adminError, adminErrorEncoding);
@@ -115,7 +115,7 @@ AXmlElement& AOSAdminInterface::addError(
 AXmlElement& AOSAdminInterface::addMessage(
   AXmlElement& eBase, 
   const AString& adminMessage,
-  AXmlData::Encoding adminMessageEncoding //= AXmlData::CDataDirect
+  AXmlElement::Encoding adminMessageEncoding //= AXmlElement::CDataDirect
 ) const
 {
   return eBase.addElement(ADMIN_MESSAGE, adminMessage, adminMessageEncoding);
@@ -128,7 +128,7 @@ void AOSAdminInterface::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
   if (request.getUrl().getParameterPairs().exists(DEBUGDUMP))
   {
     debugDumpToAOutputBuffer(rope);
-    eBase.addElement(DEBUGDUMP, rope, AXmlData::CDataSafe);
+    eBase.addElement(DEBUGDUMP, rope, AXmlElement::ENC_CDATASAFE);
   }
 #endif
 }

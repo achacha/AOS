@@ -58,9 +58,9 @@ void AOSContextManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
     ALock lock(m_InUseSync);
     while(citU != m_InUse.end())
     {
-      AXmlElement& eProp = addProperty(eInUse, ASW("context",7), (*citU).first->useEventVisitor(), AXmlData::CDataDirect);
+      AXmlElement& eProp = addProperty(eInUse, ASW("context",7), (*citU).first->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
       eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citU).first->useEventVisitor().getErrorCount()));
-      eProp.addElement(ASW("url",3), (*citU).first->useEventVisitor().useName(), AXmlData::CDataDirect);
+      eProp.addElement(ASW("url",3), (*citU).first->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
       ++citU;
     }
   }
@@ -72,9 +72,9 @@ void AOSContextManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
     ALock lock(m_HistorySync);
     while(citH != m_History.end())
     {
-      AXmlElement& eProp = addProperty(eHistory, ASW("context",7), (*citH)->useEventVisitor(), AXmlData::CDataDirect);
+      AXmlElement& eProp = addProperty(eHistory, ASW("context",7), (*citH)->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
       eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citH)->useEventVisitor().getErrorCount()));
-      eProp.addElement(ASW("url",3), (*citH)->useEventVisitor().useName(), AXmlData::CDataDirect);
+      eProp.addElement(ASW("url",3), (*citH)->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
       ++citH;
     }
   }

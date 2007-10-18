@@ -51,7 +51,7 @@ void AOSRequestListener::startListening()
     ATHROW(this, AException::ProgrammingError);
 
   //a_HTTP setup
-  AXmlNode *pNode = m_Services.useConfiguration().useConfigRoot().findNode(ASW("/config/server/listen/http",26));
+  AXmlElement *pNode = m_Services.useConfiguration().useConfigRoot().findNode(ASW("/config/server/listen/http",26));
   
   {
     int http_port = -1;

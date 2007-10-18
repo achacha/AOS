@@ -112,12 +112,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Date, str);
         }
 
-        int dumpContext = 0;
-        str.clear();
-        if (pContext->useRequestParameterPairs().get(ASW("dumpContext", 11), str))
-        {
-          dumpContext = str.toInt();
-        }
+        int dumpContext = pContext->getDumpContextLevel();
 
         //
         //a_Generate output
@@ -129,7 +124,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         {
           //a_Dump context as XML instead of usual output
           pContext->useOutputRootXmlElement().addElement(ASW("/context/dump",13), *pContext);
-          pContext->useOutputRootXmlElement().addElement(ASW("/context/buffer",15), pContext->useOutputBuffer(), AXmlData::CDataHexDump);
+          pContext->useOutputRootXmlElement().addElement(ASW("/context/buffer",15), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP);
 
           if (dumpContext > 1)
           {

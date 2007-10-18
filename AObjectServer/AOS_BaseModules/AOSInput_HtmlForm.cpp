@@ -32,7 +32,7 @@ bool AOSInput_HtmlForm::execute(AOSContext& context)
     //a_Publish raw_data if dumping context in debug mode and when 'dumpContext' exists
     //a_The executor was supress all output if dumpContext is not enabled
     if (context.useRequestParameterPairs().exists(ASW("dumpContext",11)))
-      context.useOutputRootXmlElement().addElement(ASW("/input/data", 11), str, AXmlData::CDataSafe);
+      context.useOutputRootXmlElement().addElement(ASW("/input/data", 11), str, AXmlElement::ENC_CDATASAFE);
   }
   else
   {

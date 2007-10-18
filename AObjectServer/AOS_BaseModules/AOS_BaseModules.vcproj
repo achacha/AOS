@@ -363,6 +363,10 @@
 					RelativePath=".\AOSModule_PublishInput.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\AOSModule_Template.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Source Files"
@@ -386,6 +390,10 @@
 				</File>
 				<File
 					RelativePath=".\AOSModule_PublishInput.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSModule_Template.cpp"
 					>
 				</File>
 			</Filter>

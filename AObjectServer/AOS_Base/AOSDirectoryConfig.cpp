@@ -54,7 +54,7 @@ void AOSDirectoryConfig::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeade
     rope.clear();
     (*cit)->useParams().emit(rope, 0);
     
-    addProperty(eBase, ropeName, rope, AXmlData::CDataSafe);
+    addProperty(eBase, ropeName, rope, AXmlElement::ENC_CDATASAFE);
     ++cit;
     ++i;
   }
@@ -95,19 +95,18 @@ void AOSDirectoryConfig::fromXml(const AXmlElement& element)
 
   //a_Get module names
   m_Modules.use().clear();
-  AXmlNode::ConstNodeContainer nodes;
+  AXmlElement::ConstNodeContainer nodes;
   element.find(ASW("module",6), nodes);
   
   AString strClass, strName;
-  for(AXmlNode::ConstNodeContainer::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
+  for(AXmlElement::ConstNodeContainer::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
     if ((*citModule)->getAttributes().get(ASW("class",5), strClass) && !strClass.isEmpty())
     {
       //a_Add new module info object
-      const AXmlElement *pBase = dynamic_cast<const AXmlElement *>(*citModule);
-      AASSERT(*citModule, pBase);
-      m_Modules.use().push_back(new AOSModuleInfo(strClass, *pBase));
+      AASSERT(*citModule, *citModule);
+      m_Modules.use().push_back(new AOSModuleInfo(strClass, *(*citModule)));
     }
     strClass.clear();
   }

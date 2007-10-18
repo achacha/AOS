@@ -20,7 +20,7 @@ public:
 
 private:
   //Set a cookie from element
-  void _processSetCookie(ACookies&, AXmlNode::ConstNodeContainer&);
+  void _processSetCookie(ACookies&, AXmlElement::ConstNodeContainer&);
 };
 
 #endif //INCLUDED__AOSModule_AlterContext_HPP__

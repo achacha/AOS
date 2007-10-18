@@ -20,7 +20,7 @@ AOSModuleInfo::AOSModuleInfo(const AString& className, const AXmlElement& params
   m_Class(className),
   m_ModuleParams(ASW("params",6))
 {
-  paramsBase.emitXml(m_ModuleParams);
+  paramsBase.emitXmlContent(m_ModuleParams);
 }
 
 const AString& AOSModuleInfo::getModuleClass() const
