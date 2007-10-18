@@ -216,7 +216,7 @@ void AEventVisitor::emitXml(AXmlElement& target) const
     target.addAttribute(ASW("enabled",7), AConstant::ASTRING_FALSE);
 
   if (!m_Name.isEmpty())
-    target.addElement(ASW("Name",4), m_Name, AXmlData::CDataDirect);
+    target.addElement(ASW("Name",4), m_Name, AXmlElement::ENC_CDATADIRECT);
 
   target.addElement(ASW("Timer",5), m_LifespanTimer);
 
@@ -246,7 +246,7 @@ void AEventVisitor::Event::emitXml(AXmlElement& target) const
   target.addAttribute(ASW("interval",8), m_interval);
   if (m_isError)
     target.addAttribute(ASW("error",5), AConstant::ASTRING_TRUE);
-  target.addData(m_state, AXmlData::CDataDirect);
+  target.addData(m_state, AXmlElement::ENC_CDATADIRECT);
 }
 
 double AEventVisitor::getTimeIntervalInState() const

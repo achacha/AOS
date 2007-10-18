@@ -107,7 +107,7 @@ void AQueryString::emitXml(AXmlElement& target) const
   {
     target
       .addElement((*cit).second.getName())
-        .addData((*cit).second.getValue(), AXmlData::CDataSafe);
+        .addData((*cit).second.getValue(), AXmlElement::ENC_CDATASAFE);
     ++cit;
   }
 }

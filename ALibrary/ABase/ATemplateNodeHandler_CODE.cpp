@@ -65,7 +65,7 @@ void ATemplateNodeHandler_CODE::Node::process(ABasePtrHolder& objects, AOutputBu
   //a_If this assert failed, theis object was not constructed correctly
   AXmlDocument *pDoc = objects.useAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
   if (!pDoc)
-    ATHROW_EX(this, AException::InvalidObject, ARope("Must have AXmlDocument model object named: ")+ATemplate::OBJECTNAME_MODEL);
+    ATHROW_EX(this, AException::NotFound, ARope("Must have AXmlDocument model object named: ")+ATemplate::OBJECTNAME_MODEL);
 
   AFile_AString strf(m_BlockData);
   AString strLine(1024, 1024);
@@ -106,10 +106,10 @@ void ATemplateNodeHandler_CODE::Node::_processLine(const AString& line, AXmlElem
       param.setSize(pos);
     }
 
-    AXmlNode::ConstNodeContainer nodes;
+    AXmlElement::ConstNodeContainer nodes;
     root.find(param, nodes);
 
-    AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin();
+    AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
     while (cit != nodes.end())
     {
       if (cit != nodes.begin())
@@ -124,7 +124,7 @@ void ATemplateNodeHandler_CODE::Node::_processLine(const AString& line, AXmlElem
   }
   else if (command.equalsNoCase("count"))
   {
-    AXmlNode::ConstNodeContainer nodes;
+    AXmlElement::ConstNodeContainer nodes;
     root.find(param, nodes);
     output.append(AString::fromSize_t(nodes.size()));
   }

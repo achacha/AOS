@@ -101,7 +101,6 @@ AXmlDocument
 AXmlElement
 AXmlEmittable
 AXmlInstruction
-AXmlNode
 AXmlParsable
 
 ASW

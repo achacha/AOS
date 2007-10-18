@@ -2,6 +2,7 @@
 #include "AString.hpp"
 #include "AXmlElement.hpp"
 #include "AFile_AString.hpp"
+#include "AXmlData.hpp"
 
 void testGetSet(int& iRet)
 {
@@ -23,9 +24,9 @@ void testGetSet(int& iRet)
 void testAddAndSerialize(int& iRet)
 {
   AXmlElement elem("root");
-  elem.addElement("/path0/path1/obj0", "value0");
-  elem.addElement("/path0/path2/obj1", "value1");
-  elem.addElement("/path0/path1/obj2", "value2");
+  elem.addElement("path0/path1/obj0", "value0");
+  elem.addElement("path0/path2/obj1", "value1");
+  elem.addElement("path0/path1/obj2", "value2");
 
   AString str0(8188, 1024), str1(8188, 1024);
   str1.assign("\
@@ -44,14 +45,14 @@ void testAddAndSerialize(int& iRet)
   //std::cout << str0 << std::endl;
   ASSERT_UNIT_TEST(str0.equals(str1), "add_emit", "1", iRet);
 
-  AXmlNode *p;
+  AXmlElement *p;
   if (p = elem.findNode("/root/path0/path1/"))
   {
     p->useAttributes().insert("attrib0", "0");
     p->useAttributes().insert("attrib1", "0");
     p->useAttributes().insert("attrib2", "0");
-    p->addContentNode(new AXmlElement(ASWNL("foo")));
-    p->addContentNode(new AXmlData(ASWNL("more data")));
+    p->addContent(new AXmlElement(ASWNL("foo")));
+    p->addContent(new AXmlData(ASWNL("more data")));
     p->addComment("This is the comment");
 
     str0.clear();

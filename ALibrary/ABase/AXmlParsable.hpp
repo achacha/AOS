@@ -3,14 +3,14 @@
 
 #include "apiABase.hpp"
 
-class AXmlNode;
+class AXmlElement;
 
 /*!
   Required methods
 
 -------------------START: HPP cup/past----------------------
 public:
-  virtual void fromXml(const AXmlNode&);
+  virtual void fromXml(const AXmlElement&);
 -------------------STOP: HPP cup/past-----------------------
 */
 class ABASE_API AXmlParsable

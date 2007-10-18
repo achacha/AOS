@@ -123,20 +123,9 @@ AString::AString
   m_InternalBufferSize(0),
   m_BufferIncrement(source.m_BufferIncrement)
 {
-  //if (source.mbool_Wrapped)
-  //{
-  //  //a_Retain wrapping
-  //  mp_Buffer = source.mp_Buffer;
-  //  m_Length = source.m_Length;
-  //  mbool_Wrapped = source.mbool_Wrapped;
-  //  m_InternalBufferSize = source.m_InternalBufferSize;
-  //}
-  //else
-  //{
-    //a_Copy content (if any)
-    if (source.m_Length > 0)
-      _assign(source.mp_Buffer, source.m_Length);
-//  }
+  //a_Copy content (if any)
+  if (source.m_Length > 0)
+    _assign(source.mp_Buffer, source.m_Length);
 }
 
 AString::AString
@@ -2173,7 +2162,7 @@ void AString::emit(AOutputBuffer& target) const
 void AString::emitXml(AXmlElement& target) const
 {
   target.addAttribute(ASW("class",5), ASW("AString",7));
-  target.addData(*this, AXmlData::CDataDirect);
+  target.addData(*this, AXmlElement::ENC_CDATADIRECT);
 }
 
 size_t AString::split(

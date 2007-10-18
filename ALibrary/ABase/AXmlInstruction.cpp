@@ -9,7 +9,7 @@
 void AXmlInstruction::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AXmlInstruction @ " << std::hex << this << std::dec << ") {" << std::endl;
-  AXmlNode::debugDump(os, indent+1);
+  AXmlElement::debugDump(os, indent+1);
 
   ADebugDumpable::indent(os, indent) << "  m_Data=" << m_Data << std::endl;
   AString str;
@@ -20,14 +20,14 @@ void AXmlInstruction::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-AXmlInstruction::AXmlInstruction(AXmlInstruction::TYPE type, AXmlNode *pParent /* = NULL */) :
-  AXmlNode(pParent)
+AXmlInstruction::AXmlInstruction(AXmlInstruction::TYPE type, AXmlElement *pParent /* = NULL */) :
+  AXmlElement(pParent)
 {
   setType(type);
 }
 
-AXmlInstruction::AXmlInstruction(const AString& name, AXmlNode *pParent /* = NULL */) :
-  AXmlNode(pParent)
+AXmlInstruction::AXmlInstruction(const AString& name, AXmlElement *pParent /* = NULL */) :
+  AXmlElement(pParent)
 {
   if (name.equals("?xml", 4))
     setType(AXmlInstruction::XML_HEADER);
@@ -47,9 +47,9 @@ AXmlInstruction::AXmlInstruction(
   AXmlInstruction::TYPE type, 
   const AAttributes& attrs, 
   const AString& data,      // = AConstant::ASTRING_EMPTY
-  AXmlNode *pParent         // = NULL
+  AXmlElement *pParent         // = NULL
 ) :
-  AXmlNode(attrs, pParent),
+  AXmlElement(attrs, pParent),
   m_Data(data)
 {
   setType(type);
@@ -127,7 +127,7 @@ AXmlInstruction::TYPE AXmlInstruction::getType() const
 
 void AXmlInstruction::clear()
 {
-  AXmlNode::clear();
+  AXmlElement::clear();
   m_Data.clear();
 }
 
@@ -173,7 +173,7 @@ void AXmlInstruction::emit(AOutputBuffer& target) const
 void AXmlInstruction::emit(AOutputBuffer& target, int indent) const
 {
   //a_No indent on instructions
-  target.append(AXmlDocument::sstr_Start);
+  target.append(AXmlElement::sstr_Start);
   
   AASSERT(this, !m_Name.isEmpty());
   target.append(m_Name);
@@ -193,18 +193,18 @@ void AXmlInstruction::emit(AOutputBuffer& target, int indent) const
   switch (m_Name.at(0))
   {
     case '?':
-      target.append(AXmlDocument::sstr_EndInstruction);
+      target.append(AXmlElement::sstr_EndInstruction);
       break;
 
     case '!':
       if (!m_Name.compare("!--", 3))
       {
-        target.append(AXmlDocument::sstr_EndComment);
+        target.append(AXmlElement::sstr_EndComment);
       }
       break;
 
     default:
-      target.append(AXmlDocument::sstr_End);
+      target.append(AXmlElement::sstr_End);
   }
 }
 

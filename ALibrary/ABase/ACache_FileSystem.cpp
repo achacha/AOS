@@ -151,7 +151,7 @@ void ACache_FileSystem::emitXml(AXmlElement& target) const
     const CONTAINER& container = pCache->m_Cache;
     for(CONTAINER::const_iterator cit = container.begin(); cit != container.end(); ++cit)
     {
-      AXmlElement& file = base.addElement(KEY, (*cit).first, AXmlData::None, false);  //a_Create new key instead of reusing
+      AXmlElement& file = base.addElement(KEY, (*cit).first, AXmlElement::ENC_NONE, false);  //a_Create new key instead of reusing
       file.addAttribute(HITS, AString::fromInt((*cit).second->hits));
       file.addAttribute(LAST, AString::fromS8((*cit).second->lastUsed));
       file.addAttribute(FOUND, (NULL == (*cit).second->pData ? AConstant::ASTRING_FALSE : AConstant::ASTRING_TRUE));

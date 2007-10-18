@@ -1407,7 +1407,7 @@ void AStackWalker::emitXml(AXmlElement& target) const
   STACKLINES::const_iterator cit = m_StackWalkResult.begin();
   while(cit != m_StackWalkResult.end())
   {
-    target.addElement(ASW("stack",5), *(*cit), AXmlData::CDataSafe);
+    target.addElement(ASW("stack",5), *(*cit), AXmlElement::ENC_CDATASAFE);
     ++cit;
   }
 }

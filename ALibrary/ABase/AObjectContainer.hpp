@@ -42,7 +42,7 @@ public:
   Value can be AObjectBase based object or AString (which will get wrapped in AObject<AString> object)
   insert() returns a reference to the AObjectBase that was just inserted
   */
-  AObjectBase& insert(const AString& path, const AString& value = AConstant::ASTRING_EMPTY, AXmlData::Encoding encoding = AXmlData::None);
+  AObjectBase& insert(const AString& path, const AString& value = AConstant::ASTRING_EMPTY, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
   
   /*!
   Insert AObjectBase type into a given path

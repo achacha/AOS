@@ -8,16 +8,16 @@
 #include "ARope.hpp"
 #include "AException.hpp"
 
-const AString AXmlDocument::sstr_Start("<");
-const AString AXmlDocument::sstr_StartComment("<!--");
-const AString AXmlDocument::sstr_StartInstruction("<?");
-const AString AXmlDocument::sstr_StartEnd("</");
-const AString AXmlDocument::sstr_EndSingular("/>");
-const AString AXmlDocument::sstr_End(">");
-const AString AXmlDocument::sstr_EndOrWhitespace("/> \t\n\r");
-const AString AXmlDocument::sstr_EndComment("-->");
-const AString AXmlDocument::sstr_EndInstruction("?>");
-const AString AXmlDocument::sstr_EndInstructionOrWhitespace("?> \t\n\r");
+const AString AXmlElement::sstr_Start("<");
+const AString AXmlElement::sstr_StartComment("<!--");
+const AString AXmlElement::sstr_StartInstruction("<?");
+const AString AXmlElement::sstr_StartEnd("</");
+const AString AXmlElement::sstr_EndSingular("/>");
+const AString AXmlElement::sstr_End(">");
+const AString AXmlElement::sstr_EndOrWhitespace("/> \t\n\r");
+const AString AXmlElement::sstr_EndComment("-->");
+const AString AXmlElement::sstr_EndInstruction("?>");
+const AString AXmlElement::sstr_EndInstructionOrWhitespace("?> \t\n\r");
 
 #ifdef __DEBUG_DUMP__
 void AXmlDocument::debugDump(std::ostream& os /* = std::cerr */, int indent /* = 0x0 */) const
@@ -76,7 +76,7 @@ AXmlDocument::AXmlDocument(const AXmlDocument& that) :
 {
   for (LIST_NODEPTR::const_iterator cit = that.m_Instructions.begin(); cit != that.m_Instructions.end(); ++cit)
   {
-    AXmlNode *pClone = (*cit)->clone();
+    AXmlElement *pClone = (*cit)->clone();
     m_Instructions.push_back(dynamic_cast<AXmlInstruction *>(pClone));
   }
 }
@@ -199,7 +199,7 @@ void AXmlDocument::fromAFile(AFile& file)
       file.read(str, 1);
 
       //a_Extract name and skip over whitespace
-      if (AConstant::npos == file.readUntilOneOf(str, sstr_EndInstructionOrWhitespace, false))
+      if (AConstant::npos == file.readUntilOneOf(str, AXmlElement::sstr_EndInstructionOrWhitespace, false))
         ATHROW(this, AException::InvalidData);
 
       if (0 != str.find(ASW("!--",3)))

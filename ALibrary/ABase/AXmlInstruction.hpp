@@ -2,8 +2,10 @@
 #define INCLUDED__AXmlInstruction_HPP__
 
 #include "apiABase.hpp"
-#include "AXmlNode.hpp"
+#include "AXmlElement.hpp"
 #include "AAttributes.hpp"
+
+class AOutputBuffer;
 
 /*!
   XML Instruction element
@@ -27,10 +29,7 @@ Adding a comment to XML element (AXmlElement::addComment() does this):
   p->useData().assign("This is my comment");
   myElement.addContent(p);
 */
-
-class AOutputBuffer;
-
-class ABASE_API AXmlInstruction : public AXmlNode
+class ABASE_API AXmlInstruction : public AXmlElement
 {
 public:
   //a_Enums for the most common types
@@ -48,9 +47,9 @@ public:
   ctors
   */
   AXmlInstruction() {}
-  AXmlInstruction(const AXmlInstruction::TYPE type, AXmlNode *pParent = NULL);
-  AXmlInstruction(const AString& name, AXmlNode *pParent = NULL);
-  AXmlInstruction(const AXmlInstruction::TYPE type, const AAttributes& attrs, const AString& data = AConstant::ASTRING_EMPTY, AXmlNode *pParent = NULL);
+  AXmlInstruction(const AXmlInstruction::TYPE type, AXmlElement *pParent = NULL);
+  AXmlInstruction(const AString& name, AXmlElement *pParent = NULL);
+  AXmlInstruction(const AXmlInstruction::TYPE type, const AAttributes& attrs, const AString& data = AConstant::ASTRING_EMPTY, AXmlElement *pParent = NULL);
   AXmlInstruction(const AXmlInstruction&);
   virtual ~AXmlInstruction() {}
 
@@ -115,7 +114,7 @@ public:
   /*!
   Clone of self used in deep copy
   */
-  virtual AXmlNode* clone() const { return new AXmlInstruction(*this); }
+  virtual AXmlElement* clone() const { return new AXmlInstruction(*this); }
 
 private:
   //a_Format <$start$name $attributes $data $end>

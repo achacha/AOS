@@ -2,34 +2,21 @@
 #define INCLUDED__AXmlData_HPP__
 
 #include "apiABase.hpp"
-#include "AXmlNode.hpp"
+#include "AXmlElement.hpp"
 #include "AString.hpp"
 
-class ABASE_API AXmlData : public AXmlNode
+class ABASE_API AXmlData : public AXmlElement
 {
-public:
-  //a_The way the data will be encoded
-  enum Encoding
-  {
-    None = 0,     //a_Text as is
-    Url,          //a_Url encoded text
-    CDataSafe,    //a_<![CDATA[ data ]]> with data made safe for CData
-    CDataDirect,  //a_<![CDATA[ data ]]> with data as is
-    XmlSafe,      //a_Replaces < > &  with &lt; &gt; &amp;
-    Base64,       //a_Encodes with Base64
-    CDataHexDump  //a_Debugging format useful for examining binary data
-  };
-
 public:
   AXmlData();
   AXmlData(const AXmlData&);
-  AXmlData(const AEmittable& data, AXmlData::Encoding encoding = AXmlData::None, AXmlNode *pParent = NULL);
+  AXmlData(const AEmittable& data, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, AXmlElement *pParent = NULL);
   virtual ~AXmlData();
   
   /*!
   Change encoding of data
   */
-  void setEncoding(AXmlData::Encoding);
+  void setEncoding(AXmlElement::Encoding);
 
   /*!
   Checks if there is any data
@@ -81,7 +68,7 @@ public:
   /*!
   Clone of self used in deep copy
   */
-  virtual AXmlNode* clone() const { return new AXmlData(*this); }
+  virtual AXmlElement* clone() const { return new AXmlData(*this); }
 
 protected:
   AString m_Data;

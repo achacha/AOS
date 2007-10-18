@@ -139,24 +139,24 @@ void testParse()
 void testPathAdd()
 {
   AXmlElement elem("root");
-  elem.addElement("/path0/path1/obj0", "value0");
-  elem.addElement("/path0/path2/obj1", "value1");
-  elem.addElement("/path0/path1/obj2", "value2");
+  elem.addElement("path0/path1/obj0", "value0");
+  elem.addElement("path0/path2/obj1", "value1");
+  elem.addElement("path0/path1/obj2", "value2");
 
   AString str(8188, 1024);
   elem.emit(str, 0);
   std::cout << str << std::endl;
   elem.debugDump();
 
-  AXmlNode *p;
+  AXmlElement *p;
 
   if (p = elem.findNode("/root/path0/path1/"))
   {
     p->useAttributes().insert("attrib0", "0");
     p->useAttributes().insert("attrib1", "0");
     p->useAttributes().insert("attrib2", "0");
-    p->addContentNode(new AXmlElement("foo"));
-    p->addContentNode(new AXmlData(ASWNL("more data")));
+    p->addContent(new AXmlElement("foo"));
+    p->addContent(new AXmlData(ASWNL("more data")));
     p->addComment("This is the comment");
 
     str.clear();
@@ -196,7 +196,6 @@ void testRandomXml()
   AString xpath(256, 128);
   for (int i=0; i<80; ++i)
   {
-    xpath.assign('/');
     int level = ARandomNumberGenerator::get().nextRange(6, 2);
     for (int j=1; j<level; ++j)
     {
@@ -220,39 +219,60 @@ void testRandomXml()
 void testMultiAdd()
 {
   AXmlElement e("root");
-  e.addElement("/base/path0/obj0", "v");
-  e.addElement("/base/path0/obj1", "v");
-  e.addElement("/base/path0/obj2", "v");
-  e.addElement("/base/path0/obj3", "v");
-  e.addElement("/base/path0/obj3", "v");
+  e.addElement("base/path0/obj0", "v");
+  e.addElement("base/path0/obj1", "v");
+  e.addElement("base/path0/obj2", "v");
+  e.addElement("base/path0/obj3", "v");
+  e.addElement("base/path0/obj3", "v");
 
   AString str0(8188, 1024);
   e.emit(str0,0);
   std::cout << str0 << std::endl;
 }
 
+void testEmitClone()
+{
+  AXmlElement e("root");
+  e.addElement(ASWNL("base/path2/obj0"), ASWNL("a0"));
+  e.addElement(ASWNL("base/path2/obj1"), ASWNL("b1"));
+
+  AString str;
+  AXmlElement target("newroot");
+  AXmlElement *pNode = e.findNode("/root/base/path2");
+  if (pNode)
+  {
+    pNode->emitXml(target);
+    str.clear();
+    target.emit(str,0);
+  }
+
+  e.debugDump();
+  target.debugDump();
+  std::cout << str << std::endl;
+}
+
 void testXmlEmit()
 {
   AXmlElement e("root");
-  e.addElement(ASWNL("/base/path0/obj0"), ASWNL("v0")).addData(ASWNL("foo0"));
-  e.addElement(ASWNL("/base/path0/obj1"), ASWNL("v1"));
-  e.addElement(ASWNL("/base/path0/obj2"), ASWNL("v2")).addData(ASWNL("foo1"));
-  e.addElement(ASWNL("/base/path0/obj3"), ASWNL("v3"));
-  e.addElement(ASWNL("/base/path0/obj3"), ASWNL("v4"));
-  e.addElement(ASWNL("/base/path1/obj0"), ASWNL("v10"));
-  e.addElement(ASWNL("/base/path1/obj1"), ASWNL("v11")).addData(ASWNL("foo2"), AXmlData::CDataDirect);
-  e.addElement(ASWNL("/base/path2/obj0"), ASWNL("v20"));
-  e.addElement(ASWNL("/base/path2/obj1"), ASWNL("v21")).addData(ASWNL("foo3"), AXmlData::CDataSafe);
+  e.addElement(ASWNL("base/path0/obj0"), ASWNL("v0")).addData(ASWNL("foo0"));
+  e.addElement(ASWNL("base/path0/obj1"), ASWNL("v1"));
+  e.addElement(ASWNL("base/path0/obj2"), ASWNL("v2")).addData(ASWNL("foo1"));
+  e.addElement(ASWNL("base/path0/obj3"), ASWNL("v3"));
+  e.addElement(ASWNL("base/path0/obj3"), ASWNL("v4"));
+  e.addElement(ASWNL("base/path1/obj0"), ASWNL("v10"));
+  e.addElement(ASWNL("base/path1/obj1"), ASWNL("v11")).addData(ASWNL("foo2"), AXmlElement::ENC_CDATADIRECT);
+  e.addElement(ASWNL("base/path2/obj0"), ASWNL("v20"));
+  e.addElement(ASWNL("base/path2/obj1"), ASWNL("v21")).addData(ASWNL("foo3"), AXmlElement::ENC_CDATASAFE);
 
   AString str;
   e.emit(str,0);
   std::cout << str << std::endl;
 
   AXmlElement target("newroot");
-  AXmlNode *pNode = e.findNode("/root/base/path2");
+  AXmlElement *pNode = e.findNode("/root/base/path2");
   if (pNode)
   {
-    pNode->emit(target);
+    pNode->emitXml(target);
     str.clear();
     target.emit(str,0);
     std::cout << str << std::endl;
@@ -299,14 +319,14 @@ void testFind1()
 
   AXmlDocument doc(f);
 
-  AXmlNode *pNode = doc.useRoot().findNode("/xml/TextColor");
+  AXmlElement *pNode = doc.useRoot().findNode("/xml/TextColor");
   if (pNode)
   {
     AString str;
     pNode->emit(str,0);
     std::cout << str << std::endl;
 
-    AXmlNode *pR = pNode->findNode("R");
+    AXmlElement *pR = pNode->findNode("R");
     if (pR)
     {
       str.clear();
@@ -327,12 +347,12 @@ void testFind2()
 
   AXmlDocument doc(f);
 
-  AXmlNode::ConstNodeContainer nodes;
+  AXmlElement::ConstNodeContainer nodes;
   doc.useRoot().find("/root/http", nodes);
   if (nodes.size() > 0)
   {
     AString str;
-    AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin();
+    AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
     while (cit != nodes.end())
     {
       AString str("port=");
@@ -354,12 +374,12 @@ void testFind3()
 
   AXmlDocument doc(f);
 
-  AXmlNode::ConstNodeContainer nodes;
+  AXmlElement::ConstNodeContainer nodes;
   doc.useRoot().find("/root/http", nodes);
   if (nodes.size() > 0)
   {
     AString str;
-    AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin();
+    AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
     while (cit != nodes.end())
     {
       std::cout << (*cit)->getName() << std::endl;
@@ -410,18 +430,19 @@ void testInsertWithPath()
 
 int main()
 {
-  //testParse();
-  //testPathAdd();
-  //testOutput();
-  //testRandomXml();
-  //testMultiAdd();
-  //testXmlEmit();
-  //testClone();
-  //testAppend();
-  //testFind1();
-  //testFind2();
-  //testFind3();
-  testInsertWithPath();
+//  testParse();
+//  testPathAdd();
+//  testOutput();
+//  testRandomXml();
+//  testMultiAdd();
+//  testEmitClone();
+//  testXmlEmit();
+//  testClone();
+  testAppend();
+//  testFind1();
+//  testFind2();
+//  testFind3();
+//  testInsertWithPath();
 
 	return 0;
 }

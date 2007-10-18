@@ -2,68 +2,495 @@
 #include "pchABase.hpp"
 
 #include "AXmlElement.hpp"
+#include "AString.hpp"
 #include "ARope.hpp"
+#include "AXmlInstruction.hpp"
+#include "AXmlElement.hpp"
+#include "AXmlData.hpp"
 #include "AFile.hpp"
-#include "AXmlDocument.hpp"
-#include "AObjectBase.hpp"
-#include "AEmittable.hpp"
-#include "AXmlEmittable.hpp"
 
 #ifdef __DEBUG_DUMP__
 void AXmlElement::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AXmlElement @ " << std::hex << this << std::dec << ") {" << std::endl;
-  AXmlNode::debugDump(os, indent+1);
+  ADebugDumpable::indent(os, indent) << "(AXmlElement @ " << std::hex << this << std::dec << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mp_Parent=" << std::hex << mp_Parent << std::dec << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Name=" << m_Name << std::endl;
 
+  ADebugDumpable::indent(os, indent+1) << "m_Attributes={" << std::endl;
+  m_Attributes.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_Content={" << std::endl;
   NodeContainer::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
-    (*cit)->debugDump(os, indent+1);
+    (*cit)->debugDump(os, indent+2);
     ++cit;
   }
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
 
-AXmlElement::AXmlElement(AXmlNode *pParent /* = NULL */) :
-  AXmlNode(pParent)
+AXmlElement::AXmlElement(AXmlElement *pParent) :
+  mp_Parent(pParent)
 {
 }
 
-AXmlElement::AXmlElement(const AString& name, AXmlNode *pParent /* = NULL */) :
-  AXmlNode(name, pParent)
+AXmlElement::AXmlElement(const AString& name, AXmlElement *pParent) :
+  mp_Parent(pParent),
+  m_Name(name)
 {
 }
 
-AXmlElement::AXmlElement(const AString& name, const AAttributes& attrs, AXmlNode *pParent) :
-  AXmlNode(name, attrs, pParent)
+AXmlElement::AXmlElement(const AString& name, const AAttributes& attrs, AXmlElement *pParent) :
+  mp_Parent(pParent),
+  m_Name(name),
+  m_Attributes(attrs)
 {
 }
 
-AXmlElement::AXmlElement(const AXmlElement& that, AXmlNode *pParent /* = NULL */) :
-  AXmlNode(that.m_Name, that.m_Attributes, pParent)
+AXmlElement::AXmlElement(const AXmlElement& that, AXmlElement *pParent /* = NULL */) :
+  mp_Parent(pParent),
+  m_Name(that.m_Name),
+  m_Attributes(that.m_Attributes)
 {
   //a_By default parent node is not copied
-  NodeContainer::const_iterator cit = that.m_Content.begin();
-  while (cit != that.m_Content.end())
-  {
-    AXmlNode *p = (*cit)->clone();
-    m_Content.push_back(p);
-    ++cit;
-  }
+  for (NodeContainer::const_iterator cit = that.m_Content.begin(); cit != that.m_Content.end(); ++cit)
+    m_Content.push_back((*cit)->clone());
 }
 
 AXmlElement::~AXmlElement()
 {
+  try
+  {
+    for (NodeContainer::iterator it = m_Content.begin(); it != m_Content.end(); ++it)
+      delete (*it);
+  }
+  catch(...) {}
 }
 
 void AXmlElement::clear()
 {
-  AXmlNode::clear();
+  NodeContainer::iterator it = m_Content.begin();
+  while (it != m_Content.end())
+  {
+    delete (*it);
+    ++it;
+  }
+  m_Content.clear();
+  m_Attributes.clear();
+  mp_Parent = NULL;
 }
 
-AXmlElement *AXmlElement::_getAndInsert(LIST_AString& xparts, AXmlNode* pParent)
+bool AXmlElement::emitFromPath(
+  const AString& xpath, 
+  AOutputBuffer& target,
+  int indent //= -1
+) const
+{
+  const AXmlElement *pNode = findNode(xpath);
+  if (pNode)
+  {
+    AXmlElement::NodeContainer::const_iterator cit = pNode->m_Content.begin();
+    while (cit != pNode->m_Content.end())
+    {
+      (*cit)->emit(target, indent);
+      ++cit;
+    }
+    return true;
+  }
+  else
+    return false;
+}
+
+//void AXmlElement::emitJson(
+//  AOutputBuffer& target,
+//  int indent // = -1
+//) const
+//{
+//  bool needsBraces = (m_Content.size() > 0 || m_Attributes.size() > 0);
+//  if (needsBraces)
+//  {
+//    target.append('{');
+//  }
+//
+//  //a_Attributes become name:value pairs
+//  if (m_Attributes.size() > 0)
+//  {
+//    SET_AString names;
+//    m_Attributes.getNames(names);
+//    for(LIST_NVPair::const_iterator cit = m_Attributes.getAttributeContainer().begin(); cit != m_Attributes.getAttributeContainer().end(); ++cit)
+//    {
+//      if (indent >=0) _indent(target, indent+1);
+//      target.append(cit->getName());
+//      target.append(':');
+//      target.append(cit->getValue());
+//      if (indent >=0) target.append(AConstant::ASTRING_CRLF);
+//    }
+//  }
+//
+//  //a_Add content
+//  if (m_Content.size() > 0)
+//  {
+//    if (indent >=0) _indent(target, indent+1);
+//    target.append(m_Name);
+//    target.append(':');
+//    for (NodeContainer::const_iterator cit = m_Content.begin(); cit != m_Content.end(); ++cit)
+//    {
+//      (*cit)->emitJson(target, (indent >= 0 ? indent+1 : indent));
+//    }
+//  }
+//
+//  if (needsBraces)
+//  {
+//    if (indent >=0) _indent(target, indent);
+//    target.append('}');
+//    if (indent >=0) target.append(AConstant::ASTRING_CRLF);
+//  }
+//}
+
+void AXmlElement::emitXml(AXmlElement& target) const
+{
+  AXmlElement& base = target.addElement(m_Name);
+  NodeContainer::const_iterator cit = m_Content.begin();
+  while (cit != m_Content.end())
+  {
+    base.addContent((*cit)->clone());
+    ++cit;
+  }
+}
+
+void AXmlElement::emitXmlContent(AXmlElement& target) const
+{
+  NodeContainer::const_iterator cit = m_Content.begin();
+  while (cit != m_Content.end())
+  {
+    target.addContent((*cit)->clone());
+    ++cit;
+  }
+}
+
+void AXmlElement::emitContent(AOutputBuffer& target) const
+{
+  NodeContainer::const_iterator cit = m_Content.begin();
+  while (cit != m_Content.end())
+  {   
+    (*cit)->emitContent(target);
+    ++cit;
+  }
+}
+
+void AXmlElement::_indent(AOutputBuffer& target, int indent) const
+{
+  while (indent > 0)
+  {
+    target.append(AConstant::ASTRING_TWOSPACES);
+    --indent;
+  }
+}
+
+AXmlElement& AXmlElement::addAttribute(const AString& name, const AString& value)
+{
+  m_Attributes.insert(name, value);
+
+  return *this;
+}
+
+AXmlElement *AXmlElement::findNode(const AString& xpath)
+{
+  LIST_AString xparts;
+  xpath.split(xparts, '/');
+
+  if (xparts.size() > 0)
+  {
+    if ('/' == xpath.at(0))
+    {
+      if (m_Name.equals(xparts.front()))
+      {
+        xparts.pop_front();
+        if (xparts.size() > 0)
+          return _get(xparts);
+        else
+          return this;
+      }
+      else
+        return NULL;
+    }
+    else
+    {
+      if (xparts.size() > 0)
+        return _get(xparts);
+      else
+        return NULL;
+    }
+  }
+  else
+  {
+    return this;
+  }
+}
+
+const AXmlElement *AXmlElement::findNode(const AString& xpath) const
+{
+  LIST_AString xparts;
+  xpath.split(xparts, '/');
+
+  if (xparts.size() > 0)
+  {
+    if ('/' == xpath.at(0))
+    {
+      if (m_Name.equals(xparts.front()))
+      {
+        xparts.pop_front();
+        if (xparts.size() > 0)
+          return _get(xparts);
+        else
+          return this;
+      }
+      else
+        return NULL;
+    }
+    else
+    {
+      if (xparts.size() > 0)
+        return _get(xparts);
+      else
+        return NULL;
+    }
+  }
+  else
+  {
+    return this;
+  }
+}
+
+AXmlElement *AXmlElement::_get(LIST_AString& xparts) const
+{
+  AString& strName = xparts.front();
+  NodeContainer::const_iterator cit = m_Content.begin();
+  while (cit != m_Content.end())
+  {
+    if ((*cit)->getName().equals(strName))
+    {
+      xparts.pop_front();
+      if (xparts.size() > 0)
+        return (*cit)->_get(xparts);
+      else 
+        return (*cit);
+    }
+    ++cit;
+  }
+  
+  //a_Not found
+  return NULL;
+}
+
+AXmlElement& AXmlElement::addComment(const AString& comment)
+{
+  AASSERT(this, m_Content.size() < DEBUG_MAXSIZE_AXmlElement);  //Debug only limit
+
+  AXmlInstruction *p = new AXmlInstruction(AXmlInstruction::COMMENT, this);
+  p->useData().assign(comment);
+  m_Content.push_back(p);
+
+  return *this;
+}
+
+const AString& AXmlElement::getName() const 
+{ 
+  return m_Name;
+}
+
+AString& AXmlElement::useName() 
+{ 
+  return m_Name; 
+}
+
+const AAttributes& AXmlElement::getAttributes() const
+{
+  return m_Attributes; 
+}
+
+AAttributes& AXmlElement::useAttributes() 
+{ 
+  return m_Attributes; 
+}
+
+const AXmlElement::NodeContainer& AXmlElement::getContentContainer() const 
+{
+  return m_Content;
+}
+
+size_t AXmlElement::find(const AString& path, AXmlElement::ConstNodeContainer& result) const
+{
+  AString strAttribute;
+  AString strPath(path);
+  bool leadingSlash = false;
+
+  size_t pos = path.find('@');
+  if (AConstant::npos != pos)
+  {
+    //a_Extract attribute
+    strPath.get(strAttribute, pos);
+    strPath.setSize(strPath.getSize() - 1);  //a_Remove the trailing '@'
+  }
+
+  if ('/' == strPath.at(0))
+  {
+    leadingSlash = true;  //a_Signals that slash leads the path so much include current name
+  }
+
+  //a_Remove the leading name (which should be this element's name)
+  LIST_AString listPath;
+  strPath.split(listPath, '/');
+  if (leadingSlash)
+  {
+    if (0 == listPath.size())
+    {
+      //a_ "/" selects current node
+      result.push_back(this);
+      return 1;
+    }
+    else if (0 != listPath.front().compare(m_Name))
+    {
+      //a_First token MUST be the name of this element if / leads
+      ATHROW_EX(this, AException::ProgrammingError, ARope("Absolute path must start with the name of the current root element: root=/")+m_Name+" while path="+path);
+    }
+  }
+  else if (0 == listPath.size())
+  {
+    //a_ "/" selects current node
+    result.push_back(this);
+    return 1;
+  }
+  else
+  {
+    //a_Relative path implies this node is first
+    listPath.push_front(m_Name);
+  }
+
+  return _find(listPath, result);
+}
+
+size_t AXmlElement::_find(LIST_AString listPath, AXmlElement::ConstNodeContainer& result) const
+{
+  if (listPath.front().equals(m_Name))
+  {
+    listPath.pop_front();
+
+    size_t ret = 0;
+    switch(listPath.size())
+    {
+      case 0:
+        //a_This node is it
+        result.push_back(this);
+        ++ret;
+      break;
+      
+      case 1:
+      {
+        //a_Include immediate children nodes
+        NodeContainer::const_iterator cit = m_Content.begin();
+        while (cit != m_Content.end())
+        {
+          if ((*cit)->getName().equals(listPath.front()))
+          {
+            result.push_back(*cit);
+            ++ret;
+          }
+          ++cit;
+        }
+      }
+      break;
+      
+      default:
+      {
+        //a_Recurse deeper for each element
+        NodeContainer::const_iterator cit = m_Content.begin();
+        while (cit != m_Content.end())
+        {
+          if ((*cit)->getName().equals(listPath.front()))
+          {
+            ret += (*cit)->_find(listPath, result);
+          }
+          ++cit;
+        }
+      }
+      break;
+    }
+
+    return ret;
+  }
+  else
+    return 0;
+}
+
+
+bool AXmlElement::exists(const AString& path) const
+{
+  return (NULL != findNode(path));
+}
+
+bool AXmlElement::emitString(const AString& path, AOutputBuffer& target) const
+{
+  return emitFromPath(path, target);
+}
+
+AString AXmlElement::getString(const AString& path, const AString& strDefault) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+    return str;
+  else
+    return strDefault;
+}          
+
+int AXmlElement::getInt(const AString& path, int iDefault) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+    return str.toInt();
+  else
+    return iDefault;
+}
+
+size_t AXmlElement::getSize_t(const AString& path, size_t iDefault) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+    return str.toSize_t();
+  else
+    return iDefault;
+}
+
+bool AXmlElement::getBool(const AString& path, bool boolDefault) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+  {
+    return str.equalsNoCase("true",4) || str.equals("1",1);
+  }
+  else
+    return boolDefault;
+}
+
+bool AXmlElement::hasElements() const
+{
+  NodeContainer::const_iterator cit = m_Content.begin();
+  while (cit != m_Content.end())
+  {
+    //a_Stop when first instance is encountered
+    if ((*cit)->isElement())
+      return true;
+
+    ++cit;
+  }
+  return false;
+}
+
+AXmlElement *AXmlElement::_getAndInsert(LIST_AString& xparts, AXmlElement* pParent)
 {
   AString& strName = xparts.front();
   NodeContainer::iterator it = m_Content.begin();
@@ -107,7 +534,7 @@ AXmlElement *AXmlElement::_getAndInsert(LIST_AString& xparts, AXmlNode* pParent)
   }
 }
 
-AXmlElement *AXmlElement::_createAndAppend(LIST_AString& xparts, AXmlNode *pParent)
+AXmlElement *AXmlElement::_createAndAppend(LIST_AString& xparts, AXmlElement *pParent)
 {
   AString& strName = xparts.front();
   AXmlElement *p = new AXmlElement(strName, this);
@@ -119,148 +546,110 @@ AXmlElement *AXmlElement::_createAndAppend(LIST_AString& xparts, AXmlNode *pPare
     return p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const AString& value, AXmlData::Encoding encoding, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const AString& value, AXmlElement::Encoding encoding, bool insert)
 {
-  LIST_AString xparts;
-  xpath.split(xparts, '/');
-  if (!xparts.size())
-    ATHROW(this, AException::InvalidParameter);
-
-  AString strName(xparts.back());
-  xparts.pop_back();
-  AXmlElement *pParent = NULL;
-  if (xparts.size() > 0)
-  { 
-    if (insert)
-      pParent = _getAndInsert(xparts, this);
-    else
-      pParent = _createAndAppend(xparts, this);
-  }
-  else
-    pParent = this;
-
-  AAutoPtr<AXmlElement>pNew(new AXmlElement(strName));
+  AXmlElement *p = _addElement(path, insert);
   if (!value.isEmpty())
-    pNew->addData(value, encoding);
-  pParent->addContent(pNew);
-  pNew.setOwnership(false);
+    p->addData(value, encoding);
 
-  return *pNew;
-}
-
-AXmlElement& AXmlElement::addElement(const AString& xpath, const ARope& value, AXmlData::Encoding encoding, bool insert)
-{
-  if (m_Name.isEmpty())
-    ATHROW_EX(this, AException::InvalidObject, ASWNL("AXmlElement does not have a name"));
-
-  LIST_AString xparts;
-  xpath.split(xparts, '/');
-  if (!xparts.size())
-    ATHROW(this, AException::InvalidParameter);
-
-  AXmlElement *p = NULL;
-  if (insert)
-    p = _getAndInsert(xparts, this);
-  else
-    p = _createAndAppend(xparts, this);
-
-  p->addData(value, encoding);
   return *p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const AEmittable& object, AXmlData::Encoding encoding, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding, bool insert)
 {
-  if (m_Name.isEmpty())
-    ATHROW_EX(this, AException::InvalidObject, ASWNL("AXmlElement does not have a name"));
-
-  LIST_AString xparts;
-  xpath.split(xparts, '/');
-  if (!xparts.size())
-    ATHROW(this, AException::InvalidParameter);
+  AXmlElement *p = _addElement(path, insert);
 
   //a_Emit to rope
   ARope value;
   object.emit(value);
-
-  //a_Add rope as data
-  AXmlElement *p = NULL;
-  if (insert)
-    p = _getAndInsert(xparts, this);
-  else
-    p = _createAndAppend(xparts, this);
-
   p->addData(value, encoding);
+
   return *p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const AXmlEmittable& object, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const AXmlEmittable& object, bool insert)
+{
+  AXmlElement *p = _addElement(path, insert);
+
+  object.emitXml(*p);
+
+  return *p;
+}
+
+AXmlElement *AXmlElement::_addElement(const AString& path, bool insert)
 {
   if (m_Name.isEmpty())
     ATHROW_EX(this, AException::InvalidObject, ASWNL("AXmlElement does not have a name"));
 
   LIST_AString xparts;
-  xpath.split(xparts, '/');
+  path.split(xparts, '/');
   if (!xparts.size())
     ATHROW(this, AException::InvalidParameter);
 
-  ARope rope;
+  //a_Check is absolute is used and if root name matches this element
+  if ('/' == path.at(0) && xparts.size() > 0)
+  {
+    //a_xpath starts with /, make sure names match
+    if (xparts.front().equals(m_Name))
+      xparts.pop_front();
+    else
+      ATHROW_EX(this, AException::InvalidPath, ARope("path specified is absolute yet root element names do not match: ")+path);
+  }
 
+  //a_Skipped over root or relative path specified
   AXmlElement *p = NULL;
-  if (insert)
-    p = _getAndInsert(xparts, this);
+  if (xparts.size() > 0)
+  { 
+    if (insert)
+      p = _getAndInsert(xparts, this);
+    else
+      p = _createAndAppend(xparts, this);
+  }
   else
-    p = _createAndAppend(xparts, this);
+    p = this;
 
-  object.emitXml(*p);
-  return *p;
+  return p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const size_t value, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const size_t value, bool insert)
 {
-  return addElement(xpath, AString::fromSize_t(value), AXmlData::None, insert);
+  return addElement(path, AString::fromSize_t(value), AXmlElement::ENC_NONE, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const double value, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const double value, bool insert)
 {
-  return addElement(xpath, AString::fromDouble(value), AXmlData::None, insert);
+  return addElement(path, AString::fromDouble(value), AXmlElement::ENC_NONE, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const u8 value, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const u8 value, bool insert)
 {
-  return addElement(xpath, AString::fromU8(value), AXmlData::None, insert);
+  return addElement(path, AString::fromU8(value), AXmlElement::ENC_NONE, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const u4 value, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const u4 value, bool insert)
 {
-  return addElement(xpath, AString::fromU4(value), AXmlData::None, insert);
+  return addElement(path, AString::fromU4(value), AXmlElement::ENC_NONE, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const char value, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const char value, bool insert)
 {
-  return addElement(xpath, AString(value), AXmlData::None, insert);
+  return addElement(path, AString(value), AXmlElement::ENC_NONE, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& xpath, const bool value, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const bool value, bool insert)
 {
-  return addElement(xpath, value ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE, AXmlData::None, insert);
+  return addElement(path, value ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE, AXmlElement::ENC_NONE, insert);
 }
 
 AXmlElement& AXmlElement::addElement(
-  const AString& xpath, 
+  const AString& path, 
   const char * value, 
-  u4 len,                      // = AConstant::npos
-  AXmlData::Encoding encoding, // = AXmlData::None
-  bool insert                  // = true
+  u4 len,                         // = AConstant::npos
+  AXmlElement::Encoding encoding, // = AXmlElement::ENC_NONE
+  bool insert                     // = true
 )
 {
-  return addElement(xpath, AString(value, len), encoding, insert);
-}
-
-AXmlElement& AXmlElement::addAttribute(const AString& name, const AString& value)
-{
-  m_Attributes.insert(name, value);
-
-  return *this;
+  return addElement(path, AString(value, len), encoding, insert);
 }
 
 AXmlElement& AXmlElement::addAttribute(const AString& name, const double value)
@@ -285,20 +674,24 @@ AXmlElement& AXmlElement::addAttributes(const AAttributes& attrs)
   return *this;
 }
 
-AXmlElement& AXmlElement::addData(const AEmittable& data, AXmlData::Encoding encoding)
+AXmlElement& AXmlElement::addData(const AEmittable& data, AXmlElement::Encoding encoding)
 {
-  addContentNode(new AXmlData(data, encoding));
+  addContent(new AXmlData(data, encoding));
   return *this;
 }
 
 AXmlElement& AXmlElement::addContent(
-  AXmlNode *pnode, 
+  AXmlElement *pnode, 
   const AString& path // = AConstant::ASTRING_EMPTY
 )
 {
   if (path.isEmpty() || path.equals(AConstant::ASTRING_SLASH))
   {
-    addContentNode(pnode);
+    AASSERT(this, m_Content.size() < DEBUG_MAXSIZE_AXmlElement);  //Debug only limit
+    AASSERT(this, pnode);
+
+    pnode->setParent(this);
+    m_Content.push_back(pnode);
   }
   else
   {
@@ -309,7 +702,7 @@ AXmlElement& AXmlElement::addContent(
 
     AXmlElement *pNewParent = _createAndAppend(parts,this);
     AASSERT_EX(this, pNewParent, path);
-    pNewParent->addContentNode(pnode);
+    pNewParent->addContent(pnode);
   }
   return *this;
 }
@@ -320,17 +713,9 @@ AXmlElement& AXmlElement::addContent(const AXmlEmittable& data)
   return *this;
 }
 
-AXmlElement& AXmlElement::addComment(const AString& comment)
+void AXmlElement::emit(AOutputBuffer& target) const
 {
-  AXmlInstruction *p = new AXmlInstruction(AXmlInstruction::COMMENT);
-  p->useData().set(comment);
-  addContentNode(p);
-  return *this;
-}
-
-void AXmlElement::emitXml(AXmlElement& target) const
-{
-  AXmlNode::emitXml(target);
+  emit(target, -1);
 }
 
 void AXmlElement::emit(AOutputBuffer& target, int indent) const
@@ -344,7 +729,7 @@ void AXmlElement::emit(AOutputBuffer& target, int indent) const
         target.append(AConstant::ASTRING_CRLF);                                    //a_End of line
       for (int i=0; i<indent; ++i) target.append(AConstant::ASTRING_TWOSPACES);    //a_Indentation
     }
-    target.append(AXmlDocument::sstr_Start);
+    target.append(AXmlElement::sstr_Start);
     target.append(m_Name);
 
     //a_Display attributes of this element
@@ -358,10 +743,10 @@ void AXmlElement::emit(AOutputBuffer& target, int indent) const
     int iSubElementCount = 0;
     if (cit != m_Content.end())
     {
-      target.append(AXmlDocument::sstr_End);
+      target.append(AXmlElement::sstr_End);
       while (cit != m_Content.end())
       {
-        if (typeid(*(*cit)) == typeid(AXmlData))
+        if ((*cit)->isData())
         {
           (*cit)->emit(target, indent);
         }
@@ -377,13 +762,13 @@ void AXmlElement::emit(AOutputBuffer& target, int indent) const
         target.append(AConstant::ASTRING_CRLF);                                      //a_End of line
         _indent(target, indent);
       }
-      target.append(AXmlDocument::sstr_StartEnd);
+      target.append(AXmlElement::sstr_StartEnd);
       target.append(m_Name);
-      target.append(AXmlDocument::sstr_End);
+      target.append(AXmlElement::sstr_End);
     }
     else
     {
-      target.append(AXmlDocument::sstr_EndSingular);
+      target.append(AXmlElement::sstr_EndSingular);
     }
   }
   else
@@ -399,11 +784,6 @@ void AXmlElement::emit(AOutputBuffer& target, int indent) const
       }
     }
   }
-}
-
-void AXmlElement::emit(AOutputBuffer& target) const
-{
-  emit(target,-1);
 }
 
 void AXmlElement::emitJson(
@@ -493,7 +873,7 @@ void AXmlElement::fromAFile(AFile& file)
 
   //a_Extract name and skip over whitespace
   m_Name.clear();
-  file.readUntilOneOf(m_Name, AXmlDocument::sstr_EndOrWhitespace, false);
+  file.readUntilOneOf(m_Name, AXmlElement::sstr_EndOrWhitespace, false);
   file.skipOver();
   
   //a_Find /> or >
@@ -502,12 +882,12 @@ void AXmlElement::fromAFile(AFile& file)
   {
     if (m_Name.rfind("--", 2) == m_Name.getSize() - 2)  //TODO:
     //a_Special case for comment, must end with '-->' and may contain '>' inside
-    file.readUntil(str, AXmlDocument::sstr_EndComment);
+    file.readUntil(str, AXmlElement::sstr_EndComment);
     addComment(str);
     return;
   }
   else
-    file.readUntilOneOf(str, AXmlDocument::sstr_End);
+    file.readUntilOneOf(str, AXmlElement::sstr_End);
 
   if (!str.isEmpty() && str.at(str.getSize() - 1) == '/')
   {
@@ -526,7 +906,7 @@ void AXmlElement::fromAFile(AFile& file)
     //a_Read data until next tag starts
     file.skipOver();                //a_Skip over whitespace
     str.clear();
-    if (AConstant::npos == file.readUntilOneOf(str, AXmlDocument::sstr_Start))
+    if (AConstant::npos == file.readUntilOneOf(str, AXmlElement::sstr_Start))
       break;
 
     str.stripTrailing();
@@ -546,8 +926,8 @@ void AXmlElement::fromAFile(AFile& file)
         //a_End of tag found
         file.read(c);
         str.clear();
-        file.readUntilOneOf(str, AXmlDocument::sstr_EndOrWhitespace);
-        file.skipOver(AXmlDocument::sstr_EndOrWhitespace);                //a_Skip over whitespace and >
+        file.readUntilOneOf(str, AXmlElement::sstr_EndOrWhitespace);
+        file.skipOver(AXmlElement::sstr_EndOrWhitespace);                //a_Skip over whitespace and >
         if (str != m_Name)
           ATHROW_EX(&file, AException::InvalidData, AString("Close tag </")+str+"> does not match opened tag <"+m_Name+">");
         
@@ -569,15 +949,15 @@ void AXmlElement::fromAFile(AFile& file)
 
           AString data;
           file.readUntil(data, AXmlData::sstr_EndCDATA, true, true);
-          addData(data, AXmlData::CDataDirect);
+          addData(data, AXmlElement::ENC_CDATADIRECT);
         }
-        else if (0 == str.findNoCase(AXmlDocument::sstr_StartComment))
+        else if (0 == str.findNoCase(AXmlElement::sstr_StartComment))
         {
           //a_Comment (!--) found
-          file.skip(AXmlDocument::sstr_StartComment.getSize());
+          file.skip(AXmlElement::sstr_StartComment.getSize());
 
           AString comment;
-          file.readUntil(comment, AXmlDocument::sstr_EndComment, true, true);
+          file.readUntil(comment, AXmlElement::sstr_EndComment, true, true);
           addComment(comment);
         }
         else
@@ -610,7 +990,7 @@ void AXmlElement::toAFile(AFile& file) const
   rope.toAFile(file);
 }
 
-void AXmlElement::setString(const AString& path, const AString& value, AXmlData::Encoding encoding)
+void AXmlElement::setString(const AString& path, const AString& value, AXmlElement::Encoding encoding)
 {
   addElement(path, value, encoding);
 }
@@ -628,11 +1008,11 @@ void AXmlElement::setSize_t(const AString& path, size_t value)
 void AXmlElement::setBool(const AString& path, bool value)
 {
   //a_TODO: Need a better way to set existing elements
-  AXmlNode *pNode = findNode(path);
+  AXmlElement *pNode = findNode(path);
   if (pNode)
   {
     pNode->clear();
-    pNode->addContentNode(new AXmlData(AString::fromBool(value)));
+    pNode->addContent(new AXmlData(AString::fromBool(value)));
   }
   else
   {
@@ -653,4 +1033,9 @@ bool AXmlElement::isData() const
 bool AXmlElement::isInstruction() const
 {
   return false;
+}
+
+AXmlElement* AXmlElement::clone() const 
+{ 
+  return new AXmlElement(*this);
 }

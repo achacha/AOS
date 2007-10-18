@@ -30,6 +30,7 @@ void testGeneric(int& iRet)
   //a_Xml emit
   AXmlElement root("root");
   fn.emitXml(root);
+  root.debugDump();
   strOut.clear();
   root.emit(strOut);
   ASSERT_UNIT_TEST(strOut.equals("<root><AFilename type=\"0\"><drive>c</drive><path><dir>path0</dir><dir>path1</dir></path><filename>filename.extension</filename></AFilename></root>"), "AFilename XML emit", "0", iRet);

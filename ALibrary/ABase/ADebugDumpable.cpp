@@ -184,7 +184,7 @@ bool ADebugDumpable::isPointerValid(void *p)
   {
     case 4 :
     {
-      u4 mem = (u4)p;
+      u4 mem = reinterpret_cast<u4>(p);
       if (
         mem == 0xcdcdcdcd ||    // MSVC: Clean land memory. New objects are filled with 0xCD when they are allocated.
         mem == 0xfdfdfdfd ||    // MSVC: No-man's land memory. Extra bytes that belong to the internal block allocated, but not the block you requested. They are placed before and after requested blocks and used for data bound checking.
@@ -202,7 +202,7 @@ bool ADebugDumpable::isPointerValid(void *p)
 
     case 8:
     {
-      u8 mem = (u8)p;
+      u8 mem = reinterpret_cast<u8>(p);
       if (
         mem == 0xcdcdcdcdcdcdcdcd ||    // MSVC: Clean land memory. New objects are filled with 0xCD when they are allocated.
         mem == 0xfdfdfdfdfdfdfdfd ||    // MSVC: No-man's land memory. Extra bytes that belong to the internal block allocated, but not the block you requested. They are placed before and after requested blocks and used for data bound checking.

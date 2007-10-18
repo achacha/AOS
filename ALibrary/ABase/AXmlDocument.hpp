@@ -2,10 +2,10 @@
 #define INCLUDED__AXmlDocument_HPP__
 
 #include "apiABase.hpp"
-#include "AXmlNode.hpp"
+#include "AXmlElement.hpp"
 #include "ASerializable.hpp"
 #include "AString.hpp"
-#include "AXmlElement.hpp"
+#include "AXmlData.hpp"
 #include "AXmlInstruction.hpp"
 #include "AObjectBase.hpp"
 #include "AJsonEmittable.hpp"
@@ -105,19 +105,6 @@ private:
 
   //a_There is only 1 root element
   AXmlElement m_Root;
-
-public:
-  //a_For convenience and efficiency
-  static const AString sstr_Start;                         //a_ "<"
-  static const AString sstr_StartComment;                  //a_ "<!--"
-  static const AString sstr_StartInstruction;              //a_ "<?"
-  static const AString sstr_StartEnd;                      //a_ "</"
-  static const AString sstr_EndSingular;                   //a_ "/>"
-  static const AString sstr_End;                           //a_ ">"
-  static const AString sstr_EndOrWhitespace;               //a_ "/> \t\n\r"
-  static const AString sstr_EndInstruction;                //a_ "?>"
-  static const AString sstr_EndComment;                    //a_ "-->"
-  static const AString sstr_EndInstructionOrWhitespace;    //a_ "?> \t\n\r"
 
 public:
 #ifdef __DEBUG_DUMP__

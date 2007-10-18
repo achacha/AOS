@@ -64,7 +64,7 @@ void AResultSet::emit(AOutputBuffer& target) const
 void AResultSet::emitXml(AXmlElement& target) const
 {
   AXmlElement& element = target.addElement(m_Name.isEmpty() ? "AResultSet" : m_Name);
-  element.addElement("sql", m_SQL, AXmlData::CDataDirect);
+  element.addElement("sql", m_SQL, AXmlElement::ENC_CDATADIRECT);
 
   RESULTSET::const_iterator citRow = m_ResultSet.begin();
   while(citRow != m_ResultSet.end())

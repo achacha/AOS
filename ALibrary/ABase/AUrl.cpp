@@ -619,7 +619,7 @@ void AUrl::emitXml(AXmlElement& target) const
   {
     target.addElement(ASW("mediaType",9), m_strServer);
     target.addElement(m_isBase64 ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
-    target.addElement(ASW("data",4), m_strFilename, AXmlData::CDataSafe);
+    target.addElement(ASW("data",4), m_strFilename, AXmlElement::ENC_CDATASAFE);
   }
   else
   {
@@ -634,7 +634,7 @@ void AUrl::emitXml(AXmlElement& target) const
 
   ARope rope;
   emit(rope);
-  target.addElement(ASW("url",3), rope, AXmlData::CDataSafe);
+  target.addElement(ASW("url",3), rope, AXmlElement::ENC_CDATASAFE);
 
   m_QueryString.emitXml(target.addElement(ASW("AQueryString",12)));
 }

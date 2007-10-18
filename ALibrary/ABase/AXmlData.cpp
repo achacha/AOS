@@ -14,7 +14,7 @@ const AString AXmlData::sstr_EndCDATA("]]>");
 void AXmlData::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AXmlData @ " << std::hex << this << std::dec << ") {" << std::endl;
-  AXmlNode::debugDump(os, indent+1);
+  AXmlElement::debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent) << "  m_Encoding=" << m_Encoding << "  m_Data={" << m_Data << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
@@ -24,8 +24,8 @@ AXmlData::AXmlData()
 {
 }
 
-AXmlData::AXmlData(const AEmittable& data, AXmlData::Encoding encoding /*  = AXmlData::None */, AXmlNode *pParent /* = NULL */) :
-  AXmlNode(pParent),
+AXmlData::AXmlData(const AEmittable& data, AXmlElement::Encoding encoding /*  = AXmlElement::ENC_NONE */, AXmlElement *pParent /* = NULL */) :
+  AXmlElement(pParent),
   m_Encoding(encoding)
 {
   data.emit(m_Data);
@@ -54,12 +54,12 @@ const AString& AXmlData::getData() const
 
 void AXmlData::clear()
 {
-  AXmlNode::clear();
+  AXmlElement::clear();
   m_Data.clear();
-  m_Encoding = AXmlData::None;
+  m_Encoding = AXmlElement::ENC_NONE;
 }
 
-void AXmlData::setEncoding(AXmlData::Encoding encoding)
+void AXmlData::setEncoding(AXmlElement::Encoding encoding)
 {
   m_Encoding = encoding;
 }
@@ -87,35 +87,35 @@ void AXmlData::emit(AOutputBuffer& target, int) const
 {
   switch(m_Encoding)
   {
-    case None:
+  case AXmlElement::ENC_NONE:
       target.append(m_Data);
       break;
 
-    case Url:
+    case AXmlElement::ENC_URL:
       ATextConverter::encodeURL(m_Data, target);
     break;
 
-    case CDataDirect:
+    case AXmlElement::ENC_CDATADIRECT:
       target.append(sstr_StartCDATA);
       target.append(m_Data);
       target.append(sstr_EndCDATA);
     break;
 
-    case CDataSafe:
+    case AXmlElement::ENC_CDATASAFE:
       target.append(sstr_StartCDATA);
       ATextConverter::makeCDataSafe(m_Data, target);
       target.append(sstr_EndCDATA);
     break;
 
-    case XmlSafe:
+    case AXmlElement::ENC_XMLSAFE:
       ATextConverter::makeHtmlSafe(m_Data, target);
     break;
 
-    case Base64:
+    case AXmlElement::ENC_BASE64:
       ATextConverter::encodeBase64(m_Data, target);
     break;
     
-    case CDataHexDump:
+    case AXmlElement::ENC_CDATAHEXDUMP:
       target.append(sstr_StartCDATA);
       ATextConverter::convertStringToHexDump(m_Data, target);
       target.append(sstr_EndCDATA);

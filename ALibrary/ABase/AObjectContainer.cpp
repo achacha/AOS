@@ -65,7 +65,7 @@ AObjectBase &AObjectContainer::insert(const AString& path, AObjectBase *pobject)
   return _insertObjectPtr(path, pobject);
 }
 
-AObjectBase &AObjectContainer::insert(const AString& path, const AString& value, AXmlData::Encoding encoding)
+AObjectBase &AObjectContainer::insert(const AString& path, const AString& value, AXmlElement::Encoding encoding)
 {
   AObjectBase *pobject = new AObject<AString>(value, encoding);
   

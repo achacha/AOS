@@ -879,10 +879,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AXmlNode.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AXmlParsable.cpp"
 				>
 			</File>
@@ -1343,10 +1339,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AXmlNode.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AXmlParsable.hpp"
 				>
 			</File>
@@ -1400,10 +1392,6 @@
 			</File>
 			<File
 				RelativePath=".\templateVectorOfPtrs.hpp"
-				>
-			</File>
-			<File
-				RelativePath="typedefContainers.hpp"
 				>
 			</File>
 			<File

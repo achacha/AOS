@@ -32,13 +32,13 @@ public:
   encoding - data encoding if any to use on the object
   name - object's name (if using AObjectContainer, you can specify object name from the path)
   */
-  AObject(AXmlData::Encoding encoding = AXmlData::None)
+  AObject(AXmlElement::Encoding encoding = AXmlElement::ENC_NONE)
     : AObjectBase(AConstant::ASTRING_EMPTY), m_Encoding(encoding) {}
 
-  AObject(const _t& object, AXmlData::Encoding encoding = AXmlData::None)
+  AObject(const _t& object, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE)
     : AObjectBase(AConstant::ASTRING_EMPTY), m_Object(object), m_Encoding(encoding) {}
   
-  AObject(const _t& object, const AString& name, AXmlData::Encoding encoding = AXmlData::None)
+  AObject(const _t& object, const AString& name, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE)
     : AObjectBase(name), m_Object(object), m_Encoding(encoding) {}
 
   AObject(const AObject& that)
@@ -55,7 +55,7 @@ public:
   /*!
   Sets the output of data (see AXmlData)
   */
-  void setDataEncoding(AXmlData::Encoding encoding) { m_Encoding = encoding; }
+  void setDataEncoding(AXmlElement::Encoding encoding) { m_Encoding = encoding; }
 
   /*!
   Methods needed for AObjectContainer usage and XML publishing
@@ -110,7 +110,7 @@ public:
 
 private:
   _t m_Object;
-  AXmlData::Encoding m_Encoding;
+  AXmlElement::Encoding m_Encoding;
 };
 
 /**

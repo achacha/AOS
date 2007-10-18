@@ -62,7 +62,7 @@
 #define DEBUG_MAXSIZE_AHTTPHeader 1000
 
 // Size of container
-#define DEBUG_MAXSIZE_AXmlNode 1000
+#define DEBUG_MAXSIZE_AXmlElement 1000
 
 // Attributes items
 #define DEBUG_MAXSIZE_AAttributes 500
