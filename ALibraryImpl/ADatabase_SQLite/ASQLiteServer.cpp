@@ -88,7 +88,7 @@ void ASQLiteServer::emit(AXmlElement& target) const
 
   AString strPath;
   _getDBFilename(strPath);
-  target.addElement(ASW("DBFilename",10), strPath, AXmlData::CDataDirect);
+  target.addElement(ASW("DBFilename",10), strPath, AXmlElement::ENC_CDATADIRECT);
 }
 
 sqlite3 *ASQLiteServer::getDBHandle()

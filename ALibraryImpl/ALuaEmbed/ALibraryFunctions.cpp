@@ -9,7 +9,7 @@ extern "C"
 #include "lstate.h"
 }
 
-static void luaA_stringappender(lua_State *L, const char *s)
+extern "C" void luaL_stringappender(lua_State *L, const char *s)
 {
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   if (pLuaEmbed)
@@ -19,7 +19,7 @@ static void luaA_stringappender(lua_State *L, const char *s)
 }
 
 /*!
-thisfunction("<path to the AXmlNode to emit>")
+thisfunction("<path to the AXmlElement to emit>")
 returns: content at the node path
 */
 static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
@@ -33,9 +33,9 @@ static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
   AASSERT(NULL, pLuaEmbed);
 
   AString str;
-  AXmlNode::ConstNodeContainer nodes;
+  AXmlElement::ConstNodeContainer nodes;
   size_t ret = pLuaEmbed->useModel().useRoot().find(xmlpath, nodes);
-  for (AXmlNode::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+  for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
   {
     (*cit)->emitContent(str);
     lua_pushlstring(L, str.c_str(), str.getSize());
@@ -136,35 +136,7 @@ static int alibrary_Objects_Model_addElementText(lua_State *L)
   return 0;
 }
 
-/*!
-print(...) to outputbuffer attached to ALuaEmbed
-Does not append trailing EOL
-*/
-static int alibrary_print(lua_State *L)
-{
-  int n = lua_gettop(L);  /* number of arguments */
-  int i;
-  lua_getglobal(L, "tostring");
-  for (i=1; i<=n; i++) {
-    const char *s;
-    lua_pushvalue(L, -1);  /* function to be called */
-    lua_pushvalue(L, i);   /* value to print */
-    lua_call(L, 1, 1);
-    s = lua_tostring(L, -1);  /* get result */
-    if (s == NULL)
-      return luaL_error(L, LUA_QL("tostring") " must return a string to "
-      LUA_QL("print"));
-
-    luaA_stringappender(L, s);
-    lua_pop(L, 1);
-    if (i<n) luaA_stringappender(L, ",");
-  }
-
-  return 0;
-}
-
 static const luaL_Reg alibrary_funcs[] = {
-  {"print", alibrary_print},
   {"emit", alibrary_Objects_emit},
   {"Model_emitXml", alibrary_Objects_Model_emitXml},
   {"Model_emitJson", alibrary_Objects_Model_emitJson},

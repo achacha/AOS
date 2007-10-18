@@ -19,7 +19,35 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#ifndef ALuaEMBED_EXPORTS
+#ifdef ALuaEMBED_EXPORTS
+/*!
+ALibrary override
+print(...) to outputbuffer attached to ALuaEmbed
+Does not append trailing EOL
+*/
+static int luaB_print(lua_State *L)
+{
+  int n = lua_gettop(L);  /* number of arguments */
+  int i;
+  lua_getglobal(L, "tostring");
+  for (i=1; i<=n; i++) {
+    const char *s;
+    lua_pushvalue(L, -1);  /* function to be called */
+    lua_pushvalue(L, i);   /* value to print */
+    lua_call(L, 1, 1);
+    s = lua_tostring(L, -1);  /* get result */
+    if (s == NULL)
+      return luaL_error(L, LUA_QL("tostring") " must return a string to "
+      LUA_QL("print"));
+
+    luaL_stringappender(L, s);
+    lua_pop(L, 1);
+    if (i<n) luaL_stringappender(L, ",");
+  }
+
+  return 0;
+}
+#else
 /*
 ** If your system does not support `stdout', you can just remove this function.
 ** If you need, you can define your own `print' function, following this
@@ -453,9 +481,7 @@ static const luaL_Reg base_funcs[] = {
   {"loadstring", luaB_loadstring},
   {"next", luaB_next},
   {"pcall", luaB_pcall},
-#ifndef ALuaEMBED_EXPORTS
   {"print", luaB_print},
-#endif
   {"rawequal", luaB_rawequal},
   {"rawget", luaB_rawget},
   {"rawset", luaB_rawset},
