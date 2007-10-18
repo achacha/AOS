@@ -7,6 +7,8 @@
 #include "AXmlEmittable.hpp"
 #include "AJsonEmittable.hpp"
 
+class AXmlElement;
+
 /*!
 Base class that represents an XML node from which AElement, AData and such are derived
 Pure virtual class not meant to be instanciated
@@ -105,8 +107,15 @@ public:
   Find path based on this node as root
   Returns NULL if not found
   */
-  AXmlNode *findNode(const AString& xpath);
-  const AXmlNode *findNode(const AString& xpath) const;
+  AXmlNode *findNode(const AString& path);
+  const AXmlNode *findNode(const AString& path) const;
+
+  /*!
+  Find element at a path
+  Returns NULL if not found or not an AXmlElement type
+  */
+  AXmlElement *findElement(const AString& path);
+  const AXmlElement *findElement(const AString& path) const;
 
   /*!
   Searching for path

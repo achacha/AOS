@@ -266,6 +266,16 @@ const AXmlNode *AXmlNode::findNode(const AString& xpath) const
   }
 }
 
+AXmlElement *AXmlNode::findElement(const AString& path)
+{
+  return dynamic_cast<AXmlElement *>(findNode(path));
+}
+
+const AXmlElement *AXmlNode::findElement(const AString& path) const
+{
+  return dynamic_cast<const AXmlElement *>(findNode(path));
+}
+
 AXmlNode *AXmlNode::_get(LIST_AString& xparts) const
 {
   AString& strName = xparts.front();
