@@ -32,35 +32,35 @@ bool AOSModule_rss20::execute(AOSContext& context, const AXmlElement& modulePara
   {
     AXmlElement& item = channel.addElement("item");
     item.addElement("title", "The dada raven");
-    item.addElement("link", "http://achacha.selfip.com/dada/Dada?templateName=TheRaven");
+    item.addElement("link", "/dada/Dada?templateName=TheRaven");
     item.addElement("description", "Nevermore");
   }
 
   {
     AXmlElement& item = channel.addElement("item");
     item.addElement("title", "The dada freeflow");
-    item.addElement("link", "http://achacha.selfip.com/dada/Dada?templateName=FreeFlow");
+    item.addElement("link", "/dada/Dada?templateName=FreeFlow");
     item.addElement("description", "Free flow of information");
   }
 
   {
     AXmlElement& item = channel.addElement("item");
     item.addElement("title", "Template: Single");
-    item.addElement("link", "http://achacha.selfip.com/DisplayInputWithTemplate.html");
+    item.addElement("link", "/DisplayInputWithTemplate.html");
     item.addElement("description", "Single template");
   }
 
   {
     AXmlElement& item = channel.addElement("item");
     item.addElement("title", "Template: Multiple");
-    item.addElement("link", "http://achacha.selfip.com/DisplayInputWithTemplateParts.html");
+    item.addElement("link", "/DisplayInputWithTemplateParts.html");
     item.addElement("description", "Multi-part template composite");
   }
 
   {
     AXmlElement& item = channel.addElement("item");
     item.addElement("title", "XSLT");
-    item.addElement("link", "http://achacha.selfip.com/DisplayInputWithXslt.html");
+    item.addElement("link", "/DisplayInputWithXslt.html");
     item.addElement("description", "XSL transform");
   }
 

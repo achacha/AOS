@@ -126,12 +126,12 @@ void ADadaDataHolder::readData(
 
 void ADadaDataHolder::readData(AOSServices& services)
 {
-  AXmlNode::ConstNodeContainer nodes;
+  AXmlElement::ConstNodeContainer nodes;
 
   //a_Words
   AString str;
   services.useConfiguration().getConfigRoot().find(ASWNL("/config/dada/data"), nodes);
-  AXmlNode::ConstNodeContainer::iterator it = nodes.begin();
+  AXmlElement::ConstNodeContainer::iterator it = nodes.begin();
   while (it != nodes.end())
   {
     str.clear();

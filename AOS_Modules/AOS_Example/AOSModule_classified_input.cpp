@@ -35,9 +35,9 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
 {
   AString str;
   bool state = false;
-  const AXmlNode *pNode = NULL;
+  const AXmlElement *pNode = NULL;
   
-  if (pNode = moduleParams.findNode(ASW("/params/module/state",20)))
+  if (pNode = moduleParams.findNode(ASW("state",5)))
   {
     pNode->emitContent(str);
     if (str.at(0) == '1')
@@ -45,29 +45,29 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
   }
   else
   {
-    context.addError(ASWNL("AOSModule_classified_input::execute"), ASWNL("classified_input module missing '/params/module/state' parameter"));
+    context.addError(ASWNL("AOSModule_classified_input::execute"), ASWNL("classified_input module missing '/module/state' parameter"));
     return false;
   }
 
   AString strDisplay;
-  if (pNode = moduleParams.findNode(ASW("/params/module/display",22)))
+  if (pNode = moduleParams.findNode(ASW("display",7)))
   {
     pNode->emitContent(strDisplay);
   }
   else
   {
-    context.addError(ASWNL("AOSModule_classified_input::execute"), ASWNL("classified_input module missing '/params/module/display' parameter"));
+    context.addError(ASWNL("AOSModule_classified_input::execute"), ASWNL("classified_input module missing '/module/display' parameter"));
     return false;
   }
 
   AString strVariable;
-  if (pNode = moduleParams.findNode(ASW("/params/module/variable",23)))
+  if (pNode = moduleParams.findNode(ASW("variable",8)))
   {
     pNode->emitContent(strVariable);
   }
   else
   {
-    context.addError(ASWNL("AOSModule_classified_input::execute"), ASWNL("classified_input module missing '/params/module/variable' parameter"));
+    context.addError(ASWNL("AOSModule_classified_input::execute"), ASWNL("classified_input module missing '/module/variable' parameter"));
     return false;
   }
 

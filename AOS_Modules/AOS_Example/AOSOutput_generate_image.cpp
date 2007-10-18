@@ -17,17 +17,17 @@ bool AOSOutput_generate_image::execute(AOSOutputContext& context)
 {
   int x,y;
   AString str;
-  if (!context.getOutputParams().emitFromPath(ASW("output/canvas/x", 15), str))
+  if (!context.getOutputParams().emitFromPath(ASW("canvas/x", 15), str))
   {
-    m_Services.useLog().append("AOSOutput_generate_image: Unable to find '/params/output/canvas/x' parameter");
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("AOSOutput_generate_image requires '/params/output/canvas/x' parameter"));
+    m_Services.useLog().append("AOSOutput_generate_image: Unable to find '/output/canvas/x' parameter");
+    ATHROW_EX(this, AException::InvalidParameter, ASWNL("AOSOutput_generate_image requires '/output/canvas/x' parameter"));
   }
   x = str.toInt();
   str.clear();
-  if (!context.getOutputParams().emitFromPath(ASW("output/canvas/y", 15), str))
+  if (!context.getOutputParams().emitFromPath(ASW("canvas/y", 15), str))
   {
-    m_Services.useLog().append("AOSOutput_generate_image: Unable to find '/params/output/canvas/y' parameter");
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("AOSOutput_generate_image requires '/params/output/canvas/y' parameter"));
+    m_Services.useLog().append("AOSOutput_generate_image: Unable to find '/output/canvas/y' parameter");
+    ATHROW_EX(this, AException::InvalidParameter, ASWNL("AOSOutput_generate_image requires '/output/canvas/y' parameter"));
   }
   y = str.toInt();
 
