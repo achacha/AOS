@@ -165,8 +165,8 @@ void AMovingAverage::emitXml(AXmlElement& target) const
   if (target.useName().isEmpty())
     target.useName().assign("AMovingAverage", 14);
   
-  target.addElement(ASW("average",7), m_Average);
-  target.addElement(ASW("count",5), m_Count);
+  target.addElement(ASW("average",7)).addData(m_Average);
+  target.addElement(ASW("count",5)).addData(m_Count);
 
   AXmlElement& keep = target.addElement(ASW("keep",4));
   if (mp_Keep)
@@ -174,9 +174,9 @@ void AMovingAverage::emitXml(AXmlElement& target) const
     for (u4 i=0; i<m_KeepSize; ++i)
     {
       if (i == m_KeepPos)
-        keep.addElement(ASW("sample",6), mp_Keep[i]).addAttribute(ASW("pos",3), AConstant::ASTRING_ONE);
+        keep.addElement(ASW("sample",6)).addData(mp_Keep[i]).addAttribute(ASW("pos",3), AConstant::ASTRING_ONE);
       else
-        keep.addElement(ASW("sample",6), mp_Keep[i]);
+        keep.addElement(ASW("sample",6)).addData(mp_Keep[i]);
     }
   }
 }

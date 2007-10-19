@@ -45,7 +45,7 @@ void ALog::emitXml(AXmlElement& target) const
 {
   AASSERT(this, !target.useName().isEmpty());
 
-  target.addElement(ASW("event_mask",10), m_EventMask);
+  target.addElement(ASW("event_mask",10)).addData(m_EventMask);
 }
 
 void ALog::_append(const char *pcc, size_t len)

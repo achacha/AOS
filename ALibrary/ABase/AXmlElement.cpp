@@ -105,52 +105,6 @@ bool AXmlElement::emitFromPath(
     return false;
 }
 
-//void AXmlElement::emitJson(
-//  AOutputBuffer& target,
-//  int indent // = -1
-//) const
-//{
-//  bool needsBraces = (m_Content.size() > 0 || m_Attributes.size() > 0);
-//  if (needsBraces)
-//  {
-//    target.append('{');
-//  }
-//
-//  //a_Attributes become name:value pairs
-//  if (m_Attributes.size() > 0)
-//  {
-//    SET_AString names;
-//    m_Attributes.getNames(names);
-//    for(LIST_NVPair::const_iterator cit = m_Attributes.getAttributeContainer().begin(); cit != m_Attributes.getAttributeContainer().end(); ++cit)
-//    {
-//      if (indent >=0) _indent(target, indent+1);
-//      target.append(cit->getName());
-//      target.append(':');
-//      target.append(cit->getValue());
-//      if (indent >=0) target.append(AConstant::ASTRING_CRLF);
-//    }
-//  }
-//
-//  //a_Add content
-//  if (m_Content.size() > 0)
-//  {
-//    if (indent >=0) _indent(target, indent+1);
-//    target.append(m_Name);
-//    target.append(':');
-//    for (NodeContainer::const_iterator cit = m_Content.begin(); cit != m_Content.end(); ++cit)
-//    {
-//      (*cit)->emitJson(target, (indent >= 0 ? indent+1 : indent));
-//    }
-//  }
-//
-//  if (needsBraces)
-//  {
-//    if (indent >=0) _indent(target, indent);
-//    target.append('}');
-//    if (indent >=0) target.append(AConstant::ASTRING_CRLF);
-//  }
-//}
-
 void AXmlElement::emitXml(AXmlElement& target) const
 {
   AXmlElement& base = target.addElement(m_Name);
@@ -490,7 +444,7 @@ bool AXmlElement::hasElements() const
   return false;
 }
 
-AXmlElement *AXmlElement::_getAndInsert(LIST_AString& xparts, AXmlElement* pParent)
+AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParent)
 {
   AString& strName = xparts.front();
   NodeContainer::iterator it = m_Content.begin();
@@ -511,7 +465,7 @@ AXmlElement *AXmlElement::_getAndInsert(LIST_AString& xparts, AXmlElement* pPare
           if (!xparts.size())
             return p;
           else
-            return p->_getAndInsert(xparts, this);
+            return p->_getOrCreate(xparts, this);
         }
         else
           ATHROW_EX(this, AException::DataConflict, AString("Not AXmlElement type at: ")+strName);
@@ -530,7 +484,7 @@ AXmlElement *AXmlElement::_getAndInsert(LIST_AString& xparts, AXmlElement* pPare
   }
   else
   {
-    return p->_getAndInsert(xparts, this);
+    return p->_getOrCreate(xparts, this);
   }
 }
 
@@ -546,18 +500,17 @@ AXmlElement *AXmlElement::_createAndAppend(LIST_AString& xparts, AXmlElement *pP
     return p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const AString& value, AXmlElement::Encoding encoding, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, bool overwrite)
 {
-  AXmlElement *p = _addElement(path, insert);
-  if (!value.isEmpty())
-    p->addData(value, encoding);
-
+  AXmlElement *p = _addElement(path, overwrite);
+  AASSERT(this, p);
   return *p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding, bool insert)
+AXmlElement& AXmlElement::addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding, bool overwrite)
 {
-  AXmlElement *p = _addElement(path, insert);
+  AXmlElement *p = _addElement(path, overwrite);
+  AASSERT(this, p);
 
   //a_Emit to rope
   ARope value;
@@ -567,7 +520,7 @@ AXmlElement& AXmlElement::addElement(const AString& path, const AEmittable& obje
   return *p;
 }
 
-AXmlElement *AXmlElement::_addElement(const AString& path, bool insert)
+AXmlElement *AXmlElement::_addElement(const AString& path, bool overwrite)
 {
   if (m_Name.isEmpty())
     ATHROW_EX(this, AException::InvalidObject, ASWNL("AXmlElement does not have a name"));
@@ -584,15 +537,15 @@ AXmlElement *AXmlElement::_addElement(const AString& path, bool insert)
     if (xparts.front().equals(m_Name))
       xparts.pop_front();
     else
-      ATHROW_EX(this, AException::InvalidPath, ARope("path specified is absolute yet root element names do not match: ")+path);
+      ATHROW_EX(this, AException::InvalidPath, ARope("Path specified (")+path+ASWNL(") is absolute and does not match this element's name: ")+m_Name);
   }
 
   //a_Skipped over root or relative path specified
   AXmlElement *p = NULL;
   if (xparts.size() > 0)
   { 
-    if (insert)
-      p = _getAndInsert(xparts, this);
+    if (overwrite)
+      p = _getOrCreate(xparts, this);
     else
       p = _createAndAppend(xparts, this);
   }
@@ -602,40 +555,73 @@ AXmlElement *AXmlElement::_addElement(const AString& path, bool insert)
   return p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const size_t value, bool insert)
+AXmlElement& AXmlElement::addData(const size_t value)
 {
-  return addElement(path, AString::fromSize_t(value), AXmlElement::ENC_NONE, insert);
+  _addData(AString::fromSize_t(value), AXmlElement::ENC_NONE);
+  return *this;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const double value, bool insert)
+AXmlElement& AXmlElement::addData(const AEmittable& data, AXmlElement::Encoding encoding)
 {
-  return addElement(path, AString::fromDouble(value), AXmlElement::ENC_NONE, insert);
+  _addData(data, encoding);
+  return *this;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const u8 value, bool insert)
+AXmlElement& AXmlElement::addData(const double value)
 {
-  return addElement(path, AString::fromU8(value), AXmlElement::ENC_NONE, insert);
+  _addData(AString::fromDouble(value), AXmlElement::ENC_NONE);
+  return *this;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const u4 value, bool insert)
+AXmlElement& AXmlElement::addData(const u8 value)
 {
-  return addElement(path, AString::fromU4(value), AXmlElement::ENC_NONE, insert);
+  _addData(AString::fromU8(value), AXmlElement::ENC_NONE);
+  return *this;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const char value, bool insert)
+AXmlElement& AXmlElement::addData(const u4 value)
 {
-  return addElement(path, AString(value), AXmlElement::ENC_NONE, insert);
+  _addData(AString::fromU4(value), AXmlElement::ENC_NONE);
+  return *this;
 }
 
-AXmlElement& AXmlElement::addElement(
-  const AString& path, 
-  const char * value, 
-  u4 len,                         // = AConstant::npos
-  AXmlElement::Encoding encoding, // = AXmlElement::ENC_NONE
-  bool insert                     // = true
-)
+AXmlElement& AXmlElement::addData(const u2 value)
 {
-  return addElement(path, AString(value, len), encoding, insert);
+  _addData(AString::fromU2(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::addData(const u1 value)
+{
+  _addData(AString::fromU1(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::addData(const int value)
+{
+  _addData(AString::fromInt(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::addData(const char value)
+{
+  _addData(ASW(&value,1), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::addData(const bool value)
+{
+  _addData(AString::fromBool(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+void AXmlElement::_addData(const AEmittable& value, AXmlElement::Encoding encoding)
+{
+  AASSERT(this, m_Content.size() < DEBUG_MAXSIZE_AXmlElement);  //Debug only limit
+
+  AXmlData *p = new AXmlData(value, encoding);
+  p->setParent(this);
+  m_Content.push_back(p);
 }
 
 AXmlElement& AXmlElement::addAttribute(const AString& name, const double value)
@@ -657,18 +643,6 @@ AXmlElement& AXmlElement::addAttributes(const AAttributes& attrs)
 {
   m_Attributes.append(attrs);
 
-  return *this;
-}
-
-AXmlElement& AXmlElement::addData(const AEmittable& text)
-{
-  addContent(new AXmlData(text, AXmlElement::ENC_NONE));
-  return *this;
-}
-
-AXmlElement& AXmlElement::addData(const AEmittable& data, AXmlElement::Encoding encoding)
-{
-  addContent(new AXmlData(data, encoding));
   return *this;
 }
 
@@ -984,32 +958,22 @@ void AXmlElement::toAFile(AFile& file) const
 
 void AXmlElement::setString(const AString& path, const AString& value, AXmlElement::Encoding encoding)
 {
-  addElement(path, value, encoding);
+  addElement(path, value, encoding, true);
 }
 
 void AXmlElement::setInt(const AString& path, int value)
 {
-  addElement(path, AString::fromInt(value));
+  _addElement(path, true)->addData(value);
 }
 
 void AXmlElement::setSize_t(const AString& path, size_t value)
 {
-  addElement(path, value);
+  _addElement(path, true)->addData(value);
 }
 
 void AXmlElement::setBool(const AString& path, bool value)
 {
-  //a_TODO: Need a better way to set existing elements
-  AXmlElement *pNode = findNode(path);
-  if (pNode)
-  {
-    pNode->clear();
-    pNode->addContent(new AXmlData(AString::fromBool(value)));
-  }
-  else
-  {
-    addElement(path, AString::fromBool(value));
-  }
+  _addElement(path, true)->addData(value);
 }
 
 bool AXmlElement::isElement() const

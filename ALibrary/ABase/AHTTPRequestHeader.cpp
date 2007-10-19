@@ -326,7 +326,7 @@ bool AHTTPRequestHeader::isValidHttp() const
 ATime AHTTPRequestHeader::getIfModifiedSince() const
 {
   AString str;
-  if (find(AHTTPHeader::HT_REQ_If_Modified_Since, str))
+  if (getPairValue(AHTTPHeader::HT_REQ_If_Modified_Since, str))
   {
     ATime ret;
     ret.parseRFCtime(str);

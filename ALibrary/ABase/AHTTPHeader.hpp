@@ -103,24 +103,38 @@ public:
   bool parseLineZero(const AString &);
   void parseTokenLine(const AString &);
 
-  //a_Access
+  /*!
+  Number of header pairs
+  */
   size_t size() const { return m_Pairs.size(); }
+  
+  /*!
+  Set header pair
+  */
   void setPair(AHTTPHeader::HEADER_TOKENS eToken, const AString& strValue);
   void setPair(const AString& strName, const AString& strValue);
+  
+  /*!
+  Remove header pair
+  */
   void removePair(AHTTPHeader::HEADER_TOKENS eToken);
 
-  //a_Checks existance
+  /*!
+  Checks existance of a header pair
+  */
   bool exists(AHTTPHeader::HEADER_TOKENS eToken) const;
   
-  //a_Compares value to the string, returns false if not equals or not found
+  /*!
+  Compares value to the string, returns false if not equals or not found
+  */
   bool equals(AHTTPHeader::HEADER_TOKENS eToken, const AString&) const;
   
   /*!
   Find a token and assigns to strDest and returns true,
     else returns false without changing the strDest
   */
-  bool find(AHTTPHeader::HEADER_TOKENS eToken, AString& strDest) const;
-  bool find(const AString& strTokenName, AString& strDest) const;
+  bool getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AString& strDest) const;
+  bool getPairValue(const AString& strTokenName, AString& strDest) const;
 
   /*!
   Version of the header (supported by both response and request)

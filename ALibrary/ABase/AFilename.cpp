@@ -228,7 +228,7 @@ void AFilename::emitXml(AXmlElement& target) const
 
   //a_Drive
   if (m_Drive)
-    element.addElement(ASW("drive",5), m_Drive);
+    element.addElement(ASW("drive",5)).addData(m_Drive);
 
   //a_Path
   AXmlElement& basePath = element.addElement(ASW("path",4));

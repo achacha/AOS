@@ -33,7 +33,7 @@ AContentTypeInterface::~AContentTypeInterface()
 void AContentTypeInterface::parseHTTPHeader(AHTTPHeader& header)
 {
   AString str;
-  if (header.find(AHTTPHeader::HT_ENT_Content_Type, str))
+  if (header.getPairValue(AHTTPHeader::HT_ENT_Content_Type, str))
   {
     if (str.compare(mstr_ContentType))
       ATHROW_EX(this, AException::InvalidData, ASWNL("Content-Type: ") + str + " found instead of " + mstr_ContentType);
@@ -46,7 +46,7 @@ void AContentTypeInterface::parseHTTPHeader(AHTTPHeader& header)
   //a_For now only Content-Length matters
   //a_ -1 means it is unknown are read until EOF
   str.clear();
-  if (header.find(AHTTPHeader::HT_ENT_Content_Length, str))
+  if (header.getPairValue(AHTTPHeader::HT_ENT_Content_Length, str))
     m_ContentLength = str.toS4();
   else 
     m_ContentLength = AConstant::npos;

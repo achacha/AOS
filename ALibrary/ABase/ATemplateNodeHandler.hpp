@@ -11,6 +11,11 @@ class AFile;
 
 /*!
 Handler for a tag to register with template and process node
+
+One handler is registered with ATemplate 
+This handler is then used to create ATemplateNote types associated with this handler
+
+Derived classes should have a TAGNAME public member for convenience
 */
 class ABASE_API ATemplateNodeHandler : public ADebugDumpable
 {

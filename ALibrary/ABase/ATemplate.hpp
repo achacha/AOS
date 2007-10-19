@@ -70,6 +70,12 @@ public:
   virtual ~ATemplate();
 
   /*!
+  Add node for an existing handler to the template
+  This is used to manually build a template from node data
+  */
+  void addNode(const AString& tagname, AFile& source);
+
+  /*!
   Initializes handlers if they are hibernated
   Output based on a given source XML root element and output buffer
   Evaluate template against a model and objects

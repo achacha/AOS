@@ -129,28 +129,80 @@ public:
   If path is relative then c/cc will find 2nd child cc in child c
   Adds const AXmlElement* to the result container, will not clear the result, will append
 
-  Returns elements found
+  Returns number of elements found
   */
   size_t find(const AString& path, ConstNodeContainer& result) const;
 
   /*!
+  Create a new element
+
+  overwrite will try and reuse the first existing element found, if not it will create one
+
+  Returns the NEW element
+  */
+  AXmlElement& addElement(const AString& path, bool overwrite = false);
+
+  /*!
   Adds a new element
   
-  insert - will try to find existing structure, otherwise will create new xpath
+  overwrite - will try to find existing structure to replace, otherwise will create new path
+
+  returns: NEW element
 
   **** NOTE: Add returns NEWLY added element (NOT 'this' as with the other methods) ****
   This is done to allow you to add an element and get a reference to the newly added element
   */
-  AXmlElement& addElement(const AString& path, const AString& value = AConstant::ASTRING_EMPTY, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool insert = false);
-  AXmlElement& addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding, bool insert = false);
-  AXmlElement& addElement(const AString& path, const char * value, u4 len = AConstant::npos, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool insert = false);
+  AXmlElement& addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool overwrite = false);
 
-//TODO: make this go into addText
-  AXmlElement& addElement(const AString& path, const char value, bool insert = false);
-  AXmlElement& addElement(const AString& path, const u4 value, bool insert = false);
-  AXmlElement& addElement(const AString& path, const u8 value, bool insert = false);
-  AXmlElement& addElement(const AString& path, const double value, bool insert = false);
-  AXmlElement& addElement(const AString& path, const size_t value, bool insert = false);
+  /*!
+  Add AEmittable type (encoded as needed)
+  */
+  AXmlElement& addData(const AEmittable& object, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
+
+  /*!
+  Add signed int value to text/data of element (no encoding)
+  */
+  AXmlElement& addData(const int value);
+  
+  /*!
+  Add char value entered as is (no encoding)
+  */
+  AXmlElement& addData(const char value);
+
+  /*!
+  Add unsigned 1-byte value to text/data of element (no encoding)
+  */
+  AXmlElement& addData(const u1 value);
+
+  /*!
+  Add unsigned 2-byte value to text/data of element (no encoding)
+  */
+  AXmlElement& addData(const u2 value);
+
+  /*!
+  Add unsigned 4-byte value to text/data of element (no encoding)
+  */
+  AXmlElement& addData(const u4 value);
+
+  /*!
+  Add unsigned 8-byte value to text/data of element (no encoding)
+  */
+  AXmlElement& addData(const u8 value);
+
+  /*!
+  Add double value to text/data of element (no encoding)
+  */
+  AXmlElement& addData(const double value);
+
+  /*!
+  Add std::size_t value to text/data of element (no encoding)
+  */
+  AXmlElement& addData(const size_t value);
+  
+  /*!
+  Add bool value (AConstant::ASTRING_TRUE or AConstant::ASTRING_FALSE) to text/data of element (no encoding)
+  */
+  AXmlElement& addData(const bool value);
   
   /*!
   Adds a comment
@@ -174,22 +226,10 @@ public:
   Returns this element
   */
   AXmlElement& addContent(const AXmlEmittable&);
-  
-  /*!
-  Adds text to element (no encoding, for encoding use addData)
-  Returns this element
-  */
-  AXmlElement& addText(const AEmittable&);
 
   /*!
-  Adds data (depending on encoding)
+  Add attribute (replaces any existing attribute names must be unique)
   Returns this element
-  */
-  AXmlElement& addData(const AEmittable&, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
-
-  /*!
-  Add attribute
-  Returns this object
   */
   AXmlElement& addAttributes(const AAttributes& attrs);
   AXmlElement& addAttribute(const AString& name, const AString& value = AConstant::ASTRING_EMPTY);
@@ -203,18 +243,18 @@ public:
   void setString(const AString& path, const AString& value, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
 
   /*!
-  Saves value into DOM at path
+  Saves value into DOM at path (using addElement with overwrite)
   */
   void setInt(const AString& path, int value);
 
   /*!
-  Saves value into DOM at path
+  Saves value into DOM at path (using addElement with overwrite)
   */
   void setSize_t(const AString& path, size_t value);
 
   /*!
-  Saves value into DOM at path
-  Converts bool to "true" or "false"
+  Saves value into DOM at path (using addElement with overwrite)
+  Converts bool to AString
   */
   void setBool(const AString& path, bool value);
 
@@ -280,35 +320,38 @@ public:
   virtual void toAFile(AFile&) const;
 
 protected:
-  //a_Name
+  //! Element name
   AString m_Name;
 
-  //a_Content container
+  //! Content container
   NodeContainer m_Content;
 
-  //a_Attributes
+  //! Attributes
   AAttributes m_Attributes;
 
-  //a_Parent node (NULL if none)
+  //! Parent node (NULL if none)
   AXmlElement *mp_Parent;
 
-  //a_Recursive search function
+  //! Recursive search function
   AXmlElement *_get(LIST_AString& xparts) const;
 
-  //a_Indents with 2 spaces per indent
+  //! Indents with 2 spaces per indent
   inline void _indent(AOutputBuffer&, int) const;
 
-  /*! Internal find */
+  //! Internal find
   size_t _find(LIST_AString listPath, AXmlElement::ConstNodeContainer& result) const;
 
-  /*! Add element */
-  AXmlElement *_addElement(const AString& path, bool insert);
+  //! Add element
+  AXmlElement *_addElement(const AString& path, bool overwrite);
 
-  /*! Creates a new element */
+  //! Add data to this element
+  void _addData(const AEmittable& value, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
+
+  //! Creates a new element
   AXmlElement *_createAndAppend(LIST_AString& xparts, AXmlElement* pParent);
   
-  /*! Attempts to insert */
-  AXmlElement *_getAndInsert(LIST_AString& xparts, AXmlElement* pParent);
+  //! Attempts to overwrite if not found then creates
+  AXmlElement *_getOrCreate(LIST_AString& xparts, AXmlElement* pParent);
 
 public:
 #ifdef __DEBUG_DUMP__

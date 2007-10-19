@@ -175,10 +175,9 @@ void ALog_AFile::emitXml(AXmlElement& target) const
 
   ALog::emitXml(target);
   target.addElement(ASW("current_filename",16), m_filenameRotation, AXmlElement::ENC_CDATADIRECT);
-  target.addElement(ASW("cycle_sleep",11), m_CycleSleep);
-  target.addElement(ASW("file_rotation",13), (m_enableLogFileRotate ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
-  target.addElement(ASW("max_file_size",13), m_logMaxFileSize);
-
+  target.addElement(ASW("cycle_sleep",11)).addData(m_CycleSleep);
+  target.addElement(ASW("file_rotation",13)).addData(m_enableLogFileRotate);
+  target.addElement(ASW("max_file_size",13)).addData(m_logMaxFileSize);
 }
 
 u4 ALog_AFile::threadprocLogger(AThread& thread)

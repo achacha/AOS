@@ -10,7 +10,7 @@
 AContentTypeInterface* AContentTypeFactory::createContentTypeDocument(const AHTTPHeader& hdr)
 {
   AString str;
-  if (hdr.find(AHTTPHeader::HT_ENT_Content_Type, str))
+  if (hdr.getPairValue(AHTTPHeader::HT_ENT_Content_Type, str))
     return createContentTypeDocument(str);
   else
     return NULL;

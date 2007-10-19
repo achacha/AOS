@@ -627,7 +627,7 @@ void AUrl::emitXml(AXmlElement& target) const
     target.addElement(ASW("password",8), m_strPassword);
     target.addElement(ASW("server",6), m_strServer);
     if (AUrl::NONE != m_iPort)
-      target.addElement(ASW("port",4), u4(m_iPort));
+      target.addElement(ASW("port",4)).addData(m_iPort);
     target.addElement(ASW("path",4), m_strPath);
     target.addElement(ASW("filename",8), m_strFilename);
   }

@@ -104,7 +104,7 @@ bool AHTTPHeader::equals(AHTTPHeader::HEADER_TOKENS eToken, const AString& str) 
   return false;
 }
 
-bool AHTTPHeader::find(AHTTPHeader::HEADER_TOKENS eToken, AString& strDest) const
+bool AHTTPHeader::getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AString& strDest) const
 {
   AString strName = _mapTypeToString(eToken);
   if (strName.isEmpty())
@@ -123,7 +123,7 @@ bool AHTTPHeader::find(AHTTPHeader::HEADER_TOKENS eToken, AString& strDest) cons
   }
 }
 
-bool AHTTPHeader::find(const AString& strTokenName, AString& strDest) const
+bool AHTTPHeader::getPairValue(const AString& strTokenName, AString& strDest) const
 {
   MAP_AString_NVPair::const_iterator cit = m_Pairs.find(strTokenName);
   if (cit != m_Pairs.end())
@@ -452,7 +452,7 @@ void AHTTPHeader::fromAFile(AFile& aFile)
 size_t AHTTPHeader::getKeepAliveTimeout() const
 {
   AString str;
-  if (find(AHTTPHeader::HT_GEN_Keep_Alive, str))
+  if (getPairValue(AHTTPHeader::HT_GEN_Keep_Alive, str))
     return str.toSize_t();
   else
     return AConstant::npos;

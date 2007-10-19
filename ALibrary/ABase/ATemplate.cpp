@@ -45,6 +45,15 @@ ATemplate::~ATemplate()
   } catch(...) {}
 }
 
+void ATemplate::addNode(const AString& tagname, AFile& source)
+{
+  AASSERT_EX(this, m_Handlers.end() != m_Handlers.find(tagname), ARope("Tag handler not found: ")+tagname);
+  ATemplateNodeHandler *pHandler = m_Handlers[tagname];
+  AAutoPtr<ATemplateNode> pNode(pHandler->create(source));
+  m_Nodes.push_back(pNode);
+  pNode.setOwnership(false);
+}
+
 void ATemplate::addHandler(ATemplateNodeHandler *pHandler)
 {
   AASSERT_EX(this, m_Handlers.end() == m_Handlers.find(pHandler->getTagName()), ARope("Dupliate tag handler detected: ")+pHandler->getTagName());

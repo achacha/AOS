@@ -42,7 +42,7 @@ u4 threadprocServer(AThread& thread)
 
         requestHeader.fromAFile(connection);
 
-        if (requestHeader.find(UNIT_TEST_REQUEST, testId))
+        if (requestHeader.getPairValue(UNIT_TEST_REQUEST, testId))
         {
           responseHeader.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
           if (testId.equals("1"))
@@ -129,7 +129,7 @@ int ut_AFile_Socket_General()
   AString str;
 //  request.debugDump();
 //  response.debugDump();
-  ASSERT_UNIT_TEST(response.find(UNIT_TEST_RESPONSE, str), "Response pair not found", "", iRet);
+  ASSERT_UNIT_TEST(response.getPairValue(UNIT_TEST_RESPONSE, str), "Response pair not found", "", iRet);
   ASSERT_UNIT_TEST(str.equals("echo"), "Response pair contains invalid value", "", iRet);
 
   server.setRun(false);

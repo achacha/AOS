@@ -117,9 +117,9 @@ void ACookie::emitXml(AXmlElement& target) const
   target.addElement(ASW("value",5), m__strValue);
   target.addElement(ASW("domain",6), m__strDomain);
   target.addElement(ASW("path",4), m__strPath);
-  target.addElement(ASW("version",7), u4(m__iVersion));
+  target.addElement(ASW("version",7)).addData(m__iVersion);
   target.addElement(ASW("comment",7), m__strComment);
-  target.addElement(ASW("maxage",6), u4(m__lMaxAge));
+  target.addElement(ASW("maxage",6)).addData(m__lMaxAge);
   
   AString str;
   m__timeExpires.emitRFCtime(str);

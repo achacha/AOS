@@ -16,6 +16,12 @@ class ABASE_API ATemplateNodeHandler_CODE : public ATemplateNodeHandler
 {
 public:
   /*!
+  Tag name of this handler
+  */
+  static const AString TAGNAME;
+
+public:
+  /*!
   ctor
   */
   ATemplateNodeHandler_CODE();
@@ -50,11 +56,6 @@ protected:
   No copy ctor, each instance is attached to a template
   */
   ATemplateNodeHandler_CODE(const ATemplateNodeHandler_CODE&) {}
-
-  /*!
-  Tag name of this handler
-  */
-  static const AString TAGNAME;
 
 public:
   /*!
