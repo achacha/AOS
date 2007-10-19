@@ -14,9 +14,17 @@ class AFile;
 
 /*!
 Handles tag: LUA
+
+Handler contains 1 instance of ALuaEmbed which is used by all nodes created by this handler
 */
 class ALuaEMBED_API ATemplateNodeHandler_LUA : public ATemplateNodeHandler
 {
+public:
+  /*!
+  Tag name of this handler
+  */
+  static const AString TAGNAME;
+
 public:
   /*!
   ctor
@@ -63,11 +71,6 @@ public:
   ALuaEmbed& useLua();
 
 protected:
-  /*!
-  Tag name of this handler
-  */
-  static const AString TAGNAME;
-
   /*!
   Libraries to load when ALuaEmbed is created\
   */
