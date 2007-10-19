@@ -4,6 +4,7 @@
 #include "AXmlDocument.hpp"
 #include "ATextGenerator.hpp"
 #include "ARandomNumberGenerator.hpp"
+#include "AFilename.hpp"
 
 const char xml_data_small[] = "\
 <root>\
@@ -428,6 +429,17 @@ void testInsertWithPath()
   }
 }
 
+void testFilenameEmit()
+{
+  AFilename f(ASWNL("c:/aaa/bbb/ccc/d.txt"), false);
+  AXmlElement e("fn");
+  f.emitXml(e);
+  AString str;
+  e.emit(str);
+  std::cout << str << std::endl;
+  return;
+}
+
 int main()
 {
 //  testParse();
@@ -438,11 +450,12 @@ int main()
 //  testEmitClone();
 //  testXmlEmit();
 //  testClone();
-  testAppend();
+//  testAppend();
 //  testFind1();
 //  testFind2();
 //  testFind3();
 //  testInsertWithPath();
+  testFilenameEmit();
 
 	return 0;
 }

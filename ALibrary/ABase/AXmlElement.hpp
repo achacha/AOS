@@ -26,18 +26,6 @@ public:
     ENC_CDATAHEXDUMP  //a_Debugging format useful for examining binary data
   };
 
-  //a_For convenience and efficiency
-  static const AString sstr_Start;                         //a_ "<"
-  static const AString sstr_StartComment;                  //a_ "<!--"
-  static const AString sstr_StartInstruction;              //a_ "<?"
-  static const AString sstr_StartEnd;                      //a_ "</"
-  static const AString sstr_EndSingular;                   //a_ "/>"
-  static const AString sstr_End;                           //a_ ">"
-  static const AString sstr_EndOrWhitespace;               //a_ "/> \t\n\r"
-  static const AString sstr_EndInstruction;                //a_ "?>"
-  static const AString sstr_EndComment;                    //a_ "-->"
-  static const AString sstr_EndInstructionOrWhitespace;    //a_ "?> \t\n\r"
-
 public:
   typedef std::list<AXmlElement *> NodeContainer;
   typedef std::list<const AXmlElement *> ConstNodeContainer;
@@ -155,14 +143,14 @@ public:
   */
   AXmlElement& addElement(const AString& path, const AString& value = AConstant::ASTRING_EMPTY, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool insert = false);
   AXmlElement& addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding, bool insert = false);
-  AXmlElement& addElement(const AString& path, const AXmlEmittable& object, bool insert = false);
+  AXmlElement& addElement(const AString& path, const char * value, u4 len = AConstant::npos, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool insert = false);
+
+//TODO: make this go into addText
   AXmlElement& addElement(const AString& path, const char value, bool insert = false);
   AXmlElement& addElement(const AString& path, const u4 value, bool insert = false);
   AXmlElement& addElement(const AString& path, const u8 value, bool insert = false);
   AXmlElement& addElement(const AString& path, const double value, bool insert = false);
   AXmlElement& addElement(const AString& path, const size_t value, bool insert = false);
-  AXmlElement& addElement(const AString& path, const bool value, bool insert = false);
-  AXmlElement& addElement(const AString& path, const char * value, u4 len = AConstant::npos, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool insert = false);
   
   /*!
   Adds a comment
@@ -187,6 +175,12 @@ public:
   */
   AXmlElement& addContent(const AXmlEmittable&);
   
+  /*!
+  Adds text to element (no encoding, for encoding use addData)
+  Returns this element
+  */
+  AXmlElement& addText(const AEmittable&);
+
   /*!
   Adds data (depending on encoding)
   Returns this element
@@ -320,6 +314,19 @@ public:
 #ifdef __DEBUG_DUMP__
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 #endif
+
+public:
+  //a_For convenience and efficiency
+  static const AString sstr_Start;                         //a_ "<"
+  static const AString sstr_StartComment;                  //a_ "<!--"
+  static const AString sstr_StartInstruction;              //a_ "<?"
+  static const AString sstr_StartEnd;                      //a_ "</"
+  static const AString sstr_EndSingular;                   //a_ "/>"
+  static const AString sstr_End;                           //a_ ">"
+  static const AString sstr_EndOrWhitespace;               //a_ "/> \t\n\r"
+  static const AString sstr_EndInstruction;                //a_ "?>"
+  static const AString sstr_EndComment;                    //a_ "-->"
+  static const AString sstr_EndInstructionOrWhitespace;    //a_ "?> \t\n\r"
 };
 
 #endif // INCLUDED__AXmlElement_HPP__

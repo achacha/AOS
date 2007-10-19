@@ -103,7 +103,7 @@ int ut_AFile_Socket_General()
   testConversionIp4(iRet);
 
   Params params(iRet);
-  AThread server(threadprocServer, true, &params);
+  AThread server(threadprocServer, true, NULL, &params);
   int timeout = 10;
   while (!server.isRunning() && timeout > 0)
   {

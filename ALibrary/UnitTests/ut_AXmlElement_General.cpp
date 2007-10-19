@@ -24,9 +24,12 @@ void testGetSet(int& iRet)
 void testAddAndSerialize(int& iRet)
 {
   AXmlElement elem("root");
-  elem.addElement("path0/path1/obj0", "value0");
-  elem.addElement("path0/path2/obj1", "value1");
-  elem.addElement("path0/path1/obj2", "value2");
+  AXmlElement& path1 = elem.addElement("path0").addElement("path1");
+  AXmlElement& path2 = elem.findNode("path0")->addElement("path2");
+  path1.addElement("obj0", "value0");
+  path2.addElement("obj1", "value1");
+  path1.addElement("obj2", "value2");
+  elem.addElement(ASWNL("path0/path1/obj3"), ASWNL("value3"), AXmlElement::ENC_NONE, true);  //insert
 
   AString str0(8188, 1024), str1(8188, 1024);
   str1.assign("\
@@ -35,6 +38,7 @@ void testAddAndSerialize(int& iRet)
     <path1>\r\n\
       <obj0>value0</obj0>\r\n\
       <obj2>value2</obj2>\r\n\
+      <obj3>value3</obj3>\r\n\
     </path1>\r\n\
     <path2>\r\n\
       <obj1>value1</obj1>\r\n\
@@ -42,7 +46,7 @@ void testAddAndSerialize(int& iRet)
   </path0>\r\n\
 </root>");
   elem.emit(str0, 0);
-  //std::cout << str0 << std::endl;
+//  std::cout << str0 << std::endl;
   ASSERT_UNIT_TEST(str0.equals(str1), "add_emit", "1", iRet);
 
   AXmlElement *p;
@@ -57,26 +61,31 @@ void testAddAndSerialize(int& iRet)
 
     str0.clear();
     elem.emit(str0, 0);
+//    std::cout << str0 << std::endl;
     ASSERT_UNIT_TEST(str0.equals("<root>\r\n\
   <path0>\r\n\
     <path1 attrib0=\"0\" attrib1=\"0\" attrib2=\"0\">\r\n\
       <obj0>value0</obj0>\r\n\
       <obj2>value2</obj2>\r\n\
+      <obj3>value3</obj3>\r\n\
       <foo/>more data<!--This is the comment-->\r\n\
     </path1>\r\n\
     <path2>\r\n\
       <obj1>value1</obj1>\r\n\
     </path2>\r\n\
   </path0>\r\n\
-</root>"), "add_emit", "1", iRet);
+</root>"), "add_emit", "2", iRet);
   }
   else
     ASSERT_UNIT_TEST(p, "find", "0", iRet);
 
   AFile_AString strfile;
   elem.toAFile(strfile);
+//  std::cout << strfile.useAString() << std::endl;
   ASSERT_UNIT_TEST(strfile.useAString().equals("\
-<root><path0><path1 attrib0=\"0\" attrib1=\"0\" attrib2=\"0\"><obj0>value0</obj0><obj2>value2</obj2><foo/>more data<!--This is the comment--></path1><path2><obj1>value1</obj1></path2></path0></root>"), "toAFile", "", iRet);
+<root><path0><path1 attrib0=\"0\" attrib1=\"0\" attrib2=\"0\"><obj0>value0</obj0>\
+<obj2>value2</obj2><obj3>value3</obj3><foo/>more data<!--This is the comment-->\
+</path1><path2><obj1>value1</obj1></path2></path0></root>"), "toAFile", "", iRet);
 
   AXmlElement restored;
   restored.fromAFile(strfile);

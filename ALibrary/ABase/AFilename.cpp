@@ -231,16 +231,11 @@ void AFilename::emitXml(AXmlElement& target) const
     element.addElement(ASW("drive",5), m_Drive);
 
   //a_Path
-  LIST_AString::const_iterator cit = m_PathNames.begin();
-  AXmlElement *pePathNames = new AXmlElement(ASW("path",4));
-  while (cit != m_PathNames.end())
+  AXmlElement& basePath = element.addElement(ASW("path",4));
+  for (LIST_AString::const_iterator cit = m_PathNames.begin(); cit != m_PathNames.end(); ++cit)
   {
-    pePathNames->addElement(ASW("dir", 3), *cit);
-    ++cit;
+    basePath.addElement(ASW("dir",3), *cit);
   }
-
-  if (pePathNames->hasElements())
-    element.addContent(pePathNames);
 
   //a_Filename
   if (!m_Filename.isEmpty())

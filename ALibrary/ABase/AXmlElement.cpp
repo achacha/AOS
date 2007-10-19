@@ -567,15 +567,6 @@ AXmlElement& AXmlElement::addElement(const AString& path, const AEmittable& obje
   return *p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const AXmlEmittable& object, bool insert)
-{
-  AXmlElement *p = _addElement(path, insert);
-
-  object.emitXml(*p);
-
-  return *p;
-}
-
 AXmlElement *AXmlElement::_addElement(const AString& path, bool insert)
 {
   if (m_Name.isEmpty())
@@ -636,11 +627,6 @@ AXmlElement& AXmlElement::addElement(const AString& path, const char value, bool
   return addElement(path, AString(value), AXmlElement::ENC_NONE, insert);
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const bool value, bool insert)
-{
-  return addElement(path, value ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE, AXmlElement::ENC_NONE, insert);
-}
-
 AXmlElement& AXmlElement::addElement(
   const AString& path, 
   const char * value, 
@@ -671,6 +657,12 @@ AXmlElement& AXmlElement::addAttributes(const AAttributes& attrs)
 {
   m_Attributes.append(attrs);
 
+  return *this;
+}
+
+AXmlElement& AXmlElement::addData(const AEmittable& text)
+{
+  addContent(new AXmlData(text, AXmlElement::ENC_NONE));
   return *this;
 }
 

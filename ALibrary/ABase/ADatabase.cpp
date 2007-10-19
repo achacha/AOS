@@ -38,8 +38,8 @@ void ADatabase::emitXml(AXmlElement& target) const
   if (target.useName().isEmpty())
     target.useName().assign("ADatabase", 9);
 
-  target.addElement(ASW("url",3), m_urlConnection);
-  target.addElement(ASW("isInitialized", 13), mbool_Initialized);
+  target.addElement(ASW("url",3)).addText(m_urlConnection);
+  target.addElement(ASW("isInitialized", 13)).addText(mbool_Initialized);
 }
 
 const AUrl& ADatabase::getUrl() const
