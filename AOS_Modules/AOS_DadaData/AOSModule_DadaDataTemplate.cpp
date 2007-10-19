@@ -8,7 +8,7 @@
 #include "AAttributes.hpp"
 
 const AString AOSModule_DadaDataTemplate::PATH_DADADATA("/dadadata", 9);
-const AString AOSModule_DadaDataTemplate::PATH_OUTPUT("/output/dada", 12);
+const AString AOSModule_DadaDataTemplate::PATH_OUTPUT("output/dada", 11);
 
 const AString& AOSModule_DadaDataTemplate::getClass() const
 {
@@ -151,7 +151,7 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, const AStr
     }
   }
   file.readUntilEOF(target);
-  element.addElement(ASW("/dada/line",10), target).addAttributes(attributes);
+  element.addElement(ASW("dada/line",9), target).addAttributes(attributes);
   target.clear();
   attributes.clear();
 }
