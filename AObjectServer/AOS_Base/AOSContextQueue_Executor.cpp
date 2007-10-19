@@ -123,12 +123,15 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         if (dumpContext > 0)
         {
           //a_Dump context as XML instead of usual output
-          pContext->useOutputRootXmlElement().addElement(ASW("/context/dump",13), *pContext);
-          pContext->useOutputRootXmlElement().addElement(ASW("/context/buffer",15), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP);
+          pContext->emitXml(pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context",12), true));
+          //pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context/buffer",14), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP);
 
           if (dumpContext > 1)
           {
-            pContext->useOutputRootXmlElement().addElement(ASW("/context/buffer",15), pContext->useServices().useConfiguration().getConfigRoot());
+            pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/dump",12), *pContext);
+            pContext->useServices().useConfiguration().getConfigRoot().emitXml(
+              pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/config",14))
+            );
           }
 
           //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer

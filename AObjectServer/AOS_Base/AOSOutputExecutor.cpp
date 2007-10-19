@@ -163,7 +163,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
         //a_Start timer
         ATimer timer(true);
 
-        AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("/execute/output", 15), command);
+        AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("execute/output", 14), command);
         AOSOutputContext outputContext(context);
 
         //a_Publish total execution time before output is generated
