@@ -1,0 +1,4 @@
+foo=%[LUA]{{{
+aos.addText("/root/inline-script-added", "Cthulhu was here");
+print(aos.emitContent("/root/inline-script-added"));	
+}}}[LUA]%

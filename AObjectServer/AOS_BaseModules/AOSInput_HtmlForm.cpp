@@ -17,7 +17,7 @@ bool AOSInput_HtmlForm::execute(AOSContext& context)
   AString str;
   
   //a_Read FORM data if any
-  if (context.useRequestHeader().find(AHTTPHeader::HT_ENT_Content_Length, str))
+  if (context.useRequestHeader().getPairValue(AHTTPHeader::HT_ENT_Content_Length, str))
   {
     //a_Content specified
     u4 toRead = str.toU4();

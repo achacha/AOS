@@ -1,5 +1,5 @@
-#ifndef INCLUDED__AOSModule_Template_HPP__
-#define INCLUDED__AOSModule_Template_HPP__
+#ifndef INCLUDED__AOSModule_LuaScript_HPP__
+#define INCLUDED__AOSModule_LuaScript_HPP__
 
 #include "apiAOS_BaseModules.hpp"
 
@@ -21,10 +21,10 @@ Sample usage:
 outpath is relative to the root element output document or absolute starting with /root/
 
 */
-class AOS_BASEMODULES_API AOSModule_Template : public AOSModuleInterface
+class AOS_BASEMODULES_API AOSModule_LuaScript : public AOSModuleInterface
 {
 public:
-  AOSModule_Template(AOSServices&);
+  AOSModule_LuaScript(AOSServices&);
 
   /*!
   Execute a Lua script
@@ -49,4 +49,4 @@ public:
   virtual const AString& getClass() const;
 };
 
-#endif //INCLUDED__AOSModule_Template_HPP__
+#endif //INCLUDED__AOSModule_LuaScript_HPP__

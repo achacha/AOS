@@ -627,7 +627,7 @@ AString AOSContext::getInputCommand() const
   else
   {
     AString contentType;
-    m_RequestHeader.find(AHTTPHeader::HT_ENT_Content_Type, contentType);
+    m_RequestHeader.getPairValue(AHTTPHeader::HT_ENT_Content_Type, contentType);
     contentType.truncateAt(';');
     return contentType;
   }

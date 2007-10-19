@@ -356,6 +356,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\AOSModule_LuaScript.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\AOSModule_NOP.hpp"
 					>
 				</File>
@@ -382,6 +386,10 @@
 				</File>
 				<File
 					RelativePath=".\AOSModule_InsertIntoModel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSModule_LuaScript.cpp"
 					>
 				</File>
 				<File

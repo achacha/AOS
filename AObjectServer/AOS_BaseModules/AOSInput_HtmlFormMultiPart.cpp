@@ -15,11 +15,11 @@ AOSInput_HtmlFormMultiPart::AOSInput_HtmlFormMultiPart(AOSServices& services) :
 bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
 {
   AString strLength;
-  if (context.useRequestHeader().find(AHTTPHeader::HT_ENT_Content_Length, strLength))
+  if (context.useRequestHeader().getPairValue(AHTTPHeader::HT_ENT_Content_Length, strLength))
   {
     //a_Get the boundary string
     AString strBoundary;
-    context.useRequestHeader().find(AHTTPHeader::HT_ENT_Content_Type, strBoundary);
+    context.useRequestHeader().getPairValue(AHTTPHeader::HT_ENT_Content_Type, strBoundary);
     size_t pos = strBoundary.find(ASW("boundary=", 9));
     if (AConstant::npos == pos)
     {

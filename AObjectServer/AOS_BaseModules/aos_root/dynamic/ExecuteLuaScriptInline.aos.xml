@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<command>
+  <input/>
+  <module class="Template">
+    <script><![CDATA[
+aos.addText("/root/inline-script-added", "Cthulhu was here");
+print(aos.emitContent("/root/inline-script-added"));	
+</script>
+    <outpath>output/script</outpath>
+  </module>
+  <output/>
+</command>

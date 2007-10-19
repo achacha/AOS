@@ -124,13 +124,13 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         {
           //a_Dump context as XML instead of usual output
           pContext->emitXml(pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context",12), true));
-          //pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context/buffer",14), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP);
 
           if (dumpContext > 1)
           {
-            pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/dump",12), *pContext);
+            pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context/buffer",14), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP, true);
+            //pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/dump",12), *pContext);
             pContext->useServices().useConfiguration().getConfigRoot().emitXml(
-              pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/config",14))
+              pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/config",14), true)
             );
           }
 
@@ -164,7 +164,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 
           AString strDeflateLevel;
           str.clear();
-          pContext->useRequestHeader().find(AHTTPHeader::HT_REQ_Accept_Encoding, str);
+          pContext->useRequestHeader().getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, str);
           if ( 
                AConstant::npos != str.findNoCase(ASW("deflate",7)) 
                && pContext->useRequestParameterPairs().get(ASW("deflate",7), strDeflateLevel)

@@ -408,7 +408,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   
   AString strDeflateLevel;
   str.clear();
-  pContext->useRequestHeader().find(AHTTPHeader::HT_REQ_Accept_Encoding, str);
+  pContext->useRequestHeader().getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, str);
   if ( 
       AConstant::npos != str.findNoCase(ASW("deflate",7)) 
       && pContext->useRequestParameterPairs().get(ASW("deflate",7), strDeflateLevel)

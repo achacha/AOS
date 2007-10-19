@@ -1,24 +1,25 @@
 #include "pchAOS_BaseModules.hpp"
-#include "AOSModule_Template.hpp"
+#include "AOSModule_LuaScript.hpp"
 #include "AFile_AString.hpp"
 #include "AFile_Physical.hpp"
 #include "ABasePtrHolder.hpp"
 #include "AXmlElement.hpp"
+#include "ATemplateNodeHandler_LUA.hpp"
 
-const AString& AOSModule_Template::getClass() const
+const AString& AOSModule_LuaScript::getClass() const
 {
-  static const AString MODULE_CLASS("Template");
+  static const AString MODULE_CLASS("LuaScript");
   return MODULE_CLASS;
 }
 
-AOSModule_Template::AOSModule_Template(AOSServices& services) :
+AOSModule_LuaScript::AOSModule_LuaScript(AOSServices& services) :
   AOSModuleInterface(services)
 {
 }
 
-bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
+bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params)
 {
-  const AXmlElement *pNode = params.findNode(ASW("template",8));
+  const AXmlElement *pNode = params.findNode(ASW("script",6));
   AAutoPtr<AFile> pFile;
   if (pNode)
   {
@@ -44,7 +45,7 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
       pFile->open();
     }
     else
-      return false;  //a_Did not find either /params/template or /params/filename
+      return false;  //a_Did not find either /params/script or /params/file
   }
   
   //a_Objects
@@ -55,7 +56,11 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
   //a_Process and save output
   ARope ropeOutput;
   AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate());
-  pTemplate->fromAFile(*pFile);
+
+  //a_Read script and insert nodes into template
+  pTemplate->addNode(ATemplateNodeHandler_LUA::TAGNAME, *pFile);
+
+  //a_Process template
   pTemplate->process(objects, ropeOutput);
   
   //a_Add template to debug
@@ -63,7 +68,7 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
   {
     AString str("debug/",6);
     str.append(getClass());
-    str.append("/template",9);
+    str.append("/script",7);
     AXmlElement& base = context.useOutputRootXmlElement().addElement(str);
     pTemplate->emitXml(base);
   }
