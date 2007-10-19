@@ -21,6 +21,7 @@
 #  define ALuaEMBED_API __declspec(dllimport)
 #  pragma comment(lib, "ALuaEmbed")
 #  define LUA_BUILD_AS_DLL
+#  define LUA_LIB
 #endif
 
 #include "apiABase.hpp"

@@ -78,10 +78,10 @@ void AFile_Socket_SSL::close()
 
 size_t AFile_Socket_SSL::_write(const void *buf, size_t size)
 {
-  assert(mp_SSLData);
+  AASSERT(this, mp_SSLData);
   SSLData *pData = (SSLData *)mp_SSLData;
 
-  if (size <= 0x0)
+  if (!pData || size <= 0x0)
 	  return AConstant::npos;
 
   size_t bytesToWrite = size;
@@ -109,10 +109,10 @@ size_t AFile_Socket_SSL::_write(const void *buf, size_t size)
 
 size_t AFile_Socket_SSL::readBlocking(void *buf, size_t size)
 {
-  assert(mp_SSLData);
+  AASSERT(this, mp_SSLData);
   SSLData *pData = (SSLData *)mp_SSLData;
 
-  if (size == 0x0)
+  if (!pData || size == 0x0)
     return 0;
   
   size_t bytesToRead = size;
@@ -140,8 +140,11 @@ size_t AFile_Socket_SSL::_read(void *buf, size_t size)
   if (m_EOF)
     return 0;
 
-  assert(mp_SSLData);
+  AASSERT(this, mp_SSLData);
   SSLData *pData = (SSLData *)mp_SSLData;
+
+  if (!pData)
+    return AConstant::npos;
 
   if (mbool_Blocking)
     return readBlocking(buf, size);
@@ -169,8 +172,10 @@ size_t AFile_Socket_SSL::_read(void *buf, size_t size)
 
 void AFile_Socket_SSL::_initSSL(bool isOutboundSocket)
 {
-  assert(mp_SSLData);
+  AASSERT(this, mp_SSLData);
   SSLData *pData = (SSLData *)mp_SSLData;
+  if (!pData)
+    ATHROW(this, AException::InvalidObject);
 
   pData->meth = SSLv23_client_method();
   pData->ctx = SSL_CTX_new(pData->meth);
@@ -184,8 +189,10 @@ void AFile_Socket_SSL::_initSSL(bool isOutboundSocket)
 
 void AFile_Socket_SSL::_connectSSL()
 {
-  assert(mp_SSLData);
+  AASSERT(this, mp_SSLData);
   SSLData *pData = (SSLData *)mp_SSLData;
+  if (!pData)
+    ATHROW(this, AException::InvalidObject);
 
   /* ----------------------------------------------- */
   /* Now we have TCP conncetion. Start SSL negotiation. */
@@ -323,8 +330,10 @@ on the application."));
 
 void AFile_Socket_SSL::_deinitSSL()
 {
-  assert(mp_SSLData);
+  AASSERT(this, mp_SSLData);
   SSLData *pData = (SSLData *)mp_SSLData;
+  if (!pData)
+    return;
 
   SSL_free(pData->ssl);
   SSL_CTX_free(pData->ctx);
@@ -337,8 +346,10 @@ size_t AFile_Socket_SSL::_readBlockIntoLookahead()
   if (m_EOF)
     return 0;
   
-  assert(mp_SSLData);
+  AASSERT(this, mp_SSLData);
   SSLData *pData = (SSLData *)mp_SSLData;
+  if (!pData)
+    return AConstant::npos;
 
   char p[AFile::DefaultReadBlock];
   size_t bytesAvailable = AFile::DefaultReadBlock;
@@ -357,8 +368,10 @@ size_t AFile_Socket_SSL::_readBlockIntoLookahead()
 
 size_t AFile_Socket_SSL::_availableInputWaiting() const
 {
-  assert(mp_SSLData);
+  AASSERT(this, mp_SSLData);
   SSLData *pData = (SSLData *)mp_SSLData;
+  if (!pData)
+    return AConstant::npos;
 
   u4 bytes = SSL_pending(pData->ssl);
   return bytes;
