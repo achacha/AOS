@@ -33,9 +33,9 @@ static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
   AASSERT(NULL, pLuaEmbed);
 
   AString str;
-  AXmlElement::ConstNodeContainer nodes;
+  AXmlElement::CONST_CONTAINER nodes;
   size_t ret = pLuaEmbed->useModel().useRoot().find(xmlpath, nodes);
-  for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+  for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
   {
     (*cit)->emitContent(str);
     lua_pushlstring(L, str.c_str(), str.getSize());
