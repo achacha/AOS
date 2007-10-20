@@ -96,13 +96,10 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           pContext->useResponseHeader().emitXml(pContext->useOutputRootXmlElement().addElement("RESPONSE"));
 
           //a_Check if dumpContext is specified to override and emit XML
-          int dumpContext = pContext->getDumpContextLevel();
-          if (dumpContext > 0)
+          int dumpContextLevel = pContext->getDumpContextLevel();
+          pContext->dumpContext(dumpContextLevel);
+          if (dumpContextLevel > 0)
           {
-            //a_Process and display error as XML
-            AXmlElement& eError = pContext->useOutputRootXmlElement().addElement(ASW("error", 5));
-            pContext->useEventVisitor().emitXml(eError);
-            
             //a_Write contents of the output XML instead of output buffer
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_200_Ok);

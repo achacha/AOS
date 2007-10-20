@@ -48,7 +48,7 @@ bool AOSOutput_File::execute(AOSOutputContext& context)
 
   //a_Optional content type, if none, use text/html
   AString contentType;
-  const AXmlElement *pType = context.getOutputParams().findNode(ASW("content-type", 12));
+  const AXmlElement *pType = context.getOutputParams().findElement(ASW("content-type", 12));
   if (pType)
     pType->emitContent(contentType);
   else

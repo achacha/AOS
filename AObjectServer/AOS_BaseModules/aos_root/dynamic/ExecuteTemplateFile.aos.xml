@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?> 
+<?xml version="1.0" encoding="utf-8"?>
 <command>
-  <input/>
-  <module class="Template">
-    <script><![CDATA[foo=%[LUA]{{{
+	<input/>
+	<module class="Template">
+		<template><![CDATA[foo=%[LUA]{{{
 aos.addText("/root/inline-script-added", "Cthulhu was here");
 print(aos.emitContent("/root/inline-script-added"));	
-}}}[LUA]%]]></script>
-    <outpath>output/template</outpath>
-  </module>
-  <output/>
+}}}[LUA]%]]></template>
+		<outpath>output/template</outpath>
+	</module>
+	<output/>
 </command>

@@ -96,10 +96,10 @@ static int aos_emitContent(lua_State *L)
   const AString& xmlpath = AString::wrap(s, len);
   lua_pop(L,1);
 
-  AXmlElement::ConstNodeContainer nodes;
+  AXmlElement::CONST_CONTAINER nodes;
   pContext->useOutputRootXmlElement().find(xmlpath, nodes);
   AString str;
-  for (AXmlElement::ConstNodeContainer::iterator it = nodes.begin(); it != nodes.end(); ++it)
+  for (AXmlElement::CONST_CONTAINER::iterator it = nodes.begin(); it != nodes.end(); ++it)
   {
     (*it)->emitContent(str);
     lua_pushlstring(L, str.c_str(), str.getSize());

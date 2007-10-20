@@ -501,7 +501,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
 
   //a_Read until only 2 bytes (CR and LF) are read which signifies a blank line and end of http header
   setExecutionState(ASW("AOSContext: Reading HTTP header",31), false, 60000.0);  //a_Read header for 60 seconds
-  u4 headerBytes = mp_RequestFile->readUntil(str, AConstant::ASTRING_CRLF, true, false);
+  size_t headerBytes = mp_RequestFile->readUntil(str, AConstant::ASTRING_CRLF, true, false);
   while (2 != headerBytes && AConstant::npos != headerBytes)
   {
     headerBytes = mp_RequestFile->readUntil(str, AConstant::ASTRING_CRLF, true, false);
@@ -922,4 +922,27 @@ int AOSContext::getDumpContextLevel() const
     return str.toInt();
   }
   return 0;
+}
+
+void AOSContext::dumpContext(int dumpContextLevel)
+{
+  AXmlElement& eDumpContext = m_OutputXmlDocument.useRoot().addElement(ASW("dumpContext",11));
+  AXmlElement& eContext = eDumpContext.addElement(ASW("context",7));
+  switch(dumpContextLevel)
+  {
+    case 2:
+      eContext.addElement(ASW("buffer",6)).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
+      eContext.addElement(ASW("debugDump",9)).addData(*this, AXmlElement::ENC_CDATADIRECT);
+      m_Services.useConfiguration().getConfigRoot().emitXml(
+        eDumpContext.addElement(ASW("configuration",13))
+      );
+    case 1:
+      emitXml(eContext);
+    default:
+      if (m_EventVisitor.getErrorCount() > 0)
+      {
+        //a_Process and display error as XML
+        m_EventVisitor.emitXml(m_OutputXmlDocument.useRoot().addElement(ASW("error", 5)));
+      }
+  }
 }

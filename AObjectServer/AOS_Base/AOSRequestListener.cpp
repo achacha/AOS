@@ -51,11 +51,11 @@ void AOSRequestListener::startListening()
     ATHROW(this, AException::ProgrammingError);
 
   //a_HTTP setup
-  AXmlElement *pNode = m_Services.useConfiguration().useConfigRoot().findNode(ASW("/config/server/listen/http",26));
+  AXmlElement *pNode = m_Services.useConfiguration().useConfigRoot().findElement(ASW("/config/server/listen/http",26));
   
   {
     int http_port = -1;
-    if (pNode->findNode(ASW("port",4)))
+    if (pNode->findElement(ASW("port",4)))
     {
       AString str;
       pNode->emitFromPath(ASW("port",4), str);
@@ -91,11 +91,11 @@ void AOSRequestListener::startListening()
   }
   
   //a_HTTPS setup
-  pNode = m_Services.useConfiguration().useConfigRoot().findNode(ASW("/config/server/listen/https",27));
+  pNode = m_Services.useConfiguration().useConfigRoot().findElement(ASW("/config/server/listen/https",27));
   
   {
     int https_port = -1;
-    if (pNode->findNode(ASW("port",4)))
+    if (pNode->findElement(ASW("port",4)))
     {
       AString str;
       pNode->emitFromPath(ASW("port",4), str);

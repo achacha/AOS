@@ -419,11 +419,11 @@ void AOSConfiguration::_readCommand(AFilename& filename)
   AXmlDocument doc(commandFile);
   commandFile.close();
 
-  AXmlElement::ConstNodeContainer nodes;
+  AXmlElement::CONST_CONTAINER nodes;
   doc.useRoot().find(ASW("/command",8), nodes);
   
   //a_Parse each /command/command type
-  AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
+  AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin();
   AString strPath(1536, 512);
   AString dynamicDir(m_AosBaseDynamicDir.toAString());
   while(cit != nodes.end())
@@ -524,9 +524,9 @@ const AFilename& AOSConfiguration::getAdminBaseHttpDir() const
 u4 AOSConfiguration::getDynamicModuleLibraries(LIST_AString& target) const
 {
   u4 ret = 0;
-  AXmlElement::ConstNodeContainer nodes;
+  AXmlElement::CONST_CONTAINER nodes;
   m_Config.getRoot().find("/config/server/load/module", nodes);
-  for(AXmlElement::ConstNodeContainer::iterator it = nodes.begin(); it != nodes.end(); ++it)
+  for(AXmlElement::CONST_CONTAINER::iterator it = nodes.begin(); it != nodes.end(); ++it)
   {
     AString str;
     (*it)->emitContent(str);

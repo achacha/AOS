@@ -15,7 +15,7 @@ AOSModule_InsertIntoModel::AOSModule_InsertIntoModel(AOSServices& services) :
 
 bool AOSModule_InsertIntoModel::execute(AOSContext& context, const AXmlElement& params)
 {
-  const AXmlElement *pDataNode = params.findNode(ASW("data",4));
+  const AXmlElement *pDataNode = params.findElement(ASW("data",4));
   if (pDataNode)
   {
     AString strPath;

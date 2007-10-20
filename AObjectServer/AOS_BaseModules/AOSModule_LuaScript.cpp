@@ -19,7 +19,7 @@ AOSModule_LuaScript::AOSModule_LuaScript(AOSServices& services) :
 
 bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params)
 {
-  const AXmlElement *pNode = params.findNode(ASW("script",6));
+  const AXmlElement *pNode = params.findElement(ASW("script",6));
   AAutoPtr<AFile> pFile;
   if (pNode)
   {
@@ -31,7 +31,7 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
   }
   else
   {
-    pNode = params.findNode(ASW("filename",8));
+    pNode = params.findElement(ASW("filename",8));
     if (pNode)
     {
       AString relativePath;
@@ -46,7 +46,7 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
     }
     else
     {
-      m_Services.useLog().add(ASWNL("Unable to find module/script nor module/filename, LuaScript module did not execute"), params, ALog::FAILURE);
+      context.addError(ASWNL("AOSModule_LuaScript"), ASWNL("Unable to find module/script nor module/filename, LuaScript module did not execute"));
       return false;  //a_Did not find either module/script or module/filename
     }
   }
@@ -77,7 +77,7 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
   }
 
   //a_Insert output into outpath (if any)
-  pNode = params.findNode(ASW("outpath",7));
+  pNode = params.findElement(ASW("outpath",7));
   if (pNode)
   {
     AString xmlpath;

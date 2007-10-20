@@ -18,7 +18,7 @@ AOSModule_Template::AOSModule_Template(AOSServices& services) :
 
 bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
 {
-  const AXmlElement *pNode = params.findNode(ASW("template",8));
+  const AXmlElement *pNode = params.findElement(ASW("template",8));
   AAutoPtr<AFile> pFile;
   if (pNode)
   {
@@ -30,7 +30,7 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
   }
   else
   {
-    pNode = params.findNode(ASW("filename",8));
+    pNode = params.findElement(ASW("filename",8));
     if (pNode)
     {
       AString relativePath;
@@ -45,7 +45,7 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
     }
     else
     {
-      m_Services.useLog().add(ASWNL("Unable to find module/template nor module/filename, Template module did not execute"), params, ALog::FAILURE);
+      context.addError(ASWNL("AOSModule_Template"), ASWNL("Unable to find module/template nor module/filename, Template module did not execute, params"));
       return false;  //a_Did not find either module/template or module/filename
     }
   }  
@@ -72,7 +72,7 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
   }
 
   //a_Insert output into outpath (if any)
-  pNode = params.findNode(ASW("outpath",7));
+  pNode = params.findElement(ASW("outpath",7));
   if (pNode)
   {
     AString xmlpath;

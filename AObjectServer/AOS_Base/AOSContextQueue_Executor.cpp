@@ -112,7 +112,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Date, str);
         }
 
-        int dumpContext = pContext->getDumpContextLevel();
+        int dumpContextLevel = pContext->getDumpContextLevel();
 
         //
         //a_Generate output
@@ -120,22 +120,14 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         pContext->setExecutionState(ASW("Executing output generator",26));
         pThis->m_OutputExecutor.execute(*pContext);
 
-        if (dumpContext > 0)
+        //a_Dump context as XML instead of usual output
+        pContext->dumpContext(dumpContextLevel);
+        if (dumpContextLevel > 0)
         {
-          //a_Dump context as XML instead of usual output
-          pContext->emitXml(pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context",19), true));
-
-          if (dumpContext > 1)
-          {
-            pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context/buffer",26), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP, true);
-            pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context/debugDump",29)).addData(*pContext, AXmlElement::ENC_CDATADIRECT);
-            pContext->useServices().useConfiguration().getConfigRoot().emitXml(
-              pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/configuration",25), true)
-            );
-          }
-
           //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
-          pContext->useOutputBuffer().clear();
+          pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");
+          pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_200_Ok);
+          pContext->writeOutputBuffer(true);
         }
 
         //a_Publish total execution time
@@ -158,7 +150,10 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 
         //a_If output module set this to true, it handled all the output and we don't need to do anything else
         //a_dumpContext flag will override the output
-        if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT) || dumpContext > 0)
+        if (
+          !pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT)
+          // || dumpContextLevel > 0
+          )
         {
           pContext->setExecutionState(ASW("Generating output",17));
 

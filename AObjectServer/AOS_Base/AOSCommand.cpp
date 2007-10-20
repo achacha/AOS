@@ -213,7 +213,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   //a_Get input processor
   m_InputProcessor.clear();
   m_InputParams.clear();
-  const AXmlElement *pNode = element.findNode(ASW("input",5));
+  const AXmlElement *pNode = element.findElement(ASW("input",5));
   if (pNode)
   {
     pNode->getAttributes().get(ASW("class",5), m_InputProcessor);
@@ -223,7 +223,7 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
   //a_Get output generator
   m_OutputGenerator.clear();
   m_OutputParams.clear();
-  pNode = element.findNode(ASW("output",6));
+  pNode = element.findElement(ASW("output",6));
   if (pNode)
   {
     pNode->getAttributes().get(ASW("class",5), m_OutputGenerator);
@@ -232,11 +232,11 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
 
   //a_Get module names
   m_Modules.use().clear();
-  AXmlElement::ConstNodeContainer nodes;
+  AXmlElement::CONST_CONTAINER nodes;
   element.find(ASW("module",6), nodes);
   
   AString strClass;
-  for (AXmlElement::ConstNodeContainer::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
+  for (AXmlElement::CONST_CONTAINER::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
     if ((*citModule)->getAttributes().get(ASW("class",5), strClass) && !strClass.isEmpty())

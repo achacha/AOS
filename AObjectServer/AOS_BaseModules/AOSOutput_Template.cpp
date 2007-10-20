@@ -122,7 +122,7 @@ AOSOutput_Template::~AOSOutput_Template()
 bool AOSOutput_Template::execute(AOSOutputContext& context)
 {
   AFilename filenameBase(context.getConfiguration().getAosBaseDataDirectory());
-  AXmlElement::ConstNodeContainer templateNames;
+  AXmlElement::CONST_CONTAINER templateNames;
   context.getOutputParams().find(ASW("filename", 8), templateNames);
   if(templateNames.size() == 0)
   {
@@ -135,7 +135,7 @@ bool AOSOutput_Template::execute(AOSOutputContext& context)
     doNotAddToCache = true;
 
   AString filename(1024, 256);
-  AXmlElement::ConstNodeContainer::const_iterator cit = templateNames.begin();
+  AXmlElement::CONST_CONTAINER::const_iterator cit = templateNames.begin();
   while (cit != templateNames.end())
   {
     filename.clear();

@@ -152,6 +152,17 @@ public:
   void setResponseMimeTypeFromRequestExtension();
 
   /*!
+  Dumps self into output model depending on level
+  
+  0 - only dumps errors to dumpContext/context/error
+  1 - adds context internals (executor will force XML display for >0)
+  2 - adds 
+    extended debugDump to dumpContext/context/debugDump
+    configuration to dumpContext/configuration
+  */
+  void dumpContext(int dumpContextLevel);
+
+  /*!
   AXmlEmittable
   */
   virtual void emitXml(AXmlElement&) const;

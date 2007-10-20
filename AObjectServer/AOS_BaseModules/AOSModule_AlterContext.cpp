@@ -15,11 +15,11 @@ AOSModule_AlterContext::AOSModule_AlterContext(AOSServices& services) :
 bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   //a_Adding parameters
-  AXmlElement::ConstNodeContainer nodes;
+  AXmlElement::CONST_CONTAINER nodes;
   if (moduleParams.find(ASW("add-parameter",13), nodes) > 0)
   {
     //a_Request parameters
-    for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+    for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
     {
       AString strName;
       AString strValue;
@@ -49,7 +49,7 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
   if (moduleParams.find(ASW("add-request-header",18), nodes) > 0)
   {
     //a_Request header
-    for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+    for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
     {
       AString strName;
       AString strValue;
@@ -67,7 +67,7 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
   if (moduleParams.find(ASW("add-response-header",19), nodes) > 0)
   {
     //a_Response header
-    for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+    for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
     {
       AString strName;
       AString strValue;
@@ -84,10 +84,10 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
   return true;
 }
 
-void AOSModule_AlterContext::_processSetCookie(ACookies& cookies, AXmlElement::ConstNodeContainer& nodes)
+void AOSModule_AlterContext::_processSetCookie(ACookies& cookies, AXmlElement::CONST_CONTAINER& nodes)
 {
   //a_Request parameters
-  for (AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+  for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
   {
     AString strName;
     AString str;

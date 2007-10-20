@@ -95,11 +95,11 @@ void AOSDirectoryConfig::fromXml(const AXmlElement& element)
 
   //a_Get module names
   m_Modules.use().clear();
-  AXmlElement::ConstNodeContainer nodes;
+  AXmlElement::CONST_CONTAINER nodes;
   element.find(ASW("module",6), nodes);
   
   AString strClass, strName;
-  for(AXmlElement::ConstNodeContainer::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
+  for(AXmlElement::CONST_CONTAINER::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
     if ((*citModule)->getAttributes().get(ASW("class",5), strClass) && !strClass.isEmpty())
