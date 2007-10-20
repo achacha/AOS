@@ -45,7 +45,10 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
       pFile->open();
     }
     else
-      return false;  //a_Did not find either /params/script or /params/file
+    {
+      m_Services.useLog().add(ASWNL("Unable to find module/script nor module/filename, LuaScript module did not execute"), params, ALog::FAILURE);
+      return false;  //a_Did not find either module/script or module/filename
+    }
   }
   
   //a_Objects

@@ -259,7 +259,7 @@ void AOSAdmin::_processAdminCommand(
   {
     if (command.equalsNoCase(ASW("version",7)))
     {
-      xmlDoc.useRoot().addElement(ASW("version",7), _AOS_ADMIN_BUILD_INFO_);
+      xmlDoc.useRoot().addElement(ASW("version",7)).addData(ASWNL(_AOS_ADMIN_BUILD_INFO_));
     }
     else if (command.equalsNoCase(ASW("list",4)))
     {

@@ -44,9 +44,12 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
       pFile->open();
     }
     else
-      return false;  //a_Did not find either /params/template or /params/filename
-  }
-  
+    {
+      m_Services.useLog().add(ASWNL("Unable to find module/template nor module/filename, Template module did not execute"), params, ALog::FAILURE);
+      return false;  //a_Did not find either module/template or module/filename
+    }
+  }  
+
   //a_Objects
   ABasePtrHolder objects;
   objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useOutputXmlDocument());  //a_Add ALibrary required model AXmlDocument

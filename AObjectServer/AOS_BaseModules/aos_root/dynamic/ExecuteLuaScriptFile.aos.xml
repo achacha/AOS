@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <command>
   <input/>
-  <module class="Template">
+  <module class="LuaScript">
     <filename>lua/TestLuaScript.lua</filename>
     <outpath>output/script</outpath>
   </module>

@@ -147,7 +147,7 @@ AOSDatabaseConnectionPool& AOSServices::useDatabaseConnectionPool()
 
 ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
 {
-  ATemplate *pTemplate = new ATemplate();
+  AAutoPtr<ATemplate> pTemplate(new ATemplate());
   
   //a_Add Lua handler
   ATemplateNodeHandler_LUA *pLuaHandler = new ATemplateNodeHandler_LUA(defaultLuaLibraries);
@@ -157,6 +157,7 @@ ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
   //a_Add CODE handler
   pTemplate->addHandler(new ATemplateNodeHandler_CODE());
 
+  pTemplate.setOwnership(false);
   return pTemplate;
 }
 

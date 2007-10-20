@@ -123,14 +123,14 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         if (dumpContext > 0)
         {
           //a_Dump context as XML instead of usual output
-          pContext->emitXml(pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context",12), true));
+          pContext->emitXml(pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context",19), true));
 
           if (dumpContext > 1)
           {
-            pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context/buffer",14), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP, true);
-            //pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/dump",12), *pContext);
+            pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context/buffer",26), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP, true);
+            pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/context/debugDump",29)).addData(*pContext, AXmlElement::ENC_CDATADIRECT);
             pContext->useServices().useConfiguration().getConfigRoot().emitXml(
-              pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/config",14), true)
+              pContext->useOutputRootXmlElement().addElement(ASW("dumpContext/configuration",25), true)
             );
           }
 
