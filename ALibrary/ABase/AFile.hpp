@@ -11,20 +11,20 @@ class ARope;
 
 //a_Write and read as is
 #define DEFINE_BASICTYPE_IO_OPERATORS(T) \
-s8 write(const T& _type) \
+size_t write(const T& _type) \
   { return write(&_type, sizeof(T)); } \
-s8 read(T& _type) \
+size_t read(T& _type) \
   { return read(&_type, sizeof(T)); } \
-s8 peek(T& _type) \
+size_t peek(T& _type) \
   { return peek(&_type, sizeof(T)); }
 
 //a_Will convert to and from network order
 #define DEFINE_NETWORKTYPE_IO_OPERATORS(T) \
-s8 write(const T& _type) \
+size_t write(const T& _type) \
   { return _writeNetworkOrder((u1*)&_type, sizeof(T)); } \
-s8 read(T& _type) \
+size_t read(T& _type) \
   { return _readNetworkOrder((u1*)&_type, sizeof(T)); } \
-s8 peek(T& _type) \
+size_t peek(T& _type) \
   { return _peekNetworkOrder((u1*)&_type, sizeof(T)); }
 
 /*!

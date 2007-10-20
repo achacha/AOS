@@ -106,10 +106,10 @@ void ATemplateNodeHandler_CODE::Node::_processLine(const AString& line, AXmlElem
       param.setSize(pos);
     }
 
-    AXmlElement::ConstNodeContainer nodes;
+    AXmlElement::CONST_CONTAINER nodes;
     root.find(param, nodes);
 
-    AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
+    AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin();
     while (cit != nodes.end())
     {
       if (cit != nodes.begin())
@@ -124,7 +124,7 @@ void ATemplateNodeHandler_CODE::Node::_processLine(const AString& line, AXmlElem
   }
   else if (command.equalsNoCase("count"))
   {
-    AXmlElement::ConstNodeContainer nodes;
+    AXmlElement::CONST_CONTAINER nodes;
     root.find(param, nodes);
     output.append(AString::fromSize_t(nodes.size()));
   }

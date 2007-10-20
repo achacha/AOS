@@ -8,8 +8,14 @@
 #include "AJsonEmittable.hpp"
 
 /*!
-Base class that represents an XML node from which AElement, AData and such are derived
-Pure virtual class not meant to be instanciated
+Base class that represents an XML element node 
+
+All searching assumes (if this is /root and has child0 and child1):
+absolute path must include this element (/root/child1)
+relative path starts with contained elements and omits this element (child1)
+
+All content added as pointer is owned and deleted by this element
+Items added by reference are either cloned or emitted to data
 */
 class ABASE_API AXmlElement : public ADebugDumpable, public AXmlEmittable, public AJsonEmittable
 {
@@ -27,8 +33,8 @@ public:
   };
 
 public:
-  typedef std::list<AXmlElement *> NodeContainer;
-  typedef std::list<const AXmlElement *> ConstNodeContainer;
+  typedef std::list<AXmlElement *> CONTAINER;
+  typedef std::list<const AXmlElement *> CONST_CONTAINER;
 
   //! default ctor
   AXmlElement(AXmlElement *pParent = NULL);
@@ -116,11 +122,11 @@ public:
   bool getBool(const AString& path, bool boolDefault) const;
 
   /*!
-  Find path based on this node as root
+  Find path based on this element as root
   Returns NULL if not found
   */
-  AXmlElement *findNode(const AString& xpath);
-  const AXmlElement *findNode(const AString& xpath) const;
+  AXmlElement *findElement(const AString& xpath);
+  const AXmlElement *findElement(const AString& xpath) const;
 
   /*!
   Searching for path
@@ -131,7 +137,7 @@ public:
 
   Returns number of elements found
   */
-  size_t find(const AString& path, ConstNodeContainer& result) const;
+  size_t find(const AString& path, CONST_CONTAINER& result) const;
 
   /*!
   Create a new element
@@ -211,7 +217,7 @@ public:
   AXmlElement& addComment(const AString&);
 
   /*!
-  Adds content node pointer
+  Adds content element pointer
     this object will OWN the passed content pointer and release it when done
 
   If path is empty or "/", current element is used as base
@@ -261,7 +267,7 @@ public:
   /*!
   AEmittable and other output methods
    indent >= 0 will make it human-readable by adding indent and CRLF
-   emit will include current node, emitContent will not
+   emit will include current element, emitContent will not
   */
   virtual void emit(AOutputBuffer&) const;
   virtual void emit(AOutputBuffer&, int indent) const;
@@ -302,10 +308,10 @@ public:
   Content
   List of AXmlElement objects contained in this one
   */
-  const AXmlElement::NodeContainer& getContentContainer() const;
+  const AXmlElement::CONTAINER& getContentContainer() const;
 
   /*!
-  Set/Get parent node if any, NULL if none
+  Set/Get parent element, NULL if none
   */
   AXmlElement *getParent() const { return mp_Parent; }
   void setParent(AXmlElement *pParent) { mp_Parent = pParent; }
@@ -314,7 +320,9 @@ public:
   virtual AXmlElement* clone() const;
 
   /*!
-  Parsing XML to and from file (assumes a perfect XML node without instructions, AXmlDocument accounts for instructions)
+  Parsing XML to and from file
+  NOTE: assumes a actual XML element, not data or instruction
+  Use AXmlDocument to parse entire XML documents
   */
   virtual void fromAFile(AFile&);
   virtual void toAFile(AFile&) const;
@@ -324,12 +332,12 @@ protected:
   AString m_Name;
 
   //! Content container
-  NodeContainer m_Content;
+  CONTAINER m_Content;
 
   //! Attributes
   AAttributes m_Attributes;
 
-  //! Parent node (NULL if none)
+  //! Parent element (NULL if none)
   AXmlElement *mp_Parent;
 
   //! Recursive search function
@@ -339,7 +347,7 @@ protected:
   inline void _indent(AOutputBuffer&, int) const;
 
   //! Internal find
-  size_t _find(LIST_AString listPath, AXmlElement::ConstNodeContainer& result) const;
+  size_t _find(LIST_AString listPath, AXmlElement::CONST_CONTAINER& result) const;
 
   //! Add element
   AXmlElement *_addElement(const AString& path, bool overwrite);

@@ -25,7 +25,7 @@ void testAddAndSerialize(int& iRet)
 {
   AXmlElement elem("root");
   AXmlElement& path1 = elem.addElement("path0").addElement("path1");
-  AXmlElement& path2 = elem.findNode("path0")->addElement("path2");
+  AXmlElement& path2 = elem.findElement("path0")->addElement("path2");
   path1.addElement("obj0", "value0");
   path2.addElement("obj1", "value1");
   path1.addElement("obj2", "value2");
@@ -50,7 +50,7 @@ void testAddAndSerialize(int& iRet)
   ASSERT_UNIT_TEST(str0.equals(str1), "add_emit", "1", iRet);
 
   AXmlElement *p;
-  if (p = elem.findNode("/root/path0/path1/"))
+  if (p = elem.findElement("/root/path0/path1/"))
   {
     p->useAttributes().insert("attrib0", "0");
     p->useAttributes().insert("attrib1", "0");

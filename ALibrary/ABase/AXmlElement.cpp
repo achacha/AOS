@@ -21,7 +21,7 @@ void AXmlElement::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Content={" << std::endl;
-  NodeContainer::const_iterator cit = m_Content.begin();
+  CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
     (*cit)->debugDump(os, indent+2);
@@ -57,7 +57,7 @@ AXmlElement::AXmlElement(const AXmlElement& that, AXmlElement *pParent /* = NULL
   m_Attributes(that.m_Attributes)
 {
   //a_By default parent node is not copied
-  for (NodeContainer::const_iterator cit = that.m_Content.begin(); cit != that.m_Content.end(); ++cit)
+  for (CONTAINER::const_iterator cit = that.m_Content.begin(); cit != that.m_Content.end(); ++cit)
     m_Content.push_back((*cit)->clone());
 }
 
@@ -65,7 +65,7 @@ AXmlElement::~AXmlElement()
 {
   try
   {
-    for (NodeContainer::iterator it = m_Content.begin(); it != m_Content.end(); ++it)
+    for (CONTAINER::iterator it = m_Content.begin(); it != m_Content.end(); ++it)
       delete (*it);
   }
   catch(...) {}
@@ -73,7 +73,7 @@ AXmlElement::~AXmlElement()
 
 void AXmlElement::clear()
 {
-  NodeContainer::iterator it = m_Content.begin();
+  CONTAINER::iterator it = m_Content.begin();
   while (it != m_Content.end())
   {
     delete (*it);
@@ -90,10 +90,10 @@ bool AXmlElement::emitFromPath(
   int indent //= -1
 ) const
 {
-  const AXmlElement *pNode = findNode(xpath);
+  const AXmlElement *pNode = findElement(xpath);
   if (pNode)
   {
-    AXmlElement::NodeContainer::const_iterator cit = pNode->m_Content.begin();
+    AXmlElement::CONTAINER::const_iterator cit = pNode->m_Content.begin();
     while (cit != pNode->m_Content.end())
     {
       (*cit)->emit(target, indent);
@@ -108,7 +108,7 @@ bool AXmlElement::emitFromPath(
 void AXmlElement::emitXml(AXmlElement& target) const
 {
   AXmlElement& base = target.addElement(m_Name);
-  NodeContainer::const_iterator cit = m_Content.begin();
+  CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
     base.addContent((*cit)->clone());
@@ -118,7 +118,7 @@ void AXmlElement::emitXml(AXmlElement& target) const
 
 void AXmlElement::emitXmlContent(AXmlElement& target) const
 {
-  NodeContainer::const_iterator cit = m_Content.begin();
+  CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
     target.addContent((*cit)->clone());
@@ -128,7 +128,7 @@ void AXmlElement::emitXmlContent(AXmlElement& target) const
 
 void AXmlElement::emitContent(AOutputBuffer& target) const
 {
-  NodeContainer::const_iterator cit = m_Content.begin();
+  CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {   
     (*cit)->emitContent(target);
@@ -152,7 +152,7 @@ AXmlElement& AXmlElement::addAttribute(const AString& name, const AString& value
   return *this;
 }
 
-AXmlElement *AXmlElement::findNode(const AString& xpath)
+AXmlElement *AXmlElement::findElement(const AString& xpath)
 {
   LIST_AString xparts;
   xpath.split(xparts, '/');
@@ -186,7 +186,7 @@ AXmlElement *AXmlElement::findNode(const AString& xpath)
   }
 }
 
-const AXmlElement *AXmlElement::findNode(const AString& xpath) const
+const AXmlElement *AXmlElement::findElement(const AString& xpath) const
 {
   LIST_AString xparts;
   xpath.split(xparts, '/');
@@ -223,7 +223,7 @@ const AXmlElement *AXmlElement::findNode(const AString& xpath) const
 AXmlElement *AXmlElement::_get(LIST_AString& xparts) const
 {
   AString& strName = xparts.front();
-  NodeContainer::const_iterator cit = m_Content.begin();
+  CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
     if ((*cit)->getName().equals(strName))
@@ -272,12 +272,12 @@ AAttributes& AXmlElement::useAttributes()
   return m_Attributes; 
 }
 
-const AXmlElement::NodeContainer& AXmlElement::getContentContainer() const 
+const AXmlElement::CONTAINER& AXmlElement::getContentContainer() const 
 {
   return m_Content;
 }
 
-size_t AXmlElement::find(const AString& path, AXmlElement::ConstNodeContainer& result) const
+size_t AXmlElement::find(const AString& path, AXmlElement::CONST_CONTAINER& result) const
 {
   AString strAttribute;
   AString strPath(path);
@@ -328,7 +328,7 @@ size_t AXmlElement::find(const AString& path, AXmlElement::ConstNodeContainer& r
   return _find(listPath, result);
 }
 
-size_t AXmlElement::_find(LIST_AString listPath, AXmlElement::ConstNodeContainer& result) const
+size_t AXmlElement::_find(LIST_AString listPath, AXmlElement::CONST_CONTAINER& result) const
 {
   if (listPath.front().equals(m_Name))
   {
@@ -346,7 +346,7 @@ size_t AXmlElement::_find(LIST_AString listPath, AXmlElement::ConstNodeContainer
       case 1:
       {
         //a_Include immediate children nodes
-        NodeContainer::const_iterator cit = m_Content.begin();
+        CONTAINER::const_iterator cit = m_Content.begin();
         while (cit != m_Content.end())
         {
           if ((*cit)->getName().equals(listPath.front()))
@@ -362,7 +362,7 @@ size_t AXmlElement::_find(LIST_AString listPath, AXmlElement::ConstNodeContainer
       default:
       {
         //a_Recurse deeper for each element
-        NodeContainer::const_iterator cit = m_Content.begin();
+        CONTAINER::const_iterator cit = m_Content.begin();
         while (cit != m_Content.end())
         {
           if ((*cit)->getName().equals(listPath.front()))
@@ -384,7 +384,7 @@ size_t AXmlElement::_find(LIST_AString listPath, AXmlElement::ConstNodeContainer
 
 bool AXmlElement::exists(const AString& path) const
 {
-  return (NULL != findNode(path));
+  return (NULL != findElement(path));
 }
 
 bool AXmlElement::emitString(const AString& path, AOutputBuffer& target) const
@@ -432,7 +432,7 @@ bool AXmlElement::getBool(const AString& path, bool boolDefault) const
 
 bool AXmlElement::hasElements() const
 {
-  NodeContainer::const_iterator cit = m_Content.begin();
+  CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
     //a_Stop when first instance is encountered
@@ -447,7 +447,7 @@ bool AXmlElement::hasElements() const
 AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParent)
 {
   AString& strName = xparts.front();
-  NodeContainer::iterator it = m_Content.begin();
+  CONTAINER::iterator it = m_Content.begin();
   while (it != m_Content.end())
   {
     if ((*it)->getName().equals(strName))
@@ -705,7 +705,7 @@ void AXmlElement::emit(AOutputBuffer& target, int indent) const
       m_Attributes.emit(target);
     }
 
-    NodeContainer::const_iterator cit = m_Content.begin();
+    CONTAINER::const_iterator cit = m_Content.begin();
     int iSubElementCount = 0;
     if (cit != m_Content.end())
     {
@@ -740,7 +740,7 @@ void AXmlElement::emit(AOutputBuffer& target, int indent) const
   else
   {
     //a_Element has no name, just iterate the children if any
-    NodeContainer::const_iterator cit = m_Content.begin();
+    CONTAINER::const_iterator cit = m_Content.begin();
     if (cit != m_Content.end())
     {
       while (cit != m_Content.end())
@@ -778,7 +778,7 @@ void AXmlElement::emitJson(
   size_t attrSize = m_Attributes.size();
   if (m_Content.size() > 0)
   {
-    NodeContainer::const_iterator cit = m_Content.begin();
+    CONTAINER::const_iterator cit = m_Content.begin();
     while(cit != m_Content.end())
     {
       (*cit)->emitJson(target, (indent >= 0 ? indent+1 : indent));
