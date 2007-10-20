@@ -37,7 +37,7 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
   bool state = false;
   const AXmlElement *pNode = NULL;
   
-  if (pNode = moduleParams.findNode(ASW("state",5)))
+  if (pNode = moduleParams.findElement(ASW("state",5)))
   {
     pNode->emitContent(str);
     if (str.at(0) == '1')
@@ -50,7 +50,7 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
   }
 
   AString strDisplay;
-  if (pNode = moduleParams.findNode(ASW("display",7)))
+  if (pNode = moduleParams.findElement(ASW("display",7)))
   {
     pNode->emitContent(strDisplay);
   }
@@ -61,7 +61,7 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
   }
 
   AString strVariable;
-  if (pNode = moduleParams.findNode(ASW("variable",8)))
+  if (pNode = moduleParams.findElement(ASW("variable",8)))
   {
     pNode->emitContent(strVariable);
   }
