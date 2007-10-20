@@ -120,8 +120,9 @@ void ATemplateNode::fromAFile(AFile& aFile)
     endToken.append(ATemplate::TAG_END);
 
     //a_Read until end token into a string file which is parsed on per-line basis
+    //a_If end token not found, read everything to EOF
     if (AConstant::npos == aFile.readUntil(m_BlockData, endToken, true, true))
-      ATHROW(this, AException::EndOfBuffer);
+      aFile.readUntilEOF(m_BlockData);
   }
 }
 
