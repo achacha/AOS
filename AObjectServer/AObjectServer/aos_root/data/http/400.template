@@ -4,6 +4,6 @@
 </head>
 <body>
 <font color="red">HTTP400: Bad request.</font>
-<!-- <!--[print(/root/REQUEST/AUrl/url)]--> -->
+<!-- %[LUA]{{{ print(aos.emitContent("/root/REQUEST/AUrl/url")); }}}[LUA]% -->
 </body>
 </html>

@@ -926,23 +926,26 @@ int AOSContext::getDumpContextLevel() const
 
 void AOSContext::dumpContext(int dumpContextLevel)
 {
-  AXmlElement& eDumpContext = m_OutputXmlDocument.useRoot().addElement(ASW("dumpContext",11));
-  AXmlElement& eContext = eDumpContext.addElement(ASW("context",7));
-  switch(dumpContextLevel)
+  if (dumpContextLevel > 0)
   {
-    case 2:
-      eContext.addElement(ASW("buffer",6)).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
-      eContext.addElement(ASW("debugDump",9)).addData(*this, AXmlElement::ENC_CDATADIRECT);
-      m_Services.useConfiguration().getConfigRoot().emitXml(
-        eDumpContext.addElement(ASW("configuration",13))
-      );
-    case 1:
-      emitXml(eContext);
-    default:
-      if (m_EventVisitor.getErrorCount() > 0)
-      {
-        //a_Process and display error as XML
-        m_EventVisitor.emitXml(m_OutputXmlDocument.useRoot().addElement(ASW("error", 5)));
-      }
+    AXmlElement& eDumpContext = m_OutputXmlDocument.useRoot().addElement(ASW("dumpContext",11));
+    AXmlElement& eContext = eDumpContext.addElement(ASW("context",7));
+    switch(dumpContextLevel)
+    {
+      case 2:
+        eContext.addElement(ASW("buffer",6)).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
+        eContext.addElement(ASW("debugDump",9)).addData(*this, AXmlElement::ENC_CDATADIRECT);
+        m_Services.useConfiguration().getConfigRoot().emitXml(
+          eDumpContext.addElement(ASW("configuration",13))
+        );
+      case 1:
+        emitXml(eContext);
+      default:
+        if (m_EventVisitor.getErrorCount() > 0)
+        {
+          //a_Process and display error as XML
+          m_EventVisitor.emitXml(m_OutputXmlDocument.useRoot().addElement(ASW("error", 5)));
+        }
+    }
   }
 }

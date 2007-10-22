@@ -1,8 +1,19 @@
 <html>
 <head>
-  <title>HTTP Error <!--[print(/root/RESPONSE/status@code)]-->  <!--[print(/root/RESPONSE/status)]--></title>
+  <title>HTTP Error %[LUA]{{{
+print(aos.emitContent("/root/RESPONSE/status@code"));
+print(" - ");
+print(aos.emitContent("/root/RESPONSE/status"));
+}}}[LUA]%
 </head>
 <body>
-<font color="red"><b>HTTP Error <!--[print(/root/RESPONSE/status@code)]--></b> - <!--[print(/root/RESPONSE/status)]--></font>
+<font color="red"><b>HTTP Error %[LUA]{{{
+print(aos.emitContent("/root/REQUEST/AUrl/url"));
+print("<br/>");
+print(aos.emitContent("/root/RESPONSE/status@code"));
+print("</b>: ");
+print(aos.emitContent("/root/RESPONSE/status"));
+}}}[LUA]%
+
 </body>
 </html>

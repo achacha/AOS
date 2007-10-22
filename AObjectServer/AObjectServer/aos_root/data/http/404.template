@@ -4,6 +4,6 @@
 </head>
 <body>
 <font color="red">HTTP404: File not found.</font>
-<!-- <!--[print(/root/REQUEST/AUrl/url)]--> -->
+<!-- %[LUA]{{{ print(aos.emitContent("/root/REQUEST/AUrl/url")); }}}[LUA]% -->
 </body>
 </html>
