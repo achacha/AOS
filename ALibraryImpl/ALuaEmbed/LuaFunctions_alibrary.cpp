@@ -1,13 +1,8 @@
 #include "pchALuaEmbed.hpp"
-#include "ALibraryFunctions.hpp"
 #include "ALuaEmbed.hpp"
 #include "AXmlDocument.hpp"
 #include "ATemplate.hpp"
-
-extern "C"
-{
-#include "lstate.h"
-}
+#include "AThread.hpp"
 
 extern "C" void luaL_stringappender(lua_State *L, const char *s)
 {
@@ -136,17 +131,35 @@ static int alibrary_Objects_Model_addElementText(lua_State *L)
   return 0;
 }
 
+/*!
+Sleeps for N milliseconds
+*/
+static int alibrary_Sleep(lua_State *L)
+{
+  size_t len = AConstant::npos;
+  u4 sleeptime = (u4)luaL_checkint(L, 1, &len);
+  lua_pop(L,1);
+
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
+  AThread::sleep(sleeptime);
+
+  return 0;
+}
+
 static const luaL_Reg alibrary_funcs[] = {
   {"emit", alibrary_Objects_emit},
   {"Model_emitXml", alibrary_Objects_Model_emitXml},
   {"Model_emitJson", alibrary_Objects_Model_emitJson},
   {"Model_emitContentFromPath", alibrary_Objects_Model_emitContentFromPath},
   {"Model_addElementText", alibrary_Objects_Model_addElementText},
+  {"Sleep", alibrary_Sleep},
   {NULL, NULL}
 };
 
 LUALIB_API int luaopen_alibrary(lua_State *L)
 {
-  luaL_register(L, LUA_ALIBRARYNAME, alibrary_funcs);
+  luaL_register(L, "alibrary", alibrary_funcs);
   return 1;
 }

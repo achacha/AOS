@@ -1,16 +1,8 @@
-// ALuaEmbed.cpp : Defines the entry point for the DLL application.
-//
 
 #include "pchALuaEmbed.hpp"
 #include "ALuaEmbed.hpp"
 #include "ARope.hpp"
 #include "ATemplate.hpp"
-
-#include "ALibraryFunctions.hpp"
-extern "C"
-{
-#include "lstate.h"
-}
 
 #ifdef __DEBUG_DUMP__
 void ALuaEmbed::debugDump(std::ostream& os, int indent) const
@@ -96,6 +88,7 @@ void ALuaEmbed::_init(u4 maskLibrariesToLoad)
   //a_Load ALibrary functions first
   luaopen_alibrary(mp_LuaState);
   luaopen_base(mp_LuaState);             // opens the basic library required by ALibrary
+  luaopen_web(mp_LuaState);              // load web functions
 
   if (LUALIB_TABLE & maskLibrariesToLoad)   luaopen_table(mp_LuaState);            // opens the table library
   if (LUALIB_STRING & maskLibrariesToLoad)  luaopen_string(mp_LuaState);           // opens the string lib
@@ -127,7 +120,60 @@ void ALuaEmbed::emit(AOutputBuffer& target) const
 
 bool ALuaEmbed::execute(const AEmittable& code)
 {
-  return _execute(code);
+  AASSERT(NULL, mp_LuaState);
+  try
+  {
+    ARope rope;
+    code.emit(rope);
+    const AString& buffer = rope.toAString();
+    int error = luaL_loadbuffer(mp_LuaState, buffer.c_str(), buffer.getSize(), "buffer");
+    if (error)
+    {
+      AString strError(lua_tostring(mp_LuaState, -1));
+      lua_pop(mp_LuaState, 1);  // pop error message from the stack
+      mp_Output->append(strError);
+      return false;
+    }
+
+    //a_Execute LUA code
+    switch(lua_pcall(mp_LuaState, 0, LUA_MULTRET, 0))
+    {
+      case LUA_ERRRUN:
+      {
+        AString strError("Runtime Error: ");
+        strError.append(lua_tostring(mp_LuaState, -1));
+        lua_pop(mp_LuaState, 1);  // pop error message from the stack
+        mp_Output->append(strError);
+        return false;
+      } 
+      break;
+      
+      case LUA_ERRMEM:
+      {
+        AString strError("Memory Allocation Error: ");
+        strError.append(lua_tostring(mp_LuaState, -1));
+        lua_pop(mp_LuaState, 1);  // pop error message from the stack
+        mp_Output->append(strError);
+        return false;
+      } 
+      break;
+
+      case LUA_ERRERR:
+      {
+        AString strError("Error in error handler: ");
+        strError.append(lua_tostring(mp_LuaState, -1));
+        lua_pop(mp_LuaState, 1);  // pop error message from the stack
+        mp_Output->append(strError);
+        return false;
+      }
+      break;
+    }
+  }
+  catch(AException& ex)
+  {
+    ex.emit(*mp_Output);
+  }
+  return true;
 }
 
 bool ALuaEmbed::execute(const AEmittable& code, ABasePtrHolder& objects, AOutputBuffer& output)
@@ -136,58 +182,7 @@ bool ALuaEmbed::execute(const AEmittable& code, ABasePtrHolder& objects, AOutput
   mp_Objects.reset(&objects, false);
   mp_Output.reset(&output, false);
   
-  return _execute(code);
-}
-
-bool ALuaEmbed::_execute(const AEmittable& code)
-{
-  AASSERT(NULL, mp_LuaState);
-  ARope rope;
-  code.emit(rope);
-  const AString& buffer = rope.toAString();
-  int error = luaL_loadbuffer(mp_LuaState, buffer.c_str(), buffer.getSize(), "buffer");
-  if (error)
-  {
-    AString strError(lua_tostring(mp_LuaState, -1));
-    lua_pop(mp_LuaState, 1);  // pop error message from the stack
-    mp_Output->append(strError);
-    return false;
-  }
-
-  //a_Execute LUA code
-  switch(lua_pcall(mp_LuaState, 0, LUA_MULTRET, 0))
-  {
-    case LUA_ERRRUN:
-    {
-      AString strError("Runtime Error: ");
-      strError.append(lua_tostring(mp_LuaState, -1));
-      lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      mp_Output->append(strError);
-      return false;
-    } 
-    break;
-    
-    case LUA_ERRMEM:
-    {
-      AString strError("Memory Allocation Error: ");
-      strError.append(lua_tostring(mp_LuaState, -1));
-      lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      mp_Output->append(strError);
-      return false;
-    } 
-    break;
-
-    case LUA_ERRERR:
-    {
-      AString strError("Error in error handler: ");
-      strError.append(lua_tostring(mp_LuaState, -1));
-      lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      mp_Output->append(strError);
-      return false;
-    }
-    break;
-  }
-  return true;
+  return execute(code);
 }
 
 AOutputBuffer& ALuaEmbed::useOutput()

@@ -198,10 +198,6 @@
 			UniqueIdentifier="{4FC737F1-C7B5-4376-A166-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\ALibraryFunctions.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ALuaEmbed.cpp"
 				>
 			</File>
@@ -211,6 +207,14 @@
 			</File>
 			<File
 				RelativePath=".\ATemplateNodeHandler_LUA.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LuaFunctions_alibrary.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LuaFunctions_web.cpp"
 				>
 			</File>
 			<File

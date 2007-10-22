@@ -145,9 +145,6 @@ private:
   //a_Init Lua interpreter and load libraries
   void _init(u4 maskLibrariesToLoad);
 
-  //a_Execute Lua code 
-  bool _execute(const AEmittable& code);
-
 public:
 #ifdef __DEBUG_DUMP__
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
