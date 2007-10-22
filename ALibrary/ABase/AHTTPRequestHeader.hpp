@@ -61,6 +61,11 @@ public:
   void emitProxyHeader(AOutputBuffer&) const;
 
   /*!
+  Parse URL and set Host:
+  */
+  void parseUrl(const AString& str);
+  
+  /*!
   Method string
   Whatever was in the HTTP header
   */

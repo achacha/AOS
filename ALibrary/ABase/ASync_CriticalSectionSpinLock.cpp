@@ -4,13 +4,13 @@
 #include "ASystemException.hpp"
 
 ASync_CriticalSectionSpinLock::ASync_CriticalSectionSpinLock(
-  u4 spinCount,                        // = 4000
+  size_t spinCount,                    // = 4000
   ASynchronization::eInitialState i    // = UNLOCKED
 ) :
   mp_CriticalSection(new CRITICAL_SECTION),
   m_SpinCount(spinCount)
 {
-  if (!::InitializeCriticalSectionAndSpinCount(mp_CriticalSection, m_SpinCount))
+  if (!::InitializeCriticalSectionAndSpinCount(mp_CriticalSection, (DWORD)m_SpinCount))
     ATHROW_LAST_OS_ERROR(this);
 
   if (i==LOCKED) 

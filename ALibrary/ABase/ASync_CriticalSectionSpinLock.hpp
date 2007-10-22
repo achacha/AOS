@@ -19,7 +19,7 @@ public:
      critical sections. This gives great performance and scalability 
      in almost all worst-case scenarios." - MSDN help
   */
-  ASync_CriticalSectionSpinLock(u4 spinCount = 4000, ASynchronization::eInitialState i = UNLOCKED);
+  ASync_CriticalSectionSpinLock(size_t spinCount = 4000, ASynchronization::eInitialState i = UNLOCKED);
   virtual ~ASync_CriticalSectionSpinLock();
 
 	/*!
@@ -37,7 +37,7 @@ private:
   //a_Critical section object
 #ifdef __WINDOWS__
   CRITICAL_SECTION *mp_CriticalSection;
-  u4 m_SpinCount;
+  size_t m_SpinCount;
 #endif
 };
 

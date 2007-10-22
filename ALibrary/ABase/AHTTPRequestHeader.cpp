@@ -84,6 +84,12 @@ void AHTTPRequestHeader::clear()
   AHTTPHeader::clear();
 }
 
+void AHTTPRequestHeader::parseUrl(const AString& str)
+{
+  murl_Request.parse(str);
+  setPair(AHTTPHeader::HT_REQ_Host, murl_Request.getServer());   //a_Required for HTTP/1.1 and nice to have with earlier versions
+}
+
 const AString& AHTTPRequestHeader::getMethod() const 
 { 
   return mstr_Method;

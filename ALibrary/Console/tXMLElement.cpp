@@ -151,7 +151,7 @@ void testPathAdd()
 
   AXmlElement *p;
 
-  if (p = elem.findNode("/root/path0/path1/"))
+  if (p = elem.findElement("/root/path0/path1/"))
   {
     p->useAttributes().insert("attrib0", "0");
     p->useAttributes().insert("attrib1", "0");
@@ -239,7 +239,7 @@ void testEmitClone()
 
   AString str;
   AXmlElement target("newroot");
-  AXmlElement *pNode = e.findNode("/root/base/path2");
+  AXmlElement *pNode = e.findElement("/root/base/path2");
   if (pNode)
   {
     pNode->emitXml(target);
@@ -270,7 +270,7 @@ void testXmlEmit()
   std::cout << str << std::endl;
 
   AXmlElement target("newroot");
-  AXmlElement *pNode = e.findNode("/root/base/path2");
+  AXmlElement *pNode = e.findElement("/root/base/path2");
   if (pNode)
   {
     pNode->emitXml(target);
@@ -320,14 +320,14 @@ void testFind1()
 
   AXmlDocument doc(f);
 
-  AXmlElement *pNode = doc.useRoot().findNode("/xml/TextColor");
+  AXmlElement *pNode = doc.useRoot().findElement("/xml/TextColor");
   if (pNode)
   {
     AString str;
     pNode->emit(str,0);
     std::cout << str << std::endl;
 
-    AXmlElement *pR = pNode->findNode("R");
+    AXmlElement *pR = pNode->findElement("R");
     if (pR)
     {
       str.clear();
@@ -348,12 +348,12 @@ void testFind2()
 
   AXmlDocument doc(f);
 
-  AXmlElement::ConstNodeContainer nodes;
+  AXmlElement::CONST_CONTAINER nodes;
   doc.useRoot().find("/root/http", nodes);
   if (nodes.size() > 0)
   {
     AString str;
-    AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
+    AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin();
     while (cit != nodes.end())
     {
       AString str("port=");
@@ -375,12 +375,12 @@ void testFind3()
 
   AXmlDocument doc(f);
 
-  AXmlElement::ConstNodeContainer nodes;
+  AXmlElement::CONST_CONTAINER nodes;
   doc.useRoot().find("/root/http", nodes);
   if (nodes.size() > 0)
   {
     AString str;
-    AXmlElement::ConstNodeContainer::const_iterator cit = nodes.begin();
+    AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin();
     while (cit != nodes.end())
     {
       std::cout << (*cit)->getName() << std::endl;
