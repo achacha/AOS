@@ -85,11 +85,14 @@ void ALuaEmbed::_init(u4 maskLibrariesToLoad)
   if (LUALIB_NONE == maskLibrariesToLoad)
     return;
 
-  //a_Load ALibrary functions first
-  luaopen_alibrary(mp_LuaState);
-  luaopen_base(mp_LuaState);             // opens the basic library required by ALibrary
+  //a_Load ALibrary based functions
+  luaopen_alibrary(mp_LuaState);         // load ALibrary functions first (and override print() to use output)
+  luaopen_base(mp_LuaState);             // load base Lua functions used by ALibrary
   luaopen_web(mp_LuaState);              // load web functions
+  luaopen_objects(mp_LuaState);          // load objects functions
+  luaopen_model(mp_LuaState);            // load model functions
 
+  //a_Optional Lua libraries
   if (LUALIB_TABLE & maskLibrariesToLoad)   luaopen_table(mp_LuaState);            // opens the table library
   if (LUALIB_STRING & maskLibrariesToLoad)  luaopen_string(mp_LuaState);           // opens the string lib
   if (LUALIB_MATH & maskLibrariesToLoad)    luaopen_math(mp_LuaState);             // opens the math lib

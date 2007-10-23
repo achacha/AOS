@@ -214,6 +214,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LuaFunctions_model.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LuaFunctions_objects.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\LuaFunctions_web.cpp"
 				>
 			</File>

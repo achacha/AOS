@@ -1,7 +1,5 @@
 #include "pchALuaEmbed.hpp"
 #include "ALuaEmbed.hpp"
-#include "AXmlDocument.hpp"
-#include "ATemplate.hpp"
 #include "AThread.hpp"
 
 extern "C" void luaL_stringappender(lua_State *L, const char *s)
@@ -14,125 +12,11 @@ extern "C" void luaL_stringappender(lua_State *L, const char *s)
 }
 
 /*!
-thisfunction("<path to the AXmlElement to emit>")
-returns: content at the node path
-*/
-static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
-{
-  size_t len = AConstant::npos;
-  const char *s = luaL_checklstring(L, 1, &len);
-  const AString& xmlpath = AString::wrap(s, len);
-  lua_pop(L,1);
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
-  AString str;
-  AXmlElement::CONST_CONTAINER nodes;
-  size_t ret = pLuaEmbed->useModel().useRoot().find(xmlpath, nodes);
-  for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
-  {
-    (*cit)->emitContent(str);
-    lua_pushlstring(L, str.c_str(), str.getSize());
-    str.clear();
-  }
-  return (int)ret;
-}
-
-/*!
-thisfunction("<object name of AEmittable type>")
-returns: content at the node path
-*/
-static int alibrary_Objects_emit(lua_State *L)
-{
-  size_t len = AConstant::npos;
-  const char *s = luaL_checklstring(L, 1, &len);
-  const AString& objectName = AString::wrap(s, len);
-  lua_pop(L,1);
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
-  AEmittable *p = pLuaEmbed->useObjects().useAsPtr<AEmittable>(objectName);
-  if (p)
-  {
-    AString str;
-    p->emit(str);
-    lua_pushlstring(L, str.c_str(), str.getSize());
-    return 1;
-  }
-  else
-    return 0;
-}
-
-/*!
-thisfunction([indent = -1])
-returns: XML string of default AXmlDocument model
-*/
-static int alibrary_Objects_Model_emitXml(lua_State *L)
-{
-  int indent = -1;
-  if (lua_gettop(L) > 0)
-  {
-    indent = luaL_checkint(L, 1);
-    lua_pop(L,1);
-  }
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
-  AString str;
-  pLuaEmbed->useModel().useRoot().emit(str, indent);
-
-  lua_pushlstring(L, str.c_str(), str.getSize());
-  return 1;
-}
-
-/*!
-thisfunction([indent = -1])
-returns: JSON string of default AXmlDocument model
-*/
-static int alibrary_Objects_Model_emitJson(lua_State *L)
-{
-  int indent = -1;
-  if (lua_gettop(L) > 0)
-  {
-    indent = luaL_checkint(L, 1);
-    lua_pop(L,1);
-  }
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
-  AString str;
-  pLuaEmbed->useModel().useRoot().emitJson(str, indent);
-
-  lua_pushlstring(L, str.c_str(), str.getSize());
-  return 1;
-}
-
-/*!
-thisfunction("element path", "value")
-returns: JSON string of default AXmlDocument model
-*/
-static int alibrary_Objects_Model_addElementText(lua_State *L)
-{
-  size_t len = AConstant::npos;
-  const char *s = luaL_checklstring(L, 1, &len);
-  const AString& xmlpath = AString::wrap(s, len);
-  s = luaL_checklstring(L, 2, &len);
-  const AString& value = AString::wrap(s, len);
-  lua_pop(L,2);
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
-  pLuaEmbed->useModel().useRoot().addElement(xmlpath, value);
-  return 0;
-}
-
-/*!
 Sleeps for N milliseconds
+
+@namespace alibrary
+@param (integer) Milliseconds
+@return nil
 */
 static int alibrary_Sleep(lua_State *L)
 {
@@ -149,12 +33,7 @@ static int alibrary_Sleep(lua_State *L)
 }
 
 static const luaL_Reg alibrary_funcs[] = {
-  {"emit", alibrary_Objects_emit},
-  {"Model_emitXml", alibrary_Objects_Model_emitXml},
-  {"Model_emitJson", alibrary_Objects_Model_emitJson},
-  {"Model_emitContentFromPath", alibrary_Objects_Model_emitContentFromPath},
-  {"Model_addElementText", alibrary_Objects_Model_addElementText},
-  {"Sleep", alibrary_Sleep},
+  {"sleep", alibrary_Sleep},
   {NULL, NULL}
 };
 

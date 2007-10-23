@@ -23,5 +23,7 @@ LUA_API void (luaA_stringappender)(lua_State *L, const char *s);   /* appends a 
 /* ALibrary functionality */
 LUALIB_API int (luaopen_alibrary)(lua_State *L);    // register ALibrary generic functions with Lua
 LUALIB_API int (luaopen_web)(lua_State *L);         // register ALibrary Web specific functions with Lua
+LUALIB_API int (luaopen_objects)(lua_State *L);         // register ALibrary Web specific functions with Lua
+LUALIB_API int (luaopen_model)(lua_State *L);         // register ALibrary Web specific functions with Lua
 
 } //extern "C"
