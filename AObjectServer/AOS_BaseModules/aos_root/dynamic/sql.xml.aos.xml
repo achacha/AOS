@@ -3,11 +3,11 @@
 	<input/>
 	<module class='ExecuteQuery'>
 		<sql>select * from user</sql>
-		<path>/data/user</path>
+		<path>data/user</path>
 	</module>
 	<module class='ExecuteQuery'>
 		<sql>select * from global</sql>
-		<path>/data/global</path>
+		<path>data/global</path>
 	</module>
 	<output/>
 </command>

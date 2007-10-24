@@ -23,7 +23,7 @@ bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& par
   params.emitFromPath(ASW("path", 4), path);
   
   if (path.isEmpty())
-    path.assign(ASW("/ExecuteQuery/query", 19));
+    path.assign(ASW("ExecuteQuery/query", 18));
 
   if (!sql.isEmpty())
   {
@@ -31,7 +31,7 @@ bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& par
     AResultSet resultSet;
     if (AConstant::npos != context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(sql, resultSet, strError))
     {
-      context.useOutputRootXmlElement().addElement(path, resultSet);
+      context.useOutputRootXmlElement().addElement(path).addData(resultSet, AXmlElement::ENC_CDATADIRECT);
     }
     else
     {
