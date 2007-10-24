@@ -253,3 +253,13 @@ void AThreadPool::setMonitorCycleSleep(u4 sleeptime)
 {
   m_monitorCycleSleep = sleeptime;
 }
+
+const AThreadPool::THREADS& AThreadPool::getThreads() const
+{
+  return m_Threads;
+}
+
+ASynchronization& AThreadPool::getSync()
+{
+  return m_SynchObjectThreadPool;
+}

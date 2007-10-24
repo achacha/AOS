@@ -11,6 +11,10 @@ Ability to manage a homogenous pool of threads under one facade
 class ABASE_API AThreadPool : public ADebugDumpable
 {
 public:
+  //! List of thread pointers
+  typedef std::list<AThread *> THREADS;
+
+public:
   /*!
   Create pool based on a threadproc (which becomes threadproc of the template thread)
   */
@@ -51,9 +55,29 @@ public:
   ABase *getThis();
   ABase *getParameter();
 
+  /*!
+  Access the thtread container
+  This is not very safe unless the SyncObject is locked during use
+
+  {
+    ALock lock(threadPool.useSync());
+    const AThreadPool::THREADS& threads = threadPool.getThreads();
+    // do stuff here with threads
+    // during this time the thread monitor thread will not make any changes
+    // this may affect thread pool execution due to synchronization
+  }
+  */
+  const AThreadPool::THREADS& getThreads() const;
+
+  /*!
+  ASynchronization object that blocks the monitor thread
+  MUST lock when using getTheads() call to maintain some consistency
+  @see AThreadPool::getThreads()
+  */
+  ASynchronization& getSync();
+
 protected:
   //Thread container
-  typedef std::list<AThread *> THREADS;
   THREADS m_Threads;
 
   //Threads to run
