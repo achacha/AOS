@@ -283,9 +283,28 @@ lngMultiPrimaryKey=Chave primária de múltiplos campos somente podem ser usada se
 lngMigrationSuccess=A migração do banco de dados foi completada com sucesso!
 lngMigrationInProgress=A tabela "%s" está sendo migrada, por favor espere...
 
+;##############################################
+;########## Begin Language Updates ############
+;## Send updates to "sqliteadmin@orbmu2k.de" ##
+;##############################################
+
 lngSQLiteDB=SQLite Database
 lngAnyFile=Any File
 lngImportDone=Import done!
+lngBtnFirst=First
+lngBtnPrev=Previos
+lngBtnLast=Last
+lngBtnNext=Next
+lngBtnAdd=Insert
+lngBtnRemove=Delete
+lngBtnEdit=Edit
+lngBtnApply=Post
+lngBtnCancel=Cancel
+lngBtnRefresh=Refresh
+
+;##############################################
+;########### End Language Updates #############
+;##############################################
 
 [StrfTimeHint]
 Line0=

@@ -286,6 +286,26 @@ lngSQLiteDB=SQLite Adatbázis
 lngAnyFile=Akármilyen állomány
 lngImportDone=Import done!
 
+;##############################################
+;########## Begin Language Updates ############
+;## Send updates to "sqliteadmin@orbmu2k.de" ##
+;##############################################
+
+lngBtnFirst=First
+lngBtnPrev=Previos
+lngBtnLast=Last
+lngBtnNext=Next
+lngBtnAdd=Insert
+lngBtnRemove=Delete
+lngBtnEdit=Edit
+lngBtnApply=Post
+lngBtnCancel=Cancel
+lngBtnRefresh=Refresh
+
+;##############################################
+;########### End Language Updates #############
+;##############################################
+
 [StrfTimeHint]
 Line0=
 Line1=Formátum konstansok:

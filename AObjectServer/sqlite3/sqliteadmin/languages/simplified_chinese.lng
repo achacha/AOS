@@ -283,9 +283,28 @@ lngMultiPrimaryKey=要使用多字段主键，则不能使用单字段的主键
 lngMigrationSuccess=已经成功完成数据库迁移
 lngMigrationInProgress=正在迁移名称为“%s”的表，请稍候……
 
+;##############################################
+;########## Begin Language Updates ############
+;## Send updates to "sqliteadmin@orbmu2k.de" ##
+;##############################################
+
 lngSQLiteDB=SQLite Database
 lngAnyFile=Any File
 lngImportDone=Import done!
+lngBtnFirst=First
+lngBtnPrev=Previos
+lngBtnLast=Last
+lngBtnNext=Next
+lngBtnAdd=Insert
+lngBtnRemove=Delete
+lngBtnEdit=Edit
+lngBtnApply=Post
+lngBtnCancel=Cancel
+lngBtnRefresh=Refresh
+
+;##############################################
+;########### End Language Updates #############
+;##############################################
 
 [StrfTimeHint]
 Line0=

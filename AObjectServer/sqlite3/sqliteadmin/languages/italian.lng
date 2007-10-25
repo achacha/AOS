@@ -285,8 +285,26 @@ lngMigrationInProgress=Tabella "%s" migrata, attendere prego...
 lngSQLiteDB=SQLite Database
 lngAnyFile=Tutti i File
 
-lngImportDone=Import done!
+;##############################################
+;########## Begin Language Updates ############
+;## Send updates to "sqliteadmin@orbmu2k.de" ##
+;##############################################
 
+lngImportDone=Import done!
+lngBtnFirst=First
+lngBtnPrev=Previos
+lngBtnLast=Last
+lngBtnNext=Next
+lngBtnAdd=Insert
+lngBtnRemove=Delete
+lngBtnEdit=Edit
+lngBtnApply=Post
+lngBtnCancel=Cancel
+lngBtnRefresh=Refresh
+
+;##############################################
+;########### End Language Updates #############
+;##############################################
 
 [StrfTimeHint]
 Line0=

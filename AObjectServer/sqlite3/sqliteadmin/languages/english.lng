@@ -1,3 +1,7 @@
+;##################################
+;English Translation by Orbmu2k ;-)
+;##################################
+
 [frmMain]
 tsSQL=SQL Query
 tsResult=Result
@@ -114,11 +118,11 @@ tbbShowQueries=Show Queries
 [frmTable]
 lblTablename=Tablename:
 gbFields="     Tablefields"
-btnAdd=Add Field
-btnDel=Delete Field
-btnChange=Edit Field
-btnOK=Create
-btnCancel=Cancel
+btnAdd=&Add Field
+btnDel=&Delete Field
+btnChange=&Edit Field
+btnOK=C&reate
+btnCancel=Cance&l
 btnPrimaryKey=Primary Key
 
 [frmField]
@@ -281,6 +285,16 @@ lngMigrationInProgress=Table "%s" is migrating, please wait...
 lngSQLiteDB=SQLite Database
 lngAnyFile=Any File
 lngImportDone=Import done!
+lngBtnFirst=First
+lngBtnPrev=Previos
+lngBtnLast=Last
+lngBtnNext=Next
+lngBtnAdd=Insert
+lngBtnRemove=Delete
+lngBtnEdit=Edit
+lngBtnApply=Post
+lngBtnCancel=Cancel
+lngBtnRefresh=Refresh
 
 
 [StrfTimeHint]

@@ -218,7 +218,7 @@ lngSelectFields=Selecteer een Veld aub !
 lngSemiNotFound=Geen puntkomma gevonden op einde van SQL opdracht ! 
 lngCreateTrigger=Nieuwe Trigger
 lngEditTrigger=Wijzig Trigger
-lngBlobFileSize=Om veiligheidsredenen is de maximum grootte van een bestand beperkt tot 500kb. SQLite 2.8 x supporteert max. 1 MB per gegevensrij
+lngBlobFileSize=Om veiligheidsredenen is de maximum grootte van een bestand beperkt tot 500kb. SQLite 2.8 x ondersteunt max. 1 MB per gegevensrij
 lngSeperator=Scheidingsteken
 lngEnterSeperatorChar=Geef een scheidingsteken in aub !
 lngContainsHeaderFieldNames=Bevat de eerste rij veldnamen ?
@@ -284,9 +284,28 @@ lngMultiPrimaryKey=Meer-velden Primaire sleutel enkel te gebruiken als geen één-
 lngMigrationSuccess=Database migratie succesvol afgerond !
 lngMigrationInProgress=Bezig met Tabel "%s" te migreren, even geduld aub ...
 
+;##############################################
+;########## Begin Language Updates ############
+;## Send updates to "sqliteadmin@orbmu2k.de" ##
+;##############################################
+
 lngSQLiteDB=SQLite Database
-lngAnyFile=Any File
-lngImportDone=Import done!
+lngAnyFile=Alle bestanden
+lngImportDone=Inlezen klaar !
+lngBtnFirst=Eerste
+lngBtnPrev=Vorige
+lngBtnLast=Laatste
+lngBtnNext=Volgende
+lngBtnAdd=Toevoegen
+lngBtnRemove=Schrappen
+lngBtnEdit=Wijzigen
+lngBtnApply=Toepassen
+lngBtnCancel=Annuleren
+lngBtnRefresh=Verversen
+
+;##############################################
+;########### End Language Updates #############
+;##############################################
 
 [StrfTimeHint]
 Line0=

@@ -283,9 +283,28 @@ lngMultiPrimaryKey=¡La Clave Primaria Multi-campo solo se puede utilizar si no s
 lngMigrationSuccess=¡Migración de la Base de Datos Terminada Exitosamente!
 lngMigrationInProgress=La Tabla "%s" esta siendo migrada, por favor espere...
 
+;##############################################
+;########## Begin Language Updates ############
+;## Send updates to "sqliteadmin@orbmu2k.de" ##
+;##############################################
+
 lngSQLiteDB=SQLite Database
-lngAnyFile=Any File
-lngImportDone=Import done!
+lngAnyFile=Cualquier fichero
+lngImportDone=Importacion hecha!
+lngBtnFirst=Primero
+lngBtnPrev=Previos
+lngBtnLast=Ultimo
+lngBtnNext=Siguiente
+lngBtnAdd=Insertar
+lngBtnRemove=Eliminar
+lngBtnEdit=Editar
+lngBtnApply=Enviar
+lngBtnCancel=Cancelar
+lngBtnRefresh=Refrescar
+
+;##############################################
+;########### End Language Updates #############
+;##############################################
 
 [StrfTimeHint]
 Line0=
