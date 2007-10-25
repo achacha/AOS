@@ -31,7 +31,7 @@ bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& par
     AResultSet resultSet;
     if (AConstant::npos != context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(sql, resultSet, strError))
     {
-      context.useOutputRootXmlElement().addElement(path).addData(resultSet, AXmlElement::ENC_CDATADIRECT);
+      resultSet.emitXml(context.useOutputRootXmlElement().addElement(path));
     }
     else
     {

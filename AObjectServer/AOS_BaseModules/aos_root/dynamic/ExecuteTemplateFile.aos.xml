@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <command>
-	<input/>
-	<module class="Template">
-		<template><![CDATA[foo=%[LUA]{{{
-aos.addText("/root/inline-script-added", "Cthulhu was here");
-print(aos.emitContent("/root/inline-script-added"));	
-}}}[LUA]%]]></template>
-		<outpath>output/template</outpath>
-	</module>
-	<output/>
+  <input/>
+  <module class="Template">
+    <filename>template/TestLuaScript.template</filename>
+    <outpath>output/template</outpath>
+  </module>
+  <output/>
 </command>

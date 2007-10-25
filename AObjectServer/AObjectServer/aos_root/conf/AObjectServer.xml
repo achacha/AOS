@@ -31,6 +31,7 @@
 		<module>AOS_Example</module>
 		<module>AOS_Forum</module>
 		<module>AOS_Blog</module>
+		<module>AOS_Wiki</module>
 	</load>
 	<context-queues>
 		<is-available>
