@@ -202,6 +202,12 @@ public:
   const AOSDirectoryConfig *getDirConfig() const;
 
   /*!
+  Lookup the command based on current request URL
+  @return true if command is found
+  */
+  bool setCommandFromRequestUrl();
+
+  /*!
   Command object (NULL if does not exist)
   */
   const AOSCommand *getCommand() const;

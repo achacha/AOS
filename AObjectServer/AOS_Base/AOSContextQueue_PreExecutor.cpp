@@ -198,10 +198,10 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         }
 
         const AOSCommand *pCommand = pContext->getCommand();
-        if (pCommand && pCommand->isEnabled())
+        if ((pCommand && pCommand->isEnabled()) || (pContext->getDirConfig()))
         {
           //a_AOS command (dynamic)
-          if (pCommand->isSession())
+          if (pCommand && pCommand->isSession())
           {
             //a_Create/Use session cookie
             AString strSessionId;

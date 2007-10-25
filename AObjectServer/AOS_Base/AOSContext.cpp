@@ -198,19 +198,13 @@ AOSContext::Status AOSContext::init()
   //a_Map response MIME type based on request extension
   setResponseMimeTypeFromRequestExtension();
 
-  //a_Get the new command
-  mp_Command = m_Services.useConfiguration().getCommand(m_RequestHeader.getUrl());
-
   //a_Get associated directory config
   mp_DirConfig = m_Services.useConfiguration().getDirectoryConfig(m_RequestHeader.getUrl());
 
-  //a_AJAX style output (terse)
-  if (
-       (mp_Command && mp_Command->isForceAjax())
-    || m_RequestHeader.useUrl().useParameterPairs().exists(ASW("ajax",4))
-  )
+  //a_Set the command
+  if (!setCommandFromRequestUrl())
   {
-    m_ContextFlags.setBit(CTXFLAG_IS_AJAX);
+    addError(ASWNL("AOSContext::init"), ARope("Unable to find the command for request URL: ")+m_RequestHeader.useUrl());
   }
 
   //a_Initialize response header
@@ -948,4 +942,18 @@ void AOSContext::dumpContext(int dumpContextLevel)
         }
     }
   }
+}
+
+bool AOSContext::setCommandFromRequestUrl()
+{
+  //a_Get the new command
+  mp_Command = m_Services.useConfiguration().getCommand(m_RequestHeader.getUrl());
+  if (!mp_Command)
+    return false;
+
+  //a_AJAX style output (terse)
+  if (mp_Command->isForceAjax() || m_RequestHeader.useUrl().useParameterPairs().exists(ASW("ajax",4)))
+    m_ContextFlags.setBit(CTXFLAG_IS_AJAX);
+
+  return true;
 }
