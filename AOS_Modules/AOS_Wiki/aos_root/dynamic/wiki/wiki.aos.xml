@@ -1,0 +1,7 @@
+<command>
+  <input/>
+  <module class="WikiView"/>
+  <output class="Template">
+    <filename>wiki/view.template.html</filename>
+  </output>
+</command>
