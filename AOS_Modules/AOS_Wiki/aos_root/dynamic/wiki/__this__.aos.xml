@@ -1,5 +1,5 @@
 <config>
-	<module class="RemapWikiPath">
+	<module class="WikiRemapPath">
 		<base-path>/wiki</base-path>
 		<wiki-command>/wiki/wiki.html</wiki-command>
 	</module>

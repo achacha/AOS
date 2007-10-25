@@ -17,14 +17,14 @@ bool AOSModule_WikiRemapPath::execute(AOSContext& context, const AXmlElement& mo
   const AXmlElement *pBasePath = moduleParams.findElement(ASW("base-path",9));
   if (!pBasePath)
   {
-    context.addError(ASWNL("AOSModule_WikiView::execute"), ASWNL("missing 'module/base-path' parameter"));
+    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ASWNL("missing 'module/base-path' parameter"));
     return false;
   }
   
   const AXmlElement *pWikiCommand = moduleParams.findElement(ASW("wiki-command",12));
   if (!pWikiCommand)
   {
-    context.addError(ASWNL("AOSModule_WikiView::execute"), ASWNL("missing 'module/wiki-command' parameter"));
+    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ASWNL("missing 'module/wiki-command' parameter"));
     return false;
   }
 
@@ -34,7 +34,7 @@ bool AOSModule_WikiRemapPath::execute(AOSContext& context, const AXmlElement& mo
   size_t startOfBase = strPathAndFilename.find(strBasePath);
   if (AConstant::npos == startOfBase)
   {
-    context.addError(ASWNL("AOSModule_WikiView::execute"), ASWNL("Missing base path, is this executig in the correct path?"));
+    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ASWNL("Missing base path, is this executig in the correct path?"));
     return false;
   }
 
@@ -47,6 +47,11 @@ bool AOSModule_WikiRemapPath::execute(AOSContext& context, const AXmlElement& mo
   AString strParam;
   strPathAndFilename.peek(strParam, startOfBase+strBasePath.getSize());
   context.useRequestUrl().useParameterPairs().insert(ASW("wikipath",8), strParam);
+  if (!context.setCommandFromRequestUrl())
+  {
+    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ARope("Unable to find the command for new request URL: ")+context.useRequestUrl());
+    return false;
+  }
 
   return true;
 }
