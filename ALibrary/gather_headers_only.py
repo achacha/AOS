@@ -91,7 +91,7 @@ syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ADatabase_MySQL", "*.h*
 # ADatabase_SQLite
 print "|----------HEADERS: ALibraryImpl/ADatabase_SQLite----------|";
 syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ADatabase_SQLite", "*.hpp"), TARGET_ALIBRARY_INCLUDE_PATH);
-syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ADatabase_SQLite", "sqlite3.h"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(TARGET_BASE_PATH, "ALibraryImpl", "ADatabase_SQLite", "sqlite-3_5_1", "sqlite3.h"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # ADatabase_ODBC
 print "|----------HEADERS: ALibraryImpl/ADatabase_ODBC------------|";
