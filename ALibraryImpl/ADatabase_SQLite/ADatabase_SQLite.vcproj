@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../ALibrary/ABase"
+				AdditionalIncludeDirectories="../../ALibrary/ABase,./sqlite-3_5_1"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ADATABASE_SQLITE_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -127,7 +127,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../ALibrary/ABase"
+				AdditionalIncludeDirectories="../../ALibrary/ABase,./sqlite-3_5_1"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ADATABASE_SQLITE_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -202,119 +202,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\alter.c"
-				>
-			</File>
-			<File
-				RelativePath=".\analyze.c"
-				>
-			</File>
-			<File
 				RelativePath=".\ASQLiteServer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\attach.c"
-				>
-			</File>
-			<File
-				RelativePath=".\auth.c"
-				>
-			</File>
-			<File
-				RelativePath=".\btree.c"
-				>
-			</File>
-			<File
-				RelativePath=".\build.c"
-				>
-			</File>
-			<File
-				RelativePath=".\callback.c"
-				>
-			</File>
-			<File
-				RelativePath=".\complete.c"
-				>
-			</File>
-			<File
-				RelativePath=".\date.c"
-				>
-			</File>
-			<File
-				RelativePath=".\delete.c"
-				>
-			</File>
-			<File
-				RelativePath=".\expr.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fts1.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fts1_hash.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fts1_porter.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fts1_tokenizer1.c"
-				>
-			</File>
-			<File
-				RelativePath=".\func.c"
-				>
-			</File>
-			<File
-				RelativePath=".\hash.c"
-				>
-			</File>
-			<File
-				RelativePath=".\insert.c"
-				>
-			</File>
-			<File
-				RelativePath=".\legacy.c"
-				>
-			</File>
-			<File
-				RelativePath=".\loadext.c"
-				>
-			</File>
-			<File
-				RelativePath=".\main.c"
-				>
-			</File>
-			<File
-				RelativePath=".\opcodes.c"
-				>
-			</File>
-			<File
-				RelativePath=".\os.c"
-				>
-			</File>
-			<File
-				RelativePath=".\os_os2.c"
-				>
-			</File>
-			<File
-				RelativePath=".\os_unix.c"
-				>
-			</File>
-			<File
-				RelativePath=".\os_win.c"
-				>
-			</File>
-			<File
-				RelativePath=".\pager.c"
-				>
-			</File>
-			<File
-				RelativePath=".\parse.c"
 				>
 			</File>
 			<File
@@ -337,152 +225,72 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\pragma.c"
-				>
-			</File>
-			<File
-				RelativePath=".\prepare.c"
-				>
-			</File>
-			<File
-				RelativePath=".\printf.c"
-				>
-			</File>
-			<File
-				RelativePath=".\random.c"
-				>
-			</File>
-			<File
-				RelativePath=".\select.c"
-				>
-			</File>
-			<File
-				RelativePath=".\shell.c"
-				>
-			</File>
-			<File
-				RelativePath=".\table.c"
-				>
-			</File>
-			<File
-				RelativePath=".\tokenize.c"
-				>
-			</File>
-			<File
-				RelativePath=".\trigger.c"
-				>
-			</File>
-			<File
-				RelativePath=".\update.c"
-				>
-			</File>
-			<File
-				RelativePath=".\utf.c"
-				>
-			</File>
-			<File
-				RelativePath=".\util.c"
-				>
-			</File>
-			<File
-				RelativePath=".\vacuum.c"
-				>
-			</File>
-			<File
-				RelativePath=".\vdbe.c"
-				>
-			</File>
-			<File
-				RelativePath=".\vdbeapi.c"
-				>
-			</File>
-			<File
-				RelativePath=".\vdbeaux.c"
-				>
-			</File>
-			<File
-				RelativePath=".\vdbefifo.c"
-				>
-			</File>
-			<File
-				RelativePath=".\vdbemem.c"
-				>
-			</File>
-			<File
-				RelativePath=".\vtab.c"
-				>
-			</File>
-			<File
-				RelativePath=".\where.c"
-				>
-			</File>
 		</Filter>
 		<Filter
-			Name="External Header Files"
+			Name="sqlite Header Files"
 			>
 			<File
-				RelativePath=".\btree.h"
+				RelativePath=".\sqlite-3_5_1\btree.h"
 				>
 			</File>
 			<File
-				RelativePath=".\fts1.h"
+				RelativePath=".\sqlite-3_5_1\btreeInt.h"
 				>
 			</File>
 			<File
-				RelativePath=".\fts1_hash.h"
+				RelativePath=".\sqlite-3_5_1\hash.h"
 				>
 			</File>
 			<File
-				RelativePath=".\fts1_tokenizer.h"
+				RelativePath=".\sqlite-3_5_1\keywordhash.h"
 				>
 			</File>
 			<File
-				RelativePath=".\hash.h"
+				RelativePath=".\sqlite-3_5_1\mutex.h"
 				>
 			</File>
 			<File
-				RelativePath=".\keywordhash.h"
+				RelativePath=".\sqlite-3_5_1\opcodes.h"
 				>
 			</File>
 			<File
-				RelativePath=".\opcodes.h"
+				RelativePath=".\sqlite-3_5_1\os.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os.h"
+				RelativePath=".\sqlite-3_5_1\os_common.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os_common.h"
+				RelativePath=".\sqlite-3_5_1\pager.h"
 				>
 			</File>
 			<File
-				RelativePath=".\pager.h"
+				RelativePath=".\sqlite-3_5_1\parse.h"
 				>
 			</File>
 			<File
-				RelativePath=".\parse.h"
+				RelativePath=".\sqlite-3_5_1\sqlite3.h"
 				>
 			</File>
 			<File
-				RelativePath=".\sqlite3.h"
+				RelativePath=".\sqlite-3_5_1\sqlite3ext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\sqlite3ext.h"
+				RelativePath=".\sqlite-3_5_1\sqliteInt.h"
 				>
 			</File>
 			<File
-				RelativePath=".\sqliteInt.h"
+				RelativePath=".\sqlite-3_5_1\sqliteLimit.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vdbe.h"
+				RelativePath=".\sqlite-3_5_1\vdbe.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vdbeInt.h"
+				RelativePath=".\sqlite-3_5_1\vdbeInt.h"
 				>
 			</File>
 		</Filter>
@@ -501,6 +309,210 @@
 			</File>
 			<File
 				RelativePath=".\pchADatabase_SQLite.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="sqlite Source Files"
+			>
+			<File
+				RelativePath=".\sqlite-3_5_1\alter.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\analyze.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\attach.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\auth.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\btmutex.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\btree.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\build.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\callback.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\complete.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\date.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\delete.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\expr.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\func.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\hash.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\insert.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\journal.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\legacy.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\loadext.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\main.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\malloc.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\mem1.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\mem2.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\mutex.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\mutex_w32.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\opcodes.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\os.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\os_win.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\pager.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\parse.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\pragma.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\prepare.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\printf.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\random.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\select.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\shell.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\table.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\tokenize.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\trigger.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\update.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\utf.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\util.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\vacuum.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\vdbe.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\vdbeapi.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\vdbeaux.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\vdbeblob.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\vdbefifo.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\vdbemem.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\vtab.c"
+				>
+			</File>
+			<File
+				RelativePath=".\sqlite-3_5_1\where.c"
 				>
 			</File>
 		</Filter>
