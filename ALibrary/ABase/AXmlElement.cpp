@@ -609,9 +609,13 @@ AXmlElement& AXmlElement::addData(const char value)
   return *this;
 }
 
-AXmlElement& AXmlElement::addData(const bool value)
+AXmlElement& AXmlElement::addData(
+  const char *value, 
+  size_t length,                 // = AConstant::npos
+  AXmlElement::Encoding encoding // = AXmlElement::ENC_NONE
+)
 {
-  _addData(AString::fromBool(value), AXmlElement::ENC_NONE);
+  _addData(AString::wrap(value, length), encoding);
   return *this;
 }
 

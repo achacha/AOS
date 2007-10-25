@@ -166,6 +166,11 @@ public:
   AXmlElement& addData(const AEmittable& object, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
 
   /*!
+  Add const char * value to text/data of element
+  */
+  AXmlElement& addData(const char *value, size_t length = AConstant::npos, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
+
+  /*!
   Add signed int value to text/data of element (no encoding)
   */
   AXmlElement& addData(const int value);
@@ -204,12 +209,7 @@ public:
   Add std::size_t value to text/data of element (no encoding)
   */
   AXmlElement& addData(const size_t value);
-  
-  /*!
-  Add bool value (AConstant::ASTRING_TRUE or AConstant::ASTRING_FALSE) to text/data of element (no encoding)
-  */
-  AXmlElement& addData(const bool value);
-  
+    
   /*!
   Adds a comment
   Return this element
