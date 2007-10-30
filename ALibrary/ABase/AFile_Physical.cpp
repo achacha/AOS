@@ -73,7 +73,7 @@ void AFile_Physical::close()
 
 size_t AFile_Physical::_write(const void *buf, size_t size)
 {
-  AASSERT(this, m_fid >= 0);   // m_fid == -1? forgot to call open()?
+  AASSERT_EX(this, m_fid >= 0, ASWNL("Probably forgot to call open() or invalid file handle after call to open"));   // m_fid == -1? forgot to call open()?
   if (mp_file)
   {
     size_t written = ::_write(m_fid, buf, size);
@@ -88,7 +88,7 @@ size_t AFile_Physical::_write(const void *buf, size_t size)
 
 size_t AFile_Physical::_read(void *buf, size_t size)
 {
-  AASSERT(this, m_fid >= 0);   // m_fid == -1? forgot to call open()?
+  AASSERT_EX(this, m_fid >= 0, ASWNL("Probably forgot to call open() or invalid file handle after call to open"));   // m_fid == -1? forgot to call open()?
   if (mp_file)
   {
     size_t bytesread = ::_read(m_fid, buf, size);
