@@ -13,7 +13,7 @@ AOSOutput_generate_image::AOSOutput_generate_image(AOSServices& services) :
 {
 }
 
-bool AOSOutput_generate_image::execute(AOSOutputContext& context)
+bool AOSOutput_generate_image::execute(AOSContext& context)
 {
   int x,y;
   AString str;

@@ -1,6 +1,8 @@
 <command>
   <input/>
-  <module class="WikiView"/>
+  <module class="WikiViewFromDatabase">
+	<table>wiki</table>
+  </module>
   <output class="Template">
     <filename>wiki/view.template.html</filename>
   </output>

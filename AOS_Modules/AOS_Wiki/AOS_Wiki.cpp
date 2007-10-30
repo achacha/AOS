@@ -2,7 +2,8 @@
 #include "apiAOS_Wiki.hpp"
 
 #include "AOSModule_WikiRemapPath.hpp"
-#include "AOSModule_WikiView.hpp"
+#include "AOSModule_WikiViewFromDatabase.hpp"
+#include "AOSModule_WikiViewFromFileSystem.hpp"
 
 BOOL APIENTRY DllMain(
   HANDLE hModule, 
@@ -32,7 +33,8 @@ extern "C" AOS_WIKI_API int aos_register(
 
   //Register modules
   moduleExecutor.registerModule(new AOSModule_WikiRemapPath(services));
-  moduleExecutor.registerModule(new AOSModule_WikiView(services));
+  moduleExecutor.registerModule(new AOSModule_WikiViewFromDatabase(services));
+  moduleExecutor.registerModule(new AOSModule_WikiViewFromFileSystem(services));
   
   return 0;
 }
