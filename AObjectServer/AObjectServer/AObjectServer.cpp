@@ -189,9 +189,9 @@ int main(int argc, char **argv)
         {
           if (
             procRegister(
-              cqExecutor.useAOSInputExecutor(), 
-              cqExecutor.useAOSModuleExecutor(), 
-              cqExecutor.useAOSOutputExecutor(), 
+              services.useInputExecutor(), 
+              services.useModuleExecutor(), 
+              services.useOutputExecutor(), 
               services
             )
           )

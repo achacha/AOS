@@ -299,10 +299,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSOutputContext.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AOSOutputExecutor.cpp"
 				>
 			</File>
@@ -446,10 +442,6 @@
 			</File>
 			<File
 				RelativePath=".\AOSModules.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AOSOutputContext.hpp"
 				>
 			</File>
 			<File

@@ -4,9 +4,6 @@
 #include "apiAOS_Base.hpp"
 #include "AOSContextQueueInterface.hpp"
 #include "AOSContextQueueThreadPool_RoundRobinSwarm.hpp"
-#include "AOSInputExecutor.hpp"
-#include "AOSModuleExecutor.hpp"
-#include "AOSOutputExecutor.hpp"
 
 class AOSContext;
 
@@ -31,33 +28,9 @@ public:
   virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
 
-  /*!
-  AOSInputExecutor
-  */
-  AOSInputExecutor& useAOSInputExecutor();
-
-  /*!
-  AOSModuleExecutor
-  **/
-  AOSModuleExecutor& useAOSModuleExecutor();
-
-  /*!
-  AOSOutputExecutor
-  **/
-  AOSOutputExecutor& useAOSOutputExecutor();
-
 protected:
   //a_The main thread proc
   u4 _threadproc(AThread&);
-
-  //a_Input executor
-  AOSInputExecutor m_InputExecutor;
-
-  //a_Module executor
-  AOSModuleExecutor m_ModuleExecutor;
-
-  //a_Input executor
-  AOSOutputExecutor m_OutputExecutor;
 };
 
 #endif //INCLUDED__AOSContextQueue_Executor_HPP__

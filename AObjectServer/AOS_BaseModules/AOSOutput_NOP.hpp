@@ -11,7 +11,7 @@ public:
   /*!
   Generate output
   */
-  virtual bool execute(AOSOutputContext&);
+  virtual bool execute(AOSContext&);
   
   /*!
   AOSAdminInterface

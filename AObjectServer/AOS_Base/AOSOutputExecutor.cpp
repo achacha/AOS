@@ -1,6 +1,6 @@
 #include "pchAOS_Base.hpp"
 #include "AOSOutputExecutor.hpp"
-#include "AOSOutputContext.hpp"
+#include "AOSContext.hpp"
 #include "AOSOutputGeneratorInterface.hpp"
 #include "AOSServices.hpp"
 #include "AFile_Physical.hpp"
@@ -142,8 +142,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
 
         //a_Start timer
         ATimer timer(true);
-        AOSOutputContext outputContext(context);
-        if (!(*it).second->execute(outputContext))
+        if (!(*it).second->execute(context))
         {
           context.addError((*it).second->getClass()+"::execute", "Returned false");
           return;
@@ -164,14 +163,13 @@ void AOSOutputExecutor::execute(AOSContext& context)
         ATimer timer(true);
 
         AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("execute/output", 14), command);
-        AOSOutputContext outputContext(context);
 
         //a_Publish total execution time before output is generated
         context.useOutputRootXmlElement().addElement(ASW("request_time",12), context.getRequestTimer());
         context.useOutputRootXmlElement().addElement(ASW("context_time",12), context.getContextTimer());
 
         //a_Execute output
-        if (!(*it).second->execute(outputContext))
+        if (!(*it).second->execute(context))
         {
           context.addError((*it).second->getClass()+"::execute", "Returned false");
           return;

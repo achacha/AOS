@@ -32,6 +32,15 @@ void AOSServices::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "*mp_Configuration=" << std::endl;
   mp_Configuration->debugDump(os, indent+2);
 
+  ADebugDumpable::indent(os, indent+1) << "*mp_InputExecutor=" << std::endl;
+  mp_InputExecutor->debugDump(os, indent+2);
+
+  ADebugDumpable::indent(os, indent+1) << "*mp_ModuleExecutor=" << std::endl;
+  mp_ModuleExecutor->debugDump(os, indent+2);
+
+  ADebugDumpable::indent(os, indent+1) << "*mp_OutputExecutor=" << std::endl;
+  mp_OutputExecutor->debugDump(os, indent+2);
+
   ADebugDumpable::indent(os, indent+1) << "m_GlobalObjects=" << std::endl;
   m_GlobalObjects.debugDump(os, indent+2);
 
@@ -66,6 +75,9 @@ void AOSServices::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& requ
 
 AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
   m_GlobalObjects(ASW("global",6)),
+  mp_InputExecutor(NULL),
+  mp_ModuleExecutor(NULL),
+  mp_OutputExecutor(NULL),
   mp_Configuration(NULL),
   mp_DatabaseConnPool(NULL),
   mp_SessionManager(NULL),
@@ -86,6 +98,10 @@ AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
   mp_SessionManager = new AOSSessionManager(*this);
   mp_ContextManager = new AOSContextManager(*this);
   mp_CacheManager = new AOSCacheManager(*this);
+  mp_InputExecutor = new AOSInputExecutor(*this);
+  mp_ModuleExecutor = new AOSModuleExecutor(*this);
+  mp_OutputExecutor = new AOSOutputExecutor(*this);
+
 }
 
 AOSServices::~AOSServices()
@@ -98,6 +114,9 @@ AOSServices::~AOSServices()
     delete mp_ContextManager;
     delete mp_CacheManager;
     delete mp_DatabaseConnPool;
+    delete mp_OutputExecutor;
+    delete mp_ModuleExecutor;
+    delete mp_InputExecutor;
     delete mp_Configuration;
   }
   catch(...) {}
@@ -145,22 +164,6 @@ AOSDatabaseConnectionPool& AOSServices::useDatabaseConnectionPool()
   return *mp_DatabaseConnPool;
 }
 
-ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
-{
-  AAutoPtr<ATemplate> pTemplate(new ATemplate());
-  
-  //a_Add Lua handler
-  ATemplateNodeHandler_LUA *pLuaHandler = new ATemplateNodeHandler_LUA(defaultLuaLibraries);
-  pLuaHandler->addUserDefinedLibrary(luaopen_aos);  //a_Add AOS function library loader
-  pTemplate->addHandler(pLuaHandler);
-
-  //a_Add CODE handler
-  pTemplate->addHandler(new ATemplateNodeHandler_CODE());
-
-  pTemplate.setOwnership(false);
-  return pTemplate;
-}
-
 size_t AOSServices::loadGlobalObjects(AString& strError)
 {
   AResultSet resultSet;
@@ -200,4 +203,38 @@ AOSContextManager& AOSServices::useContextManager()
 AOSCacheManager& AOSServices::useCacheManager()
 {
   return *mp_CacheManager;
+}
+
+ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
+{
+  AAutoPtr<ATemplate> pTemplate(new ATemplate());
+  
+  //a_Add Lua handler
+  ATemplateNodeHandler_LUA *pLuaHandler = new ATemplateNodeHandler_LUA(defaultLuaLibraries);
+  pLuaHandler->addUserDefinedLibrary(luaopen_aos);  //a_Add AOS function library loader
+  pTemplate->addHandler(pLuaHandler);
+
+  //a_Add CODE handler
+  pTemplate->addHandler(new ATemplateNodeHandler_CODE());
+
+  pTemplate.setOwnership(false);
+  return pTemplate;
+}
+
+AOSInputExecutor& AOSServices::useInputExecutor() 
+{ 
+  AASSERT(this, mp_InputExecutor);
+  return *mp_InputExecutor;
+}
+
+AOSModuleExecutor& AOSServices::useModuleExecutor()
+{ 
+  AASSERT(this, mp_ModuleExecutor);
+  return *mp_ModuleExecutor; 
+}
+
+AOSOutputExecutor& AOSServices::useOutputExecutor()
+{ 
+  AASSERT(this, mp_OutputExecutor);
+  return *mp_OutputExecutor;
 }

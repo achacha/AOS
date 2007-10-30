@@ -197,8 +197,23 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             AASSERT(this, false);   //a_Should not be here, AOSContext::Status not handled
         }
 
+        //
+        //a_Process directory config
+        //
+        if (pContext->getDirConfig())
+          m_Services.useModuleExecutor().execute(*pContext, pContext->getDirConfig()->getModules());
+        else
+          pContext->useEventVisitor().set(ASW("No directory config for this path, skipping.",44));
+
+        //a_If error is logged stop and go to error handler
+        if (pContext->useEventVisitor().getErrorCount() > 0)
+        {
+          pThis->_goError(pContext);
+          continue;
+        }
+
         const AOSCommand *pCommand = pContext->getCommand();
-        if ((pCommand && pCommand->isEnabled()) || (pContext->getDirConfig()))
+        if (pCommand && pCommand->isEnabled())
         {
           //a_AOS command (dynamic)
           if (pCommand && pCommand->isSession())

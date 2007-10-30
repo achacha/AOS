@@ -28,10 +28,7 @@ AOSContextQueue_Executor::AOSContextQueue_Executor(
   AOSContextQueueInterface *pNo,    // = NULL
   AOSContextQueueInterface *pError  // = NULL
 ) :
-  BASECLASS_AOSContextQueue_Executor(services, threadCount, queueCount, pYes, pNo, pError),
-  m_InputExecutor(services),
-  m_ModuleExecutor(services),
-  m_OutputExecutor(services)
+  BASECLASS_AOSContextQueue_Executor(services, threadCount, queueCount, pYes, pNo, pError)
 {
   useThreadPool().setThis(this);
   registerAdminObject(m_Services.useAdminRegistry());
@@ -60,24 +57,9 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         }
 #endif
         //
-        //a_Process directory config
-        //
-        if (pContext->getDirConfig())
-          pThis->m_ModuleExecutor.execute(*pContext, pContext->getDirConfig()->getModules());
-        else
-          pContext->useEventVisitor().set(ASW("No directory config for this path, skipping.",44));
-
-        //a_If error is logged stop and go to error handler
-        if (pContext->useEventVisitor().getErrorCount() > 0)
-        {
-          pThis->_goError(pContext);
-          continue;
-        }
-
-        //
         //a_Process input
         //
-        pThis->m_InputExecutor.execute(*pContext);
+        pThis->m_Services.useInputExecutor().execute(*pContext);
 
         //a_If error is logged stop and go to error handler
         if (pContext->useEventVisitor().getErrorCount() > 0)
@@ -90,7 +72,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         //a_Process modules
         //
         if (pContext->getCommand())
-          pThis->m_ModuleExecutor.execute(*pContext, pContext->getCommand()->getModules());
+          pThis->m_Services.useModuleExecutor().execute(*pContext, pContext->getCommand()->getModules());
         else
           pContext->useEventVisitor().set(ASW("Command not found, skipping module execution.",45), true);
 
@@ -118,7 +100,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         //a_Generate output
         //
         pContext->setExecutionState(ASW("Executing output generator",26));
-        pThis->m_OutputExecutor.execute(*pContext);
+        pThis->m_Services.useOutputExecutor().execute(*pContext);
 
         //a_Dump context as XML instead of usual output
         pContext->dumpContext(dumpContextLevel);
@@ -268,19 +250,4 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 
   thread.setRunning(false);
   return 0;
-}
-
-AOSInputExecutor& AOSContextQueue_Executor::useAOSInputExecutor() 
-{ 
-  return m_InputExecutor;
-}
-
-AOSModuleExecutor& AOSContextQueue_Executor::useAOSModuleExecutor()
-{ 
-  return m_ModuleExecutor; 
-}
-
-AOSOutputExecutor& AOSContextQueue_Executor::useAOSOutputExecutor()
-{ 
-  return m_OutputExecutor;
 }

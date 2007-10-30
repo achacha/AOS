@@ -18,7 +18,7 @@
 #include "AHTTPRequestHeader.hpp"
 #include "AHTTPResponseHeader.hpp"
 #include "AFileSystem.hpp"
-
+#include "ATemplate.hpp"
 #include "AOSInputExecutor.hpp"
 #include "AOSModuleExecutor.hpp"
 #include "AOSOutputExecutor.hpp"
@@ -26,8 +26,8 @@
 #include "AOSModuleInterface.hpp"
 #include "AOSOutputGeneratorInterface.hpp"
 #include "AOSContext.hpp"
-#include "AOSOutputContext.hpp"
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"
+#include "AOSCacheManager.hpp"
 
 #endif //INCLUDED__AOS_HPP__

@@ -204,7 +204,7 @@ AOSContext::Status AOSContext::init()
   //a_Set the command
   if (!setCommandFromRequestUrl())
   {
-    addError(ASWNL("AOSContext::init"), ARope("Unable to find the command for request URL: ")+m_RequestHeader.useUrl());
+    m_EventVisitor.set(ARope("AOSContext::init")+ASWNL("Unable to find the command for request URL: ")+m_RequestHeader.useUrl());
   }
 
   //a_Initialize response header
@@ -956,4 +956,14 @@ bool AOSContext::setCommandFromRequestUrl()
     m_ContextFlags.setBit(CTXFLAG_IS_AJAX);
 
   return true;
+}
+
+bool AOSContext::isOutputCommitted() const
+{
+  return m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
+}
+
+void AOSContext::setOutputCommitted(bool b)
+{
+  m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT, b);
 }

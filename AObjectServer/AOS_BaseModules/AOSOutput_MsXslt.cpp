@@ -81,11 +81,11 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& fi
   return &(m_Dox[filename]);
 }
 
-bool AOSOutput_MsXslt::execute(AOSOutputContext& context)
+bool AOSOutput_MsXslt::execute(AOSContext& context)
 {
 	CoInitialize(NULL);
 
-  AFilename xsltFile(context.getConfiguration().getAosBaseDataDirectory());
+  AFilename xsltFile(m_Services.useConfiguration().getAosBaseDataDirectory());
   AString xsltName;
   if (!context.getOutputParams().emitFromPath(ASW("filename", 8), xsltName))
   {
@@ -101,7 +101,7 @@ bool AOSOutput_MsXslt::execute(AOSOutputContext& context)
   if (
     it == m_Dox.end() 
 #ifdef __DEBUG_DUMP__
-    || context.getRequestParameterPairs().exists(ASW("disableXslCache", 15))
+    || context.useRequestParameterPairs().exists(ASW("disableXslCache", 15))
 #endif
   )
   {
@@ -123,7 +123,7 @@ bool AOSOutput_MsXslt::execute(AOSOutputContext& context)
 
   //a_Force XML to file
 #ifdef __DEBUG_DUMP__
-  if (context.getRequestParameterPairs().exists(ASW("dumpXmlToFile", 13)))
+  if (context.useRequestParameterPairs().exists(ASW("dumpXmlToFile", 13)))
   {
     _dumpToFile(rope);
   }

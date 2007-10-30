@@ -11,8 +11,9 @@
 #include "AOSDatabaseConnectionPool.hpp"
 #include "AOSConfiguration.hpp"
 #include "ALuaEmbed.hpp"
-
-class AFilename;
+#include "AOSInputExecutor.hpp"
+#include "AOSModuleExecutor.hpp"
+#include "AOSOutputExecutor.hpp"
 
 class AOS_BASE_API AOSServices : public AOSAdminInterface
 {
@@ -29,6 +30,21 @@ public:
   AOSAdminRegistry& useAdminRegistry();
 
   /*!
+  AOSInputExecutor
+  */
+  AOSInputExecutor& useInputExecutor();
+
+  /*!
+  AOSModuleExecutor
+  **/
+  AOSModuleExecutor& useModuleExecutor();
+
+  /*!
+  AOSOutputExecutor
+  **/
+  AOSOutputExecutor& useOutputExecutor();
+
+  /*!
   Session manager
   */
   AOSSessionManager& useSessionManager();
@@ -42,16 +58,6 @@ public:
   AOSContext manager
   */
   AOSCacheManager& useCacheManager();
-
-  /*!
-  Create an instance of ATemplate with CODE and LUA processor with AOS specific LUA library loaded 
-  
-  @see AOSLuaFunctions.hpp
-  @see ALuaEmbed.hpp
-
-  NOTE: OWNED and DELETED by caller
-  */
-  ATemplate* createTemplate(u4 deafultLuaLibraries = ALuaEmbed::LUALIB_ALL);
 
   /*!
   Initialize database pool
@@ -71,6 +77,16 @@ public:
   AObjectContainer& useGlobalObjects();
 
   /*!
+  Create an instance of ATemplate with CODE and LUA processor with AOS specific LUA library loaded 
+  
+  @see AOSLuaFunctions.hpp
+  @see ALuaEmbed.hpp
+
+  NOTE: OWNED and DELETED by caller
+  */
+  ATemplate* createTemplate(u4 deafultLuaLibraries = ALuaEmbed::LUALIB_ALL);
+
+  /*!
   Admin xml
   */
   virtual void registerAdminObject(AOSAdminRegistry& registry);
@@ -80,6 +96,15 @@ public:
 private:
   //a_No default ctor
   AOSServices() {}
+
+  //a_Input executor
+  AOSInputExecutor *mp_InputExecutor;
+
+  //a_Module executor
+  AOSModuleExecutor *mp_ModuleExecutor;
+
+  //a_Input executor
+  AOSOutputExecutor *mp_OutputExecutor;
 
   //a_Physical log
   ALog_AFile *mp_Log;

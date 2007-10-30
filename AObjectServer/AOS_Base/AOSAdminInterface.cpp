@@ -54,11 +54,8 @@ AXmlElement& AOSAdminInterface::addActionToProperty(
 ) const
 {
   AXmlElement& eAction = eProperty.addElement(ACTION).addAttribute(NAME, actionName).addAttribute(DESC, actionDesc);
-  LIST_AString::const_iterator cit = actionParams.begin();
-  while(cit != actionParams.end())
-  {
+  for (LIST_AString::const_iterator cit = actionParams.begin(); cit != actionParams.end(); ++cit)
     eAction.addElement(PARAM, *cit);
-  }
   return eAction;
 }
 

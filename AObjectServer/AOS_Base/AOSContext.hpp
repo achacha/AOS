@@ -250,6 +250,12 @@ public:
   */
   ATimer& useTimeoutTimer();
 
+ /*!
+  Output committed
+  */
+  bool isOutputCommitted() const;
+  void setOutputCommitted(bool b);
+
   /*!
   Services and request
   */

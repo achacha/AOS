@@ -11,7 +11,8 @@
 #include "ATemplateNodeHandler_CODE.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 
-const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/cache/enabled");
+const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/static-file-cache/enabled");
+const AString AOSCacheManager::TEMPLATE_CACHE_ENABLED("/config/server/template-cache/enabled");
 
 #ifdef __DEBUG_DUMP__
 void AOSCacheManager::debugDump(std::ostream& os, int indent) const
@@ -19,8 +20,29 @@ void AOSCacheManager::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "(AOSCacheManager @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_StaticFileCache={" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   mp_StaticFileCache->debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  if (mp_StatusTemplateCache)
+  {
+    ADebugDumpable::indent(os, indent+1) << "mp_StatusTemplateCache={" << std::endl;
+    for(STATUS_TEMPLATE_CACHE::iterator it = mp_StatusTemplateCache->begin(); it != mp_StatusTemplateCache->end(); ++it)
+    {
+      ADebugDumpable::indent(os, indent+2) << it->first << "=" << AString::fromPointer(it->second) << std::endl;
+    }
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  }
+
+  if (mp_TemplateCache)
+  {
+    ADebugDumpable::indent(os, indent+1) << "mp_TemplateCache={" << std::endl;
+    for(TEMPLATE_CACHE::iterator it = mp_TemplateCache->begin(); it != mp_TemplateCache->end(); ++it)
+    {
+      ADebugDumpable::indent(os, indent+2) << it->first << "=" << AString::fromPointer(it->second) << std::endl;
+    }
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  }
+
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
@@ -98,6 +120,10 @@ AOSCacheManager::AOSCacheManager(AOSServices& services) :
   int cacheCount = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/cache_count", 97);
   mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
 
+  //a_Status template cache
+  mp_StatusTemplateCache = new STATUS_TEMPLATE_CACHE();
+
+  //a_Parsed template cache
   mp_TemplateCache = new TEMPLATE_CACHE();
 
   registerAdminObject(m_Services.useAdminRegistry());
@@ -109,10 +135,19 @@ AOSCacheManager::~AOSCacheManager()
   {
     delete mp_StaticFileCache;
     
-    //a_Release templates
-    for(TEMPLATE_CACHE::iterator it = mp_TemplateCache->begin(); it != mp_TemplateCache->end(); ++it)
-      delete (*it).second;
-    delete mp_TemplateCache;
+    {
+      //a_Release status templates
+      for(STATUS_TEMPLATE_CACHE::iterator it = mp_StatusTemplateCache->begin(); it != mp_StatusTemplateCache->end(); ++it)
+        delete (*it).second;
+      delete mp_StatusTemplateCache;
+    }
+
+    {
+      //a_Release parsed templates
+      for(TEMPLATE_CACHE::iterator it = mp_TemplateCache->begin(); it != mp_TemplateCache->end(); ++it)
+        delete (*it).second;
+      delete mp_TemplateCache;
+    }
   }
   catch(...) {}
 }
@@ -146,13 +181,91 @@ ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, cons
   }
 }
 
-bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTemplate)
+ACacheInterface::STATUS AOSCacheManager::getTemplate(AOSContext& context, const AFilename& filename, AAutoPtr<ATemplate>& pTemplate)
 {
   AASSERT(this, mp_TemplateCache);
-  TEMPLATE_CACHE::iterator it = mp_TemplateCache->find(statusCode);
-  if (mp_TemplateCache->end() == it)
+  if (m_Services.useConfiguration().useConfigRoot().getBool(AOSCacheManager::TEMPLATE_CACHE_ENABLED, false))
+  {
+    TEMPLATE_CACHE::iterator it;
+    
+    {
+      ALock lock(m_TemplateSync);
+      it = mp_TemplateCache->find(filename);
+    }
+
+    if (mp_TemplateCache->end() == it)
+    {
+      //a_Not found in cache, try to read and parse
+      ALock lock(m_TemplateSync);
+      if (AFileSystem::exists(filename))
+      {
+        //a_File exists, parse and cache
+        AAutoPtr<ATemplate> pNewTemplate(m_Services.createTemplate());
+        AFile_Physical file(filename);
+        file.open();
+        pNewTemplate->fromAFile(file);
+        (*mp_TemplateCache)[filename] = pNewTemplate.use();
+        pNewTemplate.setOwnership(false);
+        pTemplate.reset(pNewTemplate.use(), false);
+        return ACacheInterface::FOUND;
+      }
+      else
+      {
+        //a_File does not exist, insert a NULL into cache
+        (*mp_TemplateCache)[filename] = NULL;
+        pTemplate.reset();
+        return ACacheInterface::NOT_FOUND;
+      }
+    }
+    else
+    {
+      //a_Exists in the cache
+      pTemplate.reset(it->second, false);
+      if (pTemplate.isNull())
+      {
+        //a_File was not found originally
+        return ACacheInterface::NOT_FOUND;
+      }
+      else
+      {
+        //a_Exists
+        return ACacheInterface::FOUND;
+      }
+    }
+  }
+  else
+  {
+    if (AFileSystem::exists(filename))
+    {
+      //a_File exists, parse and return
+      pTemplate.reset(m_Services.createTemplate());
+      AFile_Physical file(filename);
+      pTemplate->fromAFile(file);
+      return ACacheInterface::FOUND_NOT_CACHED;
+    }
+    else
+    {
+      //a_File does not exist
+      pTemplate.reset();
+      return ACacheInterface::NOT_FOUND;
+    }
+  }
+}
+
+bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTemplate)
+{
+  AASSERT(this, mp_StatusTemplateCache);
+  STATUS_TEMPLATE_CACHE::iterator it;
+  
+  {
+    ALock lock(m_StatusTemplateSync);
+    it = mp_StatusTemplateCache->find(statusCode);
+  }
+
+  if (mp_StatusTemplateCache->end() == it)
   {
     //a_Not found insert
+    ALock lock(m_StatusTemplateSync);
     AString pathFilename("/config/server/error-templates/HTTP-",36);
     ATextOdometer odo(AString::fromInt(statusCode), 3);
     odo.emit(pathFilename);
@@ -192,7 +305,7 @@ bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTe
       else
       {
         //a_Really doesn't exist
-        (*mp_TemplateCache)[statusCode] = NULL;
+        (*mp_StatusTemplateCache)[statusCode] = NULL;
         pTemplate.reset();
         return false;
       }
@@ -218,7 +331,7 @@ ATemplate* AOSCacheManager::_putFileIntoStatusTemplateCache(int key, const AStri
   AAutoPtr<ATemplate> p(m_Services.createTemplate());
   p->fromAFile(file);
 
-  (*mp_TemplateCache)[key] = p.use();
+  (*mp_StatusTemplateCache)[key] = p.use();
   
   p.setOwnership(false);
   return p.use();

@@ -2,7 +2,7 @@
 #define INCLUDED__AOSOutputGeneratorInterface_HPP__
 
 #include "apiAOS_Base.hpp"
-#include "AOSOutputContext.hpp"
+#include "AOSContext.hpp"
 #include "AOSAdminInterface.hpp"
 
 class AOSServices;
@@ -23,7 +23,7 @@ public:
   /*!
   Generate output based on AContext
   */
-  virtual bool execute(AOSOutputContext&) = 0;
+  virtual bool execute(AOSContext&) = 0;
 
   /*!
   De-initialization routine for the module

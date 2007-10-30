@@ -14,7 +14,7 @@ public:
   /*!
   Generate output
   */
-  virtual bool execute(AOSOutputContext&);
+  virtual bool execute(AOSContext&);
   
   /*!
   AOSAdminInterface
@@ -24,10 +24,12 @@ public:
   virtual const AString& getClass() const;
 
 private:
-  typedef std::map<const AString, ATemplate *> TEMPLATES;
-  TEMPLATES *mp_Templates;
+  //typedef std::map<const AString, ATemplate *> TEMPLATES;
+  //TEMPLATES *mp_Templates;
 
-  ASynchronization *mp_TemplatesGuard;
+  //bool m_isCachingEnabled;
+
+  //ASynchronization *mp_TemplatesGuard;
 
 public:
 #ifdef __DEBUG_DUMP__

@@ -26,9 +26,9 @@ void AOSOutput_XalanXslt::init()
 #pragma message("FIX: AOSOutput_XalanXslt::init: XSLT loading hardcoded")
 }
 
-bool AOSOutput_XalanXslt::execute(AOSOutputContext& context)
+bool AOSOutput_XalanXslt::execute(AOSContext& context)
 {
-  AFilename xsltName(context.getConfiguration().getAosBaseDataDirectory());
+  AFilename xsltName(m_Services.useConfiguration().getAosBaseDataDirectory());
   AString str;
   if (!context.getOutputParams().emitFromPath(ASW("filename", 8), str))
   {
@@ -47,7 +47,7 @@ bool AOSOutput_XalanXslt::execute(AOSOutputContext& context)
 
   //a_Force XML to file
 #ifdef __DEBUG_DUMP__
-  if (context.getRequestParameterPairs().exists(ASW("dumpXmlToFile", 13)))
+  if (context.useRequestParameterPairs().exists(ASW("dumpXmlToFile", 13)))
   {
     _dumpToFile(rope);
   }

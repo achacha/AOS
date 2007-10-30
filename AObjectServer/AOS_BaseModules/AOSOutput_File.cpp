@@ -14,7 +14,7 @@ AOSOutput_File::AOSOutput_File(AOSServices& services) :
 {
 }
 
-bool AOSOutput_File::execute(AOSOutputContext& context)
+bool AOSOutput_File::execute(AOSContext& context)
 {
  
   AString str(1536, 1024);
@@ -29,16 +29,16 @@ bool AOSOutput_File::execute(AOSOutputContext& context)
   if (context.getOutputParams().emitFromPath(ASW("base", 4), strBase))
   {
     if (strBase.equals(ASW("static",6)))
-      pFilename = new AFilename(context.getConfiguration().getAosBaseStaticDirectory(), str, false);
+      pFilename = new AFilename(m_Services.useConfiguration().getAosBaseStaticDirectory(), str, false);
     else if (strBase.equals(ASW("dynamic",7)))
-      pFilename = new AFilename(context.getConfiguration().getAosBaseDynamicDirectory(), str, false);
+      pFilename = new AFilename(m_Services.useConfiguration().getAosBaseDynamicDirectory(), str, false);
     else if (strBase.equals(ASW("absolute",8)))
       pFilename = new AFilename(str, false);
   }
 
   //a_Data is the default
   if (!pFilename)
-    pFilename = new AFilename(context.getConfiguration().getAosBaseDataDirectory(), str, false);
+    pFilename = new AFilename(m_Services.useConfiguration().getAosBaseDataDirectory(), str, false);
   
   if (!AFileSystem::exists(*pFilename))
   {
@@ -59,7 +59,7 @@ bool AOSOutput_File::execute(AOSOutputContext& context)
 
   if (
        context.useEventVisitor().getErrorCount() > 0
-    || context.getRequestParameterPairs().exists(ASW("dumpContext", 11))
+    || context.useRequestParameterPairs().exists(ASW("dumpContext", 11))
     )
   {
     //a_Put file data into output buffer, error in event visitor detected or dumpContext requested
