@@ -16,7 +16,7 @@
 						<th>Contact Email</th>
 						<th>Price</th>
 					</tr>
-					<xsl:apply-templates select="/root/classified/AResultSet/row"/>
+					<xsl:apply-templates select="/root/classified/row"/>
 				</tbody>
 			</table>
 			<br/>

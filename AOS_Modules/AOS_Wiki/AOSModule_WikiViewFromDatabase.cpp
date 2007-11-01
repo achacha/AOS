@@ -22,37 +22,98 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     return false;
   }
 
-  AString str;
-  context.useRequestParameterPairs().get(ASW("wikipath",8), str);
+  AString strWikiPath;
+  context.useRequestParameterPairs().get(ASW("wikipath",8), strWikiPath);
 
-  AString query("select data from ",17);
-  query.append(strTable);
-  query.append(" where path='",13);
-  query.append(str);
-  query.append("'", 1);
+  AString strData;
+  if (context.useRequestParameterPairs().get(ASW("newdata",7), strData))
+  {
+    //a_Does it exist
+    AString query("select id from ",15);
+    query.append(strTable);
+    query.append(" where path='",13);
+    query.append(strWikiPath);
+    query.append("'", 1);
 
-  str.clear();
-  AResultSet rs;
-  size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, rs, str);
-  if (AConstant::npos == rows)
-  {
-    context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute",36),ARope("[",1)+query+ASW("]{",2)+str+ASW("}",1));
-    return false;
-  }
-  else if (!rows)
-  {
-    //a_Signal that the wiki file does not exist
-    context.useOutputRootXmlElement().addElement(ASW("wiki/DoesNotExits",17));
-  }
-  else if (1 == rows)
-  {
+    AString strError;
+    AResultSet rs;
+    size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, rs, strError);
+    if (AConstant::npos == rows)
+    {
+      //a_INSERT new data for this page, write data
+      AString query("insert into",11);
+      query.append(strTable);
+      query.append(" (path,data) values ('",22);
+      query.append(strWikiPath);
+      query.append("','",3);
+      query.append(strData);
+      query.append("')",2);
+      
+      AString str;
+      AResultSet rs;
+      size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, rs, str);
+      if (AConstant::npos == rows)
+      {
+        context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute:INSERT:"),ARope("[",1)+query+ASW("]{",2)+str+ASW("}",1));
+        return false;
+      }
+    }
+    else
+    {
+      //a_UPDATE existing data
+      AString query("update ",7);
+      query.append(strTable);
+      query.append(" set data='",11);
+      query.append(strData);
+      query.append("' where path='",14);
+      query.append(strWikiPath);
+      query.append("'",1);
+      
+      AString str;
+      AResultSet rs;
+      size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, rs, str);
+      if (AConstant::npos == rows)
+      {
+        context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute:UPDATE:"),ARope("[",1)+query+ASW("]{",2)+str+ASW("}",1));
+        return false;
+      }
+    }
+
     //a_Publish it
-    rs.emitXml(context.useOutputRootXmlElement().addElement(ASW("wiki",4)));
+    context.useOutputRootXmlElement().addElement(ASW("wiki/row/data",13)).addData(strData);
   }
   else
   {
-    context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute",36), ASWNL("More than 1 entry for this path in the database, please fix the query to return only 1 entry"));
-    return false;
+    //a_Read from database
+    AString query("select data from ",17);
+    query.append(strTable);
+    query.append(" where path='",13);
+    query.append(strWikiPath);
+    query.append("'", 1);
+
+    AString str;
+    AResultSet rs;
+    size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, rs, str);
+    if (AConstant::npos == rows)
+    {
+      context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute:SELECT:"),ARope("[",1)+query+ASW("]{",2)+str+ASW("}",1));
+      return false;
+    }
+    else if (!rows)
+    {
+      //a_Signal that the wiki file does not exist
+      context.useOutputRootXmlElement().addElement(ASW("wiki/DoesNotExits",17));
+    }
+    else if (1 == rows)
+    {
+      //a_Publish it
+      rs.emitXml(context.useOutputRootXmlElement().addElement(ASW("wiki",4)));
+    }
+    else
+    {
+      context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute:SELECT:"), ASWNL("More than 1 entry for this path in the database, please fix the query to return only 1 entry"));
+      return false;
+    }
   }
 
   return true;

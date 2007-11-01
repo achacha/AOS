@@ -1,5 +1,5 @@
 <command>
-  <input/>
+  <input class="application/x-www-form-urlencoded"/>
   <module class="WikiViewFromDatabase">
 	<table>wiki</table>
   </module>

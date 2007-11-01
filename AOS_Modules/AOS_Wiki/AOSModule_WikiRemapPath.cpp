@@ -39,19 +39,18 @@ bool AOSModule_WikiRemapPath::execute(AOSContext& context, const AXmlElement& mo
   }
 
   //a_Set new command location
-  AString strWikiCommand;
-  pWikiCommand->emitContent(strWikiCommand);
-  context.useRequestUrl().setPathAndFilename(strWikiCommand);
+  AString strWikiCommandPath;
+  pWikiCommand->emitContent(strWikiCommandPath);
+  if (!context.setNewCommandPath(strWikiCommandPath))
+  {
+    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ARope("Unable to find the command for new request URL: ")+context.useRequestUrl());
+    return false;
+  }
 
   //a_Add new parameter with path
   AString strParam;
   strPathAndFilename.peek(strParam, startOfBase+strBasePath.getSize());
   context.useRequestUrl().useParameterPairs().insert(ASW("wikipath",8), strParam);
-  if (!context.setCommandFromRequestUrl())
-  {
-    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ARope("Unable to find the command for new request URL: ")+context.useRequestUrl());
-    return false;
-  }
 
   return true;
 }

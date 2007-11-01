@@ -2,9 +2,7 @@
 <html>
 <head>
   <title>Simple Classified Item Lister</title>
-	<script src="/rte/lang/en.js" type="text/javascript"></script>
-	<script src="/rte/html2xhtml.js" type="text/javascript"></script>
-	<script src="/rte/richtext.js" type="text/javascript"></script>
+	<script src="/tiny_mce/tiny_mce.js" type="text/javascript"></script>
 	<script src="classified.js" type="text/javascript"></script>
 	<link href="classified.css" type="text/css" rel="stylesheet"/>
 </head>
@@ -39,14 +37,14 @@
 <div class="feature_on">Description<br/>
 <script type="text/javascript">
 <!--
-//Usage: object_name = new RichText('object_name', html, width, height, buttons, readOnly)
-var rte1 = new RichText('descript', '', 600, 300, true, false);
-rte1.generateXHTML = true;
-rte1.create();
+tinyMCE.init({
+  mode :  "textareas"
+});
 //-->
 </script>
 </div>
 <br/>
+<textarea cols="100" rows="23" name="descript"></textarea>
 <small><input type="checkbox" name="dumpContext" value="1"/><b>DEBUG</b>: add &amp;dumpContext=1</small><br/>
 <small><input type="checkbox" name="overrideOutput" value="NOP"/><b>DEBUG</b>: add &amp;overrideOutput=NOP</small><br/><br/>
 <input type="Submit" value="Add Classified Ad"/>

@@ -1,0 +1,19 @@
+.wikibody_view {
+	border-width: 1 1 1 1;
+	border-style: solid;
+	border-color: #e0e0e0;
+	padding: 0 2 0 2;
+	background: #efefef;
+	font: 12 Arial, Helvetica, sans-serif;
+	color: #000020;
+}
+
+.wikibody_edit {
+	border-width: 3 3 3 3;
+	border-style: solid;
+	border-color: #101010;
+	padding: 0 2 0 2;
+	background: #efefef;
+	font: 12 Arial, Helvetica, sans-serif;
+	color: #000000;
+}
