@@ -958,6 +958,12 @@ bool AOSContext::setCommandFromRequestUrl()
   return true;
 }
 
+bool AOSContext::setNewCommandPath(const AString& commandpath)
+{
+  m_RequestHeader.useUrl().setPathAndFilename(commandpath);
+  return setCommandFromRequestUrl();
+}
+
 bool AOSContext::isOutputCommitted() const
 {
   return m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT);

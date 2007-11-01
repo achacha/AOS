@@ -19,13 +19,13 @@
 	<default-output-generator/>
 	<mime-types>mime_types.ini</mime-types>
 	<static-file-cache desc="Static item cache">
-		<enabled>true</enabled>
+		<enabled>false</enabled>
 		<max_items desc="Maximum number of items to store in the static cache">10240</max_items>
 		<max_filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max_filesize>
 		<cache_count desc="Number of caches to use (must be a prime number)">13</cache_count>
 	</static-file-cache>
 	<template-cache desc="Template objects that are read from file and kept in a parsed state for execution">
-		<enabled>true</enabled>
+		<enabled>false</enabled>
 	</template-cache>
 	<load>
 		<module>AOS_BaseModules</module>

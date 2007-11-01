@@ -240,6 +240,7 @@ ACacheInterface::STATUS AOSCacheManager::getTemplate(AOSContext& context, const 
       //a_File exists, parse and return
       pTemplate.reset(m_Services.createTemplate());
       AFile_Physical file(filename);
+      file.open();
       pTemplate->fromAFile(file);
       return ACacheInterface::FOUND_NOT_CACHED;
     }

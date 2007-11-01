@@ -202,6 +202,11 @@ public:
   const AOSDirectoryConfig *getDirConfig() const;
 
   /*!
+  Sets new command from path/commandname
+  */
+  bool setNewCommandPath(const AString& commandpath);
+
+  /*!
   Lookup the command based on current request URL
   @return true if command is found
   */

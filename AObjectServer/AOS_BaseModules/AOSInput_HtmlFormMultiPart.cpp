@@ -59,7 +59,7 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             if ('\r' == str.at(str.getSize()-2))
               str.rremove(2);
           }
-          AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("/request/data/part.",19)+AString::fromInt(part)+ASW("/data",5), str, AXmlElement::ENC_BASE64);
+          AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("input/part.",11)+AString::fromInt(part)+ASW("/data",5), str, AXmlElement::ENC_BASE64);
           e.addAttribute(ASW("length", 6), AString::fromSize_t(str.getSize()));
           e.addAttribute(ASW("encoding", 8), ASW("base64", 6));
 
