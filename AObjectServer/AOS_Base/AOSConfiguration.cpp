@@ -484,11 +484,18 @@ const AOSCommand * const AOSConfiguration::getCommand(const AUrl& commandUrl) co
 const AOSDirectoryConfig * const AOSConfiguration::getDirectoryConfig(const AUrl& commandUrl) const
 {
   AString dir(commandUrl.getPath());
-  MAP_ASTRING_CONFIG::const_iterator cit = m_DirectoryConfigs.find(dir);
-  if (cit != m_DirectoryConfigs.end())
-    return (*cit).second;
-  else
-    return NULL;
+  while (dir.getSize() > 0)
+  {
+    MAP_ASTRING_CONFIG::const_iterator cit = m_DirectoryConfigs.find(dir);
+    if (cit != m_DirectoryConfigs.end())
+      return (*cit).second;
+    else
+    {
+      if (AConstant::npos == dir.rremoveUntil('/') || AConstant::npos == dir.rremoveUntil('/', false))
+        break;
+    }
+  }
+  return NULL;
 }
 
 const AFilename& AOSConfiguration::getAosBaseConfigDirectory() const

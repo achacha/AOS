@@ -25,14 +25,12 @@ bool AOSInput_HtmlForm::execute(AOSContext& context)
     context.useSocket().read(str, toRead);
     
     //a_Add POST variables to request query
-    AString strR(str.getSize(), 128);
-    ATextConverter::decodeURL(str, strR);
-    context.useRequestParameterPairs().parse(strR);
+    context.useRequestParameterPairs().parse(str);
     
     //a_Publish raw_data if dumping context in debug mode and when 'dumpContext' exists
     //a_The executor was supress all output if dumpContext is not enabled
     if (context.useRequestParameterPairs().exists(ASW("dumpContext",11)))
-      context.useOutputRootXmlElement().addElement(ASW("input/data", 10), str, AXmlElement::ENC_CDATASAFE);
+      context.useOutputRootXmlElement().addElement(ASW("input/data", 10)).addData(str, AXmlElement::ENC_CDATASAFE);
   }
   else
   {

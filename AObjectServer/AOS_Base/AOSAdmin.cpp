@@ -380,12 +380,12 @@ void AOSAdmin::_processAdminCommand(
   catch(AException& ex)
   {
     m_Services.useLog().add(ASW("ADMIN: Exception",16), ex, ALog::WARNING);
-    xmlDoc.useRoot().addElement("exception", ex.what());
+    xmlDoc.useRoot().addElement("exception", ex);
   }
   catch(...)
   {
     m_Services.useLog().add(ASW("ADMIN: Exception unknown",24), ALog::WARNING);
-    xmlDoc.useRoot().addElement("exception", "Unknown");
+    xmlDoc.useRoot().addElement("exception").addData("Unknown");
   }
 
   xmlDoc.emit(outputBuffer);

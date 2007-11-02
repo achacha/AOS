@@ -203,6 +203,6 @@ void AOSOutputExecutor::execute(AOSContext& context)
     strWhere.append(')');
     context.addError(strWhere, "Unknown Exception");
 
-    context.useOutputRootXmlElement().addElement("output_error", "Unknown Exception");
+    context.useOutputRootXmlElement().addElement("output_error").addData("Unknown Exception");
   }
 }

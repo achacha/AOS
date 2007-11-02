@@ -59,7 +59,7 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             if ('\r' == str.at(str.getSize()-2))
               str.rremove(2);
           }
-          AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("input/part.",11)+AString::fromInt(part)+ASW("/data",5), str, AXmlElement::ENC_BASE64);
+          AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("input/part.",11)+AString::fromInt(part)+ASW("/data",5)).addData(str, AXmlElement::ENC_BASE64);
           e.addAttribute(ASW("length", 6), AString::fromSize_t(str.getSize()));
           e.addAttribute(ASW("encoding", 8), ASW("base64", 6));
 
@@ -90,7 +90,7 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
         {
           //a_Content type for this block
           str.removeUntilOneOf();
-          context.useOutputRootXmlElement().addElement(xpath+ASW("/content-type",13), str);
+          context.useOutputRootXmlElement().addElement(xpath+ASW("/content-type",13)).addData(str, AXmlElement::ENC_CDATADIRECT);
         }
         else if (AConstant::npos != (pos = str.findNoCase(ASW("Content-Disposition:", 20))))
         {
@@ -109,7 +109,7 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
           }
 
           str.removeUntilOneOf();
-          context.useOutputRootXmlElement().addElement(xpath+ASW("/content-disposition",20), str);
+          context.useOutputRootXmlElement().addElement(xpath+ASW("/content-disposition",20)).addData(str);
         }
         str.clear();
       }
