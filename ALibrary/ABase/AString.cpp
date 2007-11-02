@@ -1091,7 +1091,7 @@ size_t AString::getUntil(
   return target.getSize();
 }
 
-void AString::removeUntilOneOf(
+size_t AString::removeUntilOneOf(
   const AString& delimeters, // = AConstant::ASTRING_WHITESPACE
   bool removeDelimeters // = true
 )
@@ -1110,10 +1110,12 @@ void AString::removeUntilOneOf(
       if (removeDelimeters)
         stripLeading(delimeters);
     }
+    return p;
   }
+  return AConstant::npos;
 }
 
-void AString::removeUntil(
+size_t AString::removeUntil(
   char delimeter, 
   bool removeDelimeters // = true
 )
@@ -1130,7 +1132,9 @@ void AString::removeUntil(
     {
       _remove(p+(removeDelimeters ? 1 : 0), 0);
     }
+    return p;
   }
+  return AConstant::npos;
 }
 
 size_t AString::get(AString& bufDestination, size_t sourceIndex, size_t bytes)
@@ -2278,7 +2282,7 @@ void AString::rremove(
   setSize(m_Length - length);
 }
 
-void AString::rremoveUntilOneOf(
+size_t AString::rremoveUntilOneOf(
   const AString& delimeters, //= AConstant::ASTRING_WHITESPACE
   bool removeDelimeters      //= true
 )
@@ -2289,9 +2293,14 @@ void AString::rremoveUntilOneOf(
     AASSERT(this, pos - (removeDelimeters ? 1 : 0) >= 0);
     setSize(pos - (removeDelimeters ? 1 : 0));
   }
+  else
+  {
+    clear();
+  }
+  return pos;
 }
 
-void AString::rremoveUntil(
+size_t AString::rremoveUntil(
   char delimeter, 
   bool removeDelimeter       // = true
 )
@@ -2302,6 +2311,11 @@ void AString::rremoveUntil(
     AASSERT(this, pos - (removeDelimeter ? 0 : -1) >= 0);
     setSize(pos - (removeDelimeter ? 0 : -1));
   }
+  else
+  {
+    clear();
+  }
+  return pos;
 }
 
 int AString::compare(char cSource) const

@@ -26,9 +26,9 @@ void testAddAndSerialize(int& iRet)
   AXmlElement elem("root");
   AXmlElement& path1 = elem.addElement("path0").addElement("path1");
   AXmlElement& path2 = elem.findElement("path0")->addElement("path2");
-  path1.addElement("obj0", "value0");
-  path2.addElement("obj1", "value1");
-  path1.addElement("obj2", "value2");
+  path1.addElement("obj0").addData("value0");
+  path2.addElement("obj1").addData("value1");
+  path1.addElement("obj2").addData("value2");
   elem.addElement(ASWNL("path0/path1/obj3"), ASWNL("value3"), AXmlElement::ENC_NONE, true);  //insert
 
   AString str0(8188, 1024), str1(8188, 1024);
@@ -46,7 +46,7 @@ void testAddAndSerialize(int& iRet)
   </path0>\r\n\
 </root>");
   elem.emit(str0, 0);
-//  std::cout << str0 << std::endl;
+  //std::cout << str0 << std::endl;
   ASSERT_UNIT_TEST(str0.equals(str1), "add_emit", "1", iRet);
 
   AXmlElement *p;

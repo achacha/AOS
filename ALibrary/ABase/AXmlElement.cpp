@@ -500,9 +500,16 @@ AXmlElement *AXmlElement::_createAndAppend(LIST_AString& xparts, AXmlElement *pP
     return p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, bool overwrite)
+AXmlElement& AXmlElement::addElement(const AString& path)
 {
-  AXmlElement *p = _addElement(path, overwrite);
+  AXmlElement *p = _addElement(path, false);
+  AASSERT(this, p);
+  return *p;
+}
+
+AXmlElement& AXmlElement::overwriteElement(const AString& path)
+{
+  AXmlElement *p = _addElement(path, true);
   AASSERT(this, p);
   return *p;
 }

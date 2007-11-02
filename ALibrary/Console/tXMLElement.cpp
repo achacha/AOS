@@ -140,9 +140,9 @@ void testParse()
 void testPathAdd()
 {
   AXmlElement elem("root");
-  elem.addElement("path0/path1/obj0", "value0");
-  elem.addElement("path0/path2/obj1", "value1");
-  elem.addElement("path0/path1/obj2", "value2");
+  elem.addElement("path0/path1/obj0").addData("value0");
+  elem.addElement("path0/path2/obj1").addData("value1");
+  elem.addElement("path0/path1/obj2").addData("value2");
 
   AString str(8188, 1024);
   elem.emit(str, 0);
@@ -220,11 +220,11 @@ void testRandomXml()
 void testMultiAdd()
 {
   AXmlElement e("root");
-  e.addElement("base/path0/obj0", "v");
-  e.addElement("base/path0/obj1", "v");
-  e.addElement("base/path0/obj2", "v");
-  e.addElement("base/path0/obj3", "v");
-  e.addElement("base/path0/obj3", "v");
+  e.addElement("base/path0/obj0").addData("v");
+  e.addElement("base/path0/obj1").addData("v");
+  e.addElement("base/path0/obj2").addData("v");
+  e.addElement("base/path0/obj3").addData("v");
+  e.addElement("base/path0/obj3").addData("v");
 
   AString str0(8188, 1024);
   e.emit(str0,0);
@@ -303,10 +303,10 @@ void testClone()
 void testAppend()
 {
   AXmlElement e("root");
-  e.addElement("dir00/dir01", "1");
-  e.addElement("dir00/dir02", "2");
-  e.addElement("dir00/dir03", "3");
-  e.addElement("dir00/dir01", "4");
+  e.addElement("dir00/dir01").addData("1");
+  e.addElement("dir00/dir02").addData("2");
+  e.addElement("dir00/dir03").addData("3");
+  e.addElement("dir00/dir01").addData("4");
 
   AString str;
   e.emit(str,0);

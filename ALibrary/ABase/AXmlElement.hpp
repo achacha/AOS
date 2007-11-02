@@ -142,11 +142,16 @@ public:
   /*!
   Create a new element
 
-  overwrite will try and reuse the first existing element found, if not it will create one
-
   Returns the NEW element
   */
-  AXmlElement& addElement(const AString& path, bool overwrite = false);
+  AXmlElement& addElement(const AString& path);
+
+  /*!
+  Overwrite an element or create new one if it does not exist
+
+  Returns the overwritten element
+  */
+  AXmlElement& overwriteElement(const AString& path);
 
   /*!
   Adds a new element

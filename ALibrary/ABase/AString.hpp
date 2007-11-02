@@ -497,16 +497,20 @@ public:
   void rremove(size_t length = 1);
 
   /*!
-  Remove until a given delimeter
+  Remove until a given delimeter, if not found will clear
+
+  @return AConstant::npos if not found
   */
-  void removeUntilOneOf(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
-  void removeUntil(char delimeter, bool removeDelimeter = true);
+  size_t removeUntilOneOf(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
+  size_t removeUntil(char delimeter, bool removeDelimeter = true);
 
   /*!
-  Reverse remove until a given delimeter
+  Reverse remove until a given delimeter, if not found will clear
+
+  @return AConstant::npos if not found
   */
-  void rremoveUntilOneOf(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
-  void rremoveUntil(char delimeter, bool removeDelimeter = true);
+  size_t rremoveUntilOneOf(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
+  size_t rremoveUntil(char delimeter, bool removeDelimeter = true);
 
   /*!
   set(u1,size_t) will set 1 byte at an index (yes, its really a poke! :)
