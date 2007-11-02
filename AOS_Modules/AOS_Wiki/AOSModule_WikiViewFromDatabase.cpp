@@ -80,7 +80,7 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     }
 
     //a_Publish it
-    context.useOutputRootXmlElement().addElement(ASW("wiki/row/data",13)).addData(strData);
+    context.useOutputRootXmlElement().addElement(ASW("wiki/row/data",13)).addData(strData, AXmlElement::ENC_CDATADIRECT);
   }
   else
   {

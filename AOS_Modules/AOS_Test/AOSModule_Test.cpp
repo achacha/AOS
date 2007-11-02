@@ -14,7 +14,7 @@ AOSModule_Test::AOSModule_Test(AOSServices& services) :
 
 bool AOSModule_Test::execute(AOSContext& context, const AXmlElement& params)
 {
-  context.useOutputRootXmlElement().addElement("test", "This is a test!");
+  context.useOutputRootXmlElement().addElement("test").addData("This is a test!");
 
   return true;
 }

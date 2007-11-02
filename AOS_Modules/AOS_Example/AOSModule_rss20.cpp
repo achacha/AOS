@@ -40,7 +40,7 @@ bool AOSModule_rss20::execute(AOSContext& context, const AXmlElement& modulePara
     AXmlElement& item = channel.addElement("item");
     item.addElement("title").addData("The dada freeflow");
     item.addElement("link").addData("http://achacha.selfip.com/dada/Dada?templateName=FreeFlow");
-    item.addElement("description", "Free flow of information");
+    item.addElement("description").addData("Free flow of information");
   }
 
   {

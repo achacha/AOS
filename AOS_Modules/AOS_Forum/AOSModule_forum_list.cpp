@@ -22,38 +22,38 @@ bool AOSModule_forum_list::execute(AOSContext& context, const AXmlElement& modul
 
   {
     AXmlElement& eForum = eForums.addElement("forum");
-    eForum.addElement("name", "General");
-    eForum.addElement("message_count", "130");
+    eForum.addElement("name").addData("General");
+    eForum.addElement("message_count").addData("130");
   }
   
   {
     AXmlElement& eForum = eForums.addElement("forum");
-    eForum.addElement("name", "Comments");
-    eForum.addElement("message_count", "72");
+    eForum.addElement("name").addData("Comments");
+    eForum.addElement("message_count").addData("72");
   }
 
   {
     AXmlElement& eForum = eForums.addElement("forum");
-    eForum.addElement("name", "Questions");
-    eForum.addElement("message_count", "28");
+    eForum.addElement("name").addData("Questions");
+    eForum.addElement("message_count").addData("28");
   }
 
   {
     AXmlElement& eForum = eForums.addElement("forum");
-    eForum.addElement("name", "Suggestions");
-    eForum.addElement("message_count", "32");
+    eForum.addElement("name").addData("Suggestions");
+    eForum.addElement("message_count").addData("32");
   }
 
   {
     AXmlElement& eForum = eForums.addElement("forum");
-    eForum.addElement("name", "Out Of Context");
-    eForum.addElement("message_count", "112");
+    eForum.addElement("name").addData("Out Of Context");
+    eForum.addElement("message_count").addData("112");
   }
 
   {
     AXmlElement& eForum = eForums.addElement("forum");
-    eForum.addElement("name", "Rants");
-    eForum.addElement("message_count", "9");
+    eForum.addElement("name").addData("Rants");
+    eForum.addElement("message_count").addData("9");
   }
 
   return true;
