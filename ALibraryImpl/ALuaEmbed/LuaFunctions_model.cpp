@@ -136,7 +136,7 @@ static int alibrary_Objects_Model_insertElementText(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  pLuaEmbed->useModel().useRoot().addElement(xmlpath, true).addData(value);
+  pLuaEmbed->useModel().useRoot().overwriteElement(xmlpath).addData(value);
   return 0;
 }
 

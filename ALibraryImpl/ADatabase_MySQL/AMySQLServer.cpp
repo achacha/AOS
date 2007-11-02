@@ -110,12 +110,12 @@ void AMySQLServer::emit(AXmlElement& target) const
 
   ADatabase::emitXml(target);
 
-  target.addElement(ASW("client",6), mysql_get_client_info());
+  target.addElement(ASW("client",6)).addData(mysql_get_client_info());
   if (mp_mydata)
   {
-    target.addElement(ASW("stat",4), mysql_stat(mp_mydata)); 
-    target.addElement(ASW("server",6), mysql_get_server_info(mp_mydata)); 
-    target.addElement(ASW("host",4), mysql_get_host_info(mp_mydata)); 
+    target.addElement(ASW("stat",4)).addData(mysql_stat(mp_mydata)); 
+    target.addElement(ASW("server",6)).addData(mysql_get_server_info(mp_mydata)); 
+    target.addElement(ASW("host",4)).addData(mysql_get_host_info(mp_mydata)); 
   }
 }
 
