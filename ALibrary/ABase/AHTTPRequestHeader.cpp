@@ -222,12 +222,10 @@ bool AHTTPRequestHeader::_parseLineZero()
   size_t iP2 = mstr_LineZero.rfind(AConstant::ASTRING_SPACE);
   if (iP2 != AConstant::npos)
   {
+    //a_Parse the request path and query string
     str.clear();
     mstr_LineZero.peek(str, iP + 1, iP2 - iP - 1);
-    
-    AString strDecoded(str.getSize() * 2, 256);
-    ATextConverter::decodeURL(str, strDecoded);
-    murl_Request.parse(strDecoded);
+    murl_Request.parse(str);
   }
   else
     return false;
