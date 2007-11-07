@@ -1,0 +1,10 @@
+<command>
+  <input class="application/x-www-form-urlencoded"/>
+  <module class="WikiViewFromFileSystem">
+	<base-path>wiki/filesystem</base-path>
+  </module>
+  <output class="Template">
+    <filename if="/root/wiki/edit-url" desc="If edit URL is present we are in view mode">wiki/view.template.html</filename>
+    <filename if="/root/wiki/view-url" desc="If view URL is present we are in edit mode">wiki/edit.template.html</filename>
+  </output>
+</command>

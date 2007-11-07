@@ -1,9 +1,0 @@
-<command>
-  <input class="application/x-www-form-urlencoded"/>
-  <module class="WikiViewFromDatabase">
-	<table>wiki</table>
-  </module>
-  <output class="Template">
-    <filename>wiki/view.template.html</filename>
-  </output>
-</command>

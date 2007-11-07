@@ -24,7 +24,8 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
     context.addError(ASWNL("AOSModule_WikiViewFromFileSystem::execute",36),ASWNL("Unable to find module/base-path parameter"));
     return false;
   }
-  AFilename wikifile(basePath, true);
+  AFilename wikifile(m_Services.useConfiguration().getAosBaseDataDirectory());
+  wikifile.join(basePath, true);
 
   //a_Get relative wiki path
   AString str;
@@ -34,12 +35,12 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
   if (!AFileSystem::exists(wikifile))
   {
     //a_Signal that the wiki file does not exist
-    context.useOutputRootXmlElement().addElement(ASW("wiki/DoesNotExits",17));
+    context.useOutputRootXmlElement().overwriteElement(ASW("wiki/DoesNotExits",17));
   }
   else
   {
     AFile_Physical file(wikifile);
-    context.useOutputRootXmlElement().addElement(ASW("wiki/row/data",13)).addData(file, AXmlElement::ENC_CDATADIRECT);
+    context.useOutputRootXmlElement().overwriteElement(ASW("wiki/row/data",13)).addData(file, AXmlElement::ENC_CDATADIRECT);
   }
 
   return true;

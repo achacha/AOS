@@ -1,26 +1,13 @@
 <html>
 <head>
   <title>Wiki view</title>
-    <script src="/tiny_mce/tiny_mce.js" type="text/javascript"></script>
-	<script type="text/javascript">
-<!--
-tinyMCE.init({
-  mode : 'textareas',
-  theme: 'advanced',
-  theme_advanced_toolbar_location: 'top',
-  theme_advanced_toolbar_align: 'left'
-});
-//-->
-</script>
-    <script src="/wiki/view.template.js" type="text/javascript"></script>
-    <link  href="/wiki/view.template.css" type="text/css" rel="stylesheet"/>
+    <link  href="/wiki/wiki.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-  <a id="editLink" href="about:" onclick="javascript:return clickEdit('editLink', 'wiki_body', 'wikiedit_form');">edit</a><br/>
+<a href="%[LUA]{{{ print( model.emitContentFromPath('/root/wiki/edit-url') ); }}}[LUA]%">edit<a><br/>
 <hr/>
   <div class="wikibody_view" id="wiki_body">%[LUA]{{{
 print( model.emitContentFromPath("/root/wiki/row/data") );
-  }}}[LUA]%</div>
-  <form id="wikiedit_form" method="POST"/>
+}}}[LUA]%</div>
 </body>
 </html>

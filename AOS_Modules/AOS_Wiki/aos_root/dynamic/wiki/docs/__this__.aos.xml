@@ -1,6 +1,0 @@
-<config>
-	<module class="WikiRemapPath">
-		<base-path>/wiki/docs</base-path>
-		<wiki-command>/wiki/wiki</wiki-command>
-	</module>
-</config>

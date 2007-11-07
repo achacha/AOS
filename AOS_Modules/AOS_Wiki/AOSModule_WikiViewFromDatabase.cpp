@@ -26,7 +26,7 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
   context.useRequestParameterPairs().get(ASW("wikipath",8), strWikiPath);
 
   AString strData;
-  if (context.useRequestParameterPairs().get(ASW("newdata",7), strData))
+  if (context.useRequestParameterPairs().get(ASW("wiki.newdata",12), strData))
   {
     //a_Does it exist
     AString query("select id from ",15);
@@ -80,7 +80,7 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     }
 
     //a_Publish it
-    context.useOutputRootXmlElement().addElement(ASW("wiki/row/data",13)).addData(strData, AXmlElement::ENC_CDATADIRECT);
+    context.useOutputRootXmlElement().overwriteElement(ASW("wiki/row/data",13)).addData(strData, AXmlElement::ENC_CDATADIRECT);
   }
   else
   {
@@ -102,12 +102,12 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     else if (!rows)
     {
       //a_Signal that the wiki file does not exist
-      context.useOutputRootXmlElement().addElement(ASW("wiki/DoesNotExits",17));
+      context.useOutputRootXmlElement().overwriteElement(ASW("wiki/DoesNotExits",17));
     }
     else if (1 == rows)
     {
       //a_Publish it
-      rs.emitXml(context.useOutputRootXmlElement().addElement(ASW("wiki",4)));
+      rs.emitXml(context.useOutputRootXmlElement().overwriteElement(ASW("wiki",4)));
     }
     else
     {
