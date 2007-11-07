@@ -18,11 +18,11 @@ public:
   //a_Ctors and dtor
   AQueryString();
   AQueryString(const AString& strLine);
-  AQueryString(const AQueryString& AFormSource);
+  AQueryString(const AQueryString&);
   virtual ~AQueryString();
 
   //a_Assignment operator (overwrite assumed)
-  AQueryString &operator =(const AQueryString& that) { copy(that); return *this; }
+  AQueryString &operator =(const AQueryString&);
   void copy(const AQueryString&);
 
   //a_A way to add two query strings together

@@ -28,7 +28,8 @@ AQueryString::AQueryString()
 
 AQueryString::AQueryString(const AQueryString &that)
 {
-  copy(that);
+  if (this != &that)
+    copy(that);
 }
 
 AQueryString::AQueryString(const AString &strLine)
@@ -38,6 +39,14 @@ AQueryString::AQueryString(const AString &strLine)
 
 AQueryString::~AQueryString()
 {
+}
+
+AQueryString &AQueryString::operator =(const AQueryString& that)
+{ 
+  if (this != &that)
+    copy(that); 
+
+  return *this;
 }
 
 void AQueryString::copy(const AQueryString &that)
