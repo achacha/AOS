@@ -209,6 +209,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         if (pContext->useEventVisitor().getErrorCount() > 0)
         {
           pThis->_goError(pContext);
+          pContext = NULL;
           continue;
         }
 

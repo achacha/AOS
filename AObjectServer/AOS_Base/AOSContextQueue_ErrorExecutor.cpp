@@ -55,6 +55,8 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           continue;
         }
 #endif
+        std::cout << "AOSContextQueue_ErrorExecutor: " << pContext->useRequestParameterPairs() << std::endl;
+
         pContext->setExecutionState(ASW("AOSContextQueue_ErrorExecutor: Processing error condition", 57));
 
         //a_Should only be here if an error occured, if status not set >200, then assume 500

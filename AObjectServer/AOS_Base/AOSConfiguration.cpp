@@ -397,6 +397,12 @@ void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
   filename.emitPath(strPath);                           //a_Path only for map key
   AASSERT_EX(this, m_DirectoryConfigs.find(strPath) == m_DirectoryConfigs.end(), filename);
   
+  {
+    AString str("Reading directory config file: ");
+    str.append(strPath);
+    AOS_DEBUGTRACE(str.c_str(), NULL);
+  }  
+
   //a_Parse XML document
   configFile.open();
   AAutoPtr<AXmlDocument> pDoc(new AXmlDocument(configFile));
@@ -423,9 +429,9 @@ void AOSConfiguration::_readCommand(AFilename& filename)
   doc.useRoot().find(ASW("/command",8), nodes);
   
   //a_Parse each /command/command type
-  AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin();
   AString strPath(1536, 512);
   AString dynamicDir(m_AosBaseDynamicDir.toAString());
+  AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin();
   while(cit != nodes.end())
   {
     const AXmlElement *pElement = dynamic_cast<const AXmlElement *>(*cit);
@@ -437,6 +443,13 @@ void AOSConfiguration::_readCommand(AFilename& filename)
       strPath.remove(dynamicDir.getSize()-1);
       strPath.rremove(8);   //a_.aos.xml to be removed
 
+      {
+        AString str(strPath);
+        str.append('=');
+        filename.emit(str);
+        AOS_DEBUGTRACE(str.c_str(), NULL);
+      }  
+
       //a_Parse command and associate to relative path
       AAutoPtr<AOSCommand> p(new AOSCommand(strPath, m_Services.useLog()));
       p->fromAXmlElement(*pElement);
@@ -447,12 +460,6 @@ void AOSConfiguration::_readCommand(AFilename& filename)
       //a_Register the command with admin
       p->registerAdminObject(m_Services.useAdminRegistry());
 
-      {
-        AString str(strPath);
-        str.append('=');
-        filename.emit(str);
-        AOS_DEBUGTRACE(str.c_str(), NULL);
-      }  
       strPath.clear();
     }
     ++cit;

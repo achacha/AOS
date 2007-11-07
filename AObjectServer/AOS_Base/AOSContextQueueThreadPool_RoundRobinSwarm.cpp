@@ -100,19 +100,21 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
   ++m_AddCounters.at(currentQueue);
   m_Queues.at(currentQueue).push_back(pContext);
 
+//  std::cout << typeid(*this).name() << ":" << getClass() <<  "::add(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
+
   pContext->setExecutionState(getClass()+"::add["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
 }                                                                                                                                                                                                 
-
-//static ASync_CriticalSection ZZZZ;
 
 AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
 {
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
   ALock lock(m_QueueLocks.at(currentQueue));
-
-  if (!m_Queues.at(currentQueue).empty())
+  if (m_Queues.at(currentQueue).size() > 0)
   {
     AOSContext *pContext = m_Queues.at(currentQueue).front();
+
+    //    std::cout << typeid(*this).name() << ":" << getClass() <<  "::next(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
+
     m_Queues.at(currentQueue).pop_front();
 
     pContext->setExecutionState(getClass()+"::_nextContext["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
@@ -121,31 +123,4 @@ AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
   }
   else
     return NULL;
-
-  //a_Next queue
-    //int currentQueue;
-    //{
-    //  ALock lock(ZZZZ);
-    //  currentQueue = m_currentReadQueue;
-    //  m_currentReadQueue = (m_currentReadQueue + 1) % m_queueCount;
-    //}
-
-    //AOSContext *pContext = NULL;
-
-//  int tries = 0;
-//  while (!pContext && tries < m_queueCount)
-//  {
-//    ALock lock(m_QueueLocks.at(m_currentReadQueue));
-//    if (!m_Queues.at(m_currentReadQueue).empty())
-//    {
-//      pContext = m_Queues.at(m_currentReadQueue).front();
-//      m_Queues.at(m_currentReadQueue).pop_front();
-//
-//      pContext->setExecutionState(getClass()+"::_nextContext["+AString::fromInt(m_currentReadQueue)+"]="+AString::fromPointer(pContext));
-//    }
-////    else
-////      ++tries;
-////  }
-//
-//  return pContext;
 }
