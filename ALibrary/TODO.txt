@@ -1,4 +1,2 @@
-Log to optionally output to screen/debug
-AOS directory info and pre-exec of modules
 Cleanup older headers and comments
-
+Possibly remove APythonEmbed library (Lua is better for embedding)

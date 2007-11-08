@@ -93,6 +93,15 @@ public:
   static bool exists(const AFilename&);
   static void touch(const AFilename&);
 
+  /*!
+  Temporary filename
+  Given a filepath, filename will be set to a relatively "good" tenporary filename
+
+  @param path base to add filename to
+  @param prefix part or all is used in generating the temporary filename
+  */
+  static void generateTemporaryFilename(AFilename& path, const AString& prefix);
+
 private:
   static u4 _getFilesFromPath(const AFilename&, AFilename&, LIST_AFilename&, bool, bool);   //a_Recursive internal call
 };
