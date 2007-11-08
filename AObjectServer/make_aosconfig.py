@@ -2,7 +2,10 @@
 import os,sys;
 
 def makeSystemCall(param):
-	os.system(param);
+	if (verbose == 1):
+		print "Executing: "+param;
+	if (dryrun == 0):
+		os.system(param);
 
 # rsync.py base command
 RSYNC_BASE=".\\rsync.py -rtuC --exclude=.svn ";
@@ -30,6 +33,7 @@ def showUsage():
 	print "AOS configuration and content synchronization script.";
 	print sys.argv[0]+" <verbose|dryrun> <-basepath BASEPATH>";
 	print "  verbose - extra information";
+	print "  clean - removes previous version";
 	print "  dryrun - only show what is going to be copied, but do not copy";
 	print "  -basepath BASEPATH - uses BASEPATH/_debug/ and BASEPATH/_release for deployment";
 	print "\r\nExample:";
@@ -46,11 +50,14 @@ target_path = "..\\";
 dryrun = 0;
 verbose = 0;
 argc = 1;
+clean = 0;
 while (len(sys.argv) > argc):
 	if (sys.argv[argc] == "dryrun"):
 		dryrun = 1;
 	elif (sys.argv[argc] == "verbose"):
 		verbose = 1;
+	elif (sys.argv[argc] == "clean"):
+		clean = 1;
 	elif (sys.argv[argc] == "-basepath"):
 		target_path = sys.argv[argc+1];
 		argc += 1;
@@ -76,6 +83,12 @@ if (verbose == 1):
 	print "target_path_RELEASE="+target_path_RELEASE;
 	print "parent_path="+parent_path;
 	print "modules_path="+modules_path;
+
+if (clean == 1):
+	print "Cleaning target directory: "+os.path.join(target_path_DEBUG, "aos_root");
+	makeSystemCall("del /Q /S "+os.path.join(target_path_DEBUG, "aos_root"));
+	print "Cleaning target directory: "+os.path.join(target_path_RELEASE, "aos_root");
+	makeSystemCall("del /Q /S "+os.path.join(target_path_RELEASE, "aos_root"));
 
 if (os.path.exists(modules_path)):
 	modules = os.listdir(modules_path);
