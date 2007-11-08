@@ -158,6 +158,13 @@ void testTime()
   AFileSystem::remove(f);
 }
 
+void testTempFile()
+{
+  AFilename folder(ASWNL("./Console"), true);
+  AFileSystem::generateTemporaryFilename(folder, ASW("abc",3));
+  std::cout << folder << std::endl;
+}
+
 int main()
 {
   try
@@ -168,7 +175,8 @@ int main()
     //testProperties();
     //testRelative();
     //testLength();
-    testTime();
+    //testTime();
+    testTempFile();
   }
   catch(AException& ex)
   {

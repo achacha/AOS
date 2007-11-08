@@ -5,6 +5,7 @@
 #include "AFilename.hpp"
 #include "ASystemException.hpp"
 #include "AFile_Physical.hpp"
+#include "ATextGenerator.hpp"
 
 u4 AFileSystem::dir(
   const AFilename& path,
@@ -321,17 +322,12 @@ bool AFileSystem::getLastModifiedTime(const AFilename& source, ATime& ftime)
 #endif
 }
 
-void AFileSystem::generateTemporaryFilename(
-  AFilename& path, 
-  const AString& prefix
-)
+void AFileSystem::generateTemporaryFilename(AFilename& path, const AString& prefix)
 {
-#ifdef __WINDOWS__
-  AString strPath(2048, 512);
-  path.emitPath(strPath);
-  ::GetTempFileName(strPath.c_str(), prefix.c_str(), 0, path.useFilename().startUsingCharPtr(256));
-  path.useFilename().stopUsingCharPtr();
-#else
-#pragma error("Not implemented yet")
-#endif
+  do
+  {
+    path.useFilename().assign(prefix);
+    ATextGenerator::generateUniqueId(path.useFilename());
+  }
+  while(AFileSystem::exists(path));
 }
