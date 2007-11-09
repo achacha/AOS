@@ -44,7 +44,10 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
     tempwikifile.setExtension(ASW("_temporary_rename_",19));
 
     //a_Generate temporary filename
-    AFileSystem::generateTemporaryFilename(newwikifile, ASW("_w_aoswiki",10));
+    AFileSystem::generateTemporaryFilename(newwikifile);
+
+    //a_Make sure directories exist
+    AFileSystem::createDirectories(newwikifile);
 
     //a_Save new data to temp filename
     AFile_Physical file(newwikifile, "wb");
