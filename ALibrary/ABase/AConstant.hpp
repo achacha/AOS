@@ -26,6 +26,7 @@ public:
   static const AString ASTRING_COLON;         //a_":" colon
   static const AString ASTRING_SEMICOLON;     //a_";" semicolon
   static const AString ASTRING_PERIOD;        //a_"." period
+  static const AString ASTRING_DOUBLEPERIOD;  //a_".." period
   static const AString ASTRING_COMMA;         //a_"," comma
   static const AString ASTRING_LESSTHAN;      //a_"<"
   static const AString ASTRING_GREATERTHAN;   //a_">"

@@ -581,3 +581,35 @@ void AFilename::removeExtension(int count)
   }
 }
 
+void AFilename::compactPath()
+{
+  LIST_AString pathNames(m_PathNames.begin(), m_PathNames.end());
+  m_PathNames.clear();
+  
+  LIST_AString::iterator it = pathNames.begin();
+  if (it != pathNames.end())
+  {
+    //a_Copy first part as is
+    m_PathNames.push_back(*it);
+    ++it;
+
+    while(it != pathNames.end())
+    {
+      if (it->equals(AConstant::ASTRING_PERIOD))
+        continue;
+      else if (it->equals(AConstant::ASTRING_DOUBLEPERIOD))
+      {
+        if (
+          m_PathNames.size() > 0 
+          && !m_PathNames.back().equals(AConstant::ASTRING_PERIOD)
+          && !m_PathNames.back().equals(AConstant::ASTRING_DOUBLEPERIOD)
+        )
+          m_PathNames.pop_back();
+      }
+      else
+        m_PathNames.push_back(*it);
+
+      ++it;
+    }
+  }
+}

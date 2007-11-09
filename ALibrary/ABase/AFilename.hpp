@@ -164,6 +164,11 @@ public:
   bool equalsExtension(const AString&, const AString&) const;  //a_2 extensions  filename.ext1.ext2
 
   /*!
+  Compact the path removing any /./ and substituting a/../b/ with b/
+  */
+  void compactPath();
+
+  /*!
   Removes base path from given path
   this: /foo/bar/baz/filename.ext
   base: /foo/bar

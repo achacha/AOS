@@ -25,6 +25,7 @@ const AString AConstant::ASTRING_TWOSPACES("  ",2);
 const AString AConstant::ASTRING_WHITESPACE(" \r\n\t",4);
 const AString AConstant::ASTRING_NULL("(null)",6);
 const AString AConstant::ASTRING_PERIOD(".",1);
+const AString AConstant::ASTRING_DOUBLEPERIOD("..",2);
 const AString AConstant::ASTRING_COLON(":",1);
 const AString AConstant::ASTRING_SEMICOLON(";",1);
 const AString AConstant::ASTRING_COMMA(",",1);

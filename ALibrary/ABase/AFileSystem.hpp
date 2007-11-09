@@ -94,13 +94,26 @@ public:
   static void touch(const AFilename&);
 
   /*!
+  Create single directory, does not recursively create directories (see method below)
+
+  @param path
+  */
+  static void createDirectory(const AFilename& path);
+
+  /*!
+  Create direciories if missing, only path part of the AFilename is used
+  
+  @param path to create
+  */
+  static void createDirectories(const AFilename& path);
+
+  /*!
   Temporary filename
-  Given a filepath, filename will be set to a relatively "good" tenporary filename
+  Given a filepath/filename time based random data will be appended to filename and checked to make sure it does not exist
 
   @param path base to add filename to
-  @param prefix part or all is used in generating the temporary filename
   */
-  static void generateTemporaryFilename(AFilename& path, const AString& prefix);
+  static void generateTemporaryFilename(AFilename& path);
 
 private:
   static u4 _getFilesFromPath(const AFilename&, AFilename&, LIST_AFilename&, bool, bool);   //a_Recursive internal call

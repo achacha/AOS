@@ -160,9 +160,28 @@ void testTime()
 
 void testTempFile()
 {
-  AFilename folder(ASWNL("./Console"), true);
-  AFileSystem::generateTemporaryFilename(folder, ASW("abc",3));
+  AFilename folder(ASWNL("./Console/samplefile.txt"), true);
+  AFileSystem::generateTemporaryFilename(folder);
   std::cout << folder << std::endl;
+}
+
+void testCreateDir()
+{
+  AFilename path(ASWNL("Console/created1/"), false);
+  AFileSystem::createDirectory(path);
+
+  path.parse(ASWNL("Console/created1/d0/d1/"), false);
+  AFileSystem::createDirectory(path);
+
+  path.parse(ASWNL("Console/created1/dir0/dir1/dir2/"), false);
+  AFileSystem::createDirectories(path);
+}
+
+void testCompactPath()
+{
+  AFilename path(ASWNL("./a/../b/../../c/"), false);
+  path.compactPath();
+  std::cout << path << std::endl;
 }
 
 int main()
@@ -176,7 +195,9 @@ int main()
     //testRelative();
     //testLength();
     //testTime();
-    testTempFile();
+    //testTempFile();
+    //testCreateDir();
+    testCompactPath();
   }
   catch(AException& ex)
   {

@@ -322,12 +322,43 @@ bool AFileSystem::getLastModifiedTime(const AFilename& source, ATime& ftime)
 #endif
 }
 
-void AFileSystem::generateTemporaryFilename(AFilename& path, const AString& prefix)
+void AFileSystem::generateTemporaryFilename(AFilename& path)
 {
   do
   {
-    path.useFilename().assign(prefix);
     ATextGenerator::generateUniqueId(path.useFilename());
   }
   while(AFileSystem::exists(path));
+}
+
+void AFileSystem::createDirectory(const AFilename& path)
+{
+#ifdef __WINDOWS__
+  AString strPath;
+  path.emit(strPath);
+  if (!::CreateDirectory(strPath.c_str(), NULL))
+    ATHROW_LAST_OS_ERROR(&path);
+#else
+#pragma error("Not implemented yet")
+#endif
+}
+
+void AFileSystem::createDirectories(const AFilename& path)
+{
+  LIST_AString toCreate;
+  AFilename testPath(path);
+  testPath.clearFilename();
+  testPath.compactPath();
+  while (!AFileSystem::exists(testPath) && testPath.usePathNames().size())
+  {
+    toCreate.push_front(testPath.usePathNames().back());
+    testPath.usePathNames().pop_back();
+  }
+
+  while (toCreate.size())
+  {
+    testPath.usePathNames().push_back(toCreate.front());
+    toCreate.pop_front();
+    AFileSystem::createDirectory(testPath);
+  }
 }
