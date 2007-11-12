@@ -83,7 +83,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             if (pContext->getRequestTimer().getInterval() > iWaitForHttpDataTimeout)
             {
               //a_Waited long enough
-              pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, abandoning wait",70));
+              pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, abandoning wait",70), true);
               pThis->_goTerminate(pContext);
               pContext = NULL;
               continue;
@@ -171,6 +171,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           case AOSContext::STATUS_HTTP_SOCKET_CLOSED:
           {
             //a_Socket was closed, terminate
+            pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: Socket was closed by client, terminating",69), true);
             pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
             pContext->useEventVisitor().reset();
             pThis->_goTerminate(pContext);
@@ -275,6 +276,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
           {
             //a_Socket error occured, just terminate and keep processing
+            pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: Socket error detected, terminating",63), true);
             pThis->_goTerminate(pContext);
             pContext = NULL;
           }
