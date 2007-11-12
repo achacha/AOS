@@ -35,6 +35,33 @@ static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
 }
 
 /*!
+Uses the model to determine if element exists
+
+thisfunction("<path to the AXmlElement>")
+
+@namespace model
+@param Path to element
+@return true if exists, false otherwise
+*/
+static int alibrary_Objects_Model_existElement(lua_State *L)
+{
+  size_t len = AConstant::npos;
+  const char *s = luaL_checklstring(L, 1, &len);
+  const AString& xmlpath = AString::wrap(s, len);
+  lua_pop(L,1);
+
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
+  if (pLuaEmbed->useModel().useRoot().exists(xmlpath))
+    lua_pushboolean(L, 1);
+  else
+    lua_pushboolean(L, 0);
+
+  return 1;
+}
+
+/*!
 Emits the entire model as XML
 
 thisfunction([indent = -1])
@@ -143,6 +170,7 @@ static int alibrary_Objects_Model_insertElementText(lua_State *L)
 static const luaL_Reg model_funcs[] = {
   {"emitXml", alibrary_Objects_Model_emitXml},
   {"emitJson", alibrary_Objects_Model_emitJson},
+  {"existElement", alibrary_Objects_Model_existElement},
   {"emitContentFromPath", alibrary_Objects_Model_emitContentFromPath},
   {"addElementText", alibrary_Objects_Model_addElementText},
   {"insertElementText", alibrary_Objects_Model_insertElementText},
