@@ -2,6 +2,7 @@
 #include "pchABase.hpp"
 #include "AFileSystem.hpp"
 #include <io.h>
+#include <errno.h>
 #include "AFilename.hpp"
 #include "ASystemException.hpp"
 #include "AFile_Physical.hpp"
@@ -125,17 +126,47 @@ void AFileSystem::setCWD(const AFilename& source)
 
 void AFileSystem::rename(const AFilename& from, const AFilename& to)
 {
-  if (::rename(from.toAString().c_str(), to.toAString().c_str()))
-    ATHROW_LAST_OS_ERROR(NULL);
+  switch (::rename(from.toAString().c_str(), to.toAString().c_str()))
+  {
+    case 0:
+      return;
+
+    case EACCES:
+      ATHROW_EX(&from, AException::APIFailure, ARope("File or directory specified by newname already exists or could not be created (invalid path, access violation); or oldname is a directory and newname specifies a different path: ")+to);
+
+    case ENOENT:
+      ATHROW_EX(&from, AException::APIFailure, ASWNL("File not found"));
+
+    case EINVAL:
+      ATHROW_EX(&to, AException::APIFailure, ASWNL("Name contains invalid characters"));
+
+    default:  
+      ATHROW_LAST_OS_ERROR(NULL);
+  }
 }
 
 void AFileSystem::remove(const AFilename& source)
 {
-  if (::remove(source.toAString().c_str()))
-    ATHROW_LAST_OS_ERROR(NULL);
+  switch(::remove(source.toAString().c_str()))
+  {
+    case 0:
+      return;
+
+    case EACCES:
+      ATHROW_EX(&source, AException::APIFailure, ASWNL("File speficied is no accessable, read-only or still open"));
+
+    case ENOENT:
+      ATHROW_EX(&source, AException::APIFailure, ASWNL("File not found"));
+
+    case EINVAL:
+      ATHROW_EX(&source, AException::APIFailure, ASWNL("Name contains invalid characters"));
+
+    default:
+      ATHROW_LAST_OS_ERROR(NULL);
+  }
 }
 
-bool AFileSystem::isA(const AFilename& source, AFileSystem::PATH_TYPE ptype)
+bool AFileSystem::isA(const AFilename& source, AFileSystem::PathType ptype)
 {
 #ifdef __WINDOWS__
   AString str;
@@ -144,7 +175,7 @@ bool AFileSystem::isA(const AFilename& source, AFileSystem::PATH_TYPE ptype)
   WIN32_FIND_DATA findData;
   HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
   if (INVALID_HANDLE_VALUE == hFind)
-    return false;  //a_Does not exist, thus not anything
+    return (ptype == DoesNotExist);   //a_Existance check
 
   ::FindClose(hFind);
   switch(ptype)
@@ -177,9 +208,53 @@ bool AFileSystem::isA(const AFilename& source, AFileSystem::PATH_TYPE ptype)
     ATHROW(NULL, AException::NotSupported);
   }
 #else
+#pragma message("NON-Win32: AFileSystem::isA")
+#endif
+}
+
+u4 AFileSystem::getType(const AFilename& source)
+{
+#ifdef __WINDOWS__
+  AString str;
+  AFilename::FTYPE ftype = source.getType();
+  source.emit(str, AFilename::FTYPE_WIN32, true);
+  WIN32_FIND_DATA findData;
+  HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
+  if (INVALID_HANDLE_VALUE == hFind)
+    return DoesNotExist;   //a_Existance check
+
+  u4 ret = Exists;
+  ::FindClose(hFind);
+  if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+    ret |= Directory;
+
+  if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+    ret |= File;
+
+  if (findData.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
+    ret |= ReadOnly;
+
+  if (findData.dwFileAttributes & FILE_ATTRIBUTE_COMPRESSED)
+    ret |= Compressed;
+
+  if (findData.dwFileAttributes & FILE_ATTRIBUTE_ENCRYPTED)
+    ret |= Encrypted;
+
+  if (findData.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)
+    ret |= System;
+
+  if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+    ret |= Hidden;
+
+  if (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY)
+    ret |= Temporary;
+
+  return ret;
+#else
 #pragma message("NON-Win32: AFileSystem::isDirectory")
 #endif
 }
+
 
 bool AFileSystem::canRead(const AFilename& source)
 {

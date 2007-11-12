@@ -66,20 +66,34 @@ public:
   static void expand(const AFilename& relative, AFilename& absolute);
 
   /*!
+  Path types used by isA, getType
+  */
+  enum PathType {
+    DoesNotExist = 0x0000,
+    Exists       = 0x0001,
+    Directory    = 0x0002,
+    File         = 0x0004,
+    ReadOnly     = 0x0008,
+    Compressed   = 0x0010,
+    Encrypted    = 0x0020,
+    System       = 0x0040,
+    Hidden       = 0x0080,
+    Temporary    = 0x0100
+  };
+
+  /*!
   Determines if an existing path is of some type
   */
-  enum PATH_TYPE {
-    Directory,
-    File,
-    ReadOnly,
-    Compressed,
-    Encrypted,
-    System,
-    Hidden,
-    Temporary
-  };
-  static bool isA(const AFilename&, AFileSystem::PATH_TYPE);
+  static bool isA(const AFilename&, AFileSystem::PathType);
 
+  /*!
+  Gets the path type mask of PathType flags
+  Useful in checking existance and types in one call
+  To check if directory use (AFileSystem::Directory & AFileSystem::getType(...)), etc
+  DoesNotExist is always 0
+  */
+  static u4 getType(const AFilename&);
+  
   /*!
   Properties
   */
