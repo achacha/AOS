@@ -1,10 +1,21 @@
 <html>
 <head>
   <title>Wiki view</title>
-    <link  href="/wiki/wiki.css" type="text/css" rel="stylesheet"/>
+    <link href="/wiki/wiki.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-<a href="%[LUA]{{{ print( model.emitContentFromPath('/root/wiki/edit-url') ); }}}[LUA]%">edit<a><br/>
+<div class ="wikitop">%[LUA]{{{
+if model.existElement('/root/wiki/IsDirectory') then
+  print( '<small>directory</small>' );
+else
+	local dne = model.emitContentFromPath('/root/wiki/DoesNotExist');
+	if nil == dne then
+		print( '<a href=\"' .. model.emitContentFromPath('/root/wiki/edit-url') .. '">edit<a>'); 
+	else
+		print( '<a href=\"' .. model.emitContentFromPath('/root/wiki/edit-url') .. '">create<a>'); 
+	end
+end
+}}}[LUA]%</div>
 <hr/>
   <div class="wikibody_view" id="wiki_body">%[LUA]{{{
 print( model.emitContentFromPath("/root/wiki/row/data") );

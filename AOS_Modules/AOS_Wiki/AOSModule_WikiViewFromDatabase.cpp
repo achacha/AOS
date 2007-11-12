@@ -102,7 +102,7 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     else if (!rows)
     {
       //a_Signal that the wiki file does not exist
-      context.useOutputRootXmlElement().overwriteElement(ASW("wiki/DoesNotExits",17));
+      context.useOutputRootXmlElement().overwriteElement(ASW("wiki/DoesNotExist",17));
     }
     else if (1 == rows)
     {
