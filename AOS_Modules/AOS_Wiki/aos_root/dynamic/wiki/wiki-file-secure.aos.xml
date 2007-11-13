@@ -2,6 +2,7 @@
   <input class="application/x-www-form-urlencoded"/>
   <module class="WikiViewFromFileSystem">
 		<base-path desc="Actual location where wiki data is saved">wiki/filesystem</base-path>
+		<secure/>
   </module>
   <output class="Template">
     <filename if="/root/wiki/edit-url" desc="If edit URL is present we are in view mode">wiki/view.template.html</filename>

@@ -18,9 +18,17 @@ AOSModule_WikiViewFromFileSystem::AOSModule_WikiViewFromFileSystem(AOSServices& 
 
 bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
+  static const AString ELEMENT_IS_DIRECTORY("wiki/IsDirectory",16);
+  static const AString ELEMENT_SECURE_EDIT("wiki/SecureEdit",15);
+  static const AString ELEMENT_DOES_NOT_EXIST("wiki/DoesNotExist",17);
+  static const AString ELEMENT_DATA("wiki/row/data",13);
+  
+  static const AString PARAM_SECURE("secure",6);
+  static const AString PARAM_BASE_PATH("base-path",9);
+
   //a_Get base path
   AString basePath;
-  if (!moduleParams.emitFromPath(ASW("base-path",9), basePath))
+  if (!moduleParams.emitFromPath(PARAM_BASE_PATH, basePath))
   {
     context.addError(ASWNL("AOSModule_WikiViewFromFileSystem::execute",36),ASWNL("Unable to find module/base-path parameter"));
     return false;
@@ -34,8 +42,20 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
   wikifile.join(str, false);
 
   AString strData;
-  if (context.useRequestParameterPairs().get(ASW("wiki.newdata",12), strData))
+  if (
+    context.useRequestParameterPairs().get(ASW("wiki.newdata",12), strData)
+  )
   {
+    //a_Check if authentication passed
+    if (
+      moduleParams.exists(PARAM_SECURE)
+      && !context.useOutputRootXmlElement().exists(ASW("wiki/Authenticated",18))
+    )
+    {
+      context.useOutputRootXmlElement().overwriteElement(ASW("wiki/AuthFailed",15));
+      return true;
+    }
+    
     //a_New data submitted
     u4 type = AFileSystem::getType(wikifile);
     if (type)
@@ -43,7 +63,7 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
       if (type & AFileSystem::Directory)
       {
         //a_Directory name specified
-        context.useOutputRootXmlElement().overwriteElement(ASW("wiki/IsDirectory",16));
+        context.useOutputRootXmlElement().overwriteElement(ELEMENT_IS_DIRECTORY);
       }
       else
       {
@@ -64,7 +84,7 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
         file.close();
 
         //a_Add to context so it can ve viewed after save
-        context.useOutputRootXmlElement().overwriteElement(ASW("wiki/row/data",13)).addData(strData, AXmlElement::ENC_CDATADIRECT);
+        context.useOutputRootXmlElement().overwriteElement(ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
 
         //a_Rename temp to current
         AFileSystem::rename(wikifile, tempwikifile);
@@ -85,7 +105,7 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
       file.close();
 
       //a_Add to context so it can ve viewed after save
-      context.useOutputRootXmlElement().overwriteElement(ASW("wiki/row/data",13)).addData(strData, AXmlElement::ENC_CDATADIRECT);
+      context.useOutputRootXmlElement().overwriteElement(ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
     }
   }
   else
@@ -96,23 +116,29 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
       if (type & AFileSystem::Directory)
       {
         //a_Directory name specified
-        context.useOutputRootXmlElement().overwriteElement(ASW("wiki/IsDirectory",16));
+        context.useOutputRootXmlElement().overwriteElement(ELEMENT_IS_DIRECTORY);
       }
       else
       {
         AFile_Physical file(wikifile);
         file.open();
-        context.useOutputRootXmlElement().overwriteElement(ASW("wiki/row/data",13)).addData(file, AXmlElement::ENC_CDATADIRECT);
+        context.useOutputRootXmlElement().overwriteElement(ELEMENT_DATA).addData(file, AXmlElement::ENC_CDATADIRECT);
       }
     }
     else
     {
       //a_Signal that the wiki file does not exist
       if (wikifile.isDirectory())
-        context.useOutputRootXmlElement().overwriteElement(ASW("wiki/IsDirectory",16));
+        context.useOutputRootXmlElement().overwriteElement(ELEMENT_IS_DIRECTORY);
       else
-        context.useOutputRootXmlElement().overwriteElement(ASW("wiki/DoesNotExist",17));
+        context.useOutputRootXmlElement().overwriteElement(ELEMENT_DOES_NOT_EXIST);
     }
+
+    if (moduleParams.exists(PARAM_SECURE))
+    {
+      context.useOutputRootXmlElement().overwriteElement(ELEMENT_SECURE_EDIT);
+    }
+
   }
 
   return true;

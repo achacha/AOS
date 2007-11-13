@@ -5,16 +5,27 @@
 </head>
 <body>
 <div class ="wikitop">%[LUA]{{{
+local editUrlBase = model.emitContentFromPath('/root/wiki/edit-url');
+local editUrl;
+
+if model.existElement('/root/wiki/SecureEdit') then
+  print( '<small>secure TODO</small>&nbsp;' );
+  editUrl = "https:" .. model.emitContentFromPath('/root/REQUEST/AUrl/server') .. editUrlBase;
+else
+  editUrl = editUrlBase;
+end
+
 if model.existElement('/root/wiki/IsDirectory') then
   print( '<small>directory</small>' );
 else
 	local dne = model.emitContentFromPath('/root/wiki/DoesNotExist');
 	if nil == dne then
-		print( '<a href=\"' .. model.emitContentFromPath('/root/wiki/edit-url') .. '">edit<a>'); 
+		print( '<a href=\"' .. editUrl .. '">edit<a>'); 
 	else
-		print( '<a href=\"' .. model.emitContentFromPath('/root/wiki/edit-url') .. '">create<a>'); 
+		print( '<a href=\"' .. editUrl .. '">create<a>'); 
 	end
 end
+
 }}}[LUA]%</div>
 <hr/>
   <div class="wikibody_view" id="wiki_body">%[LUA]{{{

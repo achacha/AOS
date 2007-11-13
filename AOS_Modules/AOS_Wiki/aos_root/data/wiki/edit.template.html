@@ -1,6 +1,7 @@
 <html>
 <head>
   <title>Wiki view</title>
+		<script type="text/javascript" src="_js/crypto/sha1.js"></script>
     <script src="/tiny_mce/tiny_mce.js" type="text/javascript"></script>
 	<script type="text/javascript">
 <!--
@@ -10,7 +11,16 @@ tinyMCE.init({
   theme_advanced_toolbar_location: 'top',
   theme_advanced_toolbar_align: 'left'
 });
-//-->
+
+function hashit(inputvalue, targetfield) {
+  targetfield.value = hex_sha1(inputvalue);
+  return 1;
+}
+
+function copyit(inputvalue, targetfield) {
+  targetfield.value = inputvalue;  
+  return 1;
+}
 </script>
     <link  href="/wiki/wiki.css" type="text/css" rel="stylesheet"/>
 </head>
