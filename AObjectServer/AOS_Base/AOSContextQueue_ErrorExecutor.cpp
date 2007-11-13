@@ -94,8 +94,9 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           //}
 
           //a_Add request header to result XML
-          pContext->useRequestHeader().emitXml(pContext->useOutputRootXmlElement().addElement("REQUEST"));
-          pContext->useResponseHeader().emitXml(pContext->useOutputRootXmlElement().addElement("RESPONSE"));
+          if (!pContext->useOutputRootXmlElement().exists(ASW("REQUEST",7)))
+            pContext->useRequestHeader().emitXml(pContext->useOutputRootXmlElement().overwriteElement(ASW("REQUEST",7)));
+          pContext->useResponseHeader().emitXml(pContext->useOutputRootXmlElement().overwriteElement(ASW("RESPONSE",8)));
 
           //a_Check if dumpContext is specified to override and emit XML
           int dumpContextLevel = pContext->getDumpContextLevel();

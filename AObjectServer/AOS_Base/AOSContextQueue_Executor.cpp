@@ -96,6 +96,9 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 
         int dumpContextLevel = pContext->getDumpContextLevel();
 
+        //a_Add REQUEST header
+        pContext->useRequestHeader().emitXml(pContext->useOutputRootXmlElement().overwriteElement(ASW("REQUEST",7)));
+
         //
         //a_Generate output
         //
