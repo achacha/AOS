@@ -1,2 +1,4 @@
+AXmlElement setData method needed (AOSCacheManager)
+  add setElement method (like overwrite)
 Cleanup older headers and comments
 Possibly remove APythonEmbed library (Lua is better for embedding)
