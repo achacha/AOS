@@ -163,7 +163,7 @@
 					<input type="submit" name="action" value="{@name}"/>
 				</xsl:otherwise>
 			</xsl:choose>
-			<i> <xsl:value-of select="@desc"/></i><br/>
+			<br/><i><pre><xsl:value-of select="@desc"/></pre></i><br/>
 	</xsl:template>
 
 	<xsl:template match="debugDump">

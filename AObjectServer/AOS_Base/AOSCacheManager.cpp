@@ -67,7 +67,7 @@ void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& 
       ASW("enabled",7), 
       AString::fromBool(m_Services.useConfiguration().useConfigRoot().getBool(STATIC_CACHE_ENABLED, false)),
       ASW("Update",6), 
-      ASWNL("Enable static content caching(1) or disable and clear(0)"),
+      ASWNL("1:Enable static content caching, 0:Disable and clear, -1:Clear only"),
       ASW("Set",3)
     );
 
@@ -100,6 +100,10 @@ void AOSCacheManager::processAdminAction(AXmlElement& eBase, const AHTTPRequestH
         {
           //a_Clear and disable
           m_Services.useConfiguration().useConfigRoot().setBool(STATIC_CACHE_ENABLED, false);
+          mp_StaticFileCache->clear();
+        }
+        else if (str.equals("-1"))
+        {
           mp_StaticFileCache->clear();
         }
         else
