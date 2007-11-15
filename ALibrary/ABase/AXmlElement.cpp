@@ -424,7 +424,7 @@ bool AXmlElement::getBool(const AString& path, bool boolDefault) const
   AString str;
   if (emitFromPath(path, str))
   {
-    return str.equalsNoCase("true",4) || str.equals("1",1);
+    return str.equalsNoCase(AConstant::ASTRING_TRUE) || str.equals("1",1);
   }
   else
     return boolDefault;
@@ -984,7 +984,7 @@ void AXmlElement::setSize_t(const AString& path, size_t value)
 
 void AXmlElement::setBool(const AString& path, bool value)
 {
-  _addElement(path, true)->addData(value);
+  _addElement(path, true)->addData(value ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
 }
 
 bool AXmlElement::isElement() const
