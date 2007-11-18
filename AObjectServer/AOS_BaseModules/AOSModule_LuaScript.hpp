@@ -4,21 +4,43 @@
 #include "apiAOS_BaseModules.hpp"
 
 /*!
-Template module
-Loads and evaluates a template and optionally writes output to an element
+Inline Lua script module
+Loads and evaluates a Lua script, output is written to the model as CDATA
+'outpath' is relative to the root element output document or absolute starting with /root/{your outpath}/script
 
 Sample usage:
 
-...
-<module class="Template">
-  <template><![CDADA[
-...
-  ]]></template>
-  <outpath>template/output</outpath>
+<module class="LuaScript">
+  <filename>lua/myscript.lua</filename>    This will read from {datadir}/lua/myscript.lua
+  <outpath>script</outpath>                This will output to /root/script/output
 </module>
-...
 
-outpath is relative to the root element output document or absolute starting with /root/
+<module class="LuaScript">
+  <script><![CDADA[
+-- Your lua script here
+print("Hello World!");
+  ]]></script>
+  <outpath>script</outpath>
+</module>
+
+<module class="LuaScript">
+  <script><![CDADA[
+-- More lua script here
+print("This is a test.");
+  ]]></script>
+  <outpath>script</outpath>
+</module>
+
+
+Here results will be:
+<root>
+  <script>
+    <output source="lua/myscript.lua"><![CDATA[something here output from the script file]]></output>
+    <output source="Inline"><![CDATA[Hello World!]]></output>
+    <output source="Inline"><![CDATA[This is a test]]></output>
+  </script>
+  ...
+</root>
 
 */
 class AOS_BASEMODULES_API AOSModule_LuaScript : public AOSModuleInterface

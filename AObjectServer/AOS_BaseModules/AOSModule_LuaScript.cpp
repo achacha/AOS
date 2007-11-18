@@ -19,10 +19,16 @@ AOSModule_LuaScript::AOSModule_LuaScript(AOSServices& services) :
 
 bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params)
 {
+  static const AString OUTPUT("output",6);
+
   const AXmlElement *pNode = params.findElement(ASW("script",6));
+  AString strSource;
   AAutoPtr<AFile> pFile;
   if (pNode)
   {
+    strSource.assign("inline", 6);
+    context.setExecutionState(ASW("Executing inlined Lua script",28));
+
     //a_Element contains script
     pFile.reset(new AFile_AString());
     
@@ -34,12 +40,12 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
     pNode = params.findElement(ASW("filename",8));
     if (pNode)
     {
-      AString relativePath;
-      pNode->emitContent(relativePath);
+      pNode->emitContent(strSource);
+      context.setExecutionState(ARope("Executing Lua script: ",22)+strSource);
 
       //a_File to be used (may need caching for it, but for now keep it dynamic)
       AFilename f(m_Services.useConfiguration().getAosBaseDataDirectory(), true);
-      f.join(relativePath, false);
+      f.join(strSource, false);
       
       pFile.reset(new AFile_Physical(f));
       pFile->open();
@@ -66,16 +72,6 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
   //a_Process template
   pTemplate->process(objects, ropeOutput);
   
-  //a_Add template to debug
-  if (context.getDumpContextLevel() > 0)
-  {
-    AString str("debug/",6);
-    str.append(getClass());
-    str.append("/script",7);
-    AXmlElement& base = context.useOutputRootXmlElement().addElement(str);
-    pTemplate->emitXml(base);
-  }
-
   //a_Insert output into outpath (if any)
   pNode = params.findElement(ASW("outpath",7));
   if (pNode)
@@ -85,8 +81,21 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
     if (!xmlpath.isEmpty())
     {
       //a_Add output as CDATA
-      context.useOutputRootXmlElement().addElement(xmlpath).addData(ropeOutput, AXmlElement::ENC_CDATADIRECT);
+      AXmlElement& eOutput = context.useOutputRootXmlElement().overwriteElement(xmlpath).addElement(OUTPUT);
+      eOutput.addData(ropeOutput, AXmlElement::ENC_CDATADIRECT);
+      eOutput.addAttribute(ASW("source",6), strSource);
     }
+  }
+
+  //a_Add template to debug
+  if (context.getDumpContextLevel() > 0)
+  {
+    AString str("debug/",6);
+    str.append(getClass());
+    str.append("/script",7);
+    AXmlElement& base = context.useOutputRootXmlElement().addElement(str);
+    pTemplate->emitXml(base);
+    base.addAttribute(ASW("source",6), strSource);
   }
 
   return true;

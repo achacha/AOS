@@ -1,4 +1,4 @@
-foo=%[LUA]{{{
-aos.addText("/root/inline-script-added", "Cthulhu was here");
-print(aos.emitContent("/root/inline-script-added"));	
+%[LUA]{{{
+model.addElementText("/root/inline-script-added", "Cthulhu was here");
+print(model.emitContentFromPath("/root/inline-script-added"));	
 }}}[LUA]%

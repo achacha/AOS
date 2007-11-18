@@ -14,115 +14,35 @@ extern "C"
 #include "ALuaEmbed.hpp"
 
 /*!
-Insert text at element path, if it doesn't exist, it is created
-aos.addText("<xmlpath>", "<text>")
-
-Call:
-aos.addText("/foo/bar", "something");
-
-Results:
-<foo>
-  <bar>something</bar>
-</foo>
-*/
-static int aos_addText(lua_State *L)
-{
-  //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
-  //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
-  AASSERT(NULL, pContext);
-
-  AASSERT_EX(NULL, lua_gettop(L) >= 2, ASWNL("Not enough actual parameters, expected at least 2"));
-
-  //a_param 0: xmlpath
-  size_t len = AConstant::npos;
-  const char *s = luaL_checklstring(L, 1, &len);
-  const AString& xmlpath = AString::wrap(s, len);
-
-  //a_param 1: text
-  s = luaL_checklstring(L, 2, &len);
-  const AString& text = AString::wrap(s, len);
-  lua_pop(L,2);
-
-  pContext->useOutputRootXmlElement().addElement(xmlpath, text);
-
-  return 0;
-}
-
-/*!
-Call AXmlElement::emitContentFromPath on the xmlpath specified
-If the path points to more than 1 node/element then a list of values is returned
-Emit content call will gather all text blocks from the node and sub-nodes
-
-aos.emitContent("<xmlpath">);
-
-Given:
-<root>
-  <filename>foo.txt</filename>
-  <filename>
-    <filepart>bar<filepart>
-    <ext>.txt</ext>
-  </filename>
-  <filename>baz.txt</filename>
-</root>
-
-
-Call:
-  print( aos.emitContent("/root/filename") );
-
-Return (3 items):
-  foo.txt
-  bar.txt
-  baz.txt
-*/
-static int aos_emitContent(lua_State *L)
-{
-  //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
-  //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
-  AASSERT(NULL, pContext);
-
-  AASSERT_EX(NULL, lua_gettop(L) >= 1, ASWNL("Not enough actual parameters, expected at least 1"));
-
-  //a_param 0: xmlpath
-  size_t len = AConstant::npos;
-  const char *s = luaL_checklstring(L, 1, &len);
-  const AString& xmlpath = AString::wrap(s, len);
-  lua_pop(L,1);
-
-  AXmlElement::CONST_CONTAINER nodes;
-  pContext->useOutputRootXmlElement().find(xmlpath, nodes);
-  AString str;
-  for (AXmlElement::CONST_CONTAINER::iterator it = nodes.begin(); it != nodes.end(); ++it)
-  {
-    (*it)->emitContent(str);
-    lua_pushlstring(L, str.c_str(), str.getSize());
-    str.clear();
-  }
-  
-  return (int)nodes.size();
-}
-
-/*!
 Gets HTTP request header parameter
 
-Example:
-aos.getRequestHeader("Host");
-Returns:
-www.someserver.com
+Special names:
+_METHOD  - HTTP request method in line 0
+_URL     - URL in line 0
+_VERSION - HTTP version in line 0
+_ALL     - Entire HTTP header (without last CRLF)
 
-Returns:
-  item corresponding to request header if found
-  nil if not found
+Given:
+GET /mypath/myprog?a=2 HTTP/1.1
+Host: www.someserver.com
+
+Example:
+aos.getRequestHeader("Host");    -->  www.someserver.com
+aos.getRequestHeader("DNE");     -->  nil
+aos.getRequestHeader("_METHOD")  --> GET
+aos.getRequestHeader("_URL")     --> /mypath/myprog?a=2
+
+@namespace aos
+@param HTTP request header name
+@return HTTP request header value or nil if name does not exist
 */
 static int aos_getRequestHeader(lua_State *L)
 {
+  static AString METHOD("_METHOD");
+  static AString URL("_URL");
+  static AString VERSION("_VERSION");
+  static AString ALL("_ALL");
+  
   //a_Get reference to ALuaEmbed object
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
@@ -137,13 +57,41 @@ static int aos_getRequestHeader(lua_State *L)
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
   const AString& name = AString::wrap(s, len);
-  lua_pop(L,1);
 
-  AString str;
-  if (pContext->useRequestHeader().getPairValue(name, str))
+  if (name.equals(METHOD))
   {
+    const AString& str = pContext->useRequestHeader().getMethod();
     lua_pushlstring(L, str.c_str(), str.getSize());
     return 1;
+  }
+  else if (name.equals(URL))
+  {
+    AString str;
+    pContext->useRequestUrl().emit(str);
+    lua_pushlstring(L, str.c_str(), str.getSize());
+    return 1;
+  }
+  else if (name.equals(VERSION))
+  {
+    const AString& str = pContext->useRequestHeader().getVersion();
+    lua_pushlstring(L, str.c_str(), str.getSize());
+    return 1;
+  }
+  else if (name.equals(ALL))
+  {
+    AString str(2048, 2048);
+    pContext->useRequestHeader().emit(str);
+    lua_pushlstring(L, str.c_str(), str.getSize());
+    return 1;
+  }
+  else
+  {
+    AString str;
+    if (pContext->useRequestHeader().getPairValue(name, str))
+    {
+      lua_pushlstring(L, str.c_str(), str.getSize());
+      return 1;
+    }
   }
   return 0;
 }
@@ -156,9 +104,9 @@ aos.getRequestCookie("username");
 Returns:
 foo  (if request header had parameter:  Cookie: username=foo)
 
-Returns:
-  item corresponding to request cookie if found
-  nil if not found
+@namespace aos
+@param Request cookie name
+@return Cookie value or nil if name does not exist
 */
 static int aos_getRequestCookie(lua_State *L)
 {
@@ -176,7 +124,6 @@ static int aos_getRequestCookie(lua_State *L)
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
   const AString& name = AString::wrap(s, len);
-  lua_pop(L,1);
 
   AString str;
   if (pContext->useRequestCookies().getValue(name, str))
@@ -188,17 +135,67 @@ static int aos_getRequestCookie(lua_State *L)
 }
 
 /*!
-Gets HTTP request parameter from query string or form submit
-For form submit it is assumed the correct input processor (such as HtmlForm or HtmlFormMultiPart)
-  executed and put form data into the request header
+Gets HTTP request parameter value from the header
+  (may contain form data parameters also if using form input processor)
+  (may return more than one value)
+
+Given:
+GET /someurl?foo=1&foo=2&foo=3&bar=1 HTTP/1.0
+...
 
 Example:
-aos.getRequestParameter();
-Returns:
-List of names in the parameter list of name/value pairs
+aos.getRequestParameter("foo");  -->  "1", "2", "3"
+aos.getRequestParameter("bar");  -->  "1"
+aos.getRequestParameter("baz");  -->  nil
 
-Returns:
-  names of items (0 or more)
+@namespace aos
+@param Request parameter name
+@return Parameter values (1 or more) or nil if name does not exist
+*/
+static int aos_getRequestParameter(lua_State *L)
+{
+  //a_Get reference to ALuaEmbed object
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
+  //a_Get AOSContext stored in /context
+  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AASSERT(NULL, pContext);
+
+  AASSERT_EX(NULL, lua_gettop(L) >= 1, ASWNL("Not enough actual parameters, expected at least 1"));
+
+  //a_param 0: xmlpath
+  size_t len = AConstant::npos;
+  const char *s = luaL_checklstring(L, 1, &len);
+  const AString& name = AString::wrap(s, len);
+
+  LIST_NVPair values;
+  size_t count = pContext->useRequestParameterPairs().get(name, values);
+  if (count > 0)
+  {
+    for (LIST_NVPair::iterator it = values.begin(); it != values.end(); ++it)
+    {
+      const AString& str = it->getValue();
+      lua_pushlstring(L, str.c_str(), str.getSize());
+    }
+    return (int)count;
+  }
+  return 0;
+}
+
+/*!
+Gets HTTP request parameter names from query string or form submit
+
+Given:
+GET /someurl?foo=1&foo=2&foo=3&bar=1 HTTP/1.0
+...
+
+Example:
+aos.getRequestParameterNames();  -->  "foo", "bar"
+
+@namespace aos
+@param name of the parameter
+@return HTTP request header value or nil if name does not exist
 */
 static int aos_getRequestParameterNames(lua_State *L)
 {
@@ -218,54 +215,18 @@ static int aos_getRequestParameterNames(lua_State *L)
 }
 
 /*!
-Gets HTTP request parameter values from query string or form submit
-For form submit it is assumed the correct input processor (such as HtmlForm or HtmlFormMultiPart)
-  executed and put form data into the request header
-
-Example:
-aos.getRequestParameter("query");
-Returns:
-foo  (if request had parameter:  ?query=foo&...)
-
-Returns:
-  items (0 or more) corresponding to request parameter name if found
-  nil if not found
-*/
-static int aos_getRequestParameterValues(lua_State *L)
-{
-  //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
-  //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
-  AASSERT(NULL, pContext);
-
-  AASSERT_EX(NULL, lua_gettop(L) >= 1, ASWNL("Not enough actual parameters, expected at least 1"));
-
-  //a_param 0: xmlpath
-  size_t len = AConstant::npos;
-  const char *s = luaL_checklstring(L, 1, &len);
-  const AString& name = AString::wrap(s, len);
-  lua_pop(L,1);
-
-  LIST_NVPair values;
-  if (pContext->useRequestParameterPairs().get(name, values) > 0)
-  {
-    for (LIST_NVPair::iterator it = values.begin(); it != values.end(); ++it)
-      lua_pushlstring(L, it->getValue().c_str(), it->getValue().getSize());
-    return values.size();
-  }
-  return 0;
-}
-
-/*!
 Sets HTTP response header parameter
+Does not guarantee that is may not be overwritten by the server
+  (if you set output content type here, the server will change it to account for the actual content)
+  (most server headers are appended, but Content-Type and Content-Length are known to be overwritten)
 
 Example:
 aos.setResponseHeader("Set-Cookie", "name=foo; max-ago=1000;");
 
-Returns nothing
+@namespace aos
+@param name of the response header to set
+@param value of respponse header to set
+@return nil
 */
 static int aos_setResponseHeader(lua_State *L)
 {
@@ -287,20 +248,93 @@ static int aos_setResponseHeader(lua_State *L)
   //a_param 1: text
   s = luaL_checklstring(L, 2, &len);
   const AString& value = AString::wrap(s, len);
-  lua_pop(L,2);
 
   pContext->useResponseHeader().setPair(name, value);
   return 0;
 }
 
+/*!
+Sets event to the current in event visitor object
+(old event is placed into event queue, which is used to follow the execution of the context)
+(errors are flagged as such and may result in error page (such as 500))
+
+Example:
+aos.addEvent("Hello from Lua!");      --> Sets current event
+aos.addEvent("Error from Lua!", 1);   --> Will cause error 500
+
+@namespace aos
+@param event data to set as current in event visitor
+@param nil or zero if a message, non-zero if an error
+@return nil
+*/
+static int aos_setEvent(lua_State *L)
+{
+  //a_Get reference to ALuaEmbed object
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
+  //a_Get AOSContext stored in /context
+  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AASSERT(NULL, pContext);
+
+  AASSERT_EX(NULL, lua_gettop(L) >= 1, ASWNL("Not enough actual parameters, expected at least 1"));
+
+  //a_param 0: event data
+  size_t len = AConstant::npos;
+  const char *s = luaL_checklstring(L, 1, &len);
+  const AString& data = AString::wrap(s, len);
+
+  int isError = 0;
+  if (lua_gettop(L) > 1)
+  {
+    isError = luaL_checkint(L, 2);
+  }
+
+  //a_Add Event
+  if (!data.isEmpty())
+    pContext->useEventVisitor().set(data, (isError ? true : false));
+
+  return 0;
+}
+
+/*!
+Resets event and stops current event timer
+(Current event is moved into the old event queue and its timer is stopped)
+(This is used to time events)
+
+Example:
+aos.setEvent("Starting something");
+
+-- do stuff --
+
+aos.resetEvent();      --> Sets current event to nothing, moves current into old event queue and stops current event timer
+
+@namespace aos
+@return nil
+*/
+static int aos_resetEvent(lua_State *L)
+{
+  //a_Get reference to ALuaEmbed object
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
+  //a_Get AOSContext stored in /context
+  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AASSERT(NULL, pContext);
+
+  pContext->useEventVisitor().reset();
+
+  return 0;
+}
+
 static const luaL_Reg aos_funcs[] = {
-  {"addText", aos_addText},
-  {"emitContent", aos_emitContent},
   {"getRequestHeader", aos_getRequestHeader},
   {"getRequestCookie", aos_getRequestCookie},
+  {"getRequestParameter", aos_getRequestParameter},
   {"getRequestParameterNames", aos_getRequestParameterNames},
-  {"getRequestParameterValues", aos_getRequestParameterValues},
   {"setResponseHeader", aos_setResponseHeader},
+  {"setEvent", aos_setEvent},
+  {"resetEvent", aos_resetEvent},
   {NULL, NULL}
 };
 
