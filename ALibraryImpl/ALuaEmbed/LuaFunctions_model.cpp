@@ -6,32 +6,53 @@
 /*!
 Uses the model to emit content for a path
 
-thisfunction("<path to the AXmlElement to emit>")
+thisfunction("<path to the AXmlElement to emit>", separate)
 
 @namespace model
 @param Path to emit
+@param if non-nil then each element found will be returned by itself
 @return Content at the given path
 */
 static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
 {
-  size_t len = AConstant::npos;
-  const char *s = luaL_checklstring(L, 1, &len);
-  const AString& xmlpath = AString::wrap(s, len);
-  lua_pop(L,1);
-
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  AString str;
+  size_t len = AConstant::npos;
+  const char *s = luaL_checklstring(L, 1, &len);
+  const AString& xmlpath = AString::wrap(s, len);
+
+  int mode = 0;
+  if (lua_gettop(L) > 1)
+    mode = luaL_checkint(L, 2);
+
   AXmlElement::CONST_CONTAINER nodes;
   size_t ret = pLuaEmbed->useModel().useRoot().find(xmlpath, nodes);
-  for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+
+  if (mode)
   {
-    (*cit)->emitContent(str);
-    lua_pushlstring(L, str.c_str(), str.getSize());
-    str.clear();
+    //a_Return each as separate values
+    AString str;
+    for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+    {
+      (*cit)->emitContent(str);
+      lua_pushlstring(L, str.c_str(), str.getSize());
+      str.clear();
+    }
+    return (int)ret;
   }
-  return (int)ret;
+  else
+  {
+    //a_Return each as separate values
+    ARope rope;
+    for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+      (*cit)->emitContent(rope);
+
+    const AString& str = rope.toAString();
+    lua_pushlstring(L, str.c_str(), str.getSize());
+    
+    return 1;
+  }
 }
 
 /*!
@@ -45,13 +66,12 @@ thisfunction("<path to the AXmlElement>")
 */
 static int alibrary_Objects_Model_existElement(lua_State *L)
 {
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
   const AString& xmlpath = AString::wrap(s, len);
-  lua_pop(L,1);
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
 
   if (pLuaEmbed->useModel().useRoot().exists(xmlpath))
     lua_pushboolean(L, 1);
@@ -72,15 +92,14 @@ thisfunction([indent = -1])
 */
 static int alibrary_Objects_Model_emitXml(lua_State *L)
 {
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
   int indent = -1;
   if (lua_gettop(L) > 0)
   {
     indent = luaL_checkint(L, 1);
-    lua_pop(L,1);
   }
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
 
   AString str;
   pLuaEmbed->useModel().useRoot().emit(str, indent);
@@ -100,15 +119,14 @@ thisfunction([indent = -1])
 */
 static int alibrary_Objects_Model_emitJson(lua_State *L)
 {
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
   int indent = -1;
   if (lua_gettop(L) > 0)
   {
     indent = luaL_checkint(L, 1);
-    lua_pop(L,1);
   }
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
 
   AString str;
   pLuaEmbed->useModel().useRoot().emitJson(str, indent);
@@ -128,42 +146,50 @@ thisfunction("element path", "value")
 */
 static int alibrary_Objects_Model_addElementText(lua_State *L)
 {
-  size_t len = AConstant::npos;
-  const char *s = luaL_checklstring(L, 1, &len);
-  const AString& xmlpath = AString::wrap(s, len);
-  s = luaL_checklstring(L, 2, &len);
-  const AString& value = AString::wrap(s, len);
-  lua_pop(L,2);
-
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  pLuaEmbed->useModel().useRoot().addElement(xmlpath).addData(value);
+  size_t len = AConstant::npos;
+  const char *s = luaL_checklstring(L, 1, &len);
+  const AString& xmlpath = AString::wrap(s, len);
+
+  AXmlElement &e = pLuaEmbed->useModel().useRoot().addElement(xmlpath);
+  if (lua_gettop(L) > 1)
+  {
+    s = luaL_checklstring(L, 2, &len);
+    const AString& value = AString::wrap(s, len);
+    e.addData(value);
+  }
   return 0;
 }
 
 /*!
-Inserts a value for an element at the given path, if exists it will replace otherwise create
+Sets a value for an element at the given path, if exists it will replace otherwise create
 
 thisfunction("element path", "value")
 
 @param Element path
-@param Value to set
+@param Value to set, if not specified only element is created
 @return nil
 */
-static int alibrary_Objects_Model_insertElementText(lua_State *L)
+static int alibrary_Objects_Model_setElementText(lua_State *L)
 {
-  size_t len = AConstant::npos;
-  const char *s = luaL_checklstring(L, 1, &len);
-  const AString& xmlpath = AString::wrap(s, len);
-  s = luaL_checklstring(L, 2, &len);
-  const AString& value = AString::wrap(s, len);
-  lua_pop(L,2);
-
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  pLuaEmbed->useModel().useRoot().overwriteElement(xmlpath).addData(value);
+  size_t len = AConstant::npos;
+  const char *s = luaL_checklstring(L, 1, &len);
+  const AString& xmlpath = AString::wrap(s, len);
+  
+  AXmlElement &e = pLuaEmbed->useModel().useRoot().overwriteElement(xmlpath);
+  if (lua_gettop(L) > 1)
+  {
+    s = luaL_checklstring(L, 2, &len);
+    const AString& value = AString::wrap(s, len);
+
+    e.addData(value);
+  }
+
   return 0;
 }
 
@@ -173,7 +199,7 @@ static const luaL_Reg model_funcs[] = {
   {"existElement", alibrary_Objects_Model_existElement},
   {"emitContentFromPath", alibrary_Objects_Model_emitContentFromPath},
   {"addElementText", alibrary_Objects_Model_addElementText},
-  {"insertElementText", alibrary_Objects_Model_insertElementText},
+  {"setElementText", alibrary_Objects_Model_setElementText},
   {NULL, NULL}
 };
 

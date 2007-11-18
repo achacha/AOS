@@ -12,13 +12,12 @@ thisfunction("<object name of AEmittable type>")
 */
 static int alibrary_Objects_emit(lua_State *L)
 {
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
   const AString& objectName = AString::wrap(s, len);
-  lua_pop(L,1);
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
 
   AEmittable *p = pLuaEmbed->useObjects().useAsPtr<AEmittable>(objectName);
   if (p)
