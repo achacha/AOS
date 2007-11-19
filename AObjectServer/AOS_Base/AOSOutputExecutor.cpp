@@ -162,11 +162,11 @@ void AOSOutputExecutor::execute(AOSContext& context)
         //a_Start timer
         ATimer timer(true);
 
-        AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("execute/output", 14), command);
+        AXmlElement& e = context.useModel().addElement(ASW("execute/output", 14), command);
 
         //a_Publish total execution time before output is generated
-        context.useOutputRootXmlElement().addElement(ASW("request_time",12), context.getRequestTimer());
-        context.useOutputRootXmlElement().addElement(ASW("context_time",12), context.getContextTimer());
+        context.useModel().addElement(ASW("request_time",12), context.getRequestTimer());
+        context.useModel().addElement(ASW("context_time",12), context.getContextTimer());
 
         //a_Execute output
         if (!(*it).second->execute(context))
@@ -192,7 +192,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
     strWhere.append(')');
     context.addError(strWhere, ex.what());
 
-    AXmlElement& element = context.useOutputRootXmlElement().addElement("output_error");
+    AXmlElement& element = context.useModel().addElement("output_error");
     element.addElement("where", strWhere);
     element.addElement("exception", ex);
   }
@@ -203,6 +203,6 @@ void AOSOutputExecutor::execute(AOSContext& context)
     strWhere.append(')');
     context.addError(strWhere, "Unknown Exception");
 
-    context.useOutputRootXmlElement().addElement("output_error").addData("Unknown Exception");
+    context.useModel().addElement("output_error").addData("Unknown Exception");
   }
 }

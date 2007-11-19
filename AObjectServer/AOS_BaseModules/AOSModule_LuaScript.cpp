@@ -59,7 +59,7 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
   
   //a_Objects
   ABasePtrHolder objects;
-  objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useOutputXmlDocument());  //a_Add ALibrary required model AXmlDocument
+  objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useModelXmlDocument());  //a_Add ALibrary required model AXmlDocument
   objects.insert(AOSContext::OBJECTNAME, &context);                              //a_Add AOS required AOSContext
 
   //a_Process and save output
@@ -81,7 +81,7 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
     if (!xmlpath.isEmpty())
     {
       //a_Add output as CDATA
-      AXmlElement& eOutput = context.useOutputRootXmlElement().overwriteElement(xmlpath).addElement(OUTPUT);
+      AXmlElement& eOutput = context.useModel().overwriteElement(xmlpath).addElement(OUTPUT);
       eOutput.addData(ropeOutput, AXmlElement::ENC_CDATADIRECT);
       eOutput.addAttribute(ASW("source",6), strSource);
     }
@@ -93,7 +93,7 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
     AString str("debug/",6);
     str.append(getClass());
     str.append("/script",7);
-    AXmlElement& base = context.useOutputRootXmlElement().addElement(str);
+    AXmlElement& base = context.useModel().addElement(str);
     pTemplate->emitXml(base);
     base.addAttribute(ASW("source",6), strSource);
   }

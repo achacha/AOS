@@ -136,7 +136,7 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
           //a_Start timer and execute module
           context.setExecutionState(ARope("Executing module: ",18)+(*cit)->getModuleClass());
 
-          //AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("/execute/module",15));
+          //AXmlElement& e = context.useModel().addElement(ASW("/execute/module",15));
           //e.addAttribute(ASW("seq",3), AString::fromInt(i++));
           //e.addData((*cit)->getModuleClass());
           

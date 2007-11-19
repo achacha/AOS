@@ -93,39 +93,65 @@ public:
   void writeOutputBuffer(const ARope&);
 
   /*!
-  Output XML document's root node, appended to output buffer after all modules execute
-  This is where the output goes and majority of modules will modify the root element
-  If the output buffer is empty, this document is emitted as XML
+  Root element of the XML model used for this request
+  Ouput generator will use it as either XML or a path tree
+  If XML generator is used, the model is emitted as XML
+
+  Shortcut to useModelXmlDocument().useRoot()
+
+  NOTE: If the output buffer is not empty, it may be used instead
+        since toutput generators often write output based on a model
+        to the buffer
   */
-  AXmlElement& useOutputRootXmlElement();    //a_Shortcut to useOutputXmlDocument().useRoot()
+  AXmlElement& useModel();
 
   /*!
-  The output XML document (owner of the root xml element)
+  The output XML document (owner of the root xml element used as the model)
   A document holds header instructions and root xml element
   */
-  AXmlDocument& useOutputXmlDocument();
+  AXmlDocument& useModelXmlDocument();
 
   /*!
   Output buffer, sent to output after output stage
   If this is empty then XML document is the result
-  Putting data here will override the XML document, so you have to sent MIME type as needed
+  
+  NOTE: Putting data here will override the XML document, so you have to sent MIME type as needed
+        Output generators will write output based on the model into this buffer and the server writes this to user
+        It is recommended that this is used by output generators, but not required, you're the programmer
   */
   ARope& useOutputBuffer();
 
   /*!
   Set execution state of the context
+  The old state is pushed into the queue with time in event
+  @param execution state
+  @param if this state is an error
+  @param maximum time it should stay in this state (used in some cases to detect timeout)
   */
-  void setExecutionState(const AString&, bool isError = false, double maxTimeInState = INVALID_TIME_INTERVAL);
-  void setExecutionState(const AException&);
+  void setExecutionState(const AEmittable&, bool isError = false, double maxTimeInState = INVALID_TIME_INTERVAL);
   
   /*!
+  Set execution state of the context to the what() of the exception, this is always an error state
+  The old state is pushed into the queue with time in event
+  @param execution state exception treated as an error
+  */
+  void setExecutionState(const AException&);
+
+  /*!
+  Reset the execution state
+  Pushes current state into the queue and stops the timer of the state
+  */
+  void resetExecutionState();
+
+  /*!
   True if the current state max time is exceeded (timeout set by setExecutionState)
+  @return true if the current state is over the max time specified
   */
   bool isStateTimedOut() const;
 
   /*!
   Access to the socket associated with this context
-  This is provided for flexibility but XML document should be the prefered output
+  This is provided for flexibility but XML document should be the preferred output
   Output buffer should be used when output is not XML
   If the output is written to socket manually please set the appropriate ContentFlag types (such as header sent, output sent, etc)
   Please use this with caution, it's here to make your life easy in some odd edge case, but be careful
@@ -133,17 +159,51 @@ public:
   AFile_Socket& useSocket();
     
   /*!
-  Request HTTP header and helpers
+  Request HTTP header
+  
+  @return AHTTPRequestHeader object of the request
   */
   AHTTPRequestHeader& useRequestHeader();
+
+  /*!
+  Request cookies
+
+  @see useRequestHeader().useCookies()
+  @return ACookies of the request
+  */
   ACookies& useRequestCookies();
+  
+  /*!
+  Request URL
+
+  @see useRequestHeader().useUrl()
+  @return AUrl of the request
+  */
   AUrl& useRequestUrl();
+  
+  /*!
+  HTTP request parameters
+  Initially this is only the query string
+  Input processors add name/value pairs to this, so form and multi-part will be in here
+
+  @see useRequestHeader().useUrl().useParameterPairs()
+  @return AQueryString of the request
+  */
   AQueryString& useRequestParameterPairs();
 
   /*!
-  Response HTTP header and helpers
+  Response HTTP header
+
+  @return AHTTPResponseHeader object used for output
   */
   AHTTPResponseHeader& useResponseHeader();
+  
+  /*!
+  Response cookies
+
+  @see useResponseHeader().useCookies()
+  @return ACookies of the response header
+  */
   ACookies& useResponseCookies();
   
   /*!
@@ -154,6 +214,7 @@ public:
   /*!
   Dumps self into output model depending on level
   
+  @return
   0 - only dumps errors to dumpContext/context/error
   1 - adds context internals (executor will force XML display for >0)
   2 - adds 
@@ -164,6 +225,8 @@ public:
 
   /*!
   AXmlEmittable
+
+  @param element to receive the XML dump of this object
   */
   virtual void emitXml(AXmlElement&) const;
 

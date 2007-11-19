@@ -43,7 +43,7 @@ bool AOSOutput_XalanXslt::execute(AOSContext& context)
 
   //a_Emit the context XML document
   ARope rope;
-  context.useOutputXmlDocument().emit(rope);
+  context.useModelXmlDocument().emit(rope);
 
   //a_Force XML to file
 #ifdef __DEBUG_DUMP__

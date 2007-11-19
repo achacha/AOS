@@ -20,7 +20,7 @@ bool AOSModule_InsertIntoModel::execute(AOSContext& context, const AXmlElement& 
   {
     AString strPath;
     params.emitFromPath(ASW("path",4), strPath);
-    context.useOutputRootXmlElement().addContent(pDataNode->clone(), strPath);
+    context.useModel().addContent(pDataNode->clone(), strPath);
   }
   else
   {

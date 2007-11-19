@@ -142,7 +142,7 @@ void AOSInputExecutor::execute(AOSContext& context)
         //a_Process input
         context.setExecutionState(ARope("Processing input: ",18)+command);
 
-        AXmlElement& e = context.useOutputRootXmlElement().addElement(ASW("execute/input",13), command);
+        AXmlElement& e = context.useModel().addElement(ASW("execute/input",13), command);
         ATimer timer(true);
 
         //a_Execute INPUT

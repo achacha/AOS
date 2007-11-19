@@ -68,7 +68,7 @@ bool AOSOutput_Template::execute(AOSContext& context)
       if (ifElement.getSize() > 0)
       {
         //a_Check condition, if not met continue with next template
-        if (!context.useOutputRootXmlElement().exists(ifElement))
+        if (!context.useModel().exists(ifElement))
           continue;
       }
     }
@@ -90,7 +90,7 @@ bool AOSOutput_Template::execute(AOSContext& context)
     //a_Process template
     AASSERT(this, pTemplate.isNotNull());
     ABasePtrHolder objects;
-    objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useOutputXmlDocument());
+    objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useModelXmlDocument());
     objects.insert(AOSContext::OBJECTNAME, &context);
     pTemplate->process(objects, context.useOutputBuffer());
     ++templatesDisplayed;

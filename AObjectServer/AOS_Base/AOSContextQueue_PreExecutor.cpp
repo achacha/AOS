@@ -404,8 +404,8 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   if (dumpContext > 0)
   {
     //a_Dump context as XML instead of usual output
-    pContext->useOutputRootXmlElement().addElement(ASW("/context/dump",13), *pContext);
-    pContext->useOutputRootXmlElement().addElement(ASW("/context/buffer",15), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP);
+    pContext->useModel().addElement(ASW("/context/dump",13), *pContext);
+    pContext->useModel().addElement(ASW("/context/buffer",15), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP);
 
     //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
     pContext->useOutputBuffer().clear();
@@ -420,7 +420,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     && !pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT)
   )
   {
-    pContext->useOutputXmlDocument().emit(pContext->useOutputBuffer());
+    pContext->useModelXmlDocument().emit(pContext->useOutputBuffer());
     pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
   }
   

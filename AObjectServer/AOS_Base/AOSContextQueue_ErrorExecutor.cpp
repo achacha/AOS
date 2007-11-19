@@ -86,15 +86,15 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           //{
           //  AString errorStylesheet;
           //  m_Services.useConfiguration().emitString(ASW("/config/server/error-stylesheet",31), errorStylesheet);
-          //  pContext->useOutputXmlDocument().addInstruction(AXmlInstruction::XML_STYLESHEET)
+          //  pContext->useModelXmlDocument().addInstruction(AXmlInstruction::XML_STYLESHEET)
           //    .addAttribute(ASW("type",4), ASW("text/xsl",8))
           //    .addAttribute(ASW("href",4), errorStylesheet);
           //}
 
           //a_Add request header to result XML
-          if (!pContext->useOutputRootXmlElement().exists(ASW("REQUEST",7)))
-            pContext->useRequestHeader().emitXml(pContext->useOutputRootXmlElement().overwriteElement(ASW("REQUEST",7)));
-          pContext->useResponseHeader().emitXml(pContext->useOutputRootXmlElement().overwriteElement(ASW("RESPONSE",8)));
+          if (!pContext->useModel().exists(ASW("REQUEST",7)))
+            pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(ASW("REQUEST",7)));
+          pContext->useResponseHeader().emitXml(pContext->useModel().overwriteElement(ASW("RESPONSE",8)));
 
           //a_Check if dumpContext is specified to override and emit XML
           int dumpContextLevel = pContext->getDumpContextLevel();
@@ -119,7 +119,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
             {
               //a_Template for this status code is found, so process and emit into output buffer
               ABasePtrHolder objects;
-              objects.insert(ATemplate::OBJECTNAME_MODEL, &pContext->useOutputXmlDocument());
+              objects.insert(ATemplate::OBJECTNAME_MODEL, &pContext->useModelXmlDocument());
               objects.insert(AOSContext::OBJECTNAME, pContext);
               pTemplate->process(objects, pContext->useOutputBuffer(), true);
               pContext->setExecutionState(ARope("Using error template for status ")+AString::fromInt(statusCode));

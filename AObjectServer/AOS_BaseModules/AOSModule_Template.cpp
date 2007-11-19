@@ -52,7 +52,7 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
 
   //a_Objects
   ABasePtrHolder objects;
-  objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useOutputXmlDocument());  //a_Add ALibrary required model AXmlDocument
+  objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useModelXmlDocument());  //a_Add ALibrary required model AXmlDocument
   objects.insert(AOSContext::OBJECTNAME, &context);                              //a_Add AOS required AOSContext
 
   //a_Process and save output
@@ -67,7 +67,7 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
     AString str("debug/",6);
     str.append(getClass());
     str.append("/template",9);
-    AXmlElement& base = context.useOutputRootXmlElement().addElement(str);
+    AXmlElement& base = context.useModel().addElement(str);
     pTemplate->emitXml(base);
   }
 
@@ -80,7 +80,7 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
     if (!xmlpath.isEmpty())
     {
       //a_Add output as CDATA
-      context.useOutputRootXmlElement().addElement(xmlpath).addData(ropeOutput, AXmlElement::ENC_CDATADIRECT);
+      context.useModel().addElement(xmlpath).addData(ropeOutput, AXmlElement::ENC_CDATADIRECT);
     }
   }
 

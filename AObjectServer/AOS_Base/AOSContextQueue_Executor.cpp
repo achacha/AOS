@@ -97,7 +97,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         int dumpContextLevel = pContext->getDumpContextLevel();
 
         //a_Add REQUEST header
-        pContext->useRequestHeader().emitXml(pContext->useOutputRootXmlElement().overwriteElement(ASW("REQUEST",7)));
+        pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(ASW("REQUEST",7)));
 
         //
         //a_Generate output
@@ -118,7 +118,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         //a_Publish total execution time
         if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
         {
-          pContext->useOutputRootXmlElement().addElement(ASW("total_time",10), pContext->getContextTimer());
+          pContext->useModel().addElement(ASW("total_time",10), pContext->getContextTimer());
         }
 
         //
@@ -129,7 +129,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           pContext->setExecutionState(ASW("Emitting event visitor",22));
           if (pContext->useEventVisitor().getErrorCount() > 0)
           {
-            pContext->useEventVisitor().emitXml(pContext->useOutputRootXmlElement().addElement("AEventVisitor"));
+            pContext->useEventVisitor().emitXml(pContext->useModel().addElement("AEventVisitor"));
           }
         }
 

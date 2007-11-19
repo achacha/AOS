@@ -15,8 +15,8 @@ AOSModule_PublishInput::AOSModule_PublishInput(AOSServices& services) :
 
 bool AOSModule_PublishInput::execute(AOSContext& context, const AXmlElement& params)
 {
-  context.useOutputRootXmlElement().addElement(ASW("input/request_header", 20), context.useRequestHeader());
-  context.useOutputRootXmlElement().addElement(ASW("output/response_header", 22), context.useResponseHeader());
+  context.useModel().addElement(ASW("input/request_header", 20), context.useRequestHeader());
+  context.useModel().addElement(ASW("output/response_header", 22), context.useResponseHeader());
 
   return true;
 }

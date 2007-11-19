@@ -731,12 +731,12 @@ AStringHashMap& AOSContext::useSessionData()
   }
 }
 
-AXmlDocument& AOSContext::useOutputXmlDocument()
+AXmlDocument& AOSContext::useModelXmlDocument()
 {
   return m_OutputXmlDocument;
 }
 
-AXmlElement& AOSContext::useOutputRootXmlElement()
+AXmlElement& AOSContext::useModel()
 {
   return m_OutputXmlDocument.useRoot();
 }
@@ -781,9 +781,14 @@ AObjectContainer& AOSContext::useContextObjects()
   return m_ContextObjects;
 }
 
-void AOSContext::setExecutionState(const AString& state, bool isError, double maxTimeInState)
+void AOSContext::setExecutionState(const AEmittable& state, bool isError, double maxTimeInState)
 {
   m_EventVisitor.set(state, isError, maxTimeInState);
+}
+
+void AOSContext::resetExecutionState()
+{
+  m_EventVisitor.reset();
 }
 
 void AOSContext::setExecutionState(const AException& ex)

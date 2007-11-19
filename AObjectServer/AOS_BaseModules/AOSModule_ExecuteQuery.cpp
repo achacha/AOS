@@ -31,7 +31,7 @@ bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& par
     AResultSet resultSet;
     if (AConstant::npos != context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(sql, resultSet, strError))
     {
-      resultSet.emitXml(context.useOutputRootXmlElement().addElement(path));
+      resultSet.emitXml(context.useModel().addElement(path));
     }
     else
     {
@@ -41,7 +41,7 @@ bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& par
   else
   {
     context.addError("AOSModule_ExecuteQuery::execute", "/module/sql not found");
-    context.useOutputRootXmlElement().addElement("error").addElement(getClass()).addElement("params").addContent(params);
+    context.useModel().addElement("error").addElement(getClass()).addElement("params").addContent(params);
   }
 
   return true;
