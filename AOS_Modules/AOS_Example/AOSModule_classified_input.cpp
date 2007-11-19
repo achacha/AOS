@@ -79,8 +79,8 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
   strX.append(strDisplay);
   strX.append("'); this.style.visibility='hidden'; return x;");
 
-  context.useOutputRootXmlElement().useName().assign("table",5);
-  AXmlElement& eTR = context.useOutputRootXmlElement().addElement(ASW("tr",2));
+  context.useModel().useName().assign("table",5);
+  AXmlElement& eTR = context.useModel().addElement(ASW("tr",2));
   
   AXmlElement& th0 = eTR.addElement(ASW("th",2));
   th0.addElement("img")

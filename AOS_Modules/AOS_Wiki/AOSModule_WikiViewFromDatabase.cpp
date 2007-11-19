@@ -80,7 +80,7 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     }
 
     //a_Publish it
-    context.useOutputRootXmlElement().overwriteElement(ASW("wiki/row/data",13)).addData(strData, AXmlElement::ENC_CDATADIRECT);
+    context.useModel().overwriteElement(ASW("wiki/row/data",13)).addData(strData, AXmlElement::ENC_CDATADIRECT);
   }
   else
   {
@@ -102,12 +102,12 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     else if (!rows)
     {
       //a_Signal that the wiki file does not exist
-      context.useOutputRootXmlElement().overwriteElement(ASW("wiki/DoesNotExist",17));
+      context.useModel().overwriteElement(ASW("wiki/DoesNotExist",17));
     }
     else if (1 == rows)
     {
       //a_Publish it
-      rs.emitXml(context.useOutputRootXmlElement().overwriteElement(ASW("wiki",4)));
+      rs.emitXml(context.useModel().overwriteElement(ASW("wiki",4)));
     }
     else
     {

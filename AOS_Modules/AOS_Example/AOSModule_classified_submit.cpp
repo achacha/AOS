@@ -82,7 +82,7 @@ bool AOSModule_classified_submit::execute(AOSContext& context, const AXmlElement
     return false;
   }
 
-  context.useOutputRootXmlElement().addElement("classified_submit").addData("Item added");
+  context.useModel().addElement("classified_submit").addData("Item added");
   return true;
 }
 

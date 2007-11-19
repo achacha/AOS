@@ -16,7 +16,7 @@ AOSModule_rss20::AOSModule_rss20(AOSServices& services) :
 
 bool AOSModule_rss20::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
-  AXmlElement& output = context.useOutputRootXmlElement();
+  AXmlElement& output = context.useModel();
   
   output.useName().assign("rss");
   output.addAttribute("version", "2.0");

@@ -30,7 +30,7 @@ bool AOSModule_classified_list::execute(AOSContext& context, const AXmlElement& 
     return false;
   }
 
-  AXmlElement& eClassified = context.useOutputRootXmlElement().addElement("classified");
+  AXmlElement& eClassified = context.useModel().addElement("classified");
   rs.emitXml(eClassified);
 
   return true;

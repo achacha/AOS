@@ -18,7 +18,7 @@ AOSModule_forum_list::~AOSModule_forum_list()
 
 bool AOSModule_forum_list::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
-  AXmlElement& eForums = context.useOutputRootXmlElement().addElement("forums");
+  AXmlElement& eForums = context.useModel().addElement("forums");
 
   {
     AXmlElement& eForum = eForums.addElement("forum");

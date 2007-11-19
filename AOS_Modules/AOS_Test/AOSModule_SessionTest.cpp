@@ -25,12 +25,12 @@ bool AOSModule_SessionTest::execute(AOSContext& context, const AXmlElement& para
     str.clear();
     n.emit(str);
     sessionData.set(ASW("count",5), str);
-    context.useOutputRootXmlElement().addElement(ASW("/test/count",11), str);
+    context.useModel().addElement(ASW("/test/count",11), str);
   }
   else
   {
     sessionData.set(ASW("count",5), AConstant::ASTRING_ZERO);
-    context.useOutputRootXmlElement().addElement(ASW("/test/count",11), AConstant::ASTRING_ZERO);
+    context.useModel().addElement(ASW("/test/count",11), AConstant::ASTRING_ZERO);
   }
 
   return true;

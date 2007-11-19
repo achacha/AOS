@@ -33,14 +33,14 @@ bool AOSModule_WikiRemapPath::execute(AOSContext& context, const AXmlElement& mo
     //a_Edit mode, add view path/filename
     AUrl editUrl(context.useRequestUrl());
     editUrl.useParameterPairs().remove(ASW("wiki.edit",9));
-    context.useOutputRootXmlElement().overwriteElement(ASW("wiki/view-url",13)).addData(editUrl.getPathFileAndQueryString(), AXmlElement::ENC_CDATADIRECT);
+    context.useModel().overwriteElement(ASW("wiki/view-url",13)).addData(editUrl.getPathFileAndQueryString(), AXmlElement::ENC_CDATADIRECT);
   }
   else
   {
     //a_View mode, add edit path/filename
     AUrl editUrl(context.useRequestUrl());
     editUrl.useParameterPairs().insert(ASW("wiki.edit",9), ASW("1",1));
-    context.useOutputRootXmlElement().overwriteElement(ASW("wiki/edit-url",13)).addData(editUrl.getPathFileAndQueryString(), AXmlElement::ENC_CDATADIRECT);
+    context.useModel().overwriteElement(ASW("wiki/edit-url",13)).addData(editUrl.getPathFileAndQueryString(), AXmlElement::ENC_CDATADIRECT);
   }
 
   //a_Command to execute
@@ -64,7 +64,7 @@ bool AOSModule_WikiRemapPath::execute(AOSContext& context, const AXmlElement& mo
     context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ARope("Unable to find the command for new request URL: ")+context.useRequestUrl());
     return false;
   }
-  context.useOutputRootXmlElement().overwriteElement("wiki/command").addData(strWikiCommandPath);
+  context.useModel().overwriteElement("wiki/command").addData(strWikiCommandPath);
 
     //a_Add new parameter with path
   AString strParam;

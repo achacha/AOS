@@ -16,7 +16,7 @@ AOSModule_BlogView::AOSModule_BlogView(AOSServices& services) :
 
 bool AOSModule_BlogView::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
-  AXmlElement& xmlBlog = context.useOutputRootXmlElement().addElement("blog");
+  AXmlElement& xmlBlog = context.useModel().addElement("blog");
   
   AString userId("1");
   static const AString queryBase("select title, data, created from blog where user_id=");

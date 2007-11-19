@@ -73,7 +73,7 @@ bool AOSModule_DadaDataTemplate::execute(AOSContext& context, const AXmlElement&
     VECTOR_AString& templateLines = (*it).second;
     for (size_t i=0; i<templateLines.size(); ++i)
     {
-      _generateLine(pddh, templateLines.at(i), context.useOutputRootXmlElement());
+      _generateLine(pddh, templateLines.at(i), context.useModel());
     }
   }
   else

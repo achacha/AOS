@@ -49,10 +49,10 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
     //a_Check if authentication passed
     if (
       moduleParams.exists(PARAM_SECURE)
-      && !context.useOutputRootXmlElement().exists(ASW("wiki/Authenticated",18))
+      && !context.useModel().exists(ASW("wiki/Authenticated",18))
     )
     {
-      context.useOutputRootXmlElement().overwriteElement(ASW("wiki/AuthFailed",15));
+      context.useModel().overwriteElement(ASW("wiki/AuthFailed",15));
       return true;
     }
     
@@ -63,7 +63,7 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
       if (type & AFileSystem::Directory)
       {
         //a_Directory name specified
-        context.useOutputRootXmlElement().overwriteElement(ELEMENT_IS_DIRECTORY);
+        context.useModel().overwriteElement(ELEMENT_IS_DIRECTORY);
       }
       else
       {
@@ -84,7 +84,7 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
         file.close();
 
         //a_Add to context so it can ve viewed after save
-        context.useOutputRootXmlElement().overwriteElement(ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
+        context.useModel().overwriteElement(ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
 
         //a_Rename temp to current
         AFileSystem::rename(wikifile, tempwikifile);
@@ -105,7 +105,7 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
       file.close();
 
       //a_Add to context so it can ve viewed after save
-      context.useOutputRootXmlElement().overwriteElement(ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
+      context.useModel().overwriteElement(ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
     }
   }
   else
@@ -116,27 +116,27 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
       if (type & AFileSystem::Directory)
       {
         //a_Directory name specified
-        context.useOutputRootXmlElement().overwriteElement(ELEMENT_IS_DIRECTORY);
+        context.useModel().overwriteElement(ELEMENT_IS_DIRECTORY);
       }
       else
       {
         AFile_Physical file(wikifile);
         file.open();
-        context.useOutputRootXmlElement().overwriteElement(ELEMENT_DATA).addData(file, AXmlElement::ENC_CDATADIRECT);
+        context.useModel().overwriteElement(ELEMENT_DATA).addData(file, AXmlElement::ENC_CDATADIRECT);
       }
     }
     else
     {
       //a_Signal that the wiki file does not exist
       if (wikifile.isDirectory())
-        context.useOutputRootXmlElement().overwriteElement(ELEMENT_IS_DIRECTORY);
+        context.useModel().overwriteElement(ELEMENT_IS_DIRECTORY);
       else
-        context.useOutputRootXmlElement().overwriteElement(ELEMENT_DOES_NOT_EXIST);
+        context.useModel().overwriteElement(ELEMENT_DOES_NOT_EXIST);
     }
 
     if (moduleParams.exists(PARAM_SECURE))
     {
-      context.useOutputRootXmlElement().overwriteElement(ELEMENT_SECURE_EDIT);
+      context.useModel().overwriteElement(ELEMENT_SECURE_EDIT);
     }
 
   }
