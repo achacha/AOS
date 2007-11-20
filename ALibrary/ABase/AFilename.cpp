@@ -600,9 +600,12 @@ void AFilename::compactPath()
       else if (it->equals(AConstant::ASTRING_DOUBLEPERIOD))
       {
         if (
-          m_PathNames.size() > 0 
-          && !m_PathNames.back().equals(AConstant::ASTRING_PERIOD)
-          && !m_PathNames.back().equals(AConstant::ASTRING_DOUBLEPERIOD)
+          m_PathNames.size() == 1 
+          || (
+            m_PathNames.size() > 1 
+            && !m_PathNames.back().equals(AConstant::ASTRING_PERIOD)
+            && !m_PathNames.back().equals(AConstant::ASTRING_DOUBLEPERIOD)
+          )
         )
           m_PathNames.pop_back();
       }

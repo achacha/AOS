@@ -170,16 +170,16 @@ void testCreateDir()
   AFilename path(ASWNL("Console/created1/"), false);
   AFileSystem::createDirectory(path);
 
-  path.parse(ASWNL("Console/created1/d0/d1/"), false);
+  path.set(ASWNL("Console/created1/d0/d1/"), false);
   AFileSystem::createDirectory(path);
 
-  path.parse(ASWNL("Console/created1/dir0/dir1/dir2/"), false);
+  path.set(ASWNL("Console/created1/dir0/dir1/dir2/"), false);
   AFileSystem::createDirectories(path);
 }
 
 void testCompactPath()
 {
-  AFilename path(ASWNL("./a/../b/../../c/"), false);
+  AFilename path(ASWNL("./a/../b/../../c/"), false);   //  ../c
   path.compactPath();
   std::cout << path << std::endl;
 }
