@@ -131,7 +131,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ALuaEMBED_EXPORTS;LUA_BUILD_AS_DLL;LUA_LIB;"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				WarningLevel="3"
@@ -252,10 +252,6 @@
 			UniqueIdentifier="{93995380-89CD-4b94-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\ALibraryFunctions.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ALuaEmbed.hpp"
 				>
 			</File>
@@ -265,6 +261,10 @@
 			</File>
 			<File
 				RelativePath=".\ATemplateNodeHandler_LUA.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LuaInternals.hpp"
 				>
 			</File>
 			<File
