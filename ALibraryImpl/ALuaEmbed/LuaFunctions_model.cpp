@@ -11,7 +11,7 @@ thisfunction("<path to the AXmlElement to emit>", separate)
 @namespace model
 @param Path to emit
 @param if non-nil then each element found will be returned by itself
-@return Content at the given path
+@return Content at the given path or nil if element does not exist
 */
 static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
 {
@@ -43,15 +43,20 @@ static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
   }
   else
   {
-    //a_Return each as separate values
-    ARope rope;
-    for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
-      (*cit)->emitContent(rope);
+    if (ret > 0)
+    {
+      //a_Return content concatinated
+      ARope rope;
+      for (AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin(); cit != nodes.end(); ++cit)
+        (*cit)->emitContent(rope);
 
-    const AString& str = rope.toAString();
-    lua_pushlstring(L, str.c_str(), str.getSize());
-    
-    return 1;
+      const AString& str = rope.toAString();
+      lua_pushlstring(L, str.c_str(), str.getSize());
+      
+      return 1;
+    }
+    else
+      return 0;
   }
 }
 
