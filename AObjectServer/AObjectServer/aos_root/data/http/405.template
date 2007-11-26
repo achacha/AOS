@@ -4,5 +4,6 @@
 </head>
 <body>
 <font color="red">HTTP405: Method not allowed.</font>
+<!-- %[LUA]{{{ print(model.emitContentFromPath("/root/REQUEST/AUrl/url")); }}}[LUA]% -->
 </body>
 </html>

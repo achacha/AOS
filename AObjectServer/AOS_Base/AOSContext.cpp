@@ -204,7 +204,7 @@ AOSContext::Status AOSContext::init()
   //a_Set the command
   if (!setCommandFromRequestUrl())
   {
-    m_EventVisitor.set(ARope("AOSContext::init")+ASWNL("Unable to find the command for request URL: ")+m_RequestHeader.useUrl());
+    m_EventVisitor.set(ARope("AOSContext::init: ")+ASWNL("Unable to find the command for request URL: ")+m_RequestHeader.useUrl());
   }
 
   //a_Initialize response header
