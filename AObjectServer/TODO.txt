@@ -3,6 +3,6 @@ Database connection timeout should re-build connection in pool
 Add more memory footprint to debugDump of objects that grow with time
 Add LUA script ability to generate data: urls from files inline (AOS specific to data/static directory)
 Possibly remove the CODE block in templates
-Add PYTHON block for templates?
 AOS directory chain loaded into AOSCommand
 AOS directory post-controller modules
+Session manager session cleaner

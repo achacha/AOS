@@ -95,7 +95,7 @@ AOSSessionData *AOSSessionManager::getSessionData(const AString& sessionId)
   SESSION_MAP::iterator it = pSessionMapHolder->m_SessionMap.find(sessionId);
   if (it != pSessionMapHolder->m_SessionMap.end())
   {
-    (*it).second->restartTimer();        //a_Restart session timer
+    (*it).second->restartLastUsedTimer();        //a_Restart session timer
     return ((*it).second);
   }
   else

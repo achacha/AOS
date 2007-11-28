@@ -23,16 +23,26 @@ public:
   AStringHashMap& useData();
   
   /*!
-  Timer and age in milliseconds
+  Overall age timer of the session
   */
-  double getAge();
-  void restartTimer();
+  const ATimer& getAgeTimer() const;
+  
+  /*!
+  Last used timer
+  */
+  const ATimer& getLastUsedTimer() const;
+
+  /*!
+  Timer reset for last time used
+  */
+  void restartLastUsedTimer();
 
 private:
   AOSSessionData() {}
 
   AStringHashMap m_Data;
   ATimer m_AgeTimer;
+  ATimer m_LastUsedTimer;
 
 public:
 #ifdef __DEBUG_DUMP__
