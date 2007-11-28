@@ -2630,12 +2630,145 @@ void AString::assign(char cSource)
   _assign(&cSource, 1);
 }
 
-void AString::assign(const char *pccSource, size_t length /* = AConstant::npos */)
+void AString::assign(
+  const char *pccSource,
+  size_t length  // = AConstant::npos
+)
 { 
   _assign(pccSource, length); 
 }
 
-void AString::assign(const unsigned char *pccSource, size_t length /* = AConstant::npos */)
+void AString::assign(
+  const unsigned char *pccSource, 
+  size_t length  // = AConstant::npos 
+)
 { 
   _assign((const char *)pccSource, length); 
+}
+
+bool AString::matchPattern(
+  const AString& pattern, 
+  size_t startIndex  // = 0
+) const
+{
+  if (startIndex >= m_Length)
+    return false;
+
+  size_t patternPos = 0;
+  size_t patternLen = pattern.getSize();
+
+  //a_Advance in pattern over leading * and ?
+  bool wildcardMode = false, notDone = true;
+  char matchChar = '\x0';
+  while (notDone && patternPos < patternLen)
+  {
+    matchChar = pattern.at(patternPos);
+    switch(matchChar)
+    {
+      case '?':
+        ++patternPos;
+        ++startIndex;
+      break;
+      
+      case '*':
+        wildcardMode = true;
+        ++patternPos;
+      break;
+
+      case '\\':
+        ++patternPos;
+        if (patternPos == patternLen)
+          ATHROW(this, AException::InsuffiecientData);
+      break;
+
+      default:
+        notDone = false;
+        break;
+    }
+  }
+
+  //a_All of the pattern is wildcards or enough wildcards to automatch
+  if (patternPos == patternLen)
+    return true;
+
+  //a_End of string
+  if (startIndex >= m_Length)
+    return false;
+
+  //a_Start iterating string looking fo matchChar
+  while(startIndex < m_Length)
+  {
+    if (mp_Buffer[startIndex] != matchChar)
+    {
+      if (wildcardMode)
+      {
+        //a_Wildcard mode, keep looking
+        ++startIndex;
+      }
+      else
+      {
+        //a_No match
+        return false;
+      }
+    }
+    else
+    {
+      //a_Matched, on to next pattern char
+      ++startIndex;
+      if (startIndex >= m_Length)
+        return false;
+
+      ++patternPos;
+
+      notDone = true;
+      while (notDone && patternPos < patternLen)
+      {
+        matchChar = pattern.at(patternPos);
+        switch(matchChar)
+        {
+          case '?':
+            ++startIndex;
+            if (startIndex >= m_Length)
+              return false;
+
+            ++patternPos;
+          break;
+          
+          case '*':
+            wildcardMode = true;
+            ++patternPos;
+          break;
+
+          case '\\':
+            ++patternPos;
+            if (patternPos == patternLen)
+              ATHROW(this, AException::InsuffiecientData);
+          break;
+
+          default:
+            notDone = false;
+            break;
+        }
+      }
+
+      //a_End of pattern
+      if (patternPos == patternLen)
+        return true;
+    }
+  }
+
+  return false;
+}
+
+size_t AString::findPattern(
+  const AString& pattern, 
+  size_t startIndex  // = 0
+) const
+{
+  for (size_t pos = startIndex; pos < m_Length; ++pos)
+  {
+    if (matchPattern(pattern))
+      return pos;
+  }
+  return AConstant::npos;
 }

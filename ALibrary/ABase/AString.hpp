@@ -350,10 +350,36 @@ public:
   size_t findNotOneOf(const AString& strSet, size_t startIndex = 0) const;
 
   /*!
-  Reverse finding an offset to the first element in or not in a given set
+  Reverse finding an offset to the first element in a given set
   */
   size_t rfindOneOf(const AString& strSet) const;
+
+  /*!
+  Reverse finding an offset to the first element not in a given set
+  */
   size_t rfindNotOneOf(const AString& strSet) const;
+
+  /*!
+  Find a pattern inside a string
+
+  ? = any 1 character
+  * = any set of characters
+  \? = ? character
+  \* = * character
+  \\ = \ character
+
+  @param startIndex - start position to start searching for a pattern
+  @return true if the pattern matches at position startIndex
+  */
+  bool matchPattern(const AString& strPattern, size_t startIndex = 0) const;
+
+  /*!
+  Find first occurance of a pattern match (@see matchPattern)
+
+  @param startIndex - start position to start searching for a pattern
+  @return AConstant::npos if not found or absolute index into the string >=startIndex
+  */
+  size_t findPattern(const AString& strPattern, size_t startIndex = 0) const;
 
   /*!
   Splits the string based on a delimeter character, empty strings discarded (i.e. 2 delimeters next to each other, leading delimeter, or trailing delimeter)

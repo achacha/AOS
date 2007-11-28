@@ -20,6 +20,11 @@ void ATextGenerator::generateRandomAlphanum(AOutputBuffer& target, size_t len /*
   generateRandomString(target, len, AConstant::CHARSET_ALPHANUM);
 }
 
+void ATextGenerator::resetCounter(int iNew) 
+{ 
+  si_Counter = iNew;
+}
+
 void ATextGenerator::generateFromTemplate(AOutputBuffer& target, const AString &strTemplate)
 {
   if (strTemplate.isEmpty())
@@ -206,4 +211,3 @@ void ATextGenerator::generateRandomWord(AOutputBuffer& target, size_t len /* = 0
     }
   }
 }
-

@@ -226,6 +226,26 @@ void testReverse(int& iRet)
   ASSERT_UNIT_TEST(str.equals(ASWNL("somefile")), "AString::rremove", "0", iRet);
 }
 
+void testPattern(int& iRet)
+{
+  AString base("HTTP/1.0 200 Ok?");
+
+  ASSERT_UNIT_TEST(base.matchPattern(ASWNL("*/1.? 200")), "AString::matchPattern", "0", iRet);
+  ASSERT_UNIT_TEST(base.matchPattern(ASWNL("*200")), "AString::matchPattern", "1", iRet);
+  ASSERT_UNIT_TEST(base.matchPattern(ASWNL("H??P")), "AString::matchPattern", "2", iRet);
+  ASSERT_UNIT_TEST(base.matchPattern(ASWNL("??")), "AString::matchPattern", "3", iRet);
+  ASSERT_UNIT_TEST(base.matchPattern(ASWNL("*")), "AString::matchPattern", "4", iRet);
+  ASSERT_UNIT_TEST(base.matchPattern(ASWNL("*\\?")), "AString::matchPattern", "5", iRet);
+
+  ASSERT_UNIT_TEST(!base.matchPattern(ASWNL("?f")), "AString::matchPattern", "6", iRet);
+  ASSERT_UNIT_TEST(!base.matchPattern(ASWNL("*z")), "AString::matchPattern", "7", iRet);
+  ASSERT_UNIT_TEST(!base.matchPattern(ASWNL("HTTP/1.? 2?? Ok\?X")), "AString::matchPattern", "8", iRet);
+
+  ASSERT_UNIT_TEST(4 == base.findPattern(ASWNL("/?.? 200"), 2), "AString::findPattern", "0", iRet);
+  ASSERT_UNIT_TEST(AConstant::npos == base.findPattern(ASWNL("/?.? 200"), 5), "AString::findPattern", "1", iRet);
+  ASSERT_UNIT_TEST(AConstant::npos == base.findPattern(ASWNL("/?.? 200"), 11), "AString::findPattern", "2", iRet);
+}
+
 int ut_AString_Search()
 {
   std::cerr << "ut_AString_Search" << std::endl;
