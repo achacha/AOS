@@ -116,10 +116,53 @@ public:
 
   /*!
   String corresponding to the path
+  Result is converted to u4 if does not exist default is returned
+  */
+  u4 getU4(const AString& path, u4 iDefault) const;
+
+  /*!
+  String corresponding to the path
+  Result is converted to u8 if does not exist default is returned
+  */
+  u8 getU8(const AString& path, u8 iDefault) const;
+
+  /*!
+  String corresponding to the path
   Case insensitive "true" or "1" are true
   Result is converted to bool if does not exist default is returned
   */
   bool getBool(const AString& path, bool boolDefault) const;
+
+  /*!
+  Saves value into DOM at path, overwrites existing
+  */
+  void setString(const AString& path, const AString& value, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
+
+  /*!
+  Saves value into DOM at path, overwrites existing
+  */
+  void setInt(const AString& path, int value);
+
+  /*!
+  Saves value into DOM at path, overwrites existing
+  */
+  void setU4(const AString& path, u4 value);
+
+  /*!
+  Saves value into DOM at path, overwrites existing
+  */
+  void setU8(const AString& path, u8 value);
+
+  /*!
+  Saves value into DOM at path, overwrites existing
+  */
+  void setSize_t(const AString& path, size_t value);
+
+  /*!
+  Saves value into DOM at path, overwrites existing
+  Converts bool to AString
+  */
+  void setBool(const AString& path, bool value);
 
   /*!
   Find path based on this element as root
@@ -216,6 +259,56 @@ public:
   AXmlElement& addData(const size_t value);
     
   /*!
+  Add AEmittable type (encoded as needed)
+  */
+  AXmlElement& setData(const AEmittable& object, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
+
+  /*!
+  Set const char * value to text/data of element
+  */
+  AXmlElement& setData(const char *value, size_t length = AConstant::npos, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
+
+  /*!
+  Set signed int value to text/data of element (no encoding)
+  */
+  AXmlElement& setData(const int value);
+  
+  /*!
+  Set char value entered as is (no encoding)
+  */
+  AXmlElement& setData(const char value);
+
+  /*!
+  Set unsigned 1-byte value to text/data of element (no encoding)
+  */
+  AXmlElement& setData(const u1 value);
+
+  /*!
+  Set unsigned 2-byte value to text/data of element (no encoding)
+  */
+  AXmlElement& setData(const u2 value);
+
+  /*!
+  Set unsigned 4-byte value to text/data of element (no encoding)
+  */
+  AXmlElement& setData(const u4 value);
+
+  /*!
+  Set unsigned 8-byte value to text/data of element (no encoding)
+  */
+  AXmlElement& setData(const u8 value);
+
+  /*!
+  Set double value to text/data of element (no encoding)
+  */
+  AXmlElement& setData(const double value);
+
+  /*!
+  Set std::size_t value to text/data of element (no encoding)
+  */
+  AXmlElement& setData(const size_t value);
+
+  /*!
   Adds a comment
   Return this element
   */
@@ -247,27 +340,6 @@ public:
   AXmlElement& addAttribute(const AString& name, const u4 value);
   AXmlElement& addAttribute(const AString& name, const u8 value);
   AXmlElement& addAttribute(const AString& name, const double value);
-
-  /*!
-  Saves value into DOM at path
-  */
-  void setString(const AString& path, const AString& value, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
-
-  /*!
-  Saves value into DOM at path (using addElement with overwrite)
-  */
-  void setInt(const AString& path, int value);
-
-  /*!
-  Saves value into DOM at path (using addElement with overwrite)
-  */
-  void setSize_t(const AString& path, size_t value);
-
-  /*!
-  Saves value into DOM at path (using addElement with overwrite)
-  Converts bool to AString
-  */
-  void setBool(const AString& path, bool value);
 
   /*!
   AEmittable and other output methods
@@ -358,7 +430,8 @@ protected:
   AXmlElement *_addElement(const AString& path, bool overwrite);
 
   //! Add data to this element
-  void _addData(const AEmittable& value, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE);
+  //! overwrite of true will clar existing content and replace it with value
+  void _addData(const AEmittable& value, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool overwrite = false);
 
   //! Creates a new element
   AXmlElement *_createAndAppend(LIST_AString& xparts, AXmlElement* pParent);

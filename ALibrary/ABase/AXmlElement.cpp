@@ -410,6 +410,24 @@ int AXmlElement::getInt(const AString& path, int iDefault) const
     return iDefault;
 }
 
+u4 AXmlElement::getU4(const AString& path, u4 u4Default) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+    return str.toU4();
+  else
+    return u4Default;
+}
+
+u8 AXmlElement::getU8(const AString& path, u8 u8Default) const
+{
+  AString str;
+  if (emitFromPath(path, str))
+    return str.toU8();
+  else
+    return u8Default;
+}
+
 size_t AXmlElement::getSize_t(const AString& path, size_t iDefault) const
 {
   AString str;
@@ -626,12 +644,85 @@ AXmlElement& AXmlElement::addData(
   return *this;
 }
 
-void AXmlElement::_addData(const AEmittable& value, AXmlElement::Encoding encoding)
+AXmlElement& AXmlElement::setData(const size_t value)
+{
+  _addData(AString::fromSize_t(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::setData(const AEmittable& data, AXmlElement::Encoding encoding)
+{
+  _addData(data, encoding);
+  return *this;
+}
+
+AXmlElement& AXmlElement::setData(const double value)
+{
+  _addData(AString::fromDouble(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::setData(const u8 value)
+{
+  _addData(AString::fromU8(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::setData(const u4 value)
+{
+  _addData(AString::fromU4(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::setData(const u2 value)
+{
+  _addData(AString::fromU2(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::setData(const u1 value)
+{
+  _addData(AString::fromU1(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::setData(const int value)
+{
+  _addData(AString::fromInt(value), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::setData(const char value)
+{
+  _addData(ASW(&value,1), AXmlElement::ENC_NONE);
+  return *this;
+}
+
+AXmlElement& AXmlElement::setData(
+  const char *value, 
+  size_t length,                 // = AConstant::npos
+  AXmlElement::Encoding encoding // = AXmlElement::ENC_NONE
+)
+{
+  _addData(AString::wrap(value, length), encoding);
+  return *this;
+}
+
+void AXmlElement::_addData(
+  const AEmittable& value, 
+  AXmlElement::Encoding encoding, 
+  bool overwrite // = false
+)
 {
   AASSERT(this, m_Content.size() < DEBUG_MAXSIZE_AXmlElement);  //Debug only limit
 
   AXmlData *p = new AXmlData(value, encoding);
   p->setParent(this);
+  
+  //a_Overwrite clears existing content
+  if (overwrite)
+    m_Content.clear();
+
   m_Content.push_back(p);
 }
 
@@ -974,17 +1065,27 @@ void AXmlElement::setString(const AString& path, const AString& value, AXmlEleme
 
 void AXmlElement::setInt(const AString& path, int value)
 {
-  _addElement(path, true)->addData(value);
+  _addElement(path, true)->setData(value);
+}
+
+void AXmlElement::setU4(const AString& path, u4 value)
+{
+  _addElement(path, true)->setData(value);
+}
+
+void AXmlElement::setU8(const AString& path, u8 value)
+{
+  _addElement(path, true)->setData(value);
 }
 
 void AXmlElement::setSize_t(const AString& path, size_t value)
 {
-  _addElement(path, true)->addData(value);
+  _addElement(path, true)->setData(value);
 }
 
 void AXmlElement::setBool(const AString& path, bool value)
 {
-  _addElement(path, true)->addData(value ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
+  _addElement(path, true)->setData(value ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
 }
 
 bool AXmlElement::isElement() const
