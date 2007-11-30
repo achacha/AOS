@@ -30,7 +30,7 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
   AString basePath;
   if (!moduleParams.emitFromPath(PARAM_BASE_PATH, basePath))
   {
-    context.addError(ASWNL("AOSModule_WikiViewFromFileSystem::execute",36),ASWNL("Unable to find module/base-path parameter"));
+    context.addError(ASWNL("AOSModule_WikiViewFromFileSystem::execute"),ASWNL("Unable to find module/base-path parameter"));
     return false;
   }
   AFilename wikifile(m_Services.useConfiguration().getAosBaseDataDirectory());

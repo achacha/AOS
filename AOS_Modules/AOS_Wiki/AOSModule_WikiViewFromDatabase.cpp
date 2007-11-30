@@ -18,7 +18,7 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
   AString strTable;
   if (!moduleParams.emitFromPath(ASW("table",5), strTable))
   {
-    context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute",36), ASWNL("Missing module/table paramater"));
+    context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute"), ASWNL("Missing module/table paramater"));
     return false;
   }
 
