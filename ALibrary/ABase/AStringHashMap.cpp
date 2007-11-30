@@ -119,6 +119,32 @@ bool AStringHashMap::get(const AString& name, AOutputBuffer& target) const
     return false;
 }
 
+AString& AStringHashMap::use(const AString& name)
+{
+  ALock lock(mp_SynchObject);
+  size_t hash = name.getHash(m_Container.size());
+  MAP_AString_AString *pMap = m_Container.at(hash);
+  if (pMap && pMap->find(name) != pMap->end())
+  {
+    return (*pMap)[name];
+  }
+  else
+    ATHROW_EX(this, AException::DoesNotExist, name);
+}
+
+const AString& AStringHashMap::get(const AString& name) const
+{
+  ALock lock(mp_SynchObject);
+  size_t hash = name.getHash(m_Container.size());
+  MAP_AString_AString *pMap = m_Container.at(hash);
+  if (pMap && pMap->find(name) != pMap->end())
+  {
+    return (*pMap)[name];
+  }
+  else
+    ATHROW_EX(this, AException::DoesNotExist, name);
+}
+
 bool AStringHashMap::exists(const AString& name) const
 {
   size_t hash = name.getHash(m_Container.size());
@@ -197,6 +223,10 @@ void AStringHashMap::toAFile(AFile& afile) const
 {
   ALock lock(mp_SynchObject);
 
+
+  //a_Save the hashmap buckets
+  afile.write(m_Container.size());
+  
   //a_Generate name/value pairs
   ARope rope;
   emit(rope);
@@ -210,6 +240,13 @@ void AStringHashMap::fromAFile(AFile& afile)
 {
   ALock lock(mp_SynchObject);
   size_t size = 0;
+  
+  //a_Size of the container
+  afile.read(size);
+  m_Container.resize(size, NULL);
+
+  //a_Size of the data
+  size = 0;
   afile.read(size);
 
   if (size > 0)

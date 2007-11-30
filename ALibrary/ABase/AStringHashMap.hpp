@@ -51,6 +51,13 @@ public:
   void   clear();
 
   /*!
+  Allows direct access to the stored AString
+  Can throw AException if not found
+  */
+  AString& use(const AString&);
+  const AString& get(const AString&) const;
+
+  /*!
   ASerializable
   */
   virtual void toAFile(AFile&) const;

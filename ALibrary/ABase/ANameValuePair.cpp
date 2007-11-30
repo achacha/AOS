@@ -109,7 +109,7 @@ void ANameValuePair::emit(AOutputBuffer& target) const
 
     case ANameValuePair::CGI :
     case ANameValuePair::CGI_CASE :
-      ATextConverter::encodeURL(m_name, target);
+      ATextConverter::encodeURL(m_name, target, true);
       target.append(m_separator);
       if (!m_value.isEmpty())
       {

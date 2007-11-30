@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tStringPattern.cpp"
+			RelativePath=".\tTextConverter.cpp"
 			>
 		</File>
 	</Files>

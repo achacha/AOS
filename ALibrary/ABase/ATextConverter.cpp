@@ -245,38 +245,50 @@ void ATextConverter::convertBYTEtoHEX(u1 byteV, AOutputBuffer& target)
 void ATextConverter::encodeURL(
   const AString& strSource, 
   AOutputBuffer& target,
-  bool boolIsValue // = false
+  bool isUrlPerRFC2396 // = false
 )
 {
-  char cX;
+  unsigned char cX;
   for (u4 i = 0x0; i <strSource.getSize(); ++i)
   {
     cX = strSource[i];
     
-    //a_Determine if to encode or not
-    if (
-         boolIsValue
-         && 
-         (
-           ' ' == cX
-           || AConstant::npos == AConstant::CHARSET_URL_RFC2396.find(cX)
-         )
-       )
+    if (isUrlPerRFC2396)
     {
-      if (cX == ' ')
+      //a_Determine if to encode or not
+      if (' ' == cX)
       {
         target.append('+');     //a_Space encodes to a plus
       }
-			else
+      else if (AConstant::npos == AConstant::CHARSET_URL_RFC2396.find(cX))
       {
         //a_Convert to hex
-				target.append('%');
+			  target.append('%');
+        convertBYTEtoHEX((u1)cX, target);
+      }
+		  else
+      {
+        target.append(cX);
+		  }
+    }
+    else
+    {
+      //a_Encode all non-alphanum
+      if (isalnum(cX))
+      {
+        target.append(cX);
+      }
+      else if (' ' == cX)
+      {
+        target.append('+');     //a_Space encodes to a plus
+      }
+      else
+      {
+        //a_Convert to hex
+			  target.append('%');
         convertBYTEtoHEX((u1)cX, target);
       }
     }
-		else {
-      target.append(cX);
-		}
   }
 }
 
@@ -516,3 +528,4 @@ void ATextConverter::makeAsciiPrintable(const AString& strSource, AOutputBuffer&
     }
   }
 }
+

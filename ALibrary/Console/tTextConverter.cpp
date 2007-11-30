@@ -2,17 +2,20 @@
 
 void testShortString()
 {
-  AString str("\x32\x00\x33\x01\x34\x02\x35\x03", 0x8);
-  std::cout << ATextConverter::convertStringToHexDump(str) << std::endl;
+  AString str("\x32\x00\x33\x01\x34\x02\x35\x03", 0x8), result;
+  ATextConverter::convertStringToHexDump(str, result);
+  std::cout << result << std::endl;
 }
 
 void testLongString()
 {
-AString str("\x32\x00\x33\x01\x34\x02\x35\x03\
+  AString str(
+"\x32\x00\x33\x01\x34\x02\x35\x03\
 \x36\x04\x37\x05\x38\x06\x39\x07\
 \x3A\x08\x3B\x09\x3C\x0A\x3D\x0B\
-\x3E\x0C\x3F\x0D\x40\x0E\x41\x0F", 0x20);
-  std::cout << ATextConverter::convertStringToHexDump(str) << std::endl;
+\x3E\x0C\x3F\x0D\x40\x0E\x41\x0F", 0x20), result;
+  ATextConverter::convertStringToHexDump(str, result);
+  std::cout << result << std::endl;
 }
 
 void testVeryLongString()
@@ -39,32 +42,31 @@ AString str(
 \x7A\x48\x7B\x49\x7C\x4A\x7D\x4B\
 \x7E\x4C\x7F\x4D\x80\x4E\x81\x4F\
 \x82\x50\x83"
-, 0xA3);
-  std::cout << ATextConverter::convertStringToHexDump(str) << std::endl;
-}
-
-void testHEX()
-{
-  AString str = "\x41\x42\x43\x44";
-  std::cout << "ASCII=" << str << std::endl;
-  std::cout << "HEX  =" << ATextConverter::encodeHEX(str) << std::endl;
-  std::cout << "ASCII=" << ATextConverter::decodeHEX(ATextConverter::encodeHEX(str)) << std::endl;
+, 0xA3), result;
+  ATextConverter::convertStringToHexDump(str, result);
+  std::cout << result << std::endl;
 }
 
 void testURL()
 {
-  AString str = "http://supernova.underpass.com/~achacha/VP.cgi?param=ssa";
-  std::cout << "ASCII=" << str << std::endl;
-  std::cout << "URL  =" << ATextConverter::encodeURL(str) << std::endl;
-  std::cout << "ASCII=" << ATextConverter::decodeURL(ATextConverter::encodeURL(str)) << std::endl;
+  AString str("!foo`\"'"), result;
+  ATextConverter::encodeURL(str, result, true);
+  std::cout << "original : '" << str << "'" << std::endl;
+  std::cout << "encoded  : '" << result << "'" << std::endl;
+  str.clear();
+  ATextConverter::decodeURL(result, str);
+  std::cout << "roundtrip: '" << str << "'" << std::endl;
 }
 
-
-void test64()
+void testURL2()
 {
-  AString str("This is a test.");
-  std::cout << "original : '" << ATextConverter::encodeURL(str) << "'" << std::endl;
-  std::cout << "roundtrip: '" << ATextConverter::decodeURL(ATextConverter::encodeURL(str)) << "'" << std::endl;
+  AString str("!foo`\"'"), result;
+  ATextConverter::encodeURL(str, result);
+  std::cout << "original : '" << str << "'" << std::endl;
+  std::cout << "encoded  : '" << result << "'" << std::endl;
+  str.clear();
+  ATextConverter::decodeURL(result, str);
+  std::cout << "roundtrip: '" << str << "'" << std::endl;
 }
 
 int main()
@@ -72,8 +74,8 @@ int main()
   //testShortString();
   //testLongString();
   //testVeryLongString();
-  //testHEX();
-  test64();
+  testURL();
+  testURL2();
 
   return 0x0;
 }
