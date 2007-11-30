@@ -37,7 +37,7 @@ AOSContextQueue_Executor::AOSContextQueue_Executor(
 u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 {
   AOSContextQueue_Executor *pThis = dynamic_cast<AOSContextQueue_Executor *>(thread.getThis());
-  AASSERT(NULL, pThis);
+  AASSERT(&thread, pThis);
   AOSContext *pContext = NULL;
 
   thread.setRunning(true);

@@ -36,7 +36,7 @@ AOSContextQueue_ErrorExecutor::AOSContextQueue_ErrorExecutor(
 u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
 {
   AOSContextQueue_ErrorExecutor *pThis = dynamic_cast<AOSContextQueue_ErrorExecutor *>(thread.getThis());
-  AASSERT(NULL, pThis);
+  AASSERT(&thread, pThis);
   AOSContext *pContext = NULL;
 
   thread.setRunning(true);

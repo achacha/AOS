@@ -45,7 +45,7 @@ AOSContextQueue_PreExecutor::~AOSContextQueue_PreExecutor()
 u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
 {
   AOSContextQueue_PreExecutor *pThis = dynamic_cast<AOSContextQueue_PreExecutor *>(thread.getThis());
-  AASSERT(NULL, pThis);
+  AASSERT(&thread, pThis);
   AOSContext *pContext = NULL;
 
   const int iWaitForHttpDataTimeout = pThis->m_Services.useConfiguration().useConfigRoot().getInt("/config/server/", 1000);

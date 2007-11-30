@@ -95,13 +95,12 @@ AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
 
   mp_AdminRegistry = new AOSAdminRegistry(*mp_Log);
   mp_Configuration = new AOSConfiguration(basePath, *this);
-  mp_SessionManager = new AOSSessionManager(*this);
   mp_ContextManager = new AOSContextManager(*this);
   mp_CacheManager = new AOSCacheManager(*this);
   mp_InputExecutor = new AOSInputExecutor(*this);
   mp_ModuleExecutor = new AOSModuleExecutor(*this);
   mp_OutputExecutor = new AOSOutputExecutor(*this);
-
+  mp_SessionManager = new AOSSessionManager(*this);
 }
 
 AOSServices::~AOSServices()

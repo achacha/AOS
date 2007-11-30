@@ -44,7 +44,7 @@ void AOSContextQueue_IsAvailable::processAdminAction(AXmlElement& eBase, const A
 u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
 {
   AOSContextQueue_IsAvailable *pThis = dynamic_cast<AOSContextQueue_IsAvailable *>(thread.getThis());
-  AASSERT(NULL, pThis);
+  AASSERT(&thread, pThis);
 
   timeval timeout;
   timeout.tv_sec  = 0;

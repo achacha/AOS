@@ -6,12 +6,31 @@
 #include "AStringHashMap.hpp"
 #include "ATimer.hpp"
 #include "AXmlEmittable.hpp"
+#include "ASerializable.hpp"
 
-class AOSSessionData : public ADebugDumpable, public AXmlEmittable
+class AOS_BASE_API AOSSessionData : public ADebugDumpable, public AXmlEmittable, ASerializable
 {
 public:
-  AOSSessionData(const AString& sessionId);
+  static const AString SESSIONID;       //a_Session ID stored in data with this key
+
+public:
+  /*!
+  ctor
+  @param sessionId of this data and is added to the data as 'id' parameter
+  @param number of buckets in the data hash map (prime number better)
+  */
+  AOSSessionData(const AString& sessionId, size_t defaultDataHashSize = 5);
   
+  /*!
+  ctor calls fromAFile
+  */
+  AOSSessionData(AFile&);
+
+  /*!
+  Gets the session ID stored in data
+  */
+  const AString& getSessionId() const;
+
   /*!
   AXmlEmittable
   */
@@ -19,6 +38,9 @@ public:
 
   /*!
   Data is all AString->AString map
+  Persiatable if needed via ASerialization interface
+
+  @return Data
   */
   AStringHashMap& useData();
   
@@ -29,6 +51,7 @@ public:
   
   /*!
   Last used timer
+  Gets reset when object is de-serialized via fromAFile
   */
   const ATimer& getLastUsedTimer() const;
 
@@ -36,6 +59,13 @@ public:
   Timer reset for last time used
   */
   void restartLastUsedTimer();
+
+  /*!
+  ASerializable
+  NOTE: Timers are not persisted and are reset upon deserialization
+  */
+  virtual void toAFile(AFile&) const;
+  virtual void fromAFile(AFile&);
 
 private:
   AOSSessionData() {}

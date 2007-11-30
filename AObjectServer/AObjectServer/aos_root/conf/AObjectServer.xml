@@ -6,15 +6,15 @@
 		<allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page">true</allow-dumpContext>
 		<allow-outputOverride desc="If true, will allow outputOverride to alter the output class of a command">true</allow-outputOverride>
 	</debug>
-  <!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
+	<!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
 	<error-templates desc="HTTP status response templates, located relative to aos_data directory">
-    <default desc="Default template when a status code does not have an explicit template">http/default.template</default> 
-    <HTTP-400>http/400.template</HTTP-400> 
-    <HTTP-400>http/403.template</HTTP-400> 
-    <HTTP-404>http/404.template</HTTP-404> 
-    <HTTP-500>http/500.template</HTTP-500> 
-  </error-templates>
-  <default-filename>index.html</default-filename>
+		<default desc="Default template when a status code does not have an explicit template">http/default.template</default>
+		<HTTP-400>http/400.template</HTTP-400>
+		<HTTP-400>http/403.template</HTTP-400>
+		<HTTP-404>http/404.template</HTTP-404>
+		<HTTP-500>http/500.template</HTTP-500>
+	</error-templates>
+	<default-filename>index.html</default-filename>
 	<default-input-processor>application/x-www-form-urlencoded</default-input-processor>
 	<default-output-generator/>
 	<mime-types>mime_types.ini</mime-types>
@@ -24,6 +24,11 @@
 		<max_filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max_filesize>
 		<cache_count desc="Number of caches to use (must be a prime number)">13</cache_count>
 	</static-file-cache>
+	<session-manager>
+		<holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">13</holder-size>
+		<timeout desc="Number of milliseconds before the session exipres internally">10000</timeout>
+		<sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration">5000</sleep-cycle>
+	</session-manager>
 	<template-cache desc="Template objects that are read from file and kept in a parsed state for execution">
 		<enabled>false</enabled>
 	</template-cache>

@@ -5,10 +5,11 @@
 #include "AOSAdminInterface.hpp"
 #include "AOSSessionData.hpp"
 #include "ASynchronization.hpp"
+#include "AThread.hpp"
 
 class AOSServices;
 
-#define HASHMAP_SIZE 0x10
+#define DEFAULT_HOLDER_SIZE 13
 
 class AOS_BASE_API AOSSessionManager : public AOSAdminInterface
 {
@@ -33,6 +34,7 @@ public:
   virtual const AString& getClass() const;
 
 private:
+  //! Map of session id to session data
   typedef std::map<AString, AOSSessionData *> SESSION_MAP;
   class SessionMapHolder
   {
@@ -43,13 +45,30 @@ private:
     ASynchronization *mp_SynchObject;
   };
   
-  typedef std::map<size_t, SessionMapHolder *> SESSION_HASHMAP;
-
-  SESSION_HASHMAP m_SessionHashMap;
-
+  //! Holder for session maps
+  typedef std::vector<SessionMapHolder *> SESSION_MAPHOLDER_CONTAINER;
+  SESSION_MAPHOLDER_CONTAINER m_SessionHolderContainer;
+ 
   AOSSessionManager::SessionMapHolder *_getSessionHolder(const AString&);
 
+  //!Reference to services
   AOSServices& m_Services;
+
+  //! Size of vector for session holder
+  size_t m_HolderSize;
+
+  //! Session timeout
+  //! Time in milliseconds to coincide with Timer.getInterval()
+  double m_TimeoutInterval;
+
+  //! Sleep cycle time in milliseconds
+  u4 m_SessionMonitorSleep;
+
+  //! threadproc that cleans up old sessions
+  static u4 threadprocSessionManager(AThread&);
+
+  //! Manager thread
+  AThread m_Thread;
 
 public:
 #ifdef __DEBUG_DUMP__

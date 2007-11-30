@@ -1,6 +1,8 @@
 #include "pchAOS_Base.hpp"
 #include "AOSSessionData.hpp"
 
+const AString AOSSessionData::SESSIONID("id",2);
+
 #ifdef __DEBUG_DUMP__
 void AOSSessionData::debugDump(std::ostream& os, int indent) const
 {
@@ -16,12 +18,25 @@ void AOSSessionData::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-AOSSessionData::AOSSessionData(const AString& sessionId) :
-  m_Data(NULL, 13),
+AOSSessionData::AOSSessionData(const AString& sessionId, size_t defaultDataHashSize) :
+  m_Data(NULL, defaultDataHashSize),
   m_AgeTimer(true),
   m_LastUsedTimer(true)
 {
   m_Data.set(ASW("id",2), sessionId);
+}
+
+  AOSSessionData::AOSSessionData(AFile& aFile) :
+  m_AgeTimer(true),
+  m_LastUsedTimer(true)
+{
+  fromAFile(aFile);
+  AASSERT_EX(this, m_Data.exists(SESSIONID), ASWNL("Session ID was not found after session was restored"));
+}
+
+const AString& AOSSessionData::getSessionId() const
+{
+  return m_Data.get(SESSIONID);
 }
 
 void AOSSessionData::emitXml(AXmlElement& target) const
@@ -52,4 +67,14 @@ void AOSSessionData::restartLastUsedTimer()
 AStringHashMap& AOSSessionData::useData()
 { 
   return m_Data;
+}
+
+void AOSSessionData::toAFile(AFile& aFile) const
+{
+  m_Data.toAFile(aFile);
+}
+
+void AOSSessionData::fromAFile(AFile& aFile)
+{
+  m_Data.fromAFile(aFile);
 }
