@@ -40,6 +40,7 @@ typedef int (PROC_AOS_Register)(AOSInputExecutor&, AOSModuleExecutor&, AOSOutput
 #ifdef WIN32
 #define AOS_SERVER_NAME "AsynchObjectServer/1.2.0.0"
 #define AOS_ADMIN_SERVER_NAME "AOSAdminServer/1.2.0.0"
+
 #endif
 
 #endif //__apiAOS_Base_HPP__

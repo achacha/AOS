@@ -66,10 +66,6 @@ void AOSInputExecutor::registerInputProcessor(AOSInputProcessorInterface *pProce
     ATHROW(this, AException::InvalidParameter);
 
   const AString& command = pProcessor->getClass();
-#ifdef __DEBUG_DUMP__
-  std::cerr << "Input command registration: " << command << std::endl;
-#endif
-
   InputProcessorContainer::iterator it = m_InputProcessors.find(command);
   if (it != m_InputProcessors.end())
   {
@@ -100,14 +96,21 @@ void AOSInputExecutor::execute(AOSContext& context)
   if (!context.useRequestHeader().useUrl().useParameterPairs().get(OVERRIDE_INPUT, command))
   {
     command = context.getInputCommand();
+    context.setExecutionState(ARope("Input processor: ")+command);
   }
 
   if (command.isEmpty())
   {
     if (m_Services.useConfiguration().getAosDefaultInputProcessor().isEmpty())
+    {
+      context.setExecutionState(ASW("No input processor", 18));
       return;                                 //a_Do nothing, no command and no default
+    }
     else
+    {
       command.assign(m_Services.useConfiguration().getAosDefaultInputProcessor());
+      context.setExecutionState(ARope("No input processor, using default: ")+command);
+    }
   }
 
   try

@@ -99,16 +99,24 @@ void AOSOutputExecutor::execute(AOSContext& context)
 
   AString command;
   if (
-    !context.useRequestHeader().useUrl().getParameterPairs().get(OVERRIDE_OUTPUT, command) &&
-     m_Services.useConfiguration().isOutputOverrideAllowed()
+    context.useRequestParameterPairs().exists(OVERRIDE_OUTPUT)
+    && m_Services.useConfiguration().isOutputOverrideAllowed()
   )
   {
-    command = context.getOutputCommand();
+    //a_Override requested and allowed
+    context.useRequestParameterPairs().get(OVERRIDE_OUTPUT, command);
   }
-  else if (command.equals("NOP"))
+  else
+  {
+    command = context.getOutputCommand();
+    context.setExecutionState(ARope("Default output generator overridden to: ")+command);
+  }
+
+  if (command.equals("NOP"))
   {
     //a_If NOP was used force XML
     context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
+    context.setExecutionState(ASWNL("NOP detected, defaulting to XML output"));
   }
 
   if (command.isEmpty())
@@ -116,6 +124,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
     if (!m_Services.useConfiguration().getAosDefaultOutputGenerator().isEmpty())
     {
       command.assign(m_Services.useConfiguration().getAosDefaultOutputGenerator());
+      context.setExecutionState(ARope("No output generator specified, defaulting to: ")+command);
     }
     else
     {
