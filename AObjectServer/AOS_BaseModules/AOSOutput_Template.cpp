@@ -58,7 +58,6 @@ bool AOSOutput_Template::execute(AOSContext& context)
 
   //a_Iterate filename types and execute/output templates
   bool templatesDisplayed = 0;
-  AString filename(1024, 256);
   for (AXmlElement::CONST_CONTAINER::const_iterator cit = templateNames.begin(); cit != templateNames.end(); ++cit)
   {
     //a_Check "if" condition
