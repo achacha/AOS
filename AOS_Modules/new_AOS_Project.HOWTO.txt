@@ -1,0 +1,26 @@
+Creating a new AOS_Modules project:
+
+1. In you AOS_Modules directory execute:
+
+  new_AOS_Project.py {Name of the project} {Name of a module in this project}
+	
+	Example:
+	  new_AOS_Project.py Sample HelloWorld
+		
+  This will create a new project AOS_Sample and add a simple module called AOSModule_HelloWorld.hpp and AOSModule_HelloWorld.hpp.
+	It will also add glue code to register a module called "HelloWorld"
+
+2. In MS Visual Studio from Solution window:
+
+  Add | Existing Project...
+
+3. Set correct dependencies (if this is a stand-alone project, this step is not needed)
+
+4. Let AObjectServer know that it now needs to load this library:
+  in aos_root/conf/AObjectServer.xml add entry for your module
+	  <load>
+		  ...
+			<Module>AOS_Sample</Module>
+		</load>
+
+When AObjectServer restarts it will load you library and execute aos_register() in AOS_Sample.cpp which registers it.

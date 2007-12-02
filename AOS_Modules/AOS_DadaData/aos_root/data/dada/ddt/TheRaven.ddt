@@ -1,6 +1,6 @@
 {&type:title}The {%noun_proper:$subject}
 {&type:blank}
-Once upon a {%adjective} dreary, while I c weak and weary,
+Once upon a {%adjective} dreary, while I {%verb:past} weak and weary,
 Over many a quaint and curious {%noun} of forgotten {%noun},
 While I {%verb:past}, nearly {%verb:present}, suddenly there came a {%verb:present},
 As of some one {%adverb} rapping, rapping at my {%noun} {%noun}.

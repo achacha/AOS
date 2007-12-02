@@ -15,14 +15,10 @@ else
   editUrl = editUrlBase;
 end
 
-if model.existElement('/root/wiki/IsDirectory') then
-  print( '<small>directory</small>' );
+if model.existElement('/root/wiki/DoesNotExist') then
+	print( '<a href=\"' .. editUrl .. '">create<a>'); 
 else
-	if model.existElement('/root/wiki/DoesNotExist') then
-		print( '<a href=\"' .. editUrl .. '">create<a>'); 
-	else
-		print( '<a href=\"' .. editUrl .. '">edit<a>'); 
-	end
+	print( '<a href=\"' .. editUrl .. '">edit<a>'); 
 end
 
 }}}[LUA]%</div>

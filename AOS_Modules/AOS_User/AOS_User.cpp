@@ -1,8 +1,7 @@
-#include "pchAOS_Example.hpp"
-#include "apiAOS_Example.hpp"
+#include "pchAOS_User.hpp"
+#include "apiAOS_User.hpp"
 
-#include "AOSModule_RSS20.hpp"
-#include "AOSOutput_generate_image.hpp"
+#include "AOSModule_AuthenticateUser.hpp"
 
 BOOL APIENTRY DllMain(
   HANDLE hModule, 
@@ -21,20 +20,17 @@ BOOL APIENTRY DllMain(
     return TRUE;
 }
 
-extern "C" AOS_EXAMPLE_API int aos_register(
+extern "C" AOS_USER_API int aos_register(
   AOSInputExecutor& inputExecutor, 
   AOSModuleExecutor& moduleExecutor, 
   AOSOutputExecutor& outputExecutor, 
   AOSServices& services
 )
 {
-  services.useLog().add(ASWNL("AOS_Example: aos_register"), ALog::INFO);
+  services.useLog().add(ASWNL("AOS_User: aos_register"), ALog::INFO);
 
   //Register modules
-  moduleExecutor.registerModule(new AOSModule_rss20(services));
+  moduleExecutor.registerModule(new AOSModule_AuthenticateUser(services));
   
-  //Register output generators
-  outputExecutor.registerOutputGenerator(new AOSOutput_generate_image(services));
-
   return 0;
 }

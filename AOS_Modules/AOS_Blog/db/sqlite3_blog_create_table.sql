@@ -1,0 +1,1 @@
+CREATE TABLE blog (user_id NUMERIC, id INTEGER PRIMARY KEY, title VARCHAR(1024), data TEXT, created TIMESTAMP)
