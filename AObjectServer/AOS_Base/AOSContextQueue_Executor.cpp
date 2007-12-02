@@ -96,8 +96,9 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 
         int dumpContextLevel = pContext->getDumpContextLevel();
 
-        //a_Add REQUEST header
-        pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(ASW("REQUEST",7)));
+        //a_Add REQUEST header only if not in AJAX mode
+        if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
+          pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(ASW("REQUEST",7)));
 
         //
         //a_Generate output
@@ -135,10 +136,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 
         //a_If output module set this to true, it handled all the output and we don't need to do anything else
         //a_dumpContext flag will override the output
-        if (
-          !pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT)
-          // || dumpContextLevel > 0
-          )
+        if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
         {
           pContext->setExecutionState(ASW("Generating output",17));
 

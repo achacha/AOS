@@ -40,6 +40,8 @@
 		<module>AOS_Forum</module>
 		<module>AOS_Blog</module>
 		<module>AOS_Wiki</module>
+		<module>AOS_Classified</module>
+		<module>AOS_User</module>
 	</load>
 	<context-queues>
 		<is-available>

@@ -45,6 +45,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AObjectServer", "AObjectSer
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
+		{A5D2C184-A340-4F46-852A-A69866312F00} = {A5D2C184-A340-4F46-852A-A69866312F00}
+		{8A0DC563-C163-465E-8BCF-29B557E66A80} = {8A0DC563-C163-465E-8BCF-29B557E66A80}
 		{91CD0707-B34B-47FA-A295-BA6894D833D2} = {91CD0707-B34B-47FA-A295-BA6894D833D2}
 		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E} = {96B19A0C-3D35-4589-B46F-6E0A68A33C6E}
 		{96B19A0C-3D35-4589-B46F-6E0A68A33C7F} = {96B19A0C-3D35-4589-B46F-6E0A68A33C7F}
@@ -242,6 +244,24 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOS_Wiki", "..\AOS_Modules\
 		{5D653A10-2A01-4DAD-AB60-59294DF36DF2} = {5D653A10-2A01-4DAD-AB60-59294DF36DF2}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOS_User", "..\AOS_Modules\AOS_User\AOS_User.vcproj", "{8A0DC563-C163-465E-8BCF-29B557E66A80}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1} = {ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOS_Classified", "..\AOS_Modules\AOS_Classified\AOS_Classified.vcproj", "{A5D2C184-A340-4F46-852A-A69866312F00}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{5D653A10-2A01-4DAD-AB60-59294DF36DF2} = {5D653A10-2A01-4DAD-AB60-59294DF36DF2}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -336,6 +356,14 @@ Global
 		{54A8BBE0-166E-45BE-88BC-CD944D361101}.Debug|Win32.Build.0 = Debug|Win32
 		{54A8BBE0-166E-45BE-88BC-CD944D361101}.Release|Win32.ActiveCfg = Release|Win32
 		{54A8BBE0-166E-45BE-88BC-CD944D361101}.Release|Win32.Build.0 = Release|Win32
+		{8A0DC563-C163-465E-8BCF-29B557E66A80}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8A0DC563-C163-465E-8BCF-29B557E66A80}.Debug|Win32.Build.0 = Debug|Win32
+		{8A0DC563-C163-465E-8BCF-29B557E66A80}.Release|Win32.ActiveCfg = Release|Win32
+		{8A0DC563-C163-465E-8BCF-29B557E66A80}.Release|Win32.Build.0 = Release|Win32
+		{A5D2C184-A340-4F46-852A-A69866312F00}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A5D2C184-A340-4F46-852A-A69866312F00}.Debug|Win32.Build.0 = Debug|Win32
+		{A5D2C184-A340-4F46-852A-A69866312F00}.Release|Win32.ActiveCfg = Release|Win32
+		{A5D2C184-A340-4F46-852A-A69866312F00}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
