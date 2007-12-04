@@ -109,11 +109,11 @@ void ANameValuePair::emit(AOutputBuffer& target) const
 
     case ANameValuePair::CGI :
     case ANameValuePair::CGI_CASE :
-      ATextConverter::encodeURL(m_name, target, true);
+      ATextConverter::encodeURL(m_name, target);
       target.append(m_separator);
       if (!m_value.isEmpty())
       {
-        ATextConverter::encodeURL(m_value, target, true);
+        ATextConverter::encodeURL(m_value, target);
       }
     break;
 
@@ -144,7 +144,7 @@ void ANameValuePair::emit(AOutputBuffer& target) const
       {
         target.append(m_separator);
         target.append('\"');
-        ATextConverter::encodeURL(m_value, target, true);
+        ATextConverter::encodeURL(m_value, target);
         target.append('\"');
       }
     break;

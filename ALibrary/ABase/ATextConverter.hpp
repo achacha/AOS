@@ -31,9 +31,8 @@ public:
   /*!
   URL encoding/decoding
   Alphanum is passthru, ' ' to '+' and rest to %XX
-  boolIsValue - when true it will encode 
 
-  isUrlPerRFC2396 - if true will not encode
+  isUrlPerRFC2396 - if true will assume that an entire URL is being encoded and to omit special characters
   */
   static void encodeURL(const AString& strSource, AOutputBuffer&, bool isUrlPerRFC2396 = false);
   static void decodeURL(const AString& strSource, AOutputBuffer&, bool boolIgnoreNulls = true, bool boolForceUppercase = false);

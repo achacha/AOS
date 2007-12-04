@@ -124,8 +124,11 @@ public:
   
    NOTE: return AConstant::npos if EOF or not found, else length is successful
   */
+  virtual size_t peekUntil(AString&, char cPattern);
   virtual size_t peekUntil(AString&, const AString& strPattern);
+  virtual size_t readUntil(AString&, char cPattern, bool boolRemovePattern = true, bool boolDiscardPattern = true);
   virtual size_t readUntil(AString&, const AString& strPattern, bool boolRemovePattern = true, bool boolDiscardPattern = true);
+  virtual size_t skipUntil(char cPattern, bool boolDiscardPattern = true);
   virtual size_t skipUntil(const AString& strPattern, bool boolDiscardPattern = true);
 
   /*!

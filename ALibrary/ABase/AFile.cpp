@@ -179,7 +179,10 @@ size_t AFile::peekUntilOneOf(AString &strPeek, const AString &strDelimeters)
   return ret;
 }
 
-size_t AFile::skipUntilOneOf(const AString &strDelimeters, bool boolDiscardDelimeter /* = true */)
+size_t AFile::skipUntilOneOf(
+  const AString &strDelimeters, 
+  bool boolDiscardDelimeter // = true
+)
 {
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.removeFrontUntilOneOf(strDelimeters, boolDiscardDelimeter)))
@@ -191,7 +194,10 @@ size_t AFile::skipUntilOneOf(const AString &strDelimeters, bool boolDiscardDelim
   return ret;
 }
 
-size_t AFile::skipUntilOneOf(char delimeter, bool boolDiscardDelimeter /* = true */)
+size_t AFile::skipUntilOneOf(
+  char delimeter, 
+  bool boolDiscardDelimeter // = true
+)
 {
   size_t ret = 0;
   AString strDelim(delimeter);
@@ -215,11 +221,23 @@ size_t AFile::peekUntil(AString& strPeek, const AString& strPattern)
   return ret;
 }
 
+size_t AFile::peekUntil(AString& strPeek, char cPattern)
+{
+  size_t ret = 0;
+  while (AConstant::npos == (ret = m_LookaheadBuffer.peekFrontUntil(strPeek, cPattern)))
+  {
+    if (!_readBlockIntoLookahead())
+      return AConstant::npos;
+  }
+  return ret;
+}
+
 size_t AFile::readUntil(
   AString& strRead, 
   const AString& strPattern, 
-  bool boolRemovePattern /* = true */, 
-  bool boolDiscardPattern /* = true */)
+  bool boolRemovePattern,   // = true 
+  bool boolDiscardPattern   // = true
+)
 {
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.popFrontUntil(strRead, strPattern, boolRemovePattern, boolDiscardPattern)))
@@ -231,7 +249,27 @@ size_t AFile::readUntil(
   return ret;
 }
 
-size_t AFile::skipUntil(const AString& strPattern, bool boolDiscardPattern /* = true*/)
+size_t AFile::readUntil(
+  AString& strRead, 
+  char cPattern, 
+  bool boolRemovePattern,   // = true 
+  bool boolDiscardPattern   // = true
+)
+{
+  size_t ret = 0;
+  while (AConstant::npos == (ret = m_LookaheadBuffer.popFrontUntil(strRead, cPattern, boolRemovePattern, boolDiscardPattern)))
+  {
+    if (!_readBlockIntoLookahead())
+      return AConstant::npos;
+  }
+
+  return ret;
+}
+
+size_t AFile::skipUntil(
+  const AString& strPattern, 
+  bool boolDiscardPattern // = true
+)
 {
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.removeFrontUntil(strPattern, boolDiscardPattern)))
@@ -243,7 +281,24 @@ size_t AFile::skipUntil(const AString& strPattern, bool boolDiscardPattern /* = 
   return ret;
 }
 
-size_t AFile::skipOver(const AString& strDelimeters /* = AConstant::ASTRING_WHITESPACE */)
+size_t AFile::skipUntil(
+  char cPattern, 
+  bool boolDiscardPattern // = true
+)
+{
+  size_t ret = 0;
+  while (AConstant::npos == (ret = m_LookaheadBuffer.removeFrontUntil(cPattern, boolDiscardPattern)))
+  {
+    if (!_readBlockIntoLookahead())
+      return AConstant::npos;
+  }
+
+  return ret;
+}
+
+size_t AFile::skipOver(
+  const AString& strDelimeters  // = AConstant::ASTRING_WHITESPACE
+)
 {
   char c;
   if (!peek(c))

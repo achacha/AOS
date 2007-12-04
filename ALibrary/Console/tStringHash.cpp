@@ -1,10 +1,10 @@
-#include <iostream.h>
+#include <iostream>
 #include <AString.hpp>
 #include <AFileIOStream.hpp>
 #include <ATimer.hpp>
 #include <ARandomNumberGenerator.hpp>
 
-int main()
+void testHashing()
 {
   AString strX;
   ATimer timerX;
@@ -21,6 +21,10 @@ int main()
   timerX.stop();
 
   cerr << "Timer=" << timerX.getInterval() << "ms" << endl;
+}
 
+int main()
+{
+  testHashing();
   return 0x0;
 }

@@ -221,33 +221,40 @@ void AStringHashMap::emitXml(AXmlElement& target) const
 
 void AStringHashMap::toAFile(AFile& afile) const
 {
+  // FORMAT
+  // buckets:data_size:data
+
   ALock lock(mp_SynchObject);
 
-
   //a_Save the hashmap buckets
-  afile.write(m_Container.size());
+  afile.write(AString::fromSize_t(m_Container.size()));
+  afile.write(':');
   
   //a_Generate name/value pairs
   ARope rope;
   emit(rope);
 
   //a_Write size
-  afile.write(rope.getSize());
+  afile.write(AString::fromSize_t(rope.getSize()));
+  afile.write(':');
   rope.emit(afile);
 }
 
 void AStringHashMap::fromAFile(AFile& afile)
 {
   ALock lock(mp_SynchObject);
-  size_t size = 0;
   
   //a_Size of the container
-  afile.read(size);
-  m_Container.resize(size, NULL);
+  AString str;
+  AVERIFY(&afile, AConstant::npos != afile.readUntil(str, ':'));
+  AASSERT(&afile, !str.isEmpty());
+  m_Container.resize(str.toSize_t(), NULL);
 
   //a_Size of the data
-  size = 0;
-  afile.read(size);
+  str.clear();
+  AVERIFY(&afile, AConstant::npos != afile.readUntil(str, ':'));
+  AASSERT(&afile, !str.isEmpty());
+  size_t size = str.toSize_t();
 
   if (size > 0)
   {

@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tTextConverter.cpp"
+			RelativePath=".\tStringHashMap.cpp"
 			>
 		</File>
 	</Files>
