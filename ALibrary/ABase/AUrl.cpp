@@ -8,10 +8,6 @@
 #include "AXmlElement.hpp"
 #include "ARope.hpp"
 
-const char AUrl::sc__PathSeparator('/');
-const char AUrl::sc__ProtocolSeparator(':');
-const char AUrl::sc__EmailSeparator('@');
-const char AUrl::sc__QuerySeparator('?');
 const AString AUrl::sstr__PathSeparator("/");
 const AString AUrl::sstr__PathSelf("/./");
 const AString AUrl::sstr__PathParent("/../");
@@ -28,7 +24,8 @@ void AUrl::debugDump(std::ostream& os, int indent) const
     << "  m_strServer=" << m_strServer
     << "  m_iPort=" << m_iPort << std::endl;          
   ADebugDumpable::indent(os, indent+1) << "m_strPath=" << m_strPath
-    << "  m_strFilename=" << m_strFilename << std::endl;    
+    << "  m_strFilename=" << m_strFilename 
+    << "  m_strFragment=" << m_strFragment << std::endl;    
   
   ADebugDumpable::indent(os, indent+1) << "m_QueryString=" << std::endl;    
   m_QueryString.debugDump(os, indent+2);
@@ -49,11 +46,6 @@ AUrl::AUrl(const AString &strInput)
 
 AUrl::~AUrl()
 {
-  try
-  {
-    clear();
-  }
-  catch (...) {}
 }
 
 void AUrl::clear()
@@ -66,6 +58,7 @@ void AUrl::clear()
   m_iPort = AUrl::INVALID;
   m_strPath.clear();
   m_strFilename.clear();
+  m_strFragment.clear();
 
   //a_Form elements
   m_QueryString.clear();
@@ -77,15 +70,16 @@ void AUrl::clear()
 const AUrl &AUrl::operator =(const AUrl& that)
 {
   //a_URL components
-  m_strProtocol        = that.m_strProtocol;
-  m_strUsername        = that.m_strUsername;
-  m_strPassword        = that.m_strPassword;
-  m_strServer          = that.m_strServer;
-  m_iPort              = that.m_iPort;
-  m_strPath            = that.m_strPath;
-  m_strFilename        = that.m_strFilename;
-  m_strError           = that.m_strError;
-  m_QueryString         = that.m_QueryString;
+  m_strProtocol = that.m_strProtocol;
+  m_strUsername = that.m_strUsername;
+  m_strPassword = that.m_strPassword;
+  m_strServer   = that.m_strServer;
+  m_iPort       = that.m_iPort;
+  m_strPath     = that.m_strPath;
+  m_strFilename = that.m_strFilename;
+  m_strFragment = that.m_strFragment;
+  m_strError    = that.m_strError;
+  m_QueryString = that.m_QueryString;
 
   return *this;
 }
@@ -129,6 +123,7 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
     if (m_strFilename.isEmpty())
     {
       m_strFilename = urlSource.m_strFilename;
+      m_strFragment = urlSource.m_strFragment;
       
       //If target URL didn't have form items, remove local items since we are using target filename
       if (urlSource.m_QueryString.size() == 0)
@@ -137,30 +132,31 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
   }
   else
   {
-    if (m_strPath[0] != sc__PathSeparator)
+    if (m_strPath[0] != '/')
     {
       //a_We have some relative path
       if (!urlSource.m_strPath.isEmpty())
       {
-        if (urlSource.m_strPath[0] == sc__PathSeparator && m_strPath[0] != sc__PathSeparator)
+        if (urlSource.m_strPath[0] == '/' && m_strPath[0] != '/')
         {
-          if (urlSource.m_strPath.at(urlSource.m_strPath.getSize()-1) == sc__PathSeparator)
+          if (urlSource.m_strPath.at(urlSource.m_strPath.getSize()-1) == '/')
             m_strPath = urlSource.m_strPath + m_strPath;    //a_Add relative local to absolute target
           else
-            m_strPath = urlSource.m_strPath + sc__PathSeparator + m_strPath;    //a_Add relative local to absolute target
+            m_strPath = urlSource.m_strPath + '/' + m_strPath;    //a_Add relative local to absolute target
 
           //a_Add trailing path
-          if (m_strPath.at(m_strPath.getSize()-1) != sc__PathSeparator)
-            m_strPath.append(sc__PathSeparator);
+          if (m_strPath.at(m_strPath.getSize()-1) != '/')
+            m_strPath.append('/');
 
           //a_Add to the current form
           if (!m_strFilename.isEmpty())
             m_QueryString |= urlSource.m_QueryString;
         }
-        else if (urlSource.m_strPath[0] != sc__PathSeparator && m_strPath[0] == sc__PathSeparator)
+        else if (urlSource.m_strPath[0] != '/' && m_strPath[0] == '/')
         {
           m_strPath = m_strPath + urlSource.m_strPath;    //a_Add relative target to absolute local
           m_strFilename = urlSource.m_strFilename;         //a_Keep target filename
+          m_strFragment = urlSource.m_strFragment;
 
           //If target URL didn't have form items, remove local items since we are using target filename
           if (urlSource.m_QueryString.size() == 0)
@@ -170,6 +166,8 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
         {
           m_strPath = urlSource.m_strPath;
           m_strFilename = urlSource.m_strFilename;
+          m_strFragment = urlSource.m_strFragment;
+
           //If target URL didn't have form items, remove local items since we are using target filename
           if (urlSource.m_QueryString.size() == 0)
             m_QueryString.clear();
@@ -199,7 +197,7 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
           //a_Degenerate case of /../ being the first part of the path in root
           if (iPos == 0x0)
           {
-            if ((iCutPos = m_strPath.find(sc__PathSeparator, iPos + 2)) == AConstant::npos)
+            if ((iCutPos = m_strPath.find('/', iPos + 2)) == AConstant::npos)
             {
               //a_Completely invalid path
               ATHROW(this, AException::InvalidPathRedirection);
@@ -214,7 +212,7 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
           
           //a_We have "/.." to remove
           //a_EG: /somedir/../somemoredir/ -> /somedir/somemoredir/
-          if ((iCutPos = m_strPath.rfind(sc__PathSeparator, iPos - 1)) != AConstant::npos)
+          if ((iCutPos = m_strPath.rfind('/', iPos - 1)) != AConstant::npos)
           {
             //a_Found another directory... remove it
             m_strPath.remove(3, iCutPos);
@@ -229,15 +227,16 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
       //a_Allow appends to a path only (ending with /) and with only a relative path
       if (! urlSource.m_strPath.isEmpty())
       {
-        if (urlSource.m_strPath[0] != sc__PathSeparator)
+        if (urlSource.m_strPath[0] != '/')
         {
           //a_We have a relative source, check if this is a path and allow an append
-          if (m_strPath[m_strPath.getSize() - 0x1] == sc__PathSeparator)
+          if (m_strPath[m_strPath.getSize() - 0x1] == '/')
           {
             m_strPath += urlSource.m_strPath;
 
             //a_Appended target path, filename is taken from target if any
             m_strFilename = urlSource.m_strFilename;
+            m_strFragment = urlSource.m_strFragment;
 
             //If target URL didn't have form items, remove local items since we are using target filename
             if (urlSource.m_QueryString.size() == 0)
@@ -250,6 +249,7 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
           if (! urlSource.m_strFilename.isEmpty())
           {
             m_strFilename = urlSource.m_strFilename;
+            m_strFragment = urlSource.m_strFragment;
 
             //If target URL didn't have form items, remove local items since we are using target filename
             if (urlSource.m_QueryString.size() == 0)
@@ -263,6 +263,7 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
         if (! urlSource.m_strFilename.isEmpty())
         {
           m_strFilename = urlSource.m_strFilename;
+          m_strFragment = urlSource.m_strFragment;
 
           //If target URL didn't have form items, remove local items since we are using target filename
           if (urlSource.m_QueryString.size() == 0)
@@ -286,13 +287,24 @@ AUrl AUrl::operator &(const AUrl &urlSource) const
 const AUrl &AUrl::operator &=(const AUrl &urlSource)
 {
   //a_URL components
-  if (!urlSource.m_strProtocol.isEmpty()) m_strProtocol = urlSource.m_strProtocol;
-  if (urlSource.m_iPort != AUrl::INVALID) m_iPort = urlSource.m_iPort;
-  if (!urlSource.m_strServer.isEmpty()) m_strServer = urlSource.m_strServer;
-  if (!urlSource.m_strUsername.isEmpty()) m_strUsername = urlSource.m_strUsername;
-  if (!urlSource.m_strPassword.isEmpty()) m_strPassword = urlSource.m_strPassword;
-  if (!urlSource.m_strPath.isEmpty()) m_strPath = urlSource.m_strPath;
-  if (!urlSource.m_strFilename.isEmpty()) m_strFilename = urlSource.m_strFilename;
+  if (!urlSource.m_strProtocol.isEmpty()) 
+    m_strProtocol = urlSource.m_strProtocol;
+  if (urlSource.m_iPort != AUrl::INVALID) 
+    m_iPort = urlSource.m_iPort;
+  if (!urlSource.m_strServer.isEmpty()) 
+    m_strServer = urlSource.m_strServer;
+  if (!urlSource.m_strUsername.isEmpty()) 
+    m_strUsername = urlSource.m_strUsername;
+  if (!urlSource.m_strPassword.isEmpty()) 
+    m_strPassword = urlSource.m_strPassword;
+  if (!urlSource.m_strPath.isEmpty())
+    m_strPath = urlSource.m_strPath;
+  if (!urlSource.m_strFilename.isEmpty())
+  { 
+    m_strFilename = urlSource.m_strFilename;
+    m_strFragment = urlSource.m_strFragment;
+  }
+
   m_QueryString |= urlSource.m_QueryString;
 
   return *this;
@@ -327,7 +339,7 @@ void AUrl::parse(const AString &strInput)
   clear();
   
   //a_Remove the CGI parameters first
-  size_t pos = strInput.find(sc__QuerySeparator);
+  size_t pos = strInput.find('?');
   AString strURL;
   if (pos != AConstant::npos)
   {
@@ -343,7 +355,7 @@ void AUrl::parse(const AString &strInput)
 
   //a_Extract URL sans parameters
   bool boolServerStartFound = false;
-  if ((pos = strURL.find(sc__ProtocolSeparator)) != AConstant::npos)
+  if ((pos = strURL.find(':')) != AConstant::npos)
   {
     //a_Copy the protocol
     ++pos;
@@ -352,7 +364,7 @@ void AUrl::parse(const AString &strInput)
     setProtocol(str);
 
     if (strURL.getSize() > pos + 1)
-      if ((strURL[pos] == sc__PathSeparator) && (strURL[pos + 1] == sc__PathSeparator))
+      if ((strURL[pos] == '/') && (strURL[pos + 1] == '/'))
       {
         pos += 2;
         boolServerStartFound = true;
@@ -372,7 +384,7 @@ void AUrl::parse(const AString &strInput)
   else
   {
     //a_Now separate the username:password@remoteserver:port
-    if ((pos = strURL.rfind(sc__EmailSeparator)) != AConstant::npos)
+    if ((pos = strURL.rfind('@')) != AConstant::npos)
     {
       if (pos == 0)
       {
@@ -384,7 +396,7 @@ void AUrl::parse(const AString &strInput)
         m_strUsername.clear();
         m_strPassword.clear();
 
-        size_t separator = strURL.find(sc__ProtocolSeparator);
+        size_t separator = strURL.find(':');
         if (separator != AConstant::npos)
         {
           //a_We have both name and password
@@ -406,12 +418,12 @@ void AUrl::parse(const AString &strInput)
       return;
 
     //a_Now we should have <server>:<port>/<path><filename>?<CGI parameters>
-    size_t pathpos = strURL.find(sc__PathSeparator);
+    size_t pathpos = strURL.find('/');
     m_strServer.clear();
     if (pathpos != AConstant::npos)
     {
       //a_We have both name and password up to the path
-      size_t separator = strURL.find(sc__ProtocolSeparator);
+      size_t separator = strURL.find(':');
       if (separator != AConstant::npos && pathpos > separator)
       {
         //a_Server, port and path
@@ -439,8 +451,8 @@ void AUrl::parse(const AString &strInput)
     }
     else
     {
-      //a_We have both name and password but no sc__PathSeparator to denote start of path, we are done
-      size_t separator = strURL.find(sc__ProtocolSeparator);
+      //a_We have both name and password but no '/' to denote start of path, we are done
+      size_t separator = strURL.find(':');
       if (separator != AConstant::npos)
       {
         //a_Server and port but no path
@@ -450,7 +462,7 @@ void AUrl::parse(const AString &strInput)
         m_iPort = atoi(str.c_str());
 
         //a_Force it to be root since no path was specified but a server was
-        strURL = sc__PathSeparator;  
+        strURL = '/';  
       }
       else
       {
@@ -460,7 +472,7 @@ void AUrl::parse(const AString &strInput)
           strURL.peek(m_strServer, 0, pathpos);
 
           //a_Force it to be root since no path was specified but a server was
-          strURL = sc__PathSeparator;  
+          strURL = '/';  
         }
       }
     }
@@ -514,6 +526,7 @@ void AUrl::__parseDataProtocol(const AString &strInput, size_t pos)
     m_QueryString.parse(str, ANameValuePair::DATA);
 
   m_strFilename.clear();
+  m_strFragment.clear();
   ATextConverter::decodeBase64(strInput, pos, m_strFilename);
 }
 
@@ -522,6 +535,7 @@ void AUrl::__parsePath(const AString &strPath)
   //a_Separate the path from filename
   m_strPath.clear();
   m_strFilename.clear();
+  m_strFragment.clear();
   
   //a_See if we have "/" case
   if (strPath.getSize() == 1 && strPath.at(0,'\x0') == '/')
@@ -537,7 +551,7 @@ void AUrl::__parsePath(const AString &strPath)
     ++startofpath;  // a_Use ./ as the start
   }
 
-  size_t endofpath = strPath.rfind(sc__PathSeparator);
+  size_t endofpath = strPath.rfind('/');
   if (endofpath != AConstant::npos)
   {
     //a_Found separator, filename exists, a path MUST have / at the end of it else it is a filename
@@ -550,7 +564,12 @@ void AUrl::__parsePath(const AString &strPath)
     m_strFilename = strPath;
   }
 
-  return;
+  startofpath = m_strFilename.find('#');
+  if (AConstant::npos != startofpath)
+  {
+    m_strFilename.peek(m_strFragment, startofpath+1);
+    m_strFilename.setSize(startofpath);
+  }
 }
 
 void AUrl::__parseQueryString(const AString &strParams)
@@ -568,9 +587,9 @@ AString AUrl::getBaseDirName() const
   if (!m_strPath.isEmpty())
   {
     size_t start = 0;
-    if (m_strPath[0] == sc__PathSeparator)
+    if (m_strPath[0] == '/')
       start=1;
-    size_t slash = m_strPath.find(sc__PathSeparator, start);
+    size_t slash = m_strPath.find('/', start);
     if (AConstant::npos != slash)
     {
       if (slash > start)
@@ -597,12 +616,17 @@ AString AUrl::getPathFileAndQueryString() const
   if (!m_strFilename.isEmpty())
   {
     strReturn.append(m_strFilename);
+    if (!m_strFragment.isEmpty())
+    {
+      strReturn.append('#');
+      strReturn.append(m_strFragment);
+    }
   }
 
   //a_Form parameters
   if (m_QueryString.size() > 0)
   {
-    strReturn.append(sc__QuerySeparator);
+    strReturn.append('?');
     m_QueryString.emit(strReturn);
   }
 
@@ -667,13 +691,13 @@ void AUrl::emit(AOutputBuffer& result, bool boolFull, bool boolHidePassword /* =
     result.append(m_strUsername);
     if (!m_strPassword.isEmpty())
     {
-      result.append(sc__ProtocolSeparator);
+      result.append(':');
       if (boolHidePassword)
         result.append('*');
       else
         result.append(m_strPassword);
     }
-    result.append(sc__EmailSeparator);
+    result.append('@');
   }
 
   //a_Server:Port
@@ -685,7 +709,7 @@ void AUrl::emit(AOutputBuffer& result, bool boolFull, bool boolHidePassword /* =
     && !m_strServer.isEmpty()
   )
   {
-    result.append(sc__ProtocolSeparator);
+    result.append(':');
     result.append(AString::fromInt(m_iPort));
   }
 
@@ -767,7 +791,7 @@ AString AUrl::getPathAndFilenameNoExt() const
 
 void AUrl::setProtocol(const AString &strProtocol)
 { 
-  if (strProtocol[strProtocol.getSize() - 1] != sc__ProtocolSeparator)
+  if (strProtocol[strProtocol.getSize() - 1] != ':')
     ATHROW(this, AException::InvalidProtocol);
   
   m_strProtocol = strProtocol;

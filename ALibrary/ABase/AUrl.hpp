@@ -9,7 +9,7 @@
 #include "AXmlEmittable.hpp"
 
 /*
-protocol://server/basedir/somedir/otherdir/filename.ext
+protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext#fragment?query
 
 Path separator: /
 
@@ -48,11 +48,7 @@ public:
   static const AString sstr__PathSeparator;      //a_ "/"
   static const AString sstr__PathSelf;           //a_ "/./"
   static const AString sstr__PathParent;         //a_ "/../"
-  static const char    sc__PathSeparator;        //a_ '/'
-  static const char    sc__ProtocolSeparator;    //a_ ':'
-  static const char    sc__EmailSeparator;       //a_ '@'
-  static const char    sc__QuerySeparator;       //a_ '?'
-
+  
 public:
   /*!
   ctor/dtor
@@ -88,21 +84,22 @@ public:
   /*!
   Access methods
   */
-  inline const AString& getProtocol() const;
-  inline eProtocol getProtocolEnum() const;
-  inline const AString& getUsername() const;
-  inline const AString& getPassword() const;
-  inline const AString& getServer() const;
-  inline int getPort() const;
-  inline const AString& getPath() const;
-  inline AString getBaseDirName() const;  // protocol://server/basedir/somedir/otherdir/filename.ext will return 'basedir'
-  inline const AString& getFilename() const;
-  inline AString getFilenameNoExt()const;
-  inline AString getExtension() const;
-  inline AString getParameters() const;
-  inline AString getPathAndFilename() const; 
-  inline AString getPathAndFilenameNoExt() const; 
-  inline AString getPathFileAndQueryString() const;
+  const AString& getProtocol() const;
+  eProtocol getProtocolEnum() const;
+  const AString& getUsername() const;
+  const AString& getPassword() const;
+  const AString& getServer() const;
+  int getPort() const;
+  const AString& getPath() const;
+  AString getBaseDirName() const;  // protocol://server/basedir/somedir/otherdir/filename.ext will return 'basedir'
+  const AString& getFilename() const;
+  const AString& getFragment() const;
+  AString getFilenameNoExt()const;
+  AString getExtension() const;
+  AString getParameters() const;
+  AString getPathAndFilename() const; 
+  AString getPathAndFilenameNoExt() const; 
+  AString getPathFileAndQueryString() const;
 
   /*!
   Tests
@@ -118,17 +115,18 @@ public:
   /*!
   Modification methods
   */
-         void setProtocol(eProtocol);
-  inline void setProtocol(const AString &);
-  inline void setUsername(const AString &);
-  inline void setPassword(const AString &);
-  inline void setServer(const AString &);
-  inline void setPort(int);
-  inline void setPath(const AString &);
-  inline void setFilename(const AString &);
-  inline void setExtension(const AString &);
-  inline void setFilenameNoExt(const AString &);
-         void setPathAndFilename(const AString &);
+  void setProtocol(eProtocol);
+  void setProtocol(const AString &);
+  void setUsername(const AString &);
+  void setPassword(const AString &);
+  void setServer(const AString &);
+  void setPort(int);
+  void setPath(const AString &);
+  void setFilename(const AString &);
+  void setFragment(const AString &);
+  void setExtension(const AString &);
+  void setFilenameNoExt(const AString &);
+  void setPathAndFilename(const AString &);
 
   /*!
   Support for data: protocol specifics
@@ -203,6 +201,7 @@ protected:
   int     m_iPort;
   AString m_strPath;
   AString m_strFilename;  //a_Raw data for data: will be stored here, will be encoded as need on emit
+  AString m_strFragment;
 
   //a_Support for data:
   bool m_isBase64;

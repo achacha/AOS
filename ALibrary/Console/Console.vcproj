@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tStringHashMap.cpp"
+			RelativePath=".\tUrl2.cpp"
 			>
 		</File>
 	</Files>

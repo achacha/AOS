@@ -12,8 +12,8 @@ void test_1()
   AUrl urlNew("Object:///newpath/newobject.sub2");
   urlA &= urlNew;
   urlB |= urlNew;
-  std::cout << "Result of &: " << urlA.toString() << std::endl;
-  std::cout << "Result of |: " << urlB.toString() << std::endl;
+  std::cout << "Result of &: " << urlA << std::endl;
+  std::cout << "Result of |: " << urlB << std::endl;
 }
 
 void test_debugDump()
@@ -22,44 +22,17 @@ void test_debugDump()
   url.debugDump(std::cout, 0);
 }
 
-void test_PathParts()
+void test_Ref()
 {
-  AUrl url("path0/path1/path2/name");
-  int i = 0;
-  LIST_AString sv;
-  url.getPathParts(sv);
-  while (sv.size() > 0)
-  {
-    std::cout << i++ << ": " << sv.front() << std::endl;
-    sv.pop_front();
-  }
-
-  url.parse("onlyname");
-  url.getPathParts(sv);
-  i=0;
-  while (sv.size() > 0)
-  {
-    std::cout << i++ << ": " << sv.front() << std::endl;
-    sv.pop_front();
-  }
-
-  url.parse("/root/sub0/sub1/");
-  url.getPathParts(sv);
-  LIST_AString::iterator it = sv.begin();
-  i=0;
-  while (it != sv.end())
-  {
-    std::cout << i++ << ": " << (*it) << std::endl;
-    ++it;
-  }
-
+  AUrl url("http://myserver.com/path/file#reference");
+  url.debugDump();
 }
 
 int main()
 {
   //test_1();
   //test_debugDump();
-  test_PathParts();
+  test_Ref();
 
   return 0x0;
 }

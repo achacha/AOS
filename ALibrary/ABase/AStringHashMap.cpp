@@ -229,7 +229,7 @@ void AStringHashMap::toAFile(AFile& afile) const
   //a_Save the hashmap buckets
   afile.write(AString::fromSize_t(m_Container.size()));
   afile.write(':');
-  
+
   //a_Generate name/value pairs
   ARope rope;
   emit(rope);
