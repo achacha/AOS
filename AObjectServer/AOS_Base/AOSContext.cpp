@@ -978,3 +978,13 @@ void AOSContext::setOutputCommitted(bool b)
 {
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT, b);
 }
+
+const AString& AOSContext::getSessionId() const
+{
+  return mp_SessionObject->getSessionId();
+}
+
+void AOSContext::persistSession()
+{
+  m_Services.useSessionManager().persistSession(mp_SessionObject);
+}

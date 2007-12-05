@@ -245,10 +245,24 @@ public:
   AObjectContainer& useContextObjects();
 
   /*!
-  Gets/sets the session data object/data
+  Gets the session object
   */
   void setSessionObject(AOSSessionData *);
+  
+  /*!
+  Get session data
+  */
   AStringHashMap& useSessionData();
+
+  /*!
+  Get session id if one exists
+  */
+  const AString& getSessionId() const;
+
+  /*!
+  Persist session (if database persistence is enabled)
+  */
+  void persistSession();
 
   /*!
   Error message handling

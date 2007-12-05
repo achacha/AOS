@@ -9,23 +9,48 @@
 
 class AOSServices;
 
-#define DEFAULT_HOLDER_SIZE 13
-
 class AOS_BASE_API AOSSessionManager : public AOSAdminInterface
 {
 public:
+  //! ctor
   AOSSessionManager(AOSServices&);
+  
+  //! dtor
   virtual ~AOSSessionManager();
   
   /*!
   Check existance of session data
+  If session has already expired it will be removed from database and reported as non-existing
+
+  @param sessionId checks if session exists
   */
   bool exists(const AString& sessionId);
 
   /*!
+  Create a new session data and populate new session id
+  
+  @param sessionId string to receive new session id, will be cleared first
+  @return new session data object
+  */
+  AOSSessionData *AOSSessionManager::createNewSessionData(AString& sessionId);
+
+  /*!
   Get session data
+  
+  @param sessionId for existing session, will return NULL if not found or expired
+  @return existing session data object
   */
   AOSSessionData *getSessionData(const AString& sessionId);
+
+  /*!
+  Persist session data to the database
+  If database persistence is enabled it will save the session data
+  When exists/getSessionData is called it will restore it back into memory
+
+  @param sessionId for existing session to be persisted
+  */
+  void persistSession(const AString& sessionId);
+  void persistSession(AOSSessionData *pData);
 
   /*!
   AOSAdminInterface
@@ -64,11 +89,17 @@ private:
   //! Sleep cycle time in milliseconds
   u4 m_SessionMonitorSleep;
 
+  bool m_DatabasePersistence;
+
   //! threadproc that cleans up old sessions
   static u4 threadprocSessionManager(AThread&);
 
   //! Manager thread
   AThread m_Thread;
+
+  //! Database restore
+  //! returns NULL if not found or expired
+  AOSSessionData *_restoreSession(const AString& sessionId);
 
 public:
 #ifdef __DEBUG_DUMP__

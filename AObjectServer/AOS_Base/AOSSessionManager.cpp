@@ -4,7 +4,10 @@
 #include "ALock.hpp"
 #include "AOSServices.hpp"
 #include "AThread.hpp"
+#include "AResultSet.hpp"
+#include "AFile_AString.hpp"
 
+#define DEFAULT_HOLDER_SIZE 13
 #define DEFAULT_SLEEP_DURATION 3000
 
 #ifdef __DEBUG_DUMP__
@@ -78,7 +81,7 @@ AOSSessionManager::AOSSessionManager(AOSServices& services) :
   AASSERT(this, m_SessionMonitorSleep > 0);
   m_HolderSize = m_Services.useConfiguration().useConfigRoot().getSize_t("/config/server/session-manager/holder-size", DEFAULT_HOLDER_SIZE);
   AASSERT(this, m_HolderSize > 0);
-
+  m_DatabasePersistence = m_Services.useConfiguration().useConfigRoot().getBool("/config/server/session-manager/database-persistence/enabled", false);
 
   //a_Create holders
   m_SessionHolderContainer.resize(m_HolderSize);
@@ -188,7 +191,16 @@ bool AOSSessionManager::exists(const AString& sessionId)
   AASSERT(this, pSessionMapHolder);
   
   //a_Find session in the bucket
-  return (pSessionMapHolder->m_SessionMap.end() != pSessionMapHolder->m_SessionMap.find(sessionId));
+  bool isFound = (pSessionMapHolder->m_SessionMap.end() != pSessionMapHolder->m_SessionMap.find(sessionId));
+  if (
+    !isFound
+    && m_DatabasePersistence)
+  {
+    //a_Try database
+    isFound = (NULL != _restoreSession(sessionId));
+  }
+
+  return isFound;
 }
 
 AOSSessionData *AOSSessionManager::getSessionData(const AString& sessionId)
@@ -205,6 +217,35 @@ AOSSessionData *AOSSessionManager::getSessionData(const AString& sessionId)
   }
   else
   {
+    //a_Not found, try DB or create new one
+    AOSSessionData *pData = NULL;
+    if (m_DatabasePersistence)
+    {
+      //a_Try database
+      pData = _restoreSession(sessionId);
+    }
+    
+    ALock lock(pSessionMapHolder->mp_SynchObject);
+    
+    //a_Create a new session
+    pData = new AOSSessionData(sessionId);
+    pSessionMapHolder->m_SessionMap.insert(SESSION_MAP::value_type(sessionId, pData));
+    return pData;
+  }
+}
+
+AOSSessionData *AOSSessionManager::createNewSessionData(AString& sessionId)
+{
+  sessionId.clear();
+  AString localHostHash(AString::fromSize_t(ASocketLibrary::getLocalHostName().getHash()));
+  ATextGenerator::generateRandomAlphanum(sessionId, 13);
+  sessionId.append(AString::fromSize_t(ATime::getTickCount()));
+  sessionId.append(localHostHash);
+
+  SessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
+  AASSERT(this, pSessionMapHolder);
+
+  {
     ALock lock(pSessionMapHolder->mp_SynchObject);
     
     //a_Create a new session
@@ -218,4 +259,105 @@ AOSSessionManager::SessionMapHolder *AOSSessionManager::_getSessionHolder(const 
 {
   size_t hash = sessionId.getHash(m_HolderSize);
   return m_SessionHolderContainer.at(hash);
+}
+
+void AOSSessionManager::persistSession(const AString& sessionId)
+{
+  AOSSessionData *pData = getSessionData(sessionId);
+  if (!pData)
+  {
+    m_Services.useLog().add(ARope("Trying to persist non-existing session: ")+sessionId, ALog::WARNING);
+    return;
+  }
+  persistSession(pData);
+}
+
+void AOSSessionManager::persistSession(AOSSessionData *pData)
+{
+  AASSERT(this, pData);
+
+  //a_First check if it already exists
+  AString query("SELECT id FROM session WHERE id='");
+  query.append(pData->getSessionId());
+  query.append("'",1);
+
+  AResultSet result;
+  AString strError;
+  size_t rows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
+  if (!strError.isEmpty())
+  {
+    m_Services.useLog().add(strError, ALog::FAILURE);
+    return;
+  }
+
+  AFile_AString datafile;
+  pData->toAFile(datafile);
+  if (rows > 0)
+  {
+    //a_UPDATE
+    query.assign("UPDATE session SET data='");
+    query.append(datafile);
+    query.append("' WHERE id='");
+    query.append(pData->getSessionId());
+    query.append("'",1);
+
+    result.clear();
+    size_t rows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
+    if (!strError.isEmpty())
+    {
+      m_Services.useLog().add(strError, ALog::FAILURE);
+    }
+  }           
+  else
+  {
+    //a_INSERT
+    query.assign("INSERT INTO session(id,data) VALUES ('");
+    query.append(pData->getSessionId());
+    query.append("','");
+    query.append(datafile);
+    query.append("')");
+    result.clear();
+    size_t rows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
+    if (!strError.isEmpty())
+    {
+      m_Services.useLog().add(strError, ALog::FAILURE);
+    }
+  }
+}
+
+AOSSessionData *AOSSessionManager::_restoreSession(const AString& sessionId)
+{
+  if (sessionId.isEmpty())
+    return NULL;
+
+  AString query("SELECT data FROM session WHERE id='");
+  query.append(sessionId);
+  query.append("'",1);
+
+  AResultSet result;
+  AString strError;
+  size_t rows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
+  if (!strError.isEmpty())
+  {
+    m_Services.useLog().add(strError, ALog::FAILURE);
+    return NULL;
+  }
+
+  AOSSessionData *pData = NULL;
+  if (rows > 0)
+  {
+    result.getData(0,0);
+
+    SessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
+    AASSERT(this, pSessionMapHolder);
+    ALock lock(pSessionMapHolder->mp_SynchObject);
+    
+    //a_Create a new session
+    AOSSessionData *pData = new AOSSessionData(sessionId);
+    AFile_AString datafile(result.getData(0,0));
+    pData->fromAFile(datafile);
+    pSessionMapHolder->m_SessionMap.insert(SESSION_MAP::value_type(sessionId, pData));
+  }
+
+  return pData;
 }

@@ -223,7 +223,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             //a_Create/Use session cookie
             AString strSessionId;
             pContext->useRequestCookies().getValue(ASW("AOSSession", 10), strSessionId);
-            if (m_Services.useSessionManager().exists(strSessionId))
+            if (!strSessionId.isEmpty() && m_Services.useSessionManager().exists(strSessionId))
             {
               //a_Fetch session
               pContext->setExecutionState(AString("Using existing session ",23)+strSessionId);
@@ -235,18 +235,13 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
               //a_Create session
               if (!strSessionId.isEmpty())
               {
-                pContext->setExecutionState(AString("Existing session not found ",27)+strSessionId);
+                pContext->setExecutionState(ARope("Creating new session, existing session not found: ",50)+strSessionId);
+                strSessionId.clear();
               }
-
-              pContext->setExecutionState(ASW("Creating new session",20));
               
-              AString localHostHash(AString::fromSize_t(ASocketLibrary::getLocalHostName().getHash()));
-              strSessionId.clear();
-              ATextGenerator::generateRandomAlphanum(strSessionId, 13);
-              strSessionId.append(AString::fromSize_t(ATime::getTickCount()));
-              strSessionId.append(localHostHash);
-
-              pContext->setSessionObject(m_Services.useSessionManager().getSessionData(strSessionId));
+              //a_Fetch session (creating a new one)
+              //a_This call will populate steSessionId and return the new session data object
+              pContext->setSessionObject(m_Services.useSessionManager().createNewSessionData(strSessionId));
 
               //a_Add cookie for this session
               ACookie& cookie = pContext->useResponseCookies().addCookie(ASW("AOSSession", 10), strSessionId);

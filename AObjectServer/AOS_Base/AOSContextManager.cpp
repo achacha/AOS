@@ -178,6 +178,9 @@ void AOSContextManager::deallocate(AOSContext *p)
     m_Services.useLog().add(p->useEventVisitor(), ALog::DEBUG);
   }
 
+  //a_Persist session data
+  p->persistSession();
+
   //a_Add to history
   {
     ALock lock(m_HistorySync);

@@ -323,6 +323,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSUser.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pchAOS_Base.cpp"
 				>
 				<FileConfiguration
