@@ -219,11 +219,11 @@ AOSSessionData *AOSSessionManager::getSessionData(const AString& sessionId)
   {
     //a_Not found, try DB or create new one
     AOSSessionData *pData = NULL;
-    if (m_DatabasePersistence)
-    {
+//    if (m_DatabasePersistence)
+//    {
       //a_Try database
-      pData = _restoreSession(sessionId);
-    }
+//      pData = _restoreSession(sessionId);
+//    }
     
     ALock lock(pSessionMapHolder->mp_SynchObject);
     
@@ -298,6 +298,11 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
 
   AFile_AString datafile;
   pData->toAFile(datafile);
+  
+  //a_No point in persisting empty data
+  if (datafile.useAString().isEmpty())
+    return;
+
   if (rows > 0)
   {
     //a_UPDATE
