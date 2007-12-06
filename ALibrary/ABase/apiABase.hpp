@@ -77,4 +77,6 @@
 #define DEBUG_MAXSIZE_AResultSet 500000
 #endif
 
+//#define ENABLE_EXCEPTION_STACKWALK 1
+
 #endif //INCLUDED__apiABase_HPP__

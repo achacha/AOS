@@ -125,7 +125,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
 	  /*!
     Default construction is of an unknown exception
     */
-#ifdef NDEBUG
+#ifdef ENABLE_EXCEPTION_STACKWALK
     AException(
       const ADebugDumpable *const pObject = NULL,
       int iID = AException::Unknown, 
@@ -133,7 +133,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
       int iLineNumber = 0, 
       const AEmittable& extra = AConstant::ASTRING_EMPTY,
       errno_t errornum = 0,
-      bool walkStack = false
+      bool walkStack = true
     );
 #else
     AException(
@@ -143,7 +143,7 @@ class ABASE_API AException : public AEmittable, public AXmlEmittable
       int iLineNumber = 0, 
       const AEmittable& extra = AConstant::ASTRING_EMPTY,
       errno_t errornum = 0,
-      bool walkStack = true
+      bool walkStack = false
     );
 #endif
 
