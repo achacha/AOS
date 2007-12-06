@@ -19,24 +19,32 @@ void AOSSessionData::debugDump(std::ostream& os, int indent) const
 #endif
 
 AOSSessionData::AOSSessionData(const AString& sessionId, size_t defaultDataHashSize) :
-  m_Data(NULL, defaultDataHashSize),
   m_AgeTimer(true),
-  m_LastUsedTimer(true)
+  m_LastUsedTimer(true),
+  m_Data(ASW("SESSION",7))
 {
-  m_Data.set(ASW("id",2), sessionId);
+  m_Data.useRoot().setString(SESSIONID, sessionId);
 }
 
-  AOSSessionData::AOSSessionData(AFile& aFile) :
+AOSSessionData::AOSSessionData(AFile& aFile) :
   m_AgeTimer(true),
-  m_LastUsedTimer(true)
+  m_LastUsedTimer(true),
+  m_Data(ASW("SESSION",7))
 {
   fromAFile(aFile);
-  AASSERT_EX(this, m_Data.exists(SESSIONID), ASWNL("Session ID was not found after session was restored"));
+  AASSERT_EX(this, m_Data.useRoot().exists(SESSIONID), ASWNL("Session ID was not found after session was restored"));
 }
 
-const AString& AOSSessionData::getSessionId() const
+bool AOSSessionData::getSessionId(AOutputBuffer& target) const
 {
-  return m_Data.get(SESSIONID);
+  const AXmlElement *p = m_Data.getRoot().findElement(SESSIONID);
+  if (p)
+  {
+    p->emitContent(target);
+    return true;
+  }
+  else
+    return false;
 }
 
 void AOSSessionData::emitXml(AXmlElement& target) const
@@ -46,7 +54,7 @@ void AOSSessionData::emitXml(AXmlElement& target) const
 
   m_AgeTimer.emitXml(target.addElement(ASW("session-age",11)));
   m_LastUsedTimer.emitXml(target.addElement(ASW("last-used",9)));
-  m_Data.emitXml(target.addElement(ASW("data",4)));
+  m_Data.getRoot().emitXml(target.addElement(ASW("data",4)));
 }
 
 const ATimer& AOSSessionData::getAgeTimer() const
@@ -64,9 +72,14 @@ void AOSSessionData::restartLastUsedTimer()
   m_LastUsedTimer.start();
 }
 
-AStringHashMap& AOSSessionData::useData()
+AXmlElement& AOSSessionData::useData()
 { 
-  return m_Data;
+  return m_Data.useRoot();
+}
+
+const AXmlElement& AOSSessionData::getData() const
+{ 
+  return m_Data.getRoot();
 }
 
 void AOSSessionData::toAFile(AFile& aFile) const
@@ -77,4 +90,11 @@ void AOSSessionData::toAFile(AFile& aFile) const
 void AOSSessionData::fromAFile(AFile& aFile)
 {
   m_Data.fromAFile(aFile);
+}
+
+void AOSSessionData::clear()
+{
+  m_AgeTimer.clear();
+  m_LastUsedTimer.clear();
+  m_Data.clear();
 }

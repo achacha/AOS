@@ -3,7 +3,7 @@
 
 #include "apiAOS_Base.hpp"
 #include "ADebugDumpable.hpp"
-#include "AStringHashMap.hpp"
+#include "AXmlDocument.hpp"
 #include "ATimer.hpp"
 #include "AXmlEmittable.hpp"
 #include "ASerializable.hpp"
@@ -28,8 +28,11 @@ public:
 
   /*!
   Gets the session ID stored in data
+
+  @param target appends session id if found
+  @return true if found
   */
-  const AString& getSessionId() const;
+  bool AOSSessionData::getSessionId(AOutputBuffer& target) const;
 
   /*!
   AXmlEmittable
@@ -37,12 +40,13 @@ public:
   virtual void emitXml(AXmlElement&) const;
 
   /*!
-  Data is all AString->AString map
+  Data associated with the session
   Persiatable if needed via ASerialization interface
 
   @return Data
   */
-  AStringHashMap& useData();
+  AXmlElement& useData();
+  const AXmlElement& getData() const;
   
   /*!
   Overall age timer of the session
@@ -61,6 +65,11 @@ public:
   void restartLastUsedTimer();
 
   /*!
+  Reset the object timers and clear the data
+  */
+  void clear();
+
+  /*!
   ASerializable
   NOTE: Timers are not persisted and are reset upon deserialization
   */
@@ -68,9 +77,7 @@ public:
   virtual void fromAFile(AFile&);
 
 private:
-  AOSSessionData() {}
-
-  AStringHashMap m_Data;
+  AXmlDocument m_Data;
   ATimer m_AgeTimer;
   ATimer m_LastUsedTimer;
 

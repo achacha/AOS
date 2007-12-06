@@ -718,16 +718,16 @@ void AOSContext::setSessionObject(AOSSessionData *pObj)
     mp_SessionObject = pObj;
 }
 
-AStringHashMap& AOSContext::useSessionData()
+AOSSessionData& AOSContext::useSessionData()
 {
   if (mp_SessionObject)
   {
-    return mp_SessionObject->useData();
+    return *mp_SessionObject;
   }
   else
   {
-    addError(ASWNL("AOSContext::useSessionObjects"), ASWNL("Session does not exist, falling back on context data."));
-    ATHROW_EX(this, AException::InvalidState, ASWNL("Session object does not exist"));
+    addError(ASWNL("AOSContext::useSessionData"), ASWNL("Session does not exist."));
+    ATHROW_EX(this, AException::InvalidState, ASWNL("Session data does not exist for this context, may be manually turned off in command."));
   }
 }
 
@@ -977,11 +977,6 @@ bool AOSContext::isOutputCommitted() const
 void AOSContext::setOutputCommitted(bool b)
 {
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT, b);
-}
-
-const AString& AOSContext::getSessionId() const
-{
-  return mp_SessionObject->getSessionId();
 }
 
 void AOSContext::persistSession()

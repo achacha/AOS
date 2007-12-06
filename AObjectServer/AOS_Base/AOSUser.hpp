@@ -3,57 +3,29 @@
 
 #include "apiAOS_Base.hpp"
 #include "AString.hpp"
-#include "AXmlEmittable.hpp"
-#include "AXmlParsable.hpp"
+#include "AXmlElement.hpp"
 #include "ASerializable.hpp"
 #include "AStringHashMap.hpp"
 
 /*!
-Generic user object
-
-Everything is stored in data
+This class is a pure wrapper to AXmlElement and uses it to look up and change data
+It is not intended to have any local members other than transients
+This is a view into the model that contains the user xml data
 */
-class AOS_BASE_API AOSUser : public AXmlEmittable, public AXmlParsable, public ASerializable
+class AOS_BASE_API AOSUser
 {
 public:
-  static const AString USERNAME;
-  static const AString PASSWORD;
-
-public:
-  AOSUser();
-  virtual ~AOSUser();
+  AOSUser(AXmlElement&);
 
   /*!
   Data for this user
   */
-  AStringHashMap& useData();
-  const AStringHashMap& getData() const;
-
-  /*!
-  AXmlParsable
-  */
-  virtual void fromXml(const AXmlElement&);
-
-  /*!
-  AXmlEmittable
-  */
-  virtual void emitXml(AXmlElement&) const;
-
-  /*!
-  ASerializable
-  */
-  virtual void toAFile(AFile&) const;
-  virtual void fromAFile(AFile&);
+  AXmlElement& useElement();
+  const AXmlElement& getElement() const;
 
 private:
   //! Username
-  AString m_Username;
-
-  //! Password (SHA1 hash)
-  AString m_Password;
-
-  //! Data
-  AStringHashMap m_Data;
+  AXmlElement& m_Element;
 
 public:
 #ifdef __DEBUG_DUMP__

@@ -112,6 +112,17 @@ public:
   AXmlDocument& useModelXmlDocument();
 
   /*!
+  Get session data
+  */
+  AOSSessionData& useSessionData();
+
+  /*!
+  Persist session (if database persistence is enabled)
+  */
+  void persistSession();
+
+
+  /*!
   Output buffer, sent to output after output stage
   If this is empty then XML document is the result
   
@@ -249,21 +260,6 @@ public:
   */
   void setSessionObject(AOSSessionData *);
   
-  /*!
-  Get session data
-  */
-  AStringHashMap& useSessionData();
-
-  /*!
-  Get session id if one exists
-  */
-  const AString& getSessionId() const;
-
-  /*!
-  Persist session (if database persistence is enabled)
-  */
-  void persistSession();
-
   /*!
   Error message handling
   Calling this will include context dump in log

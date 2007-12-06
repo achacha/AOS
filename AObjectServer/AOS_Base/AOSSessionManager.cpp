@@ -278,7 +278,13 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
 
   //a_First check if it already exists
   AString query("SELECT id FROM session WHERE id='");
-  query.append(pData->getSessionId());
+  AString sessionId;
+  if (!pData->getSessionId(sessionId))
+  {
+    ATHROW_EX(pData, AException::InvalidData, ASWNL("Session data cannot persist without a valid session id"));
+    return;
+  }
+  query.append(sessionId);
   query.append("'",1);
 
   AResultSet result;
@@ -298,7 +304,7 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
     query.assign("UPDATE session SET data='");
     query.append(datafile);
     query.append("' WHERE id='");
-    query.append(pData->getSessionId());
+    query.append(sessionId);
     query.append("'",1);
 
     result.clear();
@@ -312,7 +318,7 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
   {
     //a_INSERT
     query.assign("INSERT INTO session(id,data) VALUES ('");
-    query.append(pData->getSessionId());
+    query.append(sessionId);
     query.append("','");
     query.append(datafile);
     query.append("')");
