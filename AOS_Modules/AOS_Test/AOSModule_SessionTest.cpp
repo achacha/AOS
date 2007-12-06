@@ -14,23 +14,25 @@ AOSModule_SessionTest::AOSModule_SessionTest(AOSServices& services) :
 
 bool AOSModule_SessionTest::execute(AOSContext& context, const AXmlElement& params)
 {
+  static const AString COUNT("count");
+  static const AString OUTPATH("test/count");
   AString str(128, 256);
 
   //a_Session counter
-  AStringHashMap& sessionData = context.useSessionData();
-  if (sessionData.get(ASW("count",5), str))
+  AXmlElement& sessionData = context.useSessionData().useData();
+  if (sessionData.emitFromPath(COUNT, str))
   {
     ANumber n(str);
     ++n;
     str.clear();
     n.emit(str);
-    sessionData.set(ASW("count",5), str);
-    context.useModel().addElement(ASW("/test/count",11), str);
+    sessionData.setString(COUNT, str);
+    context.useModel().setString(OUTPATH, str);
   }
   else
   {
-    sessionData.set(ASW("count",5), AConstant::ASTRING_ZERO);
-    context.useModel().addElement(ASW("/test/count",11), AConstant::ASTRING_ZERO);
+    sessionData.setString(COUNT, AConstant::ASTRING_ZERO);
+    context.useModel().setString(OUTPATH, AConstant::ASTRING_ZERO);
   }
 
   return true;
