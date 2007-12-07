@@ -271,7 +271,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
           {
             //a_Socket error occured, just terminate and keep processing
-            pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: Socket error detected, terminating",63), true);
+            pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: Client socket error detected, terminating request",78));
             pThis->_goTerminate(pContext);
             pContext = NULL;
           }
@@ -454,12 +454,14 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     catch(AException& ex)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+      pContext->useEventVisitor().set(ex, true);
       m_Services.useLog().add(ex);
       return false;
     }
     catch(...)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+      pContext->useEventVisitor().set(ASWNL("Unknown exception: _processStaticPage: writing compressed"), true);
       m_Services.useLog().add(ASWNL("Unknown exception: _processStaticPage: writing compressed"), ALog::CRITICAL_ERROR);
       return false;
     }
@@ -479,12 +481,14 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     catch(AException& ex)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+      pContext->useEventVisitor().set(ex);
       m_Services.useLog().add(ex);
       return false;
     }
     catch(...)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+      pContext->useEventVisitor().set(ASWNL("Unknown exception: _processStaticPage: writing uncompressed"), true);
       m_Services.useLog().add(ASWNL("Unknown exception: _processStaticPage: writing uncompressed"), ALog::CRITICAL_ERROR);
       return false;
     }
