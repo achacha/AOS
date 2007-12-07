@@ -34,13 +34,13 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
   }
 
   nodes.clear();
-  if (moduleParams.find(ASW("add-cookie",10), nodes) > 0)
+  if (moduleParams.find(ASW("add-request-cookie",18), nodes) > 0)
   {
     _processSetCookie(context.useRequestCookies(), nodes);
   }
 
   nodes.clear();
-  if (moduleParams.find(ASW("add-set-cookie",14), nodes) > 0)
+  if (moduleParams.find(ASW("add-response-cookie",19), nodes) > 0)
   {
     _processSetCookie(context.useResponseCookies(), nodes);
   }
@@ -99,7 +99,7 @@ void AOSModule_AlterContext::_processSetCookie(ACookies& cookies, AXmlElement::C
       ACookie& cookie = cookies.addCookie(strName, str);
 
       str.clear();
-      if ((*cit)->emitFromPath("maxage", str))
+      if ((*cit)->emitFromPath("max-age", str))
       {
         if (!str.isEmpty())
           cookie.setMaxAge(str.toS4());
