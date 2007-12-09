@@ -239,6 +239,11 @@ public:
   */
   size_t toSize_t(int iBase = 0xA) const;
 
+  /*!
+  Convert to double type  
+  */
+  double toDouble() const;
+
   /*
   Convert to pointer
   Assumes 0xXXXXXXXX and returns pointer to it

@@ -1575,6 +1575,11 @@ int AString::toInt() const
   return (m_Length ? atoi(mp_Buffer) : 0);
 }
 
+double AString::toDouble() const
+{
+  return (m_Length ? atof(mp_Buffer) : 0);
+}
+
 s4 AString::toS4(int iBase) const
 { 
   char* pcEnd = "\x0";
