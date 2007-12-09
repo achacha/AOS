@@ -481,7 +481,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
     return AOSContext::STATUS_HTTP_INVALID_FIRST_CHAR;
   }
 
-  setExecutionState(ASW("AOSContext: Reading HTTP line zero",34), false, 2000.0);  //a_Read header for 60 seconds
+  setExecutionState(ASW("AOSContext: Reading HTTP line zero",34), false, 2000.0);
   if (AConstant::npos == (bytesRead = mp_RequestFile->readLine(str, 4096, false)))
   {
     m_EventVisitor.set(AString("Line zero incomplete: '",22)+str+'\'');

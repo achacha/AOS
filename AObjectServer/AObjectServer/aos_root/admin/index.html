@@ -1,0 +1,72 @@
+<html>
+<head>
+	<title>AObjectServer Administration</title>
+</head>
+<body>
+<img src="/images/aoslogo.png"><br/>
+<a href="/admin?command=list">Object list</a><br/>
+<br/>
+<b>Managment</b><br/>
+<a href="/admin?command=display&object=AOSCacheManager">AOSCacheManager</a><br/>
+<a href="/admin?command=display&object=AOSContextManager">AOSContextManager</a><br/>
+<a href="/admin?command=display&object=AOSSessionManager">AOSSessionManager</a><br/>
+<br/>
+<b>Request flow</b><br/>
+<table border="1">
+<tr><td><a href="/admin?command=display&object=AOSRequestListener">AOSRequestListener</a> (socket listener)</td><td></td><td></td></tr>
+
+<tr><td align="center"><img src="images/arrow_blue_down.gif"/></td><td></td><td></td></tr>
+
+<tr><td><a href="/admin?command=display&object=AOSContextQueue_PreExecutor">AOSContextQueue_PreExecutor</a> (Pre-Executor/Static Processor)</td><td align="center"><img src="images/arrow_gray_left.gif"/><img src="images/arrow_gray_right.gif"/></td><td><a href="/admin?command=display&object=AOSContextQueue_IsAvailable">AOSContextQueue_IsAvailable</a> (Socket available wait)</td></tr>
+
+<tr><td align="center"><img src="images/arrow_blue_down.gif"/></td><td></td><td></td></tr>
+
+<tr><td><a href="/admin?command=display&object=AOSContextQueue_Executor">AOSContextQueue_Executor</a>
+  <br/>&nbsp;&nbsp;<a href="/admin?command=display&object=AOSInputExecutor">Input Executor</a>
+  <br/>&nbsp;&nbsp;<a href="/admin?command=display&object=AOSModuleExecutor">Module Executor</a>
+  <br/>&nbsp;&nbsp;<a href="/admin?command=display&object=AOSOutputExecutor">Output Executor</a>
+  </td><td align="center"><img src="images/arrow_red_right.gif"/></td><td><a href="/admin?command=display&object=AOSContextQueue_ErrorExecutor">AOSContextQueue_ErrorExecutor</a> (Error output)</td></tr>
+  
+</table>
+
+<br/>
+<b>Useful admin shortcuts</b><br/>
+<br/>
+<br/>
+&nbsp;&nbsp;Shutdown server <a href="/admin?command=shutdown">!</a><br/>
+<br/>
+<hr/>
+<br/>
+<br/>
+<br/>
+<br/>
+Useful live site URL parameters:<br/>
+<table cellspacing="3" cellpadding="3" border="1">
+  <tr><th>&amp;ajax=1</th><td>
+      Does not add anything to output XML that is not added by modules (e.g. request URL)<br/>
+      Equivalent to having &lt;command ajax="1"&gt; in the .aos.xml command definition file</td></tr>
+  <tr><th>&amp;gzip=N</th><td>
+      Where N={0, .. ,9}  0=no compression and 9=maximum compression, 6=ZLib recommended default<br/>
+      Forces output data to be gzipped for browsers that support it, can be added to content in aos_static as well.</td></tr>
+  <tr><th>&amp;overrideInput={Module Class}</th><td>Force input to be {Module Class} e.g. 'NOP'  (<b>DEBUG BUILD ONLY</b>)</td></tr>
+  <tr><th>&amp;overrideOutput={Module Class}</th><td>Force output to be {Module Class} e.g. 'NOP' (<b>DEBUG BUILD ONLY</b>)</td></tr>
+  <tr><th>&amp;dumpContext={N}</th>
+	<td>
+	dumps AOSContext (<b>DEBUG BUILD ONLY</b>)<br/>
+	adds /input/raw_data when HtmlForm input ptocessor is used<br/>
+	<br/>
+	N=1: Dump context as XML<br/>
+	N=2: Adds /context/debugDump which calls debugDump() on the entire context
+	</td></tr>
+  <tr><th>&amp;disableXslCache=1</th><td>Output_Xslt module: disable cached XSLT and reload stylesheet from HDD</td></tr>
+</table>
+<br/>
+<hr/>
+<br/>
+Useful admin site URL parameters (this is the admin site):<br/>
+<table cellspacing="3" cellpadding="3" border="1">
+  <tr><th>&amp;xml=1</th><td>Force output as XML</td></tr>
+</table>
+
+</body>
+</html>

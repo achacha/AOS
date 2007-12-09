@@ -95,7 +95,17 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           {
             //a_Go into waiting queue
             pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, going into waiting queue",79));
-            pThis->_goNo(pContext);
+            if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
+            {
+              //a_Socket error occured, just terminate and keep processing
+              pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: Client socket error detected before heade read, terminating request",96));
+              pThis->_goTerminate(pContext);
+            }
+            else
+            {
+              pThis->_goNo(pContext);
+            }
+
             pContext = NULL;
           }
           continue;

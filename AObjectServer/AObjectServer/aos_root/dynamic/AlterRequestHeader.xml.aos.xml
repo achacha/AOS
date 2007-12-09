@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<command>
+	<input class="application/x-www-form-urlencoded"/>
+	<module class="AlterContext">
+		<add-parameter>
+			<name>param-added-0</name>
+			<value>0</value>
+		</add-parameter>
+		<add-parameter>
+			<name>param-added-0</name>
+			<value>1</value>
+		</add-parameter>
+		<add-cookie>
+			<name>reqcookie0</name>
+			<value>0</value>
+		</add-cookie>
+		<add-cookie>
+			<name>reqcookie1</name>
+			<value>1</value>
+		</add-cookie>
+		<add-request-header>
+			<name>req-header-0</name>
+			<value>value0</value>
+		</add-request-header>
+		<add-request-header>
+			<name>req-header-1</name>
+			<value>value1</value>
+		</add-request-header>
+		<add-response-header>
+			<name>res-header-0</name>
+			<value>value0</value>
+		</add-response-header>
+		<add-response-header>
+			<name>res-header-1</name>
+			<value>value1</value>
+		</add-response-header>
+	</module>
+	<module class="PublishInput"/>
+	<output/>
+</command>
+	

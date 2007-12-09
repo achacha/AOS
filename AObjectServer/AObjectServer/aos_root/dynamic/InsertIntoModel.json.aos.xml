@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<command>
+	<module class="InsertIntoModel">
+		<path>/inserted</path>
+		<data>
+			<insert-root>
+				<item>small</item>
+				<item>Medium</item>
+				<item><![CDATA[LARGE]]></item>
+			</insert-root>
+		</data>
+	</module>
+	<module class="InsertIntoModel">
+		<path>/inserted</path>
+		<data>
+			<insert-root>
+				<item>small-2</item>
+				<item>Medium-2</item>
+				<item><![CDATA[LARGE-2]]></item>
+			</insert-root>
+		</data>
+	</module>
+	<module class="InsertIntoModel">
+		<data>
+			<insert-root-2>
+				<item>small-2</item>
+				<item>Medium-2</item>
+				<item><![CDATA[LARGE-2]]></item>
+			</insert-root-2>
+		</data>
+	</module>
+	<output class="JSON"/>
+</command>
+	
