@@ -100,7 +100,7 @@ public:
   
   /*!
   Ability to read/skip until delimeter is found, appends result
-  If the delimeter is not found then it will not read to EOF, should use readUntilEOF to get the remaineder without delimeter
+  If the delimeter is not found then it will not read to EOF, should use readUntilEOF to get the remainder without delimeter
   
    remove discard
      0       X    - pattern not removed from source thus not discarded
@@ -116,7 +116,7 @@ public:
 
   /*!
   Ability to read/skip until a match is found, appends result
-  If the delimeter is not found then it will not read to EOF, should use readUntilEOF to get the remaineder without delimeter
+  If the delimeter is not found then it will not read to EOF, should use readUntilEOF to get the remainder without delimeter
    remove discard
      0       X    - pattern not removed from source thus not discarded
      1       0    - pattern removed from source and appended to target

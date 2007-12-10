@@ -191,7 +191,7 @@ size_t AFile_Socket::readBlocking(void *buf, size_t size)
   size_t bytesToRead = size;
   size_t totalBytesRead = 0;
 
-  //a_It may take multiple calls to send the entire buffer
+  //a_It may take multiple calls to read the entire buffer
   while (bytesToRead)
   {
     size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf + totalBytesRead, bytesToRead, 0 );
