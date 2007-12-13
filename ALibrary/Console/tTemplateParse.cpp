@@ -1,5 +1,7 @@
 #include "ATemplate.hpp"
 #include "ATemplateNodehandler_CODE.hpp"
+#include "ATemplateNodehandler_OBJECT.hpp"
+#include "ATemplateNodehandler_MODEL.hpp"
 #include "AFile_AString.hpp"
 #include "AFile_IOStream.hpp"
 #include "AEventVisitor.hpp"
@@ -17,14 +19,13 @@ void testSimpleParse()
 
   ABasePtrHolder objects;
   AXmlDocument *pDoc = new AXmlDocument("root");
-  pDoc->useRoot().addElement("/user/name", "Alex");
-  pDoc->useRoot().addElement("/user/loc", "(0,0)");
+  pDoc->useRoot().addElement(ASWNL("user/name"), ASWNL("Alex"));
+  pDoc->useRoot().addElement(ASWNL("user/loc"), ASWNL("(0,0)"));
 //    doc.debugDump();
   objects.insert(ATemplate::OBJECTNAME_MODEL, pDoc, true);
 
   //a_Read template
   ATemplate tm;
-  tm.addHandler(new ATemplateNodeHandler_CODE());
   tm.fromAFile(strfile);
 
   //a_Write it to cout
@@ -62,18 +63,17 @@ void testTemplateParse()
 
   ABasePtrHolder objects;
   AXmlDocument *pDoc = new AXmlDocument("root");
-  pDoc->useRoot().addElement("/user/name", "Alex");
-  pDoc->useRoot().addElement("/user/loc", "(0,0)");
-  pDoc->useRoot().addElement("/user/cpu", "iX86");
-  pDoc->useRoot().addElement("/user/cpu", "x68000");
-  pDoc->useRoot().addElement("/user/cpu", "x6502");
-  pDoc->useRoot().addElement("/user/url", "http://www.achacha.org:8888/home/index.html");
+  pDoc->useRoot().addElement(ASWNL("user/name"), ASWNL("Alex"));
+  pDoc->useRoot().addElement(ASWNL("user/loc"), ASWNL("(0,0)"));
+  pDoc->useRoot().addElement(ASWNL("user/cpu"), ASWNL("iX86"));
+  pDoc->useRoot().addElement(ASWNL("user/cpu"), ASWNL("x68000"));
+  pDoc->useRoot().addElement(ASWNL("user/cpu"), ASWNL("x6502"));
+  pDoc->useRoot().addElement(ASWNL("user/url"), ASWNL("http://www.achacha.org:8888/home/index.html"));
 //    ns.debugDump();
   objects.insert(ATemplate::OBJECTNAME_MODEL, pDoc, true);
 
   //a_Read template
   ATemplate tm;
-  tm.addHandler(new ATemplateNodeHandler_CODE());
   tm.fromAFile(strfile);
 
   //a_Write it to cout
@@ -111,14 +111,44 @@ void testHtmlTemplate()
 
   ABasePtrHolder objects;
   AXmlDocument *pDoc = new AXmlDocument("root");
-  pDoc->useRoot().addElement("/user/name", "Alex");
-  pDoc->useRoot().addElement("/user/cpu", "iX86");
+  pDoc->useRoot().addElement(ASWNL("user/name"), ASWNL("Alex"));
+  pDoc->useRoot().addElement(ASWNL("user/cpu"), ASWNL("iX86"));
   objects.insert(ATemplate::OBJECTNAME_MODEL, pDoc, true);
 
   ATemplate tm;
-  tm.addHandler(new ATemplateNodeHandler_CODE());
   tm.fromAFile(strfile);
   
+  //a_Evaluate and emit to cout
+  ARope rope;
+  tm.process(objects, rope);
+  std::cout << "\r\n\r\n" << rope << std::endl;
+}
+
+void testObjectAndModel()
+{
+  AFile_AString strfile("\
+print(/root)=%[CODE]{{{print(/root)}}}[CODE]%\r\n\
+object[someobject]=%[OBJECT]{{{someobject}}}[OBJECT]%\r\n\
+model[/root/user/cpu]=%[MODEL]{{{/root/user/cpu}}}[MODEL]%\r\n\
+</html>");
+
+  //a_Prepare objects and model
+  ABasePtrHolder objects;
+  AXmlDocument *pDoc = new AXmlDocument("root");
+  pDoc->useRoot().addElement(ASWNL("user/name")).addData(ASWNL("Alex"));
+  pDoc->useRoot().overwriteElement(ASWNL("user/cpu")).addData(ASWNL("iX86"));
+  objects.insert(ATemplate::OBJECTNAME_MODEL, pDoc, true);
+  objects.insert(ASWNL("someobject"), new AString("somestringvalue"), true);
+
+  pDoc->debugDump();
+
+  //a_Prepare template with nodes to support
+  ATemplate tm;
+
+  //a_Read the template
+  tm.fromAFile(strfile);
+  tm.debugDump();
+
   //a_Evaluate and emit to cout
   ARope rope;
   tm.process(objects, rope);
@@ -129,9 +159,10 @@ int main()
 {
   try
   {
-    //testSimpleParse();
+    testSimpleParse();
     testTemplateParse();
-    //testHtmlTemplate();
+    testHtmlTemplate();
+    testObjectAndModel();
   }
   catch(AException& ex)
   {

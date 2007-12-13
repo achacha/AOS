@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tUrl2.cpp"
+			RelativePath=".\tTemplateParse.cpp"
 			>
 		</File>
 	</Files>

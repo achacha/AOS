@@ -3,6 +3,9 @@
 #include "ABasePtrHolder.hpp"
 #include "AFile.hpp"
 #include "AXmlDocument.hpp"
+#include "ATemplateNodeHandler_CODE.hpp"
+#include "ATemplateNodeHandler_OBJECT.hpp"
+#include "ATemplateNodeHandler_MODEL.hpp"
 
 const AString ATemplate::OBJECTNAME_MODEL("_AXmlDocument_Model_");     // AXmlDocument that acts as a model for template lookup
 
@@ -30,9 +33,16 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ATemplate::ATemplate() :
+ATemplate::ATemplate(bool useDefaultHandlers) :
   m_Initialized(false)
 {
+  if (useDefaultHandlers)
+  {
+    //a_Add default handlers
+    addHandler(new ATemplateNodeHandler_CODE());
+    addHandler(new ATemplateNodeHandler_OBJECT());
+    addHandler(new ATemplateNodeHandler_MODEL());
+  }
 }
 
 ATemplate::~ATemplate()
@@ -56,7 +66,7 @@ void ATemplate::addNode(const AString& tagname, AFile& source)
 
 void ATemplate::addHandler(ATemplateNodeHandler *pHandler)
 {
-  AASSERT_EX(this, m_Handlers.end() == m_Handlers.find(pHandler->getTagName()), ARope("Dupliate tag handler detected: ")+pHandler->getTagName());
+  AASSERT_EX(this, m_Handlers.end() == m_Handlers.find(pHandler->getTagName()), ARope("Duplicate tag handler detected: ")+pHandler->getTagName());
   m_Handlers[pHandler->getTagName()] = pHandler;
 }
 

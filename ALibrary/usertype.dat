@@ -85,6 +85,8 @@ ATemplate
 ATemplateNode
 ATemplateNodeHandler
 ATemplateNodeHandler_CODE
+ATemplateNodeHandler_OBJECT
+ATemplateNodeHandler_MODEL
 ATemplateNodeHandler_LUA
 ATextConverter
 ATextGenerator

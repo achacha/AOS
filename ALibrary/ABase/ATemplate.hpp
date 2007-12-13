@@ -16,8 +16,11 @@ class ABasePtrHolder;
 /*!
 Generic template parser/processor
 
+
 Tag format: {START_TAG}{TAG}{BLOCK_START} .. tag body .. {BLOCK_END}{TAG}{TAR_END}
-Example:    %[CODE]%{{{ print(/foo); }}}%[CODE]%
+Code Example  : %[CODE]%{{{ print(/foo); }}}%[CODE]%
+Object example: %[OBJECT]{{{object}}}%[OBJECT]%
+
 
 Usage:
   // Create a template and add handlers
@@ -61,8 +64,10 @@ public:
 public:
   /*!
   Ctor
+
+  useDefaultHandlers - loads CODE, OBJECT, MODEL handlers by default (others can use addHandler call)
   */
-  ATemplate();
+  ATemplate(bool useDefaultHandlers = true);
   
   /*!
   dtor
@@ -114,6 +119,8 @@ public:
   /*!
   Attach a node handler
   This object will OWN and DELETE the handler when done with it
+
+  Example:  tmpl.addHandler(new ATemplateNodeHandler_CUSTOM())
   */
   void addHandler(ATemplateNodeHandler *);
 

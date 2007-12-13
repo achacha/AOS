@@ -797,6 +797,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ATemplateNodeHandler_MODEL.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ATemplateNodeHandler_OBJECT.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ATextConverter.cpp"
 				>
 				<FileConfiguration
@@ -1276,6 +1284,14 @@
 			</File>
 			<File
 				RelativePath=".\ATemplateNodeHandler_CODE.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ATemplateNodeHandler_MODEL.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ATemplateNodeHandler_OBJECT.hpp"
 				>
 			</File>
 			<File
