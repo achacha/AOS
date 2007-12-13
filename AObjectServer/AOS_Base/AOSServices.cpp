@@ -213,9 +213,6 @@ ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
   pLuaHandler->addUserDefinedLibrary(luaopen_aos);  //a_Add AOS function library loader
   pTemplate->addHandler(pLuaHandler);
 
-  //a_Add CODE handler
-  pTemplate->addHandler(new ATemplateNodeHandler_CODE());
-
   pTemplate.setOwnership(false);
   return pTemplate;
 }
