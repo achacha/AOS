@@ -8,15 +8,37 @@
 
 const AString AContentType_TextHtml::CONTENT_TYPE("text/html");
 
-AContentType_TextHtml::AContentType_TextHtml()   
-{ 
-  //a_No head
-  m__pheHead = NULL;
+#ifdef __DEBUG_DUMP__
+void AContentType_TextHtml::debugDump(std::ostream& os, int indent) const
+{
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
+  
+  AContentTypeInterface::debugDump(os, indent+1);
 
-  //a_Flags
-  m__boolExtendedErrorLogging = false;
-  m__boolFormatted = false;
-  m__boolNeedParsing = false;   //a_Nothing read
+  if (m__pheHead)
+  {
+    ADebugDumpable::indent(os, indent+1) << "*m__pheHead={" << std::endl;
+    m__pheHead->debugDump(os, indent+2);
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  }
+  else
+    ADebugDumpable::indent(os, indent+1) << "m__pheHead=NULL" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m__boolFormatted=" << m__boolFormatted << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m__boolNeedParsing=" << m__boolNeedParsing << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m__boolExtendedErrorLogging=" << m__boolExtendedErrorLogging << std::endl;
+
+  ADebugDumpable::indent(os, indent) << "}" << std::endl;
+}
+#endif
+
+AContentType_TextHtml::AContentType_TextHtml() :
+  AContentTypeInterface(CONTENT_TYPE),
+  m__pheHead(NULL),
+  m__boolExtendedErrorLogging(false),
+  m__boolFormatted(false),
+  m__boolNeedParsing(false)
+{ 
 }
 
 AContentType_TextHtml::~AContentType_TextHtml()
@@ -26,16 +48,11 @@ AContentType_TextHtml::~AContentType_TextHtml()
     //a_Reset hierarchy and associated elements, delete observers, etc
     __resetHierarchy();
   }
-  catch(...)
-  {
-  }
+  catch(...) {}
 }
 
 void AContentType_TextHtml::__resetHierarchy()
 {
-  //a_Clean up the old hierarchy
-  pDelete(m__pheHead);
-
   //a_cleanup the AFormObserver vector
   size_t u4X;
   for (u4X = 0; u4X < m__vectorForms.size(); u4X++)
@@ -46,11 +63,14 @@ void AContentType_TextHtml::__resetHierarchy()
   for (u4X = 0; u4X < m__vectorHrefs.size(); u4X++)
     pDelete(m__vectorHrefs[u4X]);
   m__vectorHrefs.clear();
+
+  //a_Clean up the old hierarchy
+  pDelete(m__pheHead);
 }
 
 void AContentType_TextHtml::parse()
 {
-  if (mstr_Data.isEmpty())
+  if (!m_Data.isNotEof())
     ATHROW(this, AException::ProgrammingError);
 
   //a_Reset object
@@ -60,7 +80,7 @@ void AContentType_TextHtml::parse()
   size_t pos = 0;
   if (m__boolExtendedErrorLogging)
     m__pheHead->setExtendedErrorLogging();
-  m__pheHead->parse(mstr_Data, pos);
+  m__pheHead->parse(m_Data, pos);
 
   m__boolNeedParsing = false;
 }
@@ -69,7 +89,8 @@ void AContentType_TextHtml::clear()
 {
   //a_Cleanup
   __resetHierarchy();
-  mstr_Data.clear();
+
+  AContentTypeInterface::clear();
 }
 
 void AContentType_TextHtml::lint()
@@ -293,18 +314,18 @@ void AContentType_TextHtml::fromAFile(AFile& aFile)
   m__boolNeedParsing = false;
 }
 
-void AContentType_TextHtml::emit(AOutputBuffer& target, size_t indent /* = AConstant::npos */) const
+void AContentType_TextHtml::emit(AOutputBuffer& target) const
 {
   //a_If not formatted just dump back the buffer without formatting
-  if (m__boolNeedParsing || !m__boolFormatted || indent == AConstant::npos)
-    target.append(mstr_Data);
+  if (m__boolNeedParsing || !m__boolFormatted)
+    target.append(m_Data);
   else
   {
     if (m__pheHead)
 	  {
-		  target.append(m__pheHead->begin(indent));
+		  target.append(m__pheHead->begin(0));
 		  if (!m__pheHead->isSingular())
-			  target.append(m__pheHead->end(indent));
+			  target.append(m__pheHead->end(0));
 	  }
   }
 }
@@ -312,4 +333,44 @@ void AContentType_TextHtml::emit(AOutputBuffer& target, size_t indent /* = ACons
 AElement_HTML *AContentType_TextHtml::getHead() const
 {
   return m__pheHead; 
+}
+
+size_t AContentType_TextHtml::getFormCount() const 
+{
+  return m__vectorForms.size();
+}
+
+AElementObserver_FORM &AContentType_TextHtml::getFormObserver(size_t i) const 
+{
+  return *m__vectorForms[i]; 
+}
+
+size_t AContentType_TextHtml::getHrefCount() const
+{ 
+  return m__vectorHrefs.size(); 
+}
+
+AElementObserver_HREF &AContentType_TextHtml::getHrefObserver(size_t i) const 
+{ 
+  return *m__vectorHrefs[i];
+}
+
+size_t AContentType_TextHtml::getSrcCount() const 
+{ 
+  return m__vectorSrcs.size();
+}
+
+AElementObserver_SRC &AContentType_TextHtml::getSrcObserver(size_t i) const 
+{
+  return *m__vectorSrcs[i];
+}
+
+void AContentType_TextHtml::setFormatted(bool boolFlag) 
+{ 
+  m__boolFormatted = boolFlag;
+}
+
+void AContentType_TextHtml::setExtendedErrorLogging(bool boolFlag)
+{
+  m__boolExtendedErrorLogging = boolFlag; 
 }

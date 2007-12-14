@@ -295,6 +295,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AContentType_TextXml.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AContentTypeFactory.cpp"
 				>
 			</File>
@@ -968,6 +972,10 @@
 			</File>
 			<File
 				RelativePath=".\AContentType_TextHtml.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AContentType_TextXml.hpp"
 				>
 			</File>
 			<File

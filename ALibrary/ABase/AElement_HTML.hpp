@@ -52,7 +52,7 @@ public:
   static bool isIWTemplateTag(const AString &strType);
 
   //a_Extended error reporting
-  void setExtendedErrorLogging(bool bFlag = TRUE) { m__boolExtendedErrorLogging = bFlag; }
+  void setExtendedErrorLogging(bool bFlag = true);
 
   //a_Display recursively self and children
   //a_This method takes a reference to make recursive calls more efficient
@@ -65,7 +65,7 @@ public:
   void removeChild(AElement_HTML *peChild);
 
 	//a_Cleanup
-	void reset();
+	virtual void clear();
 
 protected:
   //a_NAME=VALUE elements of this HTML element
@@ -83,6 +83,9 @@ protected:
   AElement_HTML *_findNonSingularParent();
 
 private:
+  static const AString PARSE_END_ELEMENT;  // "/>"
+  static char PARSE_START_ELEMENT;         // '<'
+
   //a_Parsing helper methods
   void __parseTextBlock(const AString &strInput, size_t& position);
   void __parseNameValuePairs(const AString &strInput, size_t& position);
@@ -105,6 +108,11 @@ private:
 
   //a_Destruction
   void __destroy();
+
+public:
+#ifdef __DEBUG_DUMP__
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+#endif
 };
 
 #endif

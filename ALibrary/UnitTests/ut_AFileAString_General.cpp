@@ -35,9 +35,9 @@ int ut_AFileAString_General()
   str.clear();
   strfile.useAString().clear();
   strfile.reset();
-  strfile.write("Test\n");
+  strfile.write(ASWNL("Test\n"));
   strfile.setWritePos(4);
-  strfile.writeLine("Line 000");
+  strfile.writeLine(ASWNL("Line 000"));
   strfile.setReadPos(4);
   strfile.readUntilOneOf(str);
   ASSERT_UNIT_TEST(!str.compare("Line"), "AFile_AString::readUntilOneOf", "0", iRet);
@@ -50,6 +50,18 @@ int ut_AFileAString_General()
   strfile.readUntilEOF(str);
   str.stripTrailing();  //a_Remove white space
   ASSERT_UNIT_TEST(str.isEmpty(), "AFile_AString::readUntilEOF", "0", iRet);
+
+  {
+    AFile_AString source("0123456789");
+    AFile_AString target;
+
+    ASSERT_UNIT_TEST(4 == target.write(source, 4), "AFile_AString::write", "0", iRet);
+    ASSERT_UNIT_TEST(2 == target.write(source, 2), "AFile_AString::write", "1", iRet);
+    ASSERT_UNIT_TEST(4 == target.write(source, 5), "AFile_AString::write", "2", iRet);
+    ASSERT_UNIT_TEST(0 == target.write(source, 1), "AFile_AString::write", "3", iRet);
+    ASSERT_UNIT_TEST(target.useAString().equals("0123456789"), "AFile_AString::write", "4", iRet);
+  }
+  
 
   return iRet;
 }

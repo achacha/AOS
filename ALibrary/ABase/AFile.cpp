@@ -347,22 +347,41 @@ size_t AFile::write(const void *pcvBuffer, size_t length)
   return _write(pcvBuffer, length);
 }
 
-size_t AFile::write(AFile& sourceFile)
+size_t AFile::read(
+  AOutputBuffer& target, 
+  size_t length
+)
 {
   const int BUFFER_SIZE = 4096;
   AString buffer(BUFFER_SIZE, 256);
-  size_t totalBytesRead = 0;
   size_t bytesRead = 0;
-  do 
+  size_t totalBytesRead = 0;
+  while (length > 0)
   {
-    bytesRead = sourceFile.read(buffer, BUFFER_SIZE);
-    totalBytesRead += bytesRead;
-    write(buffer);
-    buffer.clear();
-  }
-  while(bytesRead == BUFFER_SIZE);
+    size_t bytesToRead = min(BUFFER_SIZE, length);
+    size_t bytesRead = read(buffer, bytesToRead);
+    
+    target.append(buffer, bytesRead);
 
+    length -= bytesRead;
+    totalBytesRead += bytesRead;
+    
+    //a_Check for partial read which usually signifies EOF
+    //a_Checking for EOF would require sleep times and imply non-blocking
+    //a_That is intended for derived classes
+    if (bytesRead != bytesToRead)
+      break;
+  }
+  
   return totalBytesRead;
+}
+
+size_t AFile::write(
+  AFile& source, 
+  size_t length // = AConstant::npos
+)
+{
+  return source.read(*this, length);
 }
 
 size_t AFile::read(AString& str, size_t length)
@@ -401,9 +420,16 @@ size_t AFile::skip(size_t length)
   return totalbytesread;
 }
 
-size_t AFile::write(const AString& line)
+size_t AFile::write(
+  const AString& line, 
+  size_t length // = AConstant::npos
+)
 {
-  return _write(line.data(), line.getSize());
+  AASSERT(this, length <= line.getSize());
+  if (AConstant::npos)
+    return _write(line.data(), length);
+  else
+    return _write(line.data(), line.getSize());
 }
 
 size_t AFile::read(ARope& rope, size_t length)

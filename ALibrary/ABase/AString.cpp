@@ -917,6 +917,27 @@ size_t AString::peek(AOutputBuffer& bufDestination, size_t sourceIndex, size_t b
 
 size_t AString::peekUntil(
   AOutputBuffer& target, 
+  size_t sourceIndex,
+  const AString& delimeter
+) const
+{
+  if (sourceIndex >= m_Length)
+    return AConstant::npos;
+  
+  size_t p = find(delimeter, sourceIndex);
+  if (AConstant::npos != p) 
+  {
+    peek(target, sourceIndex, p - sourceIndex);
+  }
+  else
+  {
+    peek(target, sourceIndex);
+  }
+  return p;
+}
+
+size_t AString::peekUntilOneOf(
+  AOutputBuffer& target, 
   size_t sourceIndex, // = 0x0
   const AString& delimeters // = AConstant::ASTRING_WHITESPACE
 ) const

@@ -3,11 +3,38 @@
 #include "AException.hpp"
 
 #define ELEMENT_TERMINATION_STRING "!ps-9"
+const AString AElement_HTML::PARSE_END_ELEMENT(" />");
+char AElement_HTML::PARSE_START_ELEMENT('<');
+
+#ifdef __DEBUG_DUMP__
+void AElement_HTML::debugDump(std::ostream& os, int indent) const
+{
+  ADebugDumpable::indent(os, indent) << "(" << typeid(this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
+  AElementInterface::debugDump(os, indent+1);
+
+  ADebugDumpable::indent(os, indent+1) << "m__boolExtendedErrorLogging=" << (m__boolExtendedErrorLogging ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_vectorPairs={" << std::endl;
+  for (VECTOR_NVPairPtr::const_iterator cit = m_vectorPairs.begin(); cit != m_vectorPairs.end(); ++cit)
+  {
+    (*cit)->debugDump(os, indent+2);
+  }
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_listChildElements={" << std::endl;
+  for (LIST_AElementInterface::const_iterator cit = m_listChildElements.begin(); cit != m_listChildElements.end(); ++cit)
+  {
+    (*cit)->debugDump(os, indent+2);
+  }
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  ADebugDumpable::indent(os, indent) << "}" << std::endl;
+}
+#endif
 
 AElement_HTML::AElement_HTML(AElementInterface *elementParent) :
-  AElementInterface(elementParent)
+  AElementInterface(elementParent, false)  //a_By default HTML elements are assumed to need </TYPE>
 { 
-  setSingular(false);                   //a_By default HTML elements are assumed to need </TYPE>
   m__boolExtendedErrorLogging = false;  //a_Extended errors should not be on
 }
 
@@ -17,11 +44,11 @@ AElement_HTML::~AElement_HTML()
   __destroy();
 }
 
-void AElement_HTML::reset()
+void AElement_HTML::clear()
 {
   __reset();
 
-	AElementInterface::reset();
+	AElementInterface::clear();
 }
 
 //a_static method
@@ -87,7 +114,7 @@ bool AElement_HTML::isFormatCritical(const AString &strType)
 
 AString AElement_HTML::beginElement() const
 {
-  if (getType().isEmpty())
+  if (m_strType.isEmpty())
   {
     return m__strText;
   }
@@ -97,7 +124,7 @@ AString AElement_HTML::beginElement() const
 
     //a_HTML block or IW TL variable
     strReturn += "<";
-    strReturn += getType();
+    strReturn += m_strType;
     for (size_t x = 0x0; x < m_vectorPairs.size(); ++x)
     {
       strReturn.append(' ');
@@ -109,7 +136,7 @@ AString AElement_HTML::beginElement() const
       strReturn.append(m__strText);
     }
     
-    if (!getType().compare("!--"))
+    if (!m_strType.compare("!--"))
       strReturn.append("--", 2);
 
     if (isSingular())
@@ -148,7 +175,7 @@ AString AElement_HTML::begin(size_t iDepth) const
     if (AConstant::npos != iDepth)
     {
       //a_Formatting enabled
-      if (isFormatCritical(getType()))
+      if (isFormatCritical(m_strType))
       {
         //a_Do not format children
         iNewDepth = AConstant::npos;
@@ -179,7 +206,7 @@ AString AElement_HTML::end(size_t iDepth) const
   {
     //a_If this is a signular object it doesn't need a close tag
     strReturn += "</";
-    strReturn += getType() + ">";
+    strReturn += m_strType + ">";
 
     //a_Depth enables formatting
     if (AConstant::npos != iDepth)
@@ -233,7 +260,7 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
   {
     AString strError = "Unexpected EOF while parsing";
     if (getParent())
-      strError += AString(" under ") + ((AElement_HTML *)getParent())->getType();
+      strError += AString(" under ") + ((AElement_HTML *)getParent())->m_strType;
     strError += ASW(" position=",10)+AString::fromSize_t(position);
     ATHROW_EX(this, AException::InvalidData, strError);
   }
@@ -249,7 +276,7 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
   {
     AString strError = "Unexpected EOF while skipping over whitespace";
     if (getParent())
-      strError += AString(" under ") + ((AElement_HTML *)getParent())->getType();
+      strError += AString(" under ") + ((AElement_HTML *)getParent())->m_strType;
     strError += ASW(" position=",10)+AString::fromSize_t(position);
     ATHROW_EX(this, AException::InvalidData, strError);
   }
@@ -271,7 +298,7 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
     {
       AString strError = "Unexpected EOF while skipping over <";
       if (getParent())
-        strError += AString(" under ") + ((AElement_HTML *)getParent())->getType();
+        strError += AString(" under ") + ((AElement_HTML *)getParent())->m_strType;
       strError += ASW(" position=",10)+AString::fromSize_t(position);
       ATHROW_EX(this, AException::InvalidData, strError);
     }
@@ -282,7 +309,7 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
     {
       AString strError = "Unexpected EOF while skipping over whitespace after <";
       if (getParent())
-        strError += AString(" under ") + ((AElement_HTML *)getParent())->getType();
+        strError += AString(" under ") + ((AElement_HTML *)getParent())->m_strType;
       strError += ASW(" position=",10)+AString::fromSize_t(position);
       ATHROW_EX(this, AException::InvalidData, strError);
     }
@@ -302,7 +329,7 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
     if (strInput.find("!--", position) == position)
     {
       //a_Comment has a special case
-      setType("!--");
+      m_strType.assign("!--");
       position += 0x3;
     }
     else
@@ -323,7 +350,7 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
       while (pheParent)
       {
         //a_Found it
-        if (pheParent->getType() == getType())
+        if (pheParent->m_strType == m_strType)
         {
           __parseAdvanceToNextTag(strInput, position);
         
@@ -334,13 +361,13 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
       }
 
       //a_Did not find it, convert to literal and assume this is a tag
-      setType(AString("/") + getType());
+      m_strType.assign(AString("/") + m_strType);
       setSingular(true);
   
       if (m__boolExtendedErrorLogging)
       {
         AString strError("Dangling or unevenly closed end tag detected: ");
-        strError.append(getType());
+        strError.append(m_strType);
         strError.append(ASW(" position=",10)+AString::fromSize_t(position));
         ATHROW_EX(this, AException::InvalidData, strError);
       }
@@ -350,7 +377,7 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
 
     //a_Check if parsing of NAME=VALE should be ignored
     //a_Special case for HTML comments or !doctype
-    if (getType() == "!--")
+    if (m_strType == "!--")
     {                                             
       m__strText.clear();
 
@@ -367,7 +394,7 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
         position = iEndPosition + 0x2;
       }
     }
-    else if (!getType().compare("!doctype"))
+    else if (!m_strType.compare("!doctype"))
     {
       while (strInput.getSize() > position)
       {
@@ -386,9 +413,9 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
     if (position >= strInput.getSize())
     {
       AString strError = "Unexpected EOF while looking for > or /> in ";
-      strError += getType();
+      strError += m_strType;
       if (getParent())
-        strError += AString(" under ") + ((AElement_HTML *)getParent())->getType();
+        strError += AString(" under ") + ((AElement_HTML *)getParent())->m_strType;
       strError += ASW(" position=",10)+AString::fromSize_t(position);
       ATHROW_EX(this, AException::InvalidData, strError);
     }
@@ -399,12 +426,12 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
       setSingular(true);
       ++position;
     }
-    else if (isSingularType(getType()))
+    else if (isSingularType(m_strType))
       setSingular(true);
 
     if (m__boolExtendedErrorLogging && strInput[position] != '>' && !isWhiteSpace(strInput[position]))
     {
-      ATHROW_EX(this, AException::InvalidData, ASWNL("Possible incorrect end tag location in ") + getType() + ASW(" position=",10)+AString::fromSize_t(position));
+      ATHROW_EX(this, AException::InvalidData, ASWNL("Possible incorrect end tag location in ") + m_strType + ASW(" position=",10)+AString::fromSize_t(position));
     }
 
     //a_Advance past the end to the next tag (assumes we are at >)
@@ -413,33 +440,23 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
 
   //a_Create the children
   AElement_HTML *pheChild;
-  AString strChildReturn;
   while(strInput.getSize() > position) 
   {
     //a_Create a child (child classes can implement their own create methods
     pheChild = (AElement_HTML *)_create(this);
 
     AElement_HTML *pheParent = _addChild(pheChild);
-    strChildReturn = pheChild->parse(strInput, position);
+    bool ret = pheChild->parse(strInput, position);
 
     //a_If the child is a terminating element, remove it from the list
     //a_The child is removed from the parent it was added on to
-    if ((!strChildReturn.isEmpty()) && 
+    if ((!ret) && 
         (!pheChild->useText().compare(ELEMENT_TERMINATION_STRING)) )
       pheParent->removeChild(pheChild);
 
-    if (!strChildReturn.isEmpty())
+    if (!ret)
     {
-      if (strChildReturn == getType())
-      {
-        //a_We are being closed, return, </TYPE matches our, add the current child and leave
-        return true;
-      }
-      else
-      {
-        //a_Parent is being closed (usually </TYPE is not of this object's)
-        return true;
-      }
+      return false;
     }
   }
 
@@ -449,7 +466,7 @@ bool AElement_HTML::parse(const AString &strInput, size_t& position)
     if ((isSingular() == false) && getParent())
     {
       AElement_HTML *pheParent = ((AElement_HTML *)getParent());
-      ATHROW_EX(this, AException::InvalidData, AString("Unexpected EOF, termination for ") + (pheParent ? pheParent->getType() : AString("{root}")) + ASWNL(" not found")+ASW(" position=",10)+AString::fromSize_t(position));
+      ATHROW_EX(this, AException::InvalidData, AString("Unexpected EOF, termination for ") + (pheParent ? pheParent->m_strType : AString("{root}")) + ASWNL(" not found")+ASW(" position=",10)+AString::fromSize_t(position));
     }
     //a_If no singular parents, we are done then...
   }
@@ -480,7 +497,7 @@ void AElement_HTML::__parseTextBlock(const AString &strInput, size_t& position)
     if (pheParent)
     {
       AString strError = "Unexpected EOF while removing leading spaces from a text block";
-      strError += AString(" under ") + pheParent->getType();
+      strError += AString(" under ") + pheParent->m_strType;
       strError += ASW(" position=",10)+AString::fromSize_t(position);
       ATHROW_EX(this, AException::InvalidData, strError);
     }
@@ -489,43 +506,16 @@ void AElement_HTML::__parseTextBlock(const AString &strInput, size_t& position)
 
   char cX;
   bool boolLastIsWhiteSpace = false;
-  while ((strInput.getSize() > position) && strInput[position] != '<')
+  position = strInput.peekUntil(m__strText, position, PARSE_START_ELEMENT);
+  if (AConstant::npos == position)
   {
-    cX = strInput[position];
-    if (boolIgnoreWhiteSpace &&
-         isWhiteSpace(cX))
-    {
-      if (boolLastIsWhiteSpace == false)
-      {
-        //a_First white space accepted
-        boolLastIsWhiteSpace = true;
-        m__strText += cX;
-      }
-
-      position++;
-      continue;
-    }
-    
-    m__strText += cX;
-    boolLastIsWhiteSpace = false;     //a_No longer white space
-    position++;
-  }
-
-  if (position >= strInput.getSize())
-  {
-    AElement_HTML *pheParent = _findNonSingularParent();
-    if (pheParent)
-    {
-      AString strError = "Unexpected EOF while parsing text block";
-      strError += AString(" under ") + pheParent->getType();
-      strError += ASW(" position=",10)+AString::fromSize_t(position);
-      ATHROW_EX(this, AException::InvalidData, strError);
-    }
-    return;   //a_This is the end
+    strInput.peek(m__strText, position);
+    return;
   }
 
   //a_Now remove trailing carrige returns and spaces if not inside critical block
-  m__strText.stripTrailing();
+  if (boolIgnoreWhiteSpace)
+    m__strText.stripTrailing();
 }
 
 void AElement_HTML::__parseNameValuePairs(const AString &strInput, size_t& position)
@@ -555,7 +545,7 @@ void AElement_HTML::__parseAdvanceToEndOfTag(const AString &strInput, size_t& po
 
   if (position >= strInput.getSize())
   {
-    ATHROW_EX(this, AException::InvalidData, ASWNL("Unexpected EOF advancing to > in ") + getType()+ASW(" position=",10)+AString::fromSize_t(position));
+    ATHROW_EX(this, AException::InvalidData, ASWNL("Unexpected EOF advancing to > in ") + m_strType+ASW(" position=",10)+AString::fromSize_t(position));
   }
 }
 
@@ -582,7 +572,7 @@ void AElement_HTML::__parseAdvanceToNextTag(const AString &strInput, size_t& pos
   {
     if (position >= strInput.getSize())
     {
-      ATHROW_EX(this, AException::InvalidData, ASWNL("Unexpected EOF advancing to next tag after ") + getType()+ASW(" position=",10)+AString::fromSize_t(position));
+      ATHROW_EX(this, AException::InvalidData, ASWNL("Unexpected EOF advancing to next tag after ") + m_strType+ASW(" position=",10)+AString::fromSize_t(position));
     }
   }
 }
@@ -595,20 +585,10 @@ void AElement_HTML::__parseSkipOverWhiteSpace(const AString &strInput, size_t& p
 
 void AElement_HTML::__parseGetType(const AString &strInput, size_t& position)
 {
-  while (position < strInput.getSize())
+  position = strInput.peekUntilOneOf(m_strType, position, PARSE_END_ELEMENT);
+  if (AConstant::npos == position)
   {
-    if (!isWhiteSpace(strInput[position]) && (strInput[position] != '>') && (strInput[position] != '/'))
-    {
-      _getType() += (const char)tolower(strInput[position]);  //a_Store type in lower case always
-      position++;
-    }
-    else
-      break;
-  }
-
-  if (position >= strInput.getSize())
-  {
-    ATHROW_EX(this, AException::InvalidData, ASWNL("Unexpected EOF getting type: ") + getType()+ASW(" position=",10)+AString::fromSize_t(position));
+    ATHROW_EX(this, AException::InvalidData, ASWNL("Unexpected EOF getting type: ") + m_strType+ASW(" position=",10)+AString::fromSize_t(position));
   }
 }
 
@@ -746,7 +726,7 @@ AElement_HTML *AElement_HTML::findType(const AString &strType, AElement_HTML *ph
   //a_Keep iterating through all children until the type is found
   while (pheElement = nextChildElement(pheElement))
   {
-    if (pheElement->getType().compareNoCase(strType) == 0)
+    if (pheElement->m_strType.compareNoCase(strType) == 0)
       return pheElement;
   }
 
@@ -761,7 +741,7 @@ AElement_HTML *AElement_HTML::findFormItem(AElement_HTML *pheStartAfter)
   //a_Keep iterating through all children until the type is found
   while (pheElement = nextChildElement(pheElement))
   {
-    if (isFormItemType(pheElement->getType()))
+    if (isFormItemType(pheElement->m_strType))
       return pheElement;
   }
 
@@ -780,7 +760,7 @@ AElement_HTML *AElement_HTML::_findNonSingularParent()
 AElement_HTML *AElement_HTML::findParentType(const AString& strType)
 {
   AElement_HTML *pheParent = (AElement_HTML *)getParent();
-  while (pheParent && pheParent->getType().compare(strType))
+  while (pheParent && pheParent->m_strType.compare(strType))
     pheParent = (AElement_HTML *)pheParent->getParent();
 
   return pheParent;
@@ -791,7 +771,7 @@ bool AElement_HTML::__isInsideFormatCriticalBlock()
   AElement_HTML *peParent = this;
   while (peParent)
   {
-    if (isFormatCritical(peParent->getType()) )
+    if (isFormatCritical(peParent->m_strType) )
     {
       return TRUE;
       break;
@@ -877,11 +857,11 @@ void AElement_HTML::recurseToString(AString& strReturn, int iIndentLevel) const
     //a_This is an HTML type
     for (int iX = iIndentLevel; iX > 0x0; --iX) strReturn += AConstant::ASTRING_TWOSPACES;
     strReturn += "<";
-    strReturn += getType();
+    strReturn += m_strType;
   }
   else
   {
-    if (getType() == "!--")
+    if (m_strType == "!--")
     {
       strReturn += "<!--";
       strReturn += m__strText;
@@ -918,9 +898,14 @@ void AElement_HTML::recurseToString(AString& strReturn, int iIndentLevel) const
   {
     for (int iX = iIndentLevel; iX > 0x0; --iX) strReturn += AConstant::ASTRING_TWOSPACES;
     strReturn.append("</", 2);
-    strReturn.append(getType());
+    strReturn.append(m_strType);
     strReturn.append('>');
     if (iIndentLevel >= 0x0)
       strReturn.append(AConstant::ASTRING_CRLF);
   }
+}
+
+void AElement_HTML::setExtendedErrorLogging(bool bFlag)
+{
+  m__boolExtendedErrorLogging = bFlag; 
 }

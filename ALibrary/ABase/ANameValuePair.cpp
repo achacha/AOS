@@ -25,7 +25,7 @@ void ANameValuePair::debugDump(std::ostream& os, int indent) const
 
   AString str;
   ATextConverter::encodeURL(m_separator, str, true);
-  os << "  m_separator='" << str << "'";
+  ADebugDumpable::indent(os, indent+1) << "  m_separator='" << str << "'";
   str.clear();
   ATextConverter::encodeURL(m_terminator, str, true);
   os << "  m_terminator='" << str << "'";

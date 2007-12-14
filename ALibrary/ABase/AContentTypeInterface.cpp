@@ -8,17 +8,18 @@
 #ifdef __DEBUG_DUMP__
 void AContentTypeInterface::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AContentTypeInterface @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_Data={" << std::endl;
+  m_Data.debugDump(os, indent+1);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  
   ADebugDumpable::indent(os, indent+1) << "m_ContentLength=" << m_ContentLength << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mstr_ContentType=" << mstr_ContentType << std::endl;
+  
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
-
-AContentTypeInterface::AContentTypeInterface() :
-  m_ContentLength(AConstant::npos)
-{
-}
 
 AContentTypeInterface::AContentTypeInterface(const AString& type) :
   m_ContentLength(AConstant::npos),
@@ -30,7 +31,7 @@ AContentTypeInterface::~AContentTypeInterface()
 {
 }
 
-void AContentTypeInterface::parseHTTPHeader(AHTTPHeader& header)
+void AContentTypeInterface::parseHTTPHeader(const AHTTPHeader& header)
 {
   AString str;
   if (header.getPairValue(AHTTPHeader::HT_ENT_Content_Type, str))
@@ -54,56 +55,46 @@ void AContentTypeInterface::parseHTTPHeader(AHTTPHeader& header)
 
 void AContentTypeInterface::toAFile(AFile& fOut) const
 {
-  fOut.write(mstr_Data);
+  m_Data.emit(fOut);
 }
 
 void AContentTypeInterface::fromAFile(AFile& fIn)
 {
-  mstr_Data.clear();
+  m_Data.clear();
   if (!m_ContentLength)
     return;
 
   //a_Read in the data
   if (AConstant::npos != m_ContentLength)
   {
-    fIn.read(mstr_Data, m_ContentLength);
+    fIn.read(m_Data, m_ContentLength);
   }
   else
   {
-    fIn.readUntilEOF(mstr_Data);
-    m_ContentLength = mstr_Data.getSize();
+    fIn.readUntilEOF(m_Data);
+    m_ContentLength = m_Data.useAString().getSize();
   }
   
-  if (mstr_Data.getSize() > 0)
+  if (m_Data.useAString().getSize() > 0)
   {
     //a_Call the needed parse (derived classes override this)
     parse();
   }
 }
 
-void AContentTypeInterface::setData(const AString& strData)
+AFile& AContentTypeInterface::useData()
 { 
-  mstr_Data.assign(strData);
+  return m_Data;
 }
 
-void AContentTypeInterface::addData(const AString& strData)
-{ 
-  mstr_Data.append(strData);
-}
-
-AString& AContentTypeInterface::useData()
-{ 
-  return mstr_Data;
-}
-
-void AContentTypeInterface::emit(AOutputBuffer& target, size_t /* indent = AConstant::npos */) const
+void AContentTypeInterface::emit(AOutputBuffer& target) const
 {
-  target.append(mstr_Data);
+  m_Data.emit(target);
 }
 
 void AContentTypeInterface::clear()
 {
-  mstr_Data.clear(true); 
+  m_Data.useAString().clear(true); 
 }
 
 const AString& AContentTypeInterface::getContentType() const 

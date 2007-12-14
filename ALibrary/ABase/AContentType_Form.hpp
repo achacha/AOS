@@ -10,6 +10,9 @@ class ANameValuePair;
 class ABASE_API AContentType_Form : public AContentTypeInterface
 {
 public:
+  static const AString CONTENT_TYPE;  // application/x-www-form-urlencoded
+
+public:
   //a_Ctors and dtor
   AContentType_Form();
   virtual ~AContentType_Form() {}
@@ -17,18 +20,21 @@ public:
   //a_Guaranteed by the base
   virtual void clear();
   virtual void parse();
-  virtual void emit(AOutputBuffer&, size_t indent = AConstant::npos) const;  
+  virtual void emit(AOutputBuffer&) const;  
   virtual void toAFile(AFile& fileIn) const;  //a_Overridden here to avoid emit to buffer then write to file, doing it in 1 step
 
-  AQueryString& useForm() { return m_Form; }
+  AQueryString& useForm();
 
   virtual size_t getContentLength(bool recalculate = true);
 
 private:
-  static const AString CONTENT_TYPE;  // text/html
-
   AQueryString m_Form;
+
+public:
+#ifdef __DEBUG_DUMP__
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+#endif
 };
 
 
-#endif // __AForm_HPP__
+#endif // INCLUDED__AContentType_Form_HPP__

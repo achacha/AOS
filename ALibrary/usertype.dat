@@ -8,6 +8,7 @@ AConstant
 AChecksum
 AConstant
 AContentType_TextHtml
+AContentType_TextXml
 AContentType_Binary
 AContentType_Form
 AContentTypeFactory

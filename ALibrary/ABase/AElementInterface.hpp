@@ -9,8 +9,8 @@ class ABASE_API AElementInterface : public ADebugDumpable
 {
 public:
   //a_Every element must have a parent, even if NULL
-  AElementInterface(AElementInterface *pelementParent = NULL);
-  virtual ~AElementInterface() {};
+  AElementInterface(AElementInterface *pelementParent = NULL, bool isSingular = true);
+  virtual ~AElementInterface();
 
   //a_Each element must have an ability to parse itself
   //a_Given a string {strInput} at string offset {iPosition}
@@ -22,32 +22,29 @@ public:
   virtual AString end(size_t iDepth = AConstant::npos)   const = 0;         //a_End of this tag
 
   //a_Utility functions
-  virtual bool isWhiteSpace(char cX) const { return ((AConstant::ASTRING_WHITESPACE.find(cX) == AConstant::npos) ? false : true); }
+  virtual bool isWhiteSpace(char cX) const;
 
   //a_Singularity methods
-  bool isSingular() const { return m__boolSingular; }
-  void setSingular(bool boolFlag = TRUE) { m__boolSingular = boolFlag; }
+  bool isSingular() const;
+  void setSingular(bool boolFlag = true);
 
   //a_Type of this element (always lower case)
-  virtual const AString& getType() const { return m_strType; }
-  virtual void           setType(const AString& strType) { m_strType = strType; m_strType.makeLower(); }
-  virtual bool           isType(const AString& strType) { return (m_strType.compareNoCase(strType) ? false : true); }
+  virtual const AString& getType() const;
+  virtual void           setType(const AString& strType);
+  virtual bool           isType(const AString& strType);
 
   //a_Access to parent
-  AElementInterface *getParent() const { return m__pelementParent; }
+  AElementInterface *getParent() const;
 
 	//a_Cleanup
-	void reset();
+	virtual void clear();
 
 protected:
   //a_Creation method
   virtual AElementInterface *_create(AElementInterface *pParent) = 0;
 
-  //a_Access to the type by child classes
-  AString& _getType() { return m_strType; }
-
   //a_Access to parent
-  void _setParent(AElementInterface *pelementParent) { m__pelementParent = pelementParent; }
+  void _setParent(AElementInterface *pelementParent) { mp_Parent = pelementParent; }
   bool _isChild(AElementInterface *peChild);
 
   //a_Type <TYPE NAME=VALUE...> or similar
@@ -55,10 +52,10 @@ protected:
 
 private:
   //a_Singular objects need not call end()
-  bool m__boolSingular;
+  bool m_isSingular;
 
   //a_Pointer to the parent node
-  AElementInterface *m__pelementParent;
+  AElementInterface *mp_Parent;
 
 public:
 #ifdef __DEBUG_DUMP__

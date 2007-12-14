@@ -4,24 +4,25 @@
 #include "apiABase.hpp"
 #include "AContentTypeInterface.hpp"
 
-class ASync_EventVisitor;
 class AOutputBuffer;
 
 class ABASE_API AContentType_Binary : public AContentTypeInterface
 {
 public:
+  static const AString CONTENT_TYPE;  // application/octet-stream
+
+public:
   AContentType_Binary();
-  virtual ~AContentType_Binary() {}
+  virtual ~AContentType_Binary();
 
   //a_Activation methods do nothing, binary data stores all types and knows nothing about them
-  virtual void parse() {}
+  virtual void parse();
 
-  //a_Represent as AString (in this case a hex dump)
-  virtual void emit(AOutputBuffer&, size_t indent = AConstant::npos) const;  
-
-private:
-  static const AString CONTENT_TYPE;  // text/html
+  /*!
+  AEmittable
+  */
+  virtual void emit(AOutputBuffer&) const;  
 };
 
-#endif
+#endif // INCLUDED__AContentType_Binary_HPP__
 

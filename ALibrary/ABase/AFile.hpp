@@ -58,7 +58,7 @@ public:
   
   NOTE: return 0 if EOF
   */  
-  virtual size_t write(const AString&);
+  virtual size_t write(const AString&, size_t length);
   virtual size_t read(AString&, size_t length);
   virtual size_t write(const ARope&);
   virtual size_t read(ARope&, size_t length);
@@ -69,11 +69,28 @@ public:
   virtual size_t peek(AString&, size_t length);
 
   /*!
-  Write contents from one file to another to EOL of source
-
-  returns: bytes written
+  AEmittable required method - reads from current read position and writes to output
+  Equivalent to peekUntilEOF
   */
-  size_t write(AFile& sourceFile);
+  void emit(AOutputBuffer&) const;
+
+  /*!
+  Read content of this file and write it to the target output buffer
+
+  @param target output buffer
+  @param length if npos then write everything
+  @return number of bytes written
+  */
+  size_t read(AOutputBuffer& target, size_t length = AConstant::npos);
+
+  /*!
+  Read from a source file and write to this file
+
+  @param source file
+  @param length if npos then read everything
+  @return number of bytes read
+  */
+  size_t write(AFile& source, size_t length = AConstant::npos);
 
   /*!
   Line reads, appends result
@@ -185,12 +202,6 @@ public:
   virtual void open() = 0;          //a_Open
   virtual void flush() = 0;         //a_Signals to flush the contents
   virtual void close() = 0;         //a_Close
-
-  /*!
-  AEmittable - reads from current read position and writes to output
-  Equivalent to peekUntilEOF
-  */
-  void emit(AOutputBuffer&) const;
 
   /*!
   IO operators

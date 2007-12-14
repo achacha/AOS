@@ -482,12 +482,14 @@ public:
   peek functions will get the content without removing it
   peek(size_t) will return the byte at a given index
   peek(AString&,size_t,size_t) will append bytes from a given index into another buffer and return bytes appended
+  peekUntil(AString&,size_t,const AString&) will copy bytes from a given index until delimeter is found or everything to end if not; returns new position or npos if not found
   peekUntil(AString&,size_t,const AString&) will copy bytes from a given index until one of the delimeters is found or everything to end if not; returns new position or npos if not found
   */
   inline u1 peek(size_t index = 0) const;
   size_t peek(AOutputBuffer& bufDestination, size_t index = 0, size_t bytes = AConstant::npos) const;
-  size_t peekUntil(AOutputBuffer& bufDestination, size_t index = 0, const AString& delimeters = AConstant::ASTRING_WHITESPACE) const;
-  size_t peekUntil(AOutputBuffer& bufDestination, size_t sourceIndex, char delimeter) const;
+  size_t peekUntil(AOutputBuffer& bufDestination, size_t index, char delimeter) const;
+  size_t peekUntil(AOutputBuffer& bufDestination, size_t index, const AString& delimeters) const;
+  size_t peekUntilOneOf(AOutputBuffer& bufDestination, size_t index = 0, const AString& delimeters = AConstant::ASTRING_WHITESPACE) const;
 
   /*!
   Indexed access operators

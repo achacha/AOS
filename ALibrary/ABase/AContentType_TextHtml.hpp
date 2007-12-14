@@ -13,6 +13,8 @@ class AFile;
 class ABASE_API AContentType_TextHtml : public AContentTypeInterface
 {
 public:
+  static const AString CONTENT_TYPE;  // text/html
+
   typedef std::vector<AElementObserver_FORM *> VECTOR_AFormObservers;
   typedef std::vector<AElementObserver_HREF *> VECTOR_AHrefObservers;
   typedef std::vector<AElementObserver_SRC *>  VECTOR_ASrcObservers;
@@ -26,19 +28,24 @@ public:
   AElement_HTML *getHead() const;
   AElement_HTML *findType(const AString &strType, AElement_HTML *pheStartFrom = NULL) const;
 
-  //a_Activation method
   virtual void clear();
+
+  //a_Activation method
   virtual void parse();
   
   //a_Basic linting
   void lint();      //a_After parsing it validates with some basic rules
 
-  //a_AFile use
+  /*!
+  ASerializable
+  */
   virtual void fromAFile(AFile& fileIn);
   virtual void toAFile(AFile& fileIn) const;
 
-  //a_indent >=0 will format
-  virtual void emit(AOutputBuffer&, size_t indent = AConstant::npos) const;  
+  /*!
+  AEmittable
+  */
+  virtual void emit(AOutputBuffer&) const;  
 
   //a_Call ALL parsing routines
   //a_Must proivide a base AUrl object used in request for correct
@@ -48,20 +55,20 @@ public:
   //a_Access to FORMs via AFormObserver types
   //a_Must provide AUrl object of the request (ideally the same one used to construct AHTTPHeader)
   void parseForms(const AUrl&);    
-  size_t getFormCount() const { return m__vectorForms.size(); }
-  AElementObserver_FORM &getFormObserver(size_t i) const {return *m__vectorForms[i]; }
+  size_t getFormCount() const;
+  AElementObserver_FORM &getFormObserver(size_t i) const;
 
   //a_Access to HRef via AHrefObserver
   //a_Must provide AUrl object of the request (ideally the same one used to construct AHTTPHeader)
   void parseHrefs(const AUrl&);
-  size_t getHrefCount() const { return m__vectorHrefs.size(); }
-  AElementObserver_HREF &getHrefObserver(size_t i) const { return *m__vectorHrefs[i]; }
+  size_t getHrefCount() const;
+  AElementObserver_HREF &getHrefObserver(size_t i) const;
 
   //a_Access to FRAMEs via AFrameObserver
   //a_Must provide AUrl object of the request (ideally the same one used to construct AHTTPHeader)
   void parseSrcs(const AUrl&);
-  size_t getSrcCount() const { return m__vectorSrcs.size(); }
-  AElementObserver_SRC &getSrcObserver(size_t i) const { return *m__vectorSrcs[i]; }
+  size_t getSrcCount() const;
+  AElementObserver_SRC &getSrcObserver(size_t i) const;
 
   //a_Targets
   size_t getTargetCount() const;
@@ -70,13 +77,12 @@ public:
   const AUrl getRandomTargetUrl(size_t iFormThreshold = 40, size_t iHrefThreshold = 80, size_t iMaxThreshold = 100);
 
   //a_Formatting of the output
-  void setFormatted(bool boolFlag = true) { m__boolFormatted = boolFlag; }
+  void setFormatted(bool boolFlag = true);
+  
   //a_Extended error reporting
-  void setExtendedErrorLogging(bool boolFlag = true) { m__boolExtendedErrorLogging = boolFlag; }
+  void setExtendedErrorLogging(bool boolFlag = true);
   
 private:
-  static const AString CONTENT_TYPE;  // text/html
-
   //a_HTML page hierarchy
   AElement_HTML *m__pheHead;     //a_Head of the AHtmlElement tree
   void __resetHierarchy();       //a_Reset the AHtmlElement hierarchy
@@ -92,6 +98,11 @@ private:
 
   //a_Parsing flag
   bool m__boolNeedParsing;
+
+public:
+#ifdef __DEBUG_DUMP__
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+#endif
 };
 
 #endif
