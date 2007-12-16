@@ -13,4 +13,6 @@
 #include "ANumber.hpp"
 #include "AException.hpp"
 
+#include "errmsg.h"
+
 #endif //INCLUDED__pchADatabase_MySQL_HPP__

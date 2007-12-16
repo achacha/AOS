@@ -28,6 +28,7 @@ public:
   */
   virtual bool init(AString& error);
   virtual bool isInitialized() const;
+  virtual bool reconnect(AString& error);
   virtual void deinit();
   virtual ADatabase *clone(AString& error) const;
   

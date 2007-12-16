@@ -57,6 +57,12 @@ bool ASQLiteServer::init(AString& error)
   return true;
 }
 
+bool ASQLiteServer::reconnect(AString& error)
+{
+  //a_Not applicable to sqlite3
+  ATHROW(this, AException::NotImplemented);
+}
+
 void ASQLiteServer::deinit()
 {
   if (mbool_Initialized && mp_db)

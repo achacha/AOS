@@ -51,7 +51,7 @@ bool AODBCServer::init(AString& error)
 {
   AASSERT_EX(this, !mbool_Initialized, ASWNL("ODBC data source already initialized."));
 
-  SQLRETURN   retcode;
+  SQLRETURN retcode;
   
   //a_Allocate environment handle
   retcode = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &m_henv);
@@ -59,11 +59,12 @@ bool AODBCServer::init(AString& error)
   {
     //a_Set the ODBC version environment attribute
     retcode = SQLSetEnvAttr(m_henv, SQL_ATTR_ODBC_VERSION, (void*)SQL_OV_ODBC3, 0); 
-    if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+    if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+    {
       //a_Allocate connection handle
       retcode = SQLAllocHandle(SQL_HANDLE_DBC, m_henv, &m_hdbc); 
-      if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
-        
+      if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+      {
         //a_Set login timeout to 6 seconds
         int timeout = 6;
         SQLSetConnectAttr(m_hdbc, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER *)&timeout, SQL_IS_INTEGER);
@@ -89,7 +90,7 @@ bool AODBCServer::init(AString& error)
       }
       else
       {
-        error.append("ODBC unable to set version environment attribute:");
+        error.append("ODBC unable to allocate handle:");
         _processError(error, SQL_HANDLE_DBC, m_hdbc);
         SQLFreeHandle(SQL_HANDLE_DBC, m_hdbc);
         SQLFreeHandle(SQL_HANDLE_ENV, m_henv);
@@ -113,6 +114,49 @@ bool AODBCServer::init(AString& error)
 
   mbool_Initialized=true;
   return true;
+}
+
+bool AODBCServer::reconnect(AString& error)
+{
+  AASSERT_EX(this, !mbool_Initialized, ASWNL("ODBC data source already initialized."));
+
+  if (NULL != m_hdbc)
+    SQLFreeHandle(SQL_HANDLE_DBC, m_hdbc);
+  
+  SQLRETURN retcode = SQLAllocHandle(SQL_HANDLE_DBC, m_henv, &m_hdbc); 
+  if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+  {
+    //a_Set login timeout to 6 seconds
+    int timeout = 6;
+    SQLSetConnectAttr(m_hdbc, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER *)&timeout, SQL_IS_INTEGER);
+
+     /* Connect to data source */
+    retcode = SQLConnect(
+      m_hdbc,
+      (SQLCHAR*)m_urlConnection.getBaseDirName().c_str(), (SQLSMALLINT)m_urlConnection.getPath().getSize(),
+      (SQLCHAR*)m_urlConnection.getUsername().c_str(), (SQLSMALLINT)m_urlConnection.getUsername().getSize(),
+      (SQLCHAR*)m_urlConnection.getPassword().c_str(), (SQLSMALLINT)m_urlConnection.getPassword().getSize()
+    );
+    if (SQL_ERROR == retcode)
+    {
+      error.append("ODBC unable to re-connect:");
+      error.append("\r\n  datasource=");
+      error.append(m_urlConnection.getBaseDirName());
+      error.append("\r\n");
+      _processError(error, SQL_HANDLE_DBC, m_hdbc);
+      SQLFreeHandle(SQL_HANDLE_DBC, m_hdbc);
+      SQLFreeHandle(SQL_HANDLE_ENV, m_henv);
+      return false;
+    }
+  }
+  else
+  {
+    error.append("ODBC unable to re-allocate handle:");
+    _processError(error, SQL_HANDLE_DBC, m_hdbc);
+    SQLFreeHandle(SQL_HANDLE_DBC, m_hdbc);
+    SQLFreeHandle(SQL_HANDLE_ENV, m_henv);
+    return false;
+  }
 }
 
 void AODBCServer::_processError(AString& error, SQLSMALLINT handleType, HANDLE handle)
@@ -225,7 +269,23 @@ SQLHSTMT AODBCServer::executeSQL(const AString& query, AString& error)
   SQLHSTMT hstmt(SQL_NULL_HSTMT);
 
   // Allocate statement handle
+  int tries = 0;
   SQLRETURN retcode = SQLAllocHandle(SQL_HANDLE_STMT, m_hdbc, &hstmt); 
+  while (tries < 3 && retcode == SQL_INVALID_HANDLE)
+  {
+    if (reconnect(error))
+    {
+      error.clear();
+      break;
+    }
+    ++tries;
+  }
+  if (3 == tries)
+  {
+    error.append("Unable to re-establish a connection after 3 tries.");
+    return false;
+  }
+
   if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
   {
     _processError(error, SQL_HANDLE_STMT, hstmt);

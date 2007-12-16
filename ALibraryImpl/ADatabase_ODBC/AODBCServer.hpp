@@ -24,6 +24,7 @@ public:
   */
   virtual bool init(AString& error);
   virtual void deinit();
+  virtual bool reconnect(AString& error);
   virtual ADatabase *clone(AString& error) const;
   
   /*!

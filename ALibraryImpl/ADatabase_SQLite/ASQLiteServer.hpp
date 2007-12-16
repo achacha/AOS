@@ -27,6 +27,7 @@ public:
   ADatabase
   */
   virtual bool init(AString& error);
+  virtual bool reconnect(AString& error);
   virtual void deinit();
   virtual ADatabase *clone(AString& error) const;
   
