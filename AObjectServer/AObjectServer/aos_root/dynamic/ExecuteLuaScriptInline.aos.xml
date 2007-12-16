@@ -3,8 +3,8 @@
   <input/>
   <module class="LuaScript">
     <script><![CDATA[
-aos.addText("/root/inline-script-added", "Cthulhu was here");
-print(aos.emitContent("/root/inline-script-added"));	
+model.addElementText("/root/inline-script-added", "Cthulhu was here");
+print(model.emitContentFromPath("/root/inline-script-added"));	
 ]]></script>
     <outpath>output/script</outpath>
   </module>
