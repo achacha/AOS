@@ -16,7 +16,8 @@ Required to implement by derived class:
 ------------CUT BELOW----------
 public:
   virtual bool init(AString& error);
-  virtual void deinit();
+  virtual bool reconnect();
+  virtual void deinit(AString& error);
   virtual u4 executeSQL(const AString& query, AResultSet&, AString& error);
   virtual emitXml(AXmlElement& target) const;
   virtual ADatabase *clone() const;
@@ -43,6 +44,11 @@ public:
   virtual bool init(AString& error) = 0;
   virtual bool isInitialized() const;
   virtual void deinit() = 0;
+
+  /*!
+  exeuteSQL will call this if it detects an issue with a lost connection
+  */
+  virtual bool reconnect(AString& error) = 0;
 
   /*!
   Executes a query and inserts an object into the targetNS with resultSetName
