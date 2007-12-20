@@ -38,8 +38,8 @@ AOS_BASE_API extern ASync_CriticalSection g_DebugTraceSync;
 typedef int (PROC_AOS_Register)(AOSInputExecutor&, AOSModuleExecutor&, AOSOutputExecutor&, AOSServices&);
 
 #ifdef WIN32
-#define AOS_SERVER_NAME "AsynchObjectServer/1.2.0.0"
-#define AOS_ADMIN_SERVER_NAME "AOSAdminServer/1.2.0.0"
+#define AOS_SERVER_NAME "Conveyer/1.3.0.0 [en]"
+#define AOS_ADMIN_SERVER_NAME "Conveyer Admin Server/1.2.0.0 [en]"
 
 #endif
 

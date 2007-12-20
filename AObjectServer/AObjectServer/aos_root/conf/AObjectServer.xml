@@ -86,9 +86,9 @@
 	<reported>
 		<!-- Reported overrides -->
 		<hostname desc="Hostname reported to clients">achacha.selfip.com</hostname>
-		<server>AObjectServer 1.2.0.0</server>
-		<http/>
-		<https/>
+		<server desc="Server field in the response http header">Conveyer 1.3.0.0 [en]</server>
+		<http desc="Reported HTTP port, none means use 80"/>
+		<https desc="Reported HTTPS port, none means use 443"/>
 	</reported>
 	<context-manager>
 		<history-maxsize>100</history-maxsize>
@@ -98,9 +98,9 @@
 		<base-http-dir>admin/</base-http-dir>
 	</admin>
 	<database>
-		<!--url>mysql://aos:aos@localhost/aos/</url-->
+		<url>mysql://aos:aos@equinox/aos/</url>
 		<!--url>odbc://aos:aos@localhost/aos_global/</url-->
-		<url>sqlite:///./aos_root/AObjectServer.db</url>
+		<!--url>sqlite:///./aos_root/AObjectServer.db</url-->
 		<connections>4</connections>
 	</database>
 	<http>

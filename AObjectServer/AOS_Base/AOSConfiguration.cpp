@@ -281,7 +281,7 @@ void AOSConfiguration::_readMIMETypes()
     AString str;
     m_Config.useRoot().emitString(ASWNL("/config/server/mime-types"), str);
 
-    AFilename filename(m_BaseDir);
+    AFilename filename(m_AosBaseConfigDir);
     AFilename fMime(str, false);
     filename.join(fMime);
 
