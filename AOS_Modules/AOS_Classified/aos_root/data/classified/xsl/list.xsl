@@ -3,12 +3,13 @@
 	<xsl:template match="/">
 		<html>
 			<head>
-				<title>Classified list</title>
+				<title>Classified item list</title>
+			    <link href="/classified/classified.css" type="text/css" rel="stylesheet"/>
 			</head>
 			<body>
 			<h1>List of classified items</h1>
 			<br/>
-			<table border="1" cellpadding="1" cellspacing="1">
+			<table border="1" cellpadding="2" cellspacing="2" width="100%">
 				<tbody>
 					<tr>
 						<th>Title</th>
@@ -28,10 +29,10 @@
 
 	<xsl:template match="row">
 		<tr>
-			<td><div><xsl:value-of select="title"/></div></td>
-			<td><div><xsl:value-of select="descript"/></div></td>
-			<td><div><xsl:value-of select="contact"/></div></td>
-			<td><div><xsl:value-of select="price"/></div></td>
+			<td><div class="cla_title"><xsl:value-of select="title"/></div></td>
+			<td><div class="cla_description"><xsl:value-of disable-output-escaping="yes" select="descript"/></div></td>
+			<td><div class="cla_contact"><xsl:value-of select="contact"/></div></td>
+			<td><div class="cla_price"><xsl:value-of select="price"/></div></td>
 		</tr>
 	</xsl:template>
 </xsl:stylesheet>

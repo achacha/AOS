@@ -2,6 +2,7 @@
 #include "AOSModule_classified_list.hpp"
 #include "ADatabase.hpp"
 #include "AResultSet.hpp"
+#include "ATextConverter.hpp"
 
 const AString& AOSModule_classified_list::getClass() const
 {
@@ -20,7 +21,7 @@ bool AOSModule_classified_list::execute(AOSContext& context, const AXmlElement& 
   ARope query("SELECT * from classified where user_id=1;");
 
   //a_Commit to DB
-  AString str;
+  AString str(4096, 4096);
   AResultSet rs;
   size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query.toAString(), rs, str);
   if (AConstant::npos == rows)
@@ -31,7 +32,21 @@ bool AOSModule_classified_list::execute(AOSContext& context, const AXmlElement& 
   }
 
   AXmlElement& eClassified = context.useModel().addElement("classified");
-  rs.emitXml(eClassified);
+  eClassified.addElement("sql").addData(rs.useSQL(), AXmlElement::ENC_CDATADIRECT);
+
+  str.clear();
+  const VECTOR_AString& fieldNames = rs.getFieldNames();
+  for (size_t i = 0; i < rs.getRowCount(); ++i)
+  {
+    AXmlElement& row = eClassified.addElement(ASW("row",3));
+    const VECTOR_AString& fieldData = rs.getRow(i);
+    for (size_t j = 0; j < fieldNames.size(); ++j)
+    {
+      ATextConverter::decodeURL(fieldData.at(j), str);
+      row.addElement(fieldNames.at(j)).addData(str, AXmlElement::ENC_CDATADIRECT);
+      str.clear();
+    }
+  }
 
   return true;
 }

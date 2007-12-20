@@ -18,3 +18,24 @@
   color: blue;
 }
 
+.cla_title { 
+	background: #d6deff;
+	font: 12 Arial, Helvetica, sans-serif;
+  color: blue;
+}
+
+.cla_description { 
+	font: 12 Arial, Helvetica, sans-serif;
+  color: #303080;
+}
+
+.cla_contact { 
+	background: #d6deff;
+	font: 10 Arial, Helvetica, sans-serif;
+}
+
+.cla_price { 
+	background: #d6deff;
+	font: 10 Arial, Helvetica, sans-serif;
+}
+
