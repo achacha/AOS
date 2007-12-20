@@ -192,6 +192,8 @@ MYSQL_RES *AMySQLServer::executeSQL(const AString& query, AString& error)
         return NULL;
       }
     }
+    else
+      break;  //a_Success
   }
   if (3 == tries)
   {
