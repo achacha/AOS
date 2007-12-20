@@ -66,7 +66,7 @@ void AResultSet::emitXml(AXmlElement& target) const
   if (target.useName().isEmpty())
     target.useName().assign(m_Name.isEmpty() ? "AResultSet" : m_Name);
 
-  target.addElement("sql", m_SQL, AXmlElement::ENC_CDATADIRECT);
+  target.addElement(ASW("sql",3)).addData(m_SQL, AXmlElement::ENC_CDATADIRECT);
 
   RESULTSET::const_iterator citRow = m_ResultSet.begin();
   while(citRow != m_ResultSet.end())
@@ -78,7 +78,7 @@ void AResultSet::emitXml(AXmlElement& target) const
     for (size_t u=0; u < (*citRow).size(); ++u)
     {
       //a_DB column name and data in that column for given row
-      elementRow.addElement(m_FieldNames.at(u), (*citRow).at(u));
+      elementRow.addElement(m_FieldNames.at(u)).addData((*citRow).at(u));
     }
     ++citRow;
   }
