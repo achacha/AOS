@@ -38,10 +38,10 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     AString strError;
     AResultSet rs;
     size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, rs, strError);
-    if (AConstant::npos == rows)
+    if (0 == rows)
     {
       //a_INSERT new data for this page, write data
-      AString query("insert into",11);
+      AString query("insert into ",12);
       query.append(strTable);
       query.append(" (path,data) values ('",22);
       query.append(strWikiPath);
