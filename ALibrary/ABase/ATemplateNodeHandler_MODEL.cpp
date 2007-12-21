@@ -78,3 +78,8 @@ void ATemplateNodeHandler_MODEL::Node::process(ABasePtrHolder& objects, AOutputB
     output.append(ARope("Unable to find element for '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
   }
 }
+
+void ATemplateNodeHandler_MODEL::Node::_handleDataAfterRead()
+{
+  m_BlockData.stripLeadingAndTrailing();
+}

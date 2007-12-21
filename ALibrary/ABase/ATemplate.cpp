@@ -1,7 +1,7 @@
 #include "pchABase.hpp"
 #include "ATemplate.hpp"
 #include "ABasePtrHolder.hpp"
-#include "AFile.hpp"
+#include "AFile_AString.hpp"
 #include "AXmlDocument.hpp"
 #include "ATemplateNodeHandler_CODE.hpp"
 #include "ATemplateNodeHandler_OBJECT.hpp"
@@ -33,16 +33,35 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-ATemplate::ATemplate(bool useDefaultHandlers) :
+ATemplate::ATemplate(
+  const AString& source,
+  HandlerMask mask // = ATemplate::HANDLER_ALL
+) :
   m_Initialized(false)
 {
-  if (useDefaultHandlers)
-  {
-    //a_Add default handlers
-    addHandler(new ATemplateNodeHandler_CODE());
-    addHandler(new ATemplateNodeHandler_OBJECT());
-    addHandler(new ATemplateNodeHandler_MODEL());
-  }
+  _loadDefaultHandlers(mask);
+
+  AFile_AString strfile(source);
+  fromAFile(strfile);
+}
+
+ATemplate::ATemplate(
+  AFile& source, 
+  HandlerMask mask // = ATemplate::HANDLER_ALL
+) :
+  m_Initialized(false)
+{
+  _loadDefaultHandlers(mask);
+
+  fromAFile(source);
+}
+
+ATemplate::ATemplate(
+  HandlerMask mask // = ATemplate::HANDLER_ALL
+) :
+  m_Initialized(false)
+{
+  _loadDefaultHandlers(mask);
 }
 
 ATemplate::~ATemplate()
@@ -53,6 +72,22 @@ ATemplate::~ATemplate()
     for (NODES::iterator it = m_Nodes.begin(); it != m_Nodes.end(); ++it)
       delete (*it);
   } catch(...) {}
+}
+
+void ATemplate::_loadDefaultHandlers(ATemplate::HandlerMask mask)
+{
+  if (mask & ATemplate::HANDLER_CODE)
+  {
+    addHandler(new ATemplateNodeHandler_CODE());
+  }
+  if (mask & ATemplate::HANDLER_OBJECT)
+  {
+    addHandler(new ATemplateNodeHandler_OBJECT());
+  }
+  if (mask & ATemplate::HANDLER_MODEL)
+  {
+    addHandler(new ATemplateNodeHandler_MODEL());
+  }
 }
 
 void ATemplate::addNode(const AString& tagname, AFile& source)

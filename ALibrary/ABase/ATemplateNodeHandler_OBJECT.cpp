@@ -76,3 +76,8 @@ void ATemplateNodeHandler_OBJECT::Node::process(ABasePtrHolder& objects, AOutput
     output.append(ARope("Unable to find object or not AEmittable: '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
   }
 }
+
+void ATemplateNodeHandler_OBJECT::Node::_handleDataAfterRead()
+{
+  m_BlockData.stripLeadingAndTrailing();
+}

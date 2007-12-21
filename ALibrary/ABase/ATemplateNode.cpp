@@ -123,7 +123,13 @@ void ATemplateNode::fromAFile(AFile& aFile)
     //a_If end token not found, read everything to EOF
     if (AConstant::npos == aFile.readUntil(m_BlockData, endToken, true, true))
       aFile.readUntilEOF(m_BlockData);
+
+    _handleDataAfterRead();
   }
+}
+
+void ATemplateNode::_handleDataAfterRead()
+{
 }
 
 AString& ATemplateNode::useBlockData()

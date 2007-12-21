@@ -18,14 +18,14 @@ Generic template parser/processor
 
 
 Tag format: {START_TAG}{TAG}{BLOCK_START} .. tag body .. {BLOCK_END}{TAG}{TAR_END}
-Code Example  : %[CODE]%{{{ print(/foo); }}}%[CODE]%
-Object example: %[OBJECT]{{{object}}}%[OBJECT]%
+Code Example  : %[CODE]{{{ print(/foo); }}}[CODE]%
+Model example: %[MODEL]{{{ /model/path }}}%[MODEL]%
+Object example: %[OBJECT]{{{ object_name }}}%[OBJECT]%
 
 
 Usage:
   // Create a template and add handlers
   ATemplate t;
-  t.addHandler(new ATemplateNodeHandler_Code(t));
   t.addHandler(new ATemplateNodeHandler_SomeCustomOne(t));
 
   // Setup an objects holder to be used by the template
@@ -40,10 +40,11 @@ Usage:
   objects.insertWithOwnership("someobject", new AString("foo"));
   
   //process template nodes using the model
-  t.process(objects);
+  AString output;
+  t.process(objects, output);
 
   //Display results
-  std::cout << t.getOutput() << std::endl;
+  std::cout << output << std::endl;
 */
 class ABASE_API ATemplate : public ADebugDumpable, public ASerializable, public AXmlEmittable
 {
@@ -58,16 +59,46 @@ public:
   */
   static const AString TAG_START;     //a_ "%["
   static const AString BLOCK_START;   //a_ "]{{{"
-  static const AString BLOCK_END;     //a_ "}}}%["
+  static const AString BLOCK_END;     //a_ "}}}["
   static const AString TAG_END;       //a_ "]%"
+
+  /*!
+  Default handler enums
+  */
+  enum HandlerMask
+  {
+    HANDLER_NONE   = 0x00,
+    HANDLER_OBJECT = 0x01,
+    HANDLER_MODEL  = 0x02,
+    HANDLER_CODE   = 0x04,
+    HANDLER_ALL    = 0xff
+  };
 
 public:
   /*!
+  ctor
+  Parse given string template
+
+  @param t template to parse
+  @param mask loads CODE, OBJECT, MODEL handlers by default (others can use addHandler call)
+  */
+  ATemplate(const AString& t, HandlerMask mask = ATemplate::HANDLER_ALL);
+
+  /*!
+  ctor
+  Parse given string template
+
+  @param file to read for template to parse
+  @param mask loads CODE, OBJECT, MODEL handlers by default (others can use addHandler call)
+  */
+  ATemplate(AFile& file, HandlerMask mask = ATemplate::HANDLER_ALL);
+
+  /*!
   Ctor
 
-  useDefaultHandlers - loads CODE, OBJECT, MODEL handlers by default (others can use addHandler call)
+  @param mask loads CODE, OBJECT, MODEL handlers by default (others can use addHandler call)
   */
-  ATemplate(bool useDefaultHandlers = true);
+  ATemplate(HandlerMask mask = ATemplate::HANDLER_ALL);
   
   /*!
   dtor
@@ -125,14 +156,17 @@ public:
   void addHandler(ATemplateNodeHandler *);
 
 private:
-  //a_Initialization state
+  //! Load deafult handlers
+  void _loadDefaultHandlers(ATemplate::HandlerMask mask);
+
+  //! Initialization state
   bool m_Initialized;
   
-  //a_Parsed nodes
+  //! Parsed nodes
   typedef std::list<ATemplateNode *> NODES;
   NODES m_Nodes;
 
-  //a_Handlers
+  //! Handlers
   typedef std::map<AString, AAutoPtr<ATemplateNodeHandler>> HANDLERS;
   HANDLERS m_Handlers;
 

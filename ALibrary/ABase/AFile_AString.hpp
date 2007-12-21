@@ -5,17 +5,39 @@
 #include "AFile.hpp"
 #include "AString.hpp"
 
-/*
+/*!
  AFile operations on AString buffer
  All write operations assume clobber and truncation (append at write position and cut the rest)
 */
 class ABASE_API AFile_AString : public AFile
 {
 public:
-	AFile_AString();
+	/*!
+  ctor
+  Contains empty string
+  */
+  AFile_AString();
+  
+  /*!
+  ctor
+  AFile from an existing AString, will copy string contents
+  */
   AFile_AString(const AString&);
-  AFile_AString(size_t, u2);                   //a_Initial string buffer size, increments for realloc  (see AString ctors)
+  
+  /*!
+  ctor
+  Initial string buffer size, increments for realloc  (see AString ctors)
+  */
+  AFile_AString(size_t, u2);
+  
+  /*!
+  copy ctor
+  */
   AFile_AString(const AFile_AString&);
+  
+  /*!
+  dtor
+  */
   virtual ~AFile_AString() {}
 
   /*!
@@ -32,10 +54,14 @@ public:
 	inline size_t getWritePos() const;
 
   /*!
-  Position and cuffer control
+  Reset positions, does not clear buffer
   */
-  inline void reset();  //a_Reset positions
-  inline void clear();  //a_Clears the contents and resets
+  inline void reset();
+  
+  /*!
+  Clear string buffer and reset positions
+  */
+  inline void clear();
 	
   /*!
   Direct access to the data string
@@ -52,9 +78,9 @@ public:
   virtual void close() {}
 
 protected:
-  /*
-    * AFile guaranteed methods
-  **/
+  /*!
+  AFile guaranteed methods
+  */
   virtual size_t _read(void *data, size_t length);
 	virtual size_t _write(const void *data, size_t length);
   virtual bool _isNotEof();

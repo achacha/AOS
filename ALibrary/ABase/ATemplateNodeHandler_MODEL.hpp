@@ -84,7 +84,14 @@ public:
     Output should go to the output buffer in ATemplate
     */
     virtual void process(ABasePtrHolder& objects, AOutputBuffer& output);
+
+  protected:
+    /*!
+    Trim the string, remove whitespace
+    */
+    virtual void _handleDataAfterRead();
   };
+
 
 public:
 #ifdef __DEBUG_DUMP__

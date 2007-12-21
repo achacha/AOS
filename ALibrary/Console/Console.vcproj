@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tContentType_HTML.cpp"
+			RelativePath=".\tStringTemplate.cpp"
 			>
 		</File>
 	</Files>

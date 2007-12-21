@@ -66,6 +66,12 @@ public:
   virtual void process(ABasePtrHolder& objects, AOutputBuffer& output);
 
 protected:
+  /*!
+  Handle the data after it is read (data cleanup, etc)
+  Default does nothing, some nodes may need to trim strings, convert, re-format, etc
+  */
+  virtual void _handleDataAfterRead();
+
   //a_Block data
   AString m_BlockData;
 
