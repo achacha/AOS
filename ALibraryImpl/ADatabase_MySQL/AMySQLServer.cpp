@@ -86,7 +86,6 @@ bool AMySQLServer::reconnect(AString& error)
     return false;
   }
 
-  mysql_close(mp_mydata);
   if (!mysql_real_connect( 
     mp_mydata,
     m_urlConnection.getServer().c_str(),
@@ -103,6 +102,8 @@ bool AMySQLServer::reconnect(AString& error)
     error += ";";
     return false;
   }
+
+  return true;
 }
 
 bool AMySQLServer::isInitialized() const
