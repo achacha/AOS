@@ -24,6 +24,7 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
 
   AString strWikiPath;
   context.useRequestParameterPairs().get(ASW("wikipath",8), strWikiPath);
+  context.useModel().overwriteElement(ASW("wiki/path",13)).addData(strWikiPath, AXmlElement::ENC_CDATADIRECT);
 
   AString strData;
   if (context.useRequestParameterPairs().get(ASW("wiki.newdata",12), strData))
