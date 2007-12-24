@@ -29,7 +29,7 @@ void ACookie::debugDump(std::ostream& os, int indent) const
 
 ACookie::ACookie() :
   m_boolExpired(false),
-  m_iVersion(0x0),            //a_Default to "old Netscape" style cookies
+  m_iVersion(1),
   m_boolSecure(false),
   m_boolExpirationSet(false), //a_Indefinite cookie
   m_lMaxAge(-1)
@@ -38,7 +38,7 @@ ACookie::ACookie() :
 
 ACookie::ACookie(const AString &strName, const AString &strValue) :
   m_boolExpired(false),
-  m_iVersion(0x0),            //a_Default to "old Netscape" style cookies
+  m_iVersion(1),
   m_boolSecure(false),
   m_strName(strName),
   m_strValue(strValue),
@@ -95,7 +95,7 @@ void ACookie::clear()
   m_boolExpired       = false;
   m_boolExpirationSet = false;
  
-  m_iVersion = 0x0;
+  m_iVersion = 1;
   m_lMaxAge = -1;
   m_strComment.clear();       
 }

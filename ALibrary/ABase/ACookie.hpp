@@ -10,11 +10,18 @@
 class ABASE_API ACookie : public ADebugDumpable, public AXmlEmittable
 {
 public:
-  //a_Ctors and dtor
+  /*!
+  ctors
+  Default version is 1.0
+  */
   ACookie();
   ACookie(const ACookie& cookieSource);
   ACookie(const AString &strName, const AString &strValue = "");
-  ~ACookie();              //a_Make virtual if adding virtual methods
+  
+  /*!
+  dtor
+  */
+  virtual ~ACookie();
 
   //a_Assignment operator (overlay implied)
   ACookie& operator =(const ACookie &cookieSource);
@@ -39,6 +46,7 @@ public:
   /*!
   Cookie version
   0 = old style netscape cookie without a version attribute
+  1 = new style
   */
   void setVersion(int iVersion)             { m_iVersion    = iVersion;   }
   
