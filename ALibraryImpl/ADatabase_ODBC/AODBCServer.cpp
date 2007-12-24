@@ -275,8 +275,10 @@ SQLHSTMT AODBCServer::executeSQL(const AString& query, AString& error)
   {
     if (reconnect(error))
     {
+      //a_Try again
       error.clear();
-      break;
+      retcode = SQLAllocHandle(SQL_HANDLE_STMT, m_hdbc, &hstmt);
+      continue;
     }
     ++tries;
   }

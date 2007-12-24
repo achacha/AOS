@@ -165,36 +165,30 @@ MYSQL_RES *AMySQLServer::executeSQL(const AString& query, AString& error)
 
   int tries = 0;
   u4 u4Errno = 0;
-  while (tries < 3)
+  while (tries < 3 && mysql_real_query(mp_mydata, query.c_str(), query.getSize()))
   {
-    if (mysql_real_query(mp_mydata, query.c_str(), query.getSize()))
-    {    
-      u4Errno = mysql_errno(mp_mydata);
-      if (CR_SERVER_GONE_ERROR == u4Errno)
+    u4Errno = mysql_errno(mp_mydata);
+    if (CR_SERVER_GONE_ERROR == u4Errno)
+    {
+      //a_Connection lost, try to reconnect, clear error if reconnected
+      if (reconnect(error))
       {
-        //a_Connection lost, try to reconnect, clear error if reconnected
-        if (reconnect(error))
-        {
-          error.clear();
-          break;
-        }
-
-        ++tries;
+        error.clear();
+        continue;       //a_Try query again
       }
-      else
-      {
-        error = "Error(";
-        error += mysql_error(mp_mydata);
-        error += ":errno=";
-        error += AString::fromU4(u4Errno);
-        error += ") for query(";
-        error += query;
-        error += ");";
-        return NULL;
-      }
+      ++tries;
     }
     else
-      break;  //a_Success
+    {
+      error = "Error(";
+      error += mysql_error(mp_mydata);
+      error += ":errno=";
+      error += AString::fromU4(u4Errno);
+      error += ") for query(";
+      error += query;
+      error += ");";
+      return NULL;
+    }
   }
   if (3 == tries)
   {
