@@ -178,6 +178,13 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           {
             pContext->setExecutionState(ASW("Sending result",14));
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
+            
+            //a_Log reponse header to event visitor
+            {
+              ARope rope("HTTP response header:\r\n",23);
+              pContext->useResponseHeader().emit(rope);
+              pContext->useEventVisitor().set(rope);
+            }
 
             //a_The writing of the output
             try

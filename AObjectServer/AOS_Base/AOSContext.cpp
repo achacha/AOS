@@ -918,7 +918,10 @@ int AOSContext::getDumpContextLevel() const
     m_RequestHeader.getUrl().getParameterPairs().get(ASW("dumpContext", 11), str)
   )
   {
-    return str.toInt();
+    if (str.equals(ASW("on",2)))
+      return 1;       //a_on is used in checkboxes and equals level 1
+    else
+      return str.toInt();
   }
   return 0;
 }
