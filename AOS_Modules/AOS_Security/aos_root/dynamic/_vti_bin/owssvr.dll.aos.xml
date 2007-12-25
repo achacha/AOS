@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<command session="0">
+	<input/>
+	<module/>
+	<output class="File">
+		<content-type>text/html</content-type>
+		<path>/MSOffice/cltreq.asp</path>
+		<base>static</base>
+	</output>
+</command>
