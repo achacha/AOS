@@ -69,9 +69,10 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         }
 
         //
-        //a_Process modules
+        // Process modules
+        // Unless we are in redirect mode
         //
-        if (pContext->getCommand())
+        if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_REDIRECTING) &&  pContext->getCommand())
           pThis->m_Services.useModuleExecutor().execute(*pContext, pContext->getCommand()->getModules());
         else
           pContext->useEventVisitor().set(ASW("Command not found, skipping module execution.",45), true);
@@ -84,64 +85,70 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         }
 
         //
-        //a_Prepare for output
+        // Prepare for output
         //
-        AString str(1536, 1024);
+        if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_REDIRECTING))
         {
+          AString str(1536, 1024);
+
           //a_Add some common response header pairs
           ATime timeNow;
           timeNow.emitRFCtime(str);
           pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Date, str);
-        }
 
-        int dumpContextLevel = pContext->getDumpContextLevel();
+          int dumpContextLevel = pContext->getDumpContextLevel();
 
-        //a_Add REQUEST header only if not in AJAX mode
-        if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
-          pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(ASW("REQUEST",7)));
-
-        //
-        //a_Generate output
-        //
-        pContext->setExecutionState(ASW("Executing output generator",26));
-        pThis->m_Services.useOutputExecutor().execute(*pContext);
-
-        //a_Dump context as XML instead of usual output
-        pContext->dumpContext(dumpContextLevel);
-        if (dumpContextLevel > 0)
-        {
-          //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
-          pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");
-          pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_200_Ok);
-          pContext->writeOutputBuffer(true);
-        }
-
-        //a_Publish total execution time
-        if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
-        {
-          pContext->useModel().addElement(ASW("total_time",10), pContext->getContextTimer());
-        }
-
-        //
-        //a_Publish errors if any
-        //
-        if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
-        {
-          pContext->setExecutionState(ASW("Emitting event visitor",22));
-          if (pContext->useEventVisitor().getErrorCount() > 0)
+          //a_Add REQUEST header only if not in AJAX mode
+          if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
           {
-            pContext->useEventVisitor().emitXml(pContext->useModel().addElement("AEventVisitor"));
+            pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(ASW("REQUEST",7)));
+            pContext->useSessionData().emitXml(pContext->useModel().overwriteElement(ASW("SESSION",7)));
+          }
+
+          //
+          // Generate output
+          // Unless redirecting
+          //
+          pContext->setExecutionState(ASW("Executing output generator",26));
+          pThis->m_Services.useOutputExecutor().execute(*pContext);
+
+          //a_Dump context as XML instead of usual output
+          pContext->dumpContext(dumpContextLevel);
+          if (dumpContextLevel > 0)
+          {
+            //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
+            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");
+            pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_200_Ok);
+            pContext->writeOutputBuffer(true);
+          }
+
+          //a_Publish total execution time
+          if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
+          {
+            pContext->useModel().addElement(ASW("total_time",10), pContext->getContextTimer());
+          }
+
+          //
+          //a_Publish errors if any
+          //
+          if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
+          {
+            pContext->setExecutionState(ASW("Emitting event visitor",22));
+            if (pContext->useEventVisitor().getErrorCount() > 0)
+            {
+              pContext->useEventVisitor().emitXml(pContext->useModel().addElement("AEventVisitor"));
+            }
           }
         }
 
-        //a_If output module set this to true, it handled all the output and we don't need to do anything else
-        //a_dumpContext flag will override the output
+        //If output module set this to true, it handled all the output and we don't need to do anything else
+        //dumpContext flag will override the output
         if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
         {
           pContext->setExecutionState(ASW("Generating output",17));
 
           AString strDeflateLevel;
-          str.clear();
+          AString str;
           pContext->useRequestHeader().getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, str);
           if ( 
                AConstant::npos != str.findNoCase(ASW("deflate",7)) 

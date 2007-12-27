@@ -57,9 +57,7 @@ void AOSRequestListener::startListening()
     int http_port = -1;
     if (pNode->findElement(ASW("port",4)))
     {
-      AString str;
-      pNode->emitFromPath(ASW("port",4), str);
-      http_port = str.toInt();
+      http_port = pNode->getInt(ASW("port",4), -1);
     }
     if (http_port > 0)
     {
@@ -75,7 +73,7 @@ void AOSRequestListener::startListening()
       {
         LISTEN_DATA *p = new LISTEN_DATA();
         p->port = http_port;
-        pNode->emitFromPath(ASW("host",4), p->host);
+        pNode->emitString(ASW("host",4), p->host);
 
         mthread_Listener.setThis(this);
         mthread_Listener.setParameter(p);
@@ -97,9 +95,7 @@ void AOSRequestListener::startListening()
     int https_port = -1;
     if (pNode->findElement(ASW("port",4)))
     {
-      AString str;
-      pNode->emitFromPath(ASW("port",4), str);
-      https_port = str.toInt();
+      https_port = pNode->getInt(ASW("port",4), -1);
     }
     if (https_port > 0)
     {
@@ -112,9 +108,9 @@ void AOSRequestListener::startListening()
       {
         LISTEN_DATA *p = new LISTEN_DATA();
         p->port = https_port;
-        pNode->emitFromPath(ASW("host",4), p->host);
-        pNode->emitFromPath(ASW("cert",4), p->cert); 
-        pNode->emitFromPath(ASW("pkey",4), p->pkey);
+        pNode->emitString(ASW("host",4), p->host);
+        pNode->emitString(ASW("cert",4), p->cert); 
+        pNode->emitString(ASW("pkey",4), p->pkey);
 
         if (p->cert.isEmpty())
         {

@@ -13,11 +13,11 @@ AOSModule_PublishInput::AOSModule_PublishInput(AOSServices& services) :
 {
 }
 
-bool AOSModule_PublishInput::execute(AOSContext& context, const AXmlElement& params)
+AOSContext::ReturnCode AOSModule_PublishInput::execute(AOSContext& context, const AXmlElement& params)
 {
   context.useModel().addElement(ASW("input/request_header", 20)).addData(context.useRequestHeader(), AXmlElement::ENC_CDATADIRECT);
   context.useModel().addElement(ASW("output/response_header", 22)).addData(context.useResponseHeader(), AXmlElement::ENC_CDATADIRECT);
 
-  return true;
+  return AOSContext::RETURN_OK;
 }
 

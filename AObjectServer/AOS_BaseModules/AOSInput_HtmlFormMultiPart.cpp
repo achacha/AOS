@@ -12,7 +12,7 @@ AOSInput_HtmlFormMultiPart::AOSInput_HtmlFormMultiPart(AOSServices& services) :
 {
 }
 
-bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
+AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
 {
   AString strLength;
   if (context.useRequestHeader().getPairValue(AHTTPHeader::HT_ENT_Content_Length, strLength))
@@ -24,7 +24,7 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
     if (AConstant::npos == pos)
     {
       context.useEventVisitor().set(ASWNL("AOSInput_HtmlFormMultiPart: boundary not found"), true);
-      return false;
+      return AOSContext::RETURN_ERROR;
     }
 
     strBoundary.remove(pos+7);
@@ -121,8 +121,8 @@ bool AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
   {
     //a_411 Length Required
     context.useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_411_Length_Required);
-    return false;
+    return AOSContext::RETURN_ERROR;
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }

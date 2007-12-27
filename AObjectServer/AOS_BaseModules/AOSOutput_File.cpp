@@ -14,19 +14,19 @@ AOSOutput_File::AOSOutput_File(AOSServices& services) :
 {
 }
 
-bool AOSOutput_File::execute(AOSContext& context)
+AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
 {
  
   AString str(1536, 1024);
-  if (!context.getOutputParams().emitFromPath(ASW("path", 4), str))
+  if (!context.getOutputParams().emitString(ASW("path", 4), str))
   {
     context.useEventVisitor().set(ASWNL("AOSOutput_File: Unable to find 'path' parameter"), true);
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("StaticFile requires 'path' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
   
   AFilename *pFilename = NULL;
   AString strBase;
-  if (context.getOutputParams().emitFromPath(ASW("base", 4), strBase))
+  if (context.getOutputParams().emitString(ASW("base", 4), strBase))
   {
     if (strBase.equals(ASW("static",6)))
       pFilename = new AFilename(m_Services.useConfiguration().getAosBaseStaticDirectory(), str, false);
@@ -43,7 +43,7 @@ bool AOSOutput_File::execute(AOSContext& context)
   if (!AFileSystem::exists(*pFilename))
   {
     context.addError(ASWNL("AOSOutput_File"), ARope("File not found: ",16)+*pFilename);
-    return true;
+    return AOSContext::RETURN_ERROR;
   }
 
   //a_Optional content type, if none, use text/html
@@ -94,5 +94,6 @@ bool AOSOutput_File::execute(AOSContext& context)
     context.setOutputCommitted(true);
     context.useEventVisitor().reset();
   }
-  return true;
+  
+  return AOSContext::RETURN_OK;
 }

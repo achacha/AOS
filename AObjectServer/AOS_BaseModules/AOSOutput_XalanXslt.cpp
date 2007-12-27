@@ -26,14 +26,14 @@ void AOSOutput_XalanXslt::init()
 #pragma message("FIX: AOSOutput_XalanXslt::init: XSLT loading hardcoded")
 }
 
-bool AOSOutput_XalanXslt::execute(AOSContext& context)
+AOSContext::ReturnCode AOSOutput_XalanXslt::execute(AOSContext& context)
 {
   AFilename xsltName(m_Services.useConfiguration().getAosBaseDataDirectory());
   AString str;
-  if (!context.getOutputParams().emitFromPath(ASW("filename", 8), str))
+  if (!context.getOutputParams().emitString(ASW("filename", 8), str))
   {
-    m_Services.useLog().append("AOSOutput_XalanXslt: Unable to find '/output/filename' parameter");
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Xslt requires '/output/filename' parameter"));
+    context.addError(getClass(), ASWNL("Unable to find '/output/filename' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
   xsltName.join(str, false);
 
@@ -58,18 +58,19 @@ bool AOSOutput_XalanXslt::execute(AOSContext& context)
     //a_Transform
     m_xsl.Transform(rope, xsltName.toAString(), context.useOutputBuffer());
   }
-  catch(AException&)
+  catch(AException& e)
 	{
 #ifdef __DEBUG_DUMP__
       _dumpToFile(rope);
 #endif
-    throw;
+    context.addError(getClass(), e);
+    return AOSContext::RETURN_ERROR;
 	}
 
   //a_Add content type, length and other useful response data to response header
   context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html", 9));
 
-  return true;
+  return AOSContext::RETURN_OK;
 }
 
 void AOSOutput_XalanXslt::_dumpToFile(ARope& rope)

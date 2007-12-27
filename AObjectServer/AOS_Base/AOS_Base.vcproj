@@ -327,6 +327,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ATemplateNodeHandler_SESSION.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pchAOS_Base.cpp"
 				>
 				<FileConfiguration
@@ -474,6 +478,10 @@
 			</File>
 			<File
 				RelativePath=".\apiAOS_Base.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ATemplateNodeHandler_SESSION.hpp"
 				>
 			</File>
 			<File

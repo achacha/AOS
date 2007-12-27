@@ -81,16 +81,16 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& fi
   return &(m_Dox[filename]);
 }
 
-bool AOSOutput_MsXslt::execute(AOSContext& context)
+AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
 {
 	CoInitialize(NULL);
 
   AFilename xsltFile(m_Services.useConfiguration().getAosBaseDataDirectory());
   AString xsltName;
-  if (!context.getOutputParams().emitFromPath(ASW("filename", 8), xsltName))
+  if (!context.getOutputParams().emitString(ASW("filename", 8), xsltName))
   {
     m_Services.useLog().append("AOSOutput_MsXslt: Unable to find '/output/filename' parameter");
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Xslt requires '/output/filename' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
   xsltFile.join(xsltName, false);
 
@@ -140,8 +140,11 @@ bool AOSOutput_MsXslt::execute(AOSContext& context)
     rope.emit(str);
     const _bstr_t bstrXml = str.c_str();
     if (! pXMLDoc->loadXML(bstrXml) )
-      ATHROW_EX(this, AException::OperationFailed, AString("Unable to parse XML:\n ")+str+"\n");
-    
+    {
+      context.addError(getClass(), AString("Unable to parse XML:\n ")+str+"\n");
+      return AOSContext::RETURN_ERROR;
+    }
+
     //a_Reparse XSL every time if cache disabled
     _bstr_t xmlStr = pXMLDoc->transformNode(*p);
 
@@ -151,7 +154,8 @@ bool AOSOutput_MsXslt::execute(AOSContext& context)
 #ifdef __DEBUG_DUMP__
       _dumpToFile(rope);
 #endif
-      ATHROW_EX(this, AException::OperationFailed, ASW("Failed to transformNode: ",25) + (LPCSTR)pXMLDoc->parseError->Getreason());
+      context.addError(getClass(), ARope("Failed to transformNode: ",25) + (LPCSTR)pXMLDoc->parseError->Getreason());
+      return AOSContext::RETURN_ERROR;
     }
     else 
     {
@@ -161,7 +165,8 @@ bool AOSOutput_MsXslt::execute(AOSContext& context)
   catch(_com_error &e)
 	{
    	_bstr_t err = _bstr_t("COM_Error\n") + _bstr_t( e.Error()) + _bstr_t("\n") + e.ErrorMessage() + _bstr_t("\n") + e.Source()+ _bstr_t("\n") + e.Description() ;
-    ATHROW_EX(this, AException::OperationFailed, AString((LPCSTR)err));
+    context.addError(getClass(), AString((LPCSTR)err));
+    return AOSContext::RETURN_ERROR;
 	}
 
   //a_Add content type, length and other useful response data to response header
@@ -169,7 +174,7 @@ bool AOSOutput_MsXslt::execute(AOSContext& context)
 
   CoUninitialize();
 
-  return true;
+  return AOSContext::RETURN_OK;
 }
 
 void AOSOutput_MsXslt::_dumpToFile(ARope& rope)

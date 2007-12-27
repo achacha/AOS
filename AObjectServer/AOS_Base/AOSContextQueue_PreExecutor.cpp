@@ -59,6 +59,8 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         || (pContext = pThis->_nextContext())
       ) 
       {
+        AASSERT(this, pContext);
+
 #ifdef __DEBUG_DUMP__
         if (!ADebugDumpable::isPointerValid(pContext))
         {
@@ -208,6 +210,36 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             AASSERT(this, false);   //a_Should not be here, AOSContext::Status not handled
         }
 
+        //a_Create/Use session cookie/data
+        AString strSessionId;
+        pContext->useRequestCookies().getValue(ASW("AOSSession", 10), strSessionId);
+        if (!strSessionId.isEmpty() && m_Services.useSessionManager().exists(strSessionId))
+        {
+          //a_Fetch session
+          pContext->setExecutionState(AString("Using existing session ",23)+strSessionId);
+          AOSSessionData *pSessionData = m_Services.useSessionManager().getSessionData(strSessionId);
+          pContext->setSessionObject(pSessionData);
+        }
+        else
+        {
+          //a_Create session
+          if (!strSessionId.isEmpty())
+          {
+            pContext->setExecutionState(ARope("Creating new session, existing session not found: ",50)+strSessionId);
+            strSessionId.clear();
+          }
+          
+          //a_Fetch session (creating a new one)
+          //a_This call will populate steSessionId and return the new session data object
+          pContext->setSessionObject(m_Services.useSessionManager().createNewSessionData(strSessionId));
+
+          //a_Add cookie for this session
+          ACookie& cookie = pContext->useResponseCookies().addCookie(ASW("AOSSession", 10), strSessionId);
+          cookie.setMaxAge(3600);
+          cookie.setPath(ASW("/",1));
+          pContext->setExecutionState(ASW("Created new session ",20)+strSessionId);
+        }
+
         //
         //a_Process directory config
         //
@@ -224,42 +256,22 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           continue;
         }
 
+        if (pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_REDIRECTING))
+        {
+          //a_The writing of the output header
+          pContext->useResponseHeader().emit(pContext->useSocket());
+          pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+
+          //a_No error and pipelining, we handled request, do not continue
+          pThis->_goNo(pContext);
+          pContext = NULL;
+          continue;
+        }
+
+        //a_Command processing
         const AOSCommand *pCommand = pContext->getCommand();
         if (pCommand && pCommand->isEnabled())
         {
-          //a_AOS command (dynamic)
-          if (pCommand && pCommand->isSession())
-          {
-            //a_Create/Use session cookie
-            AString strSessionId;
-            pContext->useRequestCookies().getValue(ASW("AOSSession", 10), strSessionId);
-            if (!strSessionId.isEmpty() && m_Services.useSessionManager().exists(strSessionId))
-            {
-              //a_Fetch session
-              pContext->setExecutionState(AString("Using existing session ",23)+strSessionId);
-              AOSSessionData *pSessionData = m_Services.useSessionManager().getSessionData(strSessionId);
-              pContext->setSessionObject(pSessionData);
-            }
-            else
-            {
-              //a_Create session
-              if (!strSessionId.isEmpty())
-              {
-                pContext->setExecutionState(ARope("Creating new session, existing session not found: ",50)+strSessionId);
-                strSessionId.clear();
-              }
-              
-              //a_Fetch session (creating a new one)
-              //a_This call will populate steSessionId and return the new session data object
-              pContext->setSessionObject(m_Services.useSessionManager().createNewSessionData(strSessionId));
-
-              //a_Add cookie for this session
-              ACookie& cookie = pContext->useResponseCookies().addCookie(ASW("AOSSession", 10), strSessionId);
-              cookie.setMaxAge(3600);
-              cookie.setPath(ASW("/",1));
-              pContext->setExecutionState(ASW("Created new session ",20)+strSessionId);
-            }
-          }
           
           //a_Go to next stage
           pThis->_goYes(pContext);

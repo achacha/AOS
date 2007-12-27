@@ -12,7 +12,7 @@ AOSOutput_NOP::AOSOutput_NOP(AOSServices& services) :
 {
 }
 
-bool AOSOutput_NOP::execute(AOSContext& context)
+AOSContext::ReturnCode AOSOutput_NOP::execute(AOSContext& context)
 {
-  return true;
+  return AOSContext::RETURN_OK;
 }

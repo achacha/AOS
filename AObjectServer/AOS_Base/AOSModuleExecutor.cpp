@@ -111,50 +111,29 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
       }
       else
       {
-        //a_Lean version does no output to result xml
-        if (context.useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
+        //a_Start timer and execute module
+        context.setExecutionState(ARope("Executing module: ",18)+(*cit)->getModuleClass());
+
+        if (context.useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
         {
-          //a_Start timer and execute module
-          context.setExecutionState(ARope("Executing AJAX module: ",23)+(*cit)->getModuleClass());
-
-          ATimer timer(true);
-          if (!(*it).second->execute(context, (*cit)->useParams()))
-          {
-            //a_Error occured
-            context.addError((*cit)->getModuleClass()+"::execute", "Returned false");
-            return;
-          }
-          
-          //a_Update statistics
-          (*it).second->addExecutionTimeSample(timer.getInterval());
-
-          //a_Event over
-          context.useEventVisitor().reset();
+          AXmlElement& e = context.useModel().overwriteElement(ASW("execute",7)).addElement(ASW("module",6));
+          e.addAttribute(ASW("seq",3), AString::fromInt(i++));
+          e.addData((*cit)->getModuleClass());
         }
-        else
-        {
-          //a_Start timer and execute module
-          context.setExecutionState(ARope("Executing module: ",18)+(*cit)->getModuleClass());
 
-          //AXmlElement& e = context.useModel().addElement(ASW("/execute/module",15));
-          //e.addAttribute(ASW("seq",3), AString::fromInt(i++));
-          //e.addData((*cit)->getModuleClass());
-          
-          ATimer timer(true);
-          if (!(*it).second->execute(context, (*cit)->useParams()))
-          {
+        ATimer timer(true);
+        AOSContext::ReturnCode retCode = (*it).second->execute(context, (*cit)->useParams());
+        switch (retCode)
+        {
+          case AOSContext::RETURN_ERROR:
             //a_Error occured
             context.addError((*cit)->getModuleClass()+"::execute", "Returned false");
-            return;
-          }
+          return;
 
-          //a_Update statistics
-          double interval = timer.getInterval();
-          (*it).second->addExecutionTimeSample(interval);
-          //e.addAttribute(ASW("timer",5), AString::fromDouble(interval));
-
-          //a_Event over
-          context.useEventVisitor().reset();
+          case AOSContext::RETURN_REDIRECT:
+            context.useContextFlags().setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
+            context.useEventVisitor().set(ARope("Redirect detected for module: ",30)+(*it).second->getClass());
+          return;
         }
       }
     }

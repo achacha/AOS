@@ -144,54 +144,32 @@ void AOSOutputExecutor::execute(AOSContext& context)
     }
     else
     {
-      if (context.useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
+      ATimer timer(true);
+
+      //a_Generate output
+      context.setExecutionState(ARope("Generating output: ",19)+(*it).first);
+
+      if (context.useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
       {
-        //a_Generate AJAX output
-        context.setExecutionState(ARope("Generating AJAX output: ",24)+(*it).first);
+        AXmlElement& e = context.useModel().overwriteElement(ASW("execute/output", 14)).addData(command);
 
-        //a_Start timer
-        ATimer timer(true);
-        if (!(*it).second->execute(context))
-        {
-          context.addError((*it).second->getClass()+"::execute", "Returned false");
-          return;
-        }
-
-        //a_Add execution time
-        (*it).second->addExecutionTimeSample(timer.getInterval());
-
-        //a_Event over
-        context.useEventVisitor().reset();
+        //a_Publish timers
+        context.getRequestTimer().emitXml(context.useModel().overwriteElement(ASW("request_time",12)));
+        context.getContextTimer().emitXml(context.useModel().overwriteElement(ASW("context_time",12)));
       }
-      else
+
+      //a_Generate output
+      if (AOSContext::RETURN_OK != (*it).second->execute(context))
       {
-        //a_Generate output
-        context.setExecutionState(ARope("Generating output: ",19)+(*it).first);
-
-        //a_Start timer
-        ATimer timer(true);
-
-        AXmlElement& e = context.useModel().addElement(ASW("execute/output", 14), command);
-
-        //a_Publish total execution time before output is generated
-        context.useModel().addElement(ASW("request_time",12), context.getRequestTimer());
-        context.useModel().addElement(ASW("context_time",12), context.getContextTimer());
-
-        //a_Execute output
-        if (!(*it).second->execute(context))
-        {
-          context.addError((*it).second->getClass()+"::execute", "Returned false");
-          return;
-        }
-
-        //a_Add execution time
-        double interval = timer.getInterval();
-        e.addAttribute(ASW("timer",5), AString::fromDouble(interval));
-        (*it).second->addExecutionTimeSample(interval);
-
-        //a_Event over
-        context.useEventVisitor().reset();
+        context.addError((*it).second->getClass(), "Output generator failed");
+        return;
       }
+
+      //a_Event over
+      context.useEventVisitor().reset();
+
+      //a_Add execution time
+      (*it).second->addExecutionTimeSample(timer.getInterval());
     }
   }
   catch(AException& ex)

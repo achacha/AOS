@@ -38,7 +38,7 @@ public:
   /*!
   Execute module
   */
-  virtual bool execute(AOSContext& context, const AXmlElement& moduleParams);
+  virtual AOSContext::ReturnCode execute(AOSContext& context, const AXmlElement& moduleParams);
 
   /*!
   AOSAdminInterface

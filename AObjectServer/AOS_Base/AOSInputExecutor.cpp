@@ -119,49 +119,32 @@ void AOSInputExecutor::execute(AOSContext& context)
     InputProcessorContainer::iterator it = m_InputProcessors.find(command);
     if (it == m_InputProcessors.end())
     {
-      m_Services.useLog().append(AString("AOSInputExecutor::execute: Skipping unknown module '")+command+"'");
+      m_Services.useLog().append(ARope("AOSInputExecutor::execute: Skipping unknown input processor '")+command+"'");
     }
     else
     {
-      if (context.useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
+      ATimer timer(true);
+      AOSContext::ReturnCode retCode = (*it).second->execute(context);
+      
+      //a_Add execution time
+      (*it).second->addExecutionTimeSample(timer.getInterval());
+
+      switch (retCode)
       {
-        //a_Process AJAX input
-        context.setExecutionState(ARope("Processing AJAX input: ",23)+command);
-
-        ATimer timer(true);
-        if (!(*it).second->execute(context))
-        {
+        case AOSContext::RETURN_ERROR:
           context.addError((*it).second->getClass()+"::execute", "Returned false");
-          return;
-        }
-        //a_Add execution time
-        (*it).second->addExecutionTimeSample(timer.getInterval());
+          context.useEventVisitor().reset();
+        break;
 
-        //a_Event over
-        context.useEventVisitor().reset();
-      }
-      else
-      {
-        //a_Process input
-        context.setExecutionState(ARope("Processing input: ",18)+command);
+        case AOSContext::RETURN_REDIRECT:
+          context.useContextFlags().setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
+          context.useEventVisitor().set(ASW("Redirect detected.",18));
+          context.useEventVisitor().reset();
+        break;
 
-        AXmlElement& e = context.useModel().addElement(ASW("execute/input",13), command);
-        ATimer timer(true);
-
-        //a_Execute INPUT
-        if (!(*it).second->execute(context))
-        {
-          context.addError((*it).second->getClass()+"::execute", "Returned false");
-          return;
-        }
-
-        //a_Add execution time
-        double interval = timer.getInterval();
-        e.addAttribute(ASW("timer",5), AString::fromDouble(interval));
-        (*it).second->addExecutionTimeSample(interval);
-
-        //a_Event over
-        context.useEventVisitor().reset();
+        default:
+          context.useEventVisitor().reset();
+        break;
       }
     }
   }

@@ -23,7 +23,7 @@ public:
   /*!
   Generate output based on AContext
   */
-  virtual bool execute(AOSContext&) = 0;
+  virtual AOSContext::ReturnCode execute(AOSContext&) = 0;
 
   /*!
   De-initialization routine for the module

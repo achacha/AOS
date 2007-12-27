@@ -24,7 +24,7 @@ public:
   Process input and manupulate the request and module namespace as needed
   Publish result to AContext.useElement() base which will be transformed to a result
   */
-  virtual bool execute(AOSContext&) = 0;
+  virtual AOSContext::ReturnCode execute(AOSContext&) = 0;
 
   /*!
   De-initialization routine for the module

@@ -12,7 +12,7 @@ AOSModule_AlterContext::AOSModule_AlterContext(AOSServices& services) :
 {
 }
 
-bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   //a_Adding parameters
   AXmlElement::CONST_CONTAINER nodes;
@@ -23,8 +23,8 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
     {
       AString strName;
       AString strValue;
-      (*cit)->emitFromPath("name", strName);
-      (*cit)->emitFromPath("value", strValue);
+      (*cit)->emitString("name", strName);
+      (*cit)->emitString("value", strValue);
 
       if (!strName.isEmpty())
       {
@@ -53,8 +53,8 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
     {
       AString strName;
       AString strValue;
-      (*cit)->emitFromPath("name", strName);
-      (*cit)->emitFromPath("value", strValue);
+      (*cit)->emitString("name", strName);
+      (*cit)->emitString("value", strValue);
 
       if (!strName.isEmpty())
       {
@@ -71,8 +71,8 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
     {
       AString strName;
       AString strValue;
-      (*cit)->emitFromPath("name", strName);
-      (*cit)->emitFromPath("value", strValue);
+      (*cit)->emitString("name", strName);
+      (*cit)->emitString("value", strValue);
 
       if (!strName.isEmpty())
       {
@@ -81,7 +81,7 @@ bool AOSModule_AlterContext::execute(AOSContext& context, const AXmlElement& mod
     }
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }
 
 void AOSModule_AlterContext::_processSetCookie(ACookies& cookies, AXmlElement::CONST_CONTAINER& nodes)
@@ -91,15 +91,15 @@ void AOSModule_AlterContext::_processSetCookie(ACookies& cookies, AXmlElement::C
   {
     AString strName;
     AString str;
-    (*cit)->emitFromPath("name", strName);
-    (*cit)->emitFromPath("value", str);
+    (*cit)->emitString("name", strName);
+    (*cit)->emitString("value", str);
 
     if (!strName.isEmpty())
     {
       ACookie& cookie = cookies.addCookie(strName, str);
 
       str.clear();
-      if ((*cit)->emitFromPath("max-age", str))
+      if ((*cit)->emitString("max-age", str))
       {
         if (!str.isEmpty())
           cookie.setMaxAge(str.toS4());
@@ -107,7 +107,7 @@ void AOSModule_AlterContext::_processSetCookie(ACookies& cookies, AXmlElement::C
         str.clear();
       }
 
-      if ((*cit)->emitFromPath("expires", str))
+      if ((*cit)->emitString("expires", str))
       {
         ATime time;
         time.parseRFCtime(str);
@@ -115,19 +115,19 @@ void AOSModule_AlterContext::_processSetCookie(ACookies& cookies, AXmlElement::C
         str.clear();
       }
 
-      if ((*cit)->emitFromPath("path", str))
+      if ((*cit)->emitString("path", str))
       {
         cookie.setPath(str);
         str.clear();
       }
 
-      if ((*cit)->emitFromPath("domain", str))
+      if ((*cit)->emitString("domain", str))
       {
         cookie.setDomain(str);
         str.clear();
       }
 
-      if ((*cit)->emitFromPath("version", str))
+      if ((*cit)->emitString("version", str))
       {
         cookie.setDomain(str);
         str.clear();

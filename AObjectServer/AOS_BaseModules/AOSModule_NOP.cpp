@@ -12,8 +12,8 @@ AOSModule_NOP::AOSModule_NOP(AOSServices& services) :
 {
 }
 
-bool AOSModule_NOP::execute(AOSContext&, const AXmlElement&)
+AOSContext::ReturnCode AOSModule_NOP::execute(AOSContext&, const AXmlElement&)
 {
-  return true;
+  return AOSContext::RETURN_OK;
 }
 

@@ -7,7 +7,7 @@ class AOS_BASEMODULES_API AOSInput_NOP : public AOSInputProcessorInterface
 {
 public:
   AOSInput_NOP(AOSServices&);
-  virtual bool execute(AOSContext&);
+  virtual AOSContext::ReturnCode execute(AOSContext&);
 
   /*!
   AOSAdminInterface

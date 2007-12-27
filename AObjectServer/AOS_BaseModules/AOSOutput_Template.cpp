@@ -46,14 +46,14 @@ AOSOutput_Template::~AOSOutput_Template()
 {
 }
 
-bool AOSOutput_Template::execute(AOSContext& context)
+AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
 {
   AXmlElement::CONST_CONTAINER templateNames;
   context.getOutputParams().find(ASW("filename", 8), templateNames);
   if(templateNames.size() == 0)
   {
-    m_Services.useLog().add(ASWNL("AOSOutput_Template: Unable to find 'output/filename' parameter"), ALog::FAILURE);
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Template requires 'output/filename' parameter"));
+    context.addError(getClass(), ASWNL("AOSOutput_Template: Unable to find 'output/filename' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
 
   //a_Iterate filename types and execute/output templates
@@ -68,7 +68,10 @@ bool AOSOutput_Template::execute(AOSContext& context)
       {
         //a_Check condition, if not met continue with next template
         if (!context.useModel().exists(ifElement))
+        {
+          context.useEventVisitor().set(ARope("Skipping conditional template for ")+ifElement);
           continue;
+        }
       }
     }
    
@@ -82,7 +85,7 @@ bool AOSOutput_Template::execute(AOSContext& context)
     if (ACacheInterface::NOT_FOUND == m_Services.useCacheManager().getTemplate(context, filename, pTemplate))
     {
       //a_Not found add error and continue
-      context.addError(ASWNL("AOSOutput_Template::execute"), ARope("Unable to file a template: ")+filename+ASWNL(", ignoring and continuing"));
+      context.useEventVisitor().set(ARope(getClass())+ASWNL(": Unable to find a template file: ")+filename+ASWNL(", ignoring and continuing"));
       continue;
     }
 
@@ -97,9 +100,9 @@ bool AOSOutput_Template::execute(AOSContext& context)
 
   if (!templatesDisplayed)
   {
-    context.addError(ASWNL("AOSOutput_Template::execute"), ARope("None of the template filenames matched the conditions, nothing was generated for output"));
-    return false;
+    context.addError(getClass(), ARope("None of the template filenames matched the conditions, nothing was generated for output"));
+    return AOSContext::RETURN_ERROR;
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }

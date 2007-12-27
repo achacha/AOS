@@ -16,7 +16,7 @@ AOSModule_Template::AOSModule_Template(AOSServices& services) :
 {
 }
 
-bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
+AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
 {
   const AXmlElement *pNode = params.findElement(ASW("template",8));
   AAutoPtr<AFile> pFile;
@@ -46,7 +46,7 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
     else
     {
       context.addError(ASWNL("AOSModule_Template"), ASWNL("Unable to find module/template nor module/filename, Template module did not execute, params"));
-      return false;  //a_Did not find either module/template or module/filename
+      return AOSContext::RETURN_ERROR;  //a_Did not find either module/template or module/filename
     }
   }  
 
@@ -84,6 +84,6 @@ bool AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
     }
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }
 

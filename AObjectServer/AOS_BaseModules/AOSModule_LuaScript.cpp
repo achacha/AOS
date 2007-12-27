@@ -17,7 +17,7 @@ AOSModule_LuaScript::AOSModule_LuaScript(AOSServices& services) :
 {
 }
 
-bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params)
+AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params)
 {
   static const AString OUTPUT("output",6);
 
@@ -53,7 +53,7 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
     else
     {
       context.addError(ASWNL("AOSModule_LuaScript"), ASWNL("Unable to find module/script nor module/filename, LuaScript module did not execute"));
-      return false;  //a_Did not find either module/script or module/filename
+      return AOSContext::RETURN_ERROR;  //a_Did not find either module/script or module/filename
     }
   }
   
@@ -98,6 +98,6 @@ bool AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params
     base.addAttribute(ASW("source",6), strSource);
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }
 

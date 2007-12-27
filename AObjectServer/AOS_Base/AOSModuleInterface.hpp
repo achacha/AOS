@@ -24,7 +24,7 @@ public:
   /*!
   Process input and manupulate the request and module objects as needed
   */
-  virtual bool execute(AOSContext& context, const AXmlElement& moduleParams) = 0;
+  virtual AOSContext::ReturnCode execute(AOSContext& context, const AXmlElement& moduleParams) = 0;
 
   /*!
   De-initialization routine for the module

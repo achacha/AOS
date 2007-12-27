@@ -41,7 +41,7 @@ public:
                     If not found, output from the script is discarded
 
   */
-  virtual bool execute(AOSContext& context, const AXmlElement& moduleParams);
+  virtual AOSContext::ReturnCode execute(AOSContext& context, const AXmlElement& moduleParams);
   
   /*!
   AOSAdminInterface

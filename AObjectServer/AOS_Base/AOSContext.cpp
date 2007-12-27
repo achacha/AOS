@@ -986,3 +986,9 @@ void AOSContext::persistSession()
 {
   m_Services.useSessionManager().persistSession(mp_SessionObject);
 }
+
+void AOSContext::setResponseRedirect(const AString& url)
+{
+  m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_302_Moved_Temporarily);
+  m_ResponseHeader.setPair(AHTTPResponseHeader::HT_RES_Location, url);
+}

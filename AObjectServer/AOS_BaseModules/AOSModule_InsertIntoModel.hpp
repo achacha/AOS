@@ -7,7 +7,7 @@ class AOS_BASEMODULES_API AOSModule_InsertIntoModel : public AOSModuleInterface
 {
 public:
   AOSModule_InsertIntoModel(AOSServices&);
-  virtual bool execute(AOSContext& context, const AXmlElement& moduleParams);
+  virtual AOSContext::ReturnCode execute(AOSContext& context, const AXmlElement& moduleParams);
 
   /*!
   AOSAdminInterface

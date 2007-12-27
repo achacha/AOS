@@ -298,6 +298,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\AOSOutput_Redirect.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\AOSOutput_Template.hpp"
 					>
 				</File>
@@ -324,6 +328,10 @@
 				</File>
 				<File
 					RelativePath=".\AOSOutput_NOP.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSOutput_Redirect.cpp"
 					>
 				</File>
 				<File

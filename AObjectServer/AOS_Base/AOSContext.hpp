@@ -66,6 +66,16 @@ public:
   };
 
   /*!
+  Return codes used during execution
+  */
+  enum ReturnCode
+  {
+    RETURN_ERROR = 0,
+    RETURN_OK = 1,
+    RETURN_REDIRECT
+  };
+
+  /*!
   Initialize the context
   With pipelining not everything is reset
   Returns status of the init (AOSContext::STATUS_OK if all is well and HTTP header has been read and processed)
@@ -268,7 +278,13 @@ public:
   void addError(const AString& where, const AString& what, bool addDebugDump = false);
   void addError(const AString& where, const AException& what, bool addDebugDump = false);
   AEventVisitor& useEventVisitor();
-    
+  
+  /*!
+  Set response header to do a 302 redirect
+  Does NOT set the context flag CTX_IS_REDIRECTING (that is set when AOSContext::RETURN_REDIRECT is detected by executor)
+  */
+  void setResponseRedirect(const AString& url);
+
   /*!
   Directrory config object (NULL if does not exist)
   */
@@ -364,6 +380,7 @@ public:
   {
     CTXFLAG_IS_AJAX = 0,              //a_Request is AJAX, use minimal XML
     CTXFLAG_IS_HTTPS,                 //a_Request from HTTPS socket listener
+    CTXFLAG_IS_REDIRECTING,           //a_Context is in redirect mode
     CTXFLAG_IS_RESPONSE_HEADER_SENT,  //a_Response header already written
     CTXFLAG_IS_OUTPUT_SENT,           //a_Output as been written already (response header sent)
     //

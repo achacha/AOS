@@ -6,7 +6,7 @@
 #include "AResultSet.hpp"
 #include "ATemplate.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
-#include "ATemplateNodeHandler_CODE.hpp"
+#include "ATemplateNodeHandler_SESSION.hpp"
 
 extern "C" int luaopen_aos(lua_State *L);
 
@@ -212,6 +212,9 @@ ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
   ATemplateNodeHandler_LUA *pLuaHandler = new ATemplateNodeHandler_LUA(defaultLuaLibraries);
   pLuaHandler->addUserDefinedLibrary(luaopen_aos);  //a_Add AOS function library loader
   pTemplate->addHandler(pLuaHandler);
+
+  //a_Add session data handler
+  pTemplate->addHandler(new ATemplateNodeHandler_SESSION());
 
   pTemplate.setOwnership(false);
   return pTemplate;

@@ -12,7 +12,7 @@ AOSInput_HtmlForm::AOSInput_HtmlForm(AOSServices& services) :
 {
 }
 
-bool AOSInput_HtmlForm::execute(AOSContext& context)
+AOSContext::ReturnCode AOSInput_HtmlForm::execute(AOSContext& context)
 {
   AString str;
   
@@ -38,9 +38,9 @@ bool AOSInput_HtmlForm::execute(AOSContext& context)
     {
       //a_411 Length Required if POST
       context.useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_411_Length_Required);
-      return false;
+      return AOSContext::RETURN_ERROR;
     }
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }

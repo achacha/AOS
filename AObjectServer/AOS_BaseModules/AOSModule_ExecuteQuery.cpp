@@ -15,12 +15,12 @@ AOSModule_ExecuteQuery::AOSModule_ExecuteQuery(AOSServices& services) :
 {
 }
 
-bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& params)
+AOSContext::ReturnCode AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& params)
 {
 #pragma message("AOSModule_ExecuteQuery::execute: needs work")
   AString sql, path;
-  params.emitFromPath(ASW("sql", 3), sql);
-  params.emitFromPath(ASW("path", 4), path);
+  params.emitString(ASW("sql", 3), sql);
+  params.emitString(ASW("path", 4), path);
   
   if (path.isEmpty())
     path.assign(ASW("ExecuteQuery/query", 18));
@@ -36,6 +36,7 @@ bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& par
     else
     {
       context.addError("AOSModule_ExecuteQuery::execute", strError);
+      return AOSContext::RETURN_ERROR;
     }
   }
   else
@@ -44,6 +45,6 @@ bool AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& par
     context.useModel().addElement("error").addElement(getClass()).addElement("params").addContent(params);
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }
 
