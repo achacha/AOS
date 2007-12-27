@@ -72,12 +72,6 @@ public:
   */
   virtual void emitJson(AOutputBuffer&, int indent = -1) const;
 
-  /*!
-  Emit content from path
-  Uses root node's emitFromPath call
-  */
-  void emitFromPath(const AString& path, AOutputBuffer& output, int indent = -1) const;
-
   /*! 
   clearAll - clears root element name, data and instructions (must manually re-add XML_HEADER and set root element name)
   clear - only clears root element and retains the root name and instructions

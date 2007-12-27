@@ -87,9 +87,9 @@ void AXmlData::emit(AOutputBuffer& target, int) const
 {
   switch(m_Encoding)
   {
-  case AXmlElement::ENC_NONE:
+    case AXmlElement::ENC_NONE:
       target.append(m_Data);
-      break;
+    break;
 
     case AXmlElement::ENC_URL:
       ATextConverter::encodeURL(m_Data, target);

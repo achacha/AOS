@@ -84,7 +84,7 @@ void AXmlElement::clear()
   mp_Parent = NULL;
 }
 
-bool AXmlElement::emitFromPath(
+bool AXmlElement::emitXmlFromPath(
   const AString& xpath, 
   AOutputBuffer& target,
   int indent //= -1
@@ -97,6 +97,26 @@ bool AXmlElement::emitFromPath(
     while (cit != pNode->m_Content.end())
     {
       (*cit)->emit(target, indent);
+      ++cit;
+    }
+    return true;
+  }
+  else
+    return false;
+}
+
+bool AXmlElement::emitContentFromPath(
+  const AString& xpath, 
+  AOutputBuffer& target
+) const
+{
+  const AXmlElement *pNode = findElement(xpath);
+  if (pNode)
+  {
+    AXmlElement::CONTAINER::const_iterator cit = pNode->m_Content.begin();
+    while (cit != pNode->m_Content.end())
+    {
+      (*cit)->emitContent(target);
       ++cit;
     }
     return true;
@@ -325,10 +345,61 @@ size_t AXmlElement::find(const AString& path, AXmlElement::CONST_CONTAINER& resu
     listPath.push_front(m_Name);
   }
 
-  return _find(listPath, result);
+  return _const_find(listPath, result);
 }
 
-size_t AXmlElement::_find(LIST_AString listPath, AXmlElement::CONST_CONTAINER& result) const
+size_t AXmlElement::_find(const AString& path, AXmlElement::CONTAINER& result)
+{
+  AString strAttribute;
+  AString strPath(path);
+  bool leadingSlash = false;
+
+  size_t pos = path.find('@');
+  if (AConstant::npos != pos)
+  {
+    //a_Extract attribute
+    strPath.get(strAttribute, pos);
+    strPath.setSize(strPath.getSize() - 1);  //a_Remove the trailing '@'
+  }
+
+  if ('/' == strPath.at(0))
+  {
+    leadingSlash = true;  //a_Signals that slash leads the path so much include current name
+  }
+
+  //a_Remove the leading name (which should be this element's name)
+  LIST_AString listPath;
+  strPath.split(listPath, '/');
+  if (leadingSlash)
+  {
+    if (0 == listPath.size())
+    {
+      //a_ "/" selects current node
+      result.push_back(this);
+      return 1;
+    }
+    else if (0 != listPath.front().compare(m_Name))
+    {
+      //a_First token MUST be the name of this element if / leads
+      ATHROW_EX(this, AException::ProgrammingError, ARope("Absolute path must start with the name of the current root element: root=/")+m_Name+" while path="+path);
+    }
+  }
+  else if (0 == listPath.size())
+  {
+    //a_ "/" selects current node
+    result.push_back(this);
+    return 1;
+  }
+  else
+  {
+    //a_Relative path implies this node is first
+    listPath.push_front(m_Name);
+  }
+
+  return _nonconst_find(listPath, result);
+}
+
+size_t AXmlElement::_const_find(LIST_AString listPath, AXmlElement::CONST_CONTAINER& result) const
 {
   if (listPath.front().equals(m_Name))
   {
@@ -367,7 +438,7 @@ size_t AXmlElement::_find(LIST_AString listPath, AXmlElement::CONST_CONTAINER& r
         {
           if ((*cit)->getName().equals(listPath.front()))
           {
-            ret += (*cit)->_find(listPath, result);
+            ret += (*cit)->_const_find(listPath, result);
           }
           ++cit;
         }
@@ -381,6 +452,58 @@ size_t AXmlElement::_find(LIST_AString listPath, AXmlElement::CONST_CONTAINER& r
     return 0;
 }
 
+size_t AXmlElement::_nonconst_find(LIST_AString listPath, AXmlElement::CONTAINER& result)
+{
+  if (listPath.front().equals(m_Name))
+  {
+    listPath.pop_front();
+
+    size_t ret = 0;
+    switch(listPath.size())
+    {
+      case 0:
+        //a_This node is it
+        result.push_back(this);
+        ++ret;
+      break;
+      
+      case 1:
+      {
+        //a_Include immediate children nodes
+        CONTAINER::const_iterator cit = m_Content.begin();
+        while (cit != m_Content.end())
+        {
+          if ((*cit)->getName().equals(listPath.front()))
+          {
+            result.push_back(*cit);
+            ++ret;
+          }
+          ++cit;
+        }
+      }
+      break;
+      
+      default:
+      {
+        //a_Recurse deeper for each element
+        CONTAINER::const_iterator cit = m_Content.begin();
+        while (cit != m_Content.end())
+        {
+          if ((*cit)->getName().equals(listPath.front()))
+          {
+            ret += (*cit)->_nonconst_find(listPath, result);
+          }
+          ++cit;
+        }
+      }
+      break;
+    }
+
+    return ret;
+  }
+  else
+    return 0;
+}
 
 bool AXmlElement::exists(const AString& path) const
 {
@@ -389,13 +512,13 @@ bool AXmlElement::exists(const AString& path) const
 
 bool AXmlElement::emitString(const AString& path, AOutputBuffer& target) const
 {
-  return emitFromPath(path, target);
+  return emitContentFromPath(path, target);
 }
 
 AString AXmlElement::getString(const AString& path, const AString& strDefault) const
 {
   AString str;
-  if (emitFromPath(path, str))
+  if (emitContentFromPath(path, str))
     return str;
   else
     return strDefault;
@@ -404,7 +527,7 @@ AString AXmlElement::getString(const AString& path, const AString& strDefault) c
 int AXmlElement::getInt(const AString& path, int iDefault) const
 {
   AString str;
-  if (emitFromPath(path, str))
+  if (emitContentFromPath(path, str))
     return str.toInt();
   else
     return iDefault;
@@ -413,7 +536,7 @@ int AXmlElement::getInt(const AString& path, int iDefault) const
 u4 AXmlElement::getU4(const AString& path, u4 u4Default) const
 {
   AString str;
-  if (emitFromPath(path, str))
+  if (emitContentFromPath(path, str))
     return str.toU4();
   else
     return u4Default;
@@ -422,7 +545,7 @@ u4 AXmlElement::getU4(const AString& path, u4 u4Default) const
 u8 AXmlElement::getU8(const AString& path, u8 u8Default) const
 {
   AString str;
-  if (emitFromPath(path, str))
+  if (emitContentFromPath(path, str))
     return str.toU8();
   else
     return u8Default;
@@ -431,7 +554,7 @@ u8 AXmlElement::getU8(const AString& path, u8 u8Default) const
 size_t AXmlElement::getSize_t(const AString& path, size_t iDefault) const
 {
   AString str;
-  if (emitFromPath(path, str))
+  if (emitContentFromPath(path, str))
     return str.toSize_t();
   else
     return iDefault;
@@ -440,7 +563,7 @@ size_t AXmlElement::getSize_t(const AString& path, size_t iDefault) const
 bool AXmlElement::getBool(const AString& path, bool boolDefault) const
 {
   AString str;
-  if (emitFromPath(path, str))
+  if (emitContentFromPath(path, str))
   {
     return str.equalsNoCase(AConstant::ASTRING_TRUE) || str.equals("1",1);
   }
@@ -1106,4 +1229,33 @@ bool AXmlElement::isInstruction() const
 AXmlElement* AXmlElement::clone() const 
 { 
   return new AXmlElement(*this);
+}
+
+bool AXmlElement::remove(const AString& path)
+{
+  AXmlElement::CONTAINER result;
+  if (_find(path, result) > 0)
+  {
+    for (AXmlElement::CONTAINER::iterator it = result.begin(); result.end() != it; ++it)
+    {
+      AXmlElement *p = (*it)->getParent();
+      p->_removeChildElement(*it);
+    }
+    return true;
+  }
+  else
+    return false;
+}
+
+void AXmlElement::_removeChildElement(AXmlElement *pElement)
+{
+  for (AXmlElement::CONTAINER::iterator it = m_Content.begin(); m_Content.end() != it; ++it)
+  {
+    if (pElement == *it)
+    {
+      m_Content.erase(it);
+      delete pElement;
+      return;
+    }
+  }
 }

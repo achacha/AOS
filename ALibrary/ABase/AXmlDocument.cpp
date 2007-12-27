@@ -264,8 +264,3 @@ AObjectBase* AXmlDocument::clone() const
 { 
   return new AXmlDocument(*this);
 }
-
-void AXmlDocument::emitFromPath(const AString& path, AOutputBuffer& output, int indent) const
-{
-  m_Root.emitFromPath(path, output, indent);
-}

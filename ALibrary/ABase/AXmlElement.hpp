@@ -69,6 +69,11 @@ public:
   bool exists(const AString& path) const;
 
   /*!
+  Removes element and all children
+  */
+  bool remove(const AString& path);
+
+  /*!
   Checks if this element contains child elements
   */
   bool hasElements() const;
@@ -363,7 +368,13 @@ public:
   Emit Xml from path
   returns false if path not found
   */
-  bool emitFromPath(const AString& path, AOutputBuffer&, int indent = -1) const;
+  bool emitXmlFromPath(const AString& path, AOutputBuffer&, int indent = -1) const;
+
+  /*!
+  Emit content from path
+  returns false if path not found
+  */
+  bool emitContentFromPath(const AString& path, AOutputBuffer&) const;
 
   /*!
   AXmlEmittable
@@ -423,11 +434,20 @@ protected:
   //! Indents with 2 spaces per indent
   inline void _indent(AOutputBuffer&, int) const;
 
+  //! Find method for non const elements
+  size_t _find(const AString& path, CONTAINER& result);
+
   //! Internal find
-  size_t _find(LIST_AString listPath, AXmlElement::CONST_CONTAINER& result) const;
+  size_t _const_find(LIST_AString listPath, AXmlElement::CONST_CONTAINER& result) const;
+
+  //! Internal find
+  size_t _nonconst_find(LIST_AString listPath, AXmlElement::CONTAINER& result);
 
   //! Add element
   AXmlElement *_addElement(const AString& path, bool overwrite);
+
+  //! Remove child element
+  void _removeChildElement(AXmlElement *);
 
   //! Add data to this element
   //! overwrite of true will clar existing content and replace it with value
