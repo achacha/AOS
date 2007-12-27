@@ -23,7 +23,7 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
     size_t pos = strBoundary.find(ASW("boundary=", 9));
     if (AConstant::npos == pos)
     {
-      context.useEventVisitor().set(ASWNL("AOSInput_HtmlFormMultiPart: boundary not found"), true);
+      context.addError(getClass(), ASW("AOSInput_HtmlFormMultiPart: boundary not found",46));
       return AOSContext::RETURN_ERROR;
     }
 
@@ -41,6 +41,8 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
 
     int part = 0;
     ANameValuePair pair(ANameValuePair::FORM_MULTIPART);
+    AXmlElement& eInput = context.useModel().overwriteElement(ASW("input",5));
+    AXmlElement& requestData = context.useModel().overwriteElement(ASW("REQUEST/data",12));
     while(context.useSocket().isNotEof())
     {
       //a_Read MIME header info until blank line
@@ -59,7 +61,9 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             if ('\r' == str.at(str.getSize()-2))
               str.rremove(2);
           }
-          AXmlElement& e = context.useModel().addElement(ASW("input/part.",11)+AString::fromInt(part)+ASW("/data",5)).addData(str, AXmlElement::ENC_BASE64);
+          AString strPart("part.",5);
+          strPart.append(AString::fromInt(part));
+          AXmlElement& e = eInput.addElement(strPart+ASW("/data",5)).addData(str, AXmlElement::ENC_BASE64);
           e.addAttribute(ASW("length", 6), AString::fromSize_t(str.getSize()));
           e.addAttribute(ASW("encoding", 8), ASW("base64", 6));
 
@@ -84,13 +88,14 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
         }
 
         pos = 0;
-        AString xpath("/request/data/part.",19);
-        xpath.append(AString::fromInt(part));
+        AString strPart("part.",5);
+        strPart.append(AString::fromInt(part));
+        AXmlElement& ePart = requestData.addElement(strPart);
         if (AConstant::npos != (pos = str.findNoCase(ASW("Content-Type:", 13))))
         {
           //a_Content type for this block
           str.removeUntilOneOf();
-          context.useModel().addElement(xpath+ASW("/content-type",13)).addData(str, AXmlElement::ENC_CDATADIRECT);
+          ePart.addElement(ASW("content-type",12)).addData(str, AXmlElement::ENC_CDATADIRECT);
         }
         else if (AConstant::npos != (pos = str.findNoCase(ASW("Content-Disposition:", 20))))
         {
@@ -104,12 +109,12 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             if (pair.getName().equals(ASW("name",4)))
             {
               //a_Add reference to this as name=$(/request/data/part.N)
-              context.useRequestParameterPairs().insert(pair.getValue(), ARope("$(", 2)+xpath+ASW(")", 1));
+              context.useRequestParameterPairs().insert(pair.getValue(), ARope("$(REQUEST/data/",15)+strPart+ASW(")",1));
             }
           }
 
           str.removeUntilOneOf();
-          context.useModel().addElement(xpath+ASW("/content-disposition",20)).addData(str);
+          ePart.addElement(ASW("content-disposition",19)).addData(str);
         }
         str.clear();
       }
@@ -120,6 +125,7 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
   else
   {
     //a_411 Length Required
+    context.setExecutionState(ASW("Content-Length missing, http error 411",38));
     context.useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_411_Length_Required);
     return AOSContext::RETURN_ERROR;
   }

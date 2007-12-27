@@ -180,8 +180,9 @@ AOSContext::Status AOSContext::init()
 
   setExecutionState(ASW("AOSContext: Processing HTTP header",34), false);
 
-  m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT, false);
-  m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT, false);
+  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
+  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_REDIRECTING);
 
   m_RequestHeader.useUrl().setServer(m_Services.useConfiguration().getReportedHostname());
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_HTTPS))

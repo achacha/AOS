@@ -98,9 +98,9 @@
 		<base-http-dir>admin/</base-http-dir>
 	</admin>
 	<database>
-		<url>mysql://aos:aos@equinox/aos/</url>
+		<!--url>mysql://aos:aos@equinox/aos/</url-->
 		<!--url>odbc://aos:aos@localhost/aos_global/</url-->
-		<!--url>sqlite:///./aos_root/AObjectServer.db</url-->
+		<url>sqlite:///./aos_root/AObjectServer.db</url>
 		<connections>4</connections>
 	</database>
 	<http>

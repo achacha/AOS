@@ -98,10 +98,11 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 
           int dumpContextLevel = pContext->getDumpContextLevel();
 
-          //a_Add REQUEST header only if not in AJAX mode
+          //a_Add REQUEST, SESSION and RESPONSE header only if not in AJAX mode
           if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
           {
             pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(ASW("REQUEST",7)));
+            pContext->useResponseHeader().emitXml(pContext->useModel().overwriteElement(ASW("RESPONSE",8)));
             pContext->useSessionData().emitXml(pContext->useModel().overwriteElement(ASW("SESSION",7)));
           }
 
