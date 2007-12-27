@@ -97,7 +97,6 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
   addProperty(eBase, ASWNL("reported_http_port") , AString::fromInt(m_ReportedHttpPort));
   addProperty(eBase, ASWNL("reported_https_port"), AString::fromInt(m_ReportedHttpsPort));
 
-
   {
     LIST_AString moduleNames;
     ARope rope;
@@ -194,7 +193,7 @@ AOSConfiguration::AOSConfiguration(
   m_Services(services),
   m_Config(ASW("config",6)),
   m_ReportedServer(AOS_SERVER_NAME),
-  m_ReportedHostname("localhost"),
+  m_ReportedHostname("localhost",9),
   m_ReportedHttpPort(80),
   m_ReportedHttpsPort(443)
 {
@@ -586,9 +585,19 @@ void AOSConfiguration::setReportedHostname(const AString& configPath)
 {
   if (m_Config.useRoot().exists(configPath))
   {
-    m_ReportedHostname.clear();
-    m_Config.useRoot().emitString(configPath, m_ReportedHostname);
-    m_Services.useLog().add(ARope("Setting reported hostname: ")+m_ReportedHostname, ALog::DEBUG);
+    AString str;
+    m_Config.useRoot().emitString(configPath, str);
+
+    //a_If hostname exists, set, else use default ip
+    if (!str.isEmpty())
+    {
+      m_ReportedHostname.assign(str);
+      m_Services.useLog().add(ARope("Setting reported hostname: ")+m_ReportedHostname, ALog::DEBUG);
+    }
+    else
+    {
+      m_ReportedHostname.assign(ASocketLibrary::getDefaultIp());
+    }
   }
   else
     m_Services.useLog().add(ARope("AOSConfiguration::setReportedHostname: Unable to find path: ")+configPath, ALog::WARNING);

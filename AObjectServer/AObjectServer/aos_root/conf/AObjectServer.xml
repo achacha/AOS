@@ -85,7 +85,7 @@
 	</listen>
 	<reported>
 		<!-- Reported overrides -->
-		<hostname desc="Hostname reported to clients">achacha.selfip.com</hostname>
+		<hostname desc="Hostname reported to clients"/>
 		<server desc="Server field in the response http header">Conveyer 1.3.0.0 [en]</server>
 		<http desc="Reported HTTP port, none means use 80"/>
 		<https desc="Reported HTTPS port, none means use 443"/>
