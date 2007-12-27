@@ -13,21 +13,21 @@ AOSOutput_generate_image::AOSOutput_generate_image(AOSServices& services) :
 {
 }
 
-bool AOSOutput_generate_image::execute(AOSContext& context)
+AOSContext::ReturnCode AOSOutput_generate_image::execute(AOSContext& context)
 {
   int x,y;
   AString str;
-  if (!context.getOutputParams().emitFromPath(ASW("canvas/x", 8), str))
+  if (!context.getOutputParams().emitString(ASW("canvas/x", 8), str))
   {
-    m_Services.useLog().append("AOSOutput_generate_image: Unable to find '/output/canvas/x' parameter");
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("AOSOutput_generate_image requires '/output/canvas/x' parameter"));
+    context.addError(getClass(), ASWNL("Unable to find '/output/canvas/x' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
   x = str.toInt();
   str.clear();
-  if (!context.getOutputParams().emitFromPath(ASW("canvas/y", 8), str))
+  if (!context.getOutputParams().emitString(ASW("canvas/y", 8), str))
   {
-    m_Services.useLog().append("AOSOutput_generate_image: Unable to find '/output/canvas/y' parameter");
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("AOSOutput_generate_image requires '/output/canvas/y' parameter"));
+    context.addError(getClass(), ASWNL("Unable to find '/output/canvas/y' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
   y = str.toInt();
 
@@ -37,6 +37,6 @@ bool AOSOutput_generate_image::execute(AOSContext& context)
 
   canvas.emitPNG(context.useOutputBuffer());
   context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("image/png",9));
-  return true;
+  return AOSContext::RETURN_OK;
 }
 

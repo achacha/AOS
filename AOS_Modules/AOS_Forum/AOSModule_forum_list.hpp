@@ -9,7 +9,7 @@ public:
   AOSModule_forum_list(AOSServices&);
   virtual ~AOSModule_forum_list();
 
-  virtual bool execute(AOSContext&, const AXmlElement&);
+  virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   
   /*!
   AOSAdminInterface

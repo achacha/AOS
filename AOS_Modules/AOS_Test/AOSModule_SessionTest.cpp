@@ -12,7 +12,7 @@ AOSModule_SessionTest::AOSModule_SessionTest(AOSServices& services) :
 {
 }
 
-bool AOSModule_SessionTest::execute(AOSContext& context, const AXmlElement& params)
+AOSContext::ReturnCode AOSModule_SessionTest::execute(AOSContext& context, const AXmlElement& params)
 {
   static const AString COUNT("count");
   static const AString OUTPATH("test/count");
@@ -20,7 +20,7 @@ bool AOSModule_SessionTest::execute(AOSContext& context, const AXmlElement& para
 
   //a_Session counter
   AXmlElement& sessionData = context.useSessionData().useData();
-  if (sessionData.emitFromPath(COUNT, str))
+  if (sessionData.emitString(COUNT, str))
   {
     ANumber n(str);
     ++n;
@@ -35,5 +35,5 @@ bool AOSModule_SessionTest::execute(AOSContext& context, const AXmlElement& para
     context.useModel().setString(OUTPATH, AConstant::ASTRING_ZERO);
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }

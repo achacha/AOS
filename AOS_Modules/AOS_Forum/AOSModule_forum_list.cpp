@@ -16,7 +16,7 @@ AOSModule_forum_list::~AOSModule_forum_list()
 {
 }
 
-bool AOSModule_forum_list::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_forum_list::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   AXmlElement& eForums = context.useModel().addElement("forums");
 
@@ -56,5 +56,5 @@ bool AOSModule_forum_list::execute(AOSContext& context, const AXmlElement& modul
     eForum.addElement("message_count").addData("9");
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }

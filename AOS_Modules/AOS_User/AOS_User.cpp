@@ -1,6 +1,7 @@
 #include "pchAOS_User.hpp"
 #include "apiAOS_User.hpp"
 
+#include "AOSModule_LoginController.hpp"
 #include "AOSModule_AuthenticateUser.hpp"
 
 BOOL APIENTRY DllMain(
@@ -30,6 +31,7 @@ extern "C" AOS_USER_API int aos_register(
   services.useLog().add(ASWNL("AOS_User: aos_register"), ALog::INFO);
 
   //Register modules
+  moduleExecutor.registerModule(new AOSModule_LoginController(services));
   moduleExecutor.registerModule(new AOSModule_AuthenticateUser(services));
   
   return 0;

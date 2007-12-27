@@ -10,7 +10,7 @@ class AOS_USER_API AOSModule_AuthenticateUser : public AOSModuleInterface
 {
 public:
   AOSModule_AuthenticateUser(AOSServices&);
-  virtual bool execute(AOSContext&, const AXmlElement&);
+  virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   
   /*!
   AOSAdminInterface

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<command>
+	<output class="Template">
+	  <filename>template/login.html</filename>
+	</output>
+</command>

@@ -12,8 +12,10 @@ AOSModule_TestFail::AOSModule_TestFail(AOSServices& services) :
 {
 }
 
-bool AOSModule_TestFail::execute(AOSContext& context, const AXmlElement& params)
+AOSContext::ReturnCode AOSModule_TestFail::execute(AOSContext& context, const AXmlElement& params)
 {
+  context.useModel().addElement("test").addData("This is a fail test!");
+
   //a_Module returns a false
-  return false;
+  return AOSContext::RETURN_ERROR;
 }

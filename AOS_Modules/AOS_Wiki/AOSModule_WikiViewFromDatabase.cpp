@@ -13,13 +13,13 @@ AOSModule_WikiViewFromDatabase::AOSModule_WikiViewFromDatabase(AOSServices& serv
 {
 }
 
-bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   AString strTable;
-  if (!moduleParams.emitFromPath(ASW("table",5), strTable))
+  if (!moduleParams.emitString(ASW("table",5), strTable))
   {
-    context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute"), ASWNL("Missing module/table paramater"));
-    return false;
+    context.addError(getClass(), ASWNL("Missing module/table paramater"));
+    return AOSContext::RETURN_ERROR;
   }
 
   AString strWikiPath;
@@ -55,8 +55,8 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
       size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, rs, str);
       if (AConstant::npos == rows)
       {
-        context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute:INSERT:"),ARope("[",1)+query+ASW("]{",2)+str+ASW("}",1));
-        return false;
+        context.addError(getClass() ,ARope("INSERT[",7)+query+ASW("]{",2)+str+ASW("}",1));
+        return AOSContext::RETURN_ERROR;
       }
     }
     else
@@ -75,8 +75,8 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
       size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, rs, str);
       if (AConstant::npos == rows)
       {
-        context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute:UPDATE:"),ARope("[",1)+query+ASW("]{",2)+str+ASW("}",1));
-        return false;
+        context.addError(getClass(),ARope("UPDATE[",7)+query+ASW("]{",2)+str+ASW("}",1));
+        return AOSContext::RETURN_ERROR;
       }
     }
 
@@ -97,8 +97,8 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, rs, str);
     if (AConstant::npos == rows)
     {
-      context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute:SELECT:"),ARope("[",1)+query+ASW("]{",2)+str+ASW("}",1));
-      return false;
+      context.addError(getClass(),ARope("SELECT[",7)+query+ASW("]{",2)+str+ASW("}",1));
+      return AOSContext::RETURN_ERROR;
     }
     else if (!rows)
     {
@@ -112,10 +112,10 @@ bool AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElem
     }
     else
     {
-      context.addError(ASWNL("AOSModule_WikiViewFromDatabase::execute:SELECT:"), ASWNL("More than 1 entry for this path in the database, please fix the query to return only 1 entry"));
-      return false;
+      context.addError(getClass(), ASWNL("More than 1 entry for this path in the database, please fix the query to return only 1 entry"));
+      return AOSContext::RETURN_ERROR;
     }
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }

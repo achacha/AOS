@@ -15,7 +15,7 @@ AOSModule_classified_submit::AOSModule_classified_submit(AOSServices& services) 
 {
 }
 
-bool AOSModule_classified_submit::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_classified_submit::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   //a_Start preparing an insert
   ARope query("INSERT INTO classified(title,contact,price,descript,user_id) VALUES ('");
@@ -30,8 +30,8 @@ bool AOSModule_classified_submit::execute(AOSContext& context, const AXmlElement
   }
   else
   {
-    context.addError(ASWNL("AOSModule_classified_submit::execute"), ASWNL("Missing 'title' input"));
-    return false;
+    context.addError(getClass(), ASWNL("Missing 'title' input"));
+    return AOSContext::RETURN_ERROR;
   }
   query.append("','",3);
 
@@ -43,8 +43,8 @@ bool AOSModule_classified_submit::execute(AOSContext& context, const AXmlElement
   }
   else
   {
-    context.addError(ASWNL("AOSModule_classified_submit::execute"), ASWNL("Missing 'contact_email' input"));
-    return false;
+    context.addError(getClass(), ASWNL("Missing 'contact_email' input"));
+    return AOSContext::RETURN_ERROR;
   }
   query.append("','",3);
 
@@ -67,8 +67,8 @@ bool AOSModule_classified_submit::execute(AOSContext& context, const AXmlElement
   }
   else
   {
-    context.addError(ASWNL("AOSModule_classified_submit::execute"), ASWNL("Missing 'descript' input"));
-    return false;
+    context.addError(getClass(), ASWNL("Missing 'descript' input"));
+    return AOSContext::RETURN_ERROR;
   }
   query.append("',1)",4);
 
@@ -78,11 +78,11 @@ bool AOSModule_classified_submit::execute(AOSContext& context, const AXmlElement
   size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query.toAString(), rs, str);
   if (AConstant::npos == rows)
   {
-    context.addError(ASW("AOSModule_classified_submit::execute",36),ARope("[",1)+query+ASW("]{",2)+str+ASW("}",1));
-    return false;
+    context.addError(getClass(), ARope("[",1)+query+ASW("]{",2)+str+ASW("}",1));
+    return AOSContext::RETURN_ERROR;
   }
 
   context.useModel().addElement("classified_submit").addData("Item added");
-  return true;
+  return AOSContext::RETURN_OK;
 }
 

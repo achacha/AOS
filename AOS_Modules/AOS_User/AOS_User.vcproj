@@ -201,7 +201,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOS_User_Constants.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSModule_AuthenticateUser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSModule_LoginController.cpp"
 				>
 			</File>
 			<File
@@ -232,7 +240,15 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			>
 			<File
+				RelativePath=".\AOS_User_Constants.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSModule_AuthenticateUser.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSModule_LoginController.hpp"
 				>
 			</File>
 			<File
@@ -243,26 +259,6 @@
 				RelativePath=".\pchAOS_User.hpp"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="aos_root"
-			>
-			<Filter
-				Name="data"
-				>
-			</Filter>
-			<Filter
-				Name="dynamic"
-				>
-			</Filter>
-			<Filter
-				Name="static"
-				>
-			</Filter>
-			<Filter
-				Name="conf"
-				>
-			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

@@ -10,7 +10,7 @@ class AOS_WIKI_API AOSModule_WikiViewFromFileSystem : public AOSModuleInterface
 {
 public:
   AOSModule_WikiViewFromFileSystem(AOSServices&);
-  virtual bool execute(AOSContext&, const AXmlElement&);
+  virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   
   /*!
   AOSAdminInterface

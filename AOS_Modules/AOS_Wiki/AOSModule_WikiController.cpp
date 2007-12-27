@@ -1,31 +1,31 @@
 #include "pchAOS_Wiki.hpp"
-#include "AOSModule_WikiRemapPath.hpp"
+#include "AOSModule_WikiController.hpp"
 
-const AString& AOSModule_WikiRemapPath::getClass() const
+const AString& AOSModule_WikiController::getClass() const
 {
-  static const AString CLASS("WikiRemapPath");
+  static const AString CLASS("WikiController");
   return CLASS;
 }
 
-AOSModule_WikiRemapPath::AOSModule_WikiRemapPath(AOSServices& services) :
+AOSModule_WikiController::AOSModule_WikiController(AOSServices& services) :
   AOSModuleInterface(services)
 {
 }
 
-bool AOSModule_WikiRemapPath::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_WikiController::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   const AXmlElement *pBasePath = moduleParams.findElement(ASW("base-path",9));
   if (!pBasePath)
   {
-    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ASWNL("missing 'module/base-path' parameter"));
-    return false;
+    context.addError(getClass(), ASWNL("missing 'module/base-path' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
 
   const AXmlElement *pWikiCommand = moduleParams.findElement(ASW("wiki-command",12));
   if (!pWikiCommand)
   {
-    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ASWNL("missing 'module/wiki-command' parameter"));
-    return false;
+    context.addError(getClass(), ASWNL("missing 'module/wiki-command' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
 
   if (context.useRequestParameterPairs().exists(ASW("wiki.edit",9)))
@@ -54,15 +54,15 @@ bool AOSModule_WikiRemapPath::execute(AOSContext& context, const AXmlElement& mo
   size_t startOfBase = strPathAndFilename.find(strBasePath);
   if (AConstant::npos == startOfBase)
   {
-    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ASWNL("Missing base path, is this executing in the correct path?"));
-    return false;
+    context.addError(getClass(), ASWNL("Missing base path, is this executing in the correct path?"));
+    return AOSContext::RETURN_ERROR;
   }
 
   //a_Set new command location and change URL path/filename
   if (!context.setNewCommandPath(strWikiCommandPath))
   {
-    context.addError(ASWNL("AOSModule_WikiRemapPath::execute"), ARope("Unable to find the command for new request URL: ")+context.useRequestUrl());
-    return false;
+    context.addError(getClass(), ARope("Unable to find the command for new request URL: ")+context.useRequestUrl());
+    return AOSContext::RETURN_ERROR;
   }
   context.useModel().overwriteElement("wiki/command").addData(strWikiCommandPath);
 
@@ -71,5 +71,5 @@ bool AOSModule_WikiRemapPath::execute(AOSContext& context, const AXmlElement& mo
   strPathAndFilename.peek(strParam, startOfBase+strBasePath.getSize());
   context.useRequestUrl().useParameterPairs().insert(ASW("wikipath",8), strParam);
 
-  return true;
+  return AOSContext::RETURN_OK;
 }

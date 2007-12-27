@@ -15,7 +15,7 @@ AOSModule_classified_list::AOSModule_classified_list(AOSServices& services) :
 {
 }
 
-bool AOSModule_classified_list::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_classified_list::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   //a_Start preparing an insert
   ARope query("SELECT * from classified where user_id=1;");
@@ -26,9 +26,9 @@ bool AOSModule_classified_list::execute(AOSContext& context, const AXmlElement& 
   size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query.toAString(), rs, str);
   if (AConstant::npos == rows)
   {
-    context.addError(ASWNL("AOSModule_classified_list::execute"), str);
-    context.addError(ASWNL("AOSModule_classified_list::execute.query"), query);
-    return false;
+    context.addError(getClass(), query);
+    context.addError(getClass(), str);
+    return AOSContext::RETURN_ERROR;
   }
 
   AXmlElement& eClassified = context.useModel().addElement("classified");
@@ -48,6 +48,6 @@ bool AOSModule_classified_list::execute(AOSContext& context, const AXmlElement& 
     }
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }
 

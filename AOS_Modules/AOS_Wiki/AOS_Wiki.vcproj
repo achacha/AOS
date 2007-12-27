@@ -201,7 +201,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_WikiRemapPath.cpp"
+				RelativePath=".\AOSModule_WikiController.cpp"
 				>
 			</File>
 			<File
@@ -240,7 +240,7 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			>
 			<File
-				RelativePath=".\AOSModule_WikiRemapPath.hpp"
+				RelativePath=".\AOSModule_WikiController.hpp"
 				>
 			</File>
 			<File

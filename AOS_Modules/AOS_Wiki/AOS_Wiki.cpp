@@ -1,7 +1,7 @@
 #include "pchAOS_Wiki.hpp"
 #include "apiAOS_Wiki.hpp"
 
-#include "AOSModule_WikiRemapPath.hpp"
+#include "AOSModule_WikiController.hpp"
 #include "AOSModule_WikiViewFromDatabase.hpp"
 #include "AOSModule_WikiViewFromFileSystem.hpp"
 
@@ -32,7 +32,7 @@ extern "C" AOS_WIKI_API int aos_register(
   services.useLog().add(ASWNL("AOS_Wiki: aos_register"), ALog::INFO);
 
   //Register modules
-  moduleExecutor.registerModule(new AOSModule_WikiRemapPath(services));
+  moduleExecutor.registerModule(new AOSModule_WikiController(services));
   moduleExecutor.registerModule(new AOSModule_WikiViewFromDatabase(services));
   moduleExecutor.registerModule(new AOSModule_WikiViewFromFileSystem(services));
   

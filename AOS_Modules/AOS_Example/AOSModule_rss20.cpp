@@ -14,7 +14,7 @@ AOSModule_rss20::AOSModule_rss20(AOSServices& services) :
 {
 }
 
-bool AOSModule_rss20::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_rss20::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   AXmlElement& output = context.useModel();
   
@@ -64,6 +64,6 @@ bool AOSModule_rss20::execute(AOSContext& context, const AXmlElement& modulePara
     item.addElement("description").addData("XSL transform");
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }
 

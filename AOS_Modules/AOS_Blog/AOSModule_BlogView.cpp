@@ -14,7 +14,7 @@ AOSModule_BlogView::AOSModule_BlogView(AOSServices& services) :
 {
 }
 
-bool AOSModule_BlogView::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_BlogView::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   AXmlElement& xmlBlog = context.useModel().addElement("blog");
   
@@ -34,5 +34,5 @@ bool AOSModule_BlogView::execute(AOSContext& context, const AXmlElement& moduleP
   {
     context.addError(this->getClass(), error);
   }
-  return true;
+  return AOSContext::RETURN_OK;
 }

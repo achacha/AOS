@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<command>
+  <input class="application/x-www-form-urlencoded"/>
+	<module class="AuthenticateUser"/>
+	<output class="Redirect">
+	  <session-path>user/ru</session-path>
+	</output>
+</command>

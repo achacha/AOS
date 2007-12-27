@@ -8,7 +8,7 @@ class AOS_CLASSIFIED_API AOSModule_classified_list : public AOSModuleInterface
 public:
   AOSModule_classified_list(AOSServices&);
   
-  virtual bool execute(AOSContext&, const AXmlElement&);
+  virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   
   /*!
   AOSAdminInterface

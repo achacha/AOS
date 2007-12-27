@@ -12,9 +12,9 @@ AOSModule_Test::AOSModule_Test(AOSServices& services) :
 {
 }
 
-bool AOSModule_Test::execute(AOSContext& context, const AXmlElement& params)
+AOSContext::ReturnCode AOSModule_Test::execute(AOSContext& context, const AXmlElement& params)
 {
   context.useModel().addElement("test").addData("This is a test!");
 
-  return true;
+  return AOSContext::RETURN_OK;
 }

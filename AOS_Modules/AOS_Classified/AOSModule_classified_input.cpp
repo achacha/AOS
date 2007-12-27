@@ -31,7 +31,7 @@ AOSModule_classified_input::AOSModule_classified_input(AOSServices& services) :
 	/><span class="feature_off">Contact Email</span>
 </td></tr></table>
 */
-bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_classified_input::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   AString str;
   bool state = false;
@@ -45,8 +45,8 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
   }
   else
   {
-    context.addError(ASWNL("AOSModule_classified_input::execute"), ASWNL("classified_input module missing '/module/state' parameter"));
-    return false;
+    context.addError(getClass(), ASWNL("classified_input module missing '/module/state' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
 
   AString strDisplay;
@@ -56,8 +56,8 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
   }
   else
   {
-    context.addError(ASWNL("AOSModule_classified_input::execute"), ASWNL("classified_input module missing '/module/display' parameter"));
-    return false;
+    context.addError(getClass(), ASWNL("classified_input module missing '/module/display' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
 
   AString strVariable;
@@ -67,8 +67,8 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
   }
   else
   {
-    context.addError(ASWNL("AOSModule_classified_input::execute"), ASWNL("classified_input module missing '/module/variable' parameter"));
-    return false;
+    context.addError(getClass(), ASWNL("classified_input module missing '/module/variable' parameter"));
+    return AOSContext::RETURN_ERROR;
   }
 
   AString strX("var x=getHttpXml('");
@@ -107,6 +107,6 @@ bool AOSModule_classified_input::execute(AOSContext& context, const AXmlElement&
       .addAttribute("size", strLength);
   }
   
-  return true;
+  return AOSContext::RETURN_OK;
 }
 

@@ -14,7 +14,7 @@ public:
   AOSModule_DadaDataTemplate(AOSServices&);
   
   virtual void init();
-  virtual bool execute(AOSContext&, const AXmlElement&);
+  virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   virtual void deinit();
 
   /*!

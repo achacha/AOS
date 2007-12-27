@@ -8,7 +8,7 @@ class AOS_TEST_API AOSModule_TestFail : public AOSModuleInterface
 public:
   AOSModule_TestFail(AOSServices&);
   \
-  virtual bool execute(AOSContext&, const AXmlElement&);
+  virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   
   /*!
   AOSAdminInterface

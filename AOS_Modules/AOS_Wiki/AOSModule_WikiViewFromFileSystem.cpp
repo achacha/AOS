@@ -16,7 +16,7 @@ AOSModule_WikiViewFromFileSystem::AOSModule_WikiViewFromFileSystem(AOSServices& 
 {
 }
 
-bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   static const AString ELEMENT_SECURE_EDIT("wiki/SecureEdit",15);
   static const AString ELEMENT_DOES_NOT_EXIST("wiki/DoesNotExist",17);
@@ -27,10 +27,10 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
 
   //a_Get base path
   AString basePath;
-  if (!moduleParams.emitFromPath(PARAM_BASE_PATH, basePath))
+  if (!moduleParams.emitString(PARAM_BASE_PATH, basePath))
   {
-    context.addError(ASWNL("AOSModule_WikiViewFromFileSystem::execute"),ASWNL("Unable to find module/base-path parameter"));
-    return false;
+    context.addError(getClass(), ASWNL("Unable to find module/base-path parameter"));
+    return AOSContext::RETURN_ERROR;
   }
   AFilename wikifile(m_Services.useConfiguration().getAosBaseDataDirectory());
   wikifile.join(basePath, true);
@@ -60,7 +60,7 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
     )
     {
       context.useModel().overwriteElement(ASW("wiki/AuthFailed",15));
-      return true;
+      return AOSContext::RETURN_OK;
     }
     
     //a_New data submitted
@@ -129,5 +129,5 @@ bool AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlEl
 
   }
 
-  return true;
+  return AOSContext::RETURN_OK;
 }

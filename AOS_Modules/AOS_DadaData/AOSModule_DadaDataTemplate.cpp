@@ -50,21 +50,21 @@ void AOSModule_DadaDataTemplate::init()
   m_Objects.insert(PATH_DADADATA, pddh);
 }
 
-bool AOSModule_DadaDataTemplate::execute(AOSContext& context, const AXmlElement& params)
+AOSContext::ReturnCode AOSModule_DadaDataTemplate::execute(AOSContext& context, const AXmlElement& params)
 {
   ADadaDataHolder *pddh = dynamic_cast<ADadaDataHolder *>(m_Objects.getObject(PATH_DADADATA));
 
   if (!pddh)
   {
-    context.addError("AOSModule_DadaDataTemplate::execute", AString("AOSModule_DadaDataTemplate: ADadaDataHolder not found at: ")+PATH_DADADATA);
-    return false;
+    context.addError(getClass(), AString("AOSModule_DadaDataTemplate: ADadaDataHolder not found at: ")+PATH_DADADATA);
+    return AOSContext::RETURN_ERROR;
   }
 
   AString templateName;
   if (!context.useRequestParameterPairs().get(ASW("templateName",12), templateName))
   {
-    context.addError("AOSModule_DadaDataTemplate::execute", "Please specify 'templateName' parameter.");
-    return false;
+    context.addError(getClass(), ASWNL("Please specify 'templateName' parameter."));
+    return AOSContext::RETURN_ERROR;
   }
   
   ADadaDataHolder::TEMPLATES::iterator it = pddh->useTemplates().find(templateName);
@@ -78,11 +78,11 @@ bool AOSModule_DadaDataTemplate::execute(AOSContext& context, const AXmlElement&
   }
   else
   {
-    context.addError("AOSModule_DadaDataTemplate::execute", AString("Not found templateName=")+templateName);
-    return false;
+    context.addError(getClass(), ARope("Not found templateName: ")+templateName);
+    return AOSContext::RETURN_ERROR;
   }
   
-  return true;
+  return AOSContext::RETURN_OK;
 }
 
 void AOSModule_DadaDataTemplate::deinit()
