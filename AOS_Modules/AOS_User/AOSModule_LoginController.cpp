@@ -15,9 +15,11 @@ AOSModule_LoginController::AOSModule_LoginController(AOSServices& services) :
 AOSContext::ReturnCode AOSModule_LoginController::execute(AOSContext& context, const AXmlElement& moduleParams)
 {  
   //a_Save redirect URL
+  AUrl url(context.useRequestUrl());
+  url.setProtocol(AUrl::HTTPS);
   context.useSessionData().useData()
     .overwriteElement(AOS_User_Constants::SESSION_REDIRECTURL)
-      .addData(context.useRequestUrl().getPathFileAndQueryString(), AXmlData::ENC_CDATADIRECT);
+      .addData(url, AXmlData::ENC_CDATADIRECT);
 
   //a_Check if user is logged in
   if (!context.useSessionData().useData().exists(AOS_User_Constants::SESSION_ISLOGGEDIN))
