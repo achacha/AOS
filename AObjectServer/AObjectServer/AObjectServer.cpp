@@ -104,57 +104,65 @@ int main(int argc, char **argv)
       //
       //a_Create and configure the queues
       //
-      AOSContextQueue_IsAvailable cqIsAvailable(services);
+      AOSContextQueueThreadPool *pQueueIsAvail = new AOSContextQueue_IsAvailable(services);
       int sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/is-available/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
-        cqIsAvailable.setSleepDelay(sleepDelay);
+        pQueueIsAvail->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for is-available/sleep-delay is invalid, using default", NULL);
       
-      AOSContextQueue_ErrorExecutor cqErrorExecutor(
+      AOSContextQueueThreadPool *pQueueError = new AOSContextQueue_ErrorExecutor(
         services,
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/threads", 16), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/queues", 4)
       );
       sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
-        cqErrorExecutor.setSleepDelay(sleepDelay);
+        pQueueError->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for error-executor/sleep-delay is invalid, using default", NULL);
 
-      AOSContextQueue_PreExecutor cqPreExecutor(
+      AOSContextQueueThreadPool *pQueuePre = new AOSContextQueue_PreExecutor(
         services, 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/threads", 16), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/queues", 4)
       );
       sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/pre-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
-        cqPreExecutor.setSleepDelay(sleepDelay);
+        pQueuePre->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for pre-executor/sleep-delay is invalid, using default", NULL);
 
-      AOSContextQueue_Executor cqExecutor(
+      AOSContextQueueThreadPool *pQueueExecutor = new AOSContextQueue_Executor(
         services, 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/threads", 64), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/queues", 3)
       );
       sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
-        cqExecutor.setSleepDelay(sleepDelay);
+        pQueueExecutor->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for executor/sleep-delay is invalid, using default", NULL);
 
-      //a_Connect queues to listener
-      AOSRequestListener listener(services, &cqPreExecutor);
+      //a_Configure queue state machine
+      services.useContextManager().setQueueForState(AOSContextManager::STATE_PRE_EXECUTE, pQueuePre);
+      services.useContextManager().setQueueForState(AOSContextManager::STATE_EXECUTE, pQueueExecutor);
+      services.useContextManager().setQueueForState(AOSContextManager::STATE_IS_AVAILABLE, pQueueIsAvail);
+      services.useContextManager().setQueueForState(AOSContextManager::STATE_ERROR, pQueueError);
+
+      //a_Associate queue for the listener
+      AOSRequestListener listener(services, pQueuePre);
       
-      cqIsAvailable.setYesContextQueue(&cqPreExecutor);
+      //TODO: vvvvvvvvv     This is going away
+      pQueueIsAvail->setYesContextQueue(pQueuePre);
 
-      cqPreExecutor.setYesContextQueue(&cqExecutor);
-      cqPreExecutor.setNoContextQueue(&cqIsAvailable);
-      cqPreExecutor.setErrorContextQueue(&cqErrorExecutor);
+      pQueuePre->setYesContextQueue(pQueueExecutor);
+      pQueuePre->setNoContextQueue(pQueueIsAvail);
+      pQueuePre->setErrorContextQueue(pQueueError);
 
-      cqExecutor.setYesContextQueue(&cqIsAvailable);                 //a_Used in HTTP/1.1 pipelining
-      cqExecutor.setErrorContextQueue(&cqErrorExecutor);
+      pQueueExecutor->setYesContextQueue(pQueueIsAvail);                 //a_Used in HTTP/1.1 pipelining
+      pQueueExecutor->setErrorContextQueue(pQueueError);
+      //TODO: ^^^^^^^^^     This is going away
 
       //
       //a_Load the processors, modules, generators dynamically from DLLs
@@ -229,10 +237,10 @@ int main(int argc, char **argv)
       //
       //a_Start all the queues (listener is the last thing to start, see below)
       //
-      cqIsAvailable.useThreadPool().start();
-      cqPreExecutor.useThreadPool().start();
-      cqExecutor.useThreadPool().start();
-      cqErrorExecutor.useThreadPool().start();
+      pQueuePre->useThreadPool().start();
+      pQueueIsAvail->useThreadPool().start();
+      pQueueExecutor->useThreadPool().start();
+      pQueueError->useThreadPool().start();
 
       //
       //a_Start listener

@@ -4,31 +4,49 @@
 #include "ALock.hpp"
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"
+#include "AOSContextQueueInterface.hpp"
 
 #ifdef __DEBUG_DUMP__
 void AOSContextManager::debugDump(std::ostream& os, int indent) const
 {
-  ALock lock(const_cast<ASync_CriticalSection *>(&m_InUseSync));
   ADebugDumpable::indent(os, indent) << "(AOSContextManager @ " << std::hex << this << std::dec << ") {" << std::endl;
 
+  ADebugDumpable::indent(os, indent+1) << "m_Queues={" << std::endl;
+  for (size_t i=0; i < m_Queues.size(); ++i)
+  {
+    AOSContextQueueInterface *pQueue = m_Queues.at(i);
+    if (pQueue)
+    {
+      ADebugDumpable::indent(os, indent+2) << "[" << i << "]={" << std::endl;
+      pQueue->debugDump(os, indent+3);
+      ADebugDumpable::indent(os, indent+2) << "]" << std::endl;
+    }
+    else
+      ADebugDumpable::indent(os, indent+2) << "[" << i << "]=NULL" << std::endl;
+  }
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
   ADebugDumpable::indent(os, indent+1) << "m_Freestore.size()=" << m_Freestore.size() << std::endl;
+
   ADebugDumpable::indent(os, indent+1) << "m_InUse.size()=" << m_InUse.size() << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_InUse={" << std::endl;
-  CONTEXT_INUSE::const_iterator citU = m_InUse.begin();
-  while(citU != m_InUse.end())
   {
-    (*citU).first->debugDump(os, indent+2);
-    ++citU;
+    ALock lock(const_cast<ASync_CriticalSection *>(&m_InUseSync));
+    for (CONTEXT_INUSE::const_iterator citU = m_InUse.begin(); citU != m_InUse.end(); ++citU)
+    {
+      (*citU).first->debugDump(os, indent+2);
+    }
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_History.size()=" << m_History.size() << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_History={" << std::endl;
-  CONTEXT_HISTORY::const_iterator citH = m_History.begin();
-  while(citH != m_History.end())
   {
-    (*citH)->debugDump(os, indent+2);
-    ++citH;
+    ALock lock(const_cast<ASync_CriticalSection *>(&m_HistorySync));
+    for (CONTEXT_HISTORY::const_iterator citH = m_History.begin(); citH != m_History.end(); ++citH)
+    {
+      (*citH)->debugDump(os, indent+2);
+    }
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
@@ -45,6 +63,15 @@ const AString& AOSContextManager::getClass() const
 void AOSContextManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   AOSAdminInterface::addAdminXml(eBase, request);
+
+  for (size_t i=0; i < m_Queues.size(); ++i)
+  {
+    AOSContextQueueInterface *pQueue = m_Queues.at(i);
+    if (pQueue)
+      addProperty(eBase, AString::fromSize_t(i), pQueue->getClass());
+    else
+      addProperty(eBase, AString::fromSize_t(i), AConstant::ASTRING_NULL);
+  }
 
   addProperty(eBase, "history_max_size", AString::fromSize_t(m_HistoryMaxSize));
   addProperty(eBase, "freestore_max_size", AString::fromSize_t(m_FreestoreMaxSize));
@@ -81,6 +108,7 @@ void AOSContextManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
 }
 
 AOSContextManager::AOSContextManager(AOSServices& services) :
+  m_Queues(NULL, AOSContextManager::STATE_TERMINATE+1),
   m_Services(services)
 {
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
@@ -91,26 +119,30 @@ AOSContextManager::AOSContextManager(AOSServices& services) :
 
 AOSContextManager::~AOSContextManager()
 {
-  CONTEXT_FREESTORE::iterator itF = m_Freestore.begin();
-  while(itF != m_Freestore.end())
+  try
   {
-    delete (*itF);
-    ++itF;
-  }
+    for (CONTEXT_FREESTORE::iterator itF = m_Freestore.begin(); itF != m_Freestore.end(); ++itF)
+    {
+      delete (*itF);
+    }
 
-  CONTEXT_HISTORY::iterator itH = m_History.begin();
-  while(itH != m_History.end())
-  {
-    delete (*itH);
-    ++itH;
-  }
+    for (CONTEXT_HISTORY::iterator itH = m_History.begin(); itH != m_History.end(); ++itH)
+    {
+      delete (*itH);
+      
+    }
+    
+    for (CONTEXT_INUSE::iterator itU = m_InUse.begin(); itU != m_InUse.end(); ++itU)
+    {
+      delete (*itU).first;
+    }
 
-  CONTEXT_INUSE::iterator itU = m_InUse.begin();
-  while(itU != m_InUse.end())
-  {
-    delete (*itU).first;
-    ++itU;
+    for (QUEUES::iterator itQ = m_Queues.begin(); itQ != m_Queues.end(); ++itQ)
+    {
+      delete (*itQ);
+    }
   }
+  catch(...) {}
 }
 
 AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
@@ -208,4 +240,20 @@ void AOSContextManager::deallocate(AOSContext *p)
       }
     }
   }
+}
+
+void AOSContextManager::setQueueForState(AOSContextManager::ContextQueueState state, AOSContextQueueInterface *pQueue)
+{
+  AASSERT_EX(this, !m_Queues.at(state), ASWNL("State already associated with a queue, deleting and overwriting"));
+  m_Queues.assign(state, pQueue);
+}
+
+void AOSContextManager::changeQueueState(AOSContextManager::ContextQueueState state, AOSContext **ppContext)
+{
+  AOSContextQueueInterface *pQueue = m_Queues.at(state);
+  if (pQueue)
+  {
+    pQueue->add(*ppContext);
+  }
+  *ppContext = NULL;
 }

@@ -7,13 +7,47 @@
 #include "ASync_CriticalSection.hpp"
 
 class AOSServices;
+class AOSContextQueueInterface;
 
 class AOS_BASE_API AOSContextManager : public AOSAdminInterface
 {
 public:
+  enum ContextQueueState
+  {
+    STATE_PRE_EXECUTE = 0,
+    STATE_EXECUTE = 1,
+    STATE_IS_AVAILABLE = 2,
+    STATE_ERROR = 3,
+    STATE_TERMINATE = 4   // This MUST be the last state
+  };
+
+public:
+  /*!
+  ctor
+  */
   AOSContextManager(AOSServices&);
+  
+  /*!
+  dtor
+  */
   virtual ~AOSContextManager();
   
+  /*!
+  Advance context to next queue state
+
+  @param state
+  @param context pointer will be changed to NULL if state is advanced
+  */
+  void changeQueueState(AOSContextManager::ContextQueueState state, AOSContext **ppContext);
+
+  /*!
+  Set context queue for the given state
+
+  @param state
+  @param pointer to queue, owned and deleted by this class
+  */
+  void setQueueForState(AOSContextManager::ContextQueueState state, AOSContextQueueInterface *pQueue);
+
   /*!
   Allocate and deallocate AOSContext
   */
@@ -27,24 +61,28 @@ public:
   virtual const AString& getClass() const;
 
 private:
-  //a_Contexts currently in use
+  //! Container for state to queue
+  typedef std::vector<AOSContextQueueInterface *> QUEUES;
+  QUEUES m_Queues;
+  
+  //! Contexts currently in use
   typedef std::map<AOSContext *, int> CONTEXT_INUSE;
   CONTEXT_INUSE m_InUse;
   ASync_CriticalSection m_InUseSync;
   
-  //a_Context history, after they scroll off here they go into the freestore
+  //! Context history, after they scroll off here they go into the freestore
   typedef std::list<AOSContext *> CONTEXT_HISTORY;
   CONTEXT_HISTORY m_History;
   ASync_CriticalSection m_HistorySync;
   size_t m_HistoryMaxSize;
 
-  //a_Contexts available for reuse
+  //! Contexts available for reuse
   typedef std::deque<AOSContext *> CONTEXT_FREESTORE;
   CONTEXT_FREESTORE m_Freestore;
   ASync_CriticalSection m_FreestoreSync;
   size_t m_FreestoreMaxSize;
 
-  //a_Reference to the services
+  //! Reference to the services
   AOSServices& m_Services;
 
 public:

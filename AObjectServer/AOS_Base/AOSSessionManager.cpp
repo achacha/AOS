@@ -313,7 +313,7 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
     query.append("'",1);
 
     result.clear();
-    size_t rows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
+    size_t resultRows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
     if (!strError.isEmpty())
     {
       m_Services.useLog().add(strError, ALog::FAILURE);
@@ -328,7 +328,7 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
     query.append(datafile);
     query.append("')");
     result.clear();
-    size_t rows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
+    size_t resultRows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
     if (!strError.isEmpty())
     {
       m_Services.useLog().add(strError, ALog::FAILURE);
@@ -364,7 +364,7 @@ AOSSessionData *AOSSessionManager::_restoreSession(const AString& sessionId)
     ALock lock(pSessionMapHolder->mp_SynchObject);
     
     //a_Create a new session
-    AOSSessionData *pData = new AOSSessionData(sessionId);
+    pData = new AOSSessionData(sessionId);
     AFile_AString datafile(result.getData(0,0));
     pData->fromAFile(datafile);
     pSessionMapHolder->m_SessionMap.insert(SESSION_MAP::value_type(sessionId, pData));
