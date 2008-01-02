@@ -152,17 +152,6 @@ int main(int argc, char **argv)
 
       //a_Associate queue for the listener
       AOSRequestListener listener(services, pQueuePre);
-      
-      //TODO: vvvvvvvvv     This is going away
-      pQueueIsAvail->setYesContextQueue(pQueuePre);
-
-      pQueuePre->setYesContextQueue(pQueueExecutor);
-      pQueuePre->setNoContextQueue(pQueueIsAvail);
-      pQueuePre->setErrorContextQueue(pQueueError);
-
-      pQueueExecutor->setYesContextQueue(pQueueIsAvail);                 //a_Used in HTTP/1.1 pipelining
-      pQueueExecutor->setErrorContextQueue(pQueueError);
-      //TODO: ^^^^^^^^^     This is going away
 
       //
       //a_Load the processors, modules, generators dynamically from DLLs

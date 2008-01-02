@@ -6,13 +6,10 @@
 
 AOSContextQueueThreadPool::AOSContextQueueThreadPool(
   AOSServices& services,
-  size_t threadCount,                 // = 1
-  AOSContextQueueInterface *pForward, // = NULL, 
-  AOSContextQueueInterface *pBack,    // = NULL
-  AOSContextQueueInterface *pError    // = NULL
+  size_t threadCount                 // = 1
 ) :
   m_ThreadPool(AOSContextQueueThreadPool::_threadprocWrapper, threadCount),
-  AOSContextQueueInterface(services, pForward, pBack, pError),
+  AOSContextQueueInterface(services),
   m_SleepDelay(DEFAULT_SLEEP_DELAY)
 {
   m_ThreadPool.setThis(this);

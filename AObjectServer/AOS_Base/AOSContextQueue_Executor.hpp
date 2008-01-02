@@ -12,18 +12,18 @@ class AOSContext;
 class AOS_BASE_API AOSContextQueue_Executor : public BASECLASS_AOSContextQueue_Executor
 {
 public:
+  /*!
+  ctor
+  */
   AOSContextQueue_Executor(
     AOSServices&,
     size_t threadCount = 12,
-    size_t queueCount = 3,
-    AOSContextQueueInterface *pYes = NULL, 
-    AOSContextQueueInterface *pNo = NULL,
-    AOSContextQueueInterface *pError = NULL
+    size_t queueCount = 3
   );
 
   /*!
   AOSAdminInterface
-  **/
+  */
   virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;

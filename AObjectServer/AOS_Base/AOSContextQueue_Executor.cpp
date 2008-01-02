@@ -23,12 +23,9 @@ void AOSContextQueue_Executor::processAdminAction(AXmlElement& eBase, const AHTT
 AOSContextQueue_Executor::AOSContextQueue_Executor(
   AOSServices& services,
   size_t threadCount,               // = 12
-  size_t queueCount,                // = 3
-  AOSContextQueueInterface *pYes,   // = NULL 
-  AOSContextQueueInterface *pNo,    // = NULL
-  AOSContextQueueInterface *pError  // = NULL
+  size_t queueCount                 // = 3
 ) :
-  BASECLASS_AOSContextQueue_Executor(services, threadCount, queueCount, pYes, pNo, pError)
+  BASECLASS_AOSContextQueue_Executor(services, threadCount, queueCount)
 {
   useThreadPool().setThis(this);
   registerAdminObject(m_Services.useAdminRegistry());
@@ -64,7 +61,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         //a_If error is logged stop and go to error handler
         if (pContext->useEventVisitor().getErrorCount() > 0)
         {
-          pThis->_goError(pContext);
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
           continue;
         }
 
@@ -80,7 +77,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         //a_If error is logged stop and go to error handler
         if (pContext->useEventVisitor().getErrorCount() > 0)
         {
-          pThis->_goError(pContext);
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
           continue;
         }
 
@@ -210,7 +207,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 
         if (pContext->useEventVisitor().getErrorCount() > 0)
         {
-          pThis->_goError(pContext);
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
           continue;
         }
         
@@ -221,22 +218,21 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         )
         {
           pContext->setExecutionState(ASW("AOSContextQueue_Executor: Forcing a close since response Content-Length was not specified",89));
-          pThis->_goTerminate(pContext);
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
           continue;
         }
 
-        if (
-          pContext->useRequestHeader().isHttpPipeliningEnabled()
-        )
+        if (pContext->useRequestHeader().isHttpPipeliningEnabled())
         {
           //a_keep-alive found, pipelining enabled
-          pThis->_goYes(pContext);
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
         }
         else
         {
           pContext->useSocket().close();
-          pThis->_goNo(pContext);
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
         }
+        continue;
       }
       AThread::sleep(pThis->m_SleepDelay);  //a_Empty queue, avoid thrashing
     }
@@ -244,23 +240,20 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
     {
       pContext->setExecutionState(e);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
-      _goError(pContext);
-      pContext = NULL;
-
+      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }
     catch(std::exception& e)
     {
       pContext->setExecutionState(ASWNL(e.what()), true);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
-      _goError(pContext);
-      pContext = NULL;
+      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }
     catch(...)
     {
       pContext->setExecutionState(ASW("Unknown exception caught in AOSContextQueue_Executor::threadproc",64), true);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
-      _goError(pContext);
-      pContext = NULL;
+      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
+      break;
     }
   }
 

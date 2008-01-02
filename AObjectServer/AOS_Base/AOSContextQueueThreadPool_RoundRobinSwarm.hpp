@@ -11,19 +11,19 @@ class AOSContext;
 class AOS_BASE_API AOSContextQueueThreadPool_RoundRobinSwarm : public AOSContextQueueThreadPool
 {
 public:
+  /*!
+  ctor
+  */
   AOSContextQueueThreadPool_RoundRobinSwarm(
     AOSServices&,  
     size_t threadCount = 16,
-    size_t queueCount = 4,
-    AOSContextQueueInterface *pYes = NULL, 
-    AOSContextQueueInterface *pNo = NULL,
-    AOSContextQueueInterface *pError = NULL
+    size_t queueCount = 4
   );
   virtual ~AOSContextQueueThreadPool_RoundRobinSwarm();
 
   /*!
   Externally add AOSContext* synchronously to this queue for processing
-  **/
+  */
   virtual void add(AOSContext *);
 
   /*!
@@ -36,7 +36,7 @@ public:
 protected:
   /*!
   Synchronized remove method used by threadproc to perform work
-  **/
+  */
   virtual AOSContext *_nextContext();
 
 private:

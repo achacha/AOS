@@ -16,16 +16,11 @@ class AOS_BASE_API AOSContextQueueThreadPool : public AOSContextQueueInterface
 {
 public:
   /*!
-  pForward - Forward queue set for AOSContext* (if applicable)
-  pBack - Go back (if applicable)
-  pError - Error handler (if applicable)
-  **/
+  ctor
+  */
   AOSContextQueueThreadPool(
     AOSServices& services,
-    size_t threadCount = 1,
-    AOSContextQueueInterface *pYes = NULL, 
-    AOSContextQueueInterface *pNo = NULL,
-    AOSContextQueueInterface *pError = NULL
+    size_t threadCount = 1
   );
   virtual ~AOSContextQueueThreadPool();
 

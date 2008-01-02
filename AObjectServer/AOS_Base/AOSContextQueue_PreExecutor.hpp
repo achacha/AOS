@@ -15,9 +15,7 @@ public:
   AOSContextQueue_PreExecutor(
     AOSServices&,  
     size_t threadCount = 16,
-    size_t queueCount = 4,
-    AOSContextQueueInterface *pYes = NULL, 
-    AOSContextQueueInterface *pNo = NULL
+    size_t queueCount = 4
   );
   virtual ~AOSContextQueue_PreExecutor();
 

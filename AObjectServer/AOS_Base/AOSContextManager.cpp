@@ -108,7 +108,7 @@ void AOSContextManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
 }
 
 AOSContextManager::AOSContextManager(AOSServices& services) :
-  m_Queues(NULL, AOSContextManager::STATE_TERMINATE+1),
+  m_Queues(AOSContextManager::STATE_TERMINATE+1, NULL),
   m_Services(services)
 {
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
@@ -245,7 +245,7 @@ void AOSContextManager::deallocate(AOSContext *p)
 void AOSContextManager::setQueueForState(AOSContextManager::ContextQueueState state, AOSContextQueueInterface *pQueue)
 {
   AASSERT_EX(this, !m_Queues.at(state), ASWNL("State already associated with a queue, deleting and overwriting"));
-  m_Queues.assign(state, pQueue);
+  m_Queues[state] = pQueue;
 }
 
 void AOSContextManager::changeQueueState(AOSContextManager::ContextQueueState state, AOSContext **ppContext)

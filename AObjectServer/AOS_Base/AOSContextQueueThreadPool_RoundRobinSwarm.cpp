@@ -60,13 +60,10 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::processAdminAction(AXmlElement& 
 AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinSwarm(
   AOSServices& services,
   size_t threadCount,              // = 16
-  size_t queueCount,               // = 4
-  AOSContextQueueInterface *pYes,  // = NULL 
-  AOSContextQueueInterface *pNo,   // = NULL
-  AOSContextQueueInterface *pError // = NULL
+  size_t queueCount                // = 4
 ) :
   m_queueCount(queueCount),
-  AOSContextQueueThreadPool(services, threadCount, pYes, pNo, pError),
+  AOSContextQueueThreadPool(services, threadCount),
   m_currentWriteQueue(0),
   m_currentReadQueue(queueCount-1)
 {

@@ -28,11 +28,9 @@ void AOSContextQueue_PreExecutor::processAdminAction(AXmlElement& eBase, const A
 AOSContextQueue_PreExecutor::AOSContextQueue_PreExecutor(
   AOSServices& services,
   size_t threadCount,              // = 16
-  size_t queueCount,               // = 4
-  AOSContextQueueInterface *pYes,  // = NULL 
-  AOSContextQueueInterface *pNo    // = NULL
+  size_t queueCount                // = 4
 ) :
-  BASECLASS_AOSContextQueue_PreExecutor(services, threadCount, queueCount, pYes, pNo)
+  BASECLASS_AOSContextQueue_PreExecutor(services, threadCount, queueCount)
 {
   useThreadPool().setThis(this);
   registerAdminObject(m_Services.useAdminRegistry());
@@ -86,8 +84,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             {
               //a_Waited long enough
               pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, abandoning wait",70), true);
-              pThis->_goTerminate(pContext);
-              pContext = NULL;
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
               continue;
             }
             //Fallthrough from above
@@ -101,14 +98,12 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             {
               //a_Socket error occured, just terminate and keep processing
               pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: Client socket error detected before heade read, terminating request",96));
-              pThis->_goTerminate(pContext);
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
             }
             else
             {
-              pThis->_goNo(pContext);
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
             }
-
-            pContext = NULL;
           }
           continue;
 
@@ -131,8 +126,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             
             //a_Request is done
             pContext->useEventVisitor().set(pContext->useRequestHeader());
-            pThis->_goTerminate(pContext);
-            pContext = NULL;
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
           }
           continue;
 
@@ -141,8 +135,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_405_Method_Not_Allowed);
             pContext->useEventVisitor().set(pContext->useRequestHeader());
             pContext->useEventVisitor().reset();
-            pThis->_goError(pContext);
-            pContext = NULL;
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
           }
           continue;
 
@@ -151,8 +144,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_505_HTTP_Version_Not_Supported);
             pContext->useEventVisitor().set(pContext->useRequestHeader());
             pContext->useEventVisitor().reset();
-            pThis->_goError(pContext);
-            pContext = NULL;
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
           }
           continue;
 
@@ -161,8 +153,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
             pContext->useEventVisitor().set(pContext->useRequestHeader());
             pContext->useEventVisitor().reset();
-            pThis->_goError(pContext);
-            pContext = NULL;
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
           }
           continue;
 
@@ -175,8 +166,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           {
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
             pContext->useEventVisitor().reset();
-            pThis->_goError(pContext);
-            pContext = NULL;
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
           }
           continue;
 
@@ -186,8 +176,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: Socket was closed by client, terminating",69), true);
             pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
             pContext->useEventVisitor().reset();
-            pThis->_goTerminate(pContext);
-            pContext = NULL;
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
           }
           continue;
 
@@ -251,8 +240,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         //a_If error is logged stop and go to error handler
         if (pContext->useEventVisitor().getErrorCount() > 0)
         {
-          pThis->_goError(pContext);
-          pContext = NULL;
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
           continue;
         }
 
@@ -263,8 +251,11 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
 
           //a_No error and pipelining, we handled request, do not continue
-          pThis->_goNo(pContext);
-          pContext = NULL;
+          if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
+          else
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
+
           continue;
         }
 
@@ -274,8 +265,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         {
           
           //a_Go to next stage
-          pThis->_goYes(pContext);
-          pContext = NULL;
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_EXECUTE, &pContext);
         }
         else
         {
@@ -294,28 +284,24 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           {
             //a_Socket error occured, just terminate and keep processing
             pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: Client socket error detected, terminating request",78));
-            pThis->_goTerminate(pContext);
-            pContext = NULL;
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
           }
           else
           {
             //a_If an error occured, send context to error handler and continue
             if (!processSuccess)
             {
-              pThis->_goError(pContext);
-              pContext = NULL;
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
             }
             else if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
             {
               //a_No error and pipelining, we handled request, do not continue
-              pThis->_goNo(pContext);
-              pContext = NULL;
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
             }
             else
             {
               //a_No error, but not pipelining, terminate and continue
-              pThis->_goTerminate(pContext);
-              pContext = NULL;
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
             }
           }
 
@@ -328,22 +314,20 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
     {
       pContext->setExecutionState(e);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
-      pThis->_goError(pContext);
-      pContext = NULL;
+      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }
     catch(std::exception& e)
     {
       pContext->setExecutionState(ASWNL(e.what()), true);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
-      _goError(pContext);
-      pContext = NULL;
+      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }
     catch(...)
     {
       pContext->setExecutionState(ASW("Unknown exception caught in AOSContextQueue_PreExecutor::threadproc",67), true);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
-      pThis->_goError(pContext);
-      pContext = NULL;
+      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
+      break;
     }
   }
 

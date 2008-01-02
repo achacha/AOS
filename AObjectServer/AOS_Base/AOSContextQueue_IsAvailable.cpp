@@ -5,11 +5,9 @@
 #include "AOSServices.hpp"
 
 AOSContextQueue_IsAvailable::AOSContextQueue_IsAvailable(
-  AOSServices& services,
-  AOSContextQueueInterface *pYes, // = NULL 
-  AOSContextQueueInterface *pNo   // = NULL
+  AOSServices& services
 ) :
-  AOSContextQueueThreadPool(services, 1, pYes, pNo),
+  AOSContextQueueThreadPool(services, 1),
   m_AddCounter(0)
 {
   registerAdminObject(services.useAdminRegistry());
@@ -91,7 +89,7 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
                   //a_Add to next queue
                   ALock lock(m_SynchObjectContextContainer);
                   (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54));
-                  pThis->_goYes(*itMove);
+                  m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &(*itMove));
                   m_Queue.erase(itMove);
                 }
 
@@ -115,7 +113,7 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
                     str, 
                     !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
                   );
-                  pThis->_goNo(*itMove);
+                  m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
                   m_Queue.erase(itMove);
                 }
                 else
@@ -149,7 +147,7 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
                   str, 
                   !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
                 );
-                pThis->_goNo(*itMove);
+                m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
                 m_Queue.erase(itMove);
               }
               else

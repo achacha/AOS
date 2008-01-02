@@ -13,11 +13,7 @@ public:
   pYes - Forward queue set for AOSContext* (if applicable)
   pNo  - Go back (if applicable)
   **/
-  AOSContextQueue_IsAvailable(
-    AOSServices& services,
-    AOSContextQueueInterface *pYes = NULL, 
-    AOSContextQueueInterface *pNo  = NULL
-  );
+  AOSContextQueue_IsAvailable(AOSServices& services);
   virtual ~AOSContextQueue_IsAvailable();
   
   /*!
