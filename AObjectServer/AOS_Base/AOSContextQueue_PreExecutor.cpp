@@ -460,8 +460,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     catch(AException& ex)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-      pContext->useEventVisitor().set(ex, true);
-      m_Services.useLog().add(ex);
+      pContext->useEventVisitor().set(ex, false);
       return false;
     }
     catch(...)
@@ -487,8 +486,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     catch(AException& ex)
     {
       pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-      pContext->useEventVisitor().set(ex);
-      m_Services.useLog().add(ex);
+      pContext->useEventVisitor().set(ex, false);
       return false;
     }
     catch(...)

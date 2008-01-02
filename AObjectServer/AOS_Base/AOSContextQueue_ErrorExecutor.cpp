@@ -63,8 +63,6 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
         {
           //a_Proceed
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
-//          pThis->_goTerminate(pContext);
-//          pContext = NULL;
           continue;
         }
 
@@ -162,19 +160,19 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
     {
       pContext->setExecutionState(e);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
-      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
+      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
     }
     catch(std::exception& e)
     {
       pContext->setExecutionState(ASWNL(e.what()), true);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
-      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
+      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
     }
     catch(...)
     {
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       pContext->setExecutionState(ASWNL("Unknown exception caught in AOSContextQueue_ErrorExecutor::_threadproc"), true);
-      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
+      m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
       break;
     }
   }

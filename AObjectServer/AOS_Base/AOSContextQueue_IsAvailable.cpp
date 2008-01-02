@@ -48,6 +48,8 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
   timeout.tv_sec  = 0;
   timeout.tv_usec = 0;
 
+  static const int NO_DATA_TIMEOUT = m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/no-data-timeout",57), 30000);
+
   thread.setRunning(true);
   while (thread.isRun())
   {
@@ -98,8 +100,7 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
               else
               {
                 //a_Select called on this AOSContext and no data available
-                //a_TODO: make this configurable and possibly used Keep-Alive header
-                if ((*it)->useTimeoutTimer().getInterval() > 300000)
+                if ((*it)->useTimeoutTimer().getInterval() > NO_DATA_TIMEOUT)
                 {
                   REQUESTS::iterator itMove = it;
                   ++it;
@@ -132,7 +133,6 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
             it = m_Queue.begin();
             while (it != m_Queue.end())
             {
-              const int NO_DATA_TIMEOUT = 6000;  //TODO: move to config
               if ((*it)->useTimeoutTimer().getInterval() > NO_DATA_TIMEOUT)
               {
                 REQUESTS::iterator itMove = it;

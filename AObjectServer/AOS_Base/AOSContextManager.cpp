@@ -255,5 +255,10 @@ void AOSContextManager::changeQueueState(AOSContextManager::ContextQueueState st
   {
     pQueue->add(*ppContext);
   }
+  else
+  {
+    //a_No such queue, assume terminate
+    AOSContextManager::deallocate(*ppContext);
+  }
   *ppContext = NULL;
 }
