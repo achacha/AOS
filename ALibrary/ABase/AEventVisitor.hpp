@@ -57,8 +57,9 @@ public:
   
   /*!
   Set exception state (error set by definition)
+  If isError is false, exception is treated just like a message
   */
-  void set(const AException& ex);
+  void set(const AException& ex, bool isError = true);
 
   /*!
   Stop the timer

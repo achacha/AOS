@@ -91,9 +91,12 @@ AEventVisitor::~AEventVisitor()
   }
 }
 
-void AEventVisitor::set(const AException& ex)
+void AEventVisitor::set(
+  const AException& ex, 
+  bool isError               // = true
+)
 {
-  set(ex.what().toAString(), true);
+  set(ex, isError);
 }
 
 void AEventVisitor::set(

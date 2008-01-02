@@ -130,6 +130,11 @@ public:
   bool equals(AHTTPHeader::HEADER_TOKENS eToken, const AString&) const;
   
   /*!
+  Compares value to the string ignoring case, returns false if not equals or not found
+  */
+  bool equalsNoCase(AHTTPHeader::HEADER_TOKENS eToken, const AString&) const;
+
+  /*!
   Find a token and assigns to strDest and returns true,
     else returns false without changing the strDest
   */

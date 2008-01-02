@@ -313,7 +313,11 @@ bool AHTTPRequestHeader::isValidPath() const
 
 bool AHTTPRequestHeader::isHttpPipeliningEnabled() const
 {
-  return equals(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10)) && mstr_HTTPVersion.equals("HTTP/1.1", 8);
+  bool isEnabled = equalsNoCase(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
+  isEnabled |= !equalsNoCase(AHTTPHeader::HT_GEN_Connection, ASW("close",5));
+  isEnabled &= mstr_HTTPVersion.equals("HTTP/1.1", 8);
+
+  return isEnabled;
 }
 
 bool AHTTPRequestHeader::isValidHttp() const

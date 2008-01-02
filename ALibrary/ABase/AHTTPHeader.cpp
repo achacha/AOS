@@ -104,6 +104,21 @@ bool AHTTPHeader::equals(AHTTPHeader::HEADER_TOKENS eToken, const AString& str) 
   return false;
 }
 
+bool AHTTPHeader::equalsNoCase(AHTTPHeader::HEADER_TOKENS eToken, const AString& str) const
+{
+  AString strName = _mapTypeToString(eToken);
+  if (strName.isEmpty())
+    ATHROW(this, AException::InvalidParameter);
+
+  MAP_AString_NVPair::const_iterator cit = m_Pairs.find(strName);
+  if (cit != m_Pairs.end() && !(*cit).second.getValue().compareNoCase(str))
+  {
+    return true;
+  }
+
+  return false;
+}
+
 bool AHTTPHeader::getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AString& strDest) const
 {
   AString strName = _mapTypeToString(eToken);
