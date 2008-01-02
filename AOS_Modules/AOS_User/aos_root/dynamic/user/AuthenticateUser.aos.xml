@@ -4,5 +4,6 @@
 	<module class="AuthenticateUser"/>
 	<output class="Redirect">
 	  <session-path>user/ru</session-path>
+		<secure>true</secure>
 	</output>
 </command>
