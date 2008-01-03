@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?> 
-<command>
-  <input class="application/x-www-form-urlencoded"/>
-	<output class="Template">
-		<filename>template/login.html</filename>
-	</output>
-</command>
