@@ -92,14 +92,6 @@ AEventVisitor::~AEventVisitor()
 }
 
 void AEventVisitor::set(
-  const AException& ex, 
-  bool isError               // = true
-)
-{
-  set(ex, isError);
-}
-
-void AEventVisitor::set(
   const AEmittable &state, 
   bool isError,               // = false
   double stateTimeLimit       // = INVALID_TIME_INTERVAL

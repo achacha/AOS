@@ -56,12 +56,6 @@ public:
   void set(const AEmittable& state, bool isError = false, double stateTimeLimit = INVALID_TIME_INTERVAL);
   
   /*!
-  Set exception state (error set by definition)
-  If isError is false, exception is treated just like a message
-  */
-  void set(const AException& ex, bool isError = true);
-
-  /*!
   Stop the timer
   Current state is saved as the last one
   Stop interval is reset to INVALID_TIME_INTERVAL (not on)
