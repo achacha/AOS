@@ -449,10 +449,11 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
 //      pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
 
     //a_The writing of the output
-    pContext->setExecutionState(ASW("Writing compressed",18));
-
+    pContext->setExecutionState(ASW("Writing HTTP response header",28));
     pContext->useResponseHeader().emit(pContext->useSocket());
     pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+
+    pContext->setExecutionState(ASW("Writing compressed",18));
     try
     {
       pContext->useSocket().write(compressed);
@@ -473,12 +474,13 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   }
   else
   {
-    pContext->setExecutionState(ASW("Writing uncompressed",20));
     pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
 
-    //a_The writing of the output
+    pContext->setExecutionState(ASW("Writing HTTP response header",28));
     pContext->useResponseHeader().emit(pContext->useSocket());
     pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+
+    pContext->setExecutionState(ASW("Writing uncompressed",20));
     try
     {
       pContext->useSocket().write(pContext->useOutputBuffer());

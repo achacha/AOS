@@ -21,6 +21,7 @@ void AOSRequestListener::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeade
 {
   AOSAdminInterface::addAdminXml(eBase, request);
 
+  addProperty(eBase, ASW("first_queue",11), AString::fromInt(m_FirstQueue));
   addProperty(eBase, ASW("listener_running",16), (mthread_Listener.isRunning() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
   addProperty(eBase, ASW("secure_listener_running",23), (mthread_SecureListener.isRunning() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
   addProperty(eBase, ASW("listener_run",12), (mthread_Listener.isRun() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
@@ -29,15 +30,13 @@ void AOSRequestListener::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeade
 
 AOSRequestListener::AOSRequestListener(
   AOSServices& services,
-  AOSContextQueueInterface *pFirstQueue
+  AOSContextManager::ContextQueueState firstQueue
 ) :
   mthread_Listener(AOSRequestListener::threadprocListener),
   mthread_SecureListener(AOSRequestListener::threadprocSecureListener),
   m_Services(services),
-  mp_FirstQueue(pFirstQueue)
+  m_FirstQueue(firstQueue)
 {
-  AASSERT(this, mp_FirstQueue);
-
   registerAdminObject(m_Services.useAdminRegistry());
 }
 
@@ -221,10 +220,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
           throw;
         }
 
-        if (pContext)
-        {
-          pThis->mp_FirstQueue->add(pContext);
-        }
+        pThis->m_Services.useContextManager().changeQueueState(pThis->m_FirstQueue, &pContext);
         pSocket.reset();
       }
       else
@@ -314,10 +310,7 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
           throw;
         }
 
-        if (pContext)
-        {
-          pThis->mp_FirstQueue->add(pContext);
-        }
+        pThis->m_Services.useContextManager().changeQueueState(pThis->m_FirstQueue, &pContext);
         pSocket.reset();
       }
       else

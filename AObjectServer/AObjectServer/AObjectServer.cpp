@@ -151,7 +151,7 @@ int main(int argc, char **argv)
       services.useContextManager().setQueueForState(AOSContextManager::STATE_ERROR, pQueueError);
 
       //a_Associate queue for the listener
-      AOSRequestListener listener(services, pQueuePre);
+      AOSRequestListener listener(services, AOSContextManager::STATE_PRE_EXECUTE);
 
       //
       //a_Load the processors, modules, generators dynamically from DLLs

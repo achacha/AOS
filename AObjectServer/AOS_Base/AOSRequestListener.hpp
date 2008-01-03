@@ -6,20 +6,20 @@
 #include "ASync_CriticalSection.hpp"
 #include "AOSContext.hpp"
 #include "AOSAdminInterface.hpp"
+#include "AOSContextManager.hpp"
 
 class AOSServices;
-class AOSContextQueueInterface;
 
 class AOS_BASE_API AOSRequestListener : public AOSAdminInterface
 {
 public:
   /*!
   Create HTTP and HTTPS listeners
-  pFirstQueue - first queue set to receive AOSRequest* once accepted (not OWNED by this object)
+  firstQueue - first queue to receive AOSContext* once accepted (not OWNED by this object)
   **/
   AOSRequestListener(
     AOSServices&, 
-    AOSContextQueueInterface *pFirstQueue
+    AOSContextManager::ContextQueueState firstQueue
   );
   ~AOSRequestListener();
   
@@ -59,7 +59,7 @@ private:
   ASync_CriticalSection m_QueueRemove;
 
   //a_First queue
-  AOSContextQueueInterface *mp_FirstQueue;
+  AOSContextManager::ContextQueueState m_FirstQueue;
   
   //a_External references
   AOSServices& m_Services;
