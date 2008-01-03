@@ -158,7 +158,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
     }
     catch(AException& e)
     {
-      pContext->setExecutionState(e);
+      pContext->setExecutionState(e, true);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
     }

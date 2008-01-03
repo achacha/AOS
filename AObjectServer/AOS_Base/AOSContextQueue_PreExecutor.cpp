@@ -46,7 +46,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
   AASSERT(&thread, pThis);
   AOSContext *pContext = NULL;
 
-  const int iWaitForHttpDataTimeout = pThis->m_Services.useConfiguration().useConfigRoot().getInt("/config/server/", 1000);
+  const int iWaitForHttpDataTimeout = pThis->m_Services.useConfiguration().useConfigRoot().getInt(ASW("/config/server/http/wait-for-http-data-timeout",46), 10000);
   thread.setRunning(true);
   while(thread.isRun())
   {
@@ -83,7 +83,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             if (pContext->getRequestTimer().getInterval() > iWaitForHttpDataTimeout)
             {
               //a_Waited long enough
-              pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, abandoning wait",70), true);
+              pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: HTTP header started but did not complete before timeout, abandoning wait",101));
               m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
               continue;
             }
@@ -244,6 +244,9 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           continue;
         }
 
+        //
+        //a_Handle redirection due to directory config
+        //
         if (pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_REDIRECTING))
         {
           //a_The writing of the output header
@@ -251,25 +254,30 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
 
           //a_No error and pipelining, we handled request, do not continue
-          if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
-            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
-          else
+          if (!pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
+          //  m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
+          //else
             m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
 
           continue;
         }
 
+        //
         //a_Command processing
+        //
         const AOSCommand *pCommand = pContext->getCommand();
         if (pCommand && pCommand->isEnabled())
         {
-          
-          //a_Go to next stage
+          //
+          //a_Send context to execution queue
+          //
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_EXECUTE, &pContext);
+          continue;
         }
         else
         {
-          //a_Add some common response header pairs
+          //a_Static file detected
+          //a_Add Date: to the response
           {
             ATime timeNow;
             AString str;
@@ -277,9 +285,10 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Date, str);
           }
 
+          //
           //a_Serve page (static)
+          //
           bool processSuccess = _processStaticPage(pContext);
-          
           if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
           {
             //a_Socket error occured, just terminate and keep processing
@@ -293,18 +302,14 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             {
               m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
             }
-            else if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
-            {
-              //a_No error and pipelining, we handled request, do not continue
-              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
-            }
-            else
+            else if (!pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
             {
               //a_No error, but not pipelining, terminate and continue
               m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
             }
           }
 
+          //a_Handle next request in the pipeline
           continue;
         }
       }
@@ -312,7 +317,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
     }
     catch(AException& e)
     {
-      pContext->setExecutionState(e);
+      pContext->setExecutionState(e, true);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }

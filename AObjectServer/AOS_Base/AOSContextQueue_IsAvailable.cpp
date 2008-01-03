@@ -62,11 +62,9 @@ u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)
         
         int count = 0;
         REQUESTS::iterator it = m_Queue.begin();
-        static const AString ASTRING_SELECT("Adding to select set",20);
         while (count < FD_SETSIZE && it != m_Queue.end())
         {
           FD_SET((*it)->useSocket().getSocketInfo().m_handle, &sockSet);
-          (*it)->setExecutionState(ASTRING_SELECT);
           ++count;
           ++it;
         }

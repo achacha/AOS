@@ -173,10 +173,12 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
             {
               pContext->writeOutputBuffer(compressed);
             }
-            catch(...)
+            catch(AException& ex)
             {
+              pContext->useEventVisitor().set(ex);
               pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-              throw;
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
+              continue;
             }
           }
           else
@@ -196,10 +198,12 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
             {
               pContext->writeOutputBuffer();
             }
-            catch(...)
+            catch(AException& ex)
             {
+              pContext->useEventVisitor().set(ex);
               pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-              throw;
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
+              continue;
             }
           }
         }
@@ -238,7 +242,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
     }
     catch(AException& e)
     {
-      pContext->setExecutionState(e);
+      pContext->setExecutionState(e, true);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }

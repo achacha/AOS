@@ -106,7 +106,7 @@
 	</database>
 	<http>
 		<first-char-read-tries>15</first-char-read-tries>
-		<wait-for-http-data-timeout>500</wait-for-http-data-timeout>
+		<wait-for-http-data-timeout desc="Time to wait for complete header after initial byte before giving up, in ms">10000</wait-for-http-data-timeout>
 		<http11-pipelining-enabled>true</http11-pipelining-enabled>
 	</http>
 </server>
