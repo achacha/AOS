@@ -14,8 +14,12 @@ public:
 
   static const AString SESSION_REDIRECTURL;
   static const AString SESSION_ISLOGGEDIN;
+  static const AString SESSION_LOGINFAILCOUNT;
 
-  static const AString PARAM_REDIRECT;
+  static const AString PARAM_REDIRECT_LOGINPAGE;
+  static const AString PARAM_REDIRECT_FAILURE;
+  static const AString PARAM_ATTEMPTS;
+  static const AString PARAM_SECURE;
 };
 
 #endif

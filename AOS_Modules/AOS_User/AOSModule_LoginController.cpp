@@ -3,7 +3,7 @@
 
 const AString& AOSModule_LoginController::getClass() const
 {
-  static const AString CLASS("LoginController");
+  static const AString CLASS("User.LoginController");
   return CLASS;
 }
 
@@ -14,9 +14,9 @@ AOSModule_LoginController::AOSModule_LoginController(AOSServices& services) :
 
 AOSContext::ReturnCode AOSModule_LoginController::execute(AOSContext& context, const AXmlElement& moduleParams)
 {  
-  //a_Save redirect URL
+  //a_Save redirect URL based on reported values
   AUrl url(context.useRequestUrl());
-  url.setProtocol(AUrl::HTTPS);
+  m_Services.useConfiguration().convertUrlToReportedServerAndPort(url);
   context.useSessionData().useData()
     .overwriteElement(AOS_User_Constants::SESSION_REDIRECTURL)
       .addData(url, AXmlData::ENC_CDATADIRECT);
@@ -25,11 +25,19 @@ AOSContext::ReturnCode AOSModule_LoginController::execute(AOSContext& context, c
   if (!context.useSessionData().useData().exists(AOS_User_Constants::SESSION_ISLOGGEDIN))
   {
     AString str;
-    if (moduleParams.emitString(AOS_User_Constants::PARAM_REDIRECT, str))
+    if (moduleParams.emitString(AOS_User_Constants::PARAM_REDIRECT_LOGINPAGE, str))
     {
       //a_Redirect to login page
       context.setExecutionState(ASW("User not logged in, redirecting",31));
-      context.setResponseRedirect(str);
+      if (moduleParams.exists(AOS_User_Constants::PARAM_SECURE))
+      {
+        AUrl url(str);
+        url.setProtocol(AUrl::HTTPS);
+        context.setResponseRedirect(url);
+      }
+      else
+        context.setResponseRedirect(str);
+      
       return AOSContext::RETURN_REDIRECT;
     }
     else

@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Login</title>
-	<script type="text/javascript" src="_js/crypto/sha1.js"></script>
+	<script type="text/javascript" src="/user/js/sha1.js"></script>
 	<script type="text/javascript"><!--
 function hashit(inputvalue, targetfield) {
   targetfield.value = hex_sha1(inputvalue);
@@ -23,12 +23,14 @@ The 'scratchpad' form is used to gather data and when 'Login' is pressed then th
 The username is copied as is on change.
 The password is SHA-1 encoded on change.
 -->
-<p>Login form will query the password and use SHA-1 to encode it and submit.</p>
+<p>
+Login form will query the password and use SHA-1 to encode it and submit.<br/>
+Redirect to SESSION variable /user/ru</p>
 <br/>
 <form id="login" method="get" action="/user/AuthenticateUser">
 	<input type="hidden" name="un"/>
 	<input type="hidden" name="pwd"/>
-  <input type="hidden" name="ru" value="%[SESSION]{{{user/ru}}}[SESSION]%"/>
+  <!--input type="hidden" name="ru" value="%[SESSION]{{{user/ru}}}[SESSION]%"/-->
 <!-- Insert original parameters -->	
 %[LUA]{{{
 print("<!-- original params -->");
@@ -38,10 +40,10 @@ print("<!-- original params -->");
 	<table>
 		<tbody>
 			<tr>
-				<th>Username</th><td><input type="text" maxlength="30" onchange="javascript:copyit(this.value, login.username);"/></td>
+				<th>Username</th><td><input type="text" maxlength="30" onchange="javascript:copyit(this.value, login.un);"/></td>
 			</tr>
 			<tr>
-				<th>Password</th><td><input type="password" maxlength="30" onchange="javascript:hashit(this.value, login.sha1pwd);"/></td>
+				<th>Password</th><td><input type="password" maxlength="30" onchange="javascript:hashit(this.value, login.pwd);"/></td>
 			</tr>
 			<tr>
 				<th colspan="2" align="right"><input type="button" value="Login" onclick="javascript:login.submit();"/></th>

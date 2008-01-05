@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <config>
-	<module class="LoginController">
-	  <redirect>/login</redirect>
+	<module class="User.LoginController">
+	  <redirect>
+		<login>/login</login>
+		<failure>/login</failure>
+	  </redirect>
+	  <attempts>3</attempts>
+	  <secure>
 	</module>
 </config>
