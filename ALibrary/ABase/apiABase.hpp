@@ -53,7 +53,7 @@
 #define DEBUG_MAXSIZE_AString 1000000
 
 // Max size
-#define DEBUG_MAXSIZE_ARope 1000000
+#define DEBUG_MAXSIZE_ARope 10000000
 
 // Max size
 #define DEBUG_MAXSIZE_ARopeDeque 1000000
