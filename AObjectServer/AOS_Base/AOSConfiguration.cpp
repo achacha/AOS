@@ -687,3 +687,31 @@ bool AOSConfiguration::isOutputOverrideAllowed() const
 {
   return m_Config.getRoot().getBool(ASW("/config/server/debug/allow-outputOverride",41), false);
 }
+
+void AOSConfiguration::convertUrlToReportedServerAndPort(AUrl& url) const
+{
+  url.setServer(m_Services.useConfiguration().getReportedHostname());
+  switch(url.getProtocolEnum())
+  {
+    case AUrl::HTTP:
+      url.setPort(m_Services.useConfiguration().getReportedHttpPort());
+    break;
+
+    case AUrl::HTTPS:
+      url.setPort(m_Services.useConfiguration().getReportedHttpsPort());
+    break;
+  }
+}
+
+void AOSConfiguration::setConfigBits(
+  ConfigBit bit, 
+  bool state         // = true
+) 
+{ 
+  m_ConfigBits.setBit(bit, state);
+}
+
+const ABitArray& AOSConfiguration::getConfigBits() const 
+{ 
+  return m_ConfigBits; 
+}

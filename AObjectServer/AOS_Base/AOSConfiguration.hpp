@@ -70,25 +70,35 @@ public:
   /*!
   Setting of configuration bits
   */
-  void setConfigBits(ConfigBit bit, bool state = true) { m_ConfigBits.setBit(bit, state); }
+  void setConfigBits(ConfigBit bit, bool state = true);
 
   /*!
   Access to configuration bitmap
   */
-  const ABitArray& getConfigBits() const { return m_ConfigBits; }
+  const ABitArray& getConfigBits() const;
 
   /*!
-  Server specific parameters
-  Set methods will look up the config path and set value if found
+  Convert a given URl to the reported values
+  server and port are used as per configuration
   */
-  const AString& getReportedServer() const;
+  void convertUrlToReportedServerAndPort(AUrl& url) const;
+
+  /*!
+  Reported hostname and ports
+  Used when load balanced and a common DNS entry is desired
+  */
   const AString& getReportedHostname() const;
   int getReportedHttpPort() const;
   int getReportedHttpsPort() const;
-  void setReportedServer(const AString& configPath);
   void setReportedHostname(const AString& configPath);
   void setReportedHttpPort(const AString& configPath);
   void setReportedHttpsPort(const AString& configPath);
+
+  /*!
+  Reported Server: value in the HTTP response header
+  */
+  const AString& getReportedServer() const;
+  void setReportedServer(const AString& configPath);
 
   /*!
   Admin base directory

@@ -25,6 +25,7 @@
 #include "AOSOutput_XalanXslt.hpp"
 #include "AOSOutput_Template.hpp"
 #include "AOSOutput_File.hpp"
+#include "AOSOutput_Redirect.hpp"
 
 //a_Main DLL entry point
 BOOL APIENTRY DllMain(
@@ -76,6 +77,7 @@ extern "C" AOS_BASEMODULES_API int aos_register(
   outputExecutor.registerOutputGenerator(new AOSOutput_XalanXslt(services));
   outputExecutor.registerOutputGenerator(new AOSOutput_Template(services));
   outputExecutor.registerOutputGenerator(new AOSOutput_File(services));
+  outputExecutor.registerOutputGenerator(new AOSOutput_Redirect(services));
 
   return 0;
 }
