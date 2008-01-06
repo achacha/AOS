@@ -1,2 +1,0 @@
-Handle error 2006 on MySQL when connection goes away
-  AOSModule_ExecuteQuery::execute:Error(MySQL server has gone away:errno=2006) for query(select * from user);

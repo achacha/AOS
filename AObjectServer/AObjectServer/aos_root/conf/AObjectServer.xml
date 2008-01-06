@@ -26,7 +26,7 @@
 	</static-file-cache>
 	<session-manager>
 		<holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">13</holder-size>
-		<timeout desc="Number of milliseconds before the session exipres internally">10000</timeout>
+		<timeout desc="Number of milliseconds since session was last used and expires">600000</timeout>
 		<sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration">5000</sleep-cycle>
 		<database-persistence desc="Database persistence of session data">
 			<enabled>false</enabled>
