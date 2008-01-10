@@ -31,46 +31,48 @@ public:
 
   //a_NameValue operations
   void setNameValue(const AString &strName, const AString &strValue);
-  void setValue(const AString &strValue) { m_strValue = strValue; }
+  void setValue(const AString &strValue);
 
   //a_Special set expired flag
-  void setExpired(bool boolFlag = TRUE) { m_boolExpired = boolFlag; }
-  bool isExpired()                      { return m_boolExpired; }
-  void setNoExpire()                    { m_boolExpired= FALSE; m_boolExpirationSet = FALSE; }
+  void setExpired(bool boolFlag = true);
+  bool isExpired();
+  void setNoExpire();
 
   //a_Setting methods
-  void setDomain(const AString &strDomain)   { m_strDomain   = strDomain;  }
-  void setPath(const AString &strPath)       { m_strPath     = strPath;    }
-  void setSecure(bool boolSecure = true)     { m_boolSecure  = boolSecure; }
+  void setDomain(const AString &strDomain);
+  void setPath(const AString &strPath);
+  void setSecure(bool boolSecure = true);
 
   /*!
   Cookie version
   0 = old style netscape cookie without a version attribute
-  1 = new style
+  1 = new style (RFC-2109) NOTE: IE does not support this correctly as of IE 7
   */
-  void setVersion(int iVersion)             { m_iVersion    = iVersion;   }
+  void setVersion(int iVersion);
   
   /*!
-  Either can be used to set expiry
+  Either can be used to set expiry, version determines which is emitted
+  version 0 will use EXPIRES=
+  version 1 will use MAX-AGE=
   */
   void setExpires(const ATime &timeExpires);
   void setMaxAge(long lMaxAge);
 
   //a_Setting these will force VERSION=1, as per RFC-2109
-  void setComment(const AString &strComment) { m_strComment = strComment; m_iVersion = 1; }
+  void setComment(const AString &strComment);
 
   //a_Access methods
-  const AString &getName()  const   { return m_strName; }
-  const AString &getValue() const   { return m_strValue; }
-  const ATime   &getExpires() const { return m_timeExpires; }
-  const AString &getDomain() const  { return m_strDomain; }
-  const AString &getPath() const    { return m_strPath; }
-  bool  isSecure() const            { return m_boolSecure; }
+  const AString& getName() const;
+  const AString& getValue() const;
+  const ATime& getExpires() const;
+  const AString& getDomain() const;
+  const AString& getPath() const;
+  bool isSecure() const;
 
   //a_RFC-2109 specific
-  int  getVersion() const           { return m_iVersion; }
-  long getMaxAge() const            { return m_lMaxAge; }
-  const AString &getComment() const { return m_strComment; }
+  int getVersion() const;
+  long getMaxAge() const;
+  const AString& getComment() const;
 
   //a_Response is sent by the server and contains all fields (one per SET-COOKIE: lines)
   void emitResponseHeaderString(AOutputBuffer&) const;
@@ -79,9 +81,6 @@ public:
 
   //a_Request is sent by the browser and only contains name=value pairs (many on COOKIE: line)
   void emitRequestHeaderString(AOutputBuffer&) const;
-
-  //a_Comparisson returns 0 if equal
-  int compare(ACookie&) const;
 
 private:
   //a_Internal methods

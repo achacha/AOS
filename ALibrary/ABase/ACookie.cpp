@@ -5,6 +5,8 @@
 #include "AOutputBuffer.hpp"
 #include "AXmlElement.hpp"
 
+#define DEFAULT_VERSION 0
+
 #ifdef __DEBUG_DUMP__
 void ACookie::debugDump(std::ostream& os, int indent) const
 {
@@ -29,7 +31,7 @@ void ACookie::debugDump(std::ostream& os, int indent) const
 
 ACookie::ACookie() :
   m_boolExpired(false),
-  m_iVersion(1),
+  m_iVersion(DEFAULT_VERSION),
   m_boolSecure(false),
   m_boolExpirationSet(false), //a_Indefinite cookie
   m_lMaxAge(-1)
@@ -38,7 +40,7 @@ ACookie::ACookie() :
 
 ACookie::ACookie(const AString &strName, const AString &strValue) :
   m_boolExpired(false),
-  m_iVersion(1),
+  m_iVersion(DEFAULT_VERSION),
   m_boolSecure(false),
   m_strName(strName),
   m_strValue(strValue),
@@ -95,7 +97,7 @@ void ACookie::clear()
   m_boolExpired       = false;
   m_boolExpirationSet = false;
  
-  m_iVersion = 1;
+  m_iVersion = DEFAULT_VERSION;
   m_lMaxAge = -1;
   m_strComment.clear();       
 }
@@ -145,9 +147,9 @@ void ACookie::emitResponseHeaderString(AOutputBuffer& target) const
   {
     //a_Cookie is to be expired on the client
     if (m_iVersion == 1)
-      target.append("; MAX-AGE=0", 11);
+      target.append("; Max-Age=0", 11);
     else
-       target.append("; EXPIRES=Tue, 01-Jan-1980 00:00:01 UT", 38);   //a_This assumes no abberations of the time-space conitnuum
+       target.append("; Expires=Tue, 01-Jan-1980 00:00:01 UT", 38);
   }
   else if (m_boolExpirationSet)
   {
@@ -156,45 +158,47 @@ void ACookie::emitResponseHeaderString(AOutputBuffer& target) const
     {
       ATime t;    //a_Time now
 
-      target.append("; MAX-AGE=", 10);
+      target.append("; Max-Age=", 10);
       if (-1 != m_lMaxAge)
         target.append(AString::fromS4(m_lMaxAge));
       else
         target.append(AString::fromS4((s4)m_timeExpires.difftime(t)));
     }
     else  
-      target.append("; EXPIRES=", 10);
+    {
+      target.append("; Expires=", 10);
       m_timeExpires.emitRFCtime(target);
+    }
   }
 
   //a_Next the parameters of this cookie (in order of importance?!?)
   if (!m_strPath.isEmpty())
   {
-    target.append("; PATH=", 7);
+    target.append("; Path=", 7);
     target.append(m_strPath);
   }
 
   if (!m_strDomain.isEmpty())
   {
-    target.append("; DOMAIN=", 9);
+    target.append("; Domain=", 9);
     target.append(m_strDomain);
   }
 
   if (m_iVersion > 0)
   {
-    target.append("; VERSION=", 10);
+    target.append("; Version=", 10);
     target.append(AString::fromInt(m_iVersion));
   }
 
   if (!m_strComment.isEmpty())
   {
-    target.append("; COMMENT=", 10);
+    target.append("; Comment=", 10);
     target.append(m_strComment);
   }
 
   //a_Last the SECURE flag
   if (m_boolSecure)
-    target.append("; SECURE", 8);
+    target.append("; Secure", 8);
   
   target.append("; ", 2);
 }
@@ -233,9 +237,94 @@ void ACookie::setMaxAge(long lMaxAge)
   m_timeExpires += tAddOn;
 }
 
-int ACookie::compare(ACookie&) const
+void ACookie::setValue(const AString &strValue)
 {
-//TODO: 
-#pragma message("Need to implement comparisson for ACookie")
-ATHROW(this, AException::NotImplemented);
+  m_strValue = strValue;
+}
+
+void ACookie::setExpired(bool boolFlag)
+{ 
+  m_boolExpired = boolFlag; 
+}
+
+bool ACookie::isExpired()
+{ 
+  return m_boolExpired; 
+}
+
+void ACookie::setNoExpire()
+{ 
+  m_boolExpired = false; 
+  m_boolExpirationSet = false;
+}
+
+void ACookie::setDomain(const AString &strDomain)
+{ 
+  m_strDomain = strDomain;
+}
+
+void ACookie::setPath(const AString &strPath)
+{ 
+  m_strPath = strPath;
+}
+
+void ACookie::setSecure(bool boolSecure)
+{ 
+  m_boolSecure  = boolSecure;
+}
+
+void ACookie::setComment(const AString &strComment)
+{ 
+  m_strComment = strComment;
+  m_iVersion = 1;
+}
+
+const AString& ACookie::getName() const
+{
+  return m_strName;
+}
+
+const AString& ACookie::getValue() const
+{ 
+  return m_strValue; 
+}
+
+const ATime& ACookie::getExpires() const
+{ 
+  return m_timeExpires;
+}
+
+const AString& ACookie::getDomain() const
+{ 
+  return m_strDomain;
+}
+
+const AString& ACookie::getPath() const    
+{
+  return m_strPath;
+}
+
+bool ACookie::isSecure() const
+{ 
+  return m_boolSecure;
+}
+
+int ACookie::getVersion() const
+{ 
+  return m_iVersion;
+}
+
+long ACookie::getMaxAge() const
+{ 
+  return m_lMaxAge;
+}
+
+const AString& ACookie::getComment() const
+{ 
+  return m_strComment;
+}
+
+void ACookie::setVersion(int iVersion)
+{
+  m_iVersion = iVersion;   
 }
