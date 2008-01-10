@@ -142,7 +142,13 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
     MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.begin();
     while (cit != m_CommandPtrs.end())
     {
-      rope.append((*cit).second->getCommandName());
+      rope.append((*cit).second->getCommandPath());
+      if (!(*cit).second->getCommandAlias().isEmpty())
+      {
+        rope.append("(",1);
+        rope.append((*cit).second->getCommandAlias());
+        rope.append(")",1);
+      }
       rope.append(AConstant::ASTRING_CRLF);
       ++cit;
     }
@@ -451,7 +457,7 @@ void AOSConfiguration::_readCommand(AFilename& filename)
 
       //a_Parse command and associate to relative path
       AAutoPtr<AOSCommand> p(new AOSCommand(strPath, m_Services.useLog()));
-      p->fromAXmlElement(*pElement);
+      p->fromXml(*pElement);
       AASSERT(this, m_CommandPtrs.end() == m_CommandPtrs.find(strPath));
       m_CommandPtrs[strPath] = p;
       p.setOwnership(false);

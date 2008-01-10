@@ -12,13 +12,12 @@ const AString AOSCommand::CLASS("AOSCommand");
 void AOSCommand::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSCommand @ " << std::hex << this << std::dec << ") {" << std::endl;
-  AOSAdminInterface::debugDump(os, indent+1);
+  ADebugDumpable::indent(os, indent+1) << "m_CommandPath=" << m_CommandPath << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Enabled=" << (m_Enabled ? "true" : "false") << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_Session=" << (m_Session ? "true" : "false") << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ForceAjax=" << (m_ForceAjax ? "true" : "false") << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_Command=" << m_Command << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_CommandAlias=" << m_CommandAlias << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_InputProcessor=" << m_InputProcessor << std::endl;
   if (m_InputParams.hasElements())
@@ -42,16 +41,17 @@ void AOSCommand::debugDump(std::ostream& os, int indent) const
 
   m_Modules.debugDump(os, indent+1);
  
+  AOSAdminInterface::debugDump(os, indent+1);
+
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 #endif
 
-AOSCommand::AOSCommand(const AString& name, ALog& log) :
-  m_Command(name),
+AOSCommand::AOSCommand(const AString& path, ALog& log) :
+  m_CommandPath(path),
   m_InputParams(ASW("input",5)),
   m_OutputParams(ASW("output",6)),
   m_Enabled(true),
-  m_Session(false),
   m_ForceAjax(false),
   m_Log(log)
 {
@@ -69,7 +69,10 @@ const AString& AOSCommand::getClass() const
 void AOSCommand::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   //a_Display the commadn name (which is the path)
-  eBase.addAttribute(ASW("display",7), m_Command);
+  eBase.addAttribute(ASW("display",5), m_CommandPath);
+
+  //a_Alias if any
+  eBase.addAttribute(ASW("alias",5), m_CommandAlias);
 
   ARope rope;
   if (!m_InputProcessor.isEmpty())
@@ -114,15 +117,6 @@ void AOSCommand::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& reque
   
   addPropertyWithAction(
     eBase, 
-    ASW("session",7), 
-    AString::fromBool(m_Session),
-    ASW("Update",6), 
-    ASWNL("Use session(1) or No session(0)"),
-    ASW("Set",3)
-  );
-  
-  addPropertyWithAction(
-    eBase, 
     ASW("forceAJAX",9), 
     AString::fromBool(m_ForceAjax),
     ASW("Update",6), 
@@ -138,10 +132,6 @@ void AOSCommand::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader
   {
     m_Enabled = (str.at(0) == '0' ? false : true);
   }
-  else if (request.getUrl().getParameterPairs().get(ASW("session",7), str))
-  {
-    m_Session = (str.at(0) == '0' ? false : true);
-  }
   else if (request.getUrl().getParameterPairs().get(ASW("ajax",4), str))
   {
     m_ForceAjax = (str.at(0) == '0' ? false : true);
@@ -151,14 +141,16 @@ void AOSCommand::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader
 void AOSCommand::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
-    target.useName().assign(ASW("AOSCommand",10));
+    target.useName().assign(ASW("command",7));
 
+  if (!m_CommandAlias.isEmpty())
+    target.addAttribute(ASW("alias", 5), m_CommandAlias);
+  
   target.addAttribute(ASW("enabled", 7), m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
-  target.addAttribute(ASW("session",7), m_Session ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   target.addAttribute(ASW("forceAJAX",9), m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   
   //a_Input
-  AXmlElement& eInput = target.addElement(ASW("input_processor",15));
+  AXmlElement& eInput = target.addElement(ASW("input",5));
   eInput.addAttribute(ASW("class",5), m_InputProcessor);
   if (m_InputParams.hasElements()) 
     eInput.addContent(m_InputParams.clone());
@@ -175,19 +167,18 @@ void AOSCommand::emitXml(AXmlElement& target) const
   }
 
   //a_Output
-  AXmlElement& eOutput = target.addElement(ASW("output_generator",16));
+  AXmlElement& eOutput = target.addElement(ASW("output",6));
   eOutput.addAttribute(ASW("class",5), m_OutputGenerator);
   if (m_OutputParams.hasElements())
     eOutput.addContent(m_OutputParams.clone());
 }
 
-void AOSCommand::fromAXmlElement(const AXmlElement& element)
+void AOSCommand::fromXml(const AXmlElement& element)
 {
   AString str(256,128);
 
-  //a_Set command name
-  if (m_Command.isEmpty())
-    element.getAttributes().get(ASW("name",4), m_Command);
+  //a_Set command alias
+  element.getAttributes().get(ASW("alias",5), m_CommandAlias);
 
   //a_Enabled?
   element.getAttributes().get(ASW("enabled",7), str);
@@ -195,13 +186,6 @@ void AOSCommand::fromAXmlElement(const AXmlElement& element)
     m_Enabled = false;
   else
     m_Enabled = true;
-
-  //a_Session based?
-  element.getAttributes().get(ASW("session",7), str);
-  if (str.equals(AConstant::ASTRING_ZERO) || str.equals(AConstant::ASTRING_FALSE))
-    m_Session = false;
-  else
-    m_Session = true;
 
   //a_Is Ajax call?
   element.getAttributes().get(ASW("forceAJAX",9), str);
@@ -252,7 +236,7 @@ void AOSCommand::registerAdminObject(AOSAdminRegistry& registry)
 {
   AString str(getClass());
   str.append(':');
-  str.append(m_Command);
+  str.append(m_CommandAlias);
   registry.insert(str, *this);
 }
 
@@ -271,19 +255,19 @@ const AXmlElement& AOSCommand::getOutputParams() const
   return m_OutputParams;
 }
 
-const AString& AOSCommand::getCommandName() const
+const AString& AOSCommand::getCommandAlias() const
 { 
-  return m_Command;
+  return m_CommandAlias;
+}
+
+const AString& AOSCommand::getCommandPath() const
+{ 
+  return m_CommandPath;
 }
 
 bool AOSCommand::isEnabled() const
 {
   return m_Enabled;
-}
-
-bool AOSCommand::isSession() const
-{
-  return m_Session;
 }
 
 bool AOSCommand::isForceAjax() const
@@ -299,9 +283,4 @@ const AString& AOSCommand::getInputProcessorName() const
 const AString& AOSCommand::getOutputGeneratorName() const 
 { 
   return m_OutputGenerator;
-}
-
-AString& AOSCommand::useCommandName()
-{
-  return m_Command;
 }

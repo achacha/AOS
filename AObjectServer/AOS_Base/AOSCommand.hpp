@@ -4,6 +4,7 @@
 #include "apiAOS_Base.hpp"
 #include "AString.hpp"
 #include "AXmlEmittable.hpp"
+#include "AXmlParsable.hpp"
 #include "AOSAdminInterface.hpp"
 #include "AOSModuleInfo.hpp"
 #include "AOSModules.hpp"
@@ -11,7 +12,7 @@
 class AFile;
 class ALog;
 
-class AOS_BASE_API AOSCommand : public AXmlEmittable, public AOSAdminInterface
+class AOS_BASE_API AOSCommand : public AXmlEmittable, public AXmlParsable, public AOSAdminInterface
 {
 public:
   AOSCommand(const AString& name, ALog&);
@@ -20,7 +21,7 @@ public:
   /*!
   Parse from XML element
   */
-  void fromAXmlElement(const AXmlElement&);
+  virtual void fromXml(const AXmlElement&);
 
   /*!
   AXmlEmittable
@@ -28,31 +29,55 @@ public:
   virtual void emitXml(AXmlElement&) const;
 
   /*!
-   Access to command data
+  Determines if a command is enabled
+  Disabled commands will be skipped and static equivaltent will be checked
+    if static not found then 404 results
   */
-  inline bool isEnabled() const;
-  inline bool isSession() const;
-  inline bool isForceAjax() const;
-  inline const AString& getCommandName() const;
-  inline const AString& getInputProcessorName() const;
-  inline const AString& getOutputGeneratorName() const;
+  bool isEnabled() const;
+  
+  /*!
+  If this is an ajax command and to supress extra XML in the model
+  Only what is added explicitly by commands is what you get
+  */
+  bool isForceAjax() const;
+  
+  /*!
+  Returns command path set when command is created
+    not part of the XML rather the location of the actual command file
+  */
+  const AString& getCommandPath() const;
 
   /*!
-  Get module parameters as a query string (convenient string=string container)
-  Returns false if no such module is found
+  Returns alias to use instead of this command
+  If empty then this is a valid command else lookup the alias name
+  */
+  const AString& getCommandAlias() const;
+  
+  /*!
+  Name of the input processor
+  Often the MIME type of the HTTP request
+  */
+  const AString& getInputProcessorName() const;
+  
+  /*!
+  Name of the output generator
+  */
+  const AString& getOutputGeneratorName() const;
+
+  /*!
+  Input processor parameters
   */
   const AXmlElement& getInputParams() const;
+  
+  /*!
+  Output generator parameters
+  */
   const AXmlElement& getOutputParams() const;
 
   /*!
   Get module container
   */
   const AOSModules& getModules() const;
-
-  /*!
-  Command name
-  */
-  AString& useCommandName();
 
   /*!
   AOSAdminInterface
@@ -64,8 +89,11 @@ public:
   static const AString CLASS;
 
 private:
-  //a_Commands
-  AString m_Command;
+  //a_Command alias
+  AString m_CommandPath;
+
+  //a_Command alias
+  AString m_CommandAlias;
   
   //a_Input processor
   AString m_InputProcessor;
@@ -80,7 +108,6 @@ private:
   
   //a_Attributes
   bool m_Enabled;            //a_Command state, if disabled, static XML will be attempted instead
-  bool m_Session;            //a_By default all commands are session based unless turned off with 0 or false
   bool m_ForceAjax;          //a_Ajax forces a lean XML document, false by default
 
   //a_The log
@@ -96,7 +123,7 @@ public:
 XML for each command (example below)
 
 <?xml version="1.0" encoding="UTF-8"?>
-<command>
+<command ajax='1'>
 	<input class='application/x-www-form-urlencoded'/>
   <module class='PublishInput'>
     <name>foo</name>
@@ -110,6 +137,10 @@ XML for each command (example below)
     <filename>aos.xsl</filename>
   </output>
 </command>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<command alias='/somepath/anothercommand'/>
+
 */
 
 #endif // INCLUDED__AOSCommand_HPP__

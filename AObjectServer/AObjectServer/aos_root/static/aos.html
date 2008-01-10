@@ -28,10 +28,11 @@
 &nbsp;&nbsp;<a href="/samples/sql.xml">Simple SQL query</a><br/>
 &nbsp;&nbsp;<a href="/imagegen/generated_X.png">Generated PNG image</a><br/>
 &nbsp;&nbsp;<a href="/samples/FormWithFile.html">Multi-part FORM submit with file upload</a><br/>
-&nbsp;&nbsp;<a href="/samples/DisplayInput.xml">No output generator used, raw XML; this is the XML used in the following examples</a><br/>
-&nbsp;&nbsp;<a href="/samples/DisplayInputWithXslt.html">XSLT generated</a><br/>
-&nbsp;&nbsp;<a href="/samples/DisplayInputWithTemplate.html">Template</a> Single HTML template<br/>
-&nbsp;&nbsp;<a href="/samples/DisplayInputWithTemplateParts.html">Template parts</a> Output made up of 4 separate template parts<br/>
+&nbsp;&nbsp;<a href="/samples/DisplayInput.xml">Display Input: XML</a><br/>
+&nbsp;&nbsp;<a href="/samples/DisplayInputWithXslt.html">Display Input: XSLT generated</a><br/>
+&nbsp;&nbsp;<a href="/samples/DisplayInputWithTemplate.html">Display Input: Template</a> Single HTML template<br/>
+&nbsp;&nbsp;<a href="/AliasedToDisplayInputWithTemplate.html">Aliased to Display Input: Template</a>(above link) Aliased as single HTML template<br/>
+&nbsp;&nbsp;<a href="/samples/DisplayInputWithTemplateParts.html">Display Input: 4 Template parts</a> Output made up of 4 separate template parts<br/>
 <br/>
 NOTE: .html extension is remapped to a dynamic command, these are no longer static pages once dynamic command is defined<br/>
 If you turn off the dynamic command and there exists a static page with the same name, then dynamic command will not execute and static page will load instead.
@@ -71,22 +72,23 @@ and if needed you can turn off the dynamic and start using the static page again
 <br/>
 <hr/>
 <br/>
-<b><big>Generic Tests</big></b><br/>
+<b><big>Compression Tests (Mozilla only at the moment)</big></b><br/>
 Text file compression (/aos_static/TheCallOfCthulhu.html)<br/>
 &nbsp;&nbsp;<a href="/samples/TheCallOfCthulhu.html">The Call Of Cthulhu - original uncompressed (90,112 bytes)</a><br/>
 &nbsp;&nbsp;<a href="/samples/TheCallOfCthulhu.html?deflate=1">The Call Of Cthulhu - ZLib deflate level 1 (35,932 bytes)</a><br/>
 &nbsp;&nbsp;<a href="/samples/TheCallOfCthulhu.html?deflate=6">The Call Of Cthulhu - ZLib deflate level 6 (31,225 bytes)</a><br/>
 &nbsp;&nbsp;<a href="/samples/TheCallOfCthulhu.html?deflate=9">The Call Of Cthulhu - ZLib deflate level 9 (31,118 bytes)</a><br/>
 <br/>
+<b><big>Dynamic XML Tests (Mozilla only at the moment)</big></b><br/>
 Simple dynamic test (/aos_dynamic/test/Test.xml.aos.xml)<br/>
-&nbsp;&nbsp;<a href="/test/Test.xml">Simple test of dynamically generated  XML</a><br/>
-&nbsp;&nbsp;<a href="/test/Test.xml?ajax=1">Simple test (ajax=1)</a><br/>
-&nbsp;&nbsp;<a href="/test/Test.xml?dumpContext=1">Simple test (dumpContext=1) - context converted to XML</a><br/>
-&nbsp;&nbsp;<a href="/test/Test.xml?dumpContext=2">Simple test (dumpContext=2) - Debug build only, adds debugDump for context</a><br/>
+&nbsp;&nbsp;<a href="/samples/Test.xml">Simple test of dynamically generated XML</a><br/>
+&nbsp;&nbsp;<a href="/samples/Test.xml?ajax=1">Simple test (ajax=1)</a><br/>
+&nbsp;&nbsp;<a href="/samples/Test.xml?dumpContext=1">Simple test (dumpContext=1) - context converted to XML</a><br/>
+&nbsp;&nbsp;<a href="/samples/Test.xml?dumpContext=2">Simple test (dumpContext=2) - Debug build only, adds debugDump for context</a><br/>
 <hr/>
 <b>Simple tests</b><br/>
-&nbsp;&nbsp;<a href="/test/Test_AlterRequestContext.xml">Alter context kitchen sink (output XML, sets 10 second response cookie)</a><br/>
-&nbsp;&nbsp;<a href="/test/Test_SetTemporaryCookie.xml">Set 10 second cookie called 'vanishing' (output XML)</a><br/>
+&nbsp;&nbsp;<a href="/samples/Test_AlterRequestContext.xml">Alter context kitchen sink (output XML, sets 10 second response cookie)</a><br/>
+&nbsp;&nbsp;<a href="/samples/Test_SetTemporaryCookie.xml">Set 10 second cookie called 'vanishing' (output XML)</a><br/>
 
 
 </body>

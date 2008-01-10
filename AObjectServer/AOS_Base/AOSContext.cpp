@@ -960,6 +960,21 @@ bool AOSContext::setCommandFromRequestUrl()
   if (!mp_Command)
     return false;
 
+  //a_Check if this is an alias
+  if (!mp_Command->getCommandAlias().isEmpty())
+  {
+    setExecutionState(ARope("Aliased: ",9)+mp_Command->getCommandAlias());
+    mp_Command = m_Services.useConfiguration().getCommand(mp_Command->getCommandAlias());
+    if (!mp_Command->getCommandAlias().isEmpty())
+    {
+      setExecutionState(ASWNL("Aliased command is also an alias, which is not supported."));
+      mp_Command = NULL;
+    }
+
+    if (!mp_Command)
+      return false;
+  }
+
   //a_AJAX style output (terse)
   if (mp_Command->isForceAjax() || m_RequestHeader.useUrl().useParameterPairs().exists(ASW("ajax",4)))
     m_ContextFlags.setBit(CTXFLAG_IS_AJAX);

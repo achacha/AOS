@@ -255,8 +255,6 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
 
           //a_No error and pipelining, we handled request, do not continue
           if (!pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
-          //  m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
-          //else
             m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
 
           continue;
