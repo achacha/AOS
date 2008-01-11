@@ -769,55 +769,55 @@ AXmlElement& AXmlElement::addData(
 
 AXmlElement& AXmlElement::setData(const size_t value)
 {
-  _addData(AString::fromSize_t(value), AXmlElement::ENC_NONE);
+  _addData(AString::fromSize_t(value), AXmlElement::ENC_NONE, true);
   return *this;
 }
 
 AXmlElement& AXmlElement::setData(const AEmittable& data, AXmlElement::Encoding encoding)
 {
-  _addData(data, encoding);
+  _addData(data, encoding, true);
   return *this;
 }
 
 AXmlElement& AXmlElement::setData(const double value)
 {
-  _addData(AString::fromDouble(value), AXmlElement::ENC_NONE);
+  _addData(AString::fromDouble(value), AXmlElement::ENC_NONE, true);
   return *this;
 }
 
 AXmlElement& AXmlElement::setData(const u8 value)
 {
-  _addData(AString::fromU8(value), AXmlElement::ENC_NONE);
+  _addData(AString::fromU8(value), AXmlElement::ENC_NONE, true);
   return *this;
 }
 
 AXmlElement& AXmlElement::setData(const u4 value)
 {
-  _addData(AString::fromU4(value), AXmlElement::ENC_NONE);
+  _addData(AString::fromU4(value), AXmlElement::ENC_NONE, true);
   return *this;
 }
 
 AXmlElement& AXmlElement::setData(const u2 value)
 {
-  _addData(AString::fromU2(value), AXmlElement::ENC_NONE);
+  _addData(AString::fromU2(value), AXmlElement::ENC_NONE, true);
   return *this;
 }
 
 AXmlElement& AXmlElement::setData(const u1 value)
 {
-  _addData(AString::fromU1(value), AXmlElement::ENC_NONE);
+  _addData(AString::fromU1(value), AXmlElement::ENC_NONE, true);
   return *this;
 }
 
 AXmlElement& AXmlElement::setData(const int value)
 {
-  _addData(AString::fromInt(value), AXmlElement::ENC_NONE);
+  _addData(AString::fromInt(value), AXmlElement::ENC_NONE, true);
   return *this;
 }
 
 AXmlElement& AXmlElement::setData(const char value)
 {
-  _addData(ASW(&value,1), AXmlElement::ENC_NONE);
+  _addData(ASW(&value,1), AXmlElement::ENC_NONE, true);
   return *this;
 }
 
@@ -827,7 +827,7 @@ AXmlElement& AXmlElement::setData(
   AXmlElement::Encoding encoding // = AXmlElement::ENC_NONE
 )
 {
-  _addData(AString::wrap(value, length), encoding);
+  _addData(AString::wrap(value, length), encoding, true);
   return *this;
 }
 
