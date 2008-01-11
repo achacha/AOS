@@ -83,6 +83,19 @@ void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& 
       addProperty(elem, ASW("efficiency",10), AString::fromDouble((double)hit/double(hit+miss)));
     }
   }
+
+  {
+    AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("template_cache",14));
+
+    addPropertyWithAction(
+      elem, 
+      ASW("enabled",7), 
+      AString::fromBool(m_Services.useConfiguration().useConfigRoot().getBool(TEMPLATE_CACHE_ENABLED, false)),
+      ASW("Update",6), 
+      ASWNL("1:Enable template caching, 0:Disable and clear, -1:Clear only"),
+      ASW("Set",3)
+    );
+  }
 }
 
 void AOSCacheManager::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
@@ -100,16 +113,41 @@ void AOSCacheManager::processAdminAction(AXmlElement& eBase, const AHTTPRequestH
         {
           //a_Clear and disable
           m_Services.useConfiguration().useConfigRoot().setBool(STATIC_CACHE_ENABLED, false);
-          mp_StaticFileCache->clear();
+          mp_StaticFileCache->clear();  //a_Cache uses internal sync
         }
         else if (str.equals("-1"))
         {
-          mp_StaticFileCache->clear();
+          mp_StaticFileCache->clear();  //a_Cache uses internal sync
         }
         else
         {
           //a_Enable
           m_Services.useConfiguration().useConfigRoot().setBool(STATIC_CACHE_ENABLED, true);
+        }
+      }
+    }
+    else if (str.equals(ASW("AOSCacheManager.template_cache.enabled",38)))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
+      {
+        if (str.equals("0"))
+        {
+          //a_Clear and disable
+          m_Services.useConfiguration().useConfigRoot().setBool(TEMPLATE_CACHE_ENABLED, false);
+          
+          ALock lock(m_TemplateSync);
+          mp_TemplateCache->clear();
+        }
+        else if (str.equals("-1"))
+        {
+          ALock lock(m_TemplateSync);
+          mp_TemplateCache->clear();
+        }
+        else
+        {
+          //a_Enable
+          m_Services.useConfiguration().useConfigRoot().setBool(TEMPLATE_CACHE_ENABLED, true);
         }
       }
     }
