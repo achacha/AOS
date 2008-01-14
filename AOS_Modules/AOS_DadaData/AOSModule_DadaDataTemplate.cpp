@@ -35,12 +35,12 @@ AOSModule_DadaDataTemplate::AOSModule_DadaDataTemplate(AOSServices& services) :
 {
 }
 
-void AOSModule_DadaDataTemplate::addAdminXml(
+void AOSModule_DadaDataTemplate::adminEmitXml(
   AXmlElement& eBase, 
   const AHTTPRequestHeader& request
 )
 {
-  AOSModuleInterface::addAdminXml(eBase, request);
+  AOSModuleInterface::adminEmitXml(eBase, request);
 }
 
 void AOSModule_DadaDataTemplate::init()
