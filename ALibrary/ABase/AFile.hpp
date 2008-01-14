@@ -221,6 +221,11 @@ public:
   DEFINE_BASICTYPE_IO_OPERATORS(s8);
   DEFINE_BASICTYPE_IO_OPERATORS(u8);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   /*!
   Generic write/read/peek routines that will call the specialized _read/_write routines as needed
@@ -267,11 +272,6 @@ protected:
 
 private:
   AFile(const AFile&);  //a_Prevent copying of file objects due to handle sharing problems
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AFile_HPP__

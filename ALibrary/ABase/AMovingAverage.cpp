@@ -8,7 +8,6 @@
 #include "ANumber.hpp"
 #include "AXmlElement.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AMovingAverage::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AMovingAverage @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -36,7 +35,6 @@ void AMovingAverage::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AMovingAverage::AMovingAverage(
   u4 keepLastNSamples,   // = 16

@@ -49,6 +49,11 @@ public:
   void expireCookie(const AString& name);     //a_Expires/Removes it on the client-side
   void removeCookie(const AString& name);     //a_Deletes locally
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //a_Internal cookie storage
   typedef std::vector<ACookie *> VECTOR_CookiePointers;
@@ -59,11 +64,6 @@ private:
   
   //a_Cookie access
   ACookie *__findCookie(const AString& name) const;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

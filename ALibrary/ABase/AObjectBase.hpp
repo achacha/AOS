@@ -95,15 +95,15 @@ public:
   virtual bool trylock();      //a_Try and lock, return status
   virtual void unlock();       //a_Unlock this object
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   AString m_Name;                     //a_Name of this object
   AAttributes m_Attributes;           //a_Attributes of this object
   ASynchronization *mp_SynchObject;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AObjectBase_HPP__

@@ -77,6 +77,11 @@ public:
   virtual void flush() {}
   virtual void close() {}
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   /*!
   AFile guaranteed methods
@@ -89,11 +94,6 @@ private:
 	AString m_Data;
   size_t m_ReadPos;
   size_t m_WritePos;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AFile_AString_HPP__

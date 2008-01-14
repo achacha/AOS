@@ -3,7 +3,6 @@
 #include "AException.hpp"
 #include "ATextGenerator.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ATextOdometer::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
@@ -15,8 +14,6 @@ void ATextOdometer::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
-
 
 ATextOdometer::ATextOdometer(size_t iSize, const AString& strSubset) :
   mstr_Subset(strSubset)

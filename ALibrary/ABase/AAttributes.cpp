@@ -5,10 +5,9 @@
 #include "AException.hpp"
 #include "AOutputBuffer.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AAttributes::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AAttributes @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Pairs={" << std::endl;
   
   LIST_NVPair::const_iterator cit = m_Pairs.begin();
@@ -23,7 +22,6 @@ void AAttributes::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 //a_Ctors and dtor
 AAttributes::AAttributes()

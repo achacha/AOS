@@ -29,6 +29,11 @@ public:
   double getInterval(bool boolStopTimer = false);
   double getInterval() const;                       //a_Does not stop timer
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   /*!
   High performance counter frequency (# of counts per second)
@@ -40,11 +45,6 @@ private:
   u8 m_stopCount;
   
   bool mbool_Running;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

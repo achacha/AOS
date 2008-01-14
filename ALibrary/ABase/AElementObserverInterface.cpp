@@ -2,7 +2,6 @@
 #include "AElementObserverInterface.hpp"
 #include "AException.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AElementObserverInterface::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -10,7 +9,6 @@ void AElementObserverInterface::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m__purlRequest=0x" << m__purlRequest << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AElementObserverInterface::AElementObserverInterface(AElementInterface *pElement, const AUrl *purlRequest) :
   m__peHead(pElement),

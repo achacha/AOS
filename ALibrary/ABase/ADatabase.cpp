@@ -2,7 +2,6 @@
 #include "ADatabase.hpp"
 #include "AXmlElement.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ADatabase::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ADatabase @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -11,7 +10,6 @@ void ADatabase::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "mbool_Initialized=" << (mbool_Initialized ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ADatabase::ADatabase() :
   mbool_Initialized(false)

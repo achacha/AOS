@@ -12,7 +12,6 @@ const AString AUrl::sstr__PathSeparator("/");
 const AString AUrl::sstr__PathSelf("/./");
 const AString AUrl::sstr__PathParent("/../");
 
-#ifdef __DEBUG_DUMP__
 void AUrl::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AUrl @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -32,7 +31,6 @@ void AUrl::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AUrl::AUrl() :
   m_iPort(AUrl::INVALID)

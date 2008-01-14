@@ -5,7 +5,6 @@
 
 const AString AResultSet::ROW("row");
 
-#ifdef __DEBUG_DUMP__
 void AResultSet::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AResultSet @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -30,7 +29,6 @@ void AResultSet::debugDump(std::ostream& os, int indent) const
   AObjectBase::debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 void AResultSet::emit(AOutputBuffer& target) const
 {

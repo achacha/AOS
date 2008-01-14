@@ -140,6 +140,11 @@ public:
   */
   void emitXml(AXmlElement&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 public:
   /*!
   Inner class that logs scope only events
@@ -225,11 +230,6 @@ private:
 
   static const AString LOG_PREFIX;
   static const AString LOG_SUFFIX;       //a_Includes a trailing CRLF
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED_ALog_HPP_

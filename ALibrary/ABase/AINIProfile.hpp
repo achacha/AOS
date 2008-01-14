@@ -108,6 +108,11 @@ public:
   */
   void clear();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //a_Cannot copy this class
   AINIProfile(const AINIProfile&) {}
@@ -220,11 +225,8 @@ public:
   };
 
 public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
   void _dumpNode(_ININode* pNode, std::ostream& os, int indent) const;
   void _dumpTree(_ININode* pNode, std::ostream& os, int indent) const;
-#endif
 };
 
 //a_Examples of how to use the iterators

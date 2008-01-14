@@ -30,10 +30,10 @@ public:
     SocketInfo& operator=(const SocketInfo& that);
     bool isValid();
 
-  public:
-  #ifdef __DEBUG_DUMP__
+    /*!
+    ADebugDumpable
+    */
     virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-  #endif
   };
 
 public:

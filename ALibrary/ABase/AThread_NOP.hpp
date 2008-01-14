@@ -59,6 +59,11 @@ public:
   */
   void emit(AOutputBuffer&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   /*!
   no copy ctor
@@ -69,11 +74,6 @@ protected:
   Return value after start() is called
   */
   u4 m_Ret;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

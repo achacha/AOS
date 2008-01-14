@@ -15,14 +15,14 @@ public:
 	virtual size_t getSetSize() const;
   virtual void reset();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
 	AFragmentConstant() {}
 	AString m_Constant;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AFragmentConstant_HPP__

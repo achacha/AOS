@@ -2,7 +2,6 @@
 #include "AThread_NOP.hpp"
 #include "ASystemException.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AThread_NOP::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AThread_NOP @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -12,7 +11,6 @@ void AThread_NOP::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AThread_NOP::AThread_NOP() :
   m_Ret(0)

@@ -81,6 +81,11 @@ public:
   void emit(AOutputBuffer&) const;
   void emitXml(AXmlElement&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   /*!
   ALog
@@ -117,11 +122,6 @@ private:
   //a_Pointer to the AFile based object and filename of this log
   bool m_DeleteFileObject;
   AFile *mp_File;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ALog_AFile_HPP__

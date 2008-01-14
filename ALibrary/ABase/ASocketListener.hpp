@@ -57,6 +57,11 @@ public:
   */
   const ASocketLibrary::SocketInfo& getSocketInfo() const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   ASocketLibrary::SocketInfo accept();
 
@@ -65,11 +70,6 @@ protected:
 
   void makeHandle();
   ASocketLibrary::SocketInfo m_SocketInfo;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ASocketListener_HPP__

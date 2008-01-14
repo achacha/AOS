@@ -9,7 +9,6 @@
 #include "AXmlData.hpp"
 #include "AFile.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AXmlElement::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AXmlElement @ " << std::hex << this << std::dec << std::endl;
@@ -31,7 +30,6 @@ void AXmlElement::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AXmlElement::AXmlElement(AXmlElement *pParent) :
   mp_Parent(pParent)

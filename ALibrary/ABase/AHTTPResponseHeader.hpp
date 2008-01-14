@@ -124,6 +124,11 @@ public:
   */
   void setLastModified(const ATime&);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   //a_First line handled by respnse
   //a_Format: [HTTPVERSION] [SP] [STATUSCODE] [SP] [STATUSDESCRIPTION]
@@ -138,10 +143,6 @@ private:
   ACookies mcookies_Response;
 
   void _copy(const AHTTPResponseHeader&);
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AHTTPResponseHeader_HPP__

@@ -10,7 +10,6 @@
 const AString AXmlData::sstr_StartCDATA("<![CDATA[");
 const AString AXmlData::sstr_EndCDATA("]]>");
 
-#ifdef __DEBUG_DUMP__
 void AXmlData::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AXmlData @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -18,7 +17,6 @@ void AXmlData::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "  m_Encoding=" << m_Encoding << "  m_Data={" << m_Data << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AXmlData::AXmlData()
 {

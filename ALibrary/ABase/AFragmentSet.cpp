@@ -1,7 +1,6 @@
 #include "pchABase.hpp"
 #include "AFragmentSet.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AFragmentSet::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFragmentSet @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -9,7 +8,6 @@ void AFragmentSet::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_Offset=" << m_Offset << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AFragmentSet::AFragmentSet(AFragmentSet::SetType t)
 {

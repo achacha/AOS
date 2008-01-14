@@ -1,9 +1,5 @@
-//
-// ASystemException
-//
 
 #include "pchABase.hpp"
-
 #include "ASystemException.hpp"
 
 ASystemException::ASystemException

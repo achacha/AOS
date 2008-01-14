@@ -67,6 +67,11 @@ public:
 	//a_Cleanup
 	virtual void clear();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   //a_NAME=VALUE elements of this HTML element
   VECTOR_NVPairPtr m_vectorPairs;
@@ -108,11 +113,6 @@ private:
 
   //a_Destruction
   void __destroy();
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

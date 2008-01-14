@@ -95,6 +95,11 @@ public:
   */
   const ASocketLibrary::SocketInfo& getSocketInfo() const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected :
   //a_Implement raw read/write methods that AFile will use via socket interface
   virtual size_t _write(const void *, size_t);
@@ -119,11 +124,6 @@ private:
   AFile_Socket() {}
   AFile_Socket(const AFile_Socket &) {}
   AFile_Socket &operator=(const AFile_Socket &) { return *this; }
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AFile_Socket_HPP__

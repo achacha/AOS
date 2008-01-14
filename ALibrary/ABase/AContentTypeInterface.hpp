@@ -63,6 +63,11 @@ public:
   */
   virtual size_t getContentLength();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   //a_Base class needs to know what content type it is based on child class
   AContentTypeInterface() {}
@@ -78,11 +83,6 @@ protected:
 
 private:
   AContentTypeInterface(const AContentTypeInterface&) {}
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

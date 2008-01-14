@@ -86,7 +86,6 @@ struct _ININode
   _INILeaf* mp_Leaf;
 };
 
-#ifdef __DEBUG_DUMP__
 void AINIProfile::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
@@ -143,7 +142,6 @@ void AINIProfile::_dumpNode(_ININode* pNode, std::ostream& os, int indent) const
   else
 		ADebugDumpable::indent(os, indent) << "ptr=0x00000000\r\n" << std::endl;
 }
-#endif
 
 void AINIProfile::emit(AOutputBuffer& target) const
 {

@@ -5,7 +5,6 @@
 #include "AException.hpp"
 #include "ARope.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AFile::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFile @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -13,7 +12,6 @@ void AFile::debugDump(std::ostream& os, int indent) const
   m_LookaheadBuffer.debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AFile::AFile() :
   m_ReadBlock(AFile::DefaultReadBlock)

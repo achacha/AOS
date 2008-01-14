@@ -3,7 +3,6 @@
 #include "ASystemException.hpp"
 #include "ALock.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ADatabasePool::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ADatabasePool @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -32,7 +31,6 @@ void ADatabasePool::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ADatabasePool::ADatabasePool(
   ADatabase *pDatabase,

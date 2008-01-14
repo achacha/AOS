@@ -99,14 +99,12 @@ public:
 
 public:
   //a_debugDump() needs to be implemented in the "contained" class to use this method
-  #ifdef __DEBUG_DUMP__
   void debugDump(std::ostream& os = std::cerr, int indent = 0) const
   {
     ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() <<"[\"" << m_Name << "\"] @ " << std::hex << this << std::dec << ") {" << std::endl;
     m_Object.debugDump(os, indent+1);
     ADebugDumpable::indent(os, indent) << "}" << std::endl; 
   }
-  #endif
 
 private:
   _t m_Object;

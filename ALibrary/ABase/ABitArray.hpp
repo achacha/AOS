@@ -96,6 +96,11 @@ public:
   */
   void setOutputMode(Mode Mode = ABitArray::Hexadecimal);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   void _setBit(size_t cell, size_t offset, bool value);
   void _setByte(size_t cell, u1 value);
@@ -106,11 +111,6 @@ private:
   u1 *mp_bits;            //a_Data array 8 bits per cell
   size_t m_size;          //a_Size 2^N max (N is the number of bits of the processor compiled on ie. sizeof(size_t))
   Mode m_OutputMode;      //a_How output is to be displayed
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 ABASE_API inline void ABitArray::_setBit(size_t cell, size_t offset, bool value)

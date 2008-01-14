@@ -7,14 +7,12 @@
 
 const AString ATemplateNodeHandler_CODE::TAGNAME("CODE",4);
 
-#ifdef __DEBUG_DUMP__
 void ATemplateNodeHandler_CODE::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent) << "TAGNAME=" << getTagName() << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ATemplateNodeHandler_CODE::ATemplateNodeHandler_CODE()
 {
@@ -60,7 +58,7 @@ ATemplateNodeHandler_CODE::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_CODE::Node::process(ABasePtrHolder& objects, AOutputBuffer& output)
+void ATemplateNodeHandler_CODE::Node::process(ABasePtrContainer& objects, AOutputBuffer& output)
 {
   //a_If this assert failed, theis object was not constructed correctly
   AXmlDocument *pDoc = objects.useAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);

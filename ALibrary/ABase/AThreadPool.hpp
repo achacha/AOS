@@ -76,6 +76,11 @@ public:
   */
   ASynchronization& getSync();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   //Thread container
   THREADS m_Threads;
@@ -99,11 +104,6 @@ private:
   ABase *mp_Parameter;
 
   ASync_CriticalSection m_SynchObjectThreadPool;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AThreadPool_HPP__

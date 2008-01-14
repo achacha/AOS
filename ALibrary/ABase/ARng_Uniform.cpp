@@ -2,13 +2,11 @@
 #include "ARng_Uniform.hpp"
 #include "ATime.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ARng_Uniform::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
   ADebugDumpable::indent(os, indent) << "(ARng_Uniform @ " << std::hex << this << std::dec << ");" << std::endl;
 }
-#endif
 
 ARng_Uniform::ARng_Uniform()
 {

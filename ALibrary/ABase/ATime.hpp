@@ -153,6 +153,11 @@ public:
   static int getWeekdayFromString(const AString&);      //a_Returns # for day of week (0=Sun, 6=Sat)
   static float getTimeZoneFromString(const AString&);   //a_Returns the corrert offset from UT (and support non-integral offsets)
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   tm* _getTM() const;
   
@@ -164,11 +169,6 @@ private:
 
   //a_Time zone modifier, usually does not change (unless the computer is always moving?!)
   static int smi_TimeZone;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 //a_strftime quick reference courtesy of MSDN (http://msdn.microsoft.com)

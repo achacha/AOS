@@ -94,6 +94,11 @@ public:
   inline int nextRange(int high, int low = 0x0);
   inline size_t nextRange(size_t high, size_t low = 0x0);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   /*
     RNG specific, each RNG specifies these, rest is handled by wrappers
@@ -105,11 +110,6 @@ protected:
 
 private:
   static AMapOfPtrs<int, ARandomNumberGenerator> sm_rngMap;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED_ARandomNumberGenerator_HPP_

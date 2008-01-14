@@ -6,7 +6,6 @@
 const AString AElement_HTML::PARSE_END_ELEMENT(" />");
 char AElement_HTML::PARSE_START_ELEMENT('<');
 
-#ifdef __DEBUG_DUMP__
 void AElement_HTML::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -30,7 +29,6 @@ void AElement_HTML::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AElement_HTML::AElement_HTML(AElementInterface *elementParent) :
   AElementInterface(elementParent, false)  //a_By default HTML elements are assumed to need </TYPE>

@@ -19,14 +19,14 @@ public:
 	virtual void reset();
 	virtual size_t getSetSize() const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
 	ATextOdometer m_Odometer;
   AString m_InitialValue;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AFragmentOdometer_HPP__

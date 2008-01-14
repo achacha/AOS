@@ -8,7 +8,6 @@
 
 const AString AObjectContainer::ID("id");
 
-#ifdef __DEBUG_DUMP__
 void AObjectContainer::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AObjectContainer[\"" << m_Name << "\"] @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -22,7 +21,6 @@ void AObjectContainer::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AObjectContainer::AObjectContainer(const AString& name /* = AConstant::ASTRING_EMPTY */) :
   AObjectBase(name)

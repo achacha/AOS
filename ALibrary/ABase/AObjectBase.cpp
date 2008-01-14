@@ -6,12 +6,10 @@
 #include "AXmlElement.hpp"
 #include "AFile.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AObjectBase::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AObjectBase[\"" << m_Name << "\"] @ " << std::hex << this << std::dec << ")" << std::endl;
 }
-#endif
 
 AObjectBase::AObjectBase() :
   mp_SynchObject(NULL)

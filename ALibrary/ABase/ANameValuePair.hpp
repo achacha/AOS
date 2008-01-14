@@ -103,10 +103,16 @@ public:
   //a_Clear the pair
   void clear();
   
-//!!!ASerializable {
-	virtual void toAFile(AFile&) const;
+	/*!
+  ASerializable
+  */
+  virtual void toAFile(AFile&) const;
   virtual void fromAFile(AFile&);
-//!!!ASerializable }
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
   //a_Utility functions
@@ -130,11 +136,6 @@ private:
   AString m_terminator;      //a_Delimits start of next pair or <EOS>
   AString m_whitespace;      //a_Characters to treat as white space (ie. ignore)
   char m_valueWrap;          //a_Normally \x0 to mean none, but can be either ' or ", can change during parsing
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

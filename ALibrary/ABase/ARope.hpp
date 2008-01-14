@@ -74,6 +74,11 @@ public:
     DEFAULT_BLOCK_SIZE=2048
   };
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   /*!
   Append methods for AOutputBuffer
@@ -91,11 +96,6 @@ private:
   size_t m_BlockSize;                        //a_Size of blocks to use
 
   void __newBlock();                         //a_Gets a new block either from storage or allocation
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ARope_HPP__

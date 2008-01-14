@@ -1,6 +1,3 @@
-//
-// ATextConverter
-//
 
 #include "pchABase.hpp"
 

@@ -5,7 +5,6 @@
 
 const AString AContentType_Form::CONTENT_TYPE("application/x-www-form-urlencoded");
 
-#ifdef __DEBUG_DUMP__
 void AContentType_Form::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -18,7 +17,6 @@ void AContentType_Form::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AContentType_Form::AContentType_Form() :
   AContentTypeInterface(CONTENT_TYPE)

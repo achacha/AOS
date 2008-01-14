@@ -1,7 +1,6 @@
 #include "pchABase.hpp"
 #include "AFragmentOdometer.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AFragmentOdometer::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFragmentOdometer @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -10,7 +9,6 @@ void AFragmentOdometer::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AFragmentOdometer::AFragmentOdometer(size_t digits /* = 6 */) :
   m_Odometer(digits)

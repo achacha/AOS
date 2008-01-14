@@ -8,7 +8,6 @@
 
 const AString AContentType_TextHtml::CONTENT_TYPE("text/html");
 
-#ifdef __DEBUG_DUMP__
 void AContentType_TextHtml::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -30,7 +29,6 @@ void AContentType_TextHtml::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AContentType_TextHtml::AContentType_TextHtml() :
   AContentTypeInterface(CONTENT_TYPE),

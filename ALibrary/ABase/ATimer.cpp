@@ -7,7 +7,6 @@
 
 double ATimer::sm_frequency = 0.001f * ATime::getHighPerfFrequency();
 
-#ifdef __DEBUG_DUMP__
 void ATimer::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) 
@@ -19,7 +18,6 @@ void ATimer::debugDump(std::ostream& os, int indent) const
     << "  sm_frequency=" << sm_frequency
     << "  }" << std::endl;
 }
-#endif
 
 ATimer::ATimer(bool boolStartNow) :
   m_startCount(0),

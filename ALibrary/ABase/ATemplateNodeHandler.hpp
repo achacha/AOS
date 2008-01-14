@@ -6,7 +6,7 @@
 
 class AOutputBuffer;
 class ATemplateNode;
-class ABasePtrHolder;
+class ABasePtrContainer;
 class AFile;
 
 /*!

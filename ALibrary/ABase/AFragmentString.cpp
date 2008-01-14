@@ -5,7 +5,6 @@
 #include "AFragmentSet.hpp"
 #include "AFragmentOdometer.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AFragmentString::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFragmentString @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -18,7 +17,6 @@ void AFragmentString::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AFragmentString::AFragmentString(const AString& str) :
   m_Finished(false)

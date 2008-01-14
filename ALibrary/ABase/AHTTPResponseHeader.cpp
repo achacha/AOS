@@ -4,7 +4,6 @@
 #include "ARope.hpp"
 #include "AXmlElement.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AHTTPResponseHeader::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AHTTPResponseHeader @ " << std::hex << this << std::dec << ") { " << std::endl;
@@ -18,7 +17,6 @@ void AHTTPResponseHeader::debugDump(std::ostream& os, int indent) const
   AHTTPHeader::debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AHTTPResponseHeader::AHTTPResponseHeader() : 
   AHTTPHeader(),

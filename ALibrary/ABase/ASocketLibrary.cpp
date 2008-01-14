@@ -11,7 +11,6 @@ const AString ASocketLibrary::BROADCAST("Broadcast");
 
 const AString ASocketLibrary::LOCAL_LOOPBACK("127.0.0.1");
 
-#ifdef __DEBUG_DUMP__
 void ASocketLibrary::SocketInfo::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ASocketLibrary::SocketInfo @ " << std::hex << this << std::dec << ") {  "
@@ -20,7 +19,6 @@ void ASocketLibrary::SocketInfo::debugDump(std::ostream& os, int indent) const
     << "  m_handle=0x" << std::hex << m_handle << std::dec
     << "  }" << std::endl;
 }
-#endif
 
 ASocketLibrary::ASocketLibrary()
 {

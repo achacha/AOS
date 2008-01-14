@@ -1,7 +1,6 @@
 #include "pchABase.hpp"
 #include "AFile_AString.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AFile_AString::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFile_AString @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -11,7 +10,6 @@ void AFile_AString::debugDump(std::ostream& os, int indent) const
   AFile::debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 void AFile_AString::setReadPos(size_t pos)  { m_ReadPos = pos; }
 size_t   AFile_AString::getReadPos() const  { return m_ReadPos; } 

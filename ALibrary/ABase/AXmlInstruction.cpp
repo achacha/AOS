@@ -5,7 +5,6 @@
 #include "ARope.hpp"
 #include "AException.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AXmlInstruction::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AXmlInstruction @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -18,7 +17,6 @@ void AXmlInstruction::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AXmlInstruction::AXmlInstruction(AXmlInstruction::TYPE type, AXmlElement *pParent /* = NULL */) :
   AXmlElement(pParent)

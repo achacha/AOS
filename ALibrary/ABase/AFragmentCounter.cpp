@@ -2,7 +2,6 @@
 #include "AFragmentCounter.hpp"
 #include <math.h>
 
-#ifdef __DEBUG_DUMP__
 void AFragmentCounter::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFragmentCounter @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -14,7 +13,6 @@ void AFragmentCounter::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_Step=" << m_Step << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AFragmentCounter::AFragmentCounter(u1 digits, u4 stop_value, u4 start_value, s1 step)
 {

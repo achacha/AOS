@@ -6,7 +6,6 @@
 #include "AXmlData.hpp"
 #include "AException.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AEventVisitor::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AEventVisitor @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -53,7 +52,6 @@ void AEventVisitor::Event::debugDump(std::ostream& os, int indent) const
     << "  m_interval=" << m_interval 
     << "  m_isError=" << m_isError << "  }" << std::endl;
 }
-#endif
 
 AEventVisitor::AEventVisitor
 (

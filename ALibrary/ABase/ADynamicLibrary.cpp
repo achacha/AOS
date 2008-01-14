@@ -7,10 +7,9 @@
 #endif
 
 
-#ifdef __DEBUG_DUMP__
 void ADynamicLibrary::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ADynamicLibrary @ " << std::hex << this << std::dec << ")" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ")" << std::endl;
   MAP_Libraries::const_iterator cit = m_Libraries.begin();
   while (cit != m_Libraries.end())
   {
@@ -18,8 +17,6 @@ void ADynamicLibrary::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
-
 
 ADynamicLibrary::ADynamicLibrary()
 {

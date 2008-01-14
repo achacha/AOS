@@ -186,6 +186,11 @@ public:
   */
   void emit(AOutputBuffer&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   /*
   Main thread function
@@ -223,11 +228,6 @@ protected:
   Wrapper thread main
   */
   static u4 __stdcall __ThreadProc(void *pThis);
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

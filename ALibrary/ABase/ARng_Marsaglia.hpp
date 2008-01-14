@@ -14,6 +14,11 @@ class ABASE_API ARng_Marsaglia : public ARandomNumberGenerator
 public:
   ARng_Marsaglia();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   virtual void   _initialize();            //a_Initilize the RNG
   virtual double _nextUnit();              //a_Get the next random double [0, 1.0)
@@ -27,11 +32,6 @@ private:
   u4 m_carry;
 	u4 m_i;
   u4 m_Q[ARRAY_SIZE];
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED_ARng_Marsaglia_HPP_

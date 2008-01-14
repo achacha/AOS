@@ -11,7 +11,6 @@
 #include <float.h>
 #include "templateAutoPtr.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ANumber::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
@@ -24,7 +23,6 @@ void ANumber::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 //a_STATICs
 //a_Valid chars

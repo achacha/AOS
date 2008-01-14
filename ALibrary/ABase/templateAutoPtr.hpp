@@ -170,12 +170,10 @@ private:
 	bool m_Ownership;
 
 public:
-#ifdef __DEBUG_DUMP__
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const
   {
     ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership);
   }
-#endif
 };
 
 
@@ -279,12 +277,10 @@ private:
 	bool m_Ownership;
 
 public:
-#ifdef __DEBUG_DUMP__
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const
   {
     ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership);
   }
-#endif
 };
 
 
@@ -390,13 +386,10 @@ private:
   bool m_Ownership;
 
 public:
-#ifdef __DEBUG_DUMP__
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const
   {
     ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership);
   }
-#endif
 };
 
 #endif
-

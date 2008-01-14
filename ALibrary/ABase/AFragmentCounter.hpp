@@ -15,6 +15,11 @@ public:
 	virtual void reset();
 	virtual size_t getSetSize() const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
 	AString m_strOdometer;
 	u1      m_Digits;
@@ -24,11 +29,6 @@ private:
 	s1      m_Step;
 
 	void __set();
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AFragmentCounter_HPP__

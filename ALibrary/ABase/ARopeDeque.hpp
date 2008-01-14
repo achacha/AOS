@@ -152,6 +152,11 @@ public:
     DEFAULT_BLOCK_SIZE=128
   };
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   /*!
   Append methods for AOutputBuffer
@@ -183,11 +188,6 @@ private:
   //a_Extracts all of the data
   void _popAll(char *);
   void _peekAll(char *) const;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ARopeDeque_HPP__

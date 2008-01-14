@@ -39,6 +39,11 @@ public:
 	//a_Cleanup
 	virtual void clear();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   //a_Creation method
   virtual AElementInterface *_create(AElementInterface *pParent) = 0;
@@ -56,11 +61,6 @@ private:
 
   //a_Pointer to the parent node
   AElementInterface *mp_Parent;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

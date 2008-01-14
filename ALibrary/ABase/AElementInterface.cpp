@@ -1,7 +1,6 @@
 #include "pchABase.hpp"
 #include "AElementInterface.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AElementInterface::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -10,7 +9,6 @@ void AElementInterface::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "  mp_Parent=" << AString::fromPointer(mp_Parent) << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AElementInterface::AElementInterface(AElementInterface *pelementParent, bool isSingular) :
   mp_Parent(pelementParent),

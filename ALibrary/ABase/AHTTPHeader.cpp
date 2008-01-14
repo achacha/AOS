@@ -9,7 +9,6 @@
 
 const AString AHTTPHeader::DEFAULT_HTTP_VERSION("HTTP/1.1",8);
 
-#ifdef __DEBUG_DUMP__
 void AHTTPHeader::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AHTTPHeader @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -23,7 +22,6 @@ void AHTTPHeader::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AHTTPHeader::AHTTPHeader() :
   mstr_HTTPVersion(DEFAULT_HTTP_VERSION)

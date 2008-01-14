@@ -167,6 +167,11 @@ public:
   //a_String that denotes default HTTP version supported "HTTP/1.1"
   static const AString DEFAULT_HTTP_VERSION;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   //a_This object does not exist by itself, but it's childer will exist on their own
   AHTTPHeader();
@@ -194,11 +199,6 @@ protected:
   AString _getStatusCodeDescription(int iStatusCode);
 
   void _copy(const AHTTPHeader&);
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

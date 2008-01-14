@@ -1,18 +1,16 @@
 #include "pchABase.hpp"
 #include "ATemplateNodeHandler_OBJECT.hpp"
 #include "ATemplate.hpp"
-#include "ABasePtrHolder.hpp"
+#include "ABasePtrContainer.hpp"
 
 const AString ATemplateNodeHandler_OBJECT::TAGNAME("OBJECT",6);
 
-#ifdef __DEBUG_DUMP__
 void ATemplateNodeHandler_OBJECT::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent) << "TAGNAME=" << getTagName() << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ATemplateNodeHandler_OBJECT::ATemplateNodeHandler_OBJECT()
 {
@@ -58,7 +56,7 @@ ATemplateNodeHandler_OBJECT::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_OBJECT::Node::process(ABasePtrHolder& objects, AOutputBuffer& output)
+void ATemplateNodeHandler_OBJECT::Node::process(ABasePtrContainer& objects, AOutputBuffer& output)
 {
   //a_If this assert failed, theis object was not constructed correctly
 //  AXmlDocument *pDoc = objects.useAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);

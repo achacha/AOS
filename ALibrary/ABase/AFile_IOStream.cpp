@@ -2,7 +2,6 @@
 #include "AFile_IOStream.hpp"
 #include "AException.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AFile_IOStream::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFile_IOStream @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -11,7 +10,6 @@ void AFile_IOStream::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-#endif
 AFile_IOStream& AFile_IOStream::operator>>(std::istream& (__CDECL * _f)(std::istream&)) { (*mp_IStream) >> _f; return *this; }
 AFile_IOStream& AFile_IOStream::operator>>(std::ios& (__CDECL * _f)(std::ios&))         { (*mp_IStream) >> _f; return *this; }
 AFile_IOStream& AFile_IOStream::operator<<(std::ostream& (__CDECL * _f)(std::ostream&)) { (*mp_OStream) << _f; return *this; }

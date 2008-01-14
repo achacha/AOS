@@ -47,6 +47,11 @@ public:
   virtual void fromAFile(AFile& fileIn);
   virtual void toAFile(AFile& fileIn) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   AXmlDocument m_Document;
 
@@ -54,11 +59,6 @@ private:
 
   //a_Parsing flag
   bool m__boolNeedParsing;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

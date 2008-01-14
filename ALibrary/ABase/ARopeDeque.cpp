@@ -3,7 +3,6 @@
 #include "AFile.hpp"
 #include "ARope.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ARopeDeque::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ARopeDeque @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -44,7 +43,6 @@ void ARopeDeque::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ARopeDeque::ARopeDeque(size_t blockSize /* = DEFAULT_BLOCK_SIZE */) :
   m_BlockSize(blockSize),

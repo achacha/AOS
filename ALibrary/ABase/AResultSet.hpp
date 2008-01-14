@@ -7,6 +7,9 @@
 class ABASE_API AResultSet : public AObjectBase
 {
 public:
+  static const AString ROW;      //a_Name of 'row' for emits
+
+public:
   /*!
   name - name of the current object (AObjectContainer can override this if it is explicitly specified during insertion)
   */
@@ -59,6 +62,11 @@ public:
   */
   AObjectBase* clone() const { return new AResultSet(*this); }  //a_Clone self using copy ctor (this can just be copied as is)
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   
   //a_Query that generated this result, usually set by the database and here for reference
@@ -70,13 +78,6 @@ private:
   //a_Rows
   typedef std::vector<VECTOR_AString> RESULTSET;
   RESULTSET m_ResultSet;
-
-  static const AString ROW;      //a_Name of 'row' for emits
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AResultSet_HPP__

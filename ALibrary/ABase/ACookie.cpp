@@ -7,7 +7,6 @@
 
 #define DEFAULT_VERSION 0
 
-#ifdef __DEBUG_DUMP__
 void ACookie::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ACookie @ " << std::hex << this << std::dec << ") { " << std::endl;
@@ -27,7 +26,6 @@ void ACookie::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) <<"}" << std::endl;
 }
-#endif
 
 ACookie::ACookie() :
   m_boolExpired(false),

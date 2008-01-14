@@ -2,7 +2,6 @@
 #include "ARng_Lecuyer.hpp"
 #include "ATime.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ARng_Lecuyer::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
@@ -23,7 +22,6 @@ void ARng_Lecuyer::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 //a_L'Ecuyer long period RNG with Bays-Durham shuffle
 #define RNG_LEBD_IQ1  53668L

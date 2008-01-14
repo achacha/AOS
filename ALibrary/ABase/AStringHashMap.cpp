@@ -8,7 +8,6 @@
 #include "ANameValuePair.hpp"
 #include "ALock.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AStringHashMap::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AStringHashMap @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -34,7 +33,6 @@ void AStringHashMap::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AStringHashMap::AStringHashMap(
   ASynchronization *pSynchObject,  // = NULL

@@ -13,7 +13,6 @@
 #define DEFAULT_MAX_FILE_SIZE 1024 * 1024
 #define FREESTORE_SIZE 13
 
-#ifdef __DEBUG_DUMP__
 void ALog_AFile::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ALog_AFile @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -44,7 +43,6 @@ void ALog_AFile::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ALog_AFile::ALog_AFile(
   ASynchronization *pSynch,

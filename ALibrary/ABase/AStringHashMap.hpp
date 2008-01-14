@@ -70,6 +70,11 @@ public:
   virtual void emit(AOutputBuffer&) const;
   virtual void emitXml(AXmlElement&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   typedef std::vector<MAP_AString_AString *> HASH_MAP;
   HASH_MAP m_Container;
@@ -77,11 +82,6 @@ protected:
   void _parse(const AString&);
 
   ASynchronization *mp_SynchObject;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AStringPathHashMap_HPP__

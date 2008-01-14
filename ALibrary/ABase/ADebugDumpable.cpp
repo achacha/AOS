@@ -4,9 +4,6 @@
 #include "AOutputBuffer.hpp"
 #include <sstream>
 
-#define INDENT_STRING "  "
-
-#ifdef __DEBUG_DUMP__
 void ADebugDumpable::debugDump(std::ostream& os /* = std::cerr */, int indent /* = 0 */) const
 {
   //a_By default display the type of the class and this pointer address
@@ -21,24 +18,19 @@ void ADebugDumpable::debugDumpToAOutputBuffer(AOutputBuffer& target, int indent 
   debugDump(strm, indent);
   target.append(strm.str().c_str(), strm.str().size());
 }
-#endif
 
 void ADebugDumpable::emit(AOutputBuffer& target) const
 {
-#ifdef __DEBUG_DUMP__
   debugDumpToAOutputBuffer(target, 0);
-#endif
 }
 
 void ADebugDumpable::trace(const char *pcc)
 {
-#ifdef __DEBUG_DUMP__
   #ifdef __WINDOWS__
     OutputDebugString(pcc);
   #else
     std::cerr << pcc << std::flush;
   #endif
-#endif //__DEBUG_DUMP__
 }
 
 void ADebugDumpable::dumpMemory_Ascii(
@@ -171,7 +163,7 @@ std::ostream& ADebugDumpable::indent(std::ostream& os, size_t indent)
 {	
   while (indent > 0)
   {
-	  os << INDENT_STRING;
+	  os << "  ";
     --indent;
   }
 

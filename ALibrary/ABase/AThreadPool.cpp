@@ -5,7 +5,6 @@
 
 #define DEFAULT_MONITOR_CYCLE_SLEEP 1000
 
-#ifdef __DEBUG_DUMP__
 void AThreadPool::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AThreadPool @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -26,7 +25,6 @@ void AThreadPool::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AThreadPool::AThreadPool(
   AThread::ATHREAD_PROC *threadproc,

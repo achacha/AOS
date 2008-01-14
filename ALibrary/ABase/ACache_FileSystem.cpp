@@ -7,7 +7,6 @@
 #include "AFileSystem.hpp"
 #include "ALock.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ACache_FileSystem::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ACache_FileSystem @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -50,7 +49,6 @@ void ACache_FileSystem::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ACache_FileSystem::ACache_FileSystem(size_t maxItems, size_t maxFileSize, size_t hashSize) :
   m_MaxItems(maxItems),

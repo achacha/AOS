@@ -150,13 +150,12 @@ public:
 		}
 	}
 
-public:
-#ifdef __DEBUG_DUMP__
+  /*!
+  ADebugDumpable
+  */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
-#ifdef __DEBUG_DUMP__
 template<class T>
 void AArrayCanvas<T>::debugDump(std::ostream& os, int indent) const
 {
@@ -171,7 +170,6 @@ void AArrayCanvas<T>::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 // Sample usage
 /*

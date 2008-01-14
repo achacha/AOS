@@ -5,7 +5,6 @@
 #include "AUrl.hpp"
 #include "AHTTPHeader.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AContentTypeInterface::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -19,7 +18,6 @@ void AContentTypeInterface::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AContentTypeInterface::AContentTypeInterface(const AString& type) :
   m_ContentLength(AConstant::npos),

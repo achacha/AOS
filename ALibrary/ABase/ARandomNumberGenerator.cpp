@@ -9,11 +9,10 @@
 //a_Static map
 AMapOfPtrs<int, ARandomNumberGenerator> ARandomNumberGenerator::sm_rngMap;
 
-#ifdef __DEBUG_DUMP__
 void ARandomNumberGenerator::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
-  ADebugDumpable::indent(os, indent) << "(ARandomNumberGenerator@ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(ARandomNumberGenerator @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "sm_rngMap._map.size=" << (u4)sm_rngMap._map.size() << std::endl;
   AMapOfPtrs<int, ARandomNumberGenerator>::TYPEDEF::const_iterator cit = sm_rngMap._map.begin();
   while (sm_rngMap._map.end() != cit)
@@ -24,7 +23,6 @@ void ARandomNumberGenerator::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ARandomNumberGenerator& ARandomNumberGenerator::get(
   RNG_TYPE rng /* = ARandomNumberGenerator::Uniform */,

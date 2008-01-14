@@ -19,99 +19,99 @@
 **/
 class ABASE_API ATextOdometer : public ADebugDumpable
 {
-  public:
-    ATextOdometer(size_t iSize = 4, const AString& strSubset = AConstant::CHARSET_BASE10);
-    ATextOdometer(const AString& initial, size_t iSize = 4, const AString& strSubset = AConstant::CHARSET_BASE10);
-    ATextOdometer(const ATextOdometer&);
-    virtual ~ATextOdometer();
+public:
+  ATextOdometer(size_t iSize = 4, const AString& strSubset = AConstant::CHARSET_BASE10);
+  ATextOdometer(const AString& initial, size_t iSize = 4, const AString& strSubset = AConstant::CHARSET_BASE10);
+  ATextOdometer(const ATextOdometer&);
+  virtual ~ATextOdometer();
 
-    /*!
-    Pre increment
-    */
-    const ATextOdometer &operator ++(void);
-    
-    /*!
-    Pre decrement
-    */
-    const ATextOdometer &operator --(void);
+  /*!
+  Pre increment
+  */
+  const ATextOdometer &operator ++(void);
+  
+  /*!
+  Pre decrement
+  */
+  const ATextOdometer &operator --(void);
 
-    /*!
-    Post increment
-    */
-    const ATextOdometer  operator ++(int);
-    
-    /*!
-    Post decrement
-    */
-    const ATextOdometer  operator --(int);
+  /*!
+  Post increment
+  */
+  const ATextOdometer  operator ++(int);
+  
+  /*!
+  Post decrement
+  */
+  const ATextOdometer  operator --(int);
 
-    /*!
-    Gets the current odometer
-    */
-    inline const AString& get() const;
-    
-    /*!
-    AEmittable
-    */
-    virtual void emit(AOutputBuffer&) const;
+  /*!
+  Gets the current odometer
+  */
+  inline const AString& get() const;
+  
+  /*!
+  AEmittable
+  */
+  virtual void emit(AOutputBuffer&) const;
 
-    /*!
-    Equals
-    */
-    bool operator ==(const ATextOdometer&) const;
+  /*!
+  Equals
+  */
+  bool operator ==(const ATextOdometer&) const;
 
-    /*!
-    Not equals
-    */
-    bool operator !=(const ATextOdometer&) const;
+  /*!
+  Not equals
+  */
+  bool operator !=(const ATextOdometer&) const;
 
-    /*!
-    Size in digits
-    */
-    size_t getSize() const;
-    
-    /*!
-    A way to reset the odometer (iSize of AConstant::npos leaves the default size)
-    */
-    void clear(size_t size = AConstant::npos);
-    
-    /*!
-    Gets the current subset
-    */
-    const AString& getSubset() const;
+  /*!
+  Size in digits
+  */
+  size_t getSize() const;
+  
+  /*!
+  A way to reset the odometer (iSize of AConstant::npos leaves the default size)
+  */
+  void clear(size_t size = AConstant::npos);
+  
+  /*!
+  Gets the current subset
+  */
+  const AString& getSubset() const;
 
-    /*!
-    Sets a new subset and resets the odometer
-    */
-    void setSubset(const AString& strSubset);
-    
-    /*!
-    Sets the initial value and returns it's reference for convenience
-    */
-    const AString& setInitial(const AString& strInitial);
-    
-    /*!
-    Sets random initial value
-    */
-    const AString& setRandomInitial();
+  /*!
+  Sets a new subset and resets the odometer
+  */
+  void setSubset(const AString& strSubset);
+  
+  /*!
+  Sets the initial value and returns it's reference for convenience
+  */
+  const AString& setInitial(const AString& strInitial);
+  
+  /*!
+  Sets random initial value
+  */
+  const AString& setRandomInitial();
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
-    //a_Subset
-    AString mstr_Subset;
-    
-    //a_Current odometer
-    AString mstr_Odometer;
+  //a_Subset
+  AString mstr_Subset;
+  
+  //a_Current odometer
+  AString mstr_Odometer;
 
-    /**
-     * Modifiers
-    **/
-    void __inc();
-    void __dec();
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
+  /**
+   * Modifiers
+  **/
+  void __inc();
+  void __dec();
 };
 
 #endif //INCLUDED__ATextOdometer_HPP__

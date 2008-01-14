@@ -116,15 +116,15 @@ public:
   */
   virtual AXmlElement* clone() const { return new AXmlInstruction(*this); }
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //a_Format <$start$name $attributes $data $end>
   AString m_Data;                //a_DOCTYPE and comment will use this and store contents as is
   TYPE m_Type;                   //a_Type of an instruction
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //__AXmlInstruction_HPP__

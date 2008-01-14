@@ -187,6 +187,11 @@ public:
   virtual void toAFile(AFile& aFile) const;
   virtual void fromAFile(AFile& aFile);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   void _logError(const AString &strError);     //a_Log error
 
@@ -222,11 +227,6 @@ private:
 
   //a_Last error
   AString m_strError;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 

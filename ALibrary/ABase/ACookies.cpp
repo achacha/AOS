@@ -4,7 +4,6 @@
 #include "ATextConverter.hpp"
 #include "AXmlElement.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ACookies::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ACookies @ " << std::hex << this << std::dec << ") { " << std::endl;
@@ -14,7 +13,6 @@ void ACookies::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ACookies::ACookies()
 {

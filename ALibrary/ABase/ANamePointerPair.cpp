@@ -10,7 +10,6 @@
 #include "templateAutoPtr.hpp"
 #include "AOutputBuffer.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ANamePointerPair::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
@@ -22,7 +21,6 @@ void ANamePointerPair::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ANamePointerPair::ANamePointerPair(const AString &strName, void *pValue)
 {

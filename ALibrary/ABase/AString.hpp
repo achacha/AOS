@@ -656,6 +656,17 @@ public:
   u2   getBufferIncrementSize() const;
   void setBufferIncrementSize(u2 newIncrement);
 
+  /*!
+  ASerializable
+  */
+	virtual void toAFile(AFile& aFile) const;
+  virtual void fromAFile(AFile& aFile);
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   /*!
   Internal buffer used for storage
@@ -737,19 +748,8 @@ private:
   //a_This is used to accelerate the class by reducing reallocations
   u2 m_BufferIncrement;
 
-public:
   //a_Default allocation block
   static const u2 smi_DefaultBufferIncrement;
-
-//!!!ASerializable {
-	virtual void toAFile(AFile& aFile) const;
-  virtual void fromAFile(AFile& aFile);
-//!!!ASerializable }
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AString_HPP__

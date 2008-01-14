@@ -70,6 +70,11 @@ public:
   virtual void emit(AOutputBuffer&) const;
   virtual void emitXml(AXmlElement&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   double m_Average;
   
@@ -85,11 +90,6 @@ private:
   double *mp_Keep;
   u4      m_KeepPos;
   u4      m_KeepSize;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AMovingAverage_HPP__

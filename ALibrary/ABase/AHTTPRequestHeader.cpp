@@ -14,7 +14,6 @@ const AString AHTTPRequestHeader::METHOD_PUT("PUT",3);
 const AString AHTTPRequestHeader::METHOD_DELETE("DELETE",6); 
 const AString AHTTPRequestHeader::METHOD_TRACE("TRACE",5);
 
-#ifdef __DEBUG_DUMP__
 void AHTTPRequestHeader::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AHTTPRequestHeader @ " << std::hex << this << std::dec << ") { " << std::endl;
@@ -29,7 +28,6 @@ void AHTTPRequestHeader::debugDump(std::ostream& os, int indent) const
   AHTTPHeader::debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AHTTPRequestHeader::AHTTPRequestHeader() :
   AHTTPHeader(),

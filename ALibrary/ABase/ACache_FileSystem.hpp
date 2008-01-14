@@ -75,6 +75,11 @@ public:
   */
   virtual void clear();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   size_t m_MaxItems;
   size_t m_MaxFileSize;
@@ -115,9 +120,4 @@ private:
   size_t m_Miss;
 
   ASync_CriticalSectionSpinLock m_Sync;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };

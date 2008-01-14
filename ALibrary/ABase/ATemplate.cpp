@@ -1,6 +1,6 @@
 #include "pchABase.hpp"
 #include "ATemplate.hpp"
-#include "ABasePtrHolder.hpp"
+#include "ABasePtrContainer.hpp"
 #include "AFile_AString.hpp"
 #include "AXmlDocument.hpp"
 #include "ATemplateNodeHandler_CODE.hpp"
@@ -14,7 +14,6 @@ const AString ATemplate::BLOCK_START("]{{{",4);
 const AString ATemplate::BLOCK_END("}}}[",4);
 const AString ATemplate::TAG_END("]%",2);
 
-#ifdef __DEBUG_DUMP__
 void ATemplate::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ATemplate @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -31,7 +30,6 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ATemplate::ATemplate(
   const AString& source,
@@ -170,7 +168,7 @@ void ATemplate::fromAFile(AFile& aFile)
 }
 
 void ATemplate::process(
-  ABasePtrHolder& objects, 
+  ABasePtrContainer& objects, 
   AOutputBuffer& output,
   bool hibernateHandlersWhenDone  // = false
 )

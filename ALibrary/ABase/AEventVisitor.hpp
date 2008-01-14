@@ -103,6 +103,11 @@ public:
   */
   bool isStateOverTimeLimit() const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //a_Event
   class Event : public ADebugDumpable, public AXmlEmittable
@@ -121,11 +126,12 @@ private:
     AString m_state;
     bool m_isError;
 
-  public:
-  #ifdef __DEBUG_DUMP__
+    /*!
+    ADebugDumpable
+    */
     virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-  #endif
   };
+
   typedef std::list<Event *> EVENTS;
   EVENTS m_Events;
 
@@ -145,11 +151,6 @@ private:
 
   //a_Set if at least one error occured
   size_t m_errorCount;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AEventVisitor_HPP__

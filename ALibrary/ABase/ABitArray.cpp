@@ -5,10 +5,9 @@
 #include "ARope.hpp"
 #include "AXmlElement.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ABitArray::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ABitArray @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   AString str(32, 16);
   for (size_t x=0; x<m_size; ++x)
   {
@@ -26,7 +25,6 @@ void ABitArray::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_OutputMode=" << m_OutputMode << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ABitArray::ABitArray() :
   mp_bits(NULL),

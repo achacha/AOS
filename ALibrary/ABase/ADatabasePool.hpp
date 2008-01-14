@@ -51,6 +51,11 @@ public:
   */
   size_t executeSQL(const AString& query, AResultSet&, AString& error);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   class ADatabaseHolder
   {
@@ -72,11 +77,6 @@ private:
   void _unlockDatabase(ADatabase *);
   ASync_Semaphore m_Semaphore;
   ASync_CriticalSection m_SynchObject;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ADatabasePool_HPP__

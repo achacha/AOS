@@ -133,6 +133,11 @@ public:
   */
   static const AString ID;      // Object id tag
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   MAP_STRING_OBJECTBASE m_Objects;
 
@@ -143,11 +148,6 @@ private:
   //a_If NULL container could not be created due to error or boolCreate flag was false
   AObjectContainer *_getContainer(LIST_AString&, bool boolCreate);
   AObjectContainer *_getContainer(LIST_AString&) const;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AObjectContainer_HPP__

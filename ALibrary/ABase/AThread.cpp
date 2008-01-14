@@ -2,7 +2,6 @@
 #include "AThread.hpp"
 #include "ASystemException.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AThread::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AThread @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -21,14 +20,12 @@ void AThread::debugDump(std::ostream& os, int indent) const
   m_UserTimer.debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 //a_Static method
 void ABASE_API AThread::sleep(u4 uMilliSeconds)
 {
   ::Sleep(uMilliSeconds);
 }
-
 
 //a_This is the main thread wrapper that calls the user's main function
 //a_ and cleans up on exit

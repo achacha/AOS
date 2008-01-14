@@ -116,13 +116,13 @@ public:
 	virtual void toAFile(AFile& aFile) const;
   virtual void fromAFile(AFile& aFile);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   MMAP_AString_NVPair m_Pairs;      //a_Storage of name value pairs  name -> ANameValuePair, ANameValuePair ... 
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 

@@ -5,7 +5,6 @@
 
 const AString AContentType_TextXml::CONTENT_TYPE("text/xml",8);  // text/xml
 
-#ifdef __DEBUG_DUMP__
 void AContentType_TextXml::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -21,7 +20,6 @@ void AContentType_TextXml::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AContentType_TextXml::AContentType_TextXml() :
   AContentTypeInterface(CONTENT_TYPE),

@@ -1,4 +1,3 @@
-
 #include "pchABase.hpp"
 #include "ALog.hpp"
 #include "ARope.hpp"
@@ -12,7 +11,6 @@ const AString ALog::LOG_SUFFIX("}}}\r\n");
 
 #define MESSAGE_SEPARATOR ':'
 
-#ifdef __DEBUG_DUMP__
 void ALog::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ALog @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -20,7 +18,6 @@ void ALog::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_EventMask=" << m_EventMask << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ALog::ALog(
   ASynchronization *pSynchObject,

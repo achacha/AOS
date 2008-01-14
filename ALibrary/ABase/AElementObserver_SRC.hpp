@@ -7,19 +7,19 @@
 
 class ABASE_API AElementObserver_SRC : public AElementObserverInterface
 {
-  public:
-    //a_ctor/dtor
-    AElementObserver_SRC(AElementInterface *pElement, const AUrl *purlRequest);
-    virtual ~AElementObserver_SRC();
+public:
+  //a_ctor/dtor
+  AElementObserver_SRC(AElementInterface *pElement, const AUrl *purlRequest);
+  virtual ~AElementObserver_SRC();
 
-    //a_Access to the generated URL
-    virtual AUrl &getSubmissionUrl() { return _getSubmitUrl(); }
+  //a_Access to the generated URL
+  virtual AUrl &getSubmissionUrl() { return _getSubmitUrl(); }
 
-  private:
-    AElementObserver_SRC();         //a_Prevent default construction
+private:
+  AElementObserver_SRC();         //a_Prevent default construction
 
-    //a_Generate URL from HREF and request URL
-    void __generateSubmissionUrl();
+  //a_Generate URL from HREF and request URL
+  void __generateSubmissionUrl();
 };
 
 #endif

@@ -15,6 +15,11 @@ class ABASE_API ARng_Lecuyer : public ARandomNumberGenerator
 public:
   ARng_Lecuyer();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   virtual void   _initialize();            //a_Initilize the RNG
   virtual double _nextUnit();              //a_Get the next random double [0, 1.0)
@@ -26,11 +31,6 @@ private:
   long m_lY;
   long m_lSeed;
   long m_lSeed2;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED_ARng_Lecuyer_HPP_

@@ -70,6 +70,11 @@ public:
   */
   virtual AXmlElement* clone() const { return new AXmlData(*this); }
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   AString m_Data;
   Encoding m_Encoding;
@@ -77,11 +82,6 @@ protected:
 public:
   static const AString sstr_StartCDATA;  //a_"<![CDATA["
   static const AString sstr_EndCDATA;    //a_"]]>"
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

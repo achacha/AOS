@@ -112,6 +112,11 @@ public:
   */
   ATime getIfModifiedSince() const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   //a_First line for request
   //a_[METHOD] [SP] [URI] [SP] [HTTPVERSION]
@@ -129,11 +134,6 @@ private:
   AHTTPRequestHeader::METHOD_ID m_MethodId;
   AUrl murl_Request;
   ACookies mcookies_Request;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__IWHTTPRequestHeader_HPP__

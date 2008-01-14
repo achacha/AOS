@@ -41,6 +41,11 @@ public:
   virtual void close();
   virtual bool isOpen();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   virtual size_t _write(const void *, size_t);
 	virtual size_t _read(void *, size_t);
@@ -54,11 +59,6 @@ protected:
 private:
   std::istream *mp_IStream;
   std::ostream *mp_OStream;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 //a_Templates for operators with AFile_IOStream, to make the streaming functions work inlined
@@ -72,7 +72,9 @@ AFile_IOStream& operator >>(AFile_IOStream& aFile, T& _type)
 
 #endif // INCLUDED__AFileIOStream_HPP__
 
-/** Notes
+/**
+
+Notes
 
 - If you assign a stream for input and peek, expect the stream to be read from
 since there is no buffer peek in iostreams.  The result of using a stream to
@@ -81,6 +83,4 @@ concerned a peek and read are same, as far as user is concerned peek will not
 remove (but really store data in an internal buffer).  This was a design decision
 that was made in order to be able to support the peek based interface.
 
-
 */
-

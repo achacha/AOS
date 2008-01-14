@@ -11,7 +11,6 @@
 #include <deque>
 #include <algorithm>
 
-#ifdef __DEBUG_DUMP__
 void ANameValuePair::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
@@ -35,7 +34,6 @@ void ANameValuePair::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ANameValuePair::ANameValuePair(const AString& strName, const AString& strValue, NameValueType eType) :
   m_name(128, 128),

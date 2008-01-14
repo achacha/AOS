@@ -9,7 +9,7 @@
 
 class ATemplate;
 class ATemplateNodeHandler;
-class ABasePtrHolder;
+class ABasePtrContainer;
 
 /*!
 Base template node
@@ -63,7 +63,12 @@ public:
   Process the template node that contains the data for this tag to handle
   Output should go to the output buffer in ATemplate
   */
-  virtual void process(ABasePtrHolder& objects, AOutputBuffer& output);
+  virtual void process(ABasePtrContainer& objects, AOutputBuffer& output);
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
   /*!
@@ -77,11 +82,6 @@ protected:
 
   //a_Handler of this node
   ATemplateNodeHandler *mp_Handler;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ATemplateNode_HPP__

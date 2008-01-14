@@ -2,7 +2,6 @@
 #include "ARng_Marsaglia.hpp"
 #include "ATime.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ARng_Marsaglia::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
@@ -23,7 +22,6 @@ void ARng_Marsaglia::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ARng_Marsaglia::ARng_Marsaglia()
 {

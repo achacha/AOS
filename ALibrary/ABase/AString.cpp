@@ -9,7 +9,6 @@
 
 #include <ctype.h>
 
-#ifdef __DEBUG_DUMP__
 void AString::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AString @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -38,7 +37,6 @@ void AString::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os,indent+1) << "mbool_Wrapped=" << (mbool_Wrapped ? "true" : "false") << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 //a_The one and only NULL pos static!
 const u2 AString::smi_DefaultBufferIncrement = 256;

@@ -19,7 +19,6 @@ const AString AXmlElement::sstr_EndComment("-->");
 const AString AXmlElement::sstr_EndInstruction("?>");
 const AString AXmlElement::sstr_EndInstructionOrWhitespace("?> \t\n\r");
 
-#ifdef __DEBUG_DUMP__
 void AXmlDocument::debugDump(std::ostream& os /* = std::cerr */, int indent /* = 0x0 */) const
 {
   ADebugDumpable::indent(os, indent) << "(AXmlDocument @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -39,7 +38,6 @@ void AXmlDocument::debugDump(std::ostream& os /* = std::cerr */, int indent /* =
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 
 AXmlDocument::AXmlDocument(

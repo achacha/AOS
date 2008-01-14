@@ -5,7 +5,6 @@
 #include "AXmlElement.hpp"
 #include "AFile.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ATemplateNode::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -24,7 +23,6 @@ void ATemplateNode::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
   
 }
-#endif
 
 ATemplateNode::ATemplateNode(ATemplateNodeHandler *pHandler) :
   mp_Handler(pHandler)
@@ -142,7 +140,7 @@ const AString& ATemplateNode::getTagName() const
   return (mp_Handler ? mp_Handler->getTagName() : AConstant::ASTRING_EMPTY);
 }
 
-void ATemplateNode::process(ABasePtrHolder&, AOutputBuffer& output)
+void ATemplateNode::process(ABasePtrContainer&, AOutputBuffer& output)
 {
   m_BlockData.emit(output);
 }

@@ -198,17 +198,17 @@ public:
   void clearPathNames();
   void clearDrive();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   char m_Drive;
   LIST_AString m_PathNames;
   AString m_Filename;
   FTYPE m_Type;
   bool m_RelativePath;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AFilename_HPP__

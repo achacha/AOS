@@ -5,7 +5,6 @@
 
 const AString AFilename::RESERVED = "|\\?*<\":>/";
 
-#ifdef __DEBUG_DUMP__
 void AFilename::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFilename @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -23,7 +22,6 @@ void AFilename::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_Filename=" << m_Filename << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AFilename::AFilename() :
   m_Type(FTYPE_DEFAULT),

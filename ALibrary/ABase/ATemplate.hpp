@@ -8,10 +8,10 @@
 #include "ATemplateNode.hpp"
 #include "ATemplateNodeHandler.hpp"
 #include "AOutputBuffer.hpp"
-#include "ABasePtrHolder.hpp"
+#include "ABasePtrContainer.hpp"
 #include "templateAutoPtr.hpp"
 
-class ABasePtrHolder;
+class ABasePtrContainer;
 
 /*!
 Generic template parser/processor
@@ -29,7 +29,7 @@ Usage:
   t.addHandler(new ATemplateNodeHandler_SomeCustomOne(t));
 
   // Setup an objects holder to be used by the template
-  ABasePtrHolder objects;
+  ABasePtrContainer objects;
   AXmlDocument doc("root");
   
   // This is a well known object and will be used to expand template parts in ATemplateNodeHandler_Code and others
@@ -52,7 +52,7 @@ public:
   /*!
   Well known object name
   */
-  static const AString OBJECTNAME_MODEL;      //a_This is where AXmlDocument* will be stored in ABasePtrHolder
+  static const AString OBJECTNAME_MODEL;      //a_This is where AXmlDocument* will be stored in ABasePtrContainer
   
   /*!
   Delimiters
@@ -119,7 +119,7 @@ public:
   If hibernateHandlersWhenDone is true, hibernate is called when done with processing
   */
   virtual void process(
-    ABasePtrHolder& objects, 
+    ABasePtrContainer& objects, 
     AOutputBuffer& output,   
     bool hibernateHandlersWhenDone = false
   );
@@ -155,6 +155,11 @@ public:
   */
   void addHandler(ATemplateNodeHandler *);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //! Load deafult handlers
   void _loadDefaultHandlers(ATemplate::HandlerMask mask);
@@ -169,11 +174,6 @@ private:
   //! Handlers
   typedef std::map<AString, AAutoPtr<ATemplateNodeHandler>> HANDLERS;
   HANDLERS m_Handlers;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ATemplate_HPP__

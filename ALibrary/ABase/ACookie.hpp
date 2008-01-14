@@ -82,6 +82,11 @@ public:
   //a_Request is sent by the browser and only contains name=value pairs (many on COOKIE: line)
   void emitRequestHeaderString(AOutputBuffer&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //a_Internal methods
   void __copy(const ACookie &cookieSource);
@@ -102,11 +107,6 @@ private:
   int     m_iVersion;
   AString m_strComment;
   long    m_lMaxAge;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif

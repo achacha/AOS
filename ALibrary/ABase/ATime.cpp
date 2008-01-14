@@ -18,7 +18,6 @@ const ATime ATime::GENESIS(0);
 
 int ATime::smi_TimeZone(666);       //a_Some unexpected timezone :)
 
-#ifdef __DEBUG_DUMP__
 void ATime::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ATime @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -26,7 +25,6 @@ void ATime::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "me_Type=" << me_Type << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 size_t ATime::getTickCount()
 {

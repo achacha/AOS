@@ -7,7 +7,6 @@
 #include "ASocketListener.hpp"
 #include "AHTTPRequestHeader.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AFile_Socket::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFile_Socket @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -16,7 +15,6 @@ void AFile_Socket::debugDump(std::ostream& os, int indent) const
   m_SocketInfo.debugDump(os,indent+2);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AFile_Socket::AFile_Socket(
   const AString& ip, 

@@ -1,6 +1,8 @@
 AAttributes
 ABase
 ABasePtrHolder
+ABasePtrContainer
+ABasePtrQueue
 ABitArray
 ACacheInterface
 ACache_FileSystem

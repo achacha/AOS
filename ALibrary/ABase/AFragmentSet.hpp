@@ -26,16 +26,16 @@ public:
 	virtual size_t getSetSize() const;
   virtual void emit(AOutputBuffer&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
 	AFragmentSet() {}
 
 	AString m_Set;
 	size_t m_Offset;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AFragmentDigit_HPP__
