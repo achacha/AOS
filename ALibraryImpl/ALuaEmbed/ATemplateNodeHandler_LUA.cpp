@@ -7,7 +7,6 @@
 
 const AString ATemplateNodeHandler_LUA::TAGNAME("LUA",3);
 
-#ifdef __DEBUG_DUMP__
 void ATemplateNodeHandler_LUA::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -19,15 +18,12 @@ void ATemplateNodeHandler_LUA::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
-#ifdef __DEBUG_DUMP__
 void ATemplateNodeHandler_LUA::Node::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ATemplateNodeHandler_LUA::ATemplateNodeHandler_LUA(u4 maskLibrariesToLoad) :
   m_LibrariesToLoad(maskLibrariesToLoad)
@@ -101,7 +97,7 @@ ATemplateNodeHandler_LUA::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_LUA::Node::process(ABasePtrHolder& objects, AOutputBuffer& output)
+void ATemplateNodeHandler_LUA::Node::process(ABasePtrContainer& objects, AOutputBuffer& output)
 {
   ATemplateNodeHandler_LUA *pHandler = dynamic_cast<ATemplateNodeHandler_LUA *>(mp_Handler);
   AASSERT(this, pHandler);

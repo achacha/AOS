@@ -3,7 +3,7 @@
 
 #include "apiALuaEmbed.hpp"
 #include "ADebugDumpable.hpp"
-#include "ABasePtrHolder.hpp"
+#include "ABasePtrContainer.hpp"
 #include "templateAutoPtr.hpp"
 #include "AXmlDocument.hpp"
 
@@ -59,7 +59,7 @@ public:
   objects provided MUST include the model AXmlDocument at ATemplate::OBJECTNAME_MODEL
   */
   ALuaEmbed(
-    ABasePtrHolder& objects,
+    ABasePtrContainer& objects,
     AOutputBuffer& output,
     u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE
   );
@@ -103,7 +103,7 @@ public:
   
   Returns true if all is well, false if error occured (written to outputbuffer)
   */
-  bool ALuaEmbed::execute(const AEmittable& code, ABasePtrHolder& objects, AOutputBuffer& output);
+  bool ALuaEmbed::execute(const AEmittable& code, ABasePtrContainer& objects, AOutputBuffer& output);
 
   /*!
   Output buffer used by lua print command when LUALIB_BASE is loaded
@@ -112,9 +112,9 @@ public:
   AOutputBuffer& useOutput();
 
   /*!
-  ABasePtrHolder helper functions that can be called from the python exported ones
+  ABasePtrContainer helper functions that can be called from the python exported ones
   */
-  ABasePtrHolder& useObjects();
+  ABasePtrContainer& useObjects();
 
   /*!
   AXmlDocument at ATemplate::OBJECTNAME_MODEL
@@ -132,9 +132,14 @@ public:
   */
   virtual void emit(AOutputBuffer&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //a_Simple AString -> ABase map
-  AAutoPtr<ABasePtrHolder> mp_Objects;
+  AAutoPtr<ABasePtrContainer> mp_Objects;
 
   //a_Output buffer
   AAutoPtr<AOutputBuffer> mp_Output;
@@ -144,11 +149,6 @@ private:
 
   //a_Init Lua interpreter and load libraries
   void _init(u4 maskLibrariesToLoad);
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ALuaEmbed_HPP__

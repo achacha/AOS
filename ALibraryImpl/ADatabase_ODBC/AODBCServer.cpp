@@ -5,7 +5,6 @@
 #include "AXmlElement.hpp"
 #include "AString.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AODBCServer::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AODBCServer @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -14,7 +13,6 @@ void AODBCServer::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_hdbc=" << m_hdbc << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AODBCServer::AODBCServer():
   m_henv(SQL_NULL_HENV),

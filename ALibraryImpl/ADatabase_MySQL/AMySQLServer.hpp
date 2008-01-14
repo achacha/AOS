@@ -75,16 +75,16 @@ public:
   static bool convert(MYSQL_ROW row, int index, s2& result);
   static bool convert(MYSQL_ROW row, int index, u2& result);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   MYSQL *mp_mydata;
   
   //a_Reads all rows and populates the AObjectContainer, returns rows processed
   u4 _processQueryAllRows(MYSQL_RES *pmyresult, AResultSet& resultSet);
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AMySQLServer_HPP__

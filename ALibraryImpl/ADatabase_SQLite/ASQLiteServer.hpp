@@ -48,6 +48,11 @@ public:
   */
   sqlite3 *getDBHandle();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //a_SQLite specific
   sqlite3 *mp_db;
@@ -60,11 +65,6 @@ private:
 
   //a_Calculate effective filename from URL
   void _getDBFilename(AString&) const;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ASQLiteServer_HPP__

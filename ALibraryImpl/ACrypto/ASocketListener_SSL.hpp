@@ -34,6 +34,11 @@ public:
 
   void throwSSLError(int sslErrorCode);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected:
   ASocketLibrary::SocketInfo accept(void *pSSLData);
 
@@ -48,11 +53,6 @@ private:
 
   //a_Client
   void _initClientSSL(void *pSSLData);
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__ASocketListener_SSL_HPP__

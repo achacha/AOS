@@ -4,7 +4,6 @@
 #include "ARope.hpp"
 #include "ATemplate.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ALuaEmbed::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -30,14 +29,13 @@ void ALuaEmbed::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ALuaEmbed::ALuaEmbed(
   u4 maskLibrariesToLoad
 ):
   mp_LuaState(NULL)
 {
-  mp_Objects.reset(new ABasePtrHolder());
+  mp_Objects.reset(new ABasePtrContainer());
   mp_Objects->insert(ATemplate::OBJECTNAME_MODEL, new AXmlDocument(ASW("root",4)), true);
   
   mp_Output.reset(new ARope());
@@ -47,7 +45,7 @@ ALuaEmbed::ALuaEmbed(
 }
 
 ALuaEmbed::ALuaEmbed(
-  ABasePtrHolder& objects,
+  ABasePtrContainer& objects,
   AOutputBuffer& output,
   u4 maskLibrariesToLoad
 ):
@@ -179,7 +177,7 @@ bool ALuaEmbed::execute(const AEmittable& code)
   return true;
 }
 
-bool ALuaEmbed::execute(const AEmittable& code, ABasePtrHolder& objects, AOutputBuffer& output)
+bool ALuaEmbed::execute(const AEmittable& code, ABasePtrContainer& objects, AOutputBuffer& output)
 {
   //a_Override the defailts
   mp_Objects.reset(&objects, false);
@@ -194,7 +192,7 @@ AOutputBuffer& ALuaEmbed::useOutput()
   return *mp_Output;
 }
 
-ABasePtrHolder& ALuaEmbed::useObjects()
+ABasePtrContainer& ALuaEmbed::useObjects()
 {
   AASSERT(this, !mp_Objects.isNull());
   return *mp_Objects;

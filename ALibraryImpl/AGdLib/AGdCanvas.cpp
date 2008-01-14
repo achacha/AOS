@@ -3,14 +3,12 @@
 #include "gdIOCtx_AFile.hpp"
 #include "gdIOCtx_AOutputBuffer.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AGdCanvas::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AGdCanvas @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_GdImagePtr=" << (void *)m_GdImagePtr << std::endl;      //TODO:
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AGdCanvas::AGdCanvas(int sx, int sy)
 {

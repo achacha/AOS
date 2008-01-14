@@ -105,6 +105,10 @@ public:
   */
   SQLSMALLINT getMetadata(SQLHSTMT hstmt, AODBCServer::METADATA& metadata, AString& error);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
   //a_ODBC specific
@@ -116,11 +120,6 @@ private:
 
   //a_Query processing
   size_t _processQueryAllRows(SQLHSTMT hstmt, AResultSet& target, AString& error);
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AODBCServer_HPP__

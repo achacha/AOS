@@ -17,7 +17,6 @@ struct SSLData
   SSL_METHOD* meth;
 };
 
-#ifdef __DEBUG_DUMP__
 void AFile_Socket_SSL::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFile_Socket @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -28,7 +27,6 @@ void AFile_Socket_SSL::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "mp_SSLData->meth=0x" << std::hex << (void *)((SSLData *)mp_SSLData)->meth << std::dec << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AFile_Socket_SSL::AFile_Socket_SSL(const AString& address, int portNum) :
   AFile_Socket(address, portNum, true),

@@ -56,15 +56,15 @@ public:
   */
   void emit(AOutputBuffer&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   AGdCanvas() {}
 
   gdImagePtr m_GdImagePtr;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AGdCanvas_HPP__

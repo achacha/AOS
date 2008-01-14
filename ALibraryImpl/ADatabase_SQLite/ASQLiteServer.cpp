@@ -5,7 +5,6 @@
 #include "AXmlElement.hpp"
 #include "AString.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ASQLiteServer::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ASQLiteServer @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -16,7 +15,6 @@ void ASQLiteServer::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "DB filename=" << strPath << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ASQLiteServer::ASQLiteServer()
 {

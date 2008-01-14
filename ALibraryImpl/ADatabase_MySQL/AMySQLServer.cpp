@@ -3,7 +3,6 @@
 #include "AResultSet.hpp"
 #include "AXmlElement.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AMySQLServer::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AMySQLServer @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -24,7 +23,6 @@ void AMySQLServer::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AMySQLServer::AMySQLServer() :
   mp_mydata(NULL)
