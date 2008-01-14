@@ -31,16 +31,16 @@ public:
   **/
   u4 listAdminObjects(LIST_AString&) const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   ALog& m_Log;
   
   typedef std::map<AString, AOSAdminInterface *> CONTAINER;
   CONTAINER m_AdminObjects;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AOSAdminRegistry_HPP__

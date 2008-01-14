@@ -47,9 +47,14 @@ public:
   /*!
   AOSAdminInterface
   */
-  virtual void addAdminXml(AXmlElement& base, const AHTTPRequestHeader& request);
-  virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminEmitXml(AXmlElement& base, const AHTTPRequestHeader& request);
+  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
   //a_Reference to the services
@@ -70,11 +75,6 @@ private:
 
   //a_Put file into status template cache
   ATemplate *_putFileIntoStatusTemplateCache(int key, const AString& filename);
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AOSCacheManager_HPP__

@@ -10,14 +10,14 @@ const AString& AOSContextQueue_Executor::getClass() const
   return CLASS;
 }
 
-void AOSContextQueue_Executor::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_Executor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  BASECLASS_AOSContextQueue_Executor::addAdminXml(eBase, request);
+  BASECLASS_AOSContextQueue_Executor::adminEmitXml(eBase, request);
 }
 
-void AOSContextQueue_Executor::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_Executor::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  BASECLASS_AOSContextQueue_Executor::processAdminAction(eBase, request);
+  BASECLASS_AOSContextQueue_Executor::adminProcessAction(eBase, request);
 }
 
 AOSContextQueue_Executor::AOSContextQueue_Executor(
@@ -28,7 +28,7 @@ AOSContextQueue_Executor::AOSContextQueue_Executor(
   BASECLASS_AOSContextQueue_Executor(services, threadCount, queueCount)
 {
   useThreadPool().setThis(this);
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 u4 AOSContextQueue_Executor::_threadproc(AThread& thread)

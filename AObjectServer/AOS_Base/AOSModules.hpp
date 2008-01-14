@@ -28,13 +28,13 @@ public:
   //! Access the container
   const LIST_AOSMODULE_PTRS& get() const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   LIST_AOSMODULE_PTRS m_Modules;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AOSModules_HPP__

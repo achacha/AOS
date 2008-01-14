@@ -3,7 +3,6 @@
 
 const AString AOSSessionData::SESSIONID("id",2);
 
-#ifdef __DEBUG_DUMP__
 void AOSSessionData::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSSessionData @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -16,7 +15,6 @@ void AOSSessionData::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSSessionData::AOSSessionData(const AString& sessionId, size_t defaultDataHashSize) :
   m_AgeTimer(true),

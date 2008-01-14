@@ -477,6 +477,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSUser.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\apiAOS_Base.hpp"
 				>
 			</File>

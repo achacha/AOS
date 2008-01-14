@@ -35,7 +35,12 @@ public:
   /*!
   AOSModuleInterface
   */
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
   /*!
@@ -49,11 +54,6 @@ protected:
   Locks here can be a significant performance hit
   */
   AObjectContainer m_Objects;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AOSModuleInterface_HPP__

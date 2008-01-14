@@ -12,7 +12,7 @@ const AString AOSAdminInterface::PARAM("param",5);
 const AString AOSAdminInterface::ADMIN_ERROR("error",5);
 const AString AOSAdminInterface::ADMIN_MESSAGE("message",7);
 
-AXmlElement& AOSAdminInterface::addProperty(
+AXmlElement& AOSAdminInterface::adminAddProperty(
   AXmlElement& eBase,
   const AString& propertyName,
   const AEmittable& propertyValue,
@@ -24,7 +24,7 @@ AXmlElement& AOSAdminInterface::addProperty(
   return eProperty;
 }
 
-AXmlElement& AOSAdminInterface::addActionToProperty(
+AXmlElement& AOSAdminInterface::adminAddActionToProperty(
   AXmlElement& eProperty,
   const AString& actionName,
   const AString& actionDesc
@@ -34,7 +34,7 @@ AXmlElement& AOSAdminInterface::addActionToProperty(
   return eAction;
 }
 
-AXmlElement& AOSAdminInterface::addActionToProperty(
+AXmlElement& AOSAdminInterface::adminAddActionToProperty(
   AXmlElement& eProperty,
   const AString& actionName,
   const AString& actionDesc,
@@ -46,7 +46,7 @@ AXmlElement& AOSAdminInterface::addActionToProperty(
   return eAction;
 }
 
-AXmlElement& AOSAdminInterface::addActionToProperty(
+AXmlElement& AOSAdminInterface::adminAddActionToProperty(
   AXmlElement& eProperty,
   const AString& actionName,
   const AString& actionDesc,
@@ -59,7 +59,7 @@ AXmlElement& AOSAdminInterface::addActionToProperty(
   return eAction;
 }
 
-AXmlElement& AOSAdminInterface::addPropertyWithAction(
+AXmlElement& AOSAdminInterface::adminAddPropertyWithAction(
   AXmlElement& eBase, 
   const AString& propertyName, 
   const AEmittable& propertyValue,
@@ -67,12 +67,12 @@ AXmlElement& AOSAdminInterface::addPropertyWithAction(
   const AString& actionDesc
 ) const
 {
-  AXmlElement& eProperty = addProperty(eBase, propertyName, propertyValue);
-  addActionToProperty(eProperty, actionName, actionDesc);
+  AXmlElement& eProperty = adminAddProperty(eBase, propertyName, propertyValue);
+  adminAddActionToProperty(eProperty, actionName, actionDesc);
   return eProperty;
 }
 
-AXmlElement& AOSAdminInterface::addPropertyWithAction(
+AXmlElement& AOSAdminInterface::adminAddPropertyWithAction(
   AXmlElement& eBase, 
   const AString& propertyName, 
   const AEmittable& propertyValue,
@@ -81,12 +81,12 @@ AXmlElement& AOSAdminInterface::addPropertyWithAction(
   const AString& param
 ) const
 {
-  AXmlElement& eProperty = addProperty(eBase, propertyName, propertyValue);
-  addActionToProperty(eProperty, actionName, actionDesc, param);
+  AXmlElement& eProperty = adminAddProperty(eBase, propertyName, propertyValue);
+  adminAddActionToProperty(eProperty, actionName, actionDesc, param);
   return eProperty;
 }
 
-AXmlElement& AOSAdminInterface::addPropertyWithAction(
+AXmlElement& AOSAdminInterface::adminAddPropertyWithAction(
   AXmlElement& eBase, 
   const AString& propertyName, 
   const AEmittable& propertyValue,
@@ -95,12 +95,12 @@ AXmlElement& AOSAdminInterface::addPropertyWithAction(
   const LIST_AString& params
 ) const
 {
-  AXmlElement& eProperty = addProperty(eBase, propertyName, propertyValue);
-  addActionToProperty(eProperty, actionName, actionDesc, params);
+  AXmlElement& eProperty = adminAddProperty(eBase, propertyName, propertyValue);
+  adminAddActionToProperty(eProperty, actionName, actionDesc, params);
   return eProperty;
 }
 
-AXmlElement& AOSAdminInterface::addError(
+AXmlElement& AOSAdminInterface::adminAddError(
   AXmlElement& eBase, 
   const AString& adminError,
   AXmlElement::Encoding adminErrorEncoding //= AXmlElement::CDataDirect
@@ -109,7 +109,7 @@ AXmlElement& AOSAdminInterface::addError(
   return eBase.addElement(ADMIN_ERROR, adminError, adminErrorEncoding);
 }
 
-AXmlElement& AOSAdminInterface::addMessage(
+AXmlElement& AOSAdminInterface::adminAddMessage(
   AXmlElement& eBase, 
   const AString& adminMessage,
   AXmlElement::Encoding adminMessageEncoding //= AXmlElement::CDataDirect
@@ -118,7 +118,7 @@ AXmlElement& AOSAdminInterface::addMessage(
   return eBase.addElement(ADMIN_MESSAGE, adminMessage, adminMessageEncoding);
 }
 
-void AOSAdminInterface::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSAdminInterface::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
 #ifdef __DEBUG_DUMP__
   ARope rope;
@@ -130,12 +130,12 @@ void AOSAdminInterface::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
 #endif
 }
 
-void AOSAdminInterface::registerAdminObject(AOSAdminRegistry& registry)
+void AOSAdminInterface::adminRegisterObject(AOSAdminRegistry& registry)
 {
   registry.insert(getClass(), *this);
 }
 
-void AOSAdminInterface::registerAdminObject(AOSAdminRegistry& registry, const AString& parentClassName)
+void AOSAdminInterface::adminRegisterObject(AOSAdminRegistry& registry, const AString& parentClassName)
 {
   registry.insert(parentClassName+ASW(".",1)+getClass(), *this);
 }

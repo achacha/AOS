@@ -6,7 +6,6 @@
 #include "AOSConfiguration.hpp"
 #include "AOSContextQueueInterface.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSContextManager::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSContextManager @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -52,7 +51,6 @@ void AOSContextManager::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 const AString& AOSContextManager::getClass() const
 {
@@ -60,21 +58,21 @@ const AString& AOSContextManager::getClass() const
   return CLASS;
 }
 
-void AOSContextManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
   for (size_t i=0; i < m_Queues.size(); ++i)
   {
     AOSContextQueueInterface *pQueue = m_Queues.at(i);
     if (pQueue)
-      addProperty(eBase, AString::fromSize_t(i), pQueue->getClass());
+      adminAddProperty(eBase, AString::fromSize_t(i), pQueue->getClass());
     else
-      addProperty(eBase, AString::fromSize_t(i), AConstant::ASTRING_NULL);
+      adminAddProperty(eBase, AString::fromSize_t(i), AConstant::ASTRING_NULL);
   }
 
-  addProperty(eBase, "history_max_size", AString::fromSize_t(m_HistoryMaxSize));
-  addProperty(eBase, "freestore_max_size", AString::fromSize_t(m_FreestoreMaxSize));
+  adminAddProperty(eBase, "history_max_size", AString::fromSize_t(m_HistoryMaxSize));
+  adminAddProperty(eBase, "freestore_max_size", AString::fromSize_t(m_FreestoreMaxSize));
 
   AXmlElement& eInUse = eBase.addElement("object");
   eInUse.addAttribute("name", "InUse");
@@ -85,7 +83,7 @@ void AOSContextManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
     ALock lock(m_InUseSync);
     while(citU != m_InUse.end())
     {
-      AXmlElement& eProp = addProperty(eInUse, ASW("context",7), (*citU).first->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
+      AXmlElement& eProp = adminAddProperty(eInUse, ASW("context",7), (*citU).first->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
       eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citU).first->useEventVisitor().getErrorCount()));
       eProp.addElement(ASW("url",3), (*citU).first->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
       ++citU;
@@ -99,7 +97,7 @@ void AOSContextManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
     ALock lock(m_HistorySync);
     while(citH != m_History.end())
     {
-      AXmlElement& eProp = addProperty(eHistory, ASW("context",7), (*citH)->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
+      AXmlElement& eProp = adminAddProperty(eHistory, ASW("context",7), (*citH)->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
       eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citH)->useEventVisitor().getErrorCount()));
       eProp.addElement(ASW("url",3), (*citH)->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
       ++citH;
@@ -114,7 +112,7 @@ AOSContextManager::AOSContextManager(AOSServices& services) :
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
   m_FreestoreMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/freestore-maxsize", 50);
 
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSContextManager::~AOSContextManager()

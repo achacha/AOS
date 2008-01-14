@@ -7,14 +7,12 @@
 
 const AString ATemplateNodeHandler_SESSION::TAGNAME("SESSION",7);
 
-#ifdef __DEBUG_DUMP__
 void ATemplateNodeHandler_SESSION::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent) << "TAGNAME=" << getTagName() << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 ATemplateNodeHandler_SESSION::ATemplateNodeHandler_SESSION()
 {
@@ -60,7 +58,7 @@ ATemplateNodeHandler_SESSION::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_SESSION::Node::process(ABasePtrHolder& objects, AOutputBuffer& output)
+void ATemplateNodeHandler_SESSION::Node::process(ABasePtrContainer& objects, AOutputBuffer& output)
 {
   //a_Context
   AOSContext *pContext = objects.useAsPtr<AOSContext>(AOSContext::OBJECTNAME);

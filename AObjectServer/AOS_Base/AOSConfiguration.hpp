@@ -167,9 +167,14 @@ public:
   /*!
   Admin interface
   */
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
-  virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
   //a_Services
@@ -224,11 +229,6 @@ private:
   AString m_ReportedHostname;
   int m_ReportedHttpPort;
   int m_ReportedHttpsPort;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AOSConfiguration_HPP__

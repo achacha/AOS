@@ -10,7 +10,6 @@
 #define DEFAULT_HOLDER_SIZE 13
 #define DEFAULT_SLEEP_DURATION 3000
 
-#ifdef __DEBUG_DUMP__
 void AOSSessionManager::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSSessionManager @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -34,7 +33,6 @@ void AOSSessionManager::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 const AString& AOSSessionManager::getClass() const
 {
@@ -42,17 +40,17 @@ const AString& AOSSessionManager::getClass() const
   return CLASS;
 }
 
-void AOSSessionManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSSessionManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASW("timeout",7),
     AString::fromDouble(m_TimeoutInterval)
   );
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASW("sleep-cycle",11),
     AString::fromU4(m_SessionMonitorSleep)
@@ -62,7 +60,7 @@ void AOSSessionManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
   {
     SessionMapHolder *pSessionMapHolder = m_SessionHolderContainer[i];
     ALock lock(pSessionMapHolder->mp_SynchObject);
-    AXmlElement& eHashMap = addProperty(eBase, ASW("SessionMap",10), AString::fromSize_t(pSessionMapHolder->m_SessionMap.size()));  
+    AXmlElement& eHashMap = adminAddProperty(eBase, ASW("SessionMap",10), AString::fromSize_t(pSessionMapHolder->m_SessionMap.size()));  
     eHashMap.addAttribute(ASW("hash", 4), AString::fromSize_t(i));
     eHashMap.addElement(ASW("size", 4), AString::fromSize_t(pSessionMapHolder->m_SessionMap.size()));
   }
@@ -72,7 +70,7 @@ AOSSessionManager::AOSSessionManager(AOSServices& services) :
   m_Services(services),
   m_Thread(AOSSessionManager::threadprocSessionManager)
 {
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 
   //a_Read config
   m_TimeoutInterval = (double)m_Services.useConfiguration().useConfigRoot().getU4("/config/server/session-manager/timeout", 360000);

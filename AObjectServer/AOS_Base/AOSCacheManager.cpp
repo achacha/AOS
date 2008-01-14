@@ -14,7 +14,6 @@
 const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/static-file-cache/enabled");
 const AString AOSCacheManager::TEMPLATE_CACHE_ENABLED("/config/server/template-cache/enabled");
 
-#ifdef __DEBUG_DUMP__
 void AOSCacheManager::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSCacheManager @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -45,7 +44,6 @@ void AOSCacheManager::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 const AString& AOSCacheManager::getClass() const
 {
@@ -53,16 +51,16 @@ const AString& AOSCacheManager::getClass() const
   return CLASS;
 }
 
-void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSCacheManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
   AASSERT(this, mp_StaticFileCache);
 
   {
     AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("static_file_cache",17));
 
-    addPropertyWithAction(
+    adminAddPropertyWithAction(
       elem, 
       ASW("enabled",7), 
       AString::fromBool(m_Services.useConfiguration().useConfigRoot().getBool(STATIC_CACHE_ENABLED, false)),
@@ -71,23 +69,23 @@ void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& 
       ASW("Set",3)
     );
 
-    addProperty(elem, ASW("byte_size",9), AString::fromSize_t(mp_StaticFileCache->getByteSize()));  
-    addProperty(elem, ASW("item_count",10), AString::fromSize_t(mp_StaticFileCache->getItemCount()));  
+    adminAddProperty(elem, ASW("byte_size",9), AString::fromSize_t(mp_StaticFileCache->getByteSize()));  
+    adminAddProperty(elem, ASW("item_count",10), AString::fromSize_t(mp_StaticFileCache->getItemCount()));  
     
     size_t hit = mp_StaticFileCache->getHit();
     size_t miss = mp_StaticFileCache->getMiss();
-    addProperty(elem, ASW("hit",3), AString::fromSize_t(hit));
-    addProperty(elem, ASW("miss",4), AString::fromSize_t(miss));
+    adminAddProperty(elem, ASW("hit",3), AString::fromSize_t(hit));
+    adminAddProperty(elem, ASW("miss",4), AString::fromSize_t(miss));
     if (hit > 0 || miss > 0)
     {
-      addProperty(elem, ASW("efficiency",10), AString::fromDouble((double)hit/double(hit+miss)));
+      adminAddProperty(elem, ASW("efficiency",10), AString::fromDouble((double)hit/double(hit+miss)));
     }
   }
 
   {
     AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("template_cache",14));
 
-    addPropertyWithAction(
+    adminAddPropertyWithAction(
       elem, 
       ASW("enabled",7), 
       AString::fromBool(m_Services.useConfiguration().useConfigRoot().getBool(TEMPLATE_CACHE_ENABLED, false)),
@@ -98,7 +96,7 @@ void AOSCacheManager::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& 
   }
 }
 
-void AOSCacheManager::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   AString str;
   if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
@@ -168,7 +166,7 @@ AOSCacheManager::AOSCacheManager(AOSServices& services) :
   //a_Parsed template cache
   mp_TemplateCache = new TEMPLATE_CACHE();
 
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSCacheManager::~AOSCacheManager()

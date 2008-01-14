@@ -15,14 +15,14 @@ const AString& AOSContextQueue_PreExecutor::getClass() const
   return CLASS;
 }
 
-void AOSContextQueue_PreExecutor::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_PreExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  BASECLASS_AOSContextQueue_PreExecutor::addAdminXml(eBase, request);
+  BASECLASS_AOSContextQueue_PreExecutor::adminEmitXml(eBase, request);
 }
 
-void AOSContextQueue_PreExecutor::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_PreExecutor::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  BASECLASS_AOSContextQueue_PreExecutor::processAdminAction(eBase, request);
+  BASECLASS_AOSContextQueue_PreExecutor::adminProcessAction(eBase, request);
 }
 
 AOSContextQueue_PreExecutor::AOSContextQueue_PreExecutor(
@@ -33,7 +33,7 @@ AOSContextQueue_PreExecutor::AOSContextQueue_PreExecutor(
   BASECLASS_AOSContextQueue_PreExecutor(services, threadCount, queueCount)
 {
   useThreadPool().setThis(this);
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSContextQueue_PreExecutor::~AOSContextQueue_PreExecutor()

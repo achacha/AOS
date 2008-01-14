@@ -1,7 +1,6 @@
 #include "pchAOS_Base.hpp"
 #include "AOSModuleInterface.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSModuleInterface::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSModuleInterface @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -15,7 +14,6 @@ void AOSModuleInterface::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSModuleInterface::AOSModuleInterface(AOSServices& services) :
   m_Services(services),
@@ -23,10 +21,10 @@ AOSModuleInterface::AOSModuleInterface(AOSServices& services) :
 {
 }
 
-void AOSModuleInterface::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSModuleInterface::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
-  addProperty(eBase, ASW("ExecutionTimeAverage",20), m_ExecutionTimeAverage);
-  addProperty(eBase, ASW("ExecutionTimeCount",18), AString::fromU8(m_ExecutionTimeAverage.getCount()));
+  adminAddProperty(eBase, ASW("ExecutionTimeAverage",20), m_ExecutionTimeAverage);
+  adminAddProperty(eBase, ASW("ExecutionTimeCount",18), AString::fromU8(m_ExecutionTimeAverage.getCount()));
 }

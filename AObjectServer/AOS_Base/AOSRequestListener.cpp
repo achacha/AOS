@@ -17,15 +17,15 @@ const AString& AOSRequestListener::getClass() const
   return CLASS;
 }
 
-void AOSRequestListener::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSRequestListener::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
-  addProperty(eBase, ASW("first_queue",11), AString::fromInt(m_FirstQueue));
-  addProperty(eBase, ASW("listener_running",16), (mthread_Listener.isRunning() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
-  addProperty(eBase, ASW("secure_listener_running",23), (mthread_SecureListener.isRunning() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
-  addProperty(eBase, ASW("listener_run",12), (mthread_Listener.isRun() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
-  addProperty(eBase, ASW("secure_listener_run",19), (mthread_Listener.isRun() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
+  adminAddProperty(eBase, ASW("first_queue",11), AString::fromInt(m_FirstQueue));
+  adminAddProperty(eBase, ASW("listener_running",16), (mthread_Listener.isRunning() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
+  adminAddProperty(eBase, ASW("secure_listener_running",23), (mthread_SecureListener.isRunning() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
+  adminAddProperty(eBase, ASW("listener_run",12), (mthread_Listener.isRun() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
+  adminAddProperty(eBase, ASW("secure_listener_run",19), (mthread_Listener.isRun() ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
 }
 
 AOSRequestListener::AOSRequestListener(
@@ -37,7 +37,7 @@ AOSRequestListener::AOSRequestListener(
   m_Services(services),
   m_FirstQueue(firstQueue)
 {
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSRequestListener::~AOSRequestListener()

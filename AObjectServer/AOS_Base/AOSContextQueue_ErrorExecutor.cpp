@@ -9,14 +9,14 @@ const AString& AOSContextQueue_ErrorExecutor::getClass() const
   return CLASS;
 }
 
-void AOSContextQueue_ErrorExecutor::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_ErrorExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  BASECLASS_AOSContextQueue_ErrorExecutor::addAdminXml(eBase, request);
+  BASECLASS_AOSContextQueue_ErrorExecutor::adminEmitXml(eBase, request);
 }
 
-void AOSContextQueue_ErrorExecutor::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_ErrorExecutor::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  BASECLASS_AOSContextQueue_ErrorExecutor::processAdminAction(eBase, request);
+  BASECLASS_AOSContextQueue_ErrorExecutor::adminProcessAction(eBase, request);
 }
 
 AOSContextQueue_ErrorExecutor::AOSContextQueue_ErrorExecutor(
@@ -27,7 +27,7 @@ AOSContextQueue_ErrorExecutor::AOSContextQueue_ErrorExecutor(
   BASECLASS_AOSContextQueue_ErrorExecutor(services, threadCount, queueCount)
 {
   useThreadPool().setThis(this);
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
@@ -114,7 +114,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
             if (m_Services.useCacheManager().getStatusTemplate(statusCode, pTemplate))
             {
               //a_Template for this status code is found, so process and emit into output buffer
-              ABasePtrHolder objects;
+              ABasePtrContainer objects;
               objects.insert(ATemplate::OBJECTNAME_MODEL, &pContext->useModelXmlDocument());
               objects.insert(AOSContext::OBJECTNAME, pContext);
               pTemplate->process(objects, pContext->useOutputBuffer(), true);

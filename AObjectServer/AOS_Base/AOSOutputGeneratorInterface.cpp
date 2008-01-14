@@ -1,7 +1,6 @@
 #include "pchAOS_Base.hpp"
 #include "AOSOutputGeneratorInterface.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSOutputGeneratorInterface::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSOutputGeneratorInterface @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -11,17 +10,16 @@ void AOSOutputGeneratorInterface::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSOutputGeneratorInterface::AOSOutputGeneratorInterface(AOSServices& services) :
   m_Services(services)
 {
 }
 
-void AOSOutputGeneratorInterface::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSOutputGeneratorInterface::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
-  addProperty(eBase, ASW("ExecutionTimeAverage",20), m_ExecutionTimeAverage);
-  addProperty(eBase, ASW("ExecutionTimeCount",18), AString::fromU8(m_ExecutionTimeAverage.getCount()));
+  adminAddProperty(eBase, ASW("ExecutionTimeAverage",20), m_ExecutionTimeAverage);
+  adminAddProperty(eBase, ASW("ExecutionTimeCount",18), AString::fromU8(m_ExecutionTimeAverage.getCount()));
 }

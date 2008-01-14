@@ -294,7 +294,7 @@ void AOSAdmin::_processAdminCommand(
         if (pAdminObject)
         {
           AXmlElement& eObject = xmlDoc.useRoot().addElement(ASW("object",6)).addAttribute(ASW("name",4), objectName);
-          pAdminObject->addAdminXml(eObject, request);
+          pAdminObject->adminEmitXml(eObject, request);
         }
         else
         {
@@ -320,8 +320,8 @@ void AOSAdmin::_processAdminCommand(
         if (pAdminObject)
         {
           AXmlElement& eObject = xmlDoc.useRoot().addElement(ASW("object",6)).addAttribute(ASW("name",4), objectName);
-          pAdminObject->processAdminAction(eObject, request);
-          pAdminObject->addAdminXml(eObject, request);
+          pAdminObject->adminProcessAction(eObject, request);
+          pAdminObject->adminEmitXml(eObject, request);
         }
         else
         {

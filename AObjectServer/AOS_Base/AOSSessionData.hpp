@@ -76,15 +76,15 @@ public:
   virtual void toAFile(AFile&) const;
   virtual void fromAFile(AFile&);
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   AXmlDocument m_Data;
   ATimer m_AgeTimer;
   ATimer m_LastUsedTimer;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AOSSessionData_HPP__

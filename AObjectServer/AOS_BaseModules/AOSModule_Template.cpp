@@ -2,7 +2,7 @@
 #include "AOSModule_Template.hpp"
 #include "AFile_AString.hpp"
 #include "AFile_Physical.hpp"
-#include "ABasePtrHolder.hpp"
+#include "ABasePtrContainer.hpp"
 #include "AXmlElement.hpp"
 
 const AString& AOSModule_Template::getClass() const
@@ -51,7 +51,7 @@ AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AX
   }  
 
   //a_Objects
-  ABasePtrHolder objects;
+  ABasePtrContainer objects;
   objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useModelXmlDocument());  //a_Add ALibrary required model AXmlDocument
   objects.insert(AOSContext::OBJECTNAME, &context);                              //a_Add AOS required AOSContext
 

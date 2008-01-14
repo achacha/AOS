@@ -10,7 +10,6 @@
 
 extern "C" int luaopen_aos(lua_State *L);
 
-#ifdef __DEBUG_DUMP__
 void AOSServices::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSServices @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -46,7 +45,6 @@ void AOSServices::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 const AString& AOSServices::getClass() const
 {
@@ -54,22 +52,22 @@ const AString& AOSServices::getClass() const
   return CLASS;
 }
 
-void AOSServices::registerAdminObject(AOSAdminRegistry& registry)
+void AOSServices::adminRegisterObject(AOSAdminRegistry& registry)
 {
   registry.insert(getClass(), *this);
 }
 
-void AOSServices::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSServices::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
   
-  addProperty(eBase, ASW("log",3), *mp_Log);
+  adminAddProperty(eBase, ASW("log",3), *mp_Log);
   
   {
     AString str(16,16);
     str.parseU4(mp_Log->getEventMask(), 16);
     str.justifyRight(8, '0');
-    addProperty(eBase, ASW("log.eventmask",13), str);
+    adminAddProperty(eBase, ASW("log.eventmask",13), str);
   }
 }
 

@@ -89,9 +89,14 @@ public:
   /*!
   Admin xml
   */
-  virtual void registerAdminObject(AOSAdminRegistry& registry);
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminRegisterObject(AOSAdminRegistry& registry);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
   //a_No default ctor
@@ -129,11 +134,6 @@ private:
 
   //a_Cache manager
   AOSCacheManager *mp_CacheManager;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AOSServices_HPP__

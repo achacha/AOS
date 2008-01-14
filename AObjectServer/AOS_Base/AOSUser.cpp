@@ -2,7 +2,6 @@
 #include "pchAOS_Base.hpp"
 #include "AOSUser.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSUser::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -11,7 +10,6 @@ void AOSUser::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSUser::AOSUser(AXmlElement& element) :
   m_Element(element)

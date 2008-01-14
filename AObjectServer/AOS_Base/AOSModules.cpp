@@ -2,7 +2,6 @@
 #include "AOSModules.hpp"
 #include "AOSModuleInfo.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSModules::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSModules @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -14,7 +13,6 @@ void AOSModules::debugDump(std::ostream& os, int indent) const
  
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSModules::AOSModules()
 {

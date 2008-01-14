@@ -41,11 +41,16 @@ public:
   /*!
   AOSAdminInterface
   */
-  virtual void registerAdminObject(AOSAdminRegistry& registry);
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
-  virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminRegisterObject(AOSAdminRegistry& registry);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
   static const AString CLASS;
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
   //! Path of the config
@@ -56,11 +61,6 @@ private:
 
   //a_The log
   ALog& m_Log;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AOSDirectoryConfig_HPP__

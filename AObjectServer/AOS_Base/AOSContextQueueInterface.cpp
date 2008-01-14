@@ -14,11 +14,11 @@ AOSContextQueueInterface::~AOSContextQueueInterface()
 {
 }
 
-void AOSContextQueueInterface::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueueInterface::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 }
 
-void AOSContextQueueInterface::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueueInterface::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
 }

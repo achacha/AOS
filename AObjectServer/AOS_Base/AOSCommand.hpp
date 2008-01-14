@@ -15,6 +15,20 @@ class ALog;
 class AOS_BASE_API AOSCommand : public AXmlEmittable, public AXmlParsable, public AOSAdminInterface
 {
 public:
+  /*!
+  Constant strings
+  */
+  static const AString S_COMMAND;
+  static const AString S_INPUT;
+  static const AString S_MODULE;
+  static const AString S_OUTPUT;
+
+  static const AString S_CLASS;
+  static const AString S_ENABLED;
+  static const AString S_AJAX;
+  static const AString S_ALIAS;
+
+public:
   AOSCommand(const AString& name, ALog&);
   virtual ~AOSCommand();
 
@@ -82,11 +96,15 @@ public:
   /*!
   AOSAdminInterface
   */
-  virtual void registerAdminObject(AOSAdminRegistry& registry);
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
-  virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminRegisterObject(AOSAdminRegistry& registry);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
-  static const AString CLASS;
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
   //a_Command alias
@@ -112,11 +130,6 @@ private:
 
   //a_The log
   ALog& m_Log;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 /*

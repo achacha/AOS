@@ -18,7 +18,6 @@ const AString AOSConfiguration::DATABASE_CONNECTIONS("/config/server/database/co
 #define DEFAULT_AOSCONTEXTMANAGER_HISTORY_MAX_SIZE 100
 #define DEFAULT_AOSCONTEXTMANAGER_FREESTORE_MAX_SIZE 50
 
-#ifdef __DEBUG_DUMP__
 void AOSConfiguration::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSConfiguration @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -75,7 +74,6 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 const AString& AOSConfiguration::getClass() const
 {
@@ -83,19 +81,19 @@ const AString& AOSConfiguration::getClass() const
   return CLASS;
 }
 
-void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSConfiguration::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
   
-  addProperty(eBase, ASWNL("aos_base_config_directory"), getAosBaseConfigDirectory());
-  addProperty(eBase, ASWNL("aos_base_dynamic_directory"), getAosBaseDynamicDirectory());
-  addProperty(eBase, ASWNL("aos_base_static_directory"), getAosBaseStaticDirectory());
-  addProperty(eBase, ASWNL("aos_base_data_directory"), getAosBaseDataDirectory());
+  adminAddProperty(eBase, ASWNL("aos_base_config_directory"), getAosBaseConfigDirectory());
+  adminAddProperty(eBase, ASWNL("aos_base_dynamic_directory"), getAosBaseDynamicDirectory());
+  adminAddProperty(eBase, ASWNL("aos_base_static_directory"), getAosBaseStaticDirectory());
+  adminAddProperty(eBase, ASWNL("aos_base_data_directory"), getAosBaseDataDirectory());
 
-  addProperty(eBase, ASWNL("reported_server")    , m_ReportedServer);
-  addProperty(eBase, ASWNL("reported_hostname")  , m_ReportedHostname);
-  addProperty(eBase, ASWNL("reported_http_port") , AString::fromInt(m_ReportedHttpPort));
-  addProperty(eBase, ASWNL("reported_https_port"), AString::fromInt(m_ReportedHttpsPort));
+  adminAddProperty(eBase, ASWNL("reported_server")    , m_ReportedServer);
+  adminAddProperty(eBase, ASWNL("reported_hostname")  , m_ReportedHostname);
+  adminAddProperty(eBase, ASWNL("reported_http_port") , AString::fromInt(m_ReportedHttpPort));
+  adminAddProperty(eBase, ASWNL("reported_https_port"), AString::fromInt(m_ReportedHttpsPort));
 
   {
     LIST_AString moduleNames;
@@ -110,7 +108,7 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
         rope.append(*cit);
         ++cit;
       }
-      addProperty(
+      adminAddProperty(
         eBase,
         ASWNL("dynamic_module_libraries"),
         rope
@@ -118,19 +116,19 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
     }
   }
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASWNL("aos_default_filename"),
     getAosDefaultFilename()
   );
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASWNL("aos_default_input_processor"),
     getAosDefaultInputProcessor()
   );
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASWNL("aos_default_output_generator"),
     getAosDefaultOutputGenerator()
@@ -152,14 +150,14 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
       rope.append(AConstant::ASTRING_CRLF);
       ++cit;
     }
-    addProperty(eBase, ASWNL("Commands"), rope);
+    adminAddProperty(eBase, ASWNL("Commands"), rope);
   }
 
   {
     ARope rope;
     m_Config.emit(rope, 0);
     AXmlElement& eObject = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("XMLConfig",9));
-    addProperty(
+    adminAddProperty(
       eBase,
       ASW("config",6),
       rope,
@@ -168,20 +166,20 @@ void AOSConfiguration::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader&
   }
 }
 
-void AOSConfiguration::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSConfiguration::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   AString str;
   if (request.getUrl().getParameterPairs().get(ASW("display_name",12), str))
   {
     MAP_ASTRING_COMMANDPTR::iterator it = m_CommandPtrs.find(str);
     if (it != m_CommandPtrs.end())
-      (*it).second->processAdminAction(eBase, request);
+      (*it).second->adminProcessAction(eBase, request);
     else
-      addError(eBase, "command not found");
+      adminAddError(eBase, "command not found");
   }
   else
   {
-    addError(eBase, "'display_name' input not found");
+    adminAddError(eBase, "'display_name' input not found");
     return;
   }
 }
@@ -203,7 +201,7 @@ AOSConfiguration::AOSConfiguration(
   m_ReportedHttpPort(80),
   m_ReportedHttpsPort(443)
 {
-  registerAdminObject(services.useAdminRegistry());
+  adminRegisterObject(services.useAdminRegistry());
 
   m_AosBaseConfigDir.usePathNames().push_back("conf");
   m_AosBaseDynamicDir.usePathNames().push_back("dynamic");
@@ -419,7 +417,7 @@ void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
   m_DirectoryConfigs[strPath] = p;
 
   //a_Register the command with admin
-  p->registerAdminObject(m_Services.useAdminRegistry());
+  p->adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 void AOSConfiguration::_readCommand(AFilename& filename)
@@ -463,7 +461,7 @@ void AOSConfiguration::_readCommand(AFilename& filename)
       p.setOwnership(false);
 
       //a_Register the command with admin
-      p->registerAdminObject(m_Services.useAdminRegistry());
+      p->adminRegisterObject(m_Services.useAdminRegistry());
 
       strPath.clear();
     }

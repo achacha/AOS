@@ -24,8 +24,8 @@ public:
   /*!
   Admin interface
   */
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
-  virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
 
 protected:

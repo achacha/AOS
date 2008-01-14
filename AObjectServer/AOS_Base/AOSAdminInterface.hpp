@@ -18,13 +18,13 @@ and otionally process actions
 -----CUT: Add in your inherited class-----
 public:
   //REQUIRED
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
   
   //OPTIONAL (if any actions are attached to properties)
-  virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
-  virtual void registerAdminObject(AOSAdminRegistry& registry);
-  virtual void registerAdminObject(AOSAdminRegistry& registry, const AString& parentClassName);
+  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminRegisterObject(AOSAdminRegistry& registry);
+  virtual void adminRegisterObject(AOSAdminRegistry& registry, const AString& parentClassName);
 
 -----CUT: Add in your inherited class-----
 
@@ -34,9 +34,9 @@ const AString& MyClass::getClass() const
   static const AString CLASS("MyClass");
   return CLASS;   // MUST be unique with all AOSAdminInterface based classes
 }
-void MyClass::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void MyClass::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 { 
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
   //TODO: Your code here
 }
@@ -57,30 +57,30 @@ public:
   Derived methods must call this method also
 
   Example:
-  void registerAdminObject(AOSAdminRegistry& registry)
+  void adminRegisterObject(AOSAdminRegistry& registry)
   {
     // register self
-    registry.registerAdminObject("MyClass", *this);
+    registry.adminRegisterObject("MyClass", *this);
 
     // can register subclasses also
   }
-  void MyClass::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+  void MyClass::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
   {
     //NOTE: Call the parent class here, which would call it's parent until AOSAdminInterface is reached
     //  If a parent class does not have thsi method, it should be added to complete the chain
-    AOSAdminInterface::addAdminXml(eBase, request);
+    AOSAdminInterface::adminEmitXml(eBase, request);
 
     // add properties for this object here
   }
-  void MyClass::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+  void MyClass::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
   {
     // process 'request' and apply any requested changes
   }
   */
-  virtual void registerAdminObject(AOSAdminRegistry& registry);
-  virtual void registerAdminObject(AOSAdminRegistry& registry, const AString& parentClassName);
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
-  virtual void processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request) {}
+  virtual void adminRegisterObject(AOSAdminRegistry& registry);
+  virtual void adminRegisterObject(AOSAdminRegistry& registry, const AString& parentClassName);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request) {}
 
   /*!
   Classname, MUST be unique to all AOSAdminInterface based classes
@@ -116,12 +116,12 @@ protected:
   /*!
   Admin XML helpers
 
-  Encoding for propertyValue is assumed AXmlElement::None, use addProperty(...) helper to use a different one
+  Encoding for propertyValue is assumed AXmlElement::None, use adminAddProperty(...) helper to use a different one
   if the propertyValue is not XML content safe and requires some CDATA wrapping/encoding
 
   Returns newly created <property> element
   */
-  AXmlElement& addPropertyWithAction(
+  AXmlElement& adminAddPropertyWithAction(
     AXmlElement& eBase, 
     const AString& propertyName, 
     const AEmittable& propertyValue,
@@ -129,7 +129,7 @@ protected:
     const AString& actionDesc
   ) const;
 
-  AXmlElement& addPropertyWithAction(
+  AXmlElement& adminAddPropertyWithAction(
     AXmlElement& eBase, 
     const AString& propertyName, 
     const AEmittable& propertyValue,
@@ -138,7 +138,7 @@ protected:
     const AString& actionParam
   ) const;
 
-  AXmlElement& addPropertyWithAction(
+  AXmlElement& adminAddPropertyWithAction(
     AXmlElement& eBase, 
     const AString& propertyName, 
     const AEmittable& propertyValue,
@@ -150,7 +150,7 @@ protected:
   /*!
   Add error
   */
-  AXmlElement& addError(
+  AXmlElement& adminAddError(
     AXmlElement& eBase, 
     const AString& adminError,
     AXmlElement::Encoding adminErrorEncoding = AXmlElement::ENC_CDATADIRECT
@@ -159,7 +159,7 @@ protected:
   /*!
   Add message
   */
-  AXmlElement& addMessage(
+  AXmlElement& adminAddMessage(
     AXmlElement& eBase, 
     const AString& adminMessage,
     AXmlElement::Encoding adminMessageEncoding = AXmlElement::ENC_CDATADIRECT
@@ -169,7 +169,7 @@ protected:
   Finer grain helper: returns <property> element created
   Allows you to specify encoding for the propertyValue
   */
-  AXmlElement& addProperty(
+  AXmlElement& adminAddProperty(
     AXmlElement& eBase, 
     const AString& propertyName, 
     const AEmittable& propertyValue, 
@@ -177,9 +177,9 @@ protected:
   ) const;
 
   //a_Finer grain helper: returns <action> element attached to the property
-  AXmlElement& addActionToProperty(AXmlElement& eProperty, const AString& actionName, const AString& actionDesc) const;
-  AXmlElement& addActionToProperty(AXmlElement& eProperty, const AString& actionName, const AString& actionDesc, const AString& actionParam) const;
-  AXmlElement& addActionToProperty(AXmlElement& eProperty, const AString& actionName, const AString& actionDesc, const LIST_AString& actionParams) const;
+  AXmlElement& adminAddActionToProperty(AXmlElement& eProperty, const AString& actionName, const AString& actionDesc) const;
+  AXmlElement& adminAddActionToProperty(AXmlElement& eProperty, const AString& actionName, const AString& actionDesc, const AString& actionParam) const;
+  AXmlElement& adminAddActionToProperty(AXmlElement& eProperty, const AString& actionName, const AString& actionDesc, const LIST_AString& actionParams) const;
 
 protected:
   AMovingAverage m_ExecutionTimeAverage;

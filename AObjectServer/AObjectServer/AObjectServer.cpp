@@ -67,7 +67,7 @@ int main(int argc, char **argv)
       }
 
       AOSAdmin admin(services);
-      services.registerAdminObject(services.useAdminRegistry());
+      services.adminRegisterObject(services.useAdminRegistry());
 
       //
       //a_Initialize the global objects

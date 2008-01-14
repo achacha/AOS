@@ -8,7 +8,6 @@
 
 const AString AOSDirectoryConfig::CLASS("AOSDirectoryConfig");
 
-#ifdef __DEBUG_DUMP__
 void AOSDirectoryConfig::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSDirectoryConfig @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -18,7 +17,6 @@ void AOSDirectoryConfig::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSDirectoryConfig::AOSDirectoryConfig(const AString path, const AXmlElement& base, ALog& log) :
   m_Path(path),
@@ -36,7 +34,7 @@ const AString& AOSDirectoryConfig::getClass() const
   return CLASS;
 }
 
-void AOSDirectoryConfig::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSDirectoryConfig::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   //a_Display the command name (which is the path)
   eBase.addAttribute(ASW("display",7), m_Path);
@@ -46,25 +44,26 @@ void AOSDirectoryConfig::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeade
   int i=0;
   while (cit != m_Modules.use().end())
   {
-    ARope ropeName("module.", 7);
+    ARope ropeName(AOSCommand::S_MODULE);
+    ropeName.append('.');
     ropeName.append(AString::fromInt(i));
-    addProperty(eBase, ropeName, (*cit)->getModuleClass());
+    adminAddProperty(eBase, ropeName, (*cit)->getModuleClass());
     ropeName.append(".params",7);
 
     rope.clear();
     (*cit)->useParams().emit(rope, 0);
     
-    addProperty(eBase, ropeName, rope, AXmlElement::ENC_CDATASAFE);
+    adminAddProperty(eBase, ropeName, rope, AXmlElement::ENC_CDATASAFE);
     ++cit;
     ++i;
   }
 }
 
-void AOSDirectoryConfig::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSDirectoryConfig::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
 }
 
-void AOSDirectoryConfig::registerAdminObject(AOSAdminRegistry& registry)
+void AOSDirectoryConfig::adminRegisterObject(AOSAdminRegistry& registry)
 {
   AString str(getClass());
   str.append(':');
@@ -81,8 +80,8 @@ void AOSDirectoryConfig::emitXml(AXmlElement& target) const
   AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.get().begin();
   while (cit != m_Modules.get().end())
   {
-    AXmlElement& eModule = target.addElement(ASW("module",6));
-    eModule.addAttribute(AOSCommand::CLASS, (*cit)->getModuleClass());
+    AXmlElement& eModule = target.addElement(AOSCommand::S_MODULE);
+    eModule.addAttribute(AOSCommand::S_CLASS, (*cit)->getModuleClass());
     if ((*cit)->getParams().hasElements())
       eModule.addContent((*cit)->getParams().clone());
     ++cit;
@@ -96,13 +95,13 @@ void AOSDirectoryConfig::fromXml(const AXmlElement& element)
   //a_Get module names
   m_Modules.use().clear();
   AXmlElement::CONST_CONTAINER nodes;
-  element.find(ASW("module",6), nodes);
+  element.find(AOSCommand::S_MODULE, nodes);
   
   AString strClass, strName;
   for(AXmlElement::CONST_CONTAINER::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
-    if ((*citModule)->getAttributes().get(ASW("class",5), strClass) && !strClass.isEmpty())
+    if ((*citModule)->getAttributes().get(AOSCommand::S_CLASS, strClass) && !strClass.isEmpty())
     {
       //a_Add new module info object
       AASSERT(*citModule, *citModule);

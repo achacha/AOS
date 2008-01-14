@@ -34,18 +34,18 @@ public:
   /*!
   AOSModuleInterface
   */
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
   /*!
   AOS services
   */
   AOSServices& m_Services;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AOSOutputGeneratorInterface_HPP__

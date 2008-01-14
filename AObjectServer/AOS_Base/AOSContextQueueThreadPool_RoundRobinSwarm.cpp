@@ -14,23 +14,23 @@ const AString& AOSContextQueueThreadPool_RoundRobinSwarm::getClass() const
   return CLASS;
 }
 
-void AOSContextQueueThreadPool_RoundRobinSwarm::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueueThreadPool_RoundRobinSwarm::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSContextQueueThreadPool::addAdminXml(eBase, request);
+  AOSContextQueueThreadPool::adminEmitXml(eBase, request);
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASW("CurrentReadQueue",16),
     AString::fromInt(m_currentReadQueue % m_queueCount)
   );
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASW("CurrentWriteQueue",17),
     AString::fromInt(m_currentWriteQueue % m_queueCount)
   );
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASW("Queues.size",11),
     AString::fromSize_t(m_Queues.size())
@@ -38,13 +38,13 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::addAdminXml(AXmlElement& eBase, 
 
   for (size_t i=0; i<m_AddCounters.size(); ++i)
   {
-    addProperty(
+    adminAddProperty(
       eBase,
       ARope("Queue[")+AString::fromSize_t(i)+ASW("].count",7),
       AString::fromSize_t(m_AddCounters[i])
     );
 
-    addProperty(
+    adminAddProperty(
       eBase,
       ARope("Queue[")+AString::fromSize_t(i)+ASW("].size",6),
       AString::fromSize_t(m_Queues[i].size())
@@ -52,9 +52,9 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::addAdminXml(AXmlElement& eBase, 
   }
 }
 
-void AOSContextQueueThreadPool_RoundRobinSwarm::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueueThreadPool_RoundRobinSwarm::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSContextQueueThreadPool::processAdminAction(eBase, request);
+  AOSContextQueueThreadPool::adminProcessAction(eBase, request);
 }
 
 AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinSwarm(

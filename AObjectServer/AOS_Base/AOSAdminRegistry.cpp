@@ -3,7 +3,6 @@
 #include "AException.hpp"
 #include "ALog.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSAdminRegistry::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSAdminRegistry @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -19,7 +18,6 @@ void AOSAdminRegistry::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSAdminRegistry::AOSAdminRegistry(ALog& aLog) :
   m_Log(aLog)

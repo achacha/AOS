@@ -10,7 +10,7 @@ AOSDatabaseConnectionPool::AOSDatabaseConnectionPool(AOSServices& services) :
   mp_DatabasePool(NULL),
   m_isInitialized(false)
 {
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSDatabaseConnectionPool::~AOSDatabaseConnectionPool()
@@ -28,13 +28,13 @@ const AString& AOSDatabaseConnectionPool::getClass() const
   return CLASS;
 }
 
-void AOSDatabaseConnectionPool::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSDatabaseConnectionPool::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 { 
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
-  addProperty(eBase, ASW("isInitialized",13), (m_isInitialized ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
+  adminAddProperty(eBase, ASW("isInitialized",13), (m_isInitialized ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE));
   if (mp_DatabasePool)
-    addProperty(eBase, ASW("DatabasePool",12), *mp_DatabasePool);
+    adminAddProperty(eBase, ASW("DatabasePool",12), *mp_DatabasePool);
 }
 
 void AOSDatabaseConnectionPool::init(const AUrl& url, int count)

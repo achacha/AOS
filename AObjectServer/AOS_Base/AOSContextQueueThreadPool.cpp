@@ -19,17 +19,17 @@ AOSContextQueueThreadPool::~AOSContextQueueThreadPool()
 {
 }
 
-void AOSContextQueueThreadPool::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueueThreadPool::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSContextQueueInterface::addAdminXml(eBase, request);
+  AOSContextQueueInterface::adminEmitXml(eBase, request);
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASW("ThreadPool.threadCount",22),
     AString::fromSize_t(m_ThreadPool.getThreadCount())
   );
 
-  addPropertyWithAction(
+  adminAddPropertyWithAction(
     eBase, 
     ASW("ThreadPool.sleepDelay",21),
     AString::fromInt(m_SleepDelay),
@@ -38,7 +38,7 @@ void AOSContextQueueThreadPool::addAdminXml(AXmlElement& eBase, const AHTTPReque
     ASW("newSleepDelay",13)
   );
 
-  addPropertyWithAction(
+  adminAddPropertyWithAction(
     eBase, 
     ASW("ThreadPool.threadCount",22),
     AString::fromSize_t(m_ThreadPool.getThreadCount()),
@@ -48,7 +48,7 @@ void AOSContextQueueThreadPool::addAdminXml(AXmlElement& eBase, const AHTTPReque
   );
 }
 
-void AOSContextQueueThreadPool::processAdminAction(AXmlElement& base, const AHTTPRequestHeader& request)
+void AOSContextQueueThreadPool::adminProcessAction(AXmlElement& base, const AHTTPRequestHeader& request)
 {
   AString str;
   if (request.getUrl().getParameterPairs().get(ASW("newThreadCount",14), str))

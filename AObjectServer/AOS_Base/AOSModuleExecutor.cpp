@@ -6,7 +6,6 @@
 #include "AOSServices.hpp"
 #include "AOSCommand.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSModuleExecutor::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSModuleExecutor @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -22,7 +21,6 @@ void AOSModuleExecutor::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 const AString& AOSModuleExecutor::getClass() const
 {
@@ -30,14 +28,14 @@ const AString& AOSModuleExecutor::getClass() const
   return CLASS;
 }
 
-void AOSModuleExecutor::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSModuleExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
   ModuleContainer::const_iterator cit = m_Modules.begin();
   while (cit != m_Modules.end())
   {
-    addProperty(eBase, ASW("module",6), (*cit).second->getClass());
+    adminAddProperty(eBase, ASW("module",6), (*cit).second->getClass());
     ++cit;
   }
 }
@@ -45,7 +43,7 @@ void AOSModuleExecutor::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
 AOSModuleExecutor::AOSModuleExecutor(AOSServices& services) :
   m_Services(services)
 {
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSModuleExecutor::~AOSModuleExecutor()
@@ -92,7 +90,7 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
   pModule->init();
 
   //a_Register the module's admin interface
-  pModule->registerAdminObject(m_Services.useAdminRegistry(), ASW("AOSModuleExecutor",17));
+  pModule->adminRegisterObject(m_Services.useAdminRegistry(), ASW("AOSModuleExecutor",17));
 }
 
 void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)

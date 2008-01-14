@@ -6,9 +6,16 @@
 #include "AOSAdminRegistry.hpp"
 #include "AOSModules.hpp"
 
-const AString AOSCommand::CLASS("AOSCommand");
+const AString AOSCommand::S_COMMAND("command",7);
+const AString AOSCommand::S_INPUT("input",5);
+const AString AOSCommand::S_MODULE("module",6);
+const AString AOSCommand::S_OUTPUT("output",6);
 
-#ifdef __DEBUG_DUMP__
+const AString AOSCommand::S_CLASS("class",5);
+const AString AOSCommand::S_ENABLED("enabled",7);
+const AString AOSCommand::S_AJAX("ajax",4);
+const AString AOSCommand::S_ALIAS("alias",5);
+
 void AOSCommand::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSCommand @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -45,12 +52,11 @@ void AOSCommand::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSCommand::AOSCommand(const AString& path, ALog& log) :
   m_CommandPath(path),
-  m_InputParams(ASW("input",5)),
-  m_OutputParams(ASW("output",6)),
+  m_InputParams(S_INPUT),
+  m_OutputParams(S_OUTPUT),
   m_Enabled(true),
   m_ForceAjax(false),
   m_Log(log)
@@ -63,61 +69,63 @@ AOSCommand::~AOSCommand()
 
 const AString& AOSCommand::getClass() const
 {
+  static const AString CLASS("AOSCommand");
   return CLASS;
 }
 
-void AOSCommand::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSCommand::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   //a_Display the commadn name (which is the path)
   eBase.addAttribute(ASW("display",5), m_CommandPath);
 
   //a_Alias if any
-  eBase.addAttribute(ASW("alias",5), m_CommandAlias);
+  eBase.addAttribute(S_ALIAS, m_CommandAlias);
 
   ARope rope;
   if (!m_InputProcessor.isEmpty())
   {
-    addProperty(eBase, ASW("inputProcessor",14), m_InputProcessor);
+    adminAddProperty(eBase, S_INPUT, m_InputProcessor);
     m_InputParams.emit(rope, 0);
-    addProperty(eBase, ASW("inputProcessor.params",21), rope, AXmlElement::ENC_CDATASAFE);
+    adminAddProperty(eBase, S_INPUT+ASW(".params",7), rope, AXmlElement::ENC_CDATASAFE);
   }
 
   AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.use().begin();
   int i=0;
   while (cit != m_Modules.use().end())
   {
-    ARope ropeName("module.", 7);
+    ARope ropeName(S_MODULE);
+    ropeName.append('.');
     ropeName.append(AString::fromInt(i));
-    addProperty(eBase, ropeName, (*cit)->getModuleClass());
+    adminAddProperty(eBase, ropeName, (*cit)->getModuleClass());
     ropeName.append(".params",7);
 
     rope.clear();
     (*cit)->useParams().emit(rope, 0);
     
-    addProperty(eBase, ropeName, rope, AXmlElement::ENC_CDATASAFE);
+    adminAddProperty(eBase, ropeName, rope, AXmlElement::ENC_CDATASAFE);
     ++cit;
     ++i;
   }
 
   if (!m_OutputGenerator.isEmpty())
   {
-    addProperty(eBase, ASW("outputGenerator",15), m_OutputGenerator);
+    adminAddProperty(eBase, S_OUTPUT, m_OutputGenerator);
     rope.clear();
     m_OutputParams.emit(rope, 0);
-    addProperty(eBase, ASW("outputGenerator.params",22), rope, AXmlElement::ENC_CDATASAFE);
+    adminAddProperty(eBase, S_OUTPUT+ASW(".params",7), rope, AXmlElement::ENC_CDATASAFE);
   }
 
-  addPropertyWithAction(
+  adminAddPropertyWithAction(
     eBase, 
-    ASW("enabled",7), 
+    S_ENABLED, 
     AString::fromBool(m_Enabled),
     ASW("Update",6), 
     ASWNL("Enable(1) or Disable(0) the command"),
     ASW("Set",3));
   
-  addPropertyWithAction(
+  adminAddPropertyWithAction(
     eBase, 
-    ASW("forceAJAX",9), 
+    S_AJAX, 
     AString::fromBool(m_ForceAjax),
     ASW("Update",6), 
     ASWNL("Force AJAX(1) or Default(0)"),
@@ -125,14 +133,14 @@ void AOSCommand::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& reque
   );
 }
 
-void AOSCommand::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSCommand::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   AString str;
-  if (request.getUrl().getParameterPairs().get(ASW("enabled",7), str))
+  if (request.getUrl().getParameterPairs().get(S_ENABLED, str))
   {
     m_Enabled = (str.at(0) == '0' ? false : true);
   }
-  else if (request.getUrl().getParameterPairs().get(ASW("ajax",4), str))
+  else if (request.getUrl().getParameterPairs().get(S_AJAX, str))
   {
     m_ForceAjax = (str.at(0) == '0' ? false : true);
   }
@@ -141,17 +149,17 @@ void AOSCommand::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader
 void AOSCommand::emitXml(AXmlElement& target) const
 {
   if (target.useName().isEmpty())
-    target.useName().assign(ASW("command",7));
+    target.useName().assign(S_COMMAND);
 
   if (!m_CommandAlias.isEmpty())
-    target.addAttribute(ASW("alias", 5), m_CommandAlias);
+    target.addAttribute(S_ALIAS, m_CommandAlias);
   
-  target.addAttribute(ASW("enabled", 7), m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
-  target.addAttribute(ASW("forceAJAX",9), m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
+  target.addAttribute(S_ENABLED, m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
+  target.addAttribute(S_AJAX, m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   
   //a_Input
-  AXmlElement& eInput = target.addElement(ASW("input",5));
-  eInput.addAttribute(ASW("class",5), m_InputProcessor);
+  AXmlElement& eInput = target.addElement(S_INPUT);
+  eInput.addAttribute(S_CLASS, m_InputProcessor);
   if (m_InputParams.hasElements()) 
     eInput.addContent(m_InputParams.clone());
   
@@ -159,16 +167,16 @@ void AOSCommand::emitXml(AXmlElement& target) const
   AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.get().begin();
   while (cit != m_Modules.get().end())
   {
-    AXmlElement& eModule = target.addElement(ASW("module",6));
-    eModule.addAttribute(ASW("class",5), (*cit)->getModuleClass());
+    AXmlElement& eModule = target.addElement(S_MODULE);
+    eModule.addAttribute(S_CLASS, (*cit)->getModuleClass());
     if ((*cit)->getParams().hasElements())
       eModule.addContent((*cit)->getParams().clone());
     ++cit;
   }
 
   //a_Output
-  AXmlElement& eOutput = target.addElement(ASW("output",6));
-  eOutput.addAttribute(ASW("class",5), m_OutputGenerator);
+  AXmlElement& eOutput = target.addElement(S_OUTPUT);
+  eOutput.addAttribute(S_CLASS, m_OutputGenerator);
   if (m_OutputParams.hasElements())
     eOutput.addContent(m_OutputParams.clone());
 }
@@ -178,17 +186,17 @@ void AOSCommand::fromXml(const AXmlElement& element)
   AString str(256,128);
 
   //a_Set command alias
-  element.getAttributes().get(ASW("alias",5), m_CommandAlias);
+  element.getAttributes().get(S_ALIAS, m_CommandAlias);
 
   //a_Enabled?
-  element.getAttributes().get(ASW("enabled",7), str);
+  element.getAttributes().get(S_ENABLED, str);
   if (str.equals(AConstant::ASTRING_ZERO) || str.equals(AConstant::ASTRING_FALSE))
     m_Enabled = false;
   else
     m_Enabled = true;
 
   //a_Is Ajax call?
-  element.getAttributes().get(ASW("forceAJAX",9), str);
+  element.getAttributes().get(S_AJAX, str);
   if (str.equals(AConstant::ASTRING_ONE) || str.equals(AConstant::ASTRING_TRUE))
     m_ForceAjax = true;
   else
@@ -197,33 +205,33 @@ void AOSCommand::fromXml(const AXmlElement& element)
   //a_Get input processor
   m_InputProcessor.clear();
   m_InputParams.clear();
-  const AXmlElement *pNode = element.findElement(ASW("input",5));
+  const AXmlElement *pNode = element.findElement(S_INPUT);
   if (pNode)
   {
-    pNode->getAttributes().get(ASW("class",5), m_InputProcessor);
+    pNode->getAttributes().get(S_CLASS, m_InputProcessor);
     pNode->emitXmlContent(m_InputParams);
   }
 
   //a_Get output generator
   m_OutputGenerator.clear();
   m_OutputParams.clear();
-  pNode = element.findElement(ASW("output",6));
+  pNode = element.findElement(S_OUTPUT);
   if (pNode)
   {
-    pNode->getAttributes().get(ASW("class",5), m_OutputGenerator);
+    pNode->getAttributes().get(S_CLASS, m_OutputGenerator);
     pNode->emitXmlContent(m_OutputParams);
   }
 
   //a_Get module names
   m_Modules.use().clear();
   AXmlElement::CONST_CONTAINER nodes;
-  element.find(ASW("module",6), nodes);
+  element.find(S_MODULE, nodes);
   
   AString strClass;
   for (AXmlElement::CONST_CONTAINER::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
-    if ((*citModule)->getAttributes().get(ASW("class",5), strClass) && !strClass.isEmpty())
+    if ((*citModule)->getAttributes().get(S_CLASS, strClass) && !strClass.isEmpty())
     {
       //a_Add new module info object
       m_Modules.use().push_back(new AOSModuleInfo(strClass, *(*citModule)));
@@ -232,7 +240,7 @@ void AOSCommand::fromXml(const AXmlElement& element)
   }
 }
 
-void AOSCommand::registerAdminObject(AOSAdminRegistry& registry)
+void AOSCommand::adminRegisterObject(AOSAdminRegistry& registry)
 {
   AString str(getClass());
   str.append(':');

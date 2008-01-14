@@ -10,8 +10,6 @@ const AString AOSContext::CONTEXT("context");
 const AString AOSContext::XML_ROOT("root");
 const AString AOSContext::OBJECTNAME("__AOSContext__");
 
-
-#ifdef __DEBUG_DUMP__
 void AOSContext::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSContext @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -99,7 +97,6 @@ void AOSContext::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   m_ContextTimer(true),

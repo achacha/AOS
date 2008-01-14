@@ -10,7 +10,7 @@ AOSContextQueue_IsAvailable::AOSContextQueue_IsAvailable(
   AOSContextQueueThreadPool(services, 1),
   m_AddCounter(0)
 {
-  registerAdminObject(services.useAdminRegistry());
+  adminRegisterObject(services.useAdminRegistry());
 }
 
 AOSContextQueue_IsAvailable::~AOSContextQueue_IsAvailable()
@@ -23,20 +23,20 @@ const AString& AOSContextQueue_IsAvailable::getClass() const
   return CLASS;
 }
 
-void AOSContextQueue_IsAvailable::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_IsAvailable::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSContextQueueThreadPool::addAdminXml(eBase, request);
+  AOSContextQueueThreadPool::adminEmitXml(eBase, request);
 
-  addProperty(
+  adminAddProperty(
     eBase,
     ASW("Queue.size",10),
     AString::fromSize_t(m_Queue.size())
   );
 }
 
-void AOSContextQueue_IsAvailable::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_IsAvailable::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSContextQueueThreadPool::processAdminAction(eBase, request);
+  AOSContextQueueThreadPool::adminProcessAction(eBase, request);
 }
 
 u4 AOSContextQueue_IsAvailable::_threadproc(AThread& thread)

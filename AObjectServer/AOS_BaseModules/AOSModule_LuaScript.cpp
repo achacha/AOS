@@ -2,7 +2,7 @@
 #include "AOSModule_LuaScript.hpp"
 #include "AFile_AString.hpp"
 #include "AFile_Physical.hpp"
-#include "ABasePtrHolder.hpp"
+#include "ABasePtrContainer.hpp"
 #include "AXmlElement.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 
@@ -58,7 +58,7 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
   }
   
   //a_Objects
-  ABasePtrHolder objects;
+  ABasePtrContainer objects;
   objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useModelXmlDocument());  //a_Add ALibrary required model AXmlDocument
   objects.insert(AOSContext::OBJECTNAME, &context);                              //a_Add AOS required AOSContext
 

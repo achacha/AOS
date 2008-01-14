@@ -6,7 +6,6 @@
 #include "AFile_Physical.hpp"
 #include "AOSConfiguration.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSOutputExecutor::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSOutputExecutor @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -21,7 +20,6 @@ void AOSOutputExecutor::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 const AString& AOSOutputExecutor::getClass() const
 {
@@ -29,14 +27,14 @@ const AString& AOSOutputExecutor::getClass() const
   return CLASS;
 }
 
-void AOSOutputExecutor::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSOutputExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
   OutputGeneratorContainer::const_iterator cit = m_OutputGenerators.begin();
   while (cit != m_OutputGenerators.end())
   {
-    addProperty(eBase, ASW("generator",9), (*cit).second->getClass());
+    adminAddProperty(eBase, ASW("generator",9), (*cit).second->getClass());
     ++cit;
   }
 }
@@ -44,7 +42,7 @@ void AOSOutputExecutor::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader
 AOSOutputExecutor::AOSOutputExecutor(AOSServices& services) :
   m_Services(services)
 {
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSOutputExecutor::~AOSOutputExecutor()
@@ -90,7 +88,7 @@ void AOSOutputExecutor::registerOutputGenerator(AOSOutputGeneratorInterface *pGe
   pGenerator->init();
 
   //a_Register the module's admin interface
-  pGenerator->registerAdminObject(m_Services.useAdminRegistry(), ASW("AOSOutputExecutor",17));
+  pGenerator->adminRegisterObject(m_Services.useAdminRegistry(), ASW("AOSOutputExecutor",17));
 }
 
 void AOSOutputExecutor::execute(AOSContext& context)

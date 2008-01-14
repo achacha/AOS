@@ -55,8 +55,13 @@ public:
   /*!
   AOSAdminInterface
   */
-  virtual void addAdminXml(AXmlElement& base, const AHTTPRequestHeader& request);
+  virtual void adminEmitXml(AXmlElement& base, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
   //! Map of session id to session data
@@ -100,11 +105,6 @@ private:
   //! Database restore
   //! returns NULL if not found or expired
   AOSSessionData *_restoreSession(const AString& sessionId);
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif //INCLUDED__AOSSessionManager_HPP__

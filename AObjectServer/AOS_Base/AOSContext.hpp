@@ -399,9 +399,14 @@ public:
   static const AString XML_ROOT;
 
   /*!
-  Object name used when inserting into ABasePtrHolder in scripting
+  Object name used when inserting into ABasePtrContainer in scripting
   */
   static const AString OBJECTNAME;
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
   //a_Read and parse Http header
@@ -470,11 +475,6 @@ private:
 
   //a_Socket associated with context
   AFile_Socket *mp_RequestFile;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AContext_HPP__

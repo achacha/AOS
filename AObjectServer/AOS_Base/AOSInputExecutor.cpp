@@ -5,7 +5,6 @@
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSInputExecutor::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSInputExecutor @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -20,16 +19,15 @@ void AOSInputExecutor::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
-void AOSInputExecutor::addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSInputExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSAdminInterface::addAdminXml(eBase, request);
+  AOSAdminInterface::adminEmitXml(eBase, request);
 
   InputProcessorContainer::const_iterator cit = m_InputProcessors.begin();
   while (cit != m_InputProcessors.end())
   {
-    addProperty(eBase, ASW("processor",9), (*cit).second->getClass());
+    adminAddProperty(eBase, ASW("processor",9), (*cit).second->getClass());
     ++cit;
   }
 }
@@ -43,7 +41,7 @@ const AString& AOSInputExecutor::getClass() const
 AOSInputExecutor::AOSInputExecutor(AOSServices& services) :
   m_Services(services)
 {
-  registerAdminObject(m_Services.useAdminRegistry());
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSInputExecutor::~AOSInputExecutor()
@@ -85,7 +83,7 @@ void AOSInputExecutor::registerInputProcessor(AOSInputProcessorInterface *pProce
   pProcessor->init();
 
   //a_Register the module's admin interface
-  pProcessor->registerAdminObject(m_Services.useAdminRegistry(), ASW("AOSInputExecutor",16));
+  pProcessor->adminRegisterObject(m_Services.useAdminRegistry(), ASW("AOSInputExecutor",16));
 }
 
 void AOSInputExecutor::execute(AOSContext& context)

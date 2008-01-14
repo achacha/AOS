@@ -23,14 +23,14 @@ public:
   AXmlElement& useElement();
   const AXmlElement& getElement() const;
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //! Username
   AXmlElement& m_Element;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__AOSUser_HPP__

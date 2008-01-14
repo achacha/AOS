@@ -33,7 +33,7 @@ public:
   /*!
   AOSAdminInterface
   **/
-  virtual void addAdminXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
 
 private:

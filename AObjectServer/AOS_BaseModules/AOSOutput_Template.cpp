@@ -19,15 +19,15 @@ void AOSOutput_Template::debugDump(std::ostream& os, int indent) const
 }
 #endif
 
-void AOSOutput_Template::addAdminXml(
+void AOSOutput_Template::adminEmitXml(
   AXmlElement& eBase, 
   const AHTTPRequestHeader& request
 )
 {
-  AOSOutputGeneratorInterface::addAdminXml(eBase, request);
+  AOSOutputGeneratorInterface::adminEmitXml(eBase, request);
 }
 
-void AOSOutput_Template::processAdminAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSOutput_Template::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
 }
 
@@ -91,7 +91,7 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
 
     //a_Process template
     AASSERT(this, pTemplate.isNotNull());
-    ABasePtrHolder objects;
+    ABasePtrContainer objects;
     objects.insert(ATemplate::OBJECTNAME_MODEL, &context.useModelXmlDocument());
     objects.insert(AOSContext::OBJECTNAME, &context);
     pTemplate->process(objects, context.useOutputBuffer());
