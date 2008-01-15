@@ -4,7 +4,6 @@
 #include "AFile_Physical.hpp"
 #include "AFilename.hpp"
 
-#ifdef __DEBUG_DUMP__
 void ADadaDataHolder::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -28,8 +27,6 @@ void ADadaDataHolder::debugDump(std::ostream& os, int indent) const
   
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
-
 
 ADadaDataHolder::ADadaDataHolder()
 {

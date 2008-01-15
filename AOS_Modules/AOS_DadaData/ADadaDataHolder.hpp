@@ -33,17 +33,17 @@ public:
   virtual void emitXml(AXmlElement&) const;
   AObjectBase* clone() const { return new ADadaDataHolder(*this); }  //a_Clone self using copy ctor
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   WORDMAP m_wordmap;
   TEMPLATES m_templates;
 
   void _loadWords(const AString& type, const AFilename& filename, ALog&);
   void _loadTemplate(const AString& name, const AFilename& filename, ALog&);
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 #endif // INCLUDED__ADadaDataHolder_HPP__

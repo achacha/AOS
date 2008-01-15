@@ -16,7 +16,6 @@ const AString& AOSModule_DadaDataTemplate::getClass() const
   return CLASS;
 }
 
-#ifdef __DEBUG_DUMP__
 void AOSModule_DadaDataTemplate::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSModule_DadaDataTemplate @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -28,7 +27,6 @@ void AOSModule_DadaDataTemplate::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 AOSModule_DadaDataTemplate::AOSModule_DadaDataTemplate(AOSServices& services) :
   AOSModuleInterface(services)
