@@ -10,6 +10,9 @@ class ASynchronization;
 Queue of ABase* types
 
 Optimzed for push/pop operations
+
+This is a very basic queue that is thread safe for pop/push/clear operations
+You can manually access head/tail but you MUST use sync when traversing it to avoid race conditions
 */
 class ABASE_API ABasePtrQueue : public ADebugDumpable
 {
@@ -41,6 +44,16 @@ public:
   void push(ABase *);
 
   /*!
+  Checks if queue is empty
+  */
+  bool isEmpty() const;
+
+  /*!
+  Clear the queue
+  */
+  void clear();
+
+  /*!
   Access synchronization pointer
 
   @return NULL if unsynchronized
@@ -51,19 +64,19 @@ public:
       // do so operations
     }
   */
-  ASynchronization *getSync();
+  ASynchronization *useSync();
 
   /*!
   Access the head pointer
   Use sync to guarantee thread safety
   */
-  ABase *getHead();
+  ABase *useHead();
 
   /*!
   Access the head pointer
   Use sync to guarantee thread safety
   */
-  ABase *getTail();
+  ABase *useTail();
 
   /*!
   ADebugDumpable

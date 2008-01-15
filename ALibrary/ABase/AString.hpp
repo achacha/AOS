@@ -6,6 +6,7 @@
 #include "ASerializable.hpp"
 #include "AOutputBuffer.hpp"
 #include "AXmlEmittable.hpp"
+#include "ABase.hpp"
 
 class AFile;
 class ARope;

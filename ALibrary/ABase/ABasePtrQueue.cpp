@@ -28,9 +28,11 @@ ABase *ABasePtrQueue::pop()
   {
     //a_Queue not empty
     ABase *ret = mp_Head;
-    mp_Head = mp_Head->getNext();
+    mp_Head = mp_Head->pNext;
     if (!mp_Head)
       mp_Tail = NULL;    //a_Queue was emptied
+
+    return ret;
   }
   else
     return NULL;
@@ -42,9 +44,9 @@ void ABasePtrQueue::push(ABase *p)
   if (mp_Tail)
   {
     //a_Queue not empty, append item
-    mp_Tail->setNext(p);
+    mp_Tail->pNext = p;
     mp_Tail = p;
-    mp_Tail->setNext(NULL);
+    mp_Tail->pNext = NULL;
   }
   else
   {
@@ -53,18 +55,30 @@ void ABasePtrQueue::push(ABase *p)
   }
 }
 
-ASynchronization *ABasePtrQueue::getSync()
+void ABasePtrQueue::clear()
+{
+  ALock lock(mp_Sync);
+  mp_Head = NULL;
+  mp_Tail = NULL;
+}
+
+bool ABasePtrQueue::isEmpty() const
+{
+  ALock lock(mp_Sync);
+  return (NULL == mp_Head);
+}
+
+ASynchronization *ABasePtrQueue::useSync()
 {
   return mp_Sync;
 }
 
-ABase *ABasePtrQueue::getHead()
+ABase *ABasePtrQueue::useHead()
 {
   return mp_Head;
 }
 
-ABase *ABasePtrQueue::getTail()
+ABase *ABasePtrQueue::useTail()
 {
   return mp_Tail;
 }
-

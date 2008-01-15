@@ -3,6 +3,8 @@
 
 #include "apiABase.hpp"
 
+class ABasePtrQueue;
+
 /*!
 Simple common base class
 
@@ -11,40 +13,30 @@ Has a pointer to next and previous for easy collection building
 */
 class ABASE_API ABase
 {
+  /*!
+  Friend class allowed access to collection pointers pNext and pPrev
+  */
+  friend class ABasePtrQueue;
+
 public:
   /*!
   ctor
-
-  pNext and pPrev used if building a collection, NULL otherwise
   */
-  ABase(ABase *pNext = NULL, ABase *pPrev = NULL);
+  ABase();
 
   //! dtor
   virtual ~ABase();
 
-  /*!
-  Get next
-  */
-  ABase *getNext() const;
-
-  /*!
-  Get prev
-  */
-  ABase *getPrev() const;
-
-  /*!
-  Set next
-  */
-  void setNext(ABase *);
-
-  /*!
-  Set prev
-  */
-  void setPrev(ABase *);
-
 protected:
-  ABase *mp_Next;
-  ABase *mp_Prev;
+  /*!
+  Next pointer in some collection
+  */
+  ABase *pNext;
+  
+  /*!
+  Previous pointer in some collection
+  */
+  ABase *pPrev;
 };
 
 #endif // INCLUDED__ABase_hpp__
