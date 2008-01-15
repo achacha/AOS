@@ -50,8 +50,10 @@ public:
 
   /*!
   Clear the queue
+
+  @param deleteContent if true will call delete on all contained objects
   */
-  void clear();
+  void clear(bool deleteContent = true);
 
   /*!
   Access synchronization pointer

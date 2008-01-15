@@ -15,6 +15,7 @@ AContentTypeInterface* AContentTypeFactory::createContentTypeDocument(const AHTT
   {
     AContentTypeInterface *pDoc = createContentTypeDocument(str);
     pDoc->parseHTTPHeader(hdr);
+    return pDoc;
   }
   else
     return NULL;

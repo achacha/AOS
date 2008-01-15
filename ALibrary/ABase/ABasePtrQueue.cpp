@@ -7,6 +7,8 @@ void ABasePtrQueue::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_Sync=" << AString::fromPointer(mp_Sync) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mp_Head=" << AString::fromPointer(mp_Head) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mp_Tail=" << AString::fromPointer(mp_Tail) << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
@@ -23,19 +25,16 @@ ABasePtrQueue::~ABasePtrQueue()
 
 ABase *ABasePtrQueue::pop()
 {
+  ABase *ret = NULL;
   ALock lock(mp_Sync);
   if (mp_Head)
   {
     //a_Queue not empty
-    ABase *ret = mp_Head;
-    mp_Head = mp_Head->pNext;
-    if (!mp_Head)
+    ret = mp_Head;
+    if (!(mp_Head = mp_Head->pNext))
       mp_Tail = NULL;    //a_Queue was emptied
-
-    return ret;
   }
-  else
-    return NULL;
+  return ret;
 }
 
 void ABasePtrQueue::push(ABase *p)
@@ -50,15 +49,27 @@ void ABasePtrQueue::push(ABase *p)
   }
   else
   {
+    p->pNext = NULL;
     mp_Tail = p;
     mp_Head = p;
   }
 }
 
-void ABasePtrQueue::clear()
+void ABasePtrQueue::clear(bool deleteContent)
 {
   ALock lock(mp_Sync);
-  mp_Head = NULL;
+  if (mp_Head && deleteContent)
+  {
+    ABase *pNext;
+    ABase *pKill = mp_Head;
+    while (pKill)
+    {
+      pNext = pKill->pNext;
+      delete pKill;
+      pKill = pNext;
+    } 
+    mp_Head = NULL;
+  }
   mp_Tail = NULL;
 }
 
