@@ -31,12 +31,10 @@ void testHashMapSerialize(int& iRet)
     if (strBefore != strAfter)
     {
       //a_Dump if not matching for debugging
-#ifdef __DEBUG_DUMP__
       std::cout << strBefore << std::endl;
       shm.debugDump();
       std::cout << strAfter << std::endl;
       shmAfter.debugDump();
-#endif
     }
 
     ASSERT_UNIT_TEST(strBefore == strAfter, "serialize", "", iRet);
