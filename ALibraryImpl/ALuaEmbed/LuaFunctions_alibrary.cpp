@@ -8,7 +8,6 @@ Appender used to overwrite print() and write to output buffer
 extern "C" void luaL_stringappender(lua_State *L, const char *s)
 {
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
   if (pLuaEmbed)
   {
     pLuaEmbed->useOutput().append(s);
@@ -27,8 +26,7 @@ static int alibrary_Sleep(lua_State *L)
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
 
-  size_t len = AConstant::npos;
-  u4 sleeptime = (u4)luaL_checkint(L, 1, &len);
+  u4 sleeptime = (u4)luaL_checkint(L, 1);
 
   AThread::sleep(sleeptime);
 

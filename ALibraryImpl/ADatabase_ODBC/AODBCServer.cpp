@@ -155,6 +155,8 @@ bool AODBCServer::reconnect(AString& error)
     SQLFreeHandle(SQL_HANDLE_ENV, m_henv);
     return false;
   }
+
+  return true;
 }
 
 void AODBCServer::_processError(AString& error, SQLSMALLINT handleType, HANDLE handle)
