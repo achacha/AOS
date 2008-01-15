@@ -4,6 +4,7 @@
 #include "apiAOS_Base.hpp"
 #include "AOSContextQueueInterface.hpp"
 #include "AOSContextQueueThreadPool.hpp"
+#include "ABasePtrQueue.hpp"
 
 class AOSRequest;
 class AOSContext;
@@ -41,11 +42,7 @@ protected:
 
 private:
   //a_AOSContext container
-  typedef std::vector<ASynchronization *> QUEUE_LOCKS;
-  QUEUE_LOCKS m_QueueLocks;
-
-  typedef std::deque<AOSContext *> QUEUE;
-  typedef std::vector<QUEUE> QUEUES; 
+  typedef std::vector<ABasePtrQueue *> QUEUES;
   QUEUES m_Queues;
 
   typedef std::vector<size_t> ADD_COUNTERS;

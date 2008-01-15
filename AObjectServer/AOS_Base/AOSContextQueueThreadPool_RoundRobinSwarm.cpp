@@ -46,8 +46,8 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::adminEmitXml(AXmlElement& eBase,
 
     adminAddProperty(
       eBase,
-      ARope("Queue[")+AString::fromSize_t(i)+ASW("].size",6),
-      AString::fromSize_t(m_Queues[i].size())
+      ARope("Queue[")+AString::fromSize_t(i)+ASW("].isEmpty",9),
+      AString::fromSize_t(m_Queues[i]->isEmpty())
     );
   }
 }
@@ -67,13 +67,12 @@ AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinS
   m_currentWriteQueue(0),
   m_currentReadQueue(queueCount-1)
 {
-  AASSERT(NULL, queueCount > 0);
+  AASSERT(this, queueCount > 0);
   m_Queues.resize(m_queueCount);
-  m_QueueLocks.resize(m_queueCount);
   m_AddCounters.resize(m_queueCount);
   for (size_t i=0; i<m_queueCount; ++i)
   {
-    m_QueueLocks[i] = new ASync_CriticalSection();// SpinLock();
+    m_Queues[i] = new ABasePtrQueue(new ASync_CriticalSection());
     m_AddCounters[i] = 0;
   }
 }
@@ -82,8 +81,11 @@ AOSContextQueueThreadPool_RoundRobinSwarm::~AOSContextQueueThreadPool_RoundRobin
 {
   try
   {
-    for (size_t i=0; i<m_QueueLocks.size(); ++i)
-      delete m_QueueLocks[i];
+    for (size_t i=0; i<m_Queues.size(); ++i)
+    {
+      m_Queues[i]->clear(true);
+      delete m_Queues[i];
+    }
   }
   catch(...) {}
 }
@@ -92,32 +94,23 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
 {
   //a_Add context to the next queue
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
-  ALock lock(m_QueueLocks.at(currentQueue));
-
   ++m_AddCounters.at(currentQueue);
-  m_Queues.at(currentQueue).push_back(pContext);
+  m_Queues.at(currentQueue)->push(pContext);
 
 //  std::cout << typeid(*this).name() << ":" << getClass() <<  "::add(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
 
-  pContext->setExecutionState(getClass()+"::add["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
+  pContext->setExecutionState(ARope(getClass())+"::add["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
 }                                                                                                                                                                                                 
 
 AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
 {
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
-  ALock lock(m_QueueLocks.at(currentQueue));
-  if (m_Queues.at(currentQueue).size() > 0)
+  AOSContext *pContext = (AOSContext *)m_Queues.at(currentQueue)->pop();
+  if (pContext)
   {
-    AOSContext *pContext = m_Queues.at(currentQueue).front();
-
     //    std::cout << typeid(*this).name() << ":" << getClass() <<  "::next(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
 
-    m_Queues.at(currentQueue).pop_front();
-
-    pContext->setExecutionState(getClass()+"::_nextContext["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
-
-    return pContext;
+    pContext->setExecutionState(ARope(getClass())+"::_nextContext["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
   }
-  else
-    return NULL;
+  return pContext;
 }
