@@ -11,9 +11,7 @@ int main()
   ALog_AFile alog(new AMutex("AOSTest.log"), "AOSTest.log");
 
   AUrl urlServer("mysql://aos:aos@localhost/aos/");
-#ifdef __DEBUG_DUMP__
   urlServer.debugDump();
-#endif
 
   AString strError;
   AOSDatabaseConnectionPool dbp(alog);

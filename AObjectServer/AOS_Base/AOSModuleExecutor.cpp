@@ -66,9 +66,11 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
     ATHROW(this, AException::InvalidParameter);
 
   AString command = pModule->getClass();
-#ifdef __DEBUG_DUMP__
-  std::cerr << "Module command registration: " << command << std::endl;
-#endif
+  {
+    AString str("  Module Registered: ");
+    str.append(command);
+    AOS_DEBUGTRACE(str.c_str(), NULL);
+  }
 
   ModuleContainer::iterator it = m_Modules.find(command);
   if (it != m_Modules.end())

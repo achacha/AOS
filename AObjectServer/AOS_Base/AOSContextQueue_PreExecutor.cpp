@@ -59,7 +59,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
       {
         AASSERT(this, pContext);
 
-#ifdef __DEBUG_DUMP__
+#ifndef NDEBUG
         if (!ADebugDumpable::isPointerValid(pContext))
         {
           AString error("AOSContextQueue_PreExecutor: AOSContext pointer is invalid: ");

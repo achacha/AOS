@@ -672,13 +672,11 @@ void AOSContext::addError(
 )
 {
   ARope rope;
-#ifdef __DEBUG_DUMP__
   if (addDebugDump)
   {
     debugDumpToAOutputBuffer(rope, 1);
   }
   else
-#endif
   {
     m_RequestHeader.getUrl().emit(rope, true);
   }

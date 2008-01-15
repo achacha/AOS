@@ -43,7 +43,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
     {
       while (pContext = pThis->_nextContext()) 
       {
-#ifdef __DEBUG_DUMP__
+#ifndef NDEBUG
         if (!ADebugDumpable::isPointerValid(pContext))
         {
           AString error("AOSContext pointer is invalid: ");

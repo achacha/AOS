@@ -29,6 +29,11 @@ public:
   */
   AXmlElement& useParams();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 private:
   //! No default ctor
   AOSModuleInfo() {}
@@ -38,11 +43,6 @@ private:
   
   //! Module parameters
   AXmlElement m_ModuleParams;
-
-public:
-#ifdef __DEBUG_DUMP__
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 };
 
 

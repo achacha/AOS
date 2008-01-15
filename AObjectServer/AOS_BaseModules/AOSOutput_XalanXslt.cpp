@@ -37,21 +37,17 @@ AOSContext::ReturnCode AOSOutput_XalanXslt::execute(AOSContext& context)
   }
   xsltName.join(str, false);
 
-#ifdef __DEBUG_DUMP__
 //TODO    || context.getRequestQuery().exists(ASW("noCache", 7))
-#endif
 
   //a_Emit the context XML document
   ARope rope;
   context.useModelXmlDocument().emit(rope);
 
   //a_Force XML to file
-#ifdef __DEBUG_DUMP__
   if (context.useRequestParameterPairs().exists(ASW("dumpXmlToFile", 13)))
   {
     _dumpToFile(rope);
   }
-#endif
 
   try
   {
@@ -60,9 +56,7 @@ AOSContext::ReturnCode AOSOutput_XalanXslt::execute(AOSContext& context)
   }
   catch(AException& e)
 	{
-#ifdef __DEBUG_DUMP__
-      _dumpToFile(rope);
-#endif
+    _dumpToFile(rope);
     context.addError(getClass(), e);
     return AOSContext::RETURN_ERROR;
 	}

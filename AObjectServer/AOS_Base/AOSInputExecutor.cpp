@@ -64,6 +64,13 @@ void AOSInputExecutor::registerInputProcessor(AOSInputProcessorInterface *pProce
     ATHROW(this, AException::InvalidParameter);
 
   const AString& command = pProcessor->getClass();
+  
+  {
+    AString str("  Input Processor Registered: ");
+    str.append(command);
+    AOS_DEBUGTRACE(str.c_str(), NULL);
+  }
+
   InputProcessorContainer::iterator it = m_InputProcessors.find(command);
   if (it != m_InputProcessors.end())
   {

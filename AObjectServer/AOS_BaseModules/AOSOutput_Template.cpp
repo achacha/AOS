@@ -8,7 +8,6 @@
 #include "ATemplateNodeHandler_CODE.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 
-#ifdef __DEBUG_DUMP__
 void AOSOutput_Template::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSOutput_Template @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -17,7 +16,6 @@ void AOSOutput_Template::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 void AOSOutput_Template::adminEmitXml(
   AXmlElement& eBase, 

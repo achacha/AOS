@@ -120,14 +120,12 @@ AXmlElement& AOSAdminInterface::adminAddMessage(
 
 void AOSAdminInterface::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-#ifdef __DEBUG_DUMP__
   ARope rope;
   if (request.getUrl().getParameterPairs().exists(DEBUGDUMP))
   {
     debugDumpToAOutputBuffer(rope);
     eBase.addElement(DEBUGDUMP, rope, AXmlElement::ENC_CDATASAFE);
   }
-#endif
 }
 
 void AOSAdminInterface::adminRegisterObject(AOSAdminRegistry& registry)

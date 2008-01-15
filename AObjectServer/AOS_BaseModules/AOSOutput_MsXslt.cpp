@@ -100,9 +100,7 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
   XslDocHolder *pXslDocHolder = NULL;
   if (
     it == m_Dox.end() 
-#ifdef __DEBUG_DUMP__
     || context.useRequestParameterPairs().exists(ASW("disableXslCache", 15))
-#endif
   )
   {
     pXslDocHolder = _readXslFile(xsltPathName);
@@ -122,12 +120,10 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
   context.useModelXmlDocument().emit(rope);
 
   //a_Force XML to file
-#ifdef __DEBUG_DUMP__
   if (context.useRequestParameterPairs().exists(ASW("dumpXmlToFile", 13)))
   {
     _dumpToFile(rope);
   }
-#endif
 
   try
   {
@@ -151,9 +147,7 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
     //Always remember to check for parse errors.
     if(pXMLDoc->parseError->errorCode != 0)
     {
-#ifdef __DEBUG_DUMP__
       _dumpToFile(rope);
-#endif
       context.addError(getClass(), ARope("Failed to transformNode: ",25) + (LPCSTR)pXMLDoc->parseError->Getreason());
       return AOSContext::RETURN_ERROR;
     }

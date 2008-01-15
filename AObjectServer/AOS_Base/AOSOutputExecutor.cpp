@@ -65,9 +65,12 @@ void AOSOutputExecutor::registerOutputGenerator(AOSOutputGeneratorInterface *pGe
     ATHROW(this, AException::InvalidParameter);
 
   const AString& command = pGenerator->getClass();
-#ifdef __DEBUG_DUMP__
-  std::cerr << "Output command registration: " << command << std::endl;
-#endif
+
+  {
+    AString str("  Output Generator Registered: ");
+    str.append(command);
+    AOS_DEBUGTRACE(str.c_str(), NULL);
+  }
 
   OutputGeneratorContainer::iterator it = m_OutputGenerators.find(command);
   if (it != m_OutputGenerators.end())

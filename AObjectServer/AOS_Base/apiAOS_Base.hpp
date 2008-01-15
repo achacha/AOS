@@ -19,9 +19,7 @@ class AOSServices;
 class ALog;
 
 #define ENABLE_AFILE_TRACER_DEBUG                      // This will enable it, comment it out to disable
-#ifdef __DEBUG_DUMP__
 #define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
-#endif
 
 //a_Include api headers for other libararies which then import the appropriate LIBs
 #include <apiABase.hpp>
