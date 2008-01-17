@@ -17,9 +17,11 @@ public:
   AOSContextQueue_IsAvailable(AOSServices& services, size_t queueCount = 1);
   virtual ~AOSContextQueue_IsAvailable();
   
-  // queue thread control
-  void startQueues();
-  void stopQueues();
+  //! Start
+  virtual void start();
+  
+  //! Stop
+  virtual void stop();
 
   /*!
   Externally add AOSContext* synchronously to this queue for processing
@@ -32,6 +34,11 @@ public:
   virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
+
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
   /*!
@@ -49,24 +56,23 @@ private:
     ASync_CriticalSection sync;
     REQUESTS queue;
     AThread *pthread;
+    size_t count;      //a_Usage meter
 
     QueueWithThread();
     virtual ~QueueWithThread();
-    
-    //a_Creates a new thread for the queue but will auto-start it
-    void startThread();
   };
 
   // Queue container access
   ASync_CriticalSectionSpinLock m_SynchObjectContextContainer;
-  typedef std::vector<QueueWithThread> QUEUES;
+  typedef std::vector<QueueWithThread *> QUEUES;
   QUEUES m_Queues;
+  size_t m_queueCount;
 
   // Tries to read HTTP header for a given AOSRequest
   static u4 _threadprocWorker(AThread&);
 
   // Queue and synch
-  size_t m_AddCounter;
+  volatile long m_currentQueue;
 };
 
 #endif // INCLUDED__AOSContextQueue_IsAvailable_HPP__

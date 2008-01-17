@@ -19,6 +19,12 @@ public:
   );
   virtual ~AOSContextQueue_PreExecutor();
 
+  //! Start
+  virtual void start();
+  
+  //! Stop
+  virtual void stop();
+
   /*!
   AOSAdminInterface
   */

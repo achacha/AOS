@@ -24,6 +24,16 @@ public:
   virtual void add(AOSContext *) = 0;
 
   /*!
+  Start the queue
+  */
+  virtual void start() = 0;
+
+  /*!
+  Stop the queue
+  */
+  virtual void stop() = 0;
+
+  /*!
   AOSAdminInterface
   */
   virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);

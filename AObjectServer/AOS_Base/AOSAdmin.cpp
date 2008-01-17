@@ -344,25 +344,25 @@ void AOSAdmin::_processAdminCommand(
       AOS_DEBUGTRACE("Trying to stop AOSRequestQueue_IsAvailable...", NULL);
       AOSContextQueue_IsAvailable *pcqIsAvailable = dynamic_cast<AOSContextQueue_IsAvailable *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_IsAvailable")));;
       AASSERT(NULL, pcqIsAvailable);
-      pcqIsAvailable->stopQueues();
+      pcqIsAvailable->stop();
       AOS_DEBUGTRACE("AOSRequestQueue_IsAvailable stopped.", NULL);
 
       AOS_DEBUGTRACE("Trying to stop AOSContextQueue_PreExecutor...", NULL);
       AOSContextQueue_PreExecutor *pcqPreExecutor = dynamic_cast<AOSContextQueue_PreExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_PreExecutor")));;
       AASSERT(NULL, pcqPreExecutor);
-      pcqPreExecutor->useThreadPool().stop();
+      pcqPreExecutor->stop();
       AOS_DEBUGTRACE("AOSContextQueue_PreExecutor stopped.", NULL);
 
       AOS_DEBUGTRACE("Trying to stop AOSContextQueue_Executor...", NULL);
       AOSContextQueue_Executor *pcqExecutor = dynamic_cast<AOSContextQueue_Executor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_Executor")));;
       AASSERT(NULL, pcqExecutor);
-      pcqExecutor->useThreadPool().stop();
+      pcqExecutor->stop();
       AOS_DEBUGTRACE("AOSContextQueue_Executor stopped.", NULL);
 
       AOS_DEBUGTRACE("Trying to stop AOSContextQueue_ErrorExecutor...", NULL);
       AOSContextQueue_ErrorExecutor *pcqErrorExecutor = dynamic_cast<AOSContextQueue_ErrorExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_ErrorExecutor")));;
       AASSERT(NULL, pcqErrorExecutor);
-      pcqErrorExecutor->useThreadPool().stop();
+      pcqErrorExecutor->stop();
       AOS_DEBUGTRACE("AOSContextQueue_ErrorExecutor stopped.", NULL);
 
       //a_Emit result

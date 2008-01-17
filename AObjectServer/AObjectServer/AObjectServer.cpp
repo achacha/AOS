@@ -105,22 +105,17 @@ int main(int argc, char **argv)
       //
       //a_Create and configure the queues
       //
-      AOSContextQueueThreadPool *pQueueIsAvail = new AOSContextQueue_IsAvailable(
+      AOSContextQueueInterface *pQueueIsAvail = new AOSContextQueue_IsAvailable(
         services,
-        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/is-available/queues"
+        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/is-available/queues", 2)
       );
-      int sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/is-available/sleep-delay"), DEFAULT_SLEEP_DELAY);
-      if (sleepDelay > 0)
-        pQueueIsAvail->setSleepDelay(sleepDelay);
-      else
-        AOS_DEBUGTRACE("Sleep delay for is-available/sleep-delay is invalid, using default", NULL);
       
       AOSContextQueueThreadPool *pQueueError = new AOSContextQueue_ErrorExecutor(
         services,
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/threads", 16), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/queues", 4)
       );
-      sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+      int sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueError->setSleepDelay(sleepDelay);
       else
@@ -230,10 +225,10 @@ int main(int argc, char **argv)
       //
       //a_Start all the queues (listener is the last thing to start, see below)
       //
-      pQueuePre->useThreadPool().start();
-      pQueueIsAvail->useThreadPool().start();
-      pQueueExecutor->useThreadPool().start();
-      pQueueError->useThreadPool().start();
+      pQueuePre->start();
+      pQueueIsAvail->start();
+      pQueueExecutor->start();
+      pQueueError->start();
 
       //
       //a_Start listener

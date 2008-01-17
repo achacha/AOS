@@ -39,6 +39,16 @@ void AOSContextQueue_IsAvailable_SingleQueue::adminProcessAction(AXmlElement& eB
   AOSContextQueueThreadPool::adminProcessAction(eBase, request);
 }
 
+void AOSContextQueue_IsAvailable_SingleQueue::start()
+{
+  useThreadPool().start();
+}
+
+void AOSContextQueue_IsAvailable_SingleQueue::stop()
+{
+  useThreadPool().stop();
+}
+
 u4 AOSContextQueue_IsAvailable_SingleQueue::_threadproc(AThread& thread)
 {
   AOSContextQueue_IsAvailable_SingleQueue *pThis = dynamic_cast<AOSContextQueue_IsAvailable_SingleQueue *>(thread.getThis());

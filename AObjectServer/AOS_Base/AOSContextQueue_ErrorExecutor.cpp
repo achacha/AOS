@@ -30,6 +30,16 @@ AOSContextQueue_ErrorExecutor::AOSContextQueue_ErrorExecutor(
   adminRegisterObject(m_Services.useAdminRegistry());
 }
 
+void AOSContextQueue_ErrorExecutor::start()
+{
+  useThreadPool().start();
+}
+
+void AOSContextQueue_ErrorExecutor::stop()
+{
+  useThreadPool().stop();
+}
+
 u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
 {
   AOSContextQueue_ErrorExecutor *pThis = dynamic_cast<AOSContextQueue_ErrorExecutor *>(thread.getThis());

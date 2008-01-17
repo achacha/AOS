@@ -5,14 +5,35 @@
 #include "AOSServices.hpp"
 #include "AThread.hpp"
 
+void AOSContextQueue_IsAvailable::debugDump(std::ostream& os, int indent) const
+{
+  ADebugDumpable::indent(os, indent) << "(AOSContextQueue_IsAvailable @ " << std::hex << this << std::dec << ") {" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_Queues={" << std::endl;
+  for (size_t i=0; i<m_Queues.size(); ++i)
+  {
+    const QueueWithThread *pq = m_Queues.at(i);
+    ADebugDumpable::indent(os, indent+2) << "queue[" << i << "].pthread=" << AString::fromPointer(pq->pthread) << std::endl;
+    ADebugDumpable::indent(os, indent+2) << "queue[" << i << "].queue.size=" << pq->queue.size() << std::endl;
+  }
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  AOSContextQueueInterface::debugDump(os, indent+1);
+
+  ADebugDumpable::indent(os, indent) << "}" << std::endl;
+}
+
 AOSContextQueue_IsAvailable::AOSContextQueue_IsAvailable(
   AOSServices& services,
   size_t queueCount  // = 1
 ) :
   AOSContextQueueInterface(services),
-  m_AddCounter(0)
+  m_queueCount(queueCount),
+  m_currentQueue(0)
 {
-  m_Queues.resize(queueCount);
+  m_Queues.resize(m_queueCount);
+  for (size_t i=0; i<m_queueCount; ++i)
+    m_Queues.at(i) = new AOSContextQueue_IsAvailable::QueueWithThread();
 
   adminRegisterObject(services.useAdminRegistry());
 }
@@ -21,7 +42,7 @@ AOSContextQueue_IsAvailable::~AOSContextQueue_IsAvailable()
 {
   try
   {
-    stopQueues();
+    stop();
   }
   catch(...) {}
 }
@@ -38,9 +59,34 @@ void AOSContextQueue_IsAvailable::adminEmitXml(AXmlElement& eBase, const AHTTPRe
 
   adminAddProperty(
     eBase,
-    ASW("Queues.size",11),
-    AString::fromSize_t(m_Queues.size())
+    ASW("CurrentQueue",12),
+    AString::fromInt(m_currentQueue % m_queueCount)
   );
+
+  adminAddProperty(
+    eBase,
+    ASW("Queues.size",11),
+    AString::fromSize_t(m_queueCount)
+  );
+
+  for (size_t i=0; i<m_Queues.size(); ++i)
+  {
+    QueueWithThread *p = m_Queues.at(i);
+    AString str("queue[",6);
+    str.append(AString::fromSize_t(i));
+
+    adminAddProperty(
+      eBase,
+      str+ASW("].count",7),
+      AString::fromSize_t(p->count)
+    );
+
+    adminAddProperty(
+      eBase,
+      str+ASW("].size",6),
+      AString::fromSize_t(p->queue.size())
+    );
+  }
 }
 
 void AOSContextQueue_IsAvailable::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
@@ -50,7 +96,8 @@ void AOSContextQueue_IsAvailable::adminProcessAction(AXmlElement& eBase, const A
 
 
 AOSContextQueue_IsAvailable::QueueWithThread::QueueWithThread() :
-  pthread(NULL) 
+  pthread(NULL),
+  count(0)
 {
 }
 
@@ -58,26 +105,21 @@ AOSContextQueue_IsAvailable::QueueWithThread::~QueueWithThread()
 {
 }
 
-void AOSContextQueue_IsAvailable::QueueWithThread::startThread()
+void AOSContextQueue_IsAvailable::start()
 {
-  AASSERT(NULL, NULL == pthread);
-  pthread = new AThread(_threadprocWorker, true, this);
-}
-
-void AOSContextQueue_IsAvailable::startQueues()
-{
-  for (size_t i=0; i<m_Queues.size(); ++i)
+  for (size_t i=0; i<m_queueCount; ++i)
   {
-    m_Queues.at(i).startThread();
+    AASSERT(NULL, NULL == m_Queues.at(i)->pthread);
+    m_Queues.at(i)->pthread = new AThread(_threadprocWorker, true, m_Queues.at(i), this);
   }
 }
 
-void AOSContextQueue_IsAvailable::stopQueues()
+void AOSContextQueue_IsAvailable::stop()
 {
   for (size_t i=0; i<m_Queues.size(); ++i)
   {
-    AASSERT(this, m_Queues.at(i).pthread);
-    m_Queues.at(i).pthread->setRun(false);
+    AASSERT(this, m_Queues.at(i)->pthread);
+    m_Queues.at(i)->pthread->setRun(false);
   }
   
   int tries = 3;
@@ -87,31 +129,38 @@ void AOSContextQueue_IsAvailable::stopQueues()
     size_t i;
     for (i=0; i<m_Queues.size(); ++i)
     {
-      if (m_Queues.at(i).pthread->isRunning())
+      QueueWithThread *pqt = m_Queues.at(i);
+      if (pqt->pthread)
       {
-        AThread::sleep(200);
-        --tries;
-        break;
-      }
-      else
-      {
-        pDelete(m_Queues.at(i).pthread);
+        if (pqt->pthread->isRunning())
+        {
+          AThread::sleep(200);
+          --tries;
+          break;
+        }
+        else
+        {
+          pDelete(pqt->pthread);
+        }
       }
     }
     if (i == m_Queues.size())
+    {
+      m_Queues.clear();
       return;
+    }
 
-    if (tries < 0)
+    if (tries == 0)
       break;
   }
 
   //a_Terminate hung threads
   for (size_t i=0; i<m_Queues.size(); ++i)
   {
-    if (m_Queues.at(i).pthread && m_Queues.at(i).pthread->isRunning())
+    if (m_Queues.at(i)->pthread && m_Queues.at(i)->pthread->isRunning())
     {
-      m_Queues.at(i).pthread->terminate();
-      delete m_Queues.at(i).pthread;
+      m_Queues.at(i)->pthread->terminate();
+      delete m_Queues.at(i)->pthread;
     }
   }
 }
@@ -119,13 +168,17 @@ void AOSContextQueue_IsAvailable::stopQueues()
 u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
 {
   AOSContextQueue_IsAvailable::QueueWithThread *pThis = dynamic_cast<AOSContextQueue_IsAvailable::QueueWithThread *>(thread.getThis());
+  AOSContextQueue_IsAvailable *pOwner = dynamic_cast<AOSContextQueue_IsAvailable *>(thread.getParameter());
   AASSERT(&thread, pThis);
+  AASSERT(&thread, pOwner);
 
   timeval timeout;
   timeout.tv_sec  = 0;
   timeout.tv_usec = 0;
 
-  static const int NO_DATA_TIMEOUT = m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/no-data-timeout",57), 30000);
+  static const int NO_DATA_TIMEOUT = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/no-data-timeout",57), 30000);
+  static const int SLEEP_DELAY = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/empty-queue-sleep-delay",53), 20);
+  static const int LOOP_DELAY = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/loop-delay",52), 5);
 
   thread.setRunning(true);
   while (thread.isRun())
@@ -154,7 +207,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
             int count2 = 0;
             it = pThis->queue.begin();
             
-            while (availCount > 0 && count2 <= count && it != m_Queue.end())
+            while (availCount > 0 && count2 <= count && it != pThis->queue.end())
             {
               if (FD_ISSET((*it)->useSocket().getSocketInfo().m_handle, &sockSet))
               {
@@ -168,7 +221,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   //a_Add to next queue
                   ALock lock(pThis->sync);
                   (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54));
-                  m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &(*itMove));
+                  pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &(*itMove));
                   pThis->queue.erase(itMove);
                 }
 
@@ -192,7 +245,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                     str, 
                     !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
                   );
-                  m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
+                  pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
                   pThis->queue.erase(itMove);
                 }
                 else
@@ -203,7 +256,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
               }
               ++count2;
             }
-            AASSERT(pThis, !availCount);
+            AASSERT(pOwner, !availCount);
           }
           else
           {
@@ -225,7 +278,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   str, 
                   !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
                 );
-                m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
+                pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
                 pThis->queue.erase(itMove);
               }
               else
@@ -238,22 +291,22 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
         }
         
         //a_Sleep between selects, requests in this queue are already slow
-        AThread::sleep(10);
+        AThread::sleep(LOOP_DELAY);
       }
       else
-        AThread::sleep(30);    //a_Nothing in queue, deep sleep
+        AThread::sleep(SLEEP_DELAY);    //a_Nothing in queue, deep sleep
     }
     catch(AException& e)
     {
-      pThis->m_Services.useLog().addException(e);
+      pOwner->m_Services.useLog().addException(e);
     }
     catch(std::exception& e)
     {
-      pThis->m_Services.useLog().addException(e);
+      pOwner->m_Services.useLog().addException(e);
     }
     catch(...)
     {
-      pThis->m_Services.useLog().add(ASWNL("Unknown exception caught in AOSContextQueue_IsAvailable::threadproc"), ALog::EXCEPTION);
+      pOwner->m_Services.useLog().add(ASWNL("Unknown exception caught in AOSContextQueue_IsAvailable::threadproc"), ALog::EXCEPTION);
     }
   }
 
@@ -271,13 +324,16 @@ void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
   static const AString LOG_MSG("AOSContextQueue_IsAvailable::add");
   pContext->setExecutionState(LOG_MSG);
 
-  {
-    ALock lock(m_SynchObjectContextContainer);
-    ++m_AddCounter;
+  volatile long currentQueue = ::InterlockedIncrement(&m_currentQueue) % m_queueCount;
 
+  {
+    ALock lock(m_Queues.at(currentQueue)->sync);
+    
     //a_Start timeout timer
     pContext->useTimeoutTimer().start();
-    m_Queues.at(m_AddCounter % m_Queues.size()).push_back(pContext);
+    m_Queues.at(currentQueue)->queue.push_back(pContext);
+    ++m_Queues.at(currentQueue)->count;
+    pContext->setExecutionState(ARope(getClass())+"::add["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
   }
 }
 

@@ -20,6 +20,12 @@ public:
   **/
   virtual void add(AOSContext *);
 
+  //! Start
+  virtual void start();
+  
+  //! Stop
+  virtual void stop();
+
   /*!
   Admin interface
   */

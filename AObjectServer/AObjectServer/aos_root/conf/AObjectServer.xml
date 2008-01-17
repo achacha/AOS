@@ -48,8 +48,9 @@
 	</load>
 	<context-queues>
 		<is-available>
-			<queues desc="Queues in the is-available queue manager, each queue has single select thread">1</queues>
-			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
+			<queues desc="Queues in the is-available queue manager, each queue has single select thread">2</queues>
+			<loop-delay desc="Milliseconds of sleep between bulk selects">5</loop-delay>
+			<empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</empty-queue-sleep-delay>
 			<no-data-timeout desc="Milliseconds before a socket is clsoed due to inactivity">25000</no-data-timeout>
 		</is-available>
 		<pre-executor>

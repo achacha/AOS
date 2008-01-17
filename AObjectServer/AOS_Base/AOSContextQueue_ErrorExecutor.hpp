@@ -22,6 +22,12 @@ public:
     size_t queueCount = 2
   );
 
+  //! Start
+  virtual void start();
+  
+  //! Stop
+  virtual void stop();
+
   /*!
   AOSAdminInterface
   */

@@ -40,6 +40,16 @@ AOSContextQueue_PreExecutor::~AOSContextQueue_PreExecutor()
 {
 }
 
+void AOSContextQueue_PreExecutor::start()
+{
+  useThreadPool().start();
+}
+
+void AOSContextQueue_PreExecutor::stop()
+{
+  useThreadPool().stop();
+}
+
 u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
 {
   AOSContextQueue_PreExecutor *pThis = dynamic_cast<AOSContextQueue_PreExecutor *>(thread.getThis());
@@ -452,13 +462,13 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
 //      pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
 
     //a_The writing of the output
-    pContext->setExecutionState(ASW("Writing HTTP response header",28));
-    pContext->useResponseHeader().emit(pContext->useSocket());
-    pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
-
-    pContext->setExecutionState(ASW("Writing compressed",18));
     try
     {
+      pContext->setExecutionState(ASW("Writing HTTP response header",28));
+      pContext->useResponseHeader().emit(pContext->useSocket());
+      pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+
+      pContext->setExecutionState(ASW("Writing compressed",18));
       pContext->useSocket().write(compressed);
     }
     catch(AException& ex)
@@ -479,13 +489,13 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   {
     pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
 
-    pContext->setExecutionState(ASW("Writing HTTP response header",28));
-    pContext->useResponseHeader().emit(pContext->useSocket());
-    pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
-
-    pContext->setExecutionState(ASW("Writing uncompressed",20));
     try
     {
+      pContext->setExecutionState(ASW("Writing HTTP response header",28));
+      pContext->useResponseHeader().emit(pContext->useSocket());
+      pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+
+      pContext->setExecutionState(ASW("Writing uncompressed",20));
       pContext->useSocket().write(pContext->useOutputBuffer());
     }
     catch(AException& ex)

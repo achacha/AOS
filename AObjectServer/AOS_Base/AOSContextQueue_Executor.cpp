@@ -31,6 +31,16 @@ AOSContextQueue_Executor::AOSContextQueue_Executor(
   adminRegisterObject(m_Services.useAdminRegistry());
 }
 
+void AOSContextQueue_Executor::start()
+{
+  useThreadPool().start();
+}
+
+void AOSContextQueue_Executor::stop()
+{
+  useThreadPool().stop();
+}
+
 u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 {
   AOSContextQueue_Executor *pThis = dynamic_cast<AOSContextQueue_Executor *>(thread.getThis());
