@@ -56,6 +56,11 @@ public:
   void clear(bool deleteContent = true);
 
   /*!
+  Get the cirrent size of the queue
+  */
+  size_t size() const;
+
+  /*!
   Access synchronization pointer
 
   @return NULL if unsynchronized
@@ -90,6 +95,7 @@ private:
 
   ABase *mp_Head;
   ABase *mp_Tail;
+  size_t m_Size;
 };
 
 #endif // INCLUDED__ABasePtrQueue_hpp__

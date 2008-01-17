@@ -263,10 +263,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ABasePtrHolder.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ABasePtrQueue.cpp"
 				>
 			</File>
@@ -948,10 +944,6 @@
 			</File>
 			<File
 				RelativePath=".\ABasePtrContainer.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ABasePtrHolder.hpp"
 				>
 			</File>
 			<File

@@ -1,21 +1,22 @@
 #include "pchABase.hpp"
 #include "ABasePtrQueue.hpp"
-#include "ABasePtrHolder.hpp"
 #include "ASynchronization.hpp"
 
 void ABasePtrQueue::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_Sync=" << AString::fromPointer(mp_Sync) << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mp_Head=" << AString::fromPointer(mp_Head) << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mp_Tail=" << AString::fromPointer(mp_Tail) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mp_Head=" << AString::fromPointer(mp_Head)
+    << "  mp_Tail=" << AString::fromPointer(mp_Tail) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Size=" << m_Size << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
 ABasePtrQueue::ABasePtrQueue(ASynchronization *pSync) :
   mp_Sync(pSync),
   mp_Head(NULL),
-  mp_Tail(NULL)
+  mp_Tail(NULL),
+  m_Size(0)
 {
 }
 
@@ -33,6 +34,9 @@ ABase *ABasePtrQueue::pop()
     ret = mp_Head;
     if (!(mp_Head = mp_Head->pNext))
       mp_Tail = NULL;    //a_Queue was emptied
+  
+    AASSERT(this, m_Size>0);
+    --m_Size;
   }
   return ret;
 }
@@ -46,12 +50,18 @@ void ABasePtrQueue::push(ABase *p)
     mp_Tail->pNext = p;
     mp_Tail = p;
     mp_Tail->pNext = NULL;
+
+    AASSERT(this, m_Size>0);
+    ++m_Size;
   }
   else
   {
     p->pNext = NULL;
     mp_Tail = p;
     mp_Head = p;
+
+    AASSERT(this, 0 == m_Size);
+    ++m_Size;
   }
 }
 
@@ -71,12 +81,20 @@ void ABasePtrQueue::clear(bool deleteContent)
     mp_Head = NULL;
   }
   mp_Tail = NULL;
+  m_Size = 0;
+
 }
 
 bool ABasePtrQueue::isEmpty() const
 {
   ALock lock(mp_Sync);
   return (NULL == mp_Head);
+}
+
+size_t ABasePtrQueue::size() const
+{
+  ALock lock(mp_Sync);
+  return m_Size;
 }
 
 ASynchronization *ABasePtrQueue::useSync()
