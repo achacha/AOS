@@ -46,8 +46,8 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::adminEmitXml(AXmlElement& eBase,
 
     adminAddProperty(
       eBase,
-      ARope("Queue[")+AString::fromSize_t(i)+ASW("].isEmpty",9),
-      AString::fromSize_t(m_Queues[i]->isEmpty())
+      ARope("Queue[")+AString::fromSize_t(i)+ASW("].size",6),
+      AString::fromSize_t(m_Queues[i]->size())
     );
   }
 }

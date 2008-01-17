@@ -247,6 +247,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSContextQueue_IsAvailable_SingleQueue.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSContextQueue_PreExecutor.cpp"
 				>
 			</File>
@@ -402,6 +406,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSContextQueue_IsAvailable.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSContextQueue_IsAvailable_SingleQueue.hpp"
 				>
 			</File>
 			<File

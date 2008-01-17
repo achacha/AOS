@@ -1,124 +1,47 @@
 #include "pchAOS_Base.hpp"
-#include "AOSContextQueue_IsAvailable.hpp"
+#include "AOSContextQueue_IsAvailable_SingleQueue.hpp"
 #include "AOSContext.hpp"
 #include "AFile_Socket.hpp"
 #include "AOSServices.hpp"
-#include "AThread.hpp"
 
-AOSContextQueue_IsAvailable::AOSContextQueue_IsAvailable(
-  AOSServices& services,
-  size_t queueCount  // = 1
+AOSContextQueue_IsAvailable_SingleQueue::AOSContextQueue_IsAvailable_SingleQueue(
+  AOSServices& services
 ) :
-  AOSContextQueueInterface(services),
+  AOSContextQueueThreadPool(services, 1),
   m_AddCounter(0)
 {
-  m_Queues.resize(queueCount);
-
   adminRegisterObject(services.useAdminRegistry());
 }
 
-AOSContextQueue_IsAvailable::~AOSContextQueue_IsAvailable()
+AOSContextQueue_IsAvailable_SingleQueue::~AOSContextQueue_IsAvailable_SingleQueue()
 {
-  try
-  {
-    stopQueues();
-  }
-  catch(...) {}
 }
 
-const AString& AOSContextQueue_IsAvailable::getClass() const
+const AString& AOSContextQueue_IsAvailable_SingleQueue::getClass() const
 {
-  static const AString CLASS("AOSContextQueue_IsAvailable");
+  static const AString CLASS("AOSContextQueue_IsAvailable_SingleQueue");
   return CLASS;
 }
 
-void AOSContextQueue_IsAvailable::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_IsAvailable_SingleQueue::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSContextQueueInterface::adminEmitXml(eBase, request);
+  AOSContextQueueThreadPool::adminEmitXml(eBase, request);
 
   adminAddProperty(
     eBase,
-    ASW("Queues.size",11),
-    AString::fromSize_t(m_Queues.size())
+    ASW("Queue.size",10),
+    AString::fromSize_t(m_Queue.size())
   );
 }
 
-void AOSContextQueue_IsAvailable::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSContextQueue_IsAvailable_SingleQueue::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSContextQueueInterface::adminProcessAction(eBase, request);
+  AOSContextQueueThreadPool::adminProcessAction(eBase, request);
 }
 
-
-AOSContextQueue_IsAvailable::QueueWithThread::QueueWithThread() :
-  pthread(NULL) 
+u4 AOSContextQueue_IsAvailable_SingleQueue::_threadproc(AThread& thread)
 {
-}
-
-AOSContextQueue_IsAvailable::QueueWithThread::~QueueWithThread()
-{
-}
-
-void AOSContextQueue_IsAvailable::QueueWithThread::startThread()
-{
-  AASSERT(NULL, NULL == pthread);
-  pthread = new AThread(_threadprocWorker, true, this);
-}
-
-void AOSContextQueue_IsAvailable::startQueues()
-{
-  for (size_t i=0; i<m_Queues.size(); ++i)
-  {
-    m_Queues.at(i).startThread();
-  }
-}
-
-void AOSContextQueue_IsAvailable::stopQueues()
-{
-  for (size_t i=0; i<m_Queues.size(); ++i)
-  {
-    AASSERT(this, m_Queues.at(i).pthread);
-    m_Queues.at(i).pthread->setRun(false);
-  }
-  
-  int tries = 3;
-  bool stillStopping = true;
-  while (stillStopping)
-  {
-    size_t i;
-    for (i=0; i<m_Queues.size(); ++i)
-    {
-      if (m_Queues.at(i).pthread->isRunning())
-      {
-        AThread::sleep(200);
-        --tries;
-        break;
-      }
-      else
-      {
-        pDelete(m_Queues.at(i).pthread);
-      }
-    }
-    if (i == m_Queues.size())
-      return;
-
-    if (tries < 0)
-      break;
-  }
-
-  //a_Terminate hung threads
-  for (size_t i=0; i<m_Queues.size(); ++i)
-  {
-    if (m_Queues.at(i).pthread && m_Queues.at(i).pthread->isRunning())
-    {
-      m_Queues.at(i).pthread->terminate();
-      delete m_Queues.at(i).pthread;
-    }
-  }
-}
-
-u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
-{
-  AOSContextQueue_IsAvailable::QueueWithThread *pThis = dynamic_cast<AOSContextQueue_IsAvailable::QueueWithThread *>(thread.getThis());
+  AOSContextQueue_IsAvailable_SingleQueue *pThis = dynamic_cast<AOSContextQueue_IsAvailable_SingleQueue *>(thread.getThis());
   AASSERT(&thread, pThis);
 
   timeval timeout;
@@ -132,14 +55,14 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
   {
     try
     {
-      if (pThis->queue.size() > 0)
+      if (m_Queue.size() > 0)
       {
         fd_set sockSet;
         FD_ZERO(&sockSet);
         
         int count = 0;
-        REQUESTS::iterator it = pThis->queue.begin();
-        while (count < FD_SETSIZE && it != pThis->queue.end())
+        REQUESTS::iterator it = m_Queue.begin();
+        while (count < FD_SETSIZE && it != m_Queue.end())
         {
           FD_SET((*it)->useSocket().getSocketInfo().m_handle, &sockSet);
           ++count;
@@ -152,7 +75,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
           if (availCount > 0)
           {
             int count2 = 0;
-            it = pThis->queue.begin();
+            it = m_Queue.begin();
             
             while (availCount > 0 && count2 <= count && it != m_Queue.end())
             {
@@ -166,10 +89,10 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
 
                 {
                   //a_Add to next queue
-                  ALock lock(pThis->sync);
-                  (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54));
+                  ALock lock(m_SynchObjectContextContainer);
+                  (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable_SingleQueue: HTTP header has more data",54));
                   m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &(*itMove));
-                  pThis->queue.erase(itMove);
+                  m_Queue.erase(itMove);
                 }
 
                 --availCount;
@@ -183,17 +106,17 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   ++it;
 
                   AString str;
-                  str.append("AOSContextQueue_IsAvailable: No data after timeout: ",52);
+                  str.append("AOSContextQueue_IsAvailable_SingleQueue: No data after timeout: ",52);
                   (*itMove)->useTimeoutTimer().emit(str);
 
                   //a_We are done with this request, still no data
-                  ALock lock(pThis->sync);
+                  ALock lock(m_SynchObjectContextContainer);
                   (*itMove)->setExecutionState(
                     str, 
                     !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
                   );
                   m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
-                  pThis->queue.erase(itMove);
+                  m_Queue.erase(itMove);
                 }
                 else
                 {
@@ -208,25 +131,25 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
           else
           {
             //a_Nothing has data, flag them all
-            it = pThis->queue.begin();
-            while (it != pThis->queue.end())
+            it = m_Queue.begin();
+            while (it != m_Queue.end())
             {
               if ((*it)->useTimeoutTimer().getInterval() > NO_DATA_TIMEOUT)
               {
                 REQUESTS::iterator itMove = it;
                 ++it;
 
-                AString str("AOSContextQueue_IsAvailable: No data after timeout: ",52);
+                AString str("AOSContextQueue_IsAvailable_SingleQueue: No data after timeout: ",52);
                 (*itMove)->useTimeoutTimer().emit(str);
 
                 //a_We are done with this request, still no data
-                ALock lock(pThis->sync);
+                ALock lock(m_SynchObjectContextContainer);
                 (*itMove)->setExecutionState(
                   str, 
                   !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
                 );
                 m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
-                pThis->queue.erase(itMove);
+                m_Queue.erase(itMove);
               }
               else
               {
@@ -253,7 +176,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
     }
     catch(...)
     {
-      pThis->m_Services.useLog().add(ASWNL("Unknown exception caught in AOSContextQueue_IsAvailable::threadproc"), ALog::EXCEPTION);
+      pThis->m_Services.useLog().add(ASWNL("Unknown exception caught in AOSContextQueue_IsAvailable_SingleQueue::threadproc"), ALog::EXCEPTION);
     }
   }
 
@@ -261,28 +184,37 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
   return 0;
 }
 
-void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
+void AOSContextQueue_IsAvailable_SingleQueue::add(AOSContext *pContext)
 {
+  ALock lock(m_SynchObjectContextContainer);
+  ++m_AddCounter;
+
   //a_Clear these in case this is not the first trip here
   //a_More than one trip can result if some bytes were read but not enough
   pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_IS_AVAILABLE_SELECTED);
   pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_IS_AVAILABLE_PENDING);
 
-  static const AString LOG_MSG("AOSContextQueue_IsAvailable::add");
+  static const AString LOG_MSG("AOSContextQueue_IsAvailable_SingleQueue::add");
   pContext->setExecutionState(LOG_MSG);
 
-  {
-    ALock lock(m_SynchObjectContextContainer);
-    ++m_AddCounter;
-
-    //a_Start timeout timer
-    pContext->useTimeoutTimer().start();
-    m_Queues.at(m_AddCounter % m_Queues.size()).push_back(pContext);
-  }
+  //a_Start timeout timer
+  pContext->useTimeoutTimer().start();
+  m_Queue.push_back(pContext);
 }
 
-AOSContext *AOSContextQueue_IsAvailable::_nextContext()
+AOSContext *AOSContextQueue_IsAvailable_SingleQueue::_nextContext()
 {
-  //a_The way the queues work, this method is never used, each queue owns their own set of contexts for select
-  ATHROW(this, AException::ProgrammingError);
+  ALock lock(m_SynchObjectContextContainer);
+  if (m_Queue.empty())
+    return NULL;
+  else
+  {
+    AOSContext *pContext = m_Queue.front();
+    m_Queue.pop_front();
+
+    static const AString LOG_MSG("AOSContextQueue_IsAvailable_SingleQueue::_nextRequest");
+    pContext->setExecutionState(LOG_MSG);
+
+    return pContext;
+  }
 }

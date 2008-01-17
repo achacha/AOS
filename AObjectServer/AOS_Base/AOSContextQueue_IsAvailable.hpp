@@ -2,20 +2,25 @@
 #define INCLUDED__AOSContextQueue_IsAvailable_HPP__
 
 #include "apiAOS_Base.hpp"
-#include "AOSContextQueueThreadPool.hpp"
+#include "AOSContextQueueInterface.hpp"
 #include "ASync_CriticalSectionSpinLock.hpp"
+#include "ASync_CriticalSection.hpp"
 
-class AOS_BASE_API AOSContextQueue_IsAvailable : public AOSContextQueueThreadPool
+class AThread;
+
+class AOS_BASE_API AOSContextQueue_IsAvailable : public AOSContextQueueInterface
 {
 public:
   /*!
-  thread count for this queue is always 1
-  pYes - Forward queue set for AOSContext* (if applicable)
-  pNo  - Go back (if applicable)
+  queueCount - number of queues to use, each queue has its own select thread
   **/
-  AOSContextQueue_IsAvailable(AOSServices& services);
+  AOSContextQueue_IsAvailable(AOSServices& services, size_t queueCount = 1);
   virtual ~AOSContextQueue_IsAvailable();
   
+  // queue thread control
+  void startQueues();
+  void stopQueues();
+
   /*!
   Externally add AOSContext* synchronously to this queue for processing
   **/
@@ -30,20 +35,37 @@ public:
 
 protected:
   /*!
-  Tries to read HTTP header for a given AOSRequest
-  **/
-  virtual u4 _threadproc(AThread&);
-
-  /*!
   Synchronized remove method used by threadproc to perform work
   **/
   AOSContext *_nextContext();
 
 private:
-  // Queue and synch
-  ASync_CriticalSectionSpinLock m_SynchObjectContextContainer;
   typedef std::list<AOSContext *> REQUESTS;
-  REQUESTS m_Queue;
+
+  //a_Structure of a queue and its own worker thread
+  class QueueWithThread : public ABase
+  {
+  public:
+    ASync_CriticalSection sync;
+    REQUESTS queue;
+    AThread *pthread;
+
+    QueueWithThread();
+    virtual ~QueueWithThread();
+    
+    //a_Creates a new thread for the queue but will auto-start it
+    void startThread();
+  };
+
+  // Queue container access
+  ASync_CriticalSectionSpinLock m_SynchObjectContextContainer;
+  typedef std::vector<QueueWithThread> QUEUES;
+  QUEUES m_Queues;
+
+  // Tries to read HTTP header for a given AOSRequest
+  static u4 _threadprocWorker(AThread&);
+
+  // Queue and synch
   size_t m_AddCounter;
 };
 

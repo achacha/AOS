@@ -344,7 +344,7 @@ void AOSAdmin::_processAdminCommand(
       AOS_DEBUGTRACE("Trying to stop AOSRequestQueue_IsAvailable...", NULL);
       AOSContextQueue_IsAvailable *pcqIsAvailable = dynamic_cast<AOSContextQueue_IsAvailable *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_IsAvailable")));;
       AASSERT(NULL, pcqIsAvailable);
-      pcqIsAvailable->useThreadPool().stop();
+      pcqIsAvailable->stopQueues();
       AOS_DEBUGTRACE("AOSRequestQueue_IsAvailable stopped.", NULL);
 
       AOS_DEBUGTRACE("Trying to stop AOSContextQueue_PreExecutor...", NULL);

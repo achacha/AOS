@@ -8,6 +8,7 @@
 #include "ADynamicLibrary.hpp"
 
 #include "AOSRequestListener.hpp"
+#include "AOSContextQueue_IsAvailable_SingleQueue.hpp"
 #include "AOSContextQueue_IsAvailable.hpp"
 #include "AOSContextQueue_PreExecutor.hpp"
 #include "AOSContextQueue_Executor.hpp"
@@ -104,7 +105,10 @@ int main(int argc, char **argv)
       //
       //a_Create and configure the queues
       //
-      AOSContextQueueThreadPool *pQueueIsAvail = new AOSContextQueue_IsAvailable(services);
+      AOSContextQueueThreadPool *pQueueIsAvail = new AOSContextQueue_IsAvailable(
+        services,
+        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/is-available/queues"
+      );
       int sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/is-available/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueIsAvail->setSleepDelay(sleepDelay);
