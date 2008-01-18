@@ -226,7 +226,7 @@ void AOSContextManager::deallocate(AOSContext *p)
     ALock lock(m_HistorySync);
     if (m_History.size() >= m_HistoryMaxSize)
     {
-      //a_Remove last
+      //a_Remove last and put into free store
       pFree = m_History.back();
       m_History.pop_back();
     }

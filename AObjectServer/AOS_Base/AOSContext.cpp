@@ -174,7 +174,7 @@ void AOSContext::finalize()
   }
 
   //a_Clear ouput model and buffer and stop event timer
-  m_EventVisitor.set(ASW("Finilizing context.",19));
+  m_EventVisitor.set(ASW("Finalizing context.",19));
   m_OutputBuffer.clear(true);
   m_OutputXmlDocument.clear();
   m_EventVisitor.reset(true);
