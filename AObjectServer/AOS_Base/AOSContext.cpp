@@ -124,6 +124,12 @@ AOSContext::~AOSContext()
 
 void AOSContext::reset(AFile_Socket *pFile)
 {
+  if (!mp_RequestFile)
+  {
+    //a_New client connection
+    m_EventVisitor.useLifespanTimer().start();
+  }
+
   if (pFile)
   {
     delete mp_RequestFile;
@@ -147,6 +153,39 @@ void AOSContext::reset(AFile_Socket *pFile)
   mp_Command = NULL;
 
   m_ContextFlags.clear();
+}
+
+void AOSContext::finalize()
+{
+  //a_Close it if still open
+  if (mp_RequestFile)
+  {
+    if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
+    {
+      setExecutionState(ASW("AOSContextManager::deallocate: Socket error detected",52));
+    }
+    else
+    {
+      setExecutionState(ASW("AOSContextManager::deallocate: Closing socket connection",56));
+      mp_RequestFile->close();
+    }
+    
+    pDelete(mp_RequestFile);
+  }
+
+  //a_Clear ouput model and buffer and stop event timer
+  m_EventVisitor.set(ASW("Finilizing context.",19));
+  m_OutputBuffer.clear(true);
+  m_OutputXmlDocument.clear();
+  m_EventVisitor.reset(true);
+}
+
+void AOSContext::clear()
+{
+  reset(NULL);
+  m_EventVisitor.set(ASW("Clearing context.",17));
+  m_EventVisitor.clear();
+  m_ConnectionFlags.clear();
 }
 
 ABitArray& AOSContext::useConnectionFlags()

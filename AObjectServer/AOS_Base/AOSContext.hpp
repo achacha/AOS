@@ -44,6 +44,18 @@ public:
   void reset(AFile_Socket *pFile);
 
   /*!
+  Finalize context, used before entering history
+  Stopping timers and closing/deleting connection file
+  */
+  void finalize();
+
+  /*!
+  Clear out the context, delete the file
+  Calls reset() then clean out client specific data (used after terminate)
+  */
+  void clear();
+
+  /*!
   Init status codes
   */
   enum Status

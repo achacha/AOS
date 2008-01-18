@@ -147,7 +147,33 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
 {
   AASSERT(this, pSocket);
 
-  AOSContext *p = new AOSContext(pSocket, m_Services);
+  AOSContext *p = NULL;
+  {
+    ALock lock(m_FreestoreSync);
+    if (m_Freestore.size() > 0)
+    {
+      p = m_Freestore.back();
+      m_Freestore.pop_back();
+
+      ARope rope("AOSContextManager::allocate[",28);
+      rope.append(AString::fromPointer(p));
+      rope.append(", pFile=0x",10);
+      rope.append(AString::fromPointer(pSocket));
+      rope.append("] freestore",11);
+      p->setExecutionState(rope);
+    }
+    else
+    {
+      p = new AOSContext(pSocket, m_Services);
+
+      ARope rope("AOSContextManager::allocate[",28);
+      rope.append(AString::fromPointer(p));
+      rope.append(", pFile=0x",10);
+      rope.append(AString::fromPointer(pSocket));
+      rope.append("] new create",12);
+      p->setExecutionState(rope);
+    }
+  }
 
   {
     ALock lock(m_InUseSync);
@@ -155,36 +181,23 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
     m_InUse[p] = 1;
   }
 
-  ARope rope("AOSContextManager::allocate[",28);
-  rope.append(AString::fromPointer(p));
-  rope.append(", pFile=0x",10);
-  rope.append(AString::fromPointer(pSocket));
-  rope.append(']');
-  p->setExecutionState(rope);
-
   return p;
 }
 
 void AOSContextManager::deallocate(AOSContext *p)
 {
-  //a_Close it if still open
-  if (p->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
-  {
-    p->setExecutionState(ASW("AOSContextManager::deallocate: Socket error detected",52));
-  }
-  else
-  {
-    p->setExecutionState(ASW("AOSContextManager::deallocate: Closing socket connection",56));
-    p->useSocket().close();
-  }
 
   if (p)
   {
-    ALock lock(m_InUseSync);
-    CONTEXT_INUSE::iterator it = m_InUse.find(p);
-    AASSERT(this, p && m_InUse.end() != it);
+    p->finalize();
     
-    m_InUse.erase(it);
+    {
+      ALock lock(m_InUseSync);
+      CONTEXT_INUSE::iterator it = m_InUse.find(p);
+      AASSERT(this, p && m_InUse.end() != it);
+    
+      m_InUse.erase(it);
+    }
   }
   else
     return;
@@ -228,6 +241,7 @@ void AOSContextManager::deallocate(AOSContext *p)
       ALock lock(m_FreestoreSync);
       if (m_Freestore.size() < m_FreestoreMaxSize)
       {
+        pFree->clear();
         m_Freestore.push_front(pFree);
         pFree = NULL;
       }
