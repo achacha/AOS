@@ -8,7 +8,6 @@
 #include "ADynamicLibrary.hpp"
 
 #include "AOSRequestListener.hpp"
-#include "AOSContextQueue_IsAvailable_SingleQueue.hpp"
 #include "AOSContextQueue_IsAvailable.hpp"
 #include "AOSContextQueue_PreExecutor.hpp"
 #include "AOSContextQueue_Executor.hpp"
