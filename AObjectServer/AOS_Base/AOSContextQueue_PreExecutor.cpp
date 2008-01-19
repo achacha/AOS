@@ -184,7 +184,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           {
             //a_Socket was closed, terminate
             pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: Socket was closed by client, terminating",69), true);
-            pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+            pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_CLOSED);
             pContext->useEventVisitor().reset();
             m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
           }

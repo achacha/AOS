@@ -10,16 +10,17 @@ void AOSContextQueue_IsAvailable::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "(AOSContextQueue_IsAvailable @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Queues={" << std::endl;
-  for (size_t i=0; i<m_Queues.size(); ++i)
   {
-    const QueueWithThread *pq = m_Queues.at(i);
-    ADebugDumpable::indent(os, indent+2) << "queue[" << i << "].pthread=" << AString::fromPointer(pq->pthread) << std::endl;
-    ADebugDumpable::indent(os, indent+2) << "queue[" << i << "].queue.size=" << pq->queue.size() << std::endl;
+    ALock lock(const_cast<ASync_CriticalSectionSpinLock *>(&m_SynchObjectContextContainer));
+    for (size_t i=0; i<m_Queues.size(); ++i)
+    {
+      const QueueWithThread *pq = m_Queues.at(i);
+      ADebugDumpable::indent(os, indent+2) << "queue[" << i << "].pthread=" << AString::fromPointer(pq->pthread) << std::endl;
+      ADebugDumpable::indent(os, indent+2) << "queue[" << i << "].count=" << pq->count << std::endl;
+      ADebugDumpable::indent(os, indent+2) << "queue[" << i << "].queue.size=" << pq->queue.size() << std::endl;
+    }
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-
-  AOSContextQueueInterface::debugDump(os, indent+1);
-
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
@@ -217,12 +218,30 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                 (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_AVAILABLE_SELECTED);
                 (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_AVAILABLE_PENDING);
 
+                //a_Attempt to read some data to check if it actually has data, if not then connection is closed
+                if (0 == (*itMove)->useSocket().readBlockIntoLookahead())
+                {
+                  //a_No data to read, socket is closed
+                  (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_CLOSED);
+                  (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: Detected closed remote socket",58));
+                  (*itMove)->useSocket().close();
+
+                  {
+                    ALock lock(pOwner->m_SynchObjectContextContainer);
+                    pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
+                    pThis->queue.erase(itMove);
+                  }
+                }
+                else
                 {
                   //a_Add to next queue
-                  ALock lock(pThis->sync);
                   (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54));
-                  pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &(*itMove));
-                  pThis->queue.erase(itMove);
+
+                  {
+                    ALock lock(pOwner->m_SynchObjectContextContainer);
+                    pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &(*itMove));
+                    pThis->queue.erase(itMove);
+                  }
                 }
 
                 --availCount;
@@ -240,7 +259,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   (*itMove)->useTimeoutTimer().emit(str);
 
                   //a_We are done with this request, still no data
-                  ALock lock(pThis->sync);
+                  ALock lock(pOwner->m_SynchObjectContextContainer);
                   (*itMove)->setExecutionState(
                     str, 
                     !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
@@ -273,7 +292,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                 (*itMove)->useTimeoutTimer().emit(str);
 
                 //a_We are done with this request, still no data
-                ALock lock(pThis->sync);
+                ALock lock(pOwner->m_SynchObjectContextContainer);
                 (*itMove)->setExecutionState(
                   str, 
                   !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)

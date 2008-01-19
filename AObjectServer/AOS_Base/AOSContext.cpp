@@ -264,17 +264,8 @@ AOSContext::Status AOSContext::_processHttpHeader()
   if (0 == bytesRead && m_ConnectionFlags.isSet(AOSContext::CONFLAG_IS_AVAILABLE_PENDING))
   {
     //a_If select thinks there is data but we cannot read any then socket is dead
-    if (!m_ConnectionFlags.isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
-    {
-      m_EventVisitor.set(
-        ASW("AOSContext: detected a closed socket",36), 
-        false
-      );
-      
-      return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
-    }
-    else
-      return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
+    mp_RequestFile->close();
+    return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
   }
 
   while (
