@@ -339,7 +339,7 @@ void AFile_Socket_SSL::_deinitSSL()
   memset(pData, 0, sizeof(SSLData));
 }
 
-size_t AFile_Socket_SSL::_readBlockIntoLookahead()
+size_t AFile_Socket_SSL::readBlockIntoLookahead()
 {
   if (m_EOF)
     return 0;

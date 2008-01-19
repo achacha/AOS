@@ -29,6 +29,8 @@ public:
 
   void throwSSLError(int sslErrorCode);
 
+  virtual size_t readBlockIntoLookahead();
+
   /*!
   ADebugDumpable
   */
@@ -39,7 +41,6 @@ protected :
   virtual size_t _write(const void *, size_t);
   virtual size_t _read(void *, size_t);
 
-  virtual size_t _readBlockIntoLookahead();
   virtual size_t _availableInputWaiting() const;
 
 private:
