@@ -150,24 +150,39 @@ public:
 
   /*!
   Ability to skip over delimeters
-  returns AConstant::npos if EOF, otherwise number of characters skipped over
+  
+  @return AConstant::npos if EOF, otherwise number of characters skipped over
   */
   virtual size_t skipOver(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
 
   /*!
+  Read some data into lookahead buffer
+  Useful for moving data from file channel into local buffer
+  Used by socket code to detect a closed socket
+  This method is used by read/skip/peek routines
+
+  @return bytes read, 0 = nothing, AConstant::npos = error
+  */
+  virtual size_t readBlockIntoLookahead();
+  
+  /*!
   Scan file for a pattern (possible to read to EOF if pattern not found)
+  
+  @return position of the pattern or AConstant::npos if not found
   */
   virtual size_t find(const AString& strPattern);
 
   /*!
   Will write a line (strLine + AConstant::ASTRING_EOL delimeter)
-  Returns number of bytes written
+  
+  @return number of bytes written
   */  
   virtual size_t writeLine(const AString& line = AConstant::ASTRING_EMPTY, const AString& strEOL = AConstant::ASTRING_EOL);
 
   /*!
   Write buffer of given length
-  return AConstant::npos if EOF (which is not a common occurance)
+  
+  @return AConstant::npos if EOF (which is not a common occurance)
   */
   virtual size_t write(const void *pcvData, size_t length);
 
@@ -259,11 +274,6 @@ protected:
   Append methods for AOutputBuffer
   */
   virtual void _append(const char *, size_t);
-
-  /*!
-  Lookahead buffer used by read/write/peek
-  */
-  virtual size_t _readBlockIntoLookahead();
 
   ARopeDeque m_LookaheadBuffer;
 

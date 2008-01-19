@@ -88,7 +88,13 @@ public:
   /*!
   Bytes avaialable (in socket and lookahead)
   */
-  inline size_t getTotalBytesAvailableForRead() const;
+  size_t getTotalBytesAvailableForRead() const;
+
+
+  /*!
+  Lookahead buffer used by read/write/peek overridden due to blocking socket read mode
+  */
+  virtual size_t readBlockIntoLookahead();
 
   /*!
   Socket info
@@ -105,9 +111,6 @@ protected :
   virtual size_t _write(const void *, size_t);
   virtual size_t _read(void *, size_t);
   virtual bool _isNotEof();
-
-  //a_Lookahead buffer used by read/write/peek overridden due to blocking socket read mode
-  virtual size_t _readBlockIntoLookahead();
 
   //a_Physical bytes available in the socket (does not include the lookahead buffer)
   virtual size_t _availableInputWaiting() const;

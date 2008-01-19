@@ -74,7 +74,7 @@ void AFile_IOStream::close()
   //a_Close does not apply to these classes
 }
 
-size_t AFile_IOStream::_readBlockIntoLookahead()
+size_t AFile_IOStream::readBlockIntoLookahead()
 {
   if (mp_IStream->rdstate() & std::ios::eofbit)
     return 0;

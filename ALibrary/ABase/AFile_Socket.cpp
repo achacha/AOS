@@ -285,7 +285,7 @@ void AFile_Socket::setBlocking()
     ATHROW_LAST_SOCKET_ERROR(this);
 }
 
-size_t AFile_Socket::_readBlockIntoLookahead()
+size_t AFile_Socket::readBlockIntoLookahead()
 {
   AASSERT(this, INVALID_SOCKET != m_SocketInfo.m_handle);
   if (m_EOF)

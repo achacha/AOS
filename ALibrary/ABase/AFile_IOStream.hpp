@@ -42,6 +42,11 @@ public:
   virtual bool isOpen();
 
   /*!
+  Lookahead buffer used by read/write/peek
+  */
+  virtual size_t readBlockIntoLookahead();
+
+  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
@@ -50,11 +55,6 @@ protected:
   virtual size_t _write(const void *, size_t);
 	virtual size_t _read(void *, size_t);
   virtual bool _isNotEof();
-
-  /**
-    Lookahead buffer used by read/write/peek
-  */
-  virtual size_t _readBlockIntoLookahead();
 
 private:
   std::istream *mp_IStream;
