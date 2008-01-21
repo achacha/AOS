@@ -161,7 +161,7 @@ public:
   Used by socket code to detect a closed socket
   This method is used by read/skip/peek routines
 
-  @return bytes read, 0 = nothing, AConstant::npos = error
+  @return bytes read, 0 = nothing, AConstant::npos = error, AConstant::unavail if data not available yet
   */
   virtual size_t readBlockIntoLookahead();
   

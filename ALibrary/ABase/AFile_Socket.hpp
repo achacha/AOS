@@ -74,7 +74,7 @@ public:
   void setNagleAlgorithm(bool mode = true);
 
   /*!
-  Reading of non-blocking sockets.
+  Reading of blocking sockets
   */
   size_t readBlocking(void *, size_t size);
     
@@ -107,12 +107,21 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected :
-  //a_Implement raw read/write methods that AFile will use via socket interface
+  /*!
+  Write using socket interface
+  @return bytes written or if error exception thrown
+  */
   virtual size_t _write(const void *, size_t);
+  /*!
+  Read using socket interface
+  @return bytes read, if no data then AConstant::unavail if non-blocking
+  */
   virtual size_t _read(void *, size_t);
+  
+  //! Checks if not eof
   virtual bool _isNotEof();
 
-  //a_Physical bytes available in the socket (does not include the lookahead buffer)
+  //! Physical bytes available in the socket (does not include the lookahead buffer)
   virtual size_t _availableInputWaiting() const;
 
   void makeHandle();

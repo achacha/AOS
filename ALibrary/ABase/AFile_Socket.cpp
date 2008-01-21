@@ -227,7 +227,7 @@ size_t AFile_Socket::_read(void *buf, size_t size)
   {
     int err = ::WSAGetLastError();
     if (err == WSAEWOULDBLOCK)
-      return AConstant::npos; //Operation would block so return not found
+      return AConstant::unavail;      //Operation would block so return not available
 
     ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
   }

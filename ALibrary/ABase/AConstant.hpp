@@ -8,7 +8,11 @@ class AString;
 class ABASE_API AConstant
 {
 public:
-  static const size_t npos;         //a_Defined as -1
+  enum
+  {
+    npos    = -1,
+    unavail = -2
+  };
   static const size_t MAX_SIZE_T;   //a_max value of size_t type
 
   //a_Constants

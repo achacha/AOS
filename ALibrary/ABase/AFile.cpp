@@ -40,8 +40,12 @@ size_t AFile::readLine(
   while (AConstant::npos == ret && _isNotEof())
   {
     size_t read = readBlockIntoLookahead();
-    if (!read || AConstant::npos == read)
+    if (read <= 0)
     {
+      //a_Return unavailable if it can read more but not at the moment
+      if (AConstant::unavail == ret)
+        return AConstant::unavail;
+
       if (treatEofAsEol && m_LookaheadBuffer.getSize() > 0)
       {
         //a_Nothing left to read, so will read to EOF
@@ -107,16 +111,23 @@ size_t AFile::peekLine(
 
   while (AConstant::npos == ret)
   {
-    if (!readBlockIntoLookahead())
+    size_t ret = readBlockIntoLookahead();
+    switch(ret)
     {
-      if (treatEofAsEol)
-        ret = m_LookaheadBuffer.peekFront(strPeek, maxBytes);
-      else
-        ret = AConstant::npos;
-    }
-    else
-    {
-      ret = m_LookaheadBuffer.peekFrontUntil(strPeek, '\r', maxBytes);
+      case 0:
+        return AConstant::npos;     //No more data to read then not found
+      
+      case AConstant::unavail:
+        return AConstant::unavail;  //No data available at the moment
+
+      case AConstant::npos:
+        if (treatEofAsEol)
+          ret = m_LookaheadBuffer.peekFront(strPeek, maxBytes);
+        else
+          ret = AConstant::npos;
+
+      default:
+        ret = m_LookaheadBuffer.peekFrontUntil(strPeek, '\r', maxBytes);
     }
   }
 
@@ -132,18 +143,23 @@ size_t AFile::skipLine(
 
   while (AConstant::npos == ret)
   {
-    if (!readBlockIntoLookahead())
+    size_t ret = readBlockIntoLookahead();
+    switch(ret)
     {
-      if (treatEofAsEol)
-      {
-        ret = m_LookaheadBuffer.removeFront(maxBytes);
-      }
-      else
-        ret = AConstant::npos;
-    }
-    else
-    {
-      ret = m_LookaheadBuffer.removeFrontUntil('\n', true, maxBytes);
+      case 0:
+        return AConstant::npos;     //No more data to read then not found
+      
+      case AConstant::unavail:
+        return AConstant::unavail;  //No data available at the moment
+
+      case AConstant::npos:
+        if (treatEofAsEol)
+          ret = m_LookaheadBuffer.removeFront(maxBytes);
+        else
+          ret = AConstant::npos;
+
+      default:
+        ret = m_LookaheadBuffer.removeFrontUntil('\n', true, maxBytes);
     }
   }
 
@@ -159,8 +175,18 @@ size_t AFile::readUntilOneOf(
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.popFrontUntilOneOf(strRead, strDelimeters, boolRemoveDelimiter, boolDiscardDelimiter)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
 
   return ret;
@@ -171,8 +197,18 @@ size_t AFile::peekUntilOneOf(AString &strPeek, const AString &strDelimeters)
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.peekFrontUntilOneOf(strPeek, strDelimeters)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
   return ret;
 }
@@ -185,8 +221,18 @@ size_t AFile::skipUntilOneOf(
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.removeFrontUntilOneOf(strDelimeters, boolDiscardDelimeter)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
 
   return ret;
@@ -201,8 +247,18 @@ size_t AFile::skipUntilOneOf(
   AString strDelim(delimeter);
   while (AConstant::npos == (ret = m_LookaheadBuffer.removeFrontUntilOneOf(strDelim, boolDiscardDelimeter)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
 
   return ret;
@@ -213,8 +269,18 @@ size_t AFile::peekUntil(AString& strPeek, const AString& strPattern)
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.peekFrontUntil(strPeek, strPattern)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
   return ret;
 }
@@ -224,8 +290,18 @@ size_t AFile::peekUntil(AString& strPeek, char cPattern)
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.peekFrontUntil(strPeek, cPattern)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
   return ret;
 }
@@ -240,8 +316,18 @@ size_t AFile::readUntil(
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.popFrontUntil(strRead, strPattern, boolRemovePattern, boolDiscardPattern)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
 
   return ret;
@@ -257,8 +343,18 @@ size_t AFile::readUntil(
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.popFrontUntil(strRead, cPattern, boolRemovePattern, boolDiscardPattern)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
 
   return ret;
@@ -272,8 +368,18 @@ size_t AFile::skipUntil(
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.removeFrontUntil(strPattern, boolDiscardPattern)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
 
   return ret;
@@ -287,8 +393,18 @@ size_t AFile::skipUntil(
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.removeFrontUntil(cPattern, boolDiscardPattern)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
 
   return ret;
@@ -319,8 +435,18 @@ size_t AFile::find(const AString &strPattern)
   size_t ret = 0;
   while (AConstant::npos == (ret = m_LookaheadBuffer.find(strPattern)))
   {
-    if (!readBlockIntoLookahead())
-      return AConstant::npos;
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        return AConstant::unavail;
+
+      default:
+        continue;
+    }
   }
   return ret;
 }
@@ -444,9 +570,13 @@ size_t AFile::peekUntilEOF(AOutputBuffer& target)
 {
   //a_Read everything into lookahead buffer for peek
   size_t ret = readBlockIntoLookahead();
+  if (AConstant::unavail == ret)
+    return AConstant::unavail;
+
   while (ret > 0)
   {
-    ret = readBlockIntoLookahead();
+    if (AConstant::unavail == (ret = readBlockIntoLookahead()))
+      return AConstant::unavail;
   }
 
   m_LookaheadBuffer.emit(target);
@@ -465,6 +595,9 @@ size_t AFile::readUntilEOF(AOutputBuffer& target)
   
   //a_Read
   size_t ret = readBlockIntoLookahead();
+  if (AConstant::unavail == ret)
+    return AConstant::unavail;
+
   if (ret > 0)
   {
     do 
@@ -473,6 +606,8 @@ size_t AFile::readUntilEOF(AOutputBuffer& target)
       m_LookaheadBuffer.emit(target);
       m_LookaheadBuffer.clear();
       ret = readBlockIntoLookahead();
+      if (AConstant::unavail == ret)
+        return AConstant::unavail;
     }
     while (ret == m_ReadBlock);
 
@@ -524,8 +659,11 @@ size_t AFile::read(void *pTarget, size_t bytesLeft)
   {
     size_t bytesReadPass = readBlockIntoLookahead();
     
-    // npos returned is WOULDBLOCK is the case
-    if (!bytesReadPass || AConstant::npos == bytesReadPass)
+    if (AConstant::unavail == bytesReadPass)
+      return AConstant::unavail;
+
+    // 0 or AConstant::npos
+    if (bytesReadPass <= 0)
       break;
 
     bytesRead += bytesReadPass;
@@ -555,9 +693,14 @@ size_t AFile::peek(void *pTarget, size_t bytesLeft)
     while (m_LookaheadBuffer.getSize() < bytesLeft)
     {
       size_t bytesReadPass = readBlockIntoLookahead();
-      bytesRead += bytesReadPass;
-      if (!bytesReadPass)   //a_Blocking or out of data same for peek
+
+      if (AConstant::unavail == bytesReadPass)
+        return AConstant::unavail;
+
+      if (bytesReadPass <= 0)   //a_Blocking or out of data same for peek
         break;
+
+      bytesRead += bytesReadPass;
     }
 
     bytesRead = m_LookaheadBuffer.getSize();
