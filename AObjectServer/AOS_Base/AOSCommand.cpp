@@ -76,7 +76,7 @@ const AString& AOSCommand::getClass() const
 void AOSCommand::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   //a_Display the commadn name (which is the path)
-  eBase.addAttribute(ASW("display",5), m_CommandPath);
+  eBase.addAttribute(ASW("display",7), m_CommandPath);
 
   //a_Alias if any
   eBase.addAttribute(S_ALIAS, m_CommandAlias);

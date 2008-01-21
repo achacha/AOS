@@ -192,7 +192,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
         AAutoPtr<AFile_Socket> pSocket(NULL);
         try
         {
-          pSocket.reset(new AFile_Socket(listener));
+          pSocket.reset(new AFile_Socket(listener, true));
           pSocket->open();
           pContext = pThis->m_Services.useContextManager().allocate(pSocket.use());
           pSocket.setOwnership(false);

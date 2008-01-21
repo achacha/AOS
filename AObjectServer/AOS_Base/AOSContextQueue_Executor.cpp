@@ -239,10 +239,12 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         if (pContext->useRequestHeader().isHttpPipeliningEnabled())
         {
           //a_keep-alive found, pipelining enabled
+          pContext->setExecutionState(ASW("AOSContextQueue_Executor: Pipelining detected, going into isAvailable",69));
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
         }
         else
         {
+          pContext->setExecutionState(ASW("AOSContextQueue_Executor: Pipelining not detected, terminating request",70));
           pContext->useSocket().close();
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
         }

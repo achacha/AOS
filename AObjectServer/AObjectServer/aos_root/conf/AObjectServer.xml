@@ -46,12 +46,19 @@
 		<module>AOS_Classified</module>
 		<module>AOS_User</module>
 	</load>
+	<http>
+		<first-char-read-tries desc="Number of times to try and read the first character">15</first-char-read-tries>
+		<first-char-sleep-start desc="Initial sleep time trying to read first character">30</first-char-sleep-start>
+		<first-char-sleep-increment desc="Amount to increment the sleep time for each try">20</first-char-sleep-increment>
+		<wait-for-http-data-timeout desc="Time to wait for complete header after initial byte before giving up, in ms">10000</wait-for-http-data-timeout>
+		<http11-pipelining-enabled desc="Enabled pipelining if keep-alive is specified">true</http11-pipelining-enabled>
+	</http>
 	<context-queues>
 		<is-available>
 			<queues desc="Queues in the is-available queue manager, each queue has single select thread">2</queues>
 			<loop-delay desc="Milliseconds of sleep between bulk selects">5</loop-delay>
 			<empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</empty-queue-sleep-delay>
-			<no-data-timeout desc="Milliseconds before a socket is clsoed due to inactivity">25000</no-data-timeout>
+			<no-data-timeout desc="Milliseconds before a socket is clsoed due to inactivity">180000</no-data-timeout>
 		</is-available>
 		<pre-executor>
 			<threads desc="Threads in the pre-executor queue manager">10</threads>
@@ -106,9 +113,4 @@
 		<url>sqlite:///./aos_root/AObjectServer.db</url>
 		<connections>4</connections>
 	</database>
-	<http>
-		<first-char-read-tries>15</first-char-read-tries>
-		<wait-for-http-data-timeout desc="Time to wait for complete header after initial byte before giving up, in ms">10000</wait-for-http-data-timeout>
-		<http11-pipelining-enabled>true</http11-pipelining-enabled>
-	</http>
 </server>

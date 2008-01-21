@@ -177,8 +177,8 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
   timeout.tv_sec  = 0;
   timeout.tv_usec = 0;
 
-  static const int NO_DATA_TIMEOUT = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/no-data-timeout",57), 30000);
-  static const int SLEEP_DELAY = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/empty-queue-sleep-delay",53), 20);
+  static const int NO_DATA_TIMEOUT = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/no-data-timeout",57), 60000);
+  static const int SLEEP_DELAY = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/empty-queue-sleep-delay",65), 20);
   static const int LOOP_DELAY = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/loop-delay",52), 5);
 
   thread.setRunning(true);
@@ -215,32 +215,58 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                 REQUESTS::iterator itMove = it;
                 ++it;
 
-                (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_AVAILABLE_SELECTED);
-                (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_AVAILABLE_PENDING);
+                (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_ISAVAILABLE_SELECT_SET);
 
                 //a_Attempt to read some data to check if it actually has data, if not then connection is closed
-                if (0 == (*itMove)->useSocket().readBlockIntoLookahead())
+                switch((*itMove)->useSocket().readBlockIntoLookahead())
                 {
-                  //a_No data to read, socket is closed
-                  (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_CLOSED);
-                  (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: Detected closed remote socket",58));
-                  (*itMove)->useSocket().close();
-
+                  case AConstant::npos:
+                  case 0:
                   {
-                    ALock lock(pOwner->m_SynchObjectContextContainer);
-                    pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
-                    pThis->queue.erase(itMove);
+                    //a_No data to read, socket is closed
+                    (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_CLOSED);
+                    (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: Detected closed remote socket",58));
+                    (*itMove)->useSocket().close();
+
+                    {
+                      ALock lock(pThis->sync);
+                      pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
+                      pThis->queue.erase(itMove);
+                    }
                   }
-                }
-                else
-                {
-                  //a_Add to next queue
-                  (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54));
+                  break;
 
+                  case AConstant::unavail:
+                    if ((*itMove)->useTimeoutTimer().getInterval() > NO_DATA_TIMEOUT)
+                    {
+                      AString str;
+                      str.append("AOSContextQueue_IsAvailable: No data (non-blocking) after timeout: ",67);
+                      (*itMove)->useTimeoutTimer().emit(str);
+
+                      //a_We are done with this request, still no data
+                      (*itMove)->setExecutionState(
+                        str, 
+                        !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
+                      );
+                      {
+                        ALock lock(pThis->sync);
+                        pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
+                        pThis->queue.erase(itMove);
+                      }
+                    }
+                  break;  // Would block, keep waiting
+
+                  default:
                   {
-                    ALock lock(pOwner->m_SynchObjectContextContainer);
-                    pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &(*itMove));
-                    pThis->queue.erase(itMove);
+                    //a_Add to next queue
+                    (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
+                    (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54));
+
+                    {
+                      ALock lock(pThis->sync);
+                      pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &(*itMove));
+                      pThis->queue.erase(itMove);
+                    }
                   }
                 }
 
@@ -259,17 +285,18 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   (*itMove)->useTimeoutTimer().emit(str);
 
                   //a_We are done with this request, still no data
-                  ALock lock(pOwner->m_SynchObjectContextContainer);
                   (*itMove)->setExecutionState(
                     str, 
                     !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
                   );
-                  pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
-                  pThis->queue.erase(itMove);
+                  {
+                    ALock lock(pThis->sync);
+                    pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
+                    pThis->queue.erase(itMove);
+                  }
                 }
                 else
                 {
-                  (*it)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_AVAILABLE_SELECTED);
                   ++it;
                 }
               }
@@ -292,7 +319,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                 (*itMove)->useTimeoutTimer().emit(str);
 
                 //a_We are done with this request, still no data
-                ALock lock(pOwner->m_SynchObjectContextContainer);
+                ALock lock(pThis->sync);
                 (*itMove)->setExecutionState(
                   str, 
                   !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
@@ -302,7 +329,6 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
               }
               else
               {
-                (*it)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_AVAILABLE_SELECTED);
                 ++it;
               }
             }
@@ -337,8 +363,8 @@ void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
 {
   //a_Clear these in case this is not the first trip here
   //a_More than one trip can result if some bytes were read but not enough
-  pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_IS_AVAILABLE_SELECTED);
-  pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_IS_AVAILABLE_PENDING);
+  pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_ISAVAILABLE_SELECT_SET);
+  pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
 
   static const AString LOG_MSG("AOSContextQueue_IsAvailable::add");
   pContext->setExecutionState(LOG_MSG);

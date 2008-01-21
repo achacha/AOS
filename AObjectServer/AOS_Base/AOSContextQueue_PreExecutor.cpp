@@ -97,6 +97,14 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
               m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
               continue;
             }
+            else
+            {
+              //a_No data trying to read first character, go into isAvailable
+              pContext->setExecutionState(ASW("AOSContextQueue_PreExecutor: No data yet for HTTP header, going into waiting queue",82));
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
+            }
+          continue;
+
             //Fallthrough from above
           case AOSContext::STATUS_HTTP_INCOMPLETE_METHOD:
           case AOSContext::STATUS_HTTP_INCOMPLETE_LINEZERO:
@@ -208,6 +216,11 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           default:
             AASSERT(this, false);   //a_Should not be here, AOSContext::Status not handled
         }
+
+        //a_Programming error, should never be NULL here
+        //a_Check above to make sure if a state was changed that it didn't fall through here by accident
+        //a_After state change must continue to get the next context
+        AASSERT(this, pContext);
 
         //a_Create/Use session cookie/data
         AString strSessionId;

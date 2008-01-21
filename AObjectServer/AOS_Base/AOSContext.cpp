@@ -250,47 +250,95 @@ AOSContext::Status AOSContext::init()
   return AOSContext::STATUS_OK;
 }
 
-AOSContext::Status AOSContext::_processHttpHeader()
+bool AOSContext::_waitForFirstChar()
 {
-  setExecutionState(ASW("AOSContext: Reading HTTP method",31), false, 30000.0);  //a_Read header for 60 seconds
-  AString str(8188, 1024);
-
-  // Sum( N * sleeptime, 0 to N-1)
-  static int s_firstCharReadRetries = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/http/first-char-read-tries", 15);
+  static const int FIRST_CHAR_RETRIES = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/http/first-char-read-tries", 15);
+  static const int SLEEP_STARTTIME = m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/http/first-char-sleep-start",42), 30);
+  static const int SLEEP_INCREMENT = m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/http/first-char-sleep-increment",46), 20);
+  int sleeptime = SLEEP_STARTTIME;
   int tries = 0;
-  int sleeptime = 20;
-  char c = '\x0';
-  size_t bytesRead = mp_RequestFile->read(c);
-  if (0 == bytesRead && m_ConnectionFlags.isSet(AOSContext::CONFLAG_IS_AVAILABLE_PENDING))
-  {
-    //a_If select thinks there is data but we cannot read any then socket is dead
-    mp_RequestFile->close();
-    return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
-  }
-
-  while (
-    tries < s_firstCharReadRetries 
-    && 1 != bytesRead
-  )
+  char c;
+  while (tries < FIRST_CHAR_RETRIES)
   {
     ARope rope("AOSContext: Sleep cycle ",24);
     rope.append(AString::fromInt(tries));
     setExecutionState(rope);
 
     AThread::sleep(sleeptime);
-    sleeptime += 20;
+    sleeptime += SLEEP_INCREMENT;
     ++tries;
-    bytesRead = mp_RequestFile->read(c);
+    if (mp_RequestFile->peek(c) > 0)
+      return true;
   }
-  
-  if (s_firstCharReadRetries <= tries)
+
+  return false;
+}
+
+AOSContext::Status AOSContext::_processHttpHeader()
+{
+  setExecutionState(ASW("AOSContext: Reading HTTP method",31), false, 30000.0);  //a_Read header for 60 seconds
+  AString str(8188, 1024);
+
+  // Sum( N * sleeptime, 0 to N-1)
+  char c = '\x0';
+  size_t bytesRead = mp_RequestFile->read(c);
+  switch (bytesRead)
   {
-    ARope rope("AOSContext: Unable to read first char within ",43);
-    rope.append(AString::fromInt(s_firstCharReadRetries));
-    rope.append(" retries",8);
-    m_EventVisitor.set(rope);
-    return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
+    case AConstant::unavail:
+      //a_Data not available, try and read-wait to get it
+      if (!_waitForFirstChar())
+      {
+        m_EventVisitor.set(ASW("AOSContext: Unable to read first char after retires",51));
+        return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
+      }
+      else
+        bytesRead = mp_RequestFile->read(c);
+    break;
+
+    case AConstant::npos:
+      m_EventVisitor.set(ASW("AOSContext: Error reading first char",36));
+      return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
+
+    case 0:
+      //a_0 bytes read yet isAvailable flagged it as having data which implies closed socket
+      //a_Should not come here, isAvailable will handle closed sockets
+      if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_ISAVAILABLE_PENDING))
+      {
+        //a_If select thinks there is data but we cannot read any then socket is dead
+        m_EventVisitor.set(ASWNL("AOSContext: Handling closed socket (should be in isAvailable)"));
+        mp_RequestFile->close();
+        return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
+      }
+      else
+      {
+        //a_No data read wait and try to get more
+        if (!_waitForFirstChar())
+        {
+          m_EventVisitor.set(ASW("AOSContext: Zero data read looking for first char",49));
+          return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
+        }
+        else
+        {
+          if (bytesRead = mp_RequestFile->read(c) > 0)
+            m_ConnectionFlags.clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
+          else
+          {
+            //a_Something wrong here, peek says data is ready, read can't get it
+            ATHROW(this, AException::ProgrammingError);
+          }
+        }
+      }
+    break;
+
+    default:
+      //a_Data was read, clear the pending flag set by isAvailable
+      m_ConnectionFlags.clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
+    break;
   }
+  AASSERT(this, 1 == bytesRead);
+
+  //a_Start request timer once we have first character
+  m_RequestTimer.start();
 
   //a_Add first letter
   str.append(c);
