@@ -141,15 +141,15 @@ static int alibrary_Objects_Model_emitJson(lua_State *L)
 }
 
 /*!
-Adds a value for an element at the given path, will creates element
+Adds a new element and optionally a text value to it
 
 thisfunction("element path", "value")
 
 @param Element path
-@param Value to set
+@param Value to set (optional)
 @return nil
 */
-static int alibrary_Objects_Model_addElementText(lua_State *L)
+static int alibrary_Objects_Model_addElement(lua_State *L)
 {
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
@@ -169,6 +169,34 @@ static int alibrary_Objects_Model_addElementText(lua_State *L)
 }
 
 /*!
+Adds a text value to an existing element at the given path or will create element
+
+thisfunction("element path", "value")
+
+@param Element path
+@param Value to set
+@return nil
+*/
+static int alibrary_Objects_Model_addText(lua_State *L)
+{
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
+  size_t len = AConstant::npos;
+  const char *s = luaL_checklstring(L, 1, &len);
+  const AString& xmlpath = AString::wrap(s, len);
+
+  AXmlElement &e = pLuaEmbed->useModel().useRoot().overwriteElement(xmlpath);
+  if (lua_gettop(L) > 1)
+  {
+    s = luaL_checklstring(L, 2, &len);
+    const AString& value = AString::wrap(s, len);
+    e.addData(value);
+  }
+  return 0;
+}
+
+/*!
 Sets a value for an element at the given path, if exists it will replace otherwise create
 
 thisfunction("element path", "value")
@@ -177,7 +205,7 @@ thisfunction("element path", "value")
 @param Value to set, if not specified only element is created
 @return nil
 */
-static int alibrary_Objects_Model_setElementText(lua_State *L)
+static int alibrary_Objects_Model_setText(lua_State *L)
 {
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   AASSERT(NULL, pLuaEmbed);
@@ -192,10 +220,41 @@ static int alibrary_Objects_Model_setElementText(lua_State *L)
     s = luaL_checklstring(L, 2, &len);
     const AString& value = AString::wrap(s, len);
 
-    e.addData(value);
+    e.setData(value);
   }
 
   return 0;
+}
+
+/*!
+Gets text value for a given path
+
+thisfunction("element path")
+
+@param Element path
+@return Text content for a given element or nil if it doesn't exist
+*/
+static int alibrary_Objects_Model_getText(lua_State *L)
+{
+  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
+  AASSERT(NULL, pLuaEmbed);
+
+  size_t len = AConstant::npos;
+  const char *s = luaL_checklstring(L, 1, &len);
+  const AString& xmlpath = AString::wrap(s, len);
+  
+  AXmlElement *pElement = pLuaEmbed->useModel().useRoot().findElement(xmlpath);
+  if (!pElement)
+  {
+    return 0;
+  }
+  else
+  {
+    AString str;
+    pElement->emitContent(str);
+    lua_pushlstring(L, str.c_str(), str.getSize());
+    return 1;
+  }
 }
 
 static const luaL_Reg model_funcs[] = {
@@ -203,8 +262,10 @@ static const luaL_Reg model_funcs[] = {
   {"emitJson", alibrary_Objects_Model_emitJson},
   {"existElement", alibrary_Objects_Model_existElement},
   {"emitContentFromPath", alibrary_Objects_Model_emitContentFromPath},
-  {"addElementText", alibrary_Objects_Model_addElementText},
-  {"setElementText", alibrary_Objects_Model_setElementText},
+  {"addElement", alibrary_Objects_Model_addElement},
+  {"addText", alibrary_Objects_Model_addText},
+  {"setText", alibrary_Objects_Model_setText},
+  {"getText", alibrary_Objects_Model_getText},
   {NULL, NULL}
 };
 

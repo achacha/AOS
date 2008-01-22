@@ -102,5 +102,10 @@ void ATemplateNodeHandler_LUA::Node::process(ABasePtrContainer& objects, AOutput
   ATemplateNodeHandler_LUA *pHandler = dynamic_cast<ATemplateNodeHandler_LUA *>(mp_Handler);
   AASSERT(this, pHandler);
 
-  pHandler->useLua().execute(m_BlockData, objects, output);
+  if (!pHandler->useLua().execute(m_BlockData, objects, output))
+  {
+    output.append(" block={{{\r\n",12);
+    output.append(m_BlockData);
+    output.append("}}}\r\n",5);
+  }
 }
