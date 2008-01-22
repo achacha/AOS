@@ -1,4 +1,4 @@
 %[LUA]{{{
-model.addElementText("/root/inline-script-added", "Cthulhu was here");
+model.addText("/root/inline-script-added", "Added by data/template/TestLuaScript.template");
 print(model.emitContentFromPath("/root/inline-script-added"));	
 }}}[LUA]%

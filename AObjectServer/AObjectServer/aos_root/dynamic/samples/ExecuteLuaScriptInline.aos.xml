@@ -3,8 +3,12 @@
   <input/>
   <module class="LuaScript">
     <script><![CDATA[
-model.addElementText("/root/inline-script-added", "Cthulhu was here");
-print(model.emitContentFromPath("/root/inline-script-added"));	
+model.addText("/root/inline-script-added", "Inserted ");
+model.addText("/root/inline-script-added", "directly ");
+model.addText("/root/inline-script-added", "by ");
+model.addText("/root/inline-script-added", "ExecuteLuaScriptInline ");
+model.addText("/root/inline-script-added", "command.");
+print(model.getText("/root/inline-script-added"));	
 ]]></script>
     <outpath>output/script</outpath>
   </module>

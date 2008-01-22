@@ -3,7 +3,7 @@
   <input/>
   <module class="Template">
     <template><![CDATA[foo=%[LUA]{{{
-model.addElementText("/root/inline-script-added", "Cthulhu was here");
+model.setText("/root/inline-script-added", "Set directly by ExecuteTemplateInline command");
 print(model.emitContentFromPath("/root/inline-script-added"));	
 }}}[LUA]%]]></template>
     <outpath>output/template</outpath>
