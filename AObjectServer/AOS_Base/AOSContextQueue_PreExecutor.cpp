@@ -477,11 +477,8 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     //a_The writing of the output
     try
     {
-      pContext->setExecutionState(ASW("Writing HTTP response header",28));
-      pContext->useResponseHeader().emit(pContext->useSocket());
-      pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
-
-      pContext->setExecutionState(ASW("Writing compressed",18));
+      pContext->writeResponseHeader();
+      pContext->setExecutionState(ASW("Writing uncompressed",20));
       pContext->useSocket().write(compressed);
     }
     catch(AException& ex)
@@ -504,12 +501,9 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
 
     try
     {
-      pContext->setExecutionState(ASW("Writing HTTP response header",28));
-      pContext->useResponseHeader().emit(pContext->useSocket());
-      pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
-
+      pContext->writeResponseHeader();
       pContext->setExecutionState(ASW("Writing uncompressed",20));
-      pContext->useSocket().write(pContext->useOutputBuffer());
+      pContext->writeOutputBuffer();
     }
     catch(AException& ex)
     {

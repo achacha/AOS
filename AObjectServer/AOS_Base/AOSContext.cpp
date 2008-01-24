@@ -930,6 +930,10 @@ void AOSContext::writeResponseHeader()
   m_EventVisitor.set(ASW("Sending HTTP response header",28));
   m_ResponseHeader.emit(*mp_RequestFile);
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+
+  ARope rope("HTTP response header:\r\n",23);
+  m_ResponseHeader.emit(rope);
+  m_EventVisitor.set(rope);
   m_EventVisitor.reset();
 }
 
@@ -965,18 +969,19 @@ void AOSContext::writeOutputBuffer(const ARope& output)
     m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
     m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(fallbackOutput.getSize()));
 
-    writeResponseHeader();
+    if (m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT))
+      writeResponseHeader();
 
-    m_EventVisitor.set(ASW("Sending XML document",20));
+    m_EventVisitor.set(ASW("AOSContext: Sending XML document",32));
     fallbackOutput.emit(*mp_RequestFile);
     m_EventVisitor.reset();
   }
   else
   {
-    if (!m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT))
+    if (m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT))
       writeResponseHeader();
     
-    m_EventVisitor.set(ASW("Sending output",14));
+    m_EventVisitor.set(ASW("AOSContext: Sending output",26));
     output.emit(*mp_RequestFile);
     m_EventVisitor.reset();
   }
