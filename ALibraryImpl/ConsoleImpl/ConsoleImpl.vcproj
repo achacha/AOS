@@ -188,7 +188,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tLuaScript.cpp"
+			RelativePath=".\tLuaInTemplate.cpp"
 			>
 		</File>
 	</Files>

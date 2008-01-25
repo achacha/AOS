@@ -5,24 +5,30 @@
 #include "AFile_AString.hpp"
 #include "AXmlDocument.hpp"
 #include "AXmlElement.hpp"
+#include "ABasePtrContainer.hpp"
 #include "ATemplate.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
-#include "ATemplateNodeHandler_CODE.hpp"
 
 int main()
 {
   AFile_AString strf(
 "\
 %[LUA]{{{\
-local val = alibrary.Model_emitContentFromPath(\"/root/data\"); \n\
+local val = model.getText(\"/root/data\"); \n\
 val = val + 3; \n\
 val = val .. \" and more\"; \n\
-alibrary.Model_addElementText(\"/newElement/item\", val); \n\
-alibrary.print(alibrary.Model_emitXml(0)); \n\
-}}}[LUA]%%[CODE]{{{print(/root);}}}[CODE]%\
+model.setText(\"newElement/item0\", val); \n\
+model.setText(\"newElement/item1\", val); \n\
+print(model.emitXml(0)); \n\
+}}}[LUA]%\r\n\
+\r\ncode[print(/root/newElement)]=%[CODE]{{{print(/root/newElement);}}}[CODE]%\
+\r\nobject[rootelem]=%[OBJECT]{{{rootelem}}}[OBJECT]%\
+\r\nmodel[/root/newElement]=%[MODEL]{{{/root/newElement}}}[MODEL]%\
+\r\nmodel[/root/newElement/item0]=%[MODEL]{{{/root/newElement/item0}}}[MODEL]%\
+\r\nmodel[/root/newElement/item1]=%[MODEL]{{{/root/newElement/item1}}}[MODEL]%\
 ");
 
-  ABasePtrHolder objects;
+  ABasePtrContainer objects;
   AXmlDocument *pdoc = new AXmlDocument(ASW("root",4));
   pdoc->useRoot().addElement("swiper").addData(ASWNL("swiper no swiping! 0"));
   pdoc->useRoot().addElement("swiper").addData(ASWNL("swiper No swiping! 1"));
@@ -32,7 +38,6 @@ alibrary.print(alibrary.Model_emitXml(0)); \n\
 
   ATemplate t;
   t.addHandler(new ATemplateNodeHandler_LUA());
-  t.addHandler(new ATemplateNodeHandler_CODE());
 
   {
     AXmlElement *pElement = new AXmlElement(ASW("root",4));
