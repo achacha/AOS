@@ -5,6 +5,7 @@
 #include "ALock.hpp"
 #include "AThread.hpp"
 #include "AOSConfiguration.hpp"
+#include "ASocketException.hpp"
 
 const AString AOSContext::CONTEXT("context");
 const AString AOSContext::XML_ROOT("root");
@@ -160,11 +161,7 @@ void AOSContext::finalize()
   //a_Close it if still open
   if (mp_RequestFile)
   {
-    if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
-    {
-      setExecutionState(ASW("AOSContextManager::deallocate: Socket error detected",52));
-    }
-    else
+    if (m_ConnectionFlags.isClear(AOSContext::CONFLAG_IS_SOCKET_CLOSED))
     {
       setExecutionState(ASW("AOSContextManager::deallocate: Closing socket connection",56));
       mp_RequestFile->close();
@@ -210,9 +207,21 @@ AOSContext::Status AOSContext::init()
     reset(NULL);
   }
 
-  AOSContext::Status status = _processHttpHeader();
-  if (AOSContext::STATUS_OK != status)
-    return status;
+  try
+  {
+    AOSContext::Status status = _processHttpHeader();
+    if (AOSContext::STATUS_OK != status)
+      return status;
+  }
+  catch(ASocketException& ex)
+  {
+    ARope rope("AOSContext: Socket exception: ",30);
+    rope.appendU4(ex.getErrno());
+    m_EventVisitor.set(rope);
+    m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+    mp_RequestFile->close();
+    return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
+  }
 
   setExecutionState(ASW("AOSContext: Processing HTTP header",34), false);
 
@@ -281,10 +290,14 @@ AOSContext::Status AOSContext::_processHttpHeader()
 
   // Sum( N * sleeptime, 0 to N-1)
   char c = '\x0';
-  size_t bytesRead = mp_RequestFile->read(c);
+  size_t bytesRead = 0;
+  
+  bytesRead = mp_RequestFile->read(c);
+
   switch (bytesRead)
   {
     case AConstant::unavail:
+    {
       //a_Data not available, try and read-wait to get it
       if (!_waitForFirstChar())
       {
@@ -293,6 +306,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
       }
       else
         bytesRead = mp_RequestFile->read(c);
+    }
     break;
 
     case AConstant::npos:
@@ -312,6 +326,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
       else
       {
         //a_No data read wait and try to get more
+        
         if (!_waitForFirstChar())
         {
           m_EventVisitor.set(ASW("AOSContext: Zero data read looking for first char",49));
