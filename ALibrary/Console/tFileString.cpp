@@ -15,6 +15,14 @@ GET / HTTP/1.1\r\nHost: 127.0.0.1\r\nCookie: foo=bar\r\nContent-Length: 11\r\n\r
   {
     std::cerr << "Not found" << std::endl;
   }
+
+  AString str;
+  while (AConstant::npos != pos)
+  {
+    pos = strfile.readLine(str);
+    std::cout << str << std::endl;
+    str.clear();
+  }
 }
 
 int main()

@@ -8,6 +8,7 @@
 
 class ASocketListener;
 class AHTTPRequestHeader;
+class AUrl;
 
 /*!
  * AFile implementation using sockets
@@ -32,6 +33,13 @@ public:
   blocking - if true, it will create a blocking socket
   */
   AFile_Socket(const AHTTPRequestHeader& request, bool blocking = false);
+
+  /*!
+  ctor
+  url - url object where address and port are contained, the ctor will do lookup to convert address to ip
+  blocking - if true, it will create a blocking socket
+  */
+  AFile_Socket(const AUrl& url, bool blocking = false);
 
   /*!
   ctor

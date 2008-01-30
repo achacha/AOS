@@ -757,10 +757,10 @@ void ANameValuePair::_parseHtmlValue(const AString &strInput, size_t& pos, AStri
             if (stackD[0x0] == '\"')
             {
               stackD.pop_front();
-              if (std::find(stackD.begin(), stackD.end(), '\"') == stackD.end())
-                cInsideQuotes = ' ';
               if (stackD.empty())
                 break;
+              if (std::find(stackD.begin(), stackD.end(), '\"') == stackD.end())
+                cInsideQuotes = ' ';
             }
             else
             {
@@ -793,10 +793,10 @@ void ANameValuePair::_parseHtmlValue(const AString &strInput, size_t& pos, AStri
             if (stackD[0x0] == '\'')
             {
               stackD.pop_front();
-              if (std::find(stackD.begin(), stackD.end(), '\'') == stackD.end())
-                cInsideQuotes = ' ';
               if (stackD.empty())
                 break;
+              if (std::find(stackD.begin(), stackD.end(), '\'') == stackD.end())
+                cInsideQuotes = ' ';
             }
             else
             {

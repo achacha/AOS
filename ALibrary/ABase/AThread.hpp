@@ -74,6 +74,19 @@ public:
   void start();
   
   /*!
+  Thread stop
+    Calls setRun(false), then waits for isRunning() to be true
+    The tread should be start with setRunning(true), then check isRun() (in some loop) and when it is false should exit and setRunning(false)
+    Default will wait 6 * 250 = 1.5 seconds then return (or terminate if so specified)
+
+  @param sleep times to wait for the thread to exit
+  @param sleep time
+  @param terminate if did not stop in time (not recommended for well writtent threadprocs)
+  @return true if successfully stopped, false if thread is still running
+  */
+  bool stop(int tries = 6, u4 sleepTime = 250, bool terminateIfNotStopped = false);
+
+  /*!
   Waits until threadproc is done and returns
   a.k.a.  pthread_join() on *nix
   On windows it polls the process and sleeps inbetween polls for sleepTime milliseconds

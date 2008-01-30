@@ -425,7 +425,10 @@ void AHTTPHeader::fromAFile(AFile& aFile)
   //a_Very simple routine for reading HTTP header, waits indefinitely for lines
   AString str(1024, 1024);
   size_t bytesRead = aFile.readLine(str, AConstant::npos, false);
-  while (AConstant::npos == bytesRead && aFile.isNotEof())
+  if (AConstant::npos == bytesRead)
+    return;
+
+  while (AConstant::unavail == bytesRead && aFile.isNotEof())
   {
     AThread::sleep(100);
     bytesRead = aFile.readLine(str, AConstant::npos, false);

@@ -35,7 +35,7 @@ int ut_AFileIOStream_Manip()
 
     str.clear();
     ASSERT_UNIT_TEST(AConstant::npos != fileStream.readLine(str), "AFile_IOStream::readLine", "4", iRet);
-    ASSERT_UNIT_TEST(str == "Line5", "AFile_IOStream::readLine content", "4a", iRet);
+    ASSERT_UNIT_TEST(str == "Line5", "AFile_IOStream::readLine content", "4", iRet);
 
     str.clear();
     ASSERT_UNIT_TEST(AConstant::npos == fileStream.readLine(str), "AFile_IOStream::readLine", "5", iRet);

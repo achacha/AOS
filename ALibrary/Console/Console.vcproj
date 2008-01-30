@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tBasePtrQueue.cpp"
+			RelativePath=".\tContentType_HTML.cpp"
 			>
 		</File>
 	</Files>

@@ -6,6 +6,7 @@
 #include "ASocketLibrary.hpp"
 #include "ASocketListener.hpp"
 #include "AHTTPRequestHeader.hpp"
+#include "AUrl.hpp"
 
 void AFile_Socket::debugDump(std::ostream& os, int indent) const
 {
@@ -39,6 +40,18 @@ AFile_Socket::AFile_Socket(
 {
   m_SocketInfo.m_address = ASocketLibrary::getIPFromAddress(request.getUrl().getServer());
   m_SocketInfo.m_port = request.getUrl().getPort();
+}
+
+AFile_Socket::AFile_Socket(
+  const AUrl& url, 
+  bool blocking // = false
+) :
+  mbool_Blocking(blocking),
+  mp_Listener(NULL),
+  m_EOF(true)
+{
+  m_SocketInfo.m_address = ASocketLibrary::getIPFromAddress(url.getServer());
+  m_SocketInfo.m_port = url.getPort();
 }
 
 AFile_Socket::AFile_Socket(
@@ -299,6 +312,9 @@ size_t AFile_Socket::readBlockIntoLookahead()
   {
     //a_Blocking mode, only read what we have available to prevent blocking
     size_t bytesToRead = _availableInputWaiting();
+    if (0 == bytesToRead)
+      return AConstant::unavail;
+
     if (bytesToRead > m_ReadBlock)
       bytesToRead = m_ReadBlock;
     if (bytesToRead > 0)
@@ -309,7 +325,11 @@ size_t AFile_Socket::readBlockIntoLookahead()
     //a_Non-blocking, read up to the default read block
     bytesRead = _read(p, m_ReadBlock);
   }
-  if (AConstant::npos != bytesRead)
+  if (
+       AConstant::npos != bytesRead 
+    && AConstant::unavail != bytesRead 
+    && bytesRead > 0
+  )
     m_LookaheadBuffer.pushBack(p, bytesRead);
   
   return bytesRead;

@@ -8,8 +8,8 @@ void testHTMLparse()
   html.useData().append("<HTML><BODY TEXT=#FFFFFF><H1>HelloWorld</H1>\
 Another text line\
 <FORM METHOD=\"POST\" ACTION=\"execute.cgi\">\
-<INPUT TYPE=\"TEXT\" SIZE=\"20\" NAME=\"myname\">\
-<INPUT TYPE=\"SUBMIT\" NAME=\"_submit\"></FORM>\
+<INPUT TYPE=\"TEXT\" SIZE=\"20\" NAME=\"myname\"\>\
+<INPUT TYPE=\"SUBMIT\" NAME=\"_submit\"\></FORM>\
 <A HREF=\"http://www.somewhere.com/page.html\">here</A>\
 </BODY></HTML>");
   AUrl urlBase("http://www.myserver.com:8000/mypath/index.html");
@@ -125,9 +125,20 @@ function opencrap()\
 
 int main()
 {
-  testHTMLparse();
-  //testHTMLparseErrors();
-  testHTMLparseScript();
+  try
+  {
+    testHTMLparse();
+    //testHTMLparseErrors();
+    //testHTMLparseScript();
+  }
+  catch(AException& ex)
+  {
+    std::cout << ex << std::endl;
+  }
+  catch(...)
+  {
+    std::cout << "Unknown exception" << std::endl;
+  }
   
   return 0x0;
 }

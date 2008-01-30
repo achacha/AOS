@@ -61,7 +61,6 @@ u4 threadprocServer(AThread& thread)
         }
         responseHeader.toAFile(connection);
         connection.close();
-        break;
       }
       else
         AThread::sleep(500);
@@ -107,7 +106,7 @@ int ut_AFile_Socket_General()
   int timeout = 10;
   while (!server.isRunning() && timeout > 0)
   {
-    AThread::sleep(300);
+    AThread::sleep(500);
     --timeout;
   }
   if (!timeout)
@@ -116,32 +115,48 @@ int ut_AFile_Socket_General()
     return iRet;
   }
 
-  AFile_Socket client(UNIT_TEST_HOST, UNIT_TEST_PORT, true);
-  client.open();
-
-  AHTTPRequestHeader request;
-  AHTTPResponseHeader response;
-  request.setPair(AHTTPHeader::HT_REQ_Host, UNIT_TEST_HOST);
-  request.setPair(UNIT_TEST_REQUEST, "1");
-  request.toAFile(client);
-  response.fromAFile(client);
-
-  AString str;
-//  request.debugDump();
-//  response.debugDump();
-  ASSERT_UNIT_TEST(response.getPairValue(UNIT_TEST_RESPONSE, str), "Response pair not found", "", iRet);
-  ASSERT_UNIT_TEST(str.equals("echo"), "Response pair contains invalid value", "", iRet);
-
-  server.setRun(false);
-  timeout = 10;
-  while (server.isRunning() && timeout > 0)
   {
-    AThread::sleep(100);
-    --timeout;
+    //a_Non-blocking
+    AFile_Socket client(UNIT_TEST_HOST, UNIT_TEST_PORT, false);
+    client.open();
+
+    AHTTPRequestHeader request;
+    AHTTPResponseHeader response;
+    request.setPair(AHTTPHeader::HT_REQ_Host, UNIT_TEST_HOST);
+    request.setPair(UNIT_TEST_REQUEST, "1");
+    request.toAFile(client);
+    response.fromAFile(client);
+
+    AString str;
+  //  request.debugDump();
+  //  response.debugDump();
+    ASSERT_UNIT_TEST(response.getPairValue(UNIT_TEST_RESPONSE, str), "Non-blocking: Response pair not found", "", iRet);
+    ASSERT_UNIT_TEST(str.equals("echo"), "Non-blocking: Response pair contains invalid value", "", iRet);
   }
-  if (!timeout)
+
   {
-    ASSERT_UNIT_TEST(timeout, "AThread for server did not stop, terminating", "", iRet);
+    //a_Blocking
+    AFile_Socket client(UNIT_TEST_HOST, UNIT_TEST_PORT, true);
+    client.open();
+
+    AHTTPRequestHeader request;
+    AHTTPResponseHeader response;
+    request.setPair(AHTTPHeader::HT_REQ_Host, UNIT_TEST_HOST);
+    request.setPair(UNIT_TEST_REQUEST, "1");
+    request.toAFile(client);
+    response.fromAFile(client);
+
+    AString str;
+  //  request.debugDump();
+  //  response.debugDump();
+    ASSERT_UNIT_TEST(response.getPairValue(UNIT_TEST_RESPONSE, str), "Blocking: Response pair not found", "", iRet);
+    ASSERT_UNIT_TEST(str.equals("echo"), "Blocking: Response pair contains invalid value", "", iRet);
+  }
+
+
+  if (!server.stop())
+  {
+    ASSERT_UNIT_TEST(false, "Thread did not stop gracefully", "", iRet);
     server.terminate(-1);
   }
 

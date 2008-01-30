@@ -77,7 +77,7 @@ size_t AFile_Physical::_write(const void *buf, size_t size)
   if (mp_file)
   {
     size_t written = ::_write(m_fid, buf, size);
-    if (-1 == written || written < size)
+    if (AConstant::npos == written || written < size)
       ATHROW_ERRNO(this, AException::UnableToWrite, errno);
     
     return written;
@@ -92,7 +92,7 @@ size_t AFile_Physical::_read(void *buf, size_t size)
   if (mp_file)
   {
     size_t bytesread = ::_read(m_fid, buf, size);
-    if (-1 == bytesread)
+    if (AConstant::npos == bytesread)
       ATHROW_ERRNO(this, AException::UnableToRead, errno);
     
     return bytesread;

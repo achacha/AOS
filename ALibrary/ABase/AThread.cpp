@@ -86,6 +86,7 @@ AThread::AThread(const AThread& that) :
 
 AThread::~AThread()
 {
+  stop(3, 200, true);
   if (mh__Thread)
     ::CloseHandle(mh__Thread);
 }
@@ -119,6 +120,24 @@ void AThread::start()
   AASSERT(this, mp__ThreadProc);
   AASSERT(this, ADebugDumpable::isPointerValid(mp__ThreadProc));
   mh__Thread = ::CreateThread(NULL, 0x0, (LPTHREAD_START_ROUTINE)mp__ThreadProc, this, 0x0, &mu4__ThreadId);
+}
+
+bool AThread::stop(int tries, u4 sleepTime, bool terminateIfNotStopped)
+{
+  setRun(false);
+  while (isRunning() && tries>0)
+  {
+    --tries;
+    AThread::sleep(sleepTime);
+  }
+  if (isRunning())
+  {
+    if (!terminateIfNotStopped)
+      return false;
+
+    terminate();
+  }
+  return true;
 }
 
 void AThread::terminate(u4 uExitCode)
