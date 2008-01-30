@@ -455,24 +455,21 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   str.clear();
   pContext->useRequestHeader().getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, str);
   if ( 
-      AConstant::npos != str.findNoCase(ASW("deflate",7)) 
-      && pContext->useRequestParameterPairs().get(ASW("deflate",7), strDeflateLevel)
+      AConstant::npos != str.findNoCase(ASW("gzip",4)) 
+      && pContext->useRequestParameterPairs().get(ASW("gzip",4), strDeflateLevel)
   )
   {
     pContext->setExecutionState(ASW("Compressing",11));
     AString compressed;
     int gzipLevel = strDeflateLevel.toInt();
     if (gzipLevel < 1 || gzipLevel > 9)
-      AZlib::deflate(pContext->useOutputBuffer(), compressed);
+      AZlib::gzipDeflate(pContext->useOutputBuffer(), compressed);
     else
-      AZlib::deflate(pContext->useOutputBuffer(), compressed, gzipLevel);
+      AZlib::gzipDeflate(pContext->useOutputBuffer(), compressed, gzipLevel);
 
-    pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("deflate",7));
-    //pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Transfer_Encoding, ASW("chunked",7));
-    //pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
+    pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
     pContext->useResponseHeader().setPair(AHTTPHeader::HT_RES_Vary, ASW("Accept-Encoding",15));
     pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(compressed.getSize()));
-//      pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
 
     //a_The writing of the output
     try
