@@ -6,14 +6,31 @@
 #pragma comment(lib, "zlib1")
 #endif
 
-void testCompress()
+void testZLibCompress()
 {
   AString str("This is some raw data and This is some raw data and This is some raw data and This is some raw data and on and on and on");
   AString compressed, uncompressed;
 
-  AZlib::deflate(str, compressed, 9);
-  AZlib::inflate(compressed, uncompressed, str.getSize());
+  AZlib::zlibDeflate(str, compressed, 9);
+  AZlib::zlibInflate(compressed, uncompressed, str.getSize());
 
+  std::cout << "original=" << str << std::endl;
+  std::cout << "original.size=" << str.getSize() << std::endl;
+  std::cout << "comressed.size=" << compressed.getSize() << std::endl;
+  std::cout << "uncomressed.size=" << uncompressed.getSize() << std::endl;
+  std::cout << "uncomressed=" << uncompressed << std::endl;
+}
+
+void testGZipCompress()
+{
+  AString str("This is some raw data and This is some raw data and This is some raw data and This is some raw data and on and on and on");
+  AString compressed, uncompressed;
+
+  AZlib::gzipDeflate(str, compressed, 9);
+  AZlib::gzipInflate(compressed, uncompressed, str.getSize());
+
+  std::cout << "original=" << str << std::endl;
+  std::cout << "original.size=" << str.getSize() << std::endl;
   std::cout << "comressed.size=" << compressed.getSize() << std::endl;
   std::cout << "uncomressed.size=" << uncompressed.getSize() << std::endl;
   std::cout << "uncomressed=" << uncompressed << std::endl;
@@ -112,8 +129,10 @@ typedef struct z_stream_s {
 int main()
 {
 
-//  testCompress();
-  testDeflate();
+  //testZLibCompress();
+  testGZipCompress();
+
+  //  testDeflate();
 
   return 0;
 }
