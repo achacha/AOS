@@ -188,7 +188,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tZlib.cpp"
+			RelativePath=".\tLuaInTemplate.cpp"
 			>
 		</File>
 	</Files>
