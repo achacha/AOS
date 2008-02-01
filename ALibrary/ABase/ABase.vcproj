@@ -801,10 +801,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ATemplateNodeHandler_CODE.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ATemplateNodeHandler_MODEL.cpp"
 				>
 			</File>
@@ -1296,10 +1292,6 @@
 			</File>
 			<File
 				RelativePath=".\ATemplateNodeHandler.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ATemplateNodeHandler_CODE.hpp"
 				>
 			</File>
 			<File

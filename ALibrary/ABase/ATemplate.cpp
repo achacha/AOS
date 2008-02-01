@@ -3,7 +3,6 @@
 #include "ABasePtrContainer.hpp"
 #include "AFile_AString.hpp"
 #include "AXmlDocument.hpp"
-#include "ATemplateNodeHandler_CODE.hpp"
 #include "ATemplateNodeHandler_OBJECT.hpp"
 #include "ATemplateNodeHandler_MODEL.hpp"
 
@@ -74,10 +73,6 @@ ATemplate::~ATemplate()
 
 void ATemplate::_loadDefaultHandlers(ATemplate::HandlerMask mask)
 {
-  if (mask & ATemplate::HANDLER_CODE)
-  {
-    addHandler(new ATemplateNodeHandler_CODE());
-  }
   if (mask & ATemplate::HANDLER_OBJECT)
   {
     addHandler(new ATemplateNodeHandler_OBJECT());

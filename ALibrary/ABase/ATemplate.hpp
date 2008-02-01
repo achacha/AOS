@@ -18,7 +18,7 @@ Generic template parser/processor
 
 
 Tag format: {START_TAG}{TAG}{BLOCK_START} .. tag body .. {BLOCK_END}{TAG}{TAR_END}
-Code Example  : %[CODE]{{{ print(/foo); }}}[CODE]%
+Code Example  : %[LUA]{{{ print("Hello World"); }}}[LUA]%    (To use lua, you have to addHandler(new ATemplateNodeHandler_LUA()) to the template)
 Model example: %[MODEL]{{{ /model/path }}}%[MODEL]%
 Object example: %[OBJECT]{{{ object_name }}}%[OBJECT]%
 
@@ -70,7 +70,6 @@ public:
     HANDLER_NONE   = 0x00,
     HANDLER_OBJECT = 0x01,
     HANDLER_MODEL  = 0x02,
-    HANDLER_CODE   = 0x04,
     HANDLER_ALL    = 0xff
   };
 
@@ -80,7 +79,7 @@ public:
   Parse given string template
 
   @param t template to parse
-  @param mask loads CODE, OBJECT, MODEL handlers by default (others can use addHandler call)
+  @param mask loads OBJECT and MODEL handlers by default (others can use addHandler call)
   */
   ATemplate(const AString& t, HandlerMask mask = ATemplate::HANDLER_ALL);
 
@@ -89,14 +88,14 @@ public:
   Parse given string template
 
   @param file to read for template to parse
-  @param mask loads CODE, OBJECT, MODEL handlers by default (others can use addHandler call)
+  @param mask loads OBJECT and MODEL handlers by default (others can use addHandler call)
   */
   ATemplate(AFile& file, HandlerMask mask = ATemplate::HANDLER_ALL);
 
   /*!
   Ctor
 
-  @param mask loads CODE, OBJECT, MODEL handlers by default (others can use addHandler call)
+  @param mask loads OBJECT and MODEL handlers by default (others can use addHandler call)
   */
   ATemplate(HandlerMask mask = ATemplate::HANDLER_ALL);
   
