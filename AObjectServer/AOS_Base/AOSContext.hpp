@@ -95,6 +95,13 @@ public:
   AOSContext::Status init();
 
   /*!
+  Determines if the current output should be gzip'd
+
+  @return 0 if not to compress, else 1-9 compression level
+  */
+  int calculateGZipLevel();
+
+  /*!
   Write response header and set response header sent flag
   */
   void writeResponseHeader();
@@ -491,6 +498,9 @@ private:
 
   //a_Socket associated with context
   AFile_Socket *mp_RequestFile;
+
+  //a_Reads extensions from config and puts into a string set
+  SET_AString _getGzipCompressionExtensions();
 };
 
 #endif // INCLUDED__AContext_HPP__

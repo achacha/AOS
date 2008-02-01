@@ -24,6 +24,16 @@
 		<max_filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max_filesize>
 		<cache_count desc="Number of caches to use (must be a prime number)">13</cache_count>
 	</static-file-cache>
+	<gzip-compression>
+	  <enabled>true</enabled>
+	  <default-level desc="GZip compression level 0-none, 1-min and 9-max">6</default-level>
+		<extensions desc="Extensions which should be compress">
+		  <ext>html</ext>
+		  <ext>htm</ext>
+		  <ext>txt</ext>
+		</extensions>
+		<minimum-threshold desc="Compress files larger than this, in bytes">4096</minimum-threshold>
+	</gzip-compression>
 	<session-manager>
 		<holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">13</holder-size>
 		<timeout desc="Number of milliseconds since session was last used and expires">600000</timeout>

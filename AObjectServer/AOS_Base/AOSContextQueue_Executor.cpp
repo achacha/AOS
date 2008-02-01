@@ -3,6 +3,7 @@
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
 #include "AZlib.hpp"
+#include "ASocketException.hpp"
 
 const AString& AOSContextQueue_Executor::getClass() const
 {
@@ -155,21 +156,13 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         {
           pContext->setExecutionState(ASW("Generating output",17));
 
-          AString strDeflateLevel;
-          AString str;
-          pContext->useRequestHeader().getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, str);
-          if ( 
-               AConstant::npos != str.findNoCase(ASW("gzip",4)) 
-               && pContext->useRequestParameterPairs().get(ASW("gzip",4), strDeflateLevel)
-             )
+          int gzipLevel = pContext->calculateGZipLevel();
+          if (gzipLevel > 0 && gzipLevel < 10)
           {
+            //a_Compress output
             pContext->setExecutionState(ASW("Compressing result",18));
             AString compressed;
-            int gzipLevel = strDeflateLevel.toInt();
-            if (gzipLevel < 1 || gzipLevel > 9)
-              AZlib::gzipDeflate(pContext->useOutputBuffer(), compressed);
-            else
-              AZlib::gzipDeflate(pContext->useOutputBuffer(), compressed, gzipLevel);
+            AZlib::gzipDeflate(pContext->useOutputBuffer(), compressed, gzipLevel);
 
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_RES_Vary, ASW("Accept-Encoding",15));
@@ -180,7 +173,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
             {
               pContext->writeOutputBuffer(compressed);
             }
-            catch(AException& ex)
+            catch(ASocketException& ex)
             {
               pContext->useEventVisitor().set(ex);
               pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
@@ -190,6 +183,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           }
           else
           {
+            //a_Uncompressed
             pContext->setExecutionState(ASW("Sending result",14));
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
             
@@ -205,7 +199,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
             {
               pContext->writeOutputBuffer();
             }
-            catch(AException& ex)
+            catch(ASocketException& ex)
             {
               pContext->useEventVisitor().set(ex);
               pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
