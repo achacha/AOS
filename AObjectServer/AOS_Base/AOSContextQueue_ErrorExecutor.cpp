@@ -2,6 +2,7 @@
 #include "AOSContextQueue_ErrorExecutor.hpp"
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
+#include "ASocketException.hpp"
 
 const AString& AOSContextQueue_ErrorExecutor::getClass() const
 {
@@ -152,8 +153,17 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
               pContext->useOutputBuffer().append("</body></html>",14);
             }
 
-            //a_Write output buffer
-            pContext->writeOutputBuffer();
+            try
+            {
+              pContext->writeOutputBuffer();
+            }
+            catch(ASocketException& ex)
+            {
+              pContext->useEventVisitor().set(ex);
+              pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
+              continue;
+            }
           }
         }
 

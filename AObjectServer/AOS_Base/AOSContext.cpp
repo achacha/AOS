@@ -6,6 +6,7 @@
 #include "AThread.hpp"
 #include "AOSConfiguration.hpp"
 #include "ASocketException.hpp"
+#include "AZlib.hpp"
 
 const AString AOSContext::CONTEXT("context");
 const AString AOSContext::XML_ROOT("root");
@@ -789,8 +790,15 @@ void AOSContext::addError(
 void AOSContext::setResponseMimeTypeFromRequestExtension()
 {
   AString str(64,16);
-  AString& strExt = m_RequestHeader.useUrl().getExtension();
-  if (m_Services.useConfiguration().getMimeTypeFromExt(strExt, str))
+  AString& ext = m_RequestHeader.useUrl().getExtension();
+  if (m_Services.useConfiguration().getMimeTypeFromExt(ext, str))
+    m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Type, str);
+}
+
+void AOSContext::setResponseMimeTypeFromExtension(const AString& ext)
+{
+  AString str(64,16);
+  if (m_Services.useConfiguration().getMimeTypeFromExt(ext, str))
     m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Type, str);
 }
 
@@ -954,50 +962,48 @@ void AOSContext::writeResponseHeader()
 
 void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 {
-  if (forceXmlDocument)
-  {
-    writeOutputBuffer(ARope());
-  }
-  else
-  {
-    writeOutputBuffer(m_OutputBuffer);
-  }
-}
-
-void AOSContext::writeOutputBuffer(const ARope& output)
-{
+  m_EventVisitor.set(ASW("AOSContext: write output",24));
   AASSERT(this, mp_RequestFile);
-
-  if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
-    ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
-
-  //a_If output buffer is empty then emit output XML document into it
-  //a_This allows override of XML emit by manually adding data to the output buffer in output generator
-  if (output.isEmpty())
+  int gzipLevel = calculateGZipLevel();
+  if (gzipLevel > 0 && gzipLevel < 10 && !forceXmlDocument)
   {
-    AASSERT(this, !m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT));
-    
-    ARope fallbackOutput;
-    m_OutputXmlDocument.emit(fallbackOutput);
+    AASSERT_EX(this, m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT), ASWNL("Response header already written, incompatible with gzip output"));
+    m_EventVisitor.set(ASW("Compressing",11));
 
-    //a_Reset the content type to XML and add content-length
-    m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
-    m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(fallbackOutput.getSize()));
+    AString compressed;
+    AZlib::gzipDeflate(m_OutputBuffer, compressed, gzipLevel);
 
-    if (m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT))
-      writeResponseHeader();
+    m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
+    m_ResponseHeader.setPair(AHTTPHeader::HT_RES_Vary, ASW("Accept-Encoding",15));
+    m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(compressed.getSize()));
 
-    m_EventVisitor.set(ASW("AOSContext: Sending XML document",32));
-    fallbackOutput.emit(*mp_RequestFile);
-    m_EventVisitor.reset();
+    //a_The writing of the output
+    writeResponseHeader();
+    m_EventVisitor.set(ASW("AOSContext: Writing compressed",30));
+    compressed.emit(*mp_RequestFile);
   }
   else
   {
+    if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
+      ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
+
+    //a_If output buffer is empty then emit output XML document into it
+    //a_This allows override of XML emit by manually adding data to the output buffer in output generator
+    if (m_OutputBuffer.isEmpty())
+    {
+      m_OutputXmlDocument.emit(m_OutputBuffer);
+      m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
+    }
+
+    //a_Write header if not already written, if it was already written, we assume it is correct
     if (m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT))
-      writeResponseHeader();
-    
-    m_EventVisitor.set(ASW("AOSContext: Sending output",26));
-    output.emit(*mp_RequestFile);
+    {
+      m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(m_OutputBuffer.getSize()));
+      writeResponseHeader();  //a_Sets flag that it was sent
+    }
+
+    m_EventVisitor.set(ASW("AOSContext: Writing uncompressed",32));
+    m_OutputBuffer.emit(*mp_RequestFile);
     m_EventVisitor.reset();
   }
 
@@ -1054,10 +1060,26 @@ bool AOSContext::setCommandFromRequestUrl()
     return false;
 
   //a_Check if this is an alias
-  if (!mp_Command->getCommandAlias().isEmpty())
+  const AString& alias = mp_Command->getCommandAlias();
+  if (!alias.isEmpty())
   {
     setExecutionState(ARope("Aliased: ",9)+mp_Command->getCommandAlias());
-    mp_Command = m_Services.useConfiguration().getCommand(mp_Command->getCommandAlias());
+    
+    if ('/' == alias.at(0))
+    {
+      //a_Abosulte path
+      mp_Command = m_Services.useConfiguration().getCommand(mp_Command->getCommandAlias());
+    }
+    else
+    {
+      //a_Relative path, get base and add alias
+      AString str;
+      mp_Command->emitCommandBasePath(str);
+      str.append(alias);
+      setExecutionState(ARope("Relative aliased to: ")+str);
+      mp_Command = m_Services.useConfiguration().getCommand(str);
+    }
+
     if (!mp_Command->getCommandAlias().isEmpty())
     {
       setExecutionState(ASWNL("Aliased command is also an alias, which is not supported."));
@@ -1081,16 +1103,6 @@ bool AOSContext::setNewCommandPath(const AString& commandpath)
   return setCommandFromRequestUrl();
 }
 
-bool AOSContext::isOutputCommitted() const
-{
-  return m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
-}
-
-void AOSContext::setOutputCommitted(bool b)
-{
-  m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT, b);
-}
-
 void AOSContext::persistSession()
 {
   m_Services.useSessionManager().persistSession(mp_SessionObject);
@@ -1112,22 +1124,28 @@ int AOSContext::calculateGZipLevel()
 
   if (IS_ENABLED)
   {
+    //a_User override
+    AString strDeflateLevel;
+    if (m_RequestHeader.useUrl().useParameterPairs().get(GZIP, strDeflateLevel))
+      return strDeflateLevel.toInt();
+    
+    //a_Command definition
+    if (mp_Command && mp_Command->getGZipLevel() > 0)
+      return mp_Command->getGZipLevel();
+    
+    //a_Match extension and minimum size
     if (
          EXTENSIONS.end() != EXTENSIONS.find(m_RequestHeader.getUrl().getExtension())
-         && m_OutputBuffer.getSize() >= MIN_SIZE
-       )
+      && m_OutputBuffer.getSize() >= MIN_SIZE
+    )
     {
-      //a_Enabled, extension matches and size is > minimum
-      AString strDeflateLevel;
+      //a_Check if the client can accept gzip
       AString strAcceptEncoding;
-      m_RequestHeader.getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, strAcceptEncoding);
-      if ( 
-           AConstant::npos != strAcceptEncoding.findNoCase(GZIP) 
-           && m_RequestHeader.getPairValue(GZIP, strDeflateLevel)
+      if (
+           m_RequestHeader.getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, strAcceptEncoding)
+        && AConstant::npos != strAcceptEncoding.findNoCase(GZIP)
       )
-      {
-        return strDeflateLevel.toInt();
-      }
+        return DEFAULT_LEVEL;
     }
   }
 

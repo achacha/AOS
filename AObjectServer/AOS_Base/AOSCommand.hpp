@@ -27,6 +27,7 @@ public:
   static const AString S_ENABLED;
   static const AString S_AJAX;
   static const AString S_ALIAS;
+  static const AString S_GZIP;
 
 public:
   AOSCommand(const AString& name, ALog&);
@@ -56,10 +57,27 @@ public:
   bool isForceAjax() const;
   
   /*!
-  Returns command path set when command is created
-    not part of the XML rather the location of the actual command file
+  Command specified gzip of the output
+  If something invalid or out of range is specified then 0 is assumed
+  
+  @return 0-9, 0=off, 1=minimum, 9=maximum
+  */
+  int getGZipLevel() const;
+
+  /*!
+  Gets the path of the command with command name
+
+  @return absolute base path + command name
   */
   const AString& getCommandPath() const;
+
+  /*!
+  Gets the absolute base path of the request URL
+  Format of '/somepath/'
+
+  @return absolute base path (without command name)
+  */
+  void emitCommandBasePath(AOutputBuffer&) const;
 
   /*!
   Returns alias to use instead of this command
@@ -127,6 +145,7 @@ private:
   //a_Attributes
   bool m_Enabled;            //a_Command state, if disabled, static XML will be attempted instead
   bool m_ForceAjax;          //a_Ajax forces a lean XML document, false by default
+  int m_GZipLevel;           //a_Forced gzip compression level of the output
 
   //a_The log
   ALog& m_Log;
@@ -136,7 +155,7 @@ private:
 XML for each command (example below)
 
 <?xml version="1.0" encoding="UTF-8"?>
-<command ajax='1'>
+<command ajax='1' gzip='3' enabled='true'>
 	<input class='application/x-www-form-urlencoded'/>
   <module class='PublishInput'>
     <name>foo</name>

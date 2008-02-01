@@ -2,7 +2,6 @@
 #include "AOSContextQueue_Executor.hpp"
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
-#include "AZlib.hpp"
 #include "ASocketException.hpp"
 
 const AString& AOSContextQueue_Executor::getClass() const
@@ -150,72 +149,25 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           }
         }
 
-        //If output module set this to true, it handled all the output and we don't need to do anything else
-        //dumpContext flag will override the output
         if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
         {
-          pContext->setExecutionState(ASW("Generating output",17));
-
-          int gzipLevel = pContext->calculateGZipLevel();
-          if (gzipLevel > 0 && gzipLevel < 10)
+          try
           {
-            //a_Compress output
-            pContext->setExecutionState(ASW("Compressing result",18));
-            AString compressed;
-            AZlib::gzipDeflate(pContext->useOutputBuffer(), compressed, gzipLevel);
-
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_RES_Vary, ASW("Accept-Encoding",15));
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(compressed.getSize()));
-
-            //a_The writing of the output
-            try
-            {
-              pContext->writeOutputBuffer(compressed);
-            }
-            catch(ASocketException& ex)
-            {
-              pContext->useEventVisitor().set(ex);
-              pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
-              continue;
-            }
+            pContext->writeOutputBuffer();
           }
-          else
+          catch(ASocketException& ex)
           {
-            //a_Uncompressed
-            pContext->setExecutionState(ASW("Sending result",14));
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
-            
-            //a_Log reponse header to event visitor
-            {
-              ARope rope("HTTP response header:\r\n",23);
-              pContext->useResponseHeader().emit(rope);
-              pContext->useEventVisitor().set(rope);
-            }
-
-            //a_The writing of the output
-            try
-            {
-              pContext->writeOutputBuffer();
-            }
-            catch(ASocketException& ex)
-            {
-              pContext->useEventVisitor().set(ex);
-              pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
-              continue;
-            }
+            pContext->useEventVisitor().set(ex);
+            pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
+            continue;
           }
         }
-        pContext->useEventVisitor().reset();
-
-        if (pContext->useEventVisitor().getErrorCount() > 0)
+        else
         {
-          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
-          continue;
+          pContext->setExecutionState(ASW("AOSContextQueue_Executor: Output already sent",45));
         }
-        
+
         //a_Force a close connection if output got committed and the content-length was not set 
         if (
              pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT)
@@ -235,6 +187,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         }
         else
         {
+          //a_No pipelining
           pContext->setExecutionState(ASW("AOSContextQueue_Executor: Pipelining not detected, terminating request",70));
           pContext->useSocket().close();
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);

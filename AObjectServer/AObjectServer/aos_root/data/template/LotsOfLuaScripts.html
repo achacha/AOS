@@ -2,11 +2,11 @@
 <body bgcolor="#f0f0ff">
 
 <h2>Content found under /root/inserted/data/insert-root/item</h2>
-<b>%[CODE]{{{print(/root/inserted/data/insert-root/item)}}}[CODE]%</b>
+<b>%[LUA]{{{ print(model.getText("/root/inserted/data/insert-root/item")); }}}[LUA]%</b>
 <br/>
 <br/>
-<small><font color="blue">Request time: %[CODE]{{{print(/root/request_time)}}}[CODE]% milliseconds</font></small><br/>
-<small><font color="blue">Context time: %[CODE]{{{print(/root/context_time)}}}[CODE]% milliseconds</font></small><br/>
+<small><font color="blue">Request time: %[LUA]{{{ print(model.getText("/root/request_time")); }}}[LUA]% milliseconds</font></small><br/>
+<small><font color="blue">Context time: %[LUA]{{{ print(model.getText("/root/context_time")); }}}[LUA]% milliseconds</font></small><br/>
 <br/>
 <h2>Lots Of Lua Scripts test</h2>
 %[LUA]{{{

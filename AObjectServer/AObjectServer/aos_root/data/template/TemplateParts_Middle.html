@@ -1,8 +1,8 @@
 <!-- START: Middle  -->
 <br/>
 <b>Caller data</b><br/>
-Reported URL called: <big><b>%[CODE]{{{print(/root/input/AUrl/url); }}}[CODE]%</b></big> <small><i>(May not be the actual server:port since these values are reported from .ini file to allow clustering and load balancing)</i></small><br/>
-Browser string: <big><b>%[CODE]{{{print(/root/input/request_header/User-Agent) }}}[CODE]%</b></big><br/>
+Reported URL called: <big><b>%[LUA]{{{print(model.getText("/root/input/AUrl/url")); }}}[LUA]%</b></big> <small><i>(May not be the actual server:port since these values are reported from .ini file to allow clustering and load balancing)</i></small><br/>
+Browser string: <big><b>%[LUA]{{{print(model.getText("/root/input/request_header/User-Agent")); }}}[LUA]%</b></big><br/>
 <br/>
 <br/>
 <b>This is the middle part</b><br/>

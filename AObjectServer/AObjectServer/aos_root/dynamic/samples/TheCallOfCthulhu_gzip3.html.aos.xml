@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<command gzip="3">
+	<module class="InsertIntoModel">
+		<path>/gzip/level</path>
+		<data>
+			<insert-root>
+				<item>3</item>
+			</insert-root>
+		</data>
+	</module>
+	<output class="File">
+		<path>samples/TheCallOfCthulhu.html</path>
+	</output>
+</command>
+	

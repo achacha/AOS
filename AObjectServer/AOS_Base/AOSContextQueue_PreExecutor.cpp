@@ -3,11 +3,8 @@
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
 #include "AOSCommand.hpp"
-#include "AFileSystem.hpp"
-#include "AFile_Physical.hpp"
-#include "AZlib.hpp"
 #include "AOSConfiguration.hpp"
-#include "ATemplate.hpp"
+#include "ASocketException.hpp"
 
 const AString& AOSContextQueue_PreExecutor::getClass() const
 {
@@ -451,64 +448,15 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
   }
   
-  AString strDeflateLevel;
-  str.clear();
-  int gzipLevel = pContext->calculateGZipLevel();
-  if (gzipLevel > 0 && gzipLevel < 10)
+  try
   {
-    pContext->setExecutionState(ASW("Compressing",11));
-
-    AString compressed;
-    AZlib::gzipDeflate(pContext->useOutputBuffer(), compressed, gzipLevel);
-
-    pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
-    pContext->useResponseHeader().setPair(AHTTPHeader::HT_RES_Vary, ASW("Accept-Encoding",15));
-    pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(compressed.getSize()));
-
-    //a_The writing of the output
-    try
-    {
-      pContext->writeResponseHeader();
-      pContext->setExecutionState(ASW("Writing uncompressed",20));
-      pContext->useSocket().write(compressed);
-    }
-    catch(AException& ex)
-    {
-      pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-      pContext->useEventVisitor().set(ex, false);
-      return false;
-    }
-    catch(...)
-    {
-      pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-      pContext->useEventVisitor().set(ASWNL("Unknown exception: _processStaticPage: writing compressed"), true);
-      m_Services.useLog().add(ASWNL("Unknown exception: _processStaticPage: writing compressed"), ALog::CRITICAL_ERROR);
-      return false;
-    }
+    pContext->writeOutputBuffer();
   }
-  else
+  catch(ASocketException& ex)
   {
-    pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(pContext->useOutputBuffer().getSize()));
-
-    try
-    {
-      pContext->writeResponseHeader();
-      pContext->setExecutionState(ASW("Writing uncompressed",20));
-      pContext->writeOutputBuffer();
-    }
-    catch(AException& ex)
-    {
-      pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-      pContext->useEventVisitor().set(ex, false);
-      return false;
-    }
-    catch(...)
-    {
-      pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-      pContext->useEventVisitor().set(ASWNL("Unknown exception: _processStaticPage: writing uncompressed"), true);
-      m_Services.useLog().add(ASWNL("Unknown exception: _processStaticPage: writing uncompressed"), ALog::CRITICAL_ERROR);
-      return false;
-    }
+    pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+    pContext->useEventVisitor().set(ex, false);
+    return false;
   }
 
   pContext->useEventVisitor().reset();

@@ -115,13 +115,6 @@ public:
   void writeOutputBuffer(bool forceXmlDocument = false);
 
   /*!
-  Same as writeOutputBuffer, except the AEmittable is written instead of the internal output buffer
-  Internal buffer is all-purpose and should always be used, exception is when the output is a result of internal buffer
-    like compression or variation
-  */
-  void writeOutputBuffer(const ARope&);
-
-  /*!
   Root element of the XML model used for this request
   Ouput generator will use it as either XML or a path tree
   If XML generator is used, the model is emitted as XML
@@ -252,6 +245,13 @@ public:
   void setResponseMimeTypeFromRequestExtension();
 
   /*!
+  Uses provided extension to determine which MIME type the response header will use
+
+  @param Extension to use (no leading . needed)  e.g. "html" -> "text/html"
+  */
+  void setResponseMimeTypeFromExtension(const AString& ext);
+
+  /*!
   Dumps self into output model depending on level
   
   @return
@@ -362,12 +362,6 @@ public:
   Timeout timer (used for socket reading/keepalive/etc)
   */
   ATimer& useTimeoutTimer();
-
- /*!
-  Output committed
-  */
-  bool isOutputCommitted() const;
-  void setOutputCommitted(bool b);
 
   /*!
   Services and request

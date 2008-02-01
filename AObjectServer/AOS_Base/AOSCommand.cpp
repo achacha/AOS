@@ -15,6 +15,7 @@ const AString AOSCommand::S_CLASS("class",5);
 const AString AOSCommand::S_ENABLED("enabled",7);
 const AString AOSCommand::S_AJAX("ajax",4);
 const AString AOSCommand::S_ALIAS("alias",5);
+const AString AOSCommand::S_GZIP("gzip",4);
 
 void AOSCommand::debugDump(std::ostream& os, int indent) const
 {
@@ -23,6 +24,7 @@ void AOSCommand::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent+1) << "m_Enabled=" << (m_Enabled ? "true" : "false") << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ForceAjax=" << (m_ForceAjax ? "true" : "false") << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_GZipLevel=" << m_GZipLevel << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_CommandAlias=" << m_CommandAlias << std::endl;
 
@@ -59,6 +61,7 @@ AOSCommand::AOSCommand(const AString& path, ALog& log) :
   m_OutputParams(S_OUTPUT),
   m_Enabled(true),
   m_ForceAjax(false),
+  m_GZipLevel(0),
   m_Log(log)
 {
 }
@@ -131,6 +134,15 @@ void AOSCommand::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& requ
     ASWNL("Force AJAX(1) or Default(0)"),
     ASW("Set",3)
   );
+
+  adminAddPropertyWithAction(
+    eBase, 
+    S_GZIP, 
+    AString::fromInt(m_GZipLevel),
+    ASW("Update",6), 
+    ASWNL("GZip compression level, (0)ff, (1)Minimum-(9)Maximum"),
+    ASW("Set",3)
+  );
 }
 
 void AOSCommand::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
@@ -144,6 +156,12 @@ void AOSCommand::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader
   {
     m_ForceAjax = (str.at(0) == '0' ? false : true);
   }
+  else if (request.getUrl().getParameterPairs().get(S_GZIP, str))
+  {
+    int level = str.toInt();
+    if (level >=0 && level <=9)
+      m_GZipLevel = level;
+  }
 }
 
 void AOSCommand::emitXml(AXmlElement& target) const
@@ -156,6 +174,7 @@ void AOSCommand::emitXml(AXmlElement& target) const
   
   target.addAttribute(S_ENABLED, m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   target.addAttribute(S_AJAX, m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
+  target.addAttribute(S_GZIP, AString::fromInt(m_GZipLevel));
   
   //a_Input
   AXmlElement& eInput = target.addElement(S_INPUT);
@@ -196,11 +215,21 @@ void AOSCommand::fromXml(const AXmlElement& element)
     m_Enabled = true;
 
   //a_Is Ajax call?
+  str.clear();
   element.getAttributes().get(S_AJAX, str);
   if (str.equals(AConstant::ASTRING_ONE) || str.equals(AConstant::ASTRING_TRUE))
     m_ForceAjax = true;
   else
     m_ForceAjax = false;
+
+  //a_Is GZip compressed?
+  str.clear();
+  element.getAttributes().get(S_GZIP, str);
+  int level = str.toInt();
+  if (level >= 0 && level <= 9)
+    m_GZipLevel = level;
+  else
+    m_GZipLevel = 0;
 
   //a_Get input processor
   m_InputProcessor.clear();
@@ -273,6 +302,16 @@ const AString& AOSCommand::getCommandPath() const
   return m_CommandPath;
 }
 
+void AOSCommand::emitCommandBasePath(AOutputBuffer& target) const
+{
+  size_t pos = m_CommandPath.rfind('/');
+  AASSERT(this, AConstant::npos != pos);       //a_command path must all be absolute from server perspective
+  if (AConstant::npos != pos)
+  {
+    m_CommandPath.peek(target, 0, pos+1);
+  }
+}
+
 bool AOSCommand::isEnabled() const
 {
   return m_Enabled;
@@ -281,6 +320,11 @@ bool AOSCommand::isEnabled() const
 bool AOSCommand::isForceAjax() const
 {
   return m_ForceAjax;
+}
+
+int AOSCommand::getGZipLevel() const
+{
+  return m_GZipLevel;
 }
 
 const AString& AOSCommand::getInputProcessorName() const

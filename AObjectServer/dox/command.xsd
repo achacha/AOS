@@ -9,26 +9,27 @@
 			<xs:sequence minOccurs="0">
 				<xs:element name="input" minOccurs="0">
 					<xs:complexType>
-						<xs:attribute name="class"/>
+						<xs:attribute name="class" type="xs:string" use="required"/>
 					</xs:complexType>
 				</xs:element>
 				<xs:sequence minOccurs="0">
 					<xs:element name="module" maxOccurs="unbounded">
 						<xs:complexType>
-							<xs:attribute name="class"/>
+							<xs:attribute name="class" type="xs:string" use="required"/>
 						</xs:complexType>
 					</xs:element>
 				</xs:sequence>
 				<xs:element name="output" minOccurs="0">
 					<xs:complexType>
-						<xs:attribute name="class"/>
+						<xs:attribute name="class" type="xs:string" use="required"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
-			<xs:attribute name="class" use="required"/>
-			<xs:attribute name="ajax"/>
-			<xs:attribute name="alias"/>
-			<xs:attribute name="enabled"/>
+			<xs:attribute name="class" type="xs:string" use="required"/>
+			<xs:attribute name="ajax" type="xs:boolean" default="false"/>
+			<xs:attribute name="alias" type="xs:string"/>
+			<xs:attribute name="enabled" type="xs:boolean" default="true"/>
+			<xs:attribute name="gzip" type="xs:integer" default="0"/>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>

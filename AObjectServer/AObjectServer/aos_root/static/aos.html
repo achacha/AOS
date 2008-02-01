@@ -31,7 +31,8 @@
 &nbsp;&nbsp;<a href="/samples/DisplayInput.xml">Display Input: XML</a><br/>
 &nbsp;&nbsp;<a href="/samples/DisplayInputWithXslt.html">Display Input: XSLT generated</a><br/>
 &nbsp;&nbsp;<a href="/samples/DisplayInputWithTemplate.html">Display Input: Template</a> Single HTML template<br/>
-&nbsp;&nbsp;<a href="/AliasedToDisplayInputWithTemplate.html">Aliased to Display Input: Template</a>(above link) Aliased as single HTML template<br/>
+&nbsp;&nbsp;<a href="/samples/AliasedToDisplayInputWithTemplate.html">Aliased absolute path to Display Input: Template</a>(above link) Aliased (abosulte path) as single HTML template<br/>
+&nbsp;&nbsp;<a href="/samples/AliasedRelativeToDisplayInputWithTemplate.html">Aliased realtive path to Display Input: Template</a>(above link) Aliased (relative path) as single HTML template<br/>
 &nbsp;&nbsp;<a href="/samples/DisplayInputWithTemplateParts.html">Display Input: 4 Template parts</a> Output made up of 4 separate template parts<br/>
 <br/>
 NOTE: .html extension is remapped to a dynamic command, these are no longer static pages once dynamic command is defined<br/>
@@ -75,11 +76,19 @@ Insert data into a model and display as
 <hr/>
 <br/>
 <b><big>Compression Tests (Mozilla only at the moment)</big></b><br/>
-Text file compression (/aos_static/TheCallOfCthulhu.html)<br/>
-&nbsp;&nbsp;<a href="/samples/TheCallOfCthulhu.html">The Call Of Cthulhu - original uncompressed (90,112 bytes)</a><br/>
-&nbsp;&nbsp;<a href="/samples/TheCallOfCthulhu.html?gzip=1">The Call Of Cthulhu - GZip deflate level 1 (~35,942 bytes)</a><br/>
-&nbsp;&nbsp;<a href="/samples/TheCallOfCthulhu.html?gzip=6">The Call Of Cthulhu - GZip deflate level 6 (~31,235 bytes)</a><br/>
-&nbsp;&nbsp;<a href="/samples/TheCallOfCthulhu.html?gzip=9">The Call Of Cthulhu - GZip deflate level 9 (~31,128 bytes)</a><br/>
+The Call Of Cthulhu: Text file compression (/aos_static/samples/TheCallOfCthulhu.html)<br/>
+<table border="1">
+<tr><td><a href="/samples/TheCallOfCthulhu.html">original uncompressed static file GZip deflate level 0</a></td><td>89,184 bytes</td></tr>
+<tr><td><a href="/samples/TheCallOfCthulhu.html?gzip=1">GZip deflate level 1 (set by query string)</a></td><td>~35,998 bytes</a></td></tr>
+<tr><td><a href="/samples/TheCallOfCthulhu.html?gzip=2">GZip deflate level 2 (set by query string)</a></td><td>~34,779 bytes</a></td></tr>
+<tr><td><a href="/samples/TheCallOfCthulhu_gzip3.html">GZip deflate level 3 (set by command)</a></td><td>~33,569 bytes</a></td></tr>
+<tr><td><a href="/samples/TheCallOfCthulhu.html?gzip=4">GZip deflate level 4 (set by query string)</a></td><td>~32,689 bytes</a></td></tr>
+<tr><td><a href="/samples/TheCallOfCthulhu.html?gzip=5">GZip deflate level 5 (set by query string)</a></td><td>~31,676 bytes</a></td></tr>
+<tr><td><a href="/samples/TheCallOfCthulhu.html?gzip=6">GZip deflate level 6 (set by query string)</a></td><td>~31,290 bytes</a></td></tr>
+<tr><td><a href="/samples/TheCallOfCthulhu.html?gzip=7">GZip deflate level 7 (set by query string)</a></td><td>~31,235 bytes</a></td></tr>
+<tr><td><a href="/samples/TheCallOfCthulhu_gzip8.html">GZip deflate level 8 (set by command)</a></td><td>~31,185 bytes</a></td></tr>
+<tr><td><a href="/samples/TheCallOfCthulhu.html?gzip=9">GZip deflate level 9 (set by query string)</a></td><td>~31,185 bytes</a></td></tr>
+</table>
 <br/>
 <b><big>Dynamic XML Tests (Mozilla only at the moment)</big></b><br/>
 Simple dynamic test (/aos_dynamic/test/Test.xml.aos.xml)<br/>

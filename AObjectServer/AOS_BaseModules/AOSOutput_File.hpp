@@ -6,15 +6,15 @@
 /*!
   Output contents of a file
 
-  <file>
-    <content-type desc="MIME content type for the file"/>
-    <path desc="Relative file path from aos_static directory"/>
+  <output type="File">
+    <content-type desc="Optional MIME content type for the file"/>
+    <path desc="Relative file path from base directory"/>
     <base desc="Base directory">{ data | dynamic | absolute | static }</base>
-      data     - aos_data  (default)
+      static   - aos_static (default)
+      data     - aos_data
       dynamic  - aos_dynamic
-      static   - aos_static
       absolute - the path is the fully qualified path to the file (a bit dangerous)
-  </file>
+  </output>
 */
 
 class AOS_BASEMODULES_API AOSOutput_File : public AOSOutputGeneratorInterface
