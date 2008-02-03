@@ -5,7 +5,6 @@
 #include "AException.hpp"
 #include "ASync_Mutex.hpp"
 #include "ALock.hpp"
-#include "ATemplateNodeHandler_CODE.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 
 void AOSOutput_Template::debugDump(std::ostream& os, int indent) const

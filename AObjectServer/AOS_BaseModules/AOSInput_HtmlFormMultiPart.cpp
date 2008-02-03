@@ -33,6 +33,7 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
 
     //a_Discard the leading --
     AString str(1024, 1024);
+    AString strName;
     size_t linelen = context.useSocket().readUntil(str, strBoundary, true, true);
     AASSERT(this, !linelen);
     str.clear();
@@ -42,30 +43,57 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
     int part = 0;
     ANameValuePair pair(ANameValuePair::FORM_MULTIPART);
     AXmlElement& eInput = context.useModel().overwriteElement(ASW("input",5));
-    AXmlElement& requestData = context.useModel().overwriteElement(ASW("REQUEST/data",12));
+    AXmlElement *pePart = NULL;
+    bool isFilename = false;
+    AString strFilename;
     while(context.useSocket().isNotEof())
     {
+      //a_Build object name
+      AString strObjectName("multipart.",10);
+      strObjectName.append(AString::fromInt(part));
+
       //a_Read MIME header info until blank line
       str.clear();
-      pair.clear();
       if (AConstant::npos != (linelen = context.useSocket().readLine(str)))
       {
         //a_Empty line encountered
         if (0 == linelen)
         {
+          AASSERT(&context, pePart);
+          AASSERT(&context, !strName.isEmpty());
+
           //a_From here until boundary is pure data of this part
-          context.useSocket().readUntil(str, strBoundary, true, true);
-          if (str.getSize() > 2)
+          AAutoPtr<AString> pData(new AString());
+          context.useSocket().readUntil(*pData, strBoundary, true, true);
+          if (pData->getSize() > 2)
           {
             //a_remove trailing CRLF which are added right before the boundary
-            if ('\r' == str.at(str.getSize()-2))
-              str.rremove(2);
+            if ('\r' == pData->at(pData->getSize()-2))
+              pData->rremove(2);
           }
-          AString strPart("part.",5);
-          strPart.append(AString::fromInt(part));
-          AXmlElement& e = eInput.addElement(strPart+ASW("/data",5)).addData(str, AXmlElement::ENC_BASE64);
-          e.addAttribute(ASW("length", 6), AString::fromSize_t(str.getSize()));
-          e.addAttribute(ASW("encoding", 8), ASW("base64", 6));
+                    
+          //a_Create element with name and properties that can be used as lookup if needed
+          pePart->addElement(ASW("length", 6)).addData(AString::fromSize_t(pData->getSize()));
+
+          //a_Add the data for this multipart to the context objects
+          if (isFilename)
+          {
+            //a_If file type submitted is blank (not selected by user) it will not have a filename
+            if (!strFilename.isEmpty())
+            {
+              pePart->addElement(ASW("context-object-name",19), strObjectName);
+              context.useRequestParameterPairs().insert(strName, strObjectName);
+              context.useContextObjects().insert(strObjectName, pData.use(), true, true);
+              pData.setOwnership(false);
+            }
+            else
+              AASSERT(&context, pData->getSize() <= 2);  // Usually empty line when no filename is provided
+          }
+          else
+          {
+            //a_Add to request query
+            context.useRequestParameterPairs().insert(strName, *pData);
+          }
 
           //a_Remove trailing CRLF or --CRLF (if EOM) after boundary
           str.clear();
@@ -77,6 +105,10 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             break;
           }
           ++part;
+          strName.clear();
+          pePart = NULL;
+          isFilename = false;
+          strFilename.clear();
           continue;
         }
 
@@ -84,37 +116,49 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
         if (AConstant::npos != str.find(strBoundary))
         {
           ++part;
+          strName.clear();
+          pePart = NULL;
+          isFilename = false;
+          strFilename.clear();
           continue;
         }
 
         pos = 0;
-        AString strPart("part.",5);
-        strPart.append(AString::fromInt(part));
-        AXmlElement& ePart = requestData.addElement(strPart);
         if (AConstant::npos != (pos = str.findNoCase(ASW("Content-Type:", 13))))
         {
+          AASSERT(&context, pePart);
+
           //a_Content type for this block
           str.removeUntilOneOf();
-          ePart.addElement(ASW("content-type",12)).addData(str, AXmlElement::ENC_CDATADIRECT);
+          pePart->addElement(ASW("content-type",12)).addData(str, AXmlElement::ENC_CDATADIRECT);
         }
         else if (AConstant::npos != (pos = str.findNoCase(ASW("Content-Disposition:", 20))))
         {
+          pePart = &eInput.addElement(ASW("part",4));
+          AXmlElement& eDisposition = pePart->addElement(ASW("content-disposition",19));
+
           //a_Content disposition for this block
-          pos += 21;  //a_Include trainling space
+          pos += 21;  //a_Include trailing space
           while (pos < str.getSize())
           {
             //a_Parse pair in the line
             pair.parse(str, pos);
 
-            if (pair.getName().equals(ASW("name",4)))
+            if (pair.getName().equalsNoCase(ASW("name",4)))
             {
-              //a_Add reference to this as name=$(/request/data/part.N)
-              context.useRequestParameterPairs().insert(pair.getValue(), ARope("$(REQUEST/data/",15)+strPart+ASW(")",1));
+              //a_Gets current part's name
+              strName.assign(pair.getValue());
             }
+            else if (pair.getName().equalsNoCase(ASW("filename",8)))
+            {
+              isFilename = true;  //a_Content gets saved outside of parameter pairs if so specified
+              strFilename.assign(pair.getValue());
+            }
+
+            eDisposition.addElement(pair.getName()).addData(pair.getValue());
           }
 
           str.removeUntilOneOf();
-          ePart.addElement(ASW("content-disposition",19)).addData(str);
         }
         str.clear();
       }

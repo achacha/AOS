@@ -8,7 +8,6 @@
 #include "AFile_Physical.hpp"
 #include "AFileSystem.hpp"
 #include "ATextOdometer.hpp"
-#include "ATemplateNodeHandler_CODE.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 
 const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/static-file-cache/enabled");

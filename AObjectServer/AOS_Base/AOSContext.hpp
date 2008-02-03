@@ -7,7 +7,7 @@
 #include "AHTTPResponseHeader.hpp"
 #include "AFile_Socket.hpp"
 #include "AStringHashMap.hpp"
-#include "AObjectContainer.hpp"
+#include "ABasePtrContainer.hpp"
 #include "ARope.hpp"
 #include "AEventVisitor.hpp"
 #include "ATimer.hpp"
@@ -281,8 +281,11 @@ public:
   /*!
   Context specific data used to contain data for the duration of the request
   Also usable as inter-module communication
+
+  Contains AString -> ABase * conatiner
+  Objects will be DELETED after request is complete
   */
-  AObjectContainer& useContextObjects();
+  ABasePtrContainer& useContextObjects();
 
   /*!
   Gets the session object
@@ -440,7 +443,7 @@ protected:
   ARope m_OutputBuffer;
 
   //a_Context objects
-  AObjectContainer m_ContextObjects;
+  ABasePtrContainer m_ContextObjects;
 
   //a_Output document
   AXmlDocument m_OutputXmlDocument;

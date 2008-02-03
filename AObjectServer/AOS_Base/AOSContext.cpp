@@ -104,7 +104,6 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   m_ContextTimer(true),
   mp_SessionObject(NULL),
   m_Services(services),
-  m_ContextObjects(CONTEXT),
   m_OutputXmlDocument(XML_ROOT),
   mp_Command(NULL),
   mp_DirConfig(NULL),
@@ -175,6 +174,7 @@ void AOSContext::finalize()
   m_EventVisitor.set(ASW("Finalizing context.",19));
   m_OutputBuffer.clear(true);
   m_OutputXmlDocument.clear();
+  m_ContextObjects.clear();
   m_EventVisitor.reset(true);
 }
 
@@ -873,7 +873,7 @@ ACookies& AOSContext::useResponseCookies()
   return m_ResponseHeader.useCookies();
 }
 
-AObjectContainer& AOSContext::useContextObjects()
+ABasePtrContainer& AOSContext::useContextObjects()
 { 
   return m_ContextObjects;
 }
