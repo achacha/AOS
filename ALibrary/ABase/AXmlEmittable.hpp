@@ -20,8 +20,10 @@ public:
 
   /*!
   Ability to emit self as XML tree
+
+  @param target is the base element of the object and sub-elements are actual members of this object
   */
-  virtual void emitXml(AXmlElement&) const = 0;
+  virtual void emitXml(AXmlElement& target) const = 0;
 };
 
 #endif //INCLUDED__AXmlEmittable_HPP_

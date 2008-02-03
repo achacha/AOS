@@ -128,3 +128,9 @@ void ABasePtrContainer::emit(AOutputBuffer& target) const
   }
   target.append('}');
 }
+
+void ABasePtrContainer::emitXml(AXmlElement& target) const
+{
+  for (HOLDER::const_iterator cit = m_BasePtrs.begin(); cit != m_BasePtrs.end(); ++cit)
+    target.addElement((*cit).first).addData(ASWNL(typeid((*cit).second).name()), AXmlElement::ENC_CDATADIRECT);
+}

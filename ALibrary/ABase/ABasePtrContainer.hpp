@@ -3,6 +3,7 @@
 
 #include "apiABase.hpp"
 #include "ADebugDumpable.hpp"
+#include "AXmlEmittable.hpp"
 #include "AException.hpp"
 #include "templateAutoPtr.hpp"
 
@@ -11,7 +12,7 @@ A way to associate a name to an ABase auto pointer
 
 NOTE: ABasePtrContainer only holds pointers to ABase types, it does NOT delete and may point to stale data, caveat emptor
 */
-class ABASE_API ABasePtrContainer : public ADebugDumpable
+class ABASE_API ABasePtrContainer : public ADebugDumpable, public AXmlEmittable
 {
 public:
   //! Holder of AString -> ABase *
@@ -28,6 +29,11 @@ public:
   AEmittable
   */
   virtual void emit(AOutputBuffer&) const;
+
+  /*!
+  AXmlEmittable
+  */
+  virtual void emitXml(AXmlElement&) const;
 
   /*!
   Insertion of objects
