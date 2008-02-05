@@ -40,7 +40,20 @@ size_t AFile::readLine(
   size_t originalSize = strRead.getSize();
   size_t ret = m_LookaheadBuffer.popFrontUntil(strRead, '\n', true, true, maxBytes);
   if (AConstant::npos == ret && !_isNotEof())
-    return AConstant::npos;
+  {
+    if (treatEofAsEol)
+    {
+      ret = m_LookaheadBuffer.getSize();
+      if (!ret)
+        return AConstant::npos;       //a_No more data
+
+      m_LookaheadBuffer.emit(strRead);
+      m_LookaheadBuffer.clear();
+      return ret;
+    }
+    else
+      return AConstant::npos;
+  }
 
   while ((AConstant::npos == ret || AConstant::unavail == ret) && _isNotEof())
   {
