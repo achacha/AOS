@@ -121,10 +121,13 @@ void ABasePtrContainer::emit(AOutputBuffer& target) const
   {
     target.append((*cit).first);
     target.append('=');
+    target.append(typeid(*((*cit).second)).name());
+    target.append(" @ ",3);
     target.append(AString::fromPointer((*cit).second));
+
     ++cit;
     if (cit != m_BasePtrs.end())
-      target.append(',');
+      target.append(AConstant::ASTRING_CRLF);
   }
   target.append('}');
 }
