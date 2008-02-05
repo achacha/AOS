@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- /config/dada -->
-<dada>
-	<data type="noun">dada/data/nouns.dat</data>
-	<data type="noun_proper">dada/data/nouns_proper.dat</data>
-	<data type="pronoun_s">dada/data/pronouns_singular.dat</data>
-	<data type="pronoun_p">dada/data/pronouns_plural.dat</data>
-	<data type="pronoun_s_pos">dada/data/pronouns_singular_possesive.dat</data>
-	<data type="pronoun_p_pos">dada/data/pronouns_plural_possesive.dat</data>
-	<data type="pronoun_s_pos_pers">dada/data/pronouns_singular_possesive_personal.dat</data>
-	<data type="pronoun_p_pos_pers">dada/data/pronouns_plural_possesive_personal.dat</data>
-	<data type="verb">dada/data/verbs.dat</data>
-	<data type="adjective">dada/data/adjects.dat</data>
-	<data type="adverb">dada/data/adverbs.dat</data>
-	<data type="connect">dada/data/connects.dat</data>
-	<data type="preposition">dada/data/prepositions.dat</data>
-	<data type="location">dada/data/locations.dat</data>
-	<data type="html">dada/data/html.dat</data>
-	
-	<template name="test">dada/ddt/test.ddt</template>
-	<template name="FreeFlow">dada/ddt/FreeFlow.ddt</template>
-	<template name="TheRaven">dada/ddt/TheRaven.ddt</template>
-</dada>
+<!-- /config/AOS_DadaData -->
+<AOS_DadaData>
+	<set name="dada">
+		<data type="noun">dada/data/nouns.dat</data>
+		<data type="noun_proper">dada/data/nouns_proper.dat</data>
+		<data type="pronoun_s">dada/data/pronouns_singular.dat</data>
+		<data type="pronoun_p">dada/data/pronouns_plural.dat</data>
+		<data type="pronoun_s_pos">dada/data/pronouns_singular_possesive.dat</data>
+		<data type="pronoun_p_pos">dada/data/pronouns_plural_possesive.dat</data>
+		<data type="pronoun_s_pos_pers">dada/data/pronouns_singular_possesive_personal.dat</data>
+		<data type="pronoun_p_pos_pers">dada/data/pronouns_plural_possesive_personal.dat</data>
+		<data type="verb">dada/data/verbs.dat</data>
+		<data type="adjective">dada/data/adjects.dat</data>
+		<data type="adverb">dada/data/adverbs.dat</data>
+		<data type="connect">dada/data/connects.dat</data>
+		<data type="preposition">dada/data/prepositions.dat</data>
+		<data type="location">dada/data/locations.dat</data>
+		<data type="html">dada/data/html.dat</data>
+		<template name="test">dada/ddt/test.ddt</template>
+		<template name="FreeFlow">dada/ddt/FreeFlow.ddt</template>
+		<template name="TheRaven">dada/ddt/TheRaven.ddt</template>
+	</set>
+</AOS_DadaData>

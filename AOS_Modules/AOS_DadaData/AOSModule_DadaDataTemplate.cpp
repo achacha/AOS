@@ -7,7 +7,7 @@
 #include "AXmlElement.hpp"
 #include "AAttributes.hpp"
 
-const AString AOSModule_DadaDataTemplate::PATH_DADADATA("/dadadata", 9);
+const AString AOSModule_DadaDataTemplate::PATH_DADADATA("dadadata", 9);
 const AString AOSModule_DadaDataTemplate::PATH_OUTPUT("output/dada", 11);
 
 const AString& AOSModule_DadaDataTemplate::getClass() const
@@ -43,18 +43,36 @@ void AOSModule_DadaDataTemplate::adminEmitXml(
 
 void AOSModule_DadaDataTemplate::init()
 {
-  ADadaDataHolder *pddh = new ADadaDataHolder();
-  pddh->readData(m_Services);
-  m_Objects.insert(PATH_DADADATA, pddh);
+  AXmlElement::CONST_CONTAINER nodes;
+
+  m_Services.useConfiguration().getConfigRoot().find("AOS_DadaData/set", nodes);
+  for (AXmlElement::CONST_CONTAINER::iterator it = nodes.begin(); it != nodes.end(); ++it)
+  {
+    AString strSet;
+    (*it)->getAttributes().get(ASW("name",4), strSet);
+    if (strSet.isEmpty())
+      ATHROW(*it, AException::InvalidData, "<set> missing name parameter");
+
+    ADadaDataHolder *pddh = new ADadaDataHolder();
+    pddh->readData(m_Services, *it);
+    m_Objects.insert(strSet, pddh);
+  }
+
 }
 
 AOSContext::ReturnCode AOSModule_DadaDataTemplate::execute(AOSContext& context, const AXmlElement& params)
 {
-  ADadaDataHolder *pddh = dynamic_cast<ADadaDataHolder *>(m_Objects.getObject(PATH_DADADATA));
+  AString strSet;
+  const AXmlElement *pDataNode = params.findElement(ASW("set",3));
+  if (pDataNode)
+    pDataNode->emitContent(strSet);
+  else
+    strSet.assign("dada",4);
 
+  ADadaDataHolder *pddh = m_Objects.useAsPtr<ADadaDataHolder>(strSet);
   if (!pddh)
   {
-    context.addError(getClass(), AString("AOSModule_DadaDataTemplate: ADadaDataHolder not found at: ")+PATH_DADADATA);
+    context.addError(getClass(), AString("AOSModule_DadaDataTemplate: ADadaDataHolder not found at: ")+strSet);
     return AOSContext::RETURN_ERROR;
   }
 
@@ -65,13 +83,14 @@ AOSContext::ReturnCode AOSModule_DadaDataTemplate::execute(AOSContext& context, 
     return AOSContext::RETURN_ERROR;
   }
   
+  VARIABLEMAP globals;
   ADadaDataHolder::TEMPLATES::iterator it = pddh->useTemplates().find(templateName);
   if (it != pddh->useTemplates().end())
   {
     VECTOR_AString& templateLines = (*it).second;
     for (size_t i=0; i<templateLines.size(); ++i)
     {
-      _generateLine(pddh, templateLines.at(i), context.useModel());
+      _generateLine(pddh, globals, templateLines.at(i), context.useModel());
     }
   }
   else
@@ -85,10 +104,9 @@ AOSContext::ReturnCode AOSModule_DadaDataTemplate::execute(AOSContext& context, 
 
 void AOSModule_DadaDataTemplate::deinit()
 {
-  m_Objects.remove(PATH_DADADATA);
 }
 
-void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, const AString& format, AXmlElement& element)
+void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& format, AXmlElement& element)
 {
   static const AString delimStart("{");
   static const AString delimEnd("}");
@@ -124,12 +142,12 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, const AStr
         {
           case '%':
             //a_Process the tag {%type:tar,tag,...}
-            _appendWordType(pddh, strType, target);
+            _appendWordType(pddh, globals, strType, target);
           break;
 
           case '$':
             //a_ {$variable}
-            _appendVariable(pddh, strType, target);
+            _appendVariable(pddh, globals, strType, target);
           break;
 
           case '&':
@@ -154,7 +172,7 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, const AStr
   attributes.clear();
 }
 
-void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, const AString& strType, AOutputBuffer& target)
+void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& target)
 {
   AASSERT(this, strType.getSize() > 0);
 
@@ -177,8 +195,8 @@ void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, const AS
   }
 
   //a_Find it in the global lookup
-  VARIABLEMAP::iterator it = m_globals.find(strTypeName);
-  if (it != m_globals.end())
+  VARIABLEMAP::iterator it = globals.find(strTypeName);
+  if (it != globals.end())
   {
     AString str((*it).second);
 
@@ -232,7 +250,7 @@ void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, const AS
   }
 }
 
-void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, const AString& strType, AOutputBuffer& target)
+void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& target)
 {
   //a_First remove control tags "TYPE:controltag1,controltag2,..."
   AString strTypeName, strControl;
@@ -342,7 +360,7 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, const AS
     //a_Save it if save variable was detected
     if (!strSaveVariable.isEmpty())
     {
-      m_globals[strSaveVariable] = str;
+      globals[strSaveVariable] = str;
       strSaveVariable.clear();
     }
   }

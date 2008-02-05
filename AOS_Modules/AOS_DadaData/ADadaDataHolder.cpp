@@ -79,55 +79,55 @@ void ADadaDataHolder::resetData()
   m_wordmap.clear();
 }
 
-void ADadaDataHolder::readData(
-  const AFilename& iniFilename,
-  const AFilename& baseDataDir,
-  ALog& alog
-)
-{
-  if (!AFileSystem::exists(iniFilename))
-  {
-    alog.add(AString("ERROR: ADadaDataHolder: unable to open INI profile"), iniFilename.toAString(), ALog::FAILURE);
-    return;
-  }
+//void ADadaDataHolder::readData(
+//  const AFilename& iniFilename,
+//  const AFilename& baseDataDir,
+//  ALog& alog
+//)
+//{
+//  if (!AFileSystem::exists(iniFilename))
+//  {
+//    alog.add(AString("ERROR: ADadaDataHolder: unable to open INI profile"), iniFilename.toAString(), ALog::FAILURE);
+//    return;
+//  }
+//
+//  AINIProfile iniProfile(iniFilename);
+//  iniProfile.parse();
+//
+//  AINIProfile::WindingIterator it = iniProfile.getWindingIterator(ASW("dadadata",8));
+//  AString strName, strValue;
+//  while (it.next())
+//  {
+//    it.getName(strName);
+//    it.getValue(strValue);
+//    AFilename filename(baseDataDir);
+//    filename.join(strValue, false);
+//    _loadWords(strName, filename, alog);
+//  }
+//
+//  it = iniProfile.getWindingIterator(ASW("templates", 9));
+//  while (it.next())
+//  {
+//    it.getName(strName);
+//    if ('#' != strName.at(0, '\x0'))
+//    {
+//      it.getValue(strValue);
+//      AFilename filename(baseDataDir);
+//      filename.join(strValue, false);
+//      _loadTemplate(strName, filename, alog);
+//    }
+//    else
+//      alog.add(ASWNL("ADadaDataHolder: skipping template"), strName, ALog::WARNING);
+//  }
+//}
 
-  AINIProfile iniProfile(iniFilename);
-  iniProfile.parse();
-
-  AINIProfile::WindingIterator it = iniProfile.getWindingIterator(ASW("dadadata",8));
-  AString strName, strValue;
-  while (it.next())
-  {
-    it.getName(strName);
-    it.getValue(strValue);
-    AFilename filename(baseDataDir);
-    filename.join(strValue, false);
-    _loadWords(strName, filename, alog);
-  }
-
-  it = iniProfile.getWindingIterator(ASW("templates", 9));
-  while (it.next())
-  {
-    it.getName(strName);
-    if ('#' != strName.at(0, '\x0'))
-    {
-      it.getValue(strValue);
-      AFilename filename(baseDataDir);
-      filename.join(strValue, false);
-      _loadTemplate(strName, filename, alog);
-    }
-    else
-      alog.add(ASWNL("ADadaDataHolder: skipping template"), strName, ALog::WARNING);
-  }
-}
-
-void ADadaDataHolder::readData(AOSServices& services)
+void ADadaDataHolder::readData(AOSServices& services, const AXmlElement *pSet)
 {
   AXmlElement::CONST_CONTAINER nodes;
 
   //a_Words
   AString str;
-  services.useConfiguration().getConfigRoot().find(ASWNL("/config/dada/data"), nodes);
+  pSet->find(ASW("data",4), nodes);
   AXmlElement::CONST_CONTAINER::iterator it = nodes.begin();
   while (it != nodes.end())
   {
@@ -148,7 +148,7 @@ void ADadaDataHolder::readData(AOSServices& services)
 
   //a_Templates
   nodes.clear();
-  services.useConfiguration().getConfigRoot().find(ASWNL("/config/dada/template"), nodes);
+  pSet->find(ASW("template",8), nodes);
   it = nodes.begin();
   while (it != nodes.end())
   {

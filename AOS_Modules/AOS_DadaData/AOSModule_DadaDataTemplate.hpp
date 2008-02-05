@@ -32,12 +32,11 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
-  typedef std::map<AString, AString> VARIABLEMAP;
-  VARIABLEMAP m_globals;
+  typedef MAP_AString_AString VARIABLEMAP;
 
-  void _generateLine(ADadaDataHolder *pddh, const AString& format, AXmlElement&);
-  void _appendWordType(ADadaDataHolder *pddh, const AString& strType, AOutputBuffer&);
-  void _appendVariable(ADadaDataHolder *pddh, const AString& strType, AOutputBuffer&);
+  void _generateLine(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& format, AXmlElement&);
+  void _appendWordType(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer&);
+  void _appendVariable(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer&);
   void _parseAttributes(const AString& data, AAttributes&);
 };
 
