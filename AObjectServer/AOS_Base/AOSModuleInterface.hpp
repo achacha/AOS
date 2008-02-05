@@ -3,7 +3,7 @@
 
 #include "apiAOS_Base.hpp"
 #include "AOSAdminInterface.hpp"
-#include "AObjectContainer.hpp"
+#include "ABasePtrContainer.hpp"
 #include "AOSContext.hpp"
 
 class AOSServices;
@@ -49,11 +49,12 @@ protected:
   AOSServices& m_Services;
 
   /*!
-  Every module will have their own object container that is shared by all calls to this module
-  It is very important that blocking access here be minimal and it only be used for read-only purposes
-  Locks here can be a significant performance hit
+  Every module will have their own container that is shared by all calls to this module class (server maintains 1 instance for all calls)
+  It is very important that blocking access here be minimal and it only be used for read-only purposes, locks here can be a significant performance hit
+  Initialize in init() call for the module
+  Read in execute()
   */
-  AObjectContainer m_Objects;
+  ABasePtrContainer m_Objects;
 };
 
 #endif //INCLUDED__AOSModuleInterface_HPP__

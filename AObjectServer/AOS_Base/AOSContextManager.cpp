@@ -106,11 +106,12 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
 }
 
 AOSContextManager::AOSContextManager(AOSServices& services) :
-  m_Queues(AOSContextManager::STATE_TERMINATE+1, NULL),
   m_Services(services)
 {
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
   m_FreestoreMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/freestore-maxsize", 50);
+
+  m_Queues.resize(AOSContextManager::STATE_TERMINATE+1, NULL);
 
   adminRegisterObject(m_Services.useAdminRegistry());
 }

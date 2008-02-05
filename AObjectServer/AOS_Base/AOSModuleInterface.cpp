@@ -16,8 +16,7 @@ void AOSModuleInterface::debugDump(std::ostream& os, int indent) const
 }
 
 AOSModuleInterface::AOSModuleInterface(AOSServices& services) :
-  m_Services(services),
-  m_Objects("module")
+  m_Services(services)
 {
 }
 
@@ -27,4 +26,6 @@ void AOSModuleInterface::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHead
 
   adminAddProperty(eBase, ASW("ExecutionTimeAverage",20), m_ExecutionTimeAverage);
   adminAddProperty(eBase, ASW("ExecutionTimeCount",18), AString::fromU8(m_ExecutionTimeAverage.getCount()));
+
+  adminAddProperty(eBase, ASW("Objects",7), m_Objects);
 }
