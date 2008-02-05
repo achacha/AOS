@@ -23,15 +23,15 @@ public:
   virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
 
-  static const AString PATH_DADADATA;        //a_Location of ADadaDataHolder in module object container
-  static const AString PATH_OUTPUT;          //a_Location of the output
-
   /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
+  typedef std::map<AString, VECTOR_AString> TEMPLATES;
+  TEMPLATES m_Templates;
+
   typedef MAP_AString_AString VARIABLEMAP;
 
   void _generateLine(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& format, AXmlElement&);

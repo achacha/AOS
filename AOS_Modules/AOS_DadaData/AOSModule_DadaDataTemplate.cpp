@@ -6,9 +6,7 @@
 #include "ARandomNumberGenerator.hpp"
 #include "AXmlElement.hpp"
 #include "AAttributes.hpp"
-
-const AString AOSModule_DadaDataTemplate::PATH_DADADATA("dadadata", 9);
-const AString AOSModule_DadaDataTemplate::PATH_OUTPUT("output/dada", 11);
+#include "AFile_Physical.hpp"
 
 const AString& AOSModule_DadaDataTemplate::getClass() const
 {
@@ -20,8 +18,14 @@ void AOSModule_DadaDataTemplate::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSModule_DadaDataTemplate @ " << std::hex << this << std::dec << ") {" << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "PATH_DADADATA=" << PATH_DADADATA << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "PATH_OUTPUT=" << PATH_OUTPUT << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Templates={" << std::endl;
+  TEMPLATES::const_iterator citT = m_Templates.begin();
+  while (citT != m_Templates.end())
+  {
+    ADebugDumpable::indent(os, indent+2) << (*citT).first << " size=" << u4((*citT).second.size()) << std::endl;
+    ++citT;
+  }
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   AOSModuleInterface::debugDump(os, indent+1);
 
@@ -45,29 +49,67 @@ void AOSModule_DadaDataTemplate::init()
 {
   AXmlElement::CONST_CONTAINER nodes;
 
-  m_Services.useConfiguration().getConfigRoot().find("AOS_DadaData/set", nodes);
-  for (AXmlElement::CONST_CONTAINER::iterator it = nodes.begin(); it != nodes.end(); ++it)
+  m_Services.useConfiguration().getConfigRoot().find("AOS_DadaData/dataset", nodes);
+  AXmlElement::CONST_CONTAINER::iterator it;
+  for (it = nodes.begin(); it != nodes.end(); ++it)
   {
     AString strSet;
     (*it)->getAttributes().get(ASW("name",4), strSet);
     if (strSet.isEmpty())
-      ATHROW(*it, AException::InvalidData, "<set> missing name parameter");
+      ATHROW(*it, AException::InvalidData, "AOS_DadaData/dataset missing 'name' parameter");
 
     ADadaDataHolder *pddh = new ADadaDataHolder();
     pddh->readData(m_Services, *it);
     m_Objects.insert(strSet, pddh);
   }
 
+  nodes.clear();
+  m_Services.useConfiguration().getConfigRoot().find(ASW("AOS_DadaData/template",21), nodes);
+  it = nodes.begin();
+  while (it != nodes.end())
+  {
+    AString str;
+    (*it)->emitContent(str);
+    
+    AString strName;
+    if ((*it)->getAttributes().get(ASW("name",4), strName))
+    {
+      AFilename filename(m_Services.useConfiguration().getAosBaseDataDirectory(), str, false);
+      AFile_Physical file(filename, ASW("r", 1));
+      file.open();
+
+      str.clear();
+      while (AConstant::npos != file.readLine(str))
+      {
+        if ('#' != str.at(0, '\x0'))
+        {
+          m_Templates[strName].push_back(str);
+        }
+        str.clear();
+      }
+    }
+    else
+      m_Services.useLog().add(ASWNL("AOS_DadaData: AOS_DadaData/template missing 'name' attribute"), ALog::FAILURE);
+
+    ++it;
+  }
 }
 
 AOSContext::ReturnCode AOSModule_DadaDataTemplate::execute(AOSContext& context, const AXmlElement& params)
 {
+  AString templateName;
+  if (!context.useRequestParameterPairs().get(ASW("templateName",12), templateName))
+  {
+    context.addError(getClass(), ASWNL("Please specify 'templateName' parameter."));
+    return AOSContext::RETURN_ERROR;
+  }
+
   AString strSet;
-  const AXmlElement *pDataNode = params.findElement(ASW("set",3));
-  if (pDataNode)
-    pDataNode->emitContent(strSet);
-  else
-    strSet.assign("dada",4);
+  if (!context.useRequestParameterPairs().get(ASW("dataset",7), strSet))
+  {
+    context.addError(getClass(), ASWNL("Please specify 'dataset' parameter."));
+    return AOSContext::RETURN_ERROR;
+  }
 
   ADadaDataHolder *pddh = m_Objects.useAsPtr<ADadaDataHolder>(strSet);
   if (!pddh)
@@ -75,17 +117,10 @@ AOSContext::ReturnCode AOSModule_DadaDataTemplate::execute(AOSContext& context, 
     context.addError(getClass(), AString("AOSModule_DadaDataTemplate: ADadaDataHolder not found at: ")+strSet);
     return AOSContext::RETURN_ERROR;
   }
-
-  AString templateName;
-  if (!context.useRequestParameterPairs().get(ASW("templateName",12), templateName))
-  {
-    context.addError(getClass(), ASWNL("Please specify 'templateName' parameter."));
-    return AOSContext::RETURN_ERROR;
-  }
   
   VARIABLEMAP globals;
-  ADadaDataHolder::TEMPLATES::iterator it = pddh->useTemplates().find(templateName);
-  if (it != pddh->useTemplates().end())
+  TEMPLATES::iterator it = m_Templates.find(templateName);
+  if (it != m_Templates.end())
   {
     VECTOR_AString& templateLines = (*it).second;
     for (size_t i=0; i<templateLines.size(); ++i)
