@@ -1,0 +1,19 @@
+<h2>"Before The {%noun_proper:$dawn}" <small>originally by Judas Priest</small></h2>
+<br/>
+Before the {$dawn:lowercase}, I hear you whisper
+In your sleep "don't let the {%noun:$morning} {%verb:$take} him"
+Outside the birds begin to call
+As if to summon up my leaving
+<br/>
+It's been a {%noun:$lifetime} since I found someone
+Since I found someone who would stay
+I've waited too long, and now you're {%verb:present,$leaving}
+Oh please don't {$take} it all away
+<br/>
+It's been a {$lifetime} since I found someone
+Since I found someone who would stay
+I've waited too long, and now you're {$leaving}
+Oh please don't {$take} it all away
+<br/>
+Before the {$dawn:lowercase}, I hear you whisper
+In your sleep "don't let the {%noun:$morning} {$take} him"
