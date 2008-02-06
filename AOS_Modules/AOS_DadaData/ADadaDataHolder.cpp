@@ -79,16 +79,21 @@ void ADadaDataHolder::readData(AOSServices& services, const AXmlElement *pSet)
   {
     str.clear();
     (*it)->emitContent(str);
-    AFilename filename(services.useConfiguration().getAosBaseDataDirectory(), str, false);
     
-    str.clear();
-    if ((*it)->getAttributes().get(ASW("type",4), str))
+    AFilename filename(services.useConfiguration().getAosBaseDataDirectory(), str, false);
+    if (AFileSystem::exists(filename))
     {
-      _loadWords(str, filename, services.useLog());
+      str.clear();
+      if ((*it)->getAttributes().get(ASW("type",4), str))
+      {
+        _loadWords(str, filename, services.useLog());
+      }
+      else
+        services.useLog().add(ASWNL("AOS_DadaData: <data> missing 'type' attribute"), ALog::FAILURE);
     }
     else
-      services.useLog().add(ASWNL("AOS_DadaData: <data> missing 'type' attribute"), ALog::FAILURE);
-
+      services.useLog().add(ARope("Missing word file: ")+filename, ALog::WARNING);
+    
     ++it;
   }
 }

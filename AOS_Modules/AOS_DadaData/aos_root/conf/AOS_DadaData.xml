@@ -2,44 +2,53 @@
 <!-- /config/AOS_DadaData -->
 <AOS_DadaData>
 	<dataset name="dada">
+		<!-- Set specific data -->
+		<data type="noun">dada/dataset_dada/noun.dat</data>
+		<data type="noun_proper">dada/dataset_dada/noun_proper.dat</data>
+		<data type="verb">dada/dataset_dada/verb.dat</data>
+		<data type="adjective">dada/dataset_dada/adject.dat</data>
+		<data type="adverb">dada/dataset_dada/adverb.dat</data>
+		<data type="location">dada/dataset_dada/location.dat</data>
+
+		<!-- Inherit from common base data -->
 		<data type="html">dada/base/html.dat</data>
-		<data type="connect">dada/base/connects.dat</data>
-		<data type="preposition">dada/base/prepositions.dat</data>
-		<data type="pronoun_s">dada/base/pronouns_singular.dat</data>
-		<data type="pronoun_p">dada/base/pronouns_plural.dat</data>
-		<data type="pronoun_s_pos">dada/base/pronouns_singular_possesive.dat</data>
-		<data type="pronoun_p_pos">dada/base/pronouns_plural_possesive.dat</data>
-		<data type="pronoun_s_pos_pers">dada/base/pronouns_singular_possesive_personal.dat</data>
-		<data type="pronoun_p_pos_pers">dada/base/pronouns_plural_possesive_personal.dat</data>
-		
-		<data type="noun">dada/dataset_dada/nouns.dat</data>
-		<data type="noun_proper">dada/dataset_dada/nouns_proper.dat</data>
-		<data type="verb">dada/dataset_dada/verbs.dat</data>
-		<data type="adjective">dada/dataset_dada/adjects.dat</data>
-		<data type="adverb">dada/dataset_dada/adverbs.dat</data>
-		<data type="location">dada/dataset_dada/locations.dat</data>
+		<data type="connect">dada/base/connect.dat</data>
+		<data type="preposition">dada/base/preposition.dat</data>
+		<data type="pronoun_s">dada/base/pronoun_singular.dat</data>
+		<data type="pronoun_p">dada/base/pronoun_plural.dat</data>
+		<data type="pronoun_s_pos">dada/base/pronoun_singular_possesive.dat</data>
+		<data type="pronoun_p_pos">dada/base/pronoun_plural_possesive.dat</data>
+		<data type="pronoun_s_pos_pers">dada/base/pronoun_singular_possesive_personal.dat</data>
+		<data type="pronoun_p_pos_pers">dada/base/pronoun_plural_possesive_personal.dat</data>
 	</dataset>
 
 	<dataset name="lyrics">
+		<!-- Set specific data -->
+		<data type="noun">dada/dataset_lyrics/noun.dat</data>
+		<data type="noun_proper">dada/dataset_lyrics/noun_proper.dat</data>
+		<data type="verb">dada/dataset_lyrics/verb.dat</data>
+		<data type="adjective">dada/dataset_lyrics/adject.dat</data>
+		<data type="adverb">dada/dataset_lyrics/adverb.dat</data>
+		<data type="location">dada/dataset_lyrics/location.dat</data>
+
+		<!-- Inherit from common base data -->
 		<data type="html">dada/base/html.dat</data>
-		<data type="connect">dada/base/connects.dat</data>
-		<data type="preposition">dada/base/prepositions.dat</data>
-		<data type="pronoun_s">dada/base/pronouns_singular.dat</data>
-		<data type="pronoun_p">dada/base/pronouns_plural.dat</data>
-		<data type="pronoun_s_pos">dada/base/pronouns_singular_possesive.dat</data>
-		<data type="pronoun_p_pos">dada/base/pronouns_plural_possesive.dat</data>
-		<data type="pronoun_s_pos_pers">dada/base/pronouns_singular_possesive_personal.dat</data>
-		<data type="pronoun_p_pos_pers">dada/base/pronouns_plural_possesive_personal.dat</data>
-		
-		<data type="noun">dada/dataset_lyrics/nouns.dat</data>
-		<data type="noun_proper">dada/dataset_lyrics/nouns_proper.dat</data>
-		<data type="verb">dada/dataset_lyrics/verbs.dat</data>
-		<data type="adjective">dada/dataset_lyrics/adjects.dat</data>
-		<data type="adverb">dada/dataset_lyrics/adverbs.dat</data>
-		<data type="location">dada/dataset_lyrics/locations.dat</data>
+		<data type="connect">dada/base/connect.dat</data>
+		<data type="preposition">dada/base/preposition.dat</data>
+		<data type="pronoun_s">dada/base/pronoun_singular.dat</data>
+		<data type="pronoun_p">dada/base/pronoun_plural.dat</data>
+		<data type="pronoun_s_pos">dada/base/pronoun_singular_possesive.dat</data>
+		<data type="pronoun_p_pos">dada/base/pronoun_plural_possesive.dat</data>
+		<data type="pronoun_s_pos_pers">dada/base/pronoun_singular_possesive_personal.dat</data>
+		<data type="pronoun_p_pos_pers">dada/base/pronoun_plural_possesive_personal.dat</data>
 	</dataset>
 
-	<template name="test">dada/ddt/test.ddt</template>
-	<template name="FreeFlow">dada/ddt/FreeFlow.ddt</template>
-	<template name="TheRaven">dada/ddt/TheRaven.ddt</template>
+	<!-- templates that get used with set data -->
+	<template name="test">dada/template_debug/test.ddt</template>
+
+	<template name="FreeFlow">dada/template_ddt/FreeFlow.ddt</template>
+	<template name="TheRaven">dada/template_ddt/TheRaven.ddt</template>
+
+	<template name="BeforeTheDawn">dada/template_lyrics/BeforeTheDawn.ddt</template>
+	<template name="AtWarWithSatan">dada/template_lyrics/AtWarWithSatan.ddt</template>
 </AOS_DadaData>

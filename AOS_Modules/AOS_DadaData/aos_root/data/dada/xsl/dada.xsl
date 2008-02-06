@@ -9,7 +9,6 @@
 			<body>
 				<xsl:apply-templates select="dada/line"/>
 				<br/>
-				<br/>
 				<div align="center"><font size="1">Request execution time is <xsl:value-of select="/root/request_time"/> milliseconds.</font></div>
 			</body>
 		</html>
@@ -20,12 +19,12 @@
 			<xsl:when test="@type='title'">
 				<h1>
 					<xsl:apply-templates select="image"/>
-					<xsl:value-of select="."/>
+					<xsl:copy-of select="."/>
 				</h1>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="image"/>
-				<xsl:value-of select="."/><br/>
+				<xsl:copy-of select="."/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

@@ -22,7 +22,7 @@ void AOSModule_DadaDataTemplate::debugDump(std::ostream& os, int indent) const
   TEMPLATES::const_iterator citT = m_Templates.begin();
   while (citT != m_Templates.end())
   {
-    ADebugDumpable::indent(os, indent+2) << (*citT).first << " size=" << u4((*citT).second.size()) << std::endl;
+    ADebugDumpable::indent(os, indent+2) << citT->first << " size=" << u4(citT->second.size()) << std::endl;
     ++citT;
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
@@ -60,7 +60,7 @@ void AOSModule_DadaDataTemplate::init()
 
     ADadaDataHolder *pddh = new ADadaDataHolder();
     pddh->readData(m_Services, *it);
-    m_Objects.insert(strSet, pddh);
+    m_Objects.insert(strSet, pddh, true);
   }
 
   nodes.clear();
@@ -75,18 +75,23 @@ void AOSModule_DadaDataTemplate::init()
     if ((*it)->getAttributes().get(ASW("name",4), strName))
     {
       AFilename filename(m_Services.useConfiguration().getAosBaseDataDirectory(), str, false);
-      AFile_Physical file(filename, ASW("r", 1));
-      file.open();
-
-      str.clear();
-      while (AConstant::npos != file.readLine(str))
+      if (AFileSystem::exists(filename))
       {
-        if ('#' != str.at(0, '\x0'))
-        {
-          m_Templates[strName].push_back(str);
-        }
+        AFile_Physical file(filename, ASW("r", 1));
+        file.open();
+
         str.clear();
+        while (AConstant::npos != file.readLine(str))
+        {
+          if ('#' != str.at(0, '\x0'))
+          {
+            m_Templates[strName].push_back(str);
+          }
+          str.clear();
+        }
       }
+      else
+        m_Services.useLog().add(ARope("AOS_DadaData: Missing file: ")+filename, ALog::WARNING);
     }
     else
       m_Services.useLog().add(ASWNL("AOS_DadaData: AOS_DadaData/template missing 'name' attribute"), ALog::FAILURE);
@@ -321,7 +326,6 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLE
     {
 //      TRACE1("Checking control: %s\n", (*it).c_str());
       
-      //a_Verb only control
       if ('$' == (*itN).at(0, '\x0'))
       {
         //a_Add variable to global map
@@ -329,6 +333,7 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLE
       }
       else if (!strTypeName.compare("verb"))
       {
+        //a_Verb only control
         if (!(*itN).compare("present", 7))
         {
           if (AConstant::npos != AWordUtility::sstr_Vowels.find(str.last()))
@@ -351,6 +356,20 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLE
         }
       }
 
+      if (!(*itN).compare("article", 7))
+      {
+        AString strTemp(str);
+        if (AConstant::npos == AWordUtility::sstr_Vowels.find(str.at(0)))
+        {
+          str.assign("a ", 2);
+        }
+        else
+        {
+          str.assign("an ", 3);
+        }
+        str.append(strTemp);
+      }
+
       if (!(*itN).compare("plural", 6))
       {
         AString strTemp;
@@ -371,20 +390,6 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLE
       if (!(*itN).compare("proper", 6))
       {
         str.use(0) = toupper(str.at(0));
-      }
-
-      if (!(*itN).compare("article", 7))
-      {
-        AString strTemp(str);
-        if (AConstant::npos == AWordUtility::sstr_Vowels.find(str.at(0)))
-        {
-          str.assign("a ", 2);
-        }
-        else
-        {
-          str.assign("an ", 3);
-        }
-        str.append(strTemp);
       }
 
       ++itN;

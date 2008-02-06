@@ -41,3 +41,27 @@ private:
 };
 
 #endif // INCLUDED__AOSModule_DadaDataTemplate_HPP__
+
+/*!
+Template usage
+---
+{%TYPE} - looks up a type and replaces it
+{%TYPE:ATTRIBUTE,ATTRIBUTE,...} - Generate a type with attribute
+{%TYPE:$VARIABLE} - Get a type and assign it to a variable (see next line)
+{$VARIABLE} - replace a generated variable (from above)
+
+
+ATTRIBUTEs applied to generated words (in order of evaluation)
+---
+$VARIABLE - Any name starting with $ are stored in the variable container for usage later in the template
+article - prepend with a or an
+plural - attempt to make the word plural
+lowercase - convert word to lowercase
+uppercase - convert word to uppercase
+proper - capitalize first letter
+
+%verb:
+  present - convert to -ing
+  past - convert to -ed -d ending
+
+*/
