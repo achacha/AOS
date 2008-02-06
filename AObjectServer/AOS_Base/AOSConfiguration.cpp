@@ -689,7 +689,7 @@ bool AOSConfiguration::isDumpContextAllowed() const
 
 bool AOSConfiguration::isOutputOverrideAllowed() const
 {
-  return m_Config.getRoot().getBool(ASW("/config/server/debug/allow-outputOverride",41), false);
+  return m_Config.getRoot().getBool(ASW("/config/server/debug/allow-overrideOutput",41), false);
 }
 
 void AOSConfiguration::convertUrlToReportedServerAndPort(AUrl& url) const

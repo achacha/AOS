@@ -4,7 +4,7 @@
 	<log-level>5</log-level>
 	<debug>
 		<allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page">true</allow-dumpContext>
-		<allow-outputOverride desc="If true, will allow outputOverride to alter the output class of a command">true</allow-outputOverride>
+		<allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command">true</allow-overrideOutput>
 	</debug>
 	<!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
 	<error-templates desc="HTTP status response templates, located relative to aos_data directory">
