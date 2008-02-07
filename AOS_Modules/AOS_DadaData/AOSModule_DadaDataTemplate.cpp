@@ -243,6 +243,20 @@ void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, VARIABLE
     LIST_AString::iterator itN = listControlNames.begin();
     while (itN != listControlNames.end())
     {
+      if (!(*itN).compare("article", 7))
+      {
+        AString strTemp(str);
+        if (AConstant::npos == AWordUtility::sstr_Vowels.find(str.at(0)))
+        {
+          str.assign("a ", 2);
+        }
+        else
+        {
+          str.assign("an ", 3);
+        }
+        str.append(strTemp);
+      }
+
       if (!(*itN).compare("plural", 6))
       {
         AString strTemp;
@@ -263,20 +277,6 @@ void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, VARIABLE
       if (!(*itN).compare("proper", 6))
       {
         str.use(0) = toupper(str.at(0));
-      }
-
-      if (!(*itN).compare("article", 7))
-      {
-        AString strTemp(str);
-        if (AConstant::npos == AWordUtility::sstr_Vowels.find(str.at(0)))
-        {
-          str.assign("a ", 2);
-        }
-        else
-        {
-          str.assign("an ", 3);
-        }
-        str.append(strTemp);
       }
 
       ++itN;

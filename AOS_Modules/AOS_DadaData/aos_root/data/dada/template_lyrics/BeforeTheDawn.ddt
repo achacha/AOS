@@ -1,6 +1,6 @@
-<h2>"Before The {%noun:$dawn}" <small>originally by Judas Priest</small></h2>
+<h2>"Before The {%noun:$dawn,proper}" <small>originally by Judas Priest</small></h2>
 <br/>
-Before the {$dawn:lowercase}, I hear you {%verb:$wisper}<br/>
+Before the {$dawn}, I hear you {%verb:$wisper}<br/>
 In your sleep "don't let the {%noun:$morning} {%verb:$take} him"<br/>
 Outside the birds begin to call<br/>
 As if to summon up my leaving<br/>
@@ -15,5 +15,5 @@ Since I found someone who would {$stay}<br/>
 I've waited too long, and now you're {$leaving}<br/>
 Oh please don't {$take} it all away<br/>
 <br/>
-Before the {$dawn:lowercase}, I hear you {$wisper}<br/>
-In your sleep "don't let the {%noun:$morning} {$take} him"<br/>
+Before the {$dawn}, I hear you {$wisper}<br/>
+In your sleep "don't let the {$morning} {$take} him"<br/>

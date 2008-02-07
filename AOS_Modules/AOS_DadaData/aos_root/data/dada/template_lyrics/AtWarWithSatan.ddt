@@ -1,10 +1,10 @@
 <h2>"At War With {%noun_proper:$Satan}" <small>originally by Venom</small></h2>
 <br/>
-The dark silouette of the creature<br/>
+The {%adjective} silouette of the creature<br/>
 Poised, crouched on the corner of a cliffs edge<br/>
-Waits eagerly, eyes glare patiently.<br/>
+Waits {%adverb}, eyes glare patiently.<br/>
 Red eyes filled with fire and torment<br/>
-Gleam in the frenzied brightness<br/>
+Gleam in the frenzied {%noun}<br/>
 Across the shadowed vallies below.<br/>
 A crack of thunder breaks the deafening silence<br/>
 Which once ruled the planes, the creature is unmoved<br/>
@@ -34,7 +34,7 @@ On the land as the angels fell<br/>
 Tyrants pray disaster for the<br/>
 Land of love and trust<br/>
 Demons plot a way to turn<br/>
-The {%location:${$Heavens}} into dust.<br/>
+The {%location:plural,$Heavens} into dust.<br/>
 <br/>
 The standard bearers chosen<br/>
 From the mass of {$Satan}'s dogs<br/>
@@ -42,10 +42,10 @@ To hold the flag of {%location:$Hades} high<br/>
 Defying all the gods<br/>
 {$Satan} laughs the words of war<br/>
 The {$Heavens} shake with fear<br/>
-Armageddon sings his song<br/>
+Armageddon {%verb:plural} his {%noun}<br/>
 The battle's ever near.<br/>
 <br/>
-Let the joyous celebrations of {$Hell} begin<br/>
+Let the {%adjective} celebrations of {$Hell} begin<br/>
 <br/>
 Who holds the keys to the seven gates?<br/>
 <br/>
@@ -152,7 +152,7 @@ You are damned...<br/>
 Children of pleasure move<br/>
 Appear amongst us<br/>
 The dark Lord has opened his jaws<br/>
-Raise for {$Satan}ic queen<br/>
+Raise for {$Satan}ic {%noun}<br/>
 Ye sons and daughters<br/>
 Take heed the flame forever learn<br/>
 Now is come salvation<br/>
