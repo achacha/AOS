@@ -51,23 +51,23 @@
 #ifdef __DEBUG_DUMP__
 // Max size
 #define DEBUG_MAXSIZE_AString 1000000
-
-// Max size
 #define DEBUG_MAXSIZE_ARope 10000000
+#define DEBUG_MAXSIZE_ARopeDeque 10000000
 
-// Max size
-#define DEBUG_MAXSIZE_ARopeDeque 1000000
+// Max items
+#define DEBUG_MAXSIZE_ABasePtrQueue 100000
+#define DEBUG_MAXSIZE_ABasePtrContainer 100000
 
-// Number of HTTP tokens
+// Max number of HTTP tokens
 #define DEBUG_MAXSIZE_AHTTPHeader 1000
 
-// Size of container
-#define DEBUG_MAXSIZE_AXmlElement 1000
+// Max size of container
+#define DEBUG_MAXSIZE_AXmlElement 3000
 
 // Attributes items
 #define DEBUG_MAXSIZE_AAttributes 500
 
-// Items per cache
+// Max items per cache
 #define DEBUG_MAXSIZE_ACache_FileSystem 100000
 
 // Max size (size * 8 = bits)

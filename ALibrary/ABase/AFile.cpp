@@ -634,7 +634,7 @@ size_t AFile::peekUntilEOF(AOutputBuffer& target)
       continue;
 
       case AConstant::npos:
-        break;
+        return m_LookaheadBuffer.getSize();  // Done
     }
   }
 

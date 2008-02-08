@@ -54,6 +54,8 @@ void ABasePtrContainer::insert(
   bool overwrite  // = true
 )
 {
+  AASSERT(this, m_BasePtrs.size()<DEBUG_MAXSIZE_ABasePtrContainer);  //a_Debug only limit
+
   if (!pBase)
     ATHROW(this, AException::InvalidParameter);
 

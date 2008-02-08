@@ -43,6 +43,8 @@ ABase *ABasePtrQueue::pop()
 
 void ABasePtrQueue::push(ABase *p)
 {
+  AASSERT(this, m_Size<DEBUG_MAXSIZE_ABasePtrQueue);  //a_Debug only limit
+  
   ALock lock(mp_Sync);
   if (mp_Tail)
   {
