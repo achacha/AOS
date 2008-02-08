@@ -286,6 +286,10 @@ bool AOSContext::_waitForFirstChar()
 
 AOSContext::Status AOSContext::_processHttpHeader()
 {
+  AASSERT(this, mp_RequestFile);
+  if (!mp_RequestFile)
+    ATHROW(this, AException::InvalidObject);
+
   setExecutionState(ASW("AOSContext: Reading HTTP method",31), false, 30000.0);  //a_Read header for 60 seconds
   AString str(8188, 1024);
 

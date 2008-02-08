@@ -273,7 +273,7 @@ void AOSCommand::adminRegisterObject(AOSAdminRegistry& registry)
 {
   AString str(getClass());
   str.append(':');
-  str.append(m_CommandAlias);
+  str.append(m_CommandPath);
   registry.insert(str, *this);
 }
 
