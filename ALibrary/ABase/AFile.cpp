@@ -156,7 +156,7 @@ size_t AFile::skipLine(
 
   while ((AConstant::npos == ret || AConstant::unavail == ret) && _isNotEof())
   {
-    size_t ret = readBlockIntoLookahead();
+    ret = readBlockIntoLookahead();
     switch(ret)
     {
       case 0:
@@ -539,7 +539,7 @@ size_t AFile::read(
   while (length > 0)
   {
     size_t bytesToRead = min(BUFFER_SIZE, length);
-    size_t bytesRead = read(buffer, bytesToRead);
+    bytesRead = read(buffer, bytesToRead);
     
     target.append(buffer, bytesRead);
 
