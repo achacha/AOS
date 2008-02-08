@@ -84,7 +84,7 @@ AOSContextQueueThreadPool_RoundRobinSwarm::~AOSContextQueueThreadPool_RoundRobin
     for (size_t i=0; i<m_Queues.size(); ++i)
     {
       m_Queues[i]->clear(true);
-      delete m_Queues[i];
+      delete m_Queues.at(i);
     }
   }
   catch(...) {}

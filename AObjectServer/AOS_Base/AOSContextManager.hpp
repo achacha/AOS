@@ -14,11 +14,12 @@ class AOS_BASE_API AOSContextManager : public AOSAdminInterface
 public:
   enum ContextQueueState
   {
-    STATE_PRE_EXECUTE = 0,
-    STATE_EXECUTE = 1,
-    STATE_IS_AVAILABLE = 2,
-    STATE_ERROR = 3,
-    STATE_TERMINATE = 4   // This MUST be the last state
+    STATE_TERMINATE = 0,
+    STATE_PRE_EXECUTE = 1,
+    STATE_EXECUTE = 2,
+    STATE_IS_AVAILABLE = 3,
+    STATE_ERROR = 4,
+    STATE_LAST = 5   // This MUST be the last state
   };
 
 public:

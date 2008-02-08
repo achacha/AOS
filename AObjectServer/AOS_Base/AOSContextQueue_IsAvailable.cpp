@@ -44,6 +44,8 @@ AOSContextQueue_IsAvailable::~AOSContextQueue_IsAvailable()
   try
   {
     stop();
+    for (size_t i=0; i<m_Queues.size(); ++i)
+      delete m_Queues.at(i);
   }
   catch(...) {}
 }

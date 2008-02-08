@@ -111,7 +111,7 @@ AOSContextManager::AOSContextManager(AOSServices& services) :
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
   m_FreestoreMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/freestore-maxsize", 50);
 
-  m_Queues.resize(AOSContextManager::STATE_TERMINATE+1, NULL);
+  m_Queues.resize(AOSContextManager::STATE_LAST, NULL);
 
   adminRegisterObject(m_Services.useAdminRegistry());
 }
