@@ -51,4 +51,6 @@
 
 	<template name="BeforeTheDawn">dada/template_lyrics/BeforeTheDawn.ddt</template>
 	<template name="AtWarWithSatan">dada/template_lyrics/AtWarWithSatan.ddt</template>
+	<template name="PianoMan">dada/template_lyrics/PianoMan.ddt</template>
+	<template name="SabbathBloodySabbath">dada/template_lyrics/SabbathBloodySabbath.ddt</template>
 </AOS_DadaData>
