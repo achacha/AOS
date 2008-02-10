@@ -149,7 +149,7 @@ public:
   size_t toAFile(AFile&) const;               
 
   enum {
-    DEFAULT_BLOCK_SIZE=128
+    DEFAULT_BLOCK_SIZE=2048
   };
 
   /*!
