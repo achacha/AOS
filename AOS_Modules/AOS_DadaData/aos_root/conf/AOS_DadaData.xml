@@ -6,7 +6,7 @@
 		<data type="noun">dada/dataset_dada/noun.dat</data>
 		<data type="noun_proper">dada/dataset_dada/noun_proper.dat</data>
 		<data type="verb">dada/dataset_dada/verb.dat</data>
-		<data type="adjective">dada/dataset_dada/adject.dat</data>
+		<data type="adjective">dada/dataset_dada/adjective.dat</data>
 		<data type="adverb">dada/dataset_dada/adverb.dat</data>
 		<data type="location">dada/dataset_dada/location.dat</data>
 
@@ -27,7 +27,7 @@
 		<data type="noun">dada/dataset_lyrics/noun.dat</data>
 		<data type="noun_proper">dada/dataset_lyrics/noun_proper.dat</data>
 		<data type="verb">dada/dataset_lyrics/verb.dat</data>
-		<data type="adjective">dada/dataset_lyrics/adject.dat</data>
+		<data type="adjective">dada/dataset_lyrics/adjective.dat</data>
 		<data type="adverb">dada/dataset_lyrics/adverb.dat</data>
 		<data type="location">dada/dataset_lyrics/location.dat</data>
 
