@@ -110,20 +110,27 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
 
         str.clear();
         AHTTPRequestHeader request;
-        while (AConstant::npos == client.readLine(str))
+        size_t ret = client.readLine(str);
+        while (AConstant::npos == ret || AConstant::unavail == ret)
         {
           AThread::sleep(50);
         }
         if (!request.parseLineZero(str))
         {
           pThis->m_Services.useLog().add(ASWNL("AOSAdmin::threadprocAdminListener: Unable to parse line 0"), str, ALog::FAILURE);
-          break;
+          continue;
         }
 
         str.clear();
         while (client.isOpen() && client.isNotEof())
         {
           size_t readRet = client.readLine(str);
+
+          if (AConstant::unavail == readRet)
+          {
+            std::cerr << "." << std::flush;
+            continue;
+          }
           
           //a_End of HTTP header (blank line)
           if (!readRet)
@@ -332,6 +339,10 @@ void AOSAdmin::_processAdminCommand(
     else if (command.equalsNoCase(ASW("shutdown",8)))
     {
       //a_Shutdown
+      //a_Flag admin listener to stop
+      mthread_AdminListener.setRun(false);
+      m_IsShutdownRequested = true;
+
       m_Services.useLog().add(ASW("ADMIN: Shutdown",15), ALog::INFO);
       AOS_DEBUGTRACE("Shutdown request received... initiating shutdown sequence.", NULL);
 
@@ -367,10 +378,6 @@ void AOSAdmin::_processAdminCommand(
 
       //a_Emit result
       xmlDoc.useRoot().addElement(ASW("shutdown",8));
-
-      //a_Flag admin listener to stop
-      mthread_AdminListener.setRun(false);
-      m_IsShutdownRequested = true;
     }
     else
     {

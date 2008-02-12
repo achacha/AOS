@@ -277,8 +277,19 @@ bool AOSContext::_waitForFirstChar()
     AThread::sleep(sleeptime);
     sleeptime += SLEEP_INCREMENT;
     ++tries;
-    if (mp_RequestFile->peek(c) > 0)
-      return true;
+    size_t ret = mp_RequestFile->peek(c);
+    switch(ret)
+    {
+      case AConstant::npos:
+        return false;
+
+      case AConstant::unavail:
+      case 0:
+        break;       // No data available yet, keep waiting
+
+      default:
+        return true; // Read something
+    }
   }
 
   return false;

@@ -158,7 +158,7 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
 
       ARope rope("AOSContextManager::allocate[",28);
       rope.append(AString::fromPointer(p));
-      rope.append(", pFile=0x",10);
+      rope.append(", pFile=",8);
       rope.append(AString::fromPointer(pSocket));
       rope.append("] freestore",11);
       p->setExecutionState(rope);
@@ -169,7 +169,7 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
 
       ARope rope("AOSContextManager::allocate[",28);
       rope.append(AString::fromPointer(p));
-      rope.append(", pFile=0x",10);
+      rope.append(", pFile=",8);
       rope.append(AString::fromPointer(pSocket));
       rope.append("] new create",12);
       p->setExecutionState(rope);
