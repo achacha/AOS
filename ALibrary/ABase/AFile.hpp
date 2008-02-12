@@ -65,21 +65,27 @@ public:
 
   /*!
   Peek
+  @param target output buffer
+  @param length if npos then peek everything
+  @return number of bytes read, 0 means EOF
+          AConstant::unavail if non-blocking and data unavailable but not closed
   */
-  virtual size_t peek(AString&, size_t length);
+  virtual size_t peek(AString& target, size_t length);
 
   /*!
   AEmittable required method - reads from current read position and writes to output
   Equivalent to peekUntilEOF
+  @param target output buffer
   */
-  void emit(AOutputBuffer&) const;
+  void emit(AOutputBuffer& target) const;
 
   /*!
   Read content of this file and write it to the target output buffer
 
   @param target output buffer
   @param length if npos then write everything
-  @return number of bytes written
+  @return number of bytes read, 0 means EOF
+          AConstant::unavail if non-blocking and data unavailable but not closed
   */
   size_t read(AOutputBuffer& target, size_t length = AConstant::npos);
 
@@ -96,10 +102,11 @@ public:
   Line reads, appends result
   Reads until CRLF or LF  (\r\n or \n) are encountered
 
-  Returns # of bytes read and appends to the result
-  If maxBytes specified will read <maxBytes, if EOL not found within maxBytes, return value is maxBytes and nothing appended
-  If EOF is found before end of line, EOF is treated as EOL if flag i set to true
-  If EOF is found and no data read then AConstant::npos is returned (or if flag is false)
+  @return Number of bytes read and appends to the result
+          If maxBytes specified will read <maxBytes, if EOL not found within maxBytes, return value is maxBytes and nothing appended
+          If EOF is found before end of line, EOF is treated as EOL if flag i set to true
+          If EOF is found and no data read then AConstant::npos is returned (or if flag is false)
+          AConstant::unavail if non-blocking and data unavailable but not closed
   */
   virtual size_t peekLine(AString& target, size_t maxBytes = AConstant::npos, bool treatEofAsEol = true);
   virtual size_t readLine(AString& target, size_t maxBytes = AConstant::npos, bool treatEofAsEol = true);
@@ -110,7 +117,8 @@ public:
   Allows control of read blocks
   ARope version does NOT clear the rope (rope is to be cleared by the caller, since the object is meant for appends)
   
-  NOTE: Returns number of bytes read, 0 bytes read if already at EOF
+  @return Number of bytes read, 0 bytes read if already at EOF
+          AConstant::unavail if non-blocking and data unavailable but not closed
   */
   virtual size_t readUntilEOF(AOutputBuffer&);
   virtual size_t peekUntilEOF(AOutputBuffer&);
@@ -124,7 +132,8 @@ public:
      1       0    - pattern removed from source and appended to target
      1       1    - pattern removed from source and discarded
   
-   NOTE: return AConstant::npos if EOF or not found, else length is successful
+  @return AConstant::npos if EOF or not found, else length is successful
+          AConstant::unavail if non-blocking and data unavailable but not closed
   */
   virtual size_t readUntilOneOf(AString&, const AString& strDelimeters = AConstant::ASTRING_WHITESPACE, bool boolRemoveDelimiter = true, bool boolDiscardDelimiter = true);
   virtual size_t peekUntilOneOf(AString&, const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
@@ -139,7 +148,8 @@ public:
      1       0    - pattern removed from source and appended to target
      1       1    - pattern removed from source and discarded
   
-   NOTE: return AConstant::npos if EOF or not found, else length is successful
+  @return AConstant::npos if EOF or not found, else length is successful
+          AConstant::unavail if non-blocking and data unavailable but not closed
   */
   virtual size_t peekUntil(AString&, char cPattern);
   virtual size_t peekUntil(AString&, const AString& strPattern);
@@ -152,6 +162,7 @@ public:
   Ability to skip over delimeters
   
   @return AConstant::npos if EOF, otherwise number of characters skipped over
+          AConstant::unavail if non-blocking and data unavailable but not closed
   */
   virtual size_t skipOver(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
 
@@ -181,21 +192,19 @@ public:
 
   /*!
   Write buffer of given length
-  
   @return AConstant::npos if EOF (which is not a common occurance)
   */
   virtual size_t write(const void *pcvData, size_t length);
 
   /*!
   Read into a buffer of given length
-  
-  NOTE: returns 0 if EOF
+  @return 0 if EOF, AConstant::unavail if non-blocking and data unavailable
   */
 	virtual size_t read(void* pvData, size_t length);
   
   /*!
   Peek data into the buffer of given length
-  NOTE: return 0 if EOF
+  @return 0 if EOF, AConstant::unavail if non-blocking and data unavailable
   */
   virtual size_t peek(void* pvData, size_t length);
   

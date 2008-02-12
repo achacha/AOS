@@ -4,7 +4,9 @@ int main()
 {
   try
   {
-    ATHROW(NULL, AException::OperationFailed);
+    //ATHROW(NULL, AException::OperationFailed);
+    AString str("hello");
+    AASSERT_EX(&str,false,ASWNL("Something bad happened"));
   }
   catch(AException& ex)
   {

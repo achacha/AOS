@@ -6,8 +6,6 @@
 #include "ARope.hpp"
 #include "AThread.hpp"
 
-#define DEFAULT_UNAVAIL_SLEEP_TIME 1
-
 void AFile::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AFile @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -62,7 +60,7 @@ size_t AFile::readLine(
     {
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       case 0:
@@ -128,7 +126,7 @@ size_t AFile::peekLine(
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return  AConstant::unavail;
       continue;
 
       case AConstant::npos:
@@ -164,7 +162,7 @@ size_t AFile::skipLine(
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       case AConstant::npos:
@@ -202,7 +200,7 @@ size_t AFile::readUntilOneOf(
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -230,7 +228,7 @@ size_t AFile::peekUntilOneOf(AString &strPeek, const AString &strDelimeters)
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -260,7 +258,7 @@ size_t AFile::skipUntilOneOf(
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -297,7 +295,7 @@ size_t AFile::peekUntil(AString& strPeek, const AString& strPattern)
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -324,7 +322,7 @@ size_t AFile::peekUntil(AString& strPeek, char cPattern)
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -356,7 +354,7 @@ size_t AFile::readUntil(
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -387,7 +385,7 @@ size_t AFile::readUntil(
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -418,7 +416,7 @@ size_t AFile::skipUntil(
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -449,7 +447,7 @@ size_t AFile::skipUntil(
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -497,7 +495,7 @@ size_t AFile::find(const AString &strPattern)
       
       case AConstant::unavail:
         //a_No data available yet, wait and try again
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       default:
@@ -630,7 +628,7 @@ size_t AFile::peekUntilEOF(AOutputBuffer& target)
     switch (ret)
     {
       case AConstant::unavail:
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       case AConstant::npos:
@@ -653,7 +651,7 @@ size_t AFile::readUntilEOF(AOutputBuffer& target)
     switch (ret)
     {
       case AConstant::unavail:
-        AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+        return AConstant::unavail;
       continue;
 
       case AConstant::npos:
@@ -751,15 +749,17 @@ size_t AFile::peek(void *pTarget, size_t bytesLeft)
       switch(ret)
       {
         case AConstant::unavail:
-          AThread::sleep(DEFAULT_UNAVAIL_SLEEP_TIME);
+          return AConstant::unavail;
         continue;
 
-        case 0:
         case AConstant::npos:
+        case 0:
         {
           //a_Not enough data, return what we have
           ret = m_LookaheadBuffer.getSize();
-          m_LookaheadBuffer.peekFront((char *)pTarget, ret);
+          if (ret > 0)
+            m_LookaheadBuffer.peekFront((char *)pTarget, ret);
+          
           return ret;
         }
       }
