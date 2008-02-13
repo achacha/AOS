@@ -71,17 +71,21 @@ void ASocketListener_SSL::_initSSL()
 
   pServerData->meth = SSLv23_server_method();
   pServerData->ctx = SSL_CTX_new(pServerData->meth);
-  if (!pServerData->ctx) {
+  if (!pServerData->ctx)
+  {
     AString strError(1024, 256);
     ERR_error_string(errno, strError.startUsingCharPtr());
     strError.stopUsingCharPtr();
+    strError.append(" (possibly ASocketLibrary_SSL global object missing)");
     ATHROW_EX(this, AException::APIFailure, strError);
   }
   
   int retCode;
   if (!AFileSystem::exists(AFilename(m_certFilename, false)))
     ATHROW_EX(this, AException::DoesNotExist, m_certFilename);
-  if ((retCode = SSL_CTX_use_certificate_file(pServerData->ctx, m_certFilename.c_str(), SSL_FILETYPE_PEM)) <= 0) {
+  
+  if ((retCode = SSL_CTX_use_certificate_file(pServerData->ctx, m_certFilename.c_str(), SSL_FILETYPE_PEM)) <= 0)
+  {
     AString strError(1024, 256);
     ERR_error_string(retCode, strError.startUsingCharPtr());
     strError.stopUsingCharPtr();
@@ -90,7 +94,9 @@ void ASocketListener_SSL::_initSSL()
 
   if (!AFileSystem::exists(AFilename(m_keyFilename, false)))
     ATHROW_EX(this, AException::DoesNotExist, m_keyFilename);
-  if ((retCode = SSL_CTX_use_PrivateKey_file(pServerData->ctx, m_keyFilename.c_str(), SSL_FILETYPE_PEM)) <= 0) {
+
+  if ((retCode = SSL_CTX_use_PrivateKey_file(pServerData->ctx, m_keyFilename.c_str(), SSL_FILETYPE_PEM)) <= 0)
+  {
     AString strError(1024, 256);
     ERR_error_string(retCode, strError.startUsingCharPtr());
     strError.stopUsingCharPtr();
