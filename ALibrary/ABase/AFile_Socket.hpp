@@ -80,11 +80,6 @@ public:
   Default is true (when socket is created)
   */
   void setNagleAlgorithm(bool mode = true);
-
-  /*!
-  Reading of blocking sockets
-  */
-  size_t readBlocking(void *, size_t size);
     
   /*!
   Check socket
@@ -97,7 +92,6 @@ public:
   Bytes avaialable (in socket and lookahead)
   */
   size_t getTotalBytesAvailableForRead() const;
-
 
   /*!
   Lookahead buffer used by read/write/peek overridden due to blocking socket read mode
@@ -131,6 +125,11 @@ protected :
 
   //! Physical bytes available in the socket (does not include the lookahead buffer)
   virtual size_t _availableInputWaiting() const;
+
+  size_t _readBlocking(void *buf, size_t size);
+  size_t _readNonBlocking(void *buf, size_t size);
+  size_t _writeBlocking(const void *buf, size_t size);
+  size_t _writeNonBlocking(const void *buf, size_t size);
 
   void makeHandle();
   bool mbool_Blocking;           //a_Determines if blocking read needs to be used

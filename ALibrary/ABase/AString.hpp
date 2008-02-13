@@ -72,7 +72,7 @@ public:
   AString(const char *, size_t length = AConstant::npos);
   
   /*!
-  Constructed from a Rope
+  Constructed from AEmittable
   */
   AString(const AEmittable&);
 

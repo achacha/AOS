@@ -168,57 +168,13 @@ void AFile_Socket::setWriteTimeout(size_t miliSec)
 size_t AFile_Socket::_write(const void *buf, size_t size)
 {
   AASSERT(this, INVALID_SOCKET != m_SocketInfo.m_handle);
-  if (size <= 0x0)
-	  return AConstant::npos;
-
-  size_t bytesToWrite = size;
-  size_t totalBytesWritten = 0;
-
-  //a_It may take multiple calls to send the entire buffer
-  while (bytesToWrite)
-  {
-    size_t bytesWritten = ::send(m_SocketInfo.m_handle, (const char *) buf + totalBytesWritten, bytesToWrite, 0);
-
-    if (!bytesWritten && bytesToWrite)
-      ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::WriteOperationFailed);
-      
-    if (bytesWritten == SOCKET_ERROR)
-      ATHROW_LAST_SOCKET_ERROR(this);
-
-    AASSERT(this, bytesToWrite >= bytesWritten);
-    bytesToWrite -= bytesWritten;      //reduce bytes to write
-    totalBytesWritten += bytesWritten; //increase offset for buffer
-  }
-
-  return totalBytesWritten;
-}
-
-size_t AFile_Socket::readBlocking(void *buf, size_t size)
-{
-  AASSERT(this, INVALID_SOCKET != m_SocketInfo.m_handle);
   if (!size)
-    return 0;
-  
-  size_t bytesToRead = size;
-  size_t totalBytesRead = 0;
+    ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::InvalidParameter);
 
-  //a_It may take multiple calls to read the entire buffer
-  while (bytesToRead)
-  {
-    size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf + totalBytesRead, bytesToRead, 0 );
-
-    if (!bytesReceived)
-      ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::ReadOperationFailed);
-
-    if (bytesReceived == SOCKET_ERROR)
-      ATHROW_LAST_SOCKET_ERROR(this);
-
-    AASSERT(this, bytesToRead >= bytesReceived);
-    bytesToRead -= bytesReceived; //reduce bytes to read
-    totalBytesRead += bytesReceived; //increase offset for buffer
-  }
-
-  return totalBytesRead;
+  if (mbool_Blocking)
+    return _writeBlocking(buf, size);
+  else
+    return _writeNonBlocking(buf, size);
 }
 
 size_t AFile_Socket::_read(void *buf, size_t size)
@@ -227,13 +183,30 @@ size_t AFile_Socket::_read(void *buf, size_t size)
   if (m_EOF)
     return 0;
 
-  if (mbool_Blocking)
-    return readBlocking(buf, size);
-  
   //a_Cannot read zero bytes, return of 0 means EOF
   if (!size)
     ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::InvalidParameter);
+
+  if (mbool_Blocking)
+    return _readBlocking(buf, size);
+  else
+    return _readNonBlocking(buf, size);
+}
+
+size_t AFile_Socket::_readBlocking(void *buf, size_t size)
+{
   
+  size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf, size, 0);
+    
+  if (bytesReceived == SOCKET_ERROR)
+    ATHROW_LAST_SOCKET_ERROR(this);
+  
+  AASSERT(this, bytesReceived >= 0);
+  return bytesReceived;
+}
+
+size_t AFile_Socket::_readNonBlocking(void *buf, size_t size)
+{
   size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf, size, 0);
     
   if (bytesReceived == SOCKET_ERROR)
@@ -247,6 +220,40 @@ size_t AFile_Socket::_read(void *buf, size_t size)
   
   AASSERT(this, bytesReceived >= 0);
   return bytesReceived;
+}
+
+size_t AFile_Socket::_writeBlocking(const void *buf, size_t size)
+{
+  //a_Cannot read zero bytes, return of 0 means EOF
+  if (!size)
+    ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::InvalidParameter);
+  
+  size_t bytesSent = ::send(m_SocketInfo.m_handle, (char *) buf, size, 0);
+    
+  if (bytesSent == SOCKET_ERROR)
+    ATHROW_LAST_SOCKET_ERROR(this);
+  
+  AASSERT(this, bytesSent >= 0);
+  return bytesSent;
+}
+
+size_t AFile_Socket::_writeNonBlocking(const void *buf, size_t size)
+{
+  size_t bytesWritten = ::send(m_SocketInfo.m_handle, (const char *) buf, size, 0);
+
+  if (!bytesWritten && size)
+    return AConstant::npos;
+    
+  if (bytesWritten == SOCKET_ERROR)
+  {
+    int err = ::WSAGetLastError();
+    if (err == WSAEWOULDBLOCK)
+      return AConstant::unavail;      //Operation would block so return not available
+
+    ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
+  }
+
+  return bytesWritten;
 }
 
 bool AFile_Socket::isInputWaiting() const

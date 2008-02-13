@@ -516,7 +516,9 @@ size_t AFile::writeLine(
     written = _write(line.data(), line.getSize());
   }
 
-  written += _write(strEOL.data(), strEOL.getSize());
+  if (AConstant::npos != written && AConstant::unavail != written)
+    written += _write(strEOL.data(), strEOL.getSize());
+  
   return written;
 }
 
