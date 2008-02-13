@@ -96,13 +96,6 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         //
         if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_REDIRECTING))
         {
-          AString str(1536, 1024);
-
-          //a_Add some common response header pairs
-          ATime timeNow;
-          timeNow.emitRFCtime(str);
-          pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Date, str);
-
           int dumpContextLevel = pContext->getDumpContextLevel();
 
           //a_Add REQUEST, SESSION and RESPONSE header only if not in AJAX mode

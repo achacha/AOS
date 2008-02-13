@@ -114,6 +114,10 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
         while (AConstant::npos == ret || AConstant::unavail == ret)
         {
           AThread::sleep(50);
+          if (!client.isOpen() || !client.isNotEof())
+            continue;
+
+          ret = client.readLine(str);
         }
         if (!request.parseLineZero(str))
         {

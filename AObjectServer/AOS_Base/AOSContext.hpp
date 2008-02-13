@@ -152,7 +152,7 @@ public:
         Output generators will write output based on the model into this buffer and the server writes this to user
         It is recommended that this is used by output generators, but not required, you're the programmer
   */
-  ARope& useOutputBuffer();
+  AString& useOutputBuffer();
 
   /*!
   Set execution state of the context
@@ -440,7 +440,7 @@ protected:
   AHTTPResponseHeader m_ResponseHeader;
 
   //a_Output buffer
-  ARope m_OutputBuffer;
+  AString m_OutputBuffer;
 
   //a_Context objects
   ABasePtrContainer m_ContextObjects;
@@ -498,6 +498,9 @@ private:
 
   //a_Reads extensions from config and puts into a string set
   SET_AString _getGzipCompressionExtensions();
+
+  //a_Write to the socket
+  size_t _write(AString&);
 };
 
 #endif // INCLUDED__AContext_HPP__

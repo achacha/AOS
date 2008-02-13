@@ -109,7 +109,8 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   mp_DirConfig(NULL),
   mp_RequestFile(NULL),
   m_ConnectionFlags(AOSContext::CONFLAG_LAST),
-  m_ContextFlags(AOSContext::CTXFLAG_LAST)
+  m_ContextFlags(AOSContext::CTXFLAG_LAST),
+  m_OutputBuffer(10240, 4096)
 {
   reset(pFile);
 }
@@ -853,7 +854,7 @@ AXmlElement& AOSContext::useModel()
   return m_OutputXmlDocument.useRoot();
 }
 
-ARope& AOSContext::useOutputBuffer()
+AString& AOSContext::useOutputBuffer()
 { 
   return m_OutputBuffer;
 }
@@ -966,12 +967,21 @@ void AOSContext::writeResponseHeader()
     ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
 
   m_EventVisitor.set(ASW("Sending HTTP response header",28));
-  m_ResponseHeader.emit(*mp_RequestFile);
+
+  AString str(10240, 4096);
+
+  //a_Add some common response header pairs
+  ATime timeNow;
+  timeNow.emitRFCtime(str);
+  m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Date, str);
+
+  str.clear();
+  m_ResponseHeader.emit(str);
+  _write(str);
+
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
 
-  ARope rope("HTTP response header:\r\n",23);
-  m_ResponseHeader.emit(rope);
-  m_EventVisitor.set(rope);
+  m_EventVisitor.set(str);
   m_EventVisitor.reset();
 }
 
@@ -985,7 +995,7 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     AASSERT_EX(this, m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT), ASWNL("Response header already written, incompatible with gzip output"));
     m_EventVisitor.set(ASW("Compressing",11));
 
-    AString compressed;
+    AString compressed(m_OutputBuffer.getSize()+32, 1024);
     AZlib::gzipDeflate(m_OutputBuffer, compressed, gzipLevel);
 
     m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
@@ -995,7 +1005,7 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     //a_The writing of the output
     writeResponseHeader();
     m_EventVisitor.set(ASW("AOSContext: Writing compressed",30));
-    compressed.emit(*mp_RequestFile);
+    _write(compressed);
   }
   else
   {
@@ -1018,11 +1028,45 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     }
 
     m_EventVisitor.set(ASW("AOSContext: Writing uncompressed",32));
-    m_OutputBuffer.emit(*mp_RequestFile);
-    m_EventVisitor.reset();
+    _write(m_OutputBuffer);
   }
 
+  m_EventVisitor.reset();
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
+}
+
+size_t AOSContext::_write(AString& data)
+{
+  const size_t WRITE_BLOCK = 65536;
+  size_t bytesWritten = 0;
+  if (data.getSize() > 0)
+  {
+    //a_Non-blocking write
+    const char *pdata = data.c_str();
+    size_t bytesToWrite = data.getSize();
+    size_t offset = 0;
+    while (bytesToWrite > 0)
+    {
+      bytesWritten = mp_RequestFile->write(pdata + offset, (bytesToWrite<WRITE_BLOCK ? bytesToWrite : WRITE_BLOCK));
+      switch(bytesWritten)
+      {
+        case 0:
+        case AConstant::npos:
+          m_EventVisitor.set(ASWNL("Error writing to socket"));
+          return 0;
+
+        case AConstant::unavail:
+          AThread::sleep(1);
+          continue;
+
+        default:
+          bytesToWrite -= bytesWritten;
+          offset += bytesWritten;
+      }
+    }
+  }
+  
+  return bytesWritten;
 }
 
 int AOSContext::getDumpContextLevel() const
