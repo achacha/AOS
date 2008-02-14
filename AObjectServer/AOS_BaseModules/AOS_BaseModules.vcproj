@@ -360,6 +360,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\AOSModule_FileList.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\AOSModule_InsertIntoModel.hpp"
 					>
 				</File>
@@ -390,6 +394,10 @@
 				</File>
 				<File
 					RelativePath=".\AOSModule_ExecuteQuery.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSModule_FileList.cpp"
 					>
 				</File>
 				<File

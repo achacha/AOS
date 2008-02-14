@@ -175,8 +175,8 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         if (pContext->useRequestHeader().isHttpPipeliningEnabled())
         {
           //a_keep-alive found, pipelining enabled
-          pContext->setExecutionState(ASW("AOSContextQueue_Executor: Pipelining detected, going into isAvailable",69));
-          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
+          pContext->setExecutionState(ASW("AOSContextQueue_Executor: Pipelining detected, going into preExecute",68));
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &pContext);
         }
         else
         {

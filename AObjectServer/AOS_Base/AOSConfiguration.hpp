@@ -5,7 +5,7 @@
 #include "AOSAdminInterface.hpp"
 #include "AOSDirectoryConfig.hpp"
 #include "ABitArray.hpp"
-#include "AFilename.hpp"
+#include "AFileSystem.hpp"
 #include "AXmlDocument.hpp"
 #include "AXmlElement.hpp"
 
@@ -201,7 +201,7 @@ private:
   void _loadCommands();
   void _readCommand(AFilename&);               //a_May alter the passed filename
   void _readDirectoryConfig(AFilename&);       //a_May alter the passed filename
-  void _postProcessCommandAndConfig(LIST_AFilename&);
+  void _postProcessCommandAndConfig(AFileSystem::LIST_FileInfo&);
 
   //a_MIME type lookup
   MAP_AString_AString m_ExtToMimeType;

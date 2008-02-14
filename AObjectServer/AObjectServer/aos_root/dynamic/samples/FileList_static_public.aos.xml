@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<command>
+	<input/>
+	<module class="FileList">
+	  <path>public/*.*</path>
+	</module>
+	<output class="Xslt">
+		<filename>xsl/FileList.xsl</filename>
+	</output>
+</command>
+	

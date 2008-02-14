@@ -355,25 +355,25 @@ void AOSConfiguration::loadConfig(const AString& name)
 
 void AOSConfiguration::_loadCommands()
 {
-  LIST_AFilename fileList, directoryConfigs;
+  AFileSystem::LIST_FileInfo fileList, directoryConfigs;
   const AString& EXT1 = ASW("aos",3);
   const AString& EXT2 = ASW("xml",3);
   if (AFileSystem::dir(m_AosBaseDynamicDir, fileList, true, true) > 0)
   {
-    for(LIST_AFilename::iterator it = fileList.begin(); it != fileList.end(); ++it)
+    for(AFileSystem::LIST_FileInfo::iterator it = fileList.begin(); it != fileList.end(); ++it)
     {
-      if (!(*it).equalsExtension(EXT1, EXT2))
+      if (!it->filename.equalsExtension(EXT1, EXT2))
       {
         continue;
       }
       
-      if (it->useFilename().equals(ASW("__this__.aos.xml",16)))
+      if (it->filename.useFilename().equals(ASW("__this__.aos.xml",16)))
       {
-        _readDirectoryConfig(*it);
+        _readDirectoryConfig(it->filename);
       }
       else
       {
-        _readCommand(*it);
+        _readCommand(it->filename);
       }
     }
 
@@ -469,12 +469,12 @@ void AOSConfiguration::_readCommand(AFilename& filename)
   }
 }
 
-void AOSConfiguration::_postProcessCommandAndConfig(LIST_AFilename& directoryConfigs)
+void AOSConfiguration::_postProcessCommandAndConfig(AFileSystem::LIST_FileInfo& directoryConfigs)
 {
   AString strPath(1536, 512);
-  for (LIST_AFilename::iterator it = directoryConfigs.begin(); it != directoryConfigs.end(); ++it)
+  for (AFileSystem::LIST_FileInfo::iterator it = directoryConfigs.begin(); it != directoryConfigs.end(); ++it)
   {
-    std::cout << "-=-=-=-=-=-=:directory config: " << *it << std::endl;
+    std::cout << "-=-=-=-=-=-=:directory config: " << it->filename << std::endl;
   }
 }
 
