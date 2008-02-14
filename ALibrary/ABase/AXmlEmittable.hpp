@@ -12,6 +12,14 @@ class AXmlElement;
 public:
   virtual void emitXml(AXmlElement&) const;
 -------------------STOP: HPP cup/past-----------------------
+
+-------------------START: CPP cup/past----------------------
+void MyClass::emitXml(AXmlElement& target) const
+{
+  //target.useAttributes().insert("name", "value");
+  //target.addElement("name").addData("value");
+}
+-------------------STOP: CPP cup/past-----------------------
 */
 class ABASE_API AXmlEmittable
 {

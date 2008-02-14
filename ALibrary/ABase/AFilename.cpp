@@ -221,23 +221,24 @@ void AFilename::emit(
 
 void AFilename::emitXml(AXmlElement& target) const
 {
-  AXmlElement& element = target.addElement(ASW("AFilename", 9));
-  element.addAttribute(ASW("type", 4), AString::fromInt(m_Type));
+  target.addAttribute(ASW("os", 2), AString::fromInt(m_Type));
 
   //a_Drive
   if (m_Drive)
-    element.addElement(ASW("drive",5)).addData(m_Drive);
+    target.addElement(ASW("drive",5)).addData(m_Drive);
 
   //a_Path
-  AXmlElement& basePath = element.addElement(ASW("path",4));
+  AXmlElement& basePath = target.addElement(ASW("path",4));
   for (LIST_AString::const_iterator cit = m_PathNames.begin(); cit != m_PathNames.end(); ++cit)
   {
-    basePath.addElement(ASW("dir",3), *cit);
+    basePath.addElement(ASW("dir",3)).addData(*cit);
   }
 
   //a_Filename
   if (!m_Filename.isEmpty())
-    element.addElement(ASW("filename",8), m_Filename);
+    target.addElement(ASW("filename",8)).addData(m_Filename);
+
+  target.addElement(ASW("full",4)).addData(*this);
 }
 
 void AFilename::emitPath(AOutputBuffer& target) const

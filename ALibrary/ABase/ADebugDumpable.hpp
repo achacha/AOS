@@ -19,18 +19,13 @@ class MyClass : public ADebugDumpable
 
   // From AEmittable
   virtual void emit(AOutputBuffer&) const;
-
-public:
-#ifdef __DEBUG_DUMP__
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
-#endif
 
   ...
 };
 -----------------------STOP: HPP cut/paste-----------------------------------
 
 -----------------------START: CPP cut/paste-----------------------------------
-#ifdef __DEBUG_DUMP__
 void MyClass::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -38,7 +33,6 @@ void MyClass::debugDump(std::ostream& os, int indent) const
   //ADebugDumpable::indent(os, indent+1) << "myvalue=" << m_value << std::endl;    //TODO:
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-#endif
 
 void MyClass::emit(AOutputBuffer& target) const
 {

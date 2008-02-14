@@ -11,20 +11,68 @@ class ABASE_API AFileSystem
 {
 public:
   /*!
+  Path types used by isA, getType
+  */
+  enum PathType {
+    DoesNotExist = 0x0000,
+    Exists       = 0x0001,
+    Directory    = 0x0002,
+    File         = 0x0004,
+    ReadOnly     = 0x0008,
+    Compressed   = 0x0010,
+    Encrypted    = 0x0020,
+    System       = 0x0040,
+    Hidden       = 0x0080,
+    Temporary    = 0x0100
+  };
+
+  class FileInfo : public AXmlEmittable, public ADebugDumpable
+  {
+  public:
+    FileInfo();
+    FileInfo(const FileInfo&);
+    AFilename filename;
+    s8 length;
+    u4 typemask;   // PathType mask
+
+    //! AXmlEmittable
+    virtual void emitXml(AXmlElement&) const;
+    
+    //! AEmittable
+    virtual void emit(AOutputBuffer&) const;
+    
+    //! ADebugDumpable
+    virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+  };
+
+  typedef std::list<FileInfo> LIST_FileInfo;
+
+public:
+  /*!
   Get contents of a directory, ignores /./ and /../
-  returns # of entries found
+  
+  @param basepath Base path for the directory query
+  @param target Target list of the AFilename objects (includes basepath)
+  @param recurse If true will traverse subdirectories also
+  @param filesOnly If true only adds files to the target, else includes directories also
+  
+  @return # of entries found
   */
   static u4 dir(
-    const AFilename& basepath,         // Base path for the directory query
-    LIST_AFilename& target,            // Target list of the AFilename objects (includes basepath)
-    bool recurse = false,              // If true will traverse subdirectories also
-    bool filesOnly = true              // If true only adds files to the target, else includes directories also
+    const AFilename& basepath,           
+    AFileSystem::LIST_FileInfo& target,  
+    bool recurse = false,                
+    bool filesOnly = true               
   );
 
   /*!
-  Get/Set current working directory
+  Get current working directory
   */
   static void getCWD(AFilename&);
+
+  /*!
+  Set current working directory
+  */
   static void setCWD(const AFilename&);
 
   /*!
@@ -64,22 +112,6 @@ public:
   Expand relative to absolute path
   */
   static void expand(const AFilename& relative, AFilename& absolute);
-
-  /*!
-  Path types used by isA, getType
-  */
-  enum PathType {
-    DoesNotExist = 0x0000,
-    Exists       = 0x0001,
-    Directory    = 0x0002,
-    File         = 0x0004,
-    ReadOnly     = 0x0008,
-    Compressed   = 0x0010,
-    Encrypted    = 0x0020,
-    System       = 0x0040,
-    Hidden       = 0x0080,
-    Temporary    = 0x0100
-  };
 
   /*!
   Determines if an existing path is of some type
@@ -130,7 +162,11 @@ public:
   static void generateTemporaryFilename(AFilename& path);
 
 private:
-  static u4 _getFilesFromPath(const AFilename&, AFilename&, LIST_AFilename&, bool, bool);   //a_Recursive internal call
+  static u4 _getFilesFromPath(const AFilename&, AFilename&, AFileSystem::LIST_FileInfo&, bool, bool);   //a_Recursive internal call
+
+#ifdef __WINDOWS__
+  static u4 _winAttrToMask(u4 attr);
+#endif
 };
 
 #endif //INCLUDED__AFileSystem_HPP__

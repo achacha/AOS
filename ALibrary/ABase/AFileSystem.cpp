@@ -7,10 +7,66 @@
 #include "ASystemException.hpp"
 #include "AFile_Physical.hpp"
 #include "ATextGenerator.hpp"
+#include "AXmlElement.hpp"
+
+AFileSystem::FileInfo::FileInfo() :
+  length(0),
+  typemask(AFileSystem::DoesNotExist)
+{
+}
+
+AFileSystem::FileInfo::FileInfo(const FileInfo& that) :
+  filename(that.filename),
+  length(that.length),
+  typemask(that.typemask)
+{
+}
+
+void AFileSystem::FileInfo::debugDump(std::ostream& os, int indent) const
+{
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "filename=";
+  filename.debugDump(os, indent+2);
+  
+  ADebugDumpable::indent(os, indent+1) << "length=" << length << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "typemask=" << typemask << std::endl;
+
+  ADebugDumpable::indent(os, indent) << "}" << std::endl;
+}
+
+void AFileSystem::FileInfo::emit(AOutputBuffer& target) const
+{
+  target.append("mask[",5);
+  target.append(AString::fromS4(typemask));
+  target.append("] len(",6);
+  target.append(AString::fromS8(length));
+  target.append("):",2);
+  target.append(filename);
+}
+
+void AFileSystem::FileInfo::emitXml(AXmlElement& target) const
+{
+  if (typemask & AFileSystem::Directory)
+    target.useAttributes().insert(ASW("dir",3), AConstant::ASTRING_ONE);
+  else
+    target.useAttributes().insert(ASW("file",4), AConstant::ASTRING_ONE);
+
+  if (typemask & AFileSystem::ReadOnly) target.useAttributes().insert(ASW("read-only",9), AConstant::ASTRING_TRUE);
+  if (typemask & AFileSystem::Compressed) target.useAttributes().insert(ASW("compressed",10), AConstant::ASTRING_TRUE);
+  if (typemask & AFileSystem::Encrypted) target.useAttributes().insert(ASW("encrypted",9), AConstant::ASTRING_TRUE);
+  if (typemask & AFileSystem::System) target.useAttributes().insert(ASW("system",6), AConstant::ASTRING_TRUE);
+  if (typemask & AFileSystem::Hidden) target.useAttributes().insert(ASW("hidden",6), AConstant::ASTRING_TRUE);
+  if (typemask & AFileSystem::Temporary) target.useAttributes().insert(ASW("temporary",9), AConstant::ASTRING_TRUE);
+  if (typemask & AFileSystem::DoesNotExist) target.useAttributes().insert(ASW("exist",5), AConstant::ASTRING_FALSE);
+
+  target.useAttributes().insert(ASW("typemask",8), AString::fromS4(typemask, 16));
+  target.useAttributes().insert(ASW("length",6), AString::fromS8(length));
+  filename.emitXml(target);
+}
 
 u4 AFileSystem::dir(
   const AFilename& path,
-  LIST_AFilename& target,
+  AFileSystem::LIST_FileInfo& target,
   bool recurse,   // = false
   bool filesOnly  // = false
 )
@@ -22,7 +78,7 @@ u4 AFileSystem::dir(
 u4 AFileSystem::_getFilesFromPath(
   const AFilename& path,
   AFilename& offsetpath,
-  LIST_AFilename& target,
+  AFileSystem::LIST_FileInfo& target,
   bool recurse,   // = false
   bool filesOnly  // = false
 )
@@ -61,14 +117,20 @@ u4 AFileSystem::_getFilesFromPath(
   u4 ret = 0;
   do
   {
-    if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && recurse)
+    if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && recurse)
     {
       if (!filesOnly)
       {
         //a_Add directory name
         newpath.usePathNames().push_back(findData.cFileName);
         newpath.clearFilename();
-        target.push_back(newpath);
+
+        FileInfo info;
+        info.filename.set(newpath, true);
+        info.typemask = Exists | _winAttrToMask(findData.dwFileAttributes);
+
+        target.push_back(info);
+
         ++ret;
       }
       
@@ -79,9 +141,22 @@ u4 AFileSystem::_getFilesFromPath(
     }
     else
     {
+      //a_Add directory name if requested only
+      if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && filesOnly)
+        continue;
+
       //a_Add file
-      newpath.useFilename().assign(findData.cFileName);
-      target.push_back(newpath);
+      newpath.join(ASWNL(findData.cFileName), false);
+
+      FileInfo info;
+      info.filename.set(newpath, false);
+      info.length = findData.nFileSizeHigh;
+      info.length <<= 32;
+      info.length |= findData.nFileSizeLow;
+      info.typemask = Exists | _winAttrToMask(findData.dwFileAttributes);
+
+      target.push_back(info);
+      
       ++ret;
     }
   }
@@ -223,38 +298,45 @@ u4 AFileSystem::getType(const AFilename& source)
   if (INVALID_HANDLE_VALUE == hFind)
     return DoesNotExist;   //a_Existance check
 
-  u4 ret = Exists;
   ::FindClose(hFind);
-  if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-    ret |= Directory;
-
-  if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-    ret |= File;
-
-  if (findData.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
-    ret |= ReadOnly;
-
-  if (findData.dwFileAttributes & FILE_ATTRIBUTE_COMPRESSED)
-    ret |= Compressed;
-
-  if (findData.dwFileAttributes & FILE_ATTRIBUTE_ENCRYPTED)
-    ret |= Encrypted;
-
-  if (findData.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)
-    ret |= System;
-
-  if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
-    ret |= Hidden;
-
-  if (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY)
-    ret |= Temporary;
-
+  u4 ret = Exists | _winAttrToMask(findData.dwFileAttributes);
   return ret;
 #else
 #pragma message("NON-Win32: AFileSystem::isDirectory")
 #endif
 }
 
+#ifdef __WINDOWS__
+u4 AFileSystem::_winAttrToMask(u4 attr)
+{
+  u4 ret = 0;
+  if (attr & FILE_ATTRIBUTE_DIRECTORY)
+    ret |= Directory;
+
+  if (attr & FILE_ATTRIBUTE_DIRECTORY)
+    ret |= File;
+
+  if (attr & FILE_ATTRIBUTE_READONLY)
+    ret |= ReadOnly;
+
+  if (attr & FILE_ATTRIBUTE_COMPRESSED)
+    ret |= Compressed;
+
+  if (attr & FILE_ATTRIBUTE_ENCRYPTED)
+    ret |= Encrypted;
+
+  if (attr & FILE_ATTRIBUTE_SYSTEM)
+    ret |= System;
+
+  if (attr & FILE_ATTRIBUTE_HIDDEN)
+    ret |= Hidden;
+
+  if (attr & FILE_ATTRIBUTE_TEMPORARY)
+    ret |= Temporary;
+
+  return ret;
+}
+#endif
 
 bool AFileSystem::canRead(const AFilename& source)
 {

@@ -5,18 +5,19 @@
 #include "AFile_Physical.hpp"
 #include "AThread.hpp"
 #include "ATime.hpp"
+#include "AXmlElement.hpp"
 
 void testWildcard()
 {
-  LIST_AFilename files;
+  AFileSystem::LIST_FileInfo files;
   u4 count = AFileSystem::dir(AFilename(ASWNL("q:/ASystem/*.sbr"), false), files);
   if (count > 0)
   {
     AString str(1024, 256);
-    LIST_AFilename::const_iterator cit = files.begin();
+    AFileSystem::LIST_FileInfo::const_iterator cit = files.begin();
     while (cit != files.end())
     {
-      (*cit).emit(str);
+      cit->filename.emit(str);
       std::cout << str << std::endl;
       str.clear();
       ++cit;
@@ -26,16 +27,16 @@ void testWildcard()
 
 void testFilesFromPath()
 {
-  LIST_AFilename files;
+  AFileSystem::LIST_FileInfo files;
   u4 count = AFileSystem::dir(AFilename(ASWNL("d:/pmdwork/"), true), files, true, true);
   if (count > 0)
   {
     AString str(1024, 256);
-    LIST_AFilename::const_iterator cit = files.begin();
+    AFileSystem::LIST_FileInfo::const_iterator cit = files.begin();
     while (cit != files.end())
     {
-      (*cit).emit(str);
-      if (!(*cit).isDirectory())
+      cit->filename.emit(str);
+      if (!cit->filename.isDirectory())
         std::cout << "F: " << str << std::endl;
       else
         std::cout << "DIR:  " << str << std::endl;
@@ -184,6 +185,22 @@ void testCompactPath()
   std::cout << path << std::endl;
 }
 
+void testDir()
+{
+  AXmlElement element("root");
+  AFileSystem::LIST_FileInfo filelist;
+  AFileSystem::dir(AFilename(ASWNL("c:\*.*"), false), filelist, false, true);
+  for(AFileSystem::LIST_FileInfo::iterator it = filelist.begin(); it != filelist.end(); ++it)
+  {
+    it->emitXml(element.addElement("file"));
+    std::cout << it->filename.getFilename() << ":" << it->length << ":" << it->typemask << std::endl;
+  }
+
+  ARope rope;
+  element.emit(rope, 0);
+  std::cout << rope << std::endl;
+}
+
 int main()
 {
   try
@@ -197,7 +214,8 @@ int main()
     //testTime();
     //testTempFile();
     //testCreateDir();
-    testCompactPath();
+    //testCompactPath();
+    testDir();
   }
   catch(AException& ex)
   {
