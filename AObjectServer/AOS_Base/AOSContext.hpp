@@ -152,7 +152,22 @@ public:
         Output generators will write output based on the model into this buffer and the server writes this to user
         It is recommended that this is used by output generators, but not required, you're the programmer
   */
-  AString& useOutputBuffer();
+  AOutputBuffer& useOutputBuffer();
+
+  /**
+  Checks if the output buffer is empty
+  */
+  bool isOutputBufferEmpty() const;
+
+  /**
+  Clears output buffer
+  */
+  void clearOutputBuffer();
+
+  /**
+  Gets the size of the output buffer
+  */
+  size_t getOutputBufferSize() const;
 
   /*!
   Set execution state of the context
@@ -425,7 +440,7 @@ public:
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
-protected:
+private:  
   //a_Read and parse Http header
   AOSContext::Status _processHttpHeader();
 
@@ -440,7 +455,7 @@ protected:
   AHTTPResponseHeader m_ResponseHeader;
 
   //a_Output buffer
-  AString m_OutputBuffer;
+  ARope m_OutputBuffer;
 
   //a_Context objects
   ABasePtrContainer m_ContextObjects;
@@ -489,7 +504,6 @@ protected:
   */
   ATimer m_TimeoutTimer;
 
-private:  
   //a_No copying
   AOSContext& operator =(const AOSContext&) { return *this; }
 
@@ -500,6 +514,7 @@ private:
   SET_AString _getGzipCompressionExtensions();
 
   //a_Write to the socket
+  size_t _write(ARope&);
   size_t _write(AString&);
 };
 

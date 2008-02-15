@@ -63,7 +63,7 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
     context.setResponseMimeTypeFromExtension(ext);
   }
 
-  context.useOutputBuffer().clear();
+  context.clearOutputBuffer();
   AFile_Physical file(*pFilename);
   file.open();
   file.readUntilEOF(context.useOutputBuffer());

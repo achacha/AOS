@@ -416,7 +416,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
       AASSERT(pContext, !pFile.isNull());
       pFile->emit(pContext->useOutputBuffer());
       pContext->useEventVisitor().reset();
-      contentLenth = pContext->useOutputBuffer().getSize();
+      contentLenth = pContext->getOutputBufferSize();
     break;
   }
 
@@ -432,7 +432,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     pContext->useModel().addElement(ASW("/context/buffer",15), pContext->useOutputBuffer(), AXmlElement::ENC_CDATAHEXDUMP);
 
     //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
-    pContext->useOutputBuffer().clear();
+    pContext->clearOutputBuffer();
     contentLenth = AConstant::npos;
   }
 
@@ -440,7 +440,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   //a_This allows override of XML emit by manually adding data to the output buffer in output generator
   if (
     AConstant::npos == contentLenth
-    && pContext->useOutputBuffer().isEmpty() 
+    && pContext->isOutputBufferEmpty() 
     && !pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT)
   )
   {

@@ -109,8 +109,7 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   mp_DirConfig(NULL),
   mp_RequestFile(NULL),
   m_ConnectionFlags(AOSContext::CONFLAG_LAST),
-  m_ContextFlags(AOSContext::CTXFLAG_LAST),
-  m_OutputBuffer(10240, 4096)
+  m_ContextFlags(AOSContext::CTXFLAG_LAST)
 {
   reset(pFile);
 }
@@ -854,7 +853,7 @@ AXmlElement& AOSContext::useModel()
   return m_OutputXmlDocument.useRoot();
 }
 
-AString& AOSContext::useOutputBuffer()
+AOutputBuffer& AOSContext::useOutputBuffer()
 { 
   return m_OutputBuffer;
 }
@@ -995,8 +994,11 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     AASSERT_EX(this, m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT), ASWNL("Response header already written, incompatible with gzip output"));
     m_EventVisitor.set(ASW("Compressing",11));
 
-    AString compressed(m_OutputBuffer.getSize()+32, 1024);
-    AZlib::gzipDeflate(m_OutputBuffer, compressed, gzipLevel);
+    AString original(m_OutputBuffer);
+    AString compressed(m_OutputBuffer.getSize()+16, 1024);
+    AZlib::gzipDeflate(original, compressed, gzipLevel);
+
+    //TODO: Add compressed to the cache
 
     m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
     m_ResponseHeader.setPair(AHTTPHeader::HT_RES_Vary, ASW("Accept-Encoding",15));
@@ -1033,6 +1035,12 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 
   m_EventVisitor.reset();
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
+}
+
+size_t AOSContext::_write(ARope& data)
+{
+  data.emit(*mp_RequestFile);
+  return data.getSize();
 }
 
 size_t AOSContext::_write(AString& data)
@@ -1224,4 +1232,19 @@ SET_AString AOSContext::_getGzipCompressionExtensions()
     str.clear();
   }
   return ret;
+}
+
+bool AOSContext::isOutputBufferEmpty() const
+{
+  return m_OutputBuffer.isEmpty();
+}
+
+void AOSContext::clearOutputBuffer()
+{
+  m_OutputBuffer.clear();
+}
+
+size_t AOSContext::getOutputBufferSize() const
+{
+  return m_OutputBuffer.getSize();
 }

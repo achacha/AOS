@@ -121,7 +121,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
             int statusCode = pContext->useResponseHeader().getStatusCode();
             
             AAutoPtr<ATemplate> pTemplate;  //a_Call to cache manager will set a template
-            pContext->useOutputBuffer().clear();
+            pContext->clearOutputBuffer();
             if (m_Services.useCacheManager().getStatusTemplate(statusCode, pTemplate))
             {
               //a_Template for this status code is found, so process and emit into output buffer
@@ -136,7 +136,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
               pContext->setExecutionState(ARope("Did not find error template for status ")+AString::fromInt(statusCode));
             }
 
-            if (pContext->useOutputBuffer().isEmpty())
+            if (pContext->isOutputBufferEmpty())
             {
               AString strError(1024, 256);
               strError.assign("Error ",6);
