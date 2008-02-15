@@ -217,7 +217,7 @@ AOSContext::Status AOSContext::init()
   catch(ASocketException& ex)
   {
     ARope rope("AOSContext: Socket exception: ",30);
-    rope.appendU4(ex.getErrno());
+    rope.append(AString::fromU4(ex.getErrno()));
     m_EventVisitor.set(rope);
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
     mp_RequestFile->close();
@@ -1037,9 +1037,23 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
 }
 
+#include "AFile_Physical.hpp"
+
 size_t AOSContext::_write(ARope& data)
 {
-  data.emit(*mp_RequestFile);
+  AFile_Physical ofile(AString("c:/tmp/test.png"), "wb");
+  ofile.open();
+  data.emit(ofile);
+  ofile.close();
+
+  size_t bytesToWrite = data.getSize();
+  size_t bytesWritten;
+  while (bytesToWrite)
+  {
+    bytesWritten = mp_RequestFile->write(data);
+  }
+  size_t ret = ;
+  std::cout << "written=" << ret << ":" <<  << std::endl;
   return data.getSize();
 }
 

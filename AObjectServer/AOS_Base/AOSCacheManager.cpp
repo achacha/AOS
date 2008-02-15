@@ -205,7 +205,7 @@ ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, cons
     if (AFileSystem::isA(filename, AFileSystem::File))
     {
       context.setExecutionState(ARope("Reading physical file: ",25)+filename.toAString());
-      pFile.reset(new AFile_Physical(filename, "rb"));
+      pFile.reset(new AFile_Physical(filename));
       pFile->open();
       if (!AFileSystem::getLastModifiedTime(filename, modified))
         ATHROW_EX(&context, AException::NotFound, filename);
