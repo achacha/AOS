@@ -217,7 +217,7 @@ AString ARope::toAString() const
   return strRet;
 }
 
-size_t ARope::fromAFile(AFile& file, size_t length /* = AConstant::npos */)
+size_t ARope::read(AFile& file, size_t length /* = AConstant::npos */)
 {
   size_t bytesRead = 0;
 
@@ -250,20 +250,35 @@ size_t ARope::fromAFile(AFile& file, size_t length /* = AConstant::npos */)
   return totalBytesRead;
 }
 
-size_t ARope::toAFile(AFile& file) const
+size_t ARope::write(AFile& file) const
 {
-  size_t bytesWritten = 0;
+  size_t bytesTotalWritten = 0;
   BlockContainer::const_iterator cit = m_Blocks.begin();
   while (cit != m_Blocks.end())
   {
-    bytesWritten += file.write((*cit), m_BlockSize);
+    size_t bytesToWrite = m_BlockSize;
+    while (bytesToWrite)
+    {
+      size_t ret = file.write((*cit) + (m_BlockSize - bytesToWrite), bytesToWrite);
+      
+      bytesTotalWritten += ret;
+      bytesToWrite -= ret;
+    }
     ++cit;
   }
 
   if (mp_LastBlock)
-    bytesWritten += file.write(mp_LastBlock, m_BlockSize - m_LastBlockFree);
+  {
+    size_t bytesToWrite = m_BlockSize - m_LastBlockFree;
+    while (bytesToWrite)
+    {
+      size_t ret = file.write(mp_LastBlock + (m_BlockSize - bytesToWrite), bytesToWrite);
+      bytesTotalWritten += ret;
+      bytesToWrite -= ret;
+    }
+  }
 
-  return bytesWritten;
+  return bytesTotalWritten;
 }
 
 ARope& ARope::operator +(const AEmittable& source)

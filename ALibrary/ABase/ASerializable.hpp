@@ -6,6 +6,8 @@
 class AFile;
 
 /*!
+  Interface for serializing an object to and from file
+
   Required methods
 
 -------------------START: HPP cup/past----------------------

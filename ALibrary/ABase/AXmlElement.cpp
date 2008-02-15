@@ -1176,7 +1176,7 @@ void AXmlElement::toAFile(AFile& file) const
 {
   ARope rope;
   emit(rope);
-  rope.toAFile(file);
+  rope.write(file);
 }
 
 void AXmlElement::setString(const AString& path, const AString& value, AXmlElement::Encoding encoding)

@@ -50,7 +50,7 @@ public:
   */
   virtual bool isEmpty() const;
   size_t getSize() const;
-
+  
   /*!
   AEmittable
   */
@@ -67,8 +67,8 @@ public:
   Length of AConstant::npos means read to EOF
   Writes contents of self to AFile object and returns bytes written
   */
-  size_t fromAFile(AFile&, size_t length = AConstant::npos);
-  size_t toAFile(AFile&) const;               
+  size_t read(AFile&, size_t length = AConstant::npos);
+  size_t write(AFile&) const;               
 
   enum {
     DEFAULT_BLOCK_SIZE=4096
@@ -77,7 +77,7 @@ public:
   /*!
   ADebugDumpable
   */
-  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0) const;
 
 protected:
   /*!

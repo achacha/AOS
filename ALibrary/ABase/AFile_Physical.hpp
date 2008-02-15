@@ -21,7 +21,7 @@ public:
 
   Use "rb" for reading binary files
   */
-  static const AString sm_DefaultOpenFlags;          // "r"
+  static const AString sm_DefaultOpenFlags;          // "rb" binary mode, no translation
   static const int sm_DefaultShareFlags;             // _SH_DENYNO 
 
   /*!

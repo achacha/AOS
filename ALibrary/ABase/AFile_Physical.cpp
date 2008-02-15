@@ -6,7 +6,7 @@
 #include "AFilename.hpp"
 #include <io.h>
 
-const AString AFile_Physical::sm_DefaultOpenFlags("r");          //a_Read, "rb" is for binary files
+const AString AFile_Physical::sm_DefaultOpenFlags("rb");          //a_Read binary file by default
 const int AFile_Physical::sm_DefaultShareFlags = _SH_DENYNO;
 
 AFile_Physical::AFile_Physical() :
