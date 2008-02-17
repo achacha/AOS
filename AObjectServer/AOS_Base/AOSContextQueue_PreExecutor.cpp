@@ -387,8 +387,10 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     return false;
   }
   
+  int dumpContext = pContext->getDumpContextLevel();
+
   AAutoPtr<AFile> pFile;
-  size_t contentLenth = AConstant::npos;
+  size_t contentLength = AConstant::npos;
   const ATime& ifModifiedSince = pContext->useRequestHeader().getIfModifiedSince();
   ATime modified;
   switch (m_Services.useCacheManager().getStaticFile(*pContext, httpFilename, pFile, modified, ifModifiedSince))
@@ -414,16 +416,17 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
     default:
       //a_Send the file
       AASSERT(pContext, !pFile.isNull());
+      pContext->setExecutionState(ARope("Sending file: ",14)+httpFilename);
       pFile->emit(pContext->useOutputBuffer());
+      contentLength = pContext->getOutputBufferSize();
+      pContext->setExecutionState(ARope("Sent bytes: ",12)+AString::fromSize_t(contentLength));
       pContext->useEventVisitor().reset();
-      contentLenth = pContext->getOutputBufferSize();
     break;
   }
 
   //a_Set modified date
   pContext->useResponseHeader().setLastModified(modified);
 
-  int dumpContext = pContext->getDumpContextLevel();
   AString str;
   if (dumpContext > 0)
   {
@@ -433,13 +436,13 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
 
     //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
     pContext->clearOutputBuffer();
-    contentLenth = AConstant::npos;
+    contentLength = AConstant::npos;
   }
 
   //a_If output buffer is empty then emit output XML document into it unless output was read from file then contentLength != -1
   //a_This allows override of XML emit by manually adding data to the output buffer in output generator
   if (
-    AConstant::npos == contentLenth
+    AConstant::npos == contentLength
     && pContext->isOutputBufferEmpty() 
     && !pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT)
   )

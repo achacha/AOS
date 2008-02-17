@@ -172,7 +172,7 @@ void AOSContext::finalize()
 
   //a_Clear ouput model and buffer and stop event timer
   m_EventVisitor.set(ASW("Finalizing context.",19));
-  m_OutputBuffer.clear(true);
+  m_OutputBuffer.clear();
   m_OutputXmlDocument.clear();
   m_ContextObjects.clear();
   m_EventVisitor.reset(true);
@@ -1007,7 +1007,10 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     //a_The writing of the output
     writeResponseHeader();
     m_EventVisitor.set(ASW("AOSContext: Writing compressed",30));
-    _write(compressed);
+    
+    size_t originalSize = compressed.getSize();
+    size_t written = _write(compressed);
+    AASSERT(this, written == originalSize);
   }
   else
   {
@@ -1030,31 +1033,40 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     }
 
     m_EventVisitor.set(ASW("AOSContext: Writing uncompressed",32));
-    _write(m_OutputBuffer);
+    size_t originalSize = m_OutputBuffer.getSize();
+    size_t written = _write(m_OutputBuffer);
+    AASSERT(this, written == originalSize);
   }
 
   m_EventVisitor.reset();
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
 }
 
-#include "AFile_Physical.hpp"
-
 size_t AOSContext::_write(ARope& data)
 {
-  AFile_Physical ofile(AString("c:/tmp/test.png"), "wb");
-  ofile.open();
-  data.emit(ofile);
-  ofile.close();
-
   size_t bytesToWrite = data.getSize();
-  size_t bytesWritten;
+  size_t bytesWritten = 0;
   while (bytesToWrite)
   {
-    bytesWritten = mp_RequestFile->write(data);
+    size_t ret = data.flush(*mp_RequestFile);
+    switch(ret)
+    {
+      case 0:
+        AASSERT(this, false); //a_Should never be here
+
+      case AConstant::npos:
+        return AConstant::npos;
+      
+      case AConstant::unavail:
+        break;
+        
+      default:
+        bytesToWrite -= ret;
+        bytesWritten += ret;
+        break;
+    }
   }
-  size_t ret = ;
-  std::cout << "written=" << ret << ":" <<  << std::endl;
-  return data.getSize();
+  return bytesWritten;
 }
 
 size_t AOSContext::_write(AString& data)
