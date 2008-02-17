@@ -50,7 +50,7 @@
 //a_Only used when __DEBUG_DUMP__ is set
 #ifdef __DEBUG_DUMP__
 // Max size
-#define DEBUG_MAXSIZE_AString 1000000
+#define DEBUG_MAXSIZE_AString 5000000
 #define DEBUG_MAXSIZE_ARope 10000000
 #define DEBUG_MAXSIZE_ARopeDeque 10000000
 
