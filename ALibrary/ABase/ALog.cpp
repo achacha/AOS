@@ -236,3 +236,9 @@ void ALog::addException(const std::exception& ex)
 {
   add(ASWNL(ex.what()), ALog::EXCEPTION);
 }
+
+size_t ALog::flush(AFile& file)
+{
+  //a_Should never be here, log handles actual flush to file
+  ATHROW(NULL, AException::ProgrammingError);
+}

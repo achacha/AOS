@@ -35,7 +35,7 @@ int ut_ARope_General()
   ASSERT_UNIT_TEST(!rope.isEmpty(), "ARope::isEmpty", "2", iRet);
   ASSERT_UNIT_TEST((rope.getSize() == 7 && !rope.toAString().compare("Mozilla")), "ARope::append", "0", iRet);
   
-  rope.clear(true);
+  rope.clear();
   ASSERT_UNIT_TEST(rope.isEmpty(), "ARope::isEmpty", "3", iRet);
   rope.append("This is lots and lots of data to force the rope to use the m_Blocks structure");
   ASSERT_UNIT_TEST(!rope.isEmpty(), "ARope::isEmpty", "4", iRet);

@@ -1097,3 +1097,40 @@ void AFile::emit(AOutputBuffer& target) const
   AFile *pFile = const_cast<AFile *>(this);
   pFile->readUntilEOF(target);
 }
+
+size_t AFile::flush(AFile& file)
+{
+  size_t totalBytesWritten = 0;
+  if (m_LookaheadBuffer.getSize() > 0)
+  {
+    size_t bytesWritten = m_LookaheadBuffer.flush(file);
+    if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
+      return bytesWritten;
+    m_LookaheadBuffer.clear();
+  }
+
+  while (_isNotEof())
+  {
+    switch (readBlockIntoLookahead())
+    {
+      case AConstant::unavail:
+        return AConstant::unavail;
+      continue;
+
+      case AConstant::npos:
+        return totalBytesWritten;
+
+      default:
+      {
+        size_t bytesWritten = m_LookaheadBuffer.flush(file);
+        if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
+          return totalBytesWritten;
+        totalBytesWritten += bytesWritten;
+        m_LookaheadBuffer.clear();
+      }
+      break;
+    }
+  }
+
+  return totalBytesWritten;
+}

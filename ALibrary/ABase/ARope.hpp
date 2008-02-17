@@ -30,10 +30,9 @@ public:
   virtual ~ARope();
   
   /*!
-  Clear the rope and optionally release memory
-  For speed the blocks are kept around and reused
+  Clear the rope and releases memory
   */
-  virtual void clear(bool bReleaseMemory = false);
+  virtual void clear();
   
   /*!
   Operators to help with inline appending
@@ -79,6 +78,11 @@ public:
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0) const;
 
+  /*!
+  AOutputBuffer
+  */
+  virtual size_t flush(AFile&);
+
 protected:
   /*!
   Append methods for AOutputBuffer
@@ -91,7 +95,6 @@ private:
 
   typedef std::list<char *> BlockContainer;
   BlockContainer m_Blocks;                   //a_Collection of memory blocks
-  BlockContainer m_FreeStore;                //a_Where free blocks are kept if not needed after allocation
 
   size_t m_BlockSize;                        //a_Size of blocks to use
 

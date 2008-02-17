@@ -125,10 +125,21 @@ public:
   size_t popFrontUntil(AString&, char, bool boolRemovePattern = true, bool discardPattern = false, size_t maxBytes = AConstant::npos); 
   size_t removeFrontUntil(char, bool boolRemovePattern = true, size_t maxBytes = AConstant::npos);
 
-  //a_Utilities
+  /*!
+  Checks if empty
+  */
   virtual bool isEmpty() const;
+  
+  /*!
+  Calculate current size
+  */
   size_t getSize() const;
 
+  /*!
+  AOutputBuffer
+  */
+  virtual size_t flush(AFile&);
+  
   /*!
   AEmittable
   Emit contents (equivalent to peekAll, for getAll use emitXXX() then clear())

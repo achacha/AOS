@@ -474,6 +474,11 @@ public:
   size_t getHash(size_t upperLimit = AConstant::MAX_SIZE_T) const;      //a_Generates a hash code used by the hash table [0, uUpperLimit)
 
   /*!
+  AOutputBuffer
+  */
+  virtual size_t flush(AFile&);
+
+  /*!
    File based methods
    Will read entire contents of AFile, use AFile methods for finer grain control
   */

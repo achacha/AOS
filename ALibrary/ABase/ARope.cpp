@@ -4,11 +4,11 @@
 
 void ARope::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ARope @ " << std::hex << this << std::dec << ")" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ")" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "getSize()=" << getSize()
     << "  m_BlockSize=" << m_BlockSize
     << "  m_LastBlockFree=" << m_LastBlockFree
-    << "  m_FreeStore.size()=" << m_FreeStore.size() << std::endl;
+    << std::endl;
  
   if (m_Blocks.size() * m_BlockSize < 10240)
   {
@@ -80,7 +80,7 @@ ARope::~ARope()
 {
   try
   {
-    clear(true);
+    clear();
   }
   catch(...) {}  //a_Prevent exception propogation in dtor
 }
@@ -105,45 +105,18 @@ size_t ARope::getSize() const
   return ret;
 }
 
-void ARope::clear(bool bReleaseMemory /* = false */)
+void ARope::clear()
 {
-  if (bReleaseMemory)
+  BlockContainer::iterator it = m_Blocks.begin();
+  while (it != m_Blocks.end())
   {
-    BlockContainer::iterator it = m_Blocks.begin();
-    while (it != m_Blocks.end())
-    {
-      delete (*it);
-      ++it;
-    }
-    m_Blocks.clear();
-
-    it = m_FreeStore.begin();
-    while(it != m_FreeStore.end())
-    {
-      delete (*it);
-      ++it;
-    }
-    m_FreeStore.clear();
-
-    pDelete(mp_LastBlock);
+    delete (*it);
+    ++it;
   }
-  else
-  {
-    //a_Put blocks into storage
-    BlockContainer::iterator it = m_Blocks.begin();
-    while (it != m_Blocks.end())
-    {
-      m_FreeStore.push_back(*it);
-      ++it;
-    }
-    m_Blocks.clear();
+  m_Blocks.clear();
 
-    if (mp_LastBlock)
-    {
-      m_FreeStore.push_back(mp_LastBlock);
-      mp_LastBlock = NULL;
-    }
-  }
+  pDelete(mp_LastBlock);
+
   m_LastBlockFree = 0;
 }
 
@@ -183,17 +156,10 @@ void ARope::__newBlock()
 
   if (mp_LastBlock)
     m_Blocks.push_back(mp_LastBlock);
-  if (m_FreeStore.size() > 0)
-  {
-    //a_Reuse existing block
-    mp_LastBlock = m_FreeStore.back();
-    m_FreeStore.pop_back();
-  }
-  else
-  {
-    //a_Allocate new block
-    mp_LastBlock = new char[m_BlockSize];
-  }
+
+  //a_Allocate new block
+  mp_LastBlock = new char[m_BlockSize];
+
   m_LastBlockFree = m_BlockSize;
 }
 
@@ -267,7 +233,7 @@ size_t ARope::write(AFile& file) const
     ++cit;
   }
 
-  if (mp_LastBlock)
+  if (mp_LastBlock && m_LastBlockFree < m_BlockSize)
   {
     size_t bytesToWrite = m_BlockSize - m_LastBlockFree;
     while (bytesToWrite)
@@ -277,6 +243,54 @@ size_t ARope::write(AFile& file) const
       bytesToWrite -= ret;
     }
   }
+
+  return bytesTotalWritten;
+}
+
+size_t ARope::flush(AFile& file)
+{
+  size_t bytesTotalWritten = 0;
+  while (m_Blocks.size() > 0)
+  {
+    char *pBlock = m_Blocks.front();
+
+    size_t bytesWritten = file.write(pBlock, m_BlockSize);
+    if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
+    {
+      if (bytesTotalWritten > 0)
+        return bytesTotalWritten;   //a_Return partial written size
+      else
+        return bytesWritten;
+    }
+    AASSERT(this, bytesWritten);                 //a_Zero bytes written?
+    AASSERT(this, bytesWritten == m_BlockSize);  //a_Unable to write the whole buffer?
+    bytesTotalWritten += bytesWritten;
+
+    //a_Release head block
+    m_Blocks.pop_front();
+    delete pBlock;
+  }
+
+  if (mp_LastBlock && m_LastBlockFree < m_BlockSize)
+  {
+    size_t bytesWritten = file.write(mp_LastBlock, m_BlockSize - m_LastBlockFree);
+    if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
+    {
+      if (bytesTotalWritten > 0)
+        return bytesTotalWritten;   //a_Return partial written size
+      else
+        return bytesWritten;
+    }
+    AASSERT(this, bytesWritten);                 //a_Zero bytes written?
+    AASSERT(this, bytesWritten == m_BlockSize - m_LastBlockFree);  //a_Unable to write the whole buffer?
+    bytesTotalWritten += bytesWritten;
+
+    //a_Release last block
+    pDelete(mp_LastBlock);
+  }
+
+  if (!bytesTotalWritten)
+    AASSERT(this, false);
 
   return bytesTotalWritten;
 }

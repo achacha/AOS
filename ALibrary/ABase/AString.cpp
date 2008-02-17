@@ -2796,3 +2796,11 @@ size_t AString::findPattern(
   }
   return AConstant::npos;
 }
+
+size_t AString::flush(AFile& file)
+{
+  if (m_Length > 0)
+    return file.write(mp_Buffer, m_Length);
+  
+  return 0;
+}

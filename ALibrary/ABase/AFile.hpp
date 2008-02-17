@@ -228,6 +228,11 @@ public:
   virtual void close() = 0;         //a_Close
 
   /*!
+  AOutputBuffer
+  */
+  virtual size_t flush(AFile&);
+
+  /*!
   IO operators
   */
   DEFINE_NETWORKTYPE_IO_OPERATORS(int);

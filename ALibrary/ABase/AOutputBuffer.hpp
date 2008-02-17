@@ -6,11 +6,14 @@
 #include "AEmittable.hpp"
 
 class AString;
+class AFile;
 
 /*!
 Class to define any class that can be used to output data
 
 -----------------------OVERLOAD---------------------------
+public:
+  virtual size_t flush(AFile&);
 protected:
   virtual void _append(const char *pccSource, u4 len) = 0;
 -----------------------OVERLOAD---------------------------
@@ -51,6 +54,15 @@ public:
   Append string and EOL
   */
   void appendLine(const AEmittable&);  //a_Appends the string and AConstant::ASTRING_EOL
+
+  /*!
+  Ability to flush the entire content into AFile&
+  Whatever was written will be removed from the buffer
+  @return bytes written
+          AConstant::unavail if partial write done but AFile will block on more
+          AConstant::npos if error
+  */
+  virtual size_t flush(AFile&) = 0;
 
 protected:
   virtual void _append(const char *pccSource, size_t len) = 0;

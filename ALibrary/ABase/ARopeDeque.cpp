@@ -1896,3 +1896,39 @@ size_t ARopeDeque::removeFrontUntil(
   return AConstant::npos;
 }
 
+size_t ARopeDeque::flush(AFile& file)
+{
+  if (mp_FrontBlock)
+  {
+    size_t ret = file.write(mp_FrontBlock + m_FrontBlockFree, m_BlockSize - m_FrontBlockFree);
+    if (AConstant::npos == ret || AConstant::unavail == ret)
+      return ret;
+
+    m_FreeStore.push_back(mp_FrontBlock);
+    mp_FrontBlock = NULL;
+    m_FrontBlockFree = 0;
+  }
+
+  while (m_Blocks.size() > 0)
+  {
+    char *pBlock = m_Blocks.front();
+    size_t ret = file.write(pBlock, m_BlockSize);
+    if (AConstant::npos == ret || AConstant::unavail == ret)
+      return ret;
+
+    m_Blocks.pop_front();
+    m_FreeStore.push_back(pBlock);
+  }
+
+  if (mp_BackBlock)
+  {
+    size_t ret = file.write(mp_BackBlock, m_BlockSize - m_BackBlockFree);
+    if (AConstant::npos == ret || AConstant::unavail == ret)
+      return ret;
+
+    m_FreeStore.push_back(mp_BackBlock);
+    mp_BackBlock = NULL;
+    m_BackBlockFree = 0;
+  }
+}
+

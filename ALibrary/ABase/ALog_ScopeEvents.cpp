@@ -50,3 +50,9 @@ void ALog::ScopeEvents::_append(const char *pcc, size_t len)
   AASSERT(this, NULL != pcc);
   m_ParentLog.add(m_ScopeName, ASW(pcc, len), ALog::MESSAGE | ALog::SCOPE);
 }
+
+size_t ALog::ScopeEvents::flush(AFile& file)
+{
+  //a_Should never be here, parent log handles actual flush to file
+  ATHROW(NULL, AException::ProgrammingError);
+}

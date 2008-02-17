@@ -145,6 +145,11 @@ public:
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
+  /*!
+  AOutputBuffer
+  */
+  virtual size_t flush(AFile&);
+
 public:
   /*!
   Inner class that logs scope only events
@@ -162,6 +167,11 @@ public:
     void add(const AEmittable&, u4 eventType = ALog::MESSAGE);
     void add(const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
     void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
+
+    /*!
+    AOutputBuffer
+    */
+    virtual size_t flush(AFile&);
 
   protected:
     /*!
