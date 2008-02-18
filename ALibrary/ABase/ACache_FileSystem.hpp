@@ -14,7 +14,7 @@ public:
   ctor
 
   maxItems to store in cache
-  maxFileSize in bytes that are cached
+  maxFileSize in bytes that are cached,files bigger than this are never cached
 
   hashSize MUST be prime
   */

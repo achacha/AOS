@@ -133,9 +133,9 @@ void ACache_FileSystem::emitXml(AXmlElement& target) const
   AXmlElement& base = target.addElement(ASW("ACache_FileSystem",17));
   base.addAttribute(HITS, AString::fromSize_t(m_Hit));
   base.addAttribute(ASW("miss",4), AString::fromSize_t(m_Miss));
-  base.addAttribute(ASW("max_items",9), AString::fromSize_t(m_MaxItems));
-  base.addAttribute(ASW("max_filesize",12), AString::fromSize_t(m_MaxFileSize));
-  base.addAttribute(ASW("time_now",8), AString::fromSize_t(ATime::getTickCount()));
+  base.addAttribute(ASW("max-items",9), AString::fromSize_t(m_MaxItems));
+  base.addAttribute(ASW("max-filesize",12), AString::fromSize_t(m_MaxFileSize));
+  base.addAttribute(ASW("time-now",8), AString::fromSize_t(ATime::getTickCount()));
 
   for (size_t i = 0; i < m_CacheArray.size(); ++i)
   {
