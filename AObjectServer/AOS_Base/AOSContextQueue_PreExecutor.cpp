@@ -413,7 +413,8 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
       pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
     return true;
 
-    default:
+    case ACache_FileSystem::FOUND_NOT_CACHED:
+    case ACache_FileSystem::FOUND:
       //a_Send the file
       AASSERT(pContext, !pFile.isNull());
       pContext->setExecutionState(ARope("Sending file: ",14)+httpFilename);
@@ -422,6 +423,9 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
       pContext->setExecutionState(ARope("Sent bytes: ",12)+AString::fromSize_t(contentLength));
       pContext->useEventVisitor().reset();
     break;
+
+    default:
+      AASSERT(pContext, false);  //a_Unknown return type?
   }
 
   //a_Set modified date

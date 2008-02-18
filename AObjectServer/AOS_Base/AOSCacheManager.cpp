@@ -154,9 +154,9 @@ void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestH
 AOSCacheManager::AOSCacheManager(AOSServices& services) :
   m_Services(services)
 {
-  int maxItems = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/max_items", 20000);
-  int maxFileSizeInK = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/max_filesize", 512 * 1024);
-  int cacheCount = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/cache_count", 97);
+  int maxItems = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/max-items", 20000);
+  int maxFileSizeInK = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/max-filesize", 512 * 1024);
+  int cacheCount = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/cache-count", 97);
   mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
 
   //a_Status template cache
