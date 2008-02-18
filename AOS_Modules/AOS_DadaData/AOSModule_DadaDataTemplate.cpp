@@ -56,7 +56,7 @@ void AOSModule_DadaDataTemplate::init()
     AString strSet;
     (*it)->getAttributes().get(ASW("name",4), strSet);
     if (strSet.isEmpty())
-      ATHROW(*it, AException::InvalidData, "AOS_DadaData/dataset missing 'name' parameter");
+      ATHROW_EX(*it, AException::InvalidData, ASWNL("AOS_DadaData/dataset missing 'name' parameter"));
 
     ADadaDataHolder *pddh = new ADadaDataHolder();
     pddh->readData(m_Services, *it);
