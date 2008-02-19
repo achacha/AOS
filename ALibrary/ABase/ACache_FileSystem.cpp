@@ -272,6 +272,8 @@ ACache_FileSystem::STATUS ACache_FileSystem::get(
     ++m_Hit;
     (*it).second->hit();
     
+    //a_Reset for reading
+    it->second->pData->setReadPos(0);
     pFile.reset(it->second->pData, false);
     if (pFile.isNull())
       return ACacheInterface::NOT_FOUND;
