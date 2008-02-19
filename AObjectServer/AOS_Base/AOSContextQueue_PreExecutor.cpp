@@ -388,6 +388,7 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
   }
   
   int dumpContext = pContext->getDumpContextLevel();
+  int gzipLevel = pContext->calculateGZipLevel();
 
   AAutoPtr<AFile> pFile;
   size_t contentLength = AConstant::npos;
@@ -409,27 +410,53 @@ bool AOSContextQueue_PreExecutor::_processStaticPage(AOSContext *pContext)
       
       //a_Set status 304 and return true (no need to display error template)
       pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_304_Not_Modified);
-      pContext->useResponseHeader().emit(pContext->useSocket());
-      pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+      pContext->writeResponseHeader();
     return true;
 
     case ACache_FileSystem::FOUND_NOT_CACHED:
     case ACache_FileSystem::FOUND:
-      //a_Send the file
-      AASSERT(pContext, !pFile.isNull());
-      pContext->setExecutionState(ARope("Sending file: ",14)+httpFilename);
-      pFile->emit(pContext->useOutputBuffer());
-      contentLength = pContext->getOutputBufferSize();
-      pContext->setExecutionState(ARope("Sent bytes: ",12)+AString::fromSize_t(contentLength));
-      pContext->useEventVisitor().reset();
+      if (!dumpContext && !gzipLevel)
+      {
+        //a_Context not dumped and no compression is needed
+        AASSERT(pContext, !pFile.isNull());
+        
+        //a_Set modified date
+        pContext->useResponseHeader().setLastModified(modified);
+        pContext->useResponseHeader().setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AString::fromS8(AFileSystem::length(httpFilename)));
+        
+        AString ext;
+        httpFilename.emitExtension(ext);
+        pContext->setResponseMimeTypeFromExtension(ext);
+        pContext->writeResponseHeader();
+
+        //a_Stream content
+        pContext->setExecutionState(ARope("Streaming file: ",16)+httpFilename);
+        contentLength = pFile->flush(pContext->useSocket());
+        pContext->setExecutionState(ARope("Streamed bytes: ",16)+AString::fromSize_t(contentLength));
+        pContext->useEventVisitor().reset();
+        pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
+        return true;
+      }
+      else
+      {
+        //a_Buffer the file
+        AASSERT(pContext, !pFile.isNull());
+
+        //a_Set modified date
+        pContext->useResponseHeader().setLastModified(modified);
+
+        //a_Buffer the file, Content-Length set in the write header
+        pContext->setExecutionState(ARope("Sending file: ",14)+httpFilename);
+        pFile->emit(pContext->useOutputBuffer());
+        contentLength = pContext->getOutputBufferSize();
+        pContext->setExecutionState(ARope("Sent bytes: ",12)+AString::fromSize_t(contentLength));
+        pContext->useEventVisitor().reset();
+      }
     break;
 
     default:
       AASSERT(pContext, false);  //a_Unknown return type?
   }
-
-  //a_Set modified date
-  pContext->useResponseHeader().setLastModified(modified);
 
   AString str;
   if (dumpContext > 0)
