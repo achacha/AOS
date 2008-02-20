@@ -154,20 +154,27 @@ public:
   */
   AOutputBuffer& useOutputBuffer();
 
-  /**
+  /*!
   Checks if the output buffer is empty
   */
   bool isOutputBufferEmpty() const;
 
-  /**
+  /*!
   Clears output buffer
   */
   void clearOutputBuffer();
 
-  /**
+  /*!
   Gets the size of the output buffer
   */
   size_t getOutputBufferSize() const;
+
+  /*!
+  Process a static page requested
+
+  @return true if processed and handled, false if static page was loaded into output buffer
+  */
+  bool processStaticPage();
 
   /*!
   Set execution state of the context
@@ -514,8 +521,7 @@ private:
   SET_AString _getGzipCompressionExtensions();
 
   //a_Write to the socket
-  size_t _write(ARope&);
-  size_t _write(AString&);
+  size_t _write(AOutputBuffer&);
 };
 
 #endif // INCLUDED__AContext_HPP__

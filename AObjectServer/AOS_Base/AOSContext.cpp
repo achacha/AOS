@@ -1042,64 +1042,35 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
 }
 
-size_t AOSContext::_write(ARope& data)
+size_t AOSContext::_write(AOutputBuffer& data)
 {
-  size_t bytesToWrite = data.getSize();
+  size_t originalSize = data.getSize();
+  size_t bytesToWrite = originalSize;
   size_t bytesWritten = 0;
   while (bytesToWrite)
   {
     size_t ret = data.flush(*mp_RequestFile);
     switch(ret)
     {
+      //a_Finished writing or EOF on read
       case 0:
-        AASSERT(this, false); //a_Should never be here
-
       case AConstant::npos:
-        return AConstant::npos;
-      
+        AASSERT(this, bytesWritten == originalSize);
+        return bytesWritten;
+
+      //a_Would block
       case AConstant::unavail:
-        break;
+        AThread::sleep(1);
+      break;
         
       default:
         bytesToWrite -= ret;
         bytesWritten += ret;
-        break;
+      break;
     }
   }
-  return bytesWritten;
-}
 
-size_t AOSContext::_write(AString& data)
-{
-  const size_t WRITE_BLOCK = 65536;
-  size_t bytesWritten = 0;
-  if (data.getSize() > 0)
-  {
-    //a_Non-blocking write
-    const char *pdata = data.c_str();
-    size_t bytesToWrite = data.getSize();
-    size_t offset = 0;
-    while (bytesToWrite > 0)
-    {
-      bytesWritten = mp_RequestFile->write(pdata + offset, (bytesToWrite<WRITE_BLOCK ? bytesToWrite : WRITE_BLOCK));
-      switch(bytesWritten)
-      {
-        case 0:
-        case AConstant::npos:
-          m_EventVisitor.set(ASWNL("Error writing to socket"));
-          return 0;
-
-        case AConstant::unavail:
-          AThread::sleep(1);
-          continue;
-
-        default:
-          bytesToWrite -= bytesWritten;
-          offset += bytesWritten;
-      }
-    }
-  }
-  
+  AASSERT(this, bytesWritten == originalSize);
   return bytesWritten;
 }
 
@@ -1273,4 +1244,144 @@ void AOSContext::clearOutputBuffer()
 size_t AOSContext::getOutputBufferSize() const
 {
   return m_OutputBuffer.getSize();
+}
+
+bool AOSContext::processStaticPage()
+{
+  setExecutionState(ASW("Serving static content",22));
+  AFilename httpFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
+
+  static const AString ROOT_PATH("/", 1);
+  AString filepart(m_RequestHeader.useUrl().getPathAndFilename());
+  if (filepart.isEmpty() 
+      || filepart.equals(ROOT_PATH)
+      || m_RequestHeader.useUrl().getFilename().isEmpty()
+  )
+  {
+    httpFilename.join(filepart, true);
+    httpFilename.useFilename().assign(m_Services.useConfiguration().getAosDefaultFilename());
+  }
+  else
+  {
+    httpFilename.join(m_RequestHeader.useUrl().getPathAndFilename(), false);
+  }
+  
+  if (!httpFilename.isValid())
+  {
+    //a_Invalid filename
+    m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
+    return false;
+  }
+  
+  int dumpContext = getDumpContextLevel();
+  int gzipLevel = calculateGZipLevel();
+
+  AAutoPtr<AFile> pFile;
+  size_t contentLength = AConstant::npos;
+  const ATime& ifModifiedSince = m_RequestHeader.getIfModifiedSince();
+  ATime modified;
+  switch (m_Services.useCacheManager().getStaticFile(*this, httpFilename, pFile, modified, ifModifiedSince))
+  {
+    case ACache_FileSystem::NOT_FOUND:
+      //a_Handle file not found
+      setExecutionState(ARope("File not found (HTTP-404 static): ",34)+httpFilename);
+      m_Services.useLog().add(ASW("File not found (HTTP-404 static): ",34), httpFilename, ALog::INFO);
+      
+      //a_Set response status and return with failed (display error template)
+      m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);
+    return false;
+
+    case ACache_FileSystem::FOUND_NOT_MODIFIED:
+      setExecutionState(ARope("File not modified (HTTP-304): ",30)+httpFilename);
+      
+      //a_Set status 304 and return true (no need to display error template)
+      m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_304_Not_Modified);
+      writeResponseHeader();
+    return true;
+
+    case ACache_FileSystem::FOUND_NOT_CACHED:
+    case ACache_FileSystem::FOUND:
+      if (!dumpContext && !gzipLevel)
+      {
+        //a_Context not dumped and no compression is needed
+        AASSERT(this, !pFile.isNull());
+        
+        //a_Set modified date
+        m_ResponseHeader.setLastModified(modified);
+        m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AString::fromS8(AFileSystem::length(httpFilename)));
+        
+        AString ext;
+        httpFilename.emitExtension(ext);
+        setResponseMimeTypeFromExtension(ext);
+        writeResponseHeader();
+
+        //a_Stream content
+        setExecutionState(ARope("Streaming file: ",16)+httpFilename);
+        contentLength = _write(*pFile);
+
+        if (AConstant::npos == contentLength)
+          setExecutionState(ASW("Failed to write",15));
+        else
+          setExecutionState(ARope("Streamed bytes: ",16)+AString::fromSize_t(contentLength));
+        m_EventVisitor.reset();
+        m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
+        return true;
+      }
+      else
+      {
+        //a_Buffer the file
+        AASSERT(this, !pFile.isNull());
+
+        //a_Set modified date
+        m_ResponseHeader.setLastModified(modified);
+
+        //a_Buffer the file, Content-Length set in the write header
+        setExecutionState(ARope("Sending file: ",14)+httpFilename);
+        pFile->emit(m_OutputBuffer);
+        setExecutionState(ARope("Output buffer bytes: ",21)+AString::fromSize_t(m_OutputBuffer.getSize()));
+        m_EventVisitor.reset();
+      }
+    break;
+
+    default:
+      AASSERT(this, false);  //a_Unknown return type?
+  }
+
+  AString str;
+  if (dumpContext > 0)
+  {
+    //a_Dump context as XML instead of usual output
+    m_OutputXmlDocument.useRoot().addElement(ASW("/context/dump",13), *this);
+    m_OutputXmlDocument.useRoot().addElement(ASW("/context/buffer",15), m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
+
+    //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
+    clearOutputBuffer();
+    contentLength = AConstant::npos;
+  }
+
+  //a_If output buffer is empty then emit output XML document into it unless output was read from file then contentLength != -1
+  //a_This allows override of XML emit by manually adding data to the output buffer in output generator
+  if (
+    AConstant::npos == contentLength
+    && isOutputBufferEmpty() 
+    && !m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT)
+  )
+  {
+    m_OutputXmlDocument.emit(m_OutputBuffer);
+    m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
+  }
+  
+  try
+  {
+    writeOutputBuffer();
+  }
+  catch(ASocketException& ex)
+  {
+    m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
+    m_EventVisitor.set(ex, false);
+    return false;
+  }
+
+  m_EventVisitor.reset();
+  return true;
 }
