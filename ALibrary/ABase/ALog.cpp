@@ -239,6 +239,10 @@ void ALog::addException(const std::exception& ex)
 
 size_t ALog::flush(AFile& file)
 {
-  //a_Should never be here, log handles actual flush to file
-  ATHROW(NULL, AException::ProgrammingError);
+  return AConstant::npos;
+}
+
+size_t ALog::getSize() const
+{
+  return AConstant::npos;
 }

@@ -256,12 +256,8 @@ size_t ARope::flush(AFile& file)
 
     size_t bytesWritten = file.write(pBlock, m_BlockSize);
     if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
-    {
-      if (bytesTotalWritten > 0)
-        return bytesTotalWritten;   //a_Return partial written size
-      else
-        return bytesWritten;
-    }
+      return (bytesTotalWritten > 0 ? bytesTotalWritten : bytesWritten);   //a_Return partial written size
+
     AASSERT(this, bytesWritten);                 //a_Zero bytes written?
     AASSERT(this, bytesWritten == m_BlockSize);  //a_Unable to write the whole buffer?
     bytesTotalWritten += bytesWritten;
@@ -275,12 +271,8 @@ size_t ARope::flush(AFile& file)
   {
     size_t bytesWritten = file.write(mp_LastBlock, m_BlockSize - m_LastBlockFree);
     if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
-    {
-      if (bytesTotalWritten > 0)
-        return bytesTotalWritten;   //a_Return partial written size
-      else
-        return bytesWritten;
-    }
+      return (bytesTotalWritten > 0 ? bytesTotalWritten : bytesWritten);   //a_Return partial written size
+
     AASSERT(this, bytesWritten);                 //a_Zero bytes written?
     AASSERT(this, bytesWritten == m_BlockSize - m_LastBlockFree);  //a_Unable to write the whole buffer?
     bytesTotalWritten += bytesWritten;
@@ -289,9 +281,7 @@ size_t ARope::flush(AFile& file)
     pDelete(mp_LastBlock);
   }
 
-  if (!bytesTotalWritten)
-    AASSERT(this, false);
-
+  AASSERT(this, bytesTotalWritten);
   return bytesTotalWritten;
 }
 

@@ -53,6 +53,10 @@ void ALog::ScopeEvents::_append(const char *pcc, size_t len)
 
 size_t ALog::ScopeEvents::flush(AFile& file)
 {
-  //a_Should never be here, parent log handles actual flush to file
-  ATHROW(NULL, AException::ProgrammingError);
+  return AConstant::npos;
+}
+
+size_t ALog::ScopeEvents::getSize() const
+{
+  return AConstant::npos;
 }

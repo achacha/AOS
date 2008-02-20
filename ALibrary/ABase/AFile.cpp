@@ -1099,31 +1099,36 @@ void AFile::emit(AOutputBuffer& target) const
 }
 
 size_t AFile::flush(AFile& file)
-{
+{  
   size_t totalBytesWritten = 0;
-  if (m_LookaheadBuffer.getSize() > 0)
+  size_t labInitialSize = m_LookaheadBuffer.getSize();
+  while (m_LookaheadBuffer.getSize() > 0)
   {
     size_t bytesWritten = m_LookaheadBuffer.flush(file);
     if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
       return bytesWritten;
-    m_LookaheadBuffer.clear();
+    
+    totalBytesWritten += bytesWritten;
   }
-
+  
   while (_isNotEof())
   {
     switch (readBlockIntoLookahead())
     {
       case AConstant::unavail:
         return AConstant::unavail;
-      continue;
 
       case AConstant::npos:
         return totalBytesWritten;
 
       default:
       {
+        size_t before = m_LookaheadBuffer.getSize();
         size_t bytesWritten = m_LookaheadBuffer.flush(file);
-        if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
+        size_t after = m_LookaheadBuffer.getSize();
+        if (AConstant::unavail == bytesWritten)
+          return (totalBytesWritten > 0 ? totalBytesWritten : AConstant::unavail);
+        if (AConstant::npos == bytesWritten)
           return totalBytesWritten;
         totalBytesWritten += bytesWritten;
         m_LookaheadBuffer.clear();
@@ -1133,4 +1138,9 @@ size_t AFile::flush(AFile& file)
   }
 
   return totalBytesWritten;
+}
+
+size_t AFile::getSize() const
+{
+  return AConstant::npos;
 }

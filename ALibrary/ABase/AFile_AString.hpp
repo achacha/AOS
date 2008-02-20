@@ -74,13 +74,20 @@ public:
   */
   virtual bool isOpen() { return true; }
   virtual void open() {}
-  virtual void flush() {}
   virtual void close() {}
+  virtual void flush() {}
 
   /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
+  /*!
+  AOutputBuffer
+  @return Size of the current internal buffer
+  */
+  virtual size_t getSize() const;
+  virtual size_t flush(AFile&);
 
 protected:
   /*!

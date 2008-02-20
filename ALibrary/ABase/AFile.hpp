@@ -233,6 +233,12 @@ public:
   virtual size_t flush(AFile&);
 
   /*!
+  AOutputBuffer
+  @return AConstant::npos by default, derived classes may return actual size if applicable (sockets, iosteams, etc do not have actual sizes for this call)
+  */
+  virtual size_t getSize() const;
+
+  /*!
   IO operators
   */
   DEFINE_NETWORKTYPE_IO_OPERATORS(int);

@@ -133,7 +133,7 @@ public:
   /*!
   Calculate current size
   */
-  size_t getSize() const;
+  virtual size_t getSize() const;
 
   /*!
   AOutputBuffer

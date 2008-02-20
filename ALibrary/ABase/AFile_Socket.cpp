@@ -240,10 +240,6 @@ size_t AFile_Socket::_writeBlocking(const void *buf, size_t size)
 size_t AFile_Socket::_writeNonBlocking(const void *buf, size_t size)
 {
   size_t bytesWritten = ::send(m_SocketInfo.m_handle, (const char *) buf, size, 0);
-
-  if (!bytesWritten && size)
-    return AConstant::npos;
-    
   if (bytesWritten == SOCKET_ERROR)
   {
     int err = ::WSAGetLastError();

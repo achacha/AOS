@@ -46,6 +46,12 @@ public:
   virtual void close();
 
   /*!
+  AOutputBuffer
+  @return Current file size as reported by file system
+  */
+  virtual size_t getSize() const;
+
+  /*!
   Physical file position helpers
   */
   bool seek(u8 offset, int origin = 0);  // true if seek succeeded

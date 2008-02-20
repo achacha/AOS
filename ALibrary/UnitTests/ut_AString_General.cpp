@@ -158,7 +158,7 @@ int ut_AString_General()
 
   //a_True clearing
   str0.clear(true);
-  if (str0.getSize(true) != 0x0)
+  if (str0.getPhysicalSize() != 0x0)
   {
     iRet++;
     std::cerr << "After clear size is not 0" << std::endl;

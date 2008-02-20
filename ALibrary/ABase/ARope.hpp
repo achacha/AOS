@@ -48,7 +48,7 @@ public:
   Properties
   */
   virtual bool isEmpty() const;
-  size_t getSize() const;
+  virtual size_t getSize() const;
   
   /*!
   AEmittable

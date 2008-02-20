@@ -147,8 +147,15 @@ public:
 
   /*!
   AOutputBuffer
+  @return Always AConstant::npos since events are written through ALog to AFile periodically
   */
   virtual size_t flush(AFile&);
+  
+  /*!
+  AOutputBuffer
+  @return Always AConstant::npos since events are written to AFile periodically
+  */
+  virtual size_t getSize() const;
 
 public:
   /*!
@@ -170,8 +177,15 @@ public:
 
     /*!
     AOutputBuffer
+    @return Always AConstant::npos since events are written through ALog to AFile periodically
     */
     virtual size_t flush(AFile&);
+
+    /*!
+    AOutputBuffer
+    @return Always AConstant::npos since events are written through ALog to AFile periodically
+    */
+    virtual size_t getSize() const;
 
   protected:
     /*!

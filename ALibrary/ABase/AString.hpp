@@ -573,10 +573,13 @@ public:
       
 	/*!
   Current logical length of the contents
-  If requested the physical size will be returned which is to be used
-   mostly for information purposes as it may have no bearing on logical buffer size
   */
-  size_t getSize(bool boolPhysicalBuffer = false) const;
+  virtual size_t getSize() const;
+
+	/*!
+  Physical size returned which is to be used mostly for information purposes as it may have no bearing on logical buffer size
+  */
+  size_t getPhysicalSize() const;
 
   /*!
   Sets the new physical size of the buffer

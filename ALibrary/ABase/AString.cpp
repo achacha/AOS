@@ -1260,12 +1260,14 @@ void AString::clear(bool boolReleaseBuffer)
   }
 }
 
-size_t AString::getSize(bool boolPhysicalBuffer) const
+size_t AString::getSize() const
 {
-  if (boolPhysicalBuffer)
-    return m_InternalBufferSize;
-  else
-    return m_Length;
+  return m_Length;
+}
+
+size_t AString::getPhysicalSize() const
+{
+  return m_InternalBufferSize;
 }
 
 void AString::setSize(size_t newSize, u1 u1Pad)

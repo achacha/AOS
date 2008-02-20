@@ -97,3 +97,13 @@ void AFile_AString::emit(AOutputBuffer& target) const
 {
   m_Data.emit(target);
 }
+
+size_t AFile_AString::getSize() const
+{
+  return m_Data.getSize();
+}
+
+size_t AFile_AString::flush(AFile& file)
+{
+  return m_Data.flush(file);
+}

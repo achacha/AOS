@@ -64,6 +64,12 @@ public:
   */
   virtual size_t flush(AFile&) = 0;
 
+  /*!
+  Gets the size of the data in the buffer
+  @return bytes in a buffer or AConstant::npos if not applicable
+  */
+  virtual size_t getSize() const = 0;
+
 protected:
   virtual void _append(const char *pccSource, size_t len) = 0;
 };

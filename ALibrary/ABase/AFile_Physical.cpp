@@ -2,9 +2,11 @@
 #include "pchABase.hpp"
 
 #include "AFile_Physical.hpp"
+#include "AFileSystem.hpp"
 #include "ASystemException.hpp"
 #include "AFilename.hpp"
 #include <io.h>
+#include <limits.h>
 
 const AString AFile_Physical::sm_DefaultOpenFlags("rb");          //a_Read binary file by default
 const int AFile_Physical::sm_DefaultShareFlags = _SH_DENYNO;
@@ -149,4 +151,11 @@ u8 AFile_Physical::tell()
 #else
   return (u8)ftell(mp_file);
 #endif
+}
+
+size_t AFile_Physical::getSize() const
+{
+  s8 size = AFileSystem::length(m_filename);
+  AASSERT(this, size <= SIZE_MAX);             //a_If this ever happens getSize should be upgraded to s8
+  return (size_t)size;
 }
