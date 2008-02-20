@@ -58,7 +58,7 @@ public:
   /*!
   Ability to flush the entire content into AFile&
   Whatever was written will be removed from the buffer
-  @return bytes written
+  @return bytes written (0 or more)
           AConstant::unavail if partial write done but AFile will block on more
           AConstant::npos if error
   */
