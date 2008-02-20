@@ -1101,7 +1101,6 @@ void AFile::emit(AOutputBuffer& target) const
 size_t AFile::flush(AFile& file)
 {  
   size_t totalBytesWritten = 0;
-  size_t labInitialSize = m_LookaheadBuffer.getSize();
   while (m_LookaheadBuffer.getSize() > 0)
   {
     size_t bytesWritten = m_LookaheadBuffer.flush(file);
@@ -1123,9 +1122,7 @@ size_t AFile::flush(AFile& file)
 
       default:
       {
-        size_t before = m_LookaheadBuffer.getSize();
         size_t bytesWritten = m_LookaheadBuffer.flush(file);
-        size_t after = m_LookaheadBuffer.getSize();
         if (AConstant::unavail == bytesWritten)
           return (totalBytesWritten > 0 ? totalBytesWritten : AConstant::unavail);
         if (AConstant::npos == bytesWritten)
