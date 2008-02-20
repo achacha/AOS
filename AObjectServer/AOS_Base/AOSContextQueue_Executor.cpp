@@ -94,6 +94,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         //
         // Prepare for output
         //
+        bool forceXml = false;
         if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_REDIRECTING))
         {
           int dumpContextLevel = pContext->getDumpContextLevel();
@@ -114,17 +115,14 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           pThis->m_Services.useOutputExecutor().execute(*pContext);
 
           //a_Dump context as XML instead of usual output
-          pContext->dumpContext(dumpContextLevel);
           if (dumpContextLevel > 0)
           {
-            //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");
-            pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_200_Ok);
-            pContext->writeOutputBuffer(true);
+            pContext->dumpContext(dumpContextLevel);
+            forceXml = true;
           }
 
           //a_Publish total execution time
-          if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_AJAX))
+          if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
           {
             pContext->useModel().addElement(ASW("total_time",10), pContext->getContextTimer());
           }
@@ -132,21 +130,19 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           //
           //a_Publish errors if any
           //
-          if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
+          if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT) && pContext->useEventVisitor().getErrorCount() > 0)
           {
             pContext->setExecutionState(ASW("Emitting event visitor",22));
-            if (pContext->useEventVisitor().getErrorCount() > 0)
-            {
-              pContext->useEventVisitor().emitXml(pContext->useModel().addElement("AEventVisitor"));
-            }
+            pContext->useEventVisitor().emitXml(pContext->useModel().addElement(ASW("AEventVisitor",13)));
           }
         }
 
+        //a_If the output was not sent yet, do so
         if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
         {
           try
           {
-            pContext->writeOutputBuffer();
+            pContext->writeOutputBuffer(forceXml);
           }
           catch(ASocketException& ex)
           {

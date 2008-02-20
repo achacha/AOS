@@ -17,7 +17,7 @@
 	</xsl:template>
 	<xsl:template match="file">
 		<xsl:value-of select="filename"/>
-		<xsl:text>&nbsp;&nbsp;&nbsp;</xsl:text>
+		<xsl:text>   </xsl:text>
 		<br/>
 	</xsl:template>
 </xsl:stylesheet>

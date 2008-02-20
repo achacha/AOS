@@ -104,6 +104,7 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   m_ContextTimer(true),
   mp_SessionObject(NULL),
   m_Services(services),
+  m_OutputBuffer(10240),
   m_OutputXmlDocument(XML_ROOT),
   mp_Command(NULL),
   mp_DirConfig(NULL),
@@ -694,7 +695,7 @@ void AOSContext::emitXml(AXmlElement& target) const
   target.useAttributes().insert(ASW("request_timer",13), AString::fromDouble(m_RequestTimer.getInterval()));
   target.useAttributes().insert(ASW("context_timer",13), AString::fromDouble(m_ContextTimer.getInterval()));
 
-  m_EventVisitor.emitXml(target.addElement(ASW("Events",6)));
+  m_EventVisitor.emitXml(target.addElement(ASW("AEventVisitor",13)));
   m_Services.useGlobalObjects().emitXml(target.addElement(ASW("GlobalObjects",13)));
   m_ContextObjects.emitXml(target.addElement(ASW("ContextObjects",14)));
   m_RequestHeader.emitXml(target.addElement(ASW("RequestHeader",13)));
@@ -1019,10 +1020,13 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 
     //a_If output buffer is empty then emit output XML document into it
     //a_This allows override of XML emit by manually adding data to the output buffer in output generator
-    if (m_OutputBuffer.isEmpty())
+    if (m_OutputBuffer.isEmpty() || forceXmlDocument)
     {
+      m_OutputXmlDocument.useRoot().addElement(ASW("OUTPUTBUFFER",12)).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
+      m_OutputBuffer.clear();
       m_OutputXmlDocument.emit(m_OutputBuffer);
-      m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
+      m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
+      m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
     }
 
     //a_Write header if not already written, if it was already written, we assume it is correct
@@ -1101,9 +1105,7 @@ void AOSContext::dumpContext(int dumpContextLevel)
       case 2:
         eContext.addElement(ASW("buffer",6)).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
         eContext.addElement(ASW("debugDump",9)).addData(*this, AXmlElement::ENC_CDATADIRECT);
-        m_Services.useConfiguration().getConfigRoot().emitXml(
-          eDumpContext.addElement(ASW("configuration",13))
-        );
+        m_Services.useConfiguration().getConfigRoot().emitXml(eDumpContext.addElement(ASW("configuration",13)));
       case 1:
         emitXml(eContext);
       default:
@@ -1273,7 +1275,7 @@ bool AOSContext::processStaticPage()
     return false;
   }
   
-  int dumpContext = getDumpContextLevel();
+  int dumpContextLevel = getDumpContextLevel();
   int gzipLevel = calculateGZipLevel();
 
   AAutoPtr<AFile> pFile;
@@ -1301,7 +1303,7 @@ bool AOSContext::processStaticPage()
 
     case ACache_FileSystem::FOUND_NOT_CACHED:
     case ACache_FileSystem::FOUND:
-      if (!dumpContext && !gzipLevel)
+      if (!dumpContextLevel && !gzipLevel)
       {
         //a_Context not dumped and no compression is needed
         AASSERT(this, !pFile.isNull());
@@ -1346,34 +1348,19 @@ bool AOSContext::processStaticPage()
     default:
       AASSERT(this, false);  //a_Unknown return type?
   }
-
-  AString str;
-  if (dumpContext > 0)
-  {
-    //a_Dump context as XML instead of usual output
-    m_OutputXmlDocument.useRoot().addElement(ASW("/context/dump",13), *this);
-    m_OutputXmlDocument.useRoot().addElement(ASW("/context/buffer",15), m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
-
-    //a_Clear the output buffer and force type for be XML, code below will emit the doc into buffer
-    clearOutputBuffer();
-    contentLength = AConstant::npos;
-  }
-
-  //a_If output buffer is empty then emit output XML document into it unless output was read from file then contentLength != -1
-  //a_This allows override of XML emit by manually adding data to the output buffer in output generator
-  if (
-    AConstant::npos == contentLength
-    && isOutputBufferEmpty() 
-    && !m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT)
-  )
-  {
-    m_OutputXmlDocument.emit(m_OutputBuffer);
-    m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
-  }
   
+  //a_Check if context is being dumped
+  bool forceXml = false;
+  if (dumpContextLevel > 0)
+  {
+    dumpContext(dumpContextLevel);
+    forceXml = true;
+  }
+
+  //a_Write
   try
   {
-    writeOutputBuffer();
+    writeOutputBuffer(forceXml);
   }
   catch(ASocketException& ex)
   {
