@@ -235,10 +235,11 @@ size_t ARope::write(AFile& file) const
 
   if (mp_LastBlock && m_LastBlockFree < m_BlockSize)
   {
-    size_t bytesToWrite = m_BlockSize - m_LastBlockFree;
+    size_t totalToWrite = m_BlockSize - m_LastBlockFree;
+    size_t bytesToWrite = totalToWrite;
     while (bytesToWrite)
     {
-      size_t ret = file.write(mp_LastBlock + (m_BlockSize - bytesToWrite), bytesToWrite);
+      size_t ret = file.write(mp_LastBlock + (totalToWrite - bytesToWrite), bytesToWrite);
       bytesTotalWritten += ret;
       bytesToWrite -= ret;
     }
