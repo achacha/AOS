@@ -169,6 +169,8 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
   AASSERT(NULL, pThis);
   AASSERT(NULL, pData.get());
 
+  static bool httpBlockingMode = pThis->m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/listen/http/blocking",35), false);
+
   thread.setRunning(true);
   AOSContext *pContext = NULL;
   try
@@ -192,7 +194,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
         AAutoPtr<AFile_Socket> pSocket(NULL);
         try
         {
-          pSocket.reset(new AFile_Socket(listener));
+          pSocket.reset(new AFile_Socket(listener, httpBlockingMode));
           pSocket->open();
           pContext = pThis->m_Services.useContextManager().allocate(pSocket.use());
           pSocket.setOwnership(false);
