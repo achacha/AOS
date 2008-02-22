@@ -1059,8 +1059,7 @@ size_t AOSContext::_write(AOutputBuffer& data)
       //a_Finished writing or EOF on read
       case 0:
       case AConstant::npos:
-        AASSERT(this, bytesWritten == originalSize);
-        return bytesWritten;
+        return (bytesWritten > 0 ? bytesWritten : ret);
 
       //a_Would block
       case AConstant::unavail:
