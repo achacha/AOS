@@ -96,7 +96,7 @@ public:
   /*!
   Lookahead buffer used by read/write/peek overridden due to blocking socket read mode
   */
-  virtual size_t readBlockIntoLookahead();
+//  virtual size_t readBlockIntoLookahead();
 
   /*!
   Socket info

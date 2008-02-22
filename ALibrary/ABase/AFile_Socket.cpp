@@ -301,42 +301,42 @@ void AFile_Socket::setBlocking()
     ATHROW_LAST_SOCKET_ERROR(this);
 }
 
-size_t AFile_Socket::readBlockIntoLookahead()
-{
-  AASSERT(this, INVALID_SOCKET != m_SocketInfo.m_handle);
-  if (m_EOF)
-    return 0;
-
-  AString str;
-  char *p = str.startUsingCharPtr(AFile::DefaultReadBlock);
-  
-  size_t bytesRead = 0;
-  if (mbool_Blocking)
-  {
-    //a_Blocking mode, only read what we have available to prevent blocking
-    size_t bytesToRead = _availableInputWaiting();
-    if (0 == bytesToRead)
-      return AConstant::unavail;
-
-    if (bytesToRead > m_ReadBlock)
-      bytesToRead = m_ReadBlock;
-    if (bytesToRead > 0)
-      bytesRead = _read(p, bytesToRead);
-  }
-  else
-  {
-    //a_Non-blocking, read up to the default read block
-    bytesRead = _read(p, m_ReadBlock);
-  }
-  if (
-       AConstant::npos != bytesRead 
-    && AConstant::unavail != bytesRead 
-    && bytesRead > 0
-  )
-    m_LookaheadBuffer.pushBack(p, bytesRead);
-  
-  return bytesRead;
-}
+//size_t AFile_Socket::readBlockIntoLookahead()
+//{
+//  AASSERT(this, INVALID_SOCKET != m_SocketInfo.m_handle);
+//  if (m_EOF)
+//    return 0;
+//
+//  AString str;
+//  char *p = str.startUsingCharPtr(AFile::DefaultReadBlock);
+//  
+//  size_t bytesRead = 0;
+//  if (mbool_Blocking)
+//  {
+//    //a_Blocking mode, only read what we have available to prevent blocking
+//    //size_t bytesToRead = _availableInputWaiting();
+//    //if (0 == bytesToRead)
+//    //  return AConstant::unavail;
+//
+//    if (bytesToRead > m_ReadBlock)
+//      bytesToRead = m_ReadBlock;
+//    if (bytesToRead > 0)
+//      bytesRead = _read(p, bytesToRead);
+//  }
+//  else
+//  {
+//    //a_Non-blocking, read up to the default read block
+//    bytesRead = _read(p, m_ReadBlock);
+//  }
+//  if (
+//       AConstant::npos != bytesRead 
+//    && AConstant::unavail != bytesRead 
+//    && bytesRead > 0
+//  )
+//    m_LookaheadBuffer.pushBack(p, bytesRead);
+//  
+//  return bytesRead;
+//}
 
 size_t AFile_Socket::getTotalBytesAvailableForRead() const
 { 

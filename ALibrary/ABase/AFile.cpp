@@ -682,11 +682,18 @@ size_t AFile::readBlockIntoLookahead()
   
   size_t bytesRead = _read(p, m_ReadBlock);
   
-  if (0 == bytesRead)
-    return AConstant::npos;
+  switch(bytesRead)
+  {
+    case AConstant::npos:
+    case 0:
+      return AConstant::npos;
 
-  if (bytesRead > 0)
-    m_LookaheadBuffer.pushBack(p, bytesRead);
+    case AConstant::unavail:
+      return AConstant::unavail;
+
+    default:
+      m_LookaheadBuffer.pushBack(p, bytesRead);
+  }
 
   return bytesRead;
 }
