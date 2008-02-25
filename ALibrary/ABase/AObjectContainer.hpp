@@ -12,6 +12,8 @@ Path examples:
   /path0/                 - object placed in /path0/ and it must have been named during creation
 
 NOTE: AObjectContainer OWNS the objects it contains and will delete them when finished
+
+@deprecated Use ABasePtrContainer instead
 */
 class ABASE_API AObjectContainer : public AObjectBase
 {
@@ -27,8 +29,8 @@ public:
   /*!
   AEmittable and AXmlEmittable
   */
-  virtual void emit(AOutputBuffer&) const;
-  virtual void emitXml(AXmlElement&) const;
+  virtual void emit(AOutputBuffer& target) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   Emit XML based on a subpath

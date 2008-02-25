@@ -200,17 +200,14 @@ void ATemplate::hibernate()
   }
 }
 
-void ATemplate::emitXml(AXmlElement& target) const
+AXmlElement& ATemplate::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("ATemplate",9);
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
-  NODES::const_iterator cit = m_Nodes.begin();
-  while (cit != m_Nodes.end())
-  {
-    (*cit)->emitXml(target.addElement(ASW("ATemplateNode",13)));
-    ++cit;
-  }
+  for (NODES::const_iterator cit = m_Nodes.begin(); cit != m_Nodes.end(); ++cit)
+    (*cit)->emitXml(thisRoot.addElement(ASW("node",4)));
+
+  return thisRoot;
 }
 
 void ATemplate::emit(AOutputBuffer& target) const

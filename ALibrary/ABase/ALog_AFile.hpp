@@ -78,8 +78,8 @@ public:
   AEmittable
   AXmlEmittable
   */
-  void emit(AOutputBuffer&) const;
-  void emitXml(AXmlElement&) const;
+  virtual void emit(AOutputBuffer& target) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   ADebugDumpable

@@ -55,7 +55,7 @@ public:
   AXmlEmittable and AEmittable call the subpath method with empty path
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
   
   /*!
   Clone self

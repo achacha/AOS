@@ -45,8 +45,8 @@ public:
   virtual ~AHTTPRequestHeader();
 
   //a_Presentation
-  virtual void emit(AOutputBuffer&) const;
-  virtual void emitXml(AXmlElement&) const;
+  virtual void emit(AOutputBuffer& target) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   //a_Clear header
   virtual void clear();

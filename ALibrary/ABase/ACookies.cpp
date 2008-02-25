@@ -309,13 +309,12 @@ void ACookies::emit(AOutputBuffer& target) const
   emitRequestHeaderString(target);
 }
 
-void ACookies::emitXml(AXmlElement& target) const 
+AXmlElement& ACookies::emitXml(AXmlElement& thisRoot) const 
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("ACookies",8);
-  
+  AASSERT(this, !thisRoot.useName().isEmpty());
+
   for (size_t i = 0; i < mvector__Cookies.size(); ++i)
-  {
-    mvector__Cookies[i]->emitXml(target.addElement(ASW("ACookie",7)));
-  }
+    mvector__Cookies[i]->emitXml(thisRoot.addElement(ASW("cookie",6)));
+
+  return thisRoot;
 }

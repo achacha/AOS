@@ -253,9 +253,9 @@ const AXmlElement& AXmlDocument::getRoot() const
   return m_Root;
 }
 
-void AXmlDocument::emitXml(AXmlElement& base) const
+AXmlElement& AXmlDocument::emitXml(AXmlElement& thisRoot) const
 {
-  m_Root.emitXml(base);
+  return m_Root.emitXml(thisRoot);
 }
 
 AObjectBase* AXmlDocument::clone() const

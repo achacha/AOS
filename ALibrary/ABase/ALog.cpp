@@ -38,11 +38,13 @@ ALog::~ALog()
   catch(...) {}
 }
 
-void ALog::emitXml(AXmlElement& target) const
+AXmlElement& ALog::emitXml(AXmlElement& thisRoot) const
 {
-  AASSERT(this, !target.useName().isEmpty());
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
-  target.addElement(ASW("event_mask",10)).addData(m_EventMask);
+  thisRoot.addElement(ASW("event_mask",10)).addData(m_EventMask);
+
+  return thisRoot;
 }
 
 void ALog::_append(const char *pcc, size_t len)

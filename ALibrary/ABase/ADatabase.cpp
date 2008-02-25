@@ -31,13 +31,12 @@ bool ADatabase::isInitialized() const
   return mbool_Initialized;
 }
 
-void ADatabase::emitXml(AXmlElement& target) const
+AXmlElement& ADatabase::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("ADatabase", 9);
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
-  target.addElement(ASW("url",3)).addData(m_urlConnection);
-  target.addElement(ASW("isInitialized", 13)).addData(mbool_Initialized);
+  thisRoot.addElement(ASW("url",3)).addData(m_urlConnection);
+  thisRoot.addElement(ASW("isInitialized", 13)).addData(mbool_Initialized);
 }
 
 const AUrl& ADatabase::getUrl() const

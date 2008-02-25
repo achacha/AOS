@@ -633,7 +633,7 @@ AString AUrl::getPathFileAndQueryString() const
 
 AXmlElement& AUrl::emitXml(AXmlElement& thisRoot) const
 {
-  AASSERT(this, !target.useName().isEmpty());
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
   thisRoot.addElement(ASW("protocol",8)).addData(m_strProtocol);
   if (m_strProtocol.equals("data:", 5))
@@ -655,7 +655,7 @@ AXmlElement& AUrl::emitXml(AXmlElement& thisRoot) const
 
   thisRoot.addElement(ASW("url",3), *this, AXmlElement::ENC_CDATASAFE);
 
-  m_QueryString.emitXml(target.addElement(ASW("query-string",12)));
+  m_QueryString.emitXml(thisRoot.addElement(ASW("query-string",12)));
   
   return thisRoot;
 }

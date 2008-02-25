@@ -138,7 +138,7 @@ public:
   /*!
   AXmlEmittable
   */
-  void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   ADebugDumpable

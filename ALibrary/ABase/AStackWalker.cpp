@@ -1401,13 +1401,10 @@ void AStackWalker::emit(AOutputBuffer& target) const
 
 AXmlElement& AStackWalker::emitXml(AXmlElement& thisRoot) const
 {
-  AASSERT(!target.useName().isEmpty());
-  STACKLINES::const_iterator cit = m_StackWalkResult.begin();
-  while(cit != m_StackWalkResult.end())
-  {
+  AASSERT(NULL, !thisRoot.useName().isEmpty());
+
+  for (STACKLINES::const_iterator cit = m_StackWalkResult.begin(); cit != m_StackWalkResult.end(); ++cit)
     thisRoot.addElement(ASW("stack",5), *(*cit), AXmlElement::ENC_CDATASAFE);
-    ++cit;
-  }
 
   return thisRoot;
 }

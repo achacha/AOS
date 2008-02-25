@@ -57,14 +57,14 @@ public:
   Use -1 for all cases processing cases to reduce spaces/CRLF, XSLT/etc parsers don't care about formatting
   indent >=0 will add 2 spaces per indent and make it human-readable
   */
-  virtual void emit(AOutputBuffer&) const;
-  virtual void emit(AOutputBuffer&, int indent) const;
+  virtual void emit(AOutputBuffer& target) const;
+  virtual void emit(AOutputBuffer& target, int indent) const;
   
   /*!
   Emits XML nodes in this document
   Does NOT emit the instructions
   */
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   AJsonEmittable

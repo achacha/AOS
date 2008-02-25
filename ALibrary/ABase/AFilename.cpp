@@ -236,7 +236,7 @@ AXmlElement& AFilename::emitXml(AXmlElement& thisRoot) const
 
   //a_Filename
   if (!m_Filename.isEmpty())
-    thisRoot.addElement(ASW("filename",8)).addData(m_Filename);
+    thisRoot.addElement(ASW("name",4)).addData(m_Filename);
 
   thisRoot.addElement(ASW("full",4)).addData(*this);
   

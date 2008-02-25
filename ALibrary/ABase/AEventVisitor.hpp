@@ -34,8 +34,8 @@ public:
   AEmittable
   AXmlEmittable
   */
-  void emit(AOutputBuffer&) const;
-  void emitXml(AXmlElement&) const;
+  virtual void emit(AOutputBuffer& target) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   The name of this event visitor
@@ -119,8 +119,8 @@ private:
     AEmittable
     AXmlEmittable
     */
-    void emit(AOutputBuffer&) const;
-    void emitXml(AXmlElement&) const;
+    virtual void emit(AOutputBuffer& target) const;
+    virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
     double m_interval;
     AString m_state;

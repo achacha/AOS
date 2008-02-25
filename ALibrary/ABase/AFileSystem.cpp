@@ -62,6 +62,8 @@ AXmlElement& AFileSystem::FileInfo::emitXml(AXmlElement& thisRoot) const
   thisRoot.useAttributes().insert(ASW("typemask",8), AString::fromS4(typemask, 16));
   thisRoot.useAttributes().insert(ASW("length",6), AString::fromS8(length));
   filename.emitXml(thisRoot.addElement(ASW("filename",8)));
+
+  return thisRoot;
 }
 
 u4 AFileSystem::dir(

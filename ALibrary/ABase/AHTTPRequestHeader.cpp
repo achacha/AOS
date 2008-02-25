@@ -118,25 +118,26 @@ ACookies &AHTTPRequestHeader::useCookies()
   return mcookies_Request;
 }
 
-void AHTTPRequestHeader::emitXml(AXmlElement& target) const
+AXmlElement& AHTTPRequestHeader::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("AHTTPRequestHeader",18);
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
   //a_The parent will output it as the initial line
-  target.addElement(ASW("method",6), mstr_Method);
-  target.addElement(ASW("version",7), mstr_HTTPVersion);
+  thisRoot.addElement(ASW("method",6)).addData(mstr_Method);
+  thisRoot.addElement(ASW("version",7)).addData(mstr_HTTPVersion);
   
   //a_From parent
   MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
   {
-    target.addElement((*cit).second.getName(), (*cit).second.getValue());
+    thisRoot.addElement((*cit).second.getName()).addData((*cit).second.getValue());
     ++cit;
   }
 
-  murl_Request.emitXml(target.addElement(ASW("AUrl",4)));
-  mcookies_Request.emitXml(target.addElement(ASW("ACookies",8)));
+  murl_Request.emitXml(thisRoot.addElement(ASW("url",3)));
+  mcookies_Request.emitXml(thisRoot.addElement(ASW("cookies",7)));
+
+  return thisRoot;
 }
 
 void AHTTPRequestHeader::emit(AOutputBuffer& target) const

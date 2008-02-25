@@ -22,6 +22,8 @@ e.g.
 
  container.insert("somepath/someurl2", new AObject<ANumber>() );
 
+
+@deprecated Use ABase instead
 */
 template<class _t>
 class AObject : public AObjectBase
@@ -66,13 +68,13 @@ public:
   XML publish, simple object does not handle path
   If an object is wrapped with this template AEmittable MUST be implemented
   */
-  virtual void emitXml(AXmlElement& element) const
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const
   {
     if (m_Name.isEmpty())
       ATHROW_EX(this, AException::ProgrammingError, ASWNL("AObjectBase objects must have a name to be emit'd to AXmlElement"));
 
-    element.useName().assign(m_Name);
-    element.useAttributes() = m_Attributes;
+    thisRoot.useName().assign(m_Name);
+    thisRoot.useAttributes() = m_Attributes;
 
     ARope rope;
     const AEmittable *p = dynamic_cast<const AEmittable *>(&m_Object);
@@ -81,12 +83,14 @@ public:
     {
       p->emit(rope);
       if (rope.getSize() > 0)
-        element.addData(rope, m_Encoding);
+        thisRoot.addData(rope, m_Encoding);
     }
     else
     {
       ATHROW_EX(this, AException::InvalidObject, ARope("Object named '")+m_Name+"' is not derived from AEmittable");
     }
+
+    return thisRoot;
   }
 
   /*!

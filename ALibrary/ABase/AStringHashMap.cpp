@@ -197,24 +197,19 @@ void AStringHashMap::emit(AOutputBuffer& target) const
   }
 }
 
-void AStringHashMap::emitXml(AXmlElement& target) const
+AXmlElement& AStringHashMap::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("AStringHashMap",14);
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
   for (size_t i=0; i<m_Container.size(); ++i)
   {
     MAP_AString_AString *pMap = m_Container.at(i);
     if (pMap)
-    {
-      MAP_AString_AString::const_iterator cit = pMap->begin();
-      while (cit != pMap->end())
-      {
-        target.addElement((*cit).first, (*cit).second);
-        ++cit;
-      }
-    }
+      for(MAP_AString_AString::const_iterator cit = pMap->begin(); cit != pMap->end();++cit)
+        thisRoot.addElement((*cit).first, (*cit).second);
   }
+
+  return thisRoot;
 }
 
 void AStringHashMap::toAFile(AFile& afile) const

@@ -118,19 +118,21 @@ void ATimer::emit(AOutputBuffer& target) const
   target.append("ms",2);
 }
 
-void ATimer::emitXml(AXmlElement& target) const
+AXmlElement& ATimer::emitXml(AXmlElement& thisRoot) const
 {
-  AASSERT(this, !target.useName().isEmpty());
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
   if (mbool_Running)
-    target.addAttribute(ASW("running",7), AConstant::ASTRING_TRUE);
+    thisRoot.addAttribute(ASW("running",7), AConstant::ASTRING_TRUE);
 
-  target.addElement(ASW("interval",8), AString::fromDouble(getInterval()))
+  thisRoot.addElement(ASW("interval",8)).addData(AString::fromDouble(getInterval()))
     .addAttribute(ASW("freq", 4), AString::fromDouble(sm_frequency, 6))
     .addAttribute(ASW("unit", 4), ASW("ms",2));
 
-  target.addElement(ASW("start_count",11), AString::fromU8(m_startCount));
-  target.addElement(ASW("stop_count",10), AString::fromU8(m_stopCount));
+  thisRoot.addElement(ASW("start_count",11)).addData(AString::fromU8(m_startCount));
+  thisRoot.addElement(ASW("stop_count",10)).addData(AString::fromU8(m_stopCount));
+
+  return thisRoot;
 }
 
 bool ATimer::isRunning() const

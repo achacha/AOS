@@ -158,15 +158,14 @@ void AMovingAverage::emit(AOutputBuffer& target) const
   num.emit(target);
 }
 
-void AMovingAverage::emitXml(AXmlElement& target) const
+AXmlElement& AMovingAverage::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("AMovingAverage", 14);
+  AASSERT(this, !thisRoot.useName().isEmpty());
   
-  target.addElement(ASW("average",7)).addData(m_Average);
-  target.addElement(ASW("count",5)).addData(m_Count);
+  thisRoot.addElement(ASW("average",7)).addData(m_Average);
+  thisRoot.addElement(ASW("count",5)).addData(m_Count);
 
-  AXmlElement& keep = target.addElement(ASW("keep",4));
+  AXmlElement& keep = thisRoot.addElement(ASW("keep",4));
   if (mp_Keep)
   {
     for (u4 i=0; i<m_KeepSize; ++i)
@@ -177,6 +176,8 @@ void AMovingAverage::emitXml(AXmlElement& target) const
         keep.addElement(ASW("sample",6)).addData(mp_Keep[i]);
     }
   }
+
+  return thisRoot;
 }
 
 double AMovingAverage::getAverage() const                 

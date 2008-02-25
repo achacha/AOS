@@ -36,7 +36,7 @@ public:
   /*!
   AXmlElement
   */
-  void emitXml(AXmlElement& target) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   Initialization and deinitialization

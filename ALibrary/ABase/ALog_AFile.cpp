@@ -166,16 +166,17 @@ void ALog_AFile::emit(AOutputBuffer& target) const
   emitCurrentFilename(target);
 }
 
-void ALog_AFile::emitXml(AXmlElement& target) const
+AXmlElement& ALog_AFile::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("ALog_AFile",10);
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
-  ALog::emitXml(target);
-  target.addElement(ASW("current_filename",16), m_filenameRotation, AXmlElement::ENC_CDATADIRECT);
-  target.addElement(ASW("cycle_sleep",11)).addData(m_CycleSleep);
-  target.addElement(ASW("file_rotation",13)).addData(m_enableLogFileRotate);
-  target.addElement(ASW("max_file_size",13)).addData(m_logMaxFileSize);
+  ALog::emitXml(thisRoot);
+  thisRoot.addElement(ASW("current_filename",16)).addData(m_filenameRotation, AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addElement(ASW("cycle_sleep",11)).addData(m_CycleSleep);
+  thisRoot.addElement(ASW("file_rotation",13)).addData(m_enableLogFileRotate);
+  thisRoot.addElement(ASW("max_file_size",13)).addData(m_logMaxFileSize);
+
+  return thisRoot;
 }
 
 u4 ALog_AFile::threadprocLogger(AThread& thread)

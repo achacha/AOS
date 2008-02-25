@@ -28,12 +28,12 @@ void testGeneric(int& iRet)
   fn.setType(AFilename::FTYPE_DEFAULT);
 
   //a_Xml emit
-  AXmlElement root("root");
+  AXmlElement root("filename");
   fn.emitXml(root);
   strOut.clear();
   root.emit(strOut);
-//  std::cout << strOut << std::endl;
-  ASSERT_UNIT_TEST(strOut.equals("<root><AFilename type=\"0\"><drive>c</drive><path><dir>path0</dir><dir>path1</dir></path><filename>filename.extension</filename></AFilename></root>"), "AFilename XML emit", "0", iRet);
+  //std::cout << strOut << std::endl;
+  ASSERT_UNIT_TEST(strOut.equals("<filename os=\"0\"><drive>c</drive><path><dir>path0</dir><dir>path1</dir></path><name>filename.extension</name><full>c:/path0/path1/filename.extension</full></filename>"), "AFilename XML emit", "0", iRet);
 
   //a_Copy
   fn.set(ASWNL("c:/some/path/here/file.ext"), false);

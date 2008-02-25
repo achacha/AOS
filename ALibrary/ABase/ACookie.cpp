@@ -115,9 +115,9 @@ void ACookie::emit(AOutputBuffer& target) const
 
 AXmlElement& ACookie::emitXml(AXmlElement& thisRoot) const
 {
-  AASSERT(!target.useName().isEmpty());
+  AASSERT(this, !thisRoot.useName().isEmpty());
   
-  thisRoot.addElement(ASW("name",4)).addaData(m_strName);
+  thisRoot.addElement(ASW("name",4)).addData(m_strName);
   thisRoot.addElement(ASW("value",5)).addData(m_strValue);
   thisRoot.addElement(ASW("domain",6)).addData(m_strDomain);
   thisRoot.addElement(ASW("path",4)).addData(m_strPath);

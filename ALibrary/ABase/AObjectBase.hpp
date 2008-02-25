@@ -41,12 +41,6 @@ public:
   virtual ~AObjectBase();
   
   /*!
-  AXmlEmittable and AEmittable
-  */
-  virtual void emit(AOutputBuffer&) const = 0;
-  virtual void emitXml(AXmlElement&) const = 0;
-  
-  /*!
   Clone self
   NOTE: Cloned object does not copy the synchronization associated with the original after copy the new object is unsynchronized
   */

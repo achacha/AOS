@@ -108,29 +108,30 @@ void AHTTPResponseHeader::setReasonPhrase(const AString& reason)
   mstr_ReasonPhrase.assign(reason);
 }
 
-void AHTTPResponseHeader::emitXml(AXmlElement& target) const
+AXmlElement& AHTTPResponseHeader::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("AHTTPResponseHeader",19);
+  AASSERT(this, !thisRoot.useName().isEmpty());
   
-  target.addElement(ASW("version",7), mstr_HTTPVersion);
+  thisRoot.addElement(ASW("version",7)).addData(mstr_HTTPVersion);
 
   //a_The parent will output it as the initial line
   if (isValidStatusCode(mi_StatusCode) && mstr_ReasonPhrase.isEmpty())
-    target.addElement(ASW("status",6), getStatusCodeReasonPhrase(mi_StatusCode)).addAttribute(ASW("code",4), u4(mi_StatusCode));
+    thisRoot.addElement(ASW("status",6)).addData(getStatusCodeReasonPhrase(mi_StatusCode)).addAttribute(ASW("code",4), u4(mi_StatusCode));
   else
-    target.addElement(ASW("status",6), mstr_ReasonPhrase).addAttribute(ASW("code",4), u4(mi_StatusCode));
+    thisRoot.addElement(ASW("status",6)).addData(mstr_ReasonPhrase).addAttribute(ASW("code",4), u4(mi_StatusCode));
   
   //a_From parent
   MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
   {
-    target.addElement((*cit).second.getName(), (*cit).second.getValue());
+    thisRoot.addElement((*cit).second.getName()).addData((*cit).second.getValue());
     ++cit;
   }
 
   //a_Cookies if any
-  mcookies_Response.emitXml(target.addElement(ASW("ACookies",8)));
+  mcookies_Response.emitXml(thisRoot.addElement(ASW("cookies",7)));
+
+  return thisRoot;
 }
 
 void AHTTPResponseHeader::emit(AOutputBuffer& target) const

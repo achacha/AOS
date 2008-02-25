@@ -329,7 +329,7 @@ void AException::emit(AOutputBuffer& target) const
 
 AXmlElement& AException::emitXml(AXmlElement& thisRoot) const
 {
-  AASSERT(this, !thisRoot.useName().isEmpty());
+  AASSERT(NULL, !thisRoot.useName().isEmpty());
   
   ARope rope;
   getDescription(rope);

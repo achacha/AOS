@@ -199,47 +199,50 @@ void AEventVisitor::Event::emit(AOutputBuffer& target) const
   target.append(AConstant::ASTRING_EOL);
 }
 
-void AEventVisitor::emitXml(AXmlElement& target) const
+AXmlElement& AEventVisitor::emitXml(AXmlElement& thisRoot) const
 {
-  AASSERT(this, !target.getName().isEmpty());
+  AASSERT(this, !thisRoot.getName().isEmpty());
 
-  target.addAttribute(ASW("errors",6), AString::fromSize_t(m_errorCount));
+  thisRoot.addAttribute(ASW("errors",6), AString::fromSize_t(m_errorCount));
 
   if (!m_isEnabled)
-    target.addAttribute(ASW("enabled",7), AConstant::ASTRING_FALSE);
+    thisRoot.addAttribute(ASW("enabled",7), AConstant::ASTRING_FALSE);
 
   if (!m_Name.isEmpty())
-    target.addElement(ASW("Name",4), m_Name, AXmlElement::ENC_CDATADIRECT);
+    thisRoot.addElement(ASW("name",4)).addData(m_Name, AXmlElement::ENC_CDATADIRECT);
 
-  target.addElement(ASW("Timer",5), m_LifespanTimer);
+  thisRoot.addElement(ASW("timer",5)).addData(m_LifespanTimer);
 
   //a_Emit events
-  AXmlElement& events = target.addElement(ASW("Events",6));
+  AXmlElement& events = thisRoot.addElement(ASW("events",6));
   EVENTS::const_iterator cit = m_Events.begin();
   u8 lastTick = 0;
   u8 firstTick = 0;
   while (cit != m_Events.end())
   {
-    (*cit)->emitXml(events.addElement(ASW("Event",5)));
+    (*cit)->emitXml(events.addElement(ASW("event",5)));
     ++cit;
   }
   if (mp_CurrentEvent)
   {
-    AXmlElement& e = events.addElement(ASW("Event",5));
-    e.addAttribute(ASW("active",6), AConstant::ASTRING_TRUE);
-    mp_CurrentEvent->emitXml(e);
+    mp_CurrentEvent->emitXml(events.addElement(ASW("event",5))).addAttribute(ASW("active",6), AConstant::ASTRING_TRUE);
   }
-  target.addElement(ASW("CurrentStateTimer",17), m_stateTimer);
+  thisRoot.addElement(ASW("current-state-timer",19)).addData(m_stateTimer);
+
+  return thisRoot;
 }
 
-void AEventVisitor::Event::emitXml(AXmlElement& target) const
+AXmlElement& AEventVisitor::Event::emitXml(AXmlElement& thisRoot) const
 {
-  AASSERT(this, !target.getName().isEmpty());
+  AASSERT(this, !thisRoot.getName().isEmpty());
 
-  target.addAttribute(ASW("interval",8), m_interval);
+  thisRoot.addAttribute(ASW("interval",8), m_interval);
   if (m_isError)
-    target.addAttribute(ASW("error",5), AConstant::ASTRING_TRUE);
-  target.addData(m_state, AXmlElement::ENC_CDATADIRECT);
+    thisRoot.addAttribute(ASW("error",5), AConstant::ASTRING_TRUE);
+
+  thisRoot.addData(m_state, AXmlElement::ENC_CDATADIRECT);
+
+  return thisRoot;
 }
 
 double AEventVisitor::getTimeIntervalInState() const

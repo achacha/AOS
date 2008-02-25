@@ -243,9 +243,10 @@ void AObjectContainer::emit(AOutputBuffer& target) const
   emit(target, AConstant::ASTRING_EMPTY);
 }
 
-void AObjectContainer::emitXml(AXmlElement& target) const
+AXmlElement& AObjectContainer::emitXml(AXmlElement& thisRoot) const
 {
-  emitXml(target, AConstant::ASTRING_EMPTY);
+  emitXml(thisRoot, AConstant::ASTRING_EMPTY);
+  return thisRoot;
 }
 
 void AObjectContainer::emit(AOutputBuffer& target, const AString& strPath) const
@@ -274,16 +275,17 @@ void AObjectContainer::emit(AOutputBuffer& target, const AString& strPath) const
   }
 }
 
-void AObjectContainer::emitXml(AXmlElement& element, const AString& strPath) const
+void AObjectContainer::emitXml(AXmlElement& thisRoot, const AString& strPath) const
 {
   if (strPath.isEmpty())
   {
     if (m_Name.isEmpty())
       ATHROW_EX(this, AException::ProgrammingError, ASWNL("Either AObjectContainer or AXmlElement must have a name"));
 
-    if (element.useName().isEmpty())
-      element.useName().assign(m_Name);
-    element.useAttributes() = m_Attributes;
+    if (thisRoot.useName().isEmpty())
+      thisRoot.useName().assign(m_Name);
+    
+    thisRoot.useAttributes() = m_Attributes;
 
     MAP_STRING_OBJECTBASE::const_iterator cit = m_Objects.begin();
     //a_Recurse objects
@@ -291,7 +293,7 @@ void AObjectContainer::emitXml(AXmlElement& element, const AString& strPath) con
     {
       AAutoPtr<AXmlElement> pself(new AXmlElement((*cit).first));     //a_Create a child
       (*cit).second->emitXml(*pself);
-      element.addContent(pself);
+      thisRoot.addContent(pself);
       pself.setOwnership(false);
       ++cit;
     }
@@ -301,7 +303,7 @@ void AObjectContainer::emitXml(AXmlElement& element, const AString& strPath) con
     AObjectBase *pObj = getObject(strPath);
     if (pObj)
     {
-      pObj->emitXml(element);
+      pObj->emitXml(thisRoot);
     }
     else
       ATHROW_EX(this, AException::DoesNotExist, AString("path specified does not exist:")+strPath);

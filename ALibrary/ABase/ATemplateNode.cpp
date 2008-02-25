@@ -39,13 +39,14 @@ ATemplateNode::~ATemplateNode()
 {
 }
 
-void ATemplateNode::emitXml(AXmlElement& target) const
+AXmlElement& ATemplateNode::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("ATemplateNode",13);
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
-  target.addAttribute(ASW("tag",3), getTagName());
-  target.addElement(ASW("data",4)).addData(m_BlockData, AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addAttribute(ASW("tag",3), getTagName());
+  thisRoot.addElement(ASW("data",4)).addData(m_BlockData, AXmlElement::ENC_CDATADIRECT);
+
+  return thisRoot;
 }
 
 void ATemplateNode::emit(AOutputBuffer& target) const

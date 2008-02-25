@@ -132,7 +132,7 @@ public:
   /*!
   AXmlEmittable, emits the template
   */
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   AEmittable, emits the template
