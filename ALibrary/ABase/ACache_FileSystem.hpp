@@ -28,7 +28,7 @@ public:
   /*!
   AEmittable, AXmlEmittable
   */
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
   virtual void emit(AOutputBuffer&) const;
   
   /*!

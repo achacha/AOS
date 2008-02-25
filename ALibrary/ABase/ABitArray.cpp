@@ -228,14 +228,13 @@ void ABitArray::emit(AOutputBuffer& target) const
   target.append(rope);
 }
 
-void ABitArray::emitXml(AXmlElement& target) const
+AXmlElement& ABitArray::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("ABitArray", 9);
+  AASSERT(this, !target.useName().isEmpty());
 
   ARope rope;
   get(rope, m_OutputMode);
-  target.addElement(ASW("data",4), rope);
+  target.addElement(ASW("data",4)).addData(rope, AXmlElement::ENC_CDATADIRECT);
 }
 
 void ABitArray::setOutputMode(

@@ -105,17 +105,15 @@ void AQueryString::emit(AOutputBuffer& target) const
   }
 }
 
-void AQueryString::emitXml(AXmlElement& target) const
+AXmlElement& AQueryString::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("AQueryString",12);
+  AASSERT(this, !target.useName().isEmpty());
 
-  target.addAttribute(ASW("size",4), u8(m_Pairs.size()));
+  thisRoot.addAttribute(ASW("size",4), u8(m_Pairs.size()));
   MMAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
   {
-    target
-      .addElement((*cit).second.getName())
+    thisRoot.addElement((*cit).second.getName())
         .addData((*cit).second.getValue(), AXmlElement::ENC_CDATASAFE);
     ++cit;
   }

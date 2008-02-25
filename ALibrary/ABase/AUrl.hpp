@@ -161,9 +161,9 @@ public:
   AEmittable
   AXmlEmittable
   */
-  virtual void emit(AOutputBuffer&) const;
-  virtual void emitXml(AXmlElement&) const;
-
+  virtual void emit(AOutputBuffer& target) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
+                                           
   /*!
   Return as AString, calls emit internally
   emit() is more efficient, this is more of a convenience when used in ctor init

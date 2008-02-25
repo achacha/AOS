@@ -64,8 +64,8 @@ public:
   /*!
   AEmittable, AXmlEmittable
   */
-  virtual void emitXml(AXmlElement&) const;
-  virtual void emit(AOutputBuffer&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
+  virtual void emit(AOutputBuffer& target) const;
   
   /*!
   Special emit to allow forcing a certain type and if trailing slash to be omitted

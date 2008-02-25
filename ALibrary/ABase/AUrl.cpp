@@ -631,34 +631,33 @@ AString AUrl::getPathFileAndQueryString() const
   return strReturn;
 }
 
-void AUrl::emitXml(AXmlElement& target) const
+AXmlElement& AUrl::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("AUrl",4);
+  AASSERT(this, !target.useName().isEmpty());
 
-  target.addElement(ASW("protocol",8), m_strProtocol);
+  thisRoot.addElement(ASW("protocol",8)).addData(m_strProtocol);
   if (m_strProtocol.equals("data:", 5))
   {
-    target.addElement(ASW("mediaType",9), m_strServer);
-    target.addElement(m_isBase64 ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
-    target.addElement(ASW("data",4), m_strFilename, AXmlElement::ENC_CDATASAFE);
+    thisRoot.addElement(ASW("mediaType",9)).addData(m_strServer);
+    thisRoot.addElement(ASW("base64",6)).addData(m_isBase64 ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
+    thisRoot.addElement(ASW("data",4)).addData(m_strFilename, AXmlElement::ENC_CDATASAFE);
   }
   else
   {
-    target.addElement(ASW("username",8), m_strUsername);
-    target.addElement(ASW("password",8), m_strPassword);
-    target.addElement(ASW("server",6), m_strServer);
+    thisRoot.addElement(ASW("username",8)).addData(m_strUsername);
+    thisRoot.addElement(ASW("password",8)).addData(m_strPassword);
+    thisRoot.addElement(ASW("server",6)).addData(m_strServer);
     if (AUrl::NONE != m_iPort)
-      target.addElement(ASW("port",4)).addData(m_iPort);
-    target.addElement(ASW("path",4), m_strPath);
-    target.addElement(ASW("filename",8), m_strFilename);
+      thisRoot.addElement(ASW("port",4)).addData(m_iPort);
+    thisRoot.addElement(ASW("path",4)).addData(m_strPath);
+    thisRoot.addElement(ASW("filename",8)).addData(m_strFilename);
   }
 
-  ARope rope;
-  emit(rope);
-  target.addElement(ASW("url",3), rope, AXmlElement::ENC_CDATASAFE);
+  thisRoot.addElement(ASW("url",3), *this, AXmlElement::ENC_CDATASAFE);
 
-  m_QueryString.emitXml(target.addElement(ASW("AQueryString",12)));
+  m_QueryString.emitXml(target.addElement(ASW("query-string",12)));
+  
+  return thisRoot;
 }
 
 void AUrl::emit(AOutputBuffer& target) const

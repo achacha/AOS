@@ -85,10 +85,10 @@ public:
   void set(const AString& strBitset, ABitArray::Mode mode = ABitArray::Hexadecimal);
   
   //! AEmittable
-  virtual void emit(AOutputBuffer&) const;
+  virtual void emit(AOutputBuffer& target) const;
   
   //! AXmlEmittable
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
   
   /*!
   Set output method to be used wne emitting

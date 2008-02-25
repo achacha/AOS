@@ -36,7 +36,7 @@ public:
     u4 typemask;   // PathType mask
 
     //! AXmlEmittable
-    virtual void emitXml(AXmlElement&) const;
+    virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
     
     //! AEmittable
     virtual void emit(AOutputBuffer&) const;

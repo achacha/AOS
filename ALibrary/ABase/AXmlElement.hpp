@@ -379,7 +379,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   Emit XML content into the given element (does not include current element unline emitXml())

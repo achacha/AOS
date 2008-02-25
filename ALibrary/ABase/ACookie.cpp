@@ -113,24 +113,25 @@ void ACookie::emit(AOutputBuffer& target) const
   emitResponseHeaderString(target);
 }
 
-void ACookie::emitXml(AXmlElement& target) const
+AXmlElement& ACookie::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("ACookie",7);
+  AASSERT(!target.useName().isEmpty());
   
-  target.addElement(ASW("name",4), m_strName);
-  target.addElement(ASW("value",5), m_strValue);
-  target.addElement(ASW("domain",6), m_strDomain);
-  target.addElement(ASW("path",4), m_strPath);
-  target.addElement(ASW("version",7)).addData(m_iVersion);
-  target.addElement(ASW("comment",7), m_strComment);
-  target.addElement(ASW("maxage",6)).addData(m_lMaxAge);
+  thisRoot.addElement(ASW("name",4)).addaData(m_strName);
+  thisRoot.addElement(ASW("value",5)).addData(m_strValue);
+  thisRoot.addElement(ASW("domain",6)).addData(m_strDomain);
+  thisRoot.addElement(ASW("path",4)).addData(m_strPath);
+  thisRoot.addElement(ASW("version",7)).addData(m_iVersion);
+  thisRoot.addElement(ASW("comment",7)).addData(m_strComment);
+  thisRoot.addElement(ASW("maxage",6)).addData(m_lMaxAge);
   
   AString str;
   m_timeExpires.emitRFCtime(str);
-  target.addElement(ASW("expires",7), str);
+  thisRoot.addElement(ASW("expires",7), str);
   
-  if (m_boolSecure) target.addElement(ASW("secure",6));
+  if (m_boolSecure) thisRoot.addElement(ASW("secure",6));
+
+  return thisRoot;
 }
 
 void ACookie::emitResponseHeaderString(AOutputBuffer& target) const

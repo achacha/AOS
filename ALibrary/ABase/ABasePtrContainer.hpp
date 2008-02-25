@@ -33,7 +33,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   Insertion of objects

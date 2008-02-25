@@ -40,8 +40,8 @@ public:
   /*!
   AEmittable and AXmlEmittable
   */
-  virtual void emit(AOutputBuffer&) const;
-  virtual void emitXml(AXmlElement&) const;
+  virtual void emit(AOutputBuffer& target) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   Emit delimeted

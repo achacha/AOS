@@ -121,25 +121,24 @@ void ACache_FileSystem::manage()
 {
 }
 
-void ACache_FileSystem::emitXml(AXmlElement& target) const
+AXmlElement& ACache_FileSystem::emitXml(AXmlElement& thisRoot) const
 {
-  const AString KEY("key", 3);
-  const AString HITS("hits", 4);
-  const AString LAST("last_used", 9);
-  const AString FOUND("found", 5);
-  const AString COUNT("count", 5);
-  const AString BYTES("bytes", 5);
+  static const AString KEY("key", 3);
+  static const AString HITS("hits", 4);
+  static const AString LAST("last_used", 9);
+  static const AString FOUND("found", 5);
+  static const AString COUNT("count", 5);
+  static const AString BYTES("bytes", 5);
 
-  AXmlElement& base = target.addElement(ASW("ACache_FileSystem",17));
-  base.addAttribute(HITS, AString::fromSize_t(m_Hit));
-  base.addAttribute(ASW("miss",4), AString::fromSize_t(m_Miss));
-  base.addAttribute(ASW("max-items",9), AString::fromSize_t(m_MaxItems));
-  base.addAttribute(ASW("max-filesize",12), AString::fromSize_t(m_MaxFileSize));
-  base.addAttribute(ASW("time-now",8), AString::fromSize_t(ATime::getTickCount()));
+  thisRoot.addAttribute(HITS, AString::fromSize_t(m_Hit));
+  thisRoot.addAttribute(ASW("miss",4), AString::fromSize_t(m_Miss));
+  thisRoot.addAttribute(ASW("max-items",9), AString::fromSize_t(m_MaxItems));
+  thisRoot.addAttribute(ASW("max-filesize",12), AString::fromSize_t(m_MaxFileSize));
+  thisRoot.addAttribute(ASW("time-now",8), AString::fromSize_t(ATime::getTickCount()));
 
   for (size_t i = 0; i < m_CacheArray.size(); ++i)
   {
-    AXmlElement& eCache = base.addElement(ASW("cache",5));
+    AXmlElement& eCache = thisRoot.addElement(ASW("cache",5));
     const CONTAINER_ITEM *pCache = m_CacheArray.at(i);
     eCache.addAttribute(ASW("id",2), AString::fromSize_t(i));
 
@@ -149,12 +148,14 @@ void ACache_FileSystem::emitXml(AXmlElement& target) const
     const CONTAINER& container = pCache->m_Cache;
     for(CONTAINER::const_iterator cit = container.begin(); cit != container.end(); ++cit)
     {
-      AXmlElement& file = base.addElement(KEY, (*cit).first, AXmlElement::ENC_NONE, false);  //a_Create new key instead of reusing
+      AXmlElement& file = thisRoot.addElement(KEY, (*cit).first, AXmlElement::ENC_NONE, false);  //a_Create new key instead of reusing
       file.addAttribute(HITS, AString::fromInt((*cit).second->hits));
       file.addAttribute(LAST, AString::fromS8((*cit).second->lastUsed));
       file.addAttribute(FOUND, (NULL == (*cit).second->pData ? AConstant::ASTRING_FALSE : AConstant::ASTRING_TRUE));
     }
   }
+  
+  return thisRoot;
 }
 
 void ACache_FileSystem::emit(AOutputBuffer& target) const

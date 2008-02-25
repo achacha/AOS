@@ -123,15 +123,17 @@ bool AXmlElement::emitContentFromPath(
     return false;
 }
 
-void AXmlElement::emitXml(AXmlElement& target) const
+AXmlElement& AXmlElement::emitXml(AXmlElement& thisRoot) const
 {
-  AXmlElement& base = target.addElement(m_Name);
+  //TODO: This has to attach itself to thisRoot and setName instead?
+  AXmlElement& base = thisRoot.addElement(m_Name);
   CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
     base.addContent((*cit)->clone());
     ++cit;
   }
+  return thisRoot;
 }
 
 void AXmlElement::emitXmlContent(AXmlElement& target) const
