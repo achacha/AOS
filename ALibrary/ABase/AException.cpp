@@ -327,21 +327,22 @@ void AException::emit(AOutputBuffer& target) const
   what().emit(target);
 }
 
-void AException::emitXml(AXmlElement& target) const
+AXmlElement& AException::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign(ASW("AException",10));
+  AASSERT(this, !thisRoot.useName().isEmpty());
   
   ARope rope;
   getDescription(rope);
-  target.addElement(ASW("desc",4), rope, AXmlElement::ENC_CDATADIRECT);
-  target.addElement(ASW("id",2)).addData(m_ID);
-  target.addElement(ASW("filename",8), ASWNL(mp_Filename), AXmlElement::ENC_CDATADIRECT);
-  target.addElement(ASW("linenum",7)).addData(m_LineNumber);
-  target.addElement(ASW("extra",5), m_ExtraText, AXmlElement::ENC_CDATADIRECT);
-  target.addElement(ASW("errno",5)).addData(m_errno);
-  target.addElement(ASW("stacktrace",10), m_StackWalker);
-  target.addElement(ASW("debugdump",9), m_DebugDump, AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addElement(ASW("desc",4)).addData(rope, AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addElement(ASW("id",2)).addData(m_ID);
+  thisRoot.addElement(ASW("filename",8)).addData(ASWNL(mp_Filename), AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addElement(ASW("linenum",7)).addData(m_LineNumber);
+  thisRoot.addElement(ASW("extra",5)).addData(m_ExtraText, AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addElement(ASW("errno",5)).addData(m_errno);
+  thisRoot.addElement(ASW("stacktrace",10)).addData(m_StackWalker);
+  thisRoot.addElement(ASW("debugdump",9)).addData(m_DebugDump, AXmlElement::ENC_CDATADIRECT);
+
+  return thisRoot;
 }
 
 const char* AException::getFilename() const throw()

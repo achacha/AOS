@@ -6,18 +6,23 @@
 class AXmlElement;
 
 /*!
-  Required methods
+  Interface for a class to emit itself onto an XML model
+  The element passed in is always the root for this object
+  The parent always names the element of the object then calls its emitXML
+
 
 -------------------START: HPP cup/past----------------------
 public:
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 -------------------STOP: HPP cup/past-----------------------
 
 -------------------START: CPP cup/past----------------------
-void MyClass::emitXml(AXmlElement& target) const
+AXmlElement& MyClass::emitXml(AXmlElement& thisRoot) const
 {
-  //target.useAttributes().insert("name", "value");
-  //target.addElement("name").addData("value");
+  //thisRoot.useAttributes().insert("name", "value");
+  //thisRoot.addElement("name").addData("value");
+  
+  return thisRoot;
 }
 -------------------STOP: CPP cup/past-----------------------
 */
@@ -30,8 +35,9 @@ public:
   Ability to emit self as XML tree
 
   @param target is the base element of the object and sub-elements are actual members of this object
+  @return thisRoot is returned for convenience
   */
-  virtual void emitXml(AXmlElement& target) const = 0;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const = 0;
 };
 
 #endif //INCLUDED__AXmlEmittable_HPP_

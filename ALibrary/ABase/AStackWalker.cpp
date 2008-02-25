@@ -1399,15 +1399,15 @@ void AStackWalker::emit(AOutputBuffer& target) const
   }
 }
 
-void AStackWalker::emitXml(AXmlElement& target) const
+AXmlElement& AStackWalker::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign("AStackWalker", 12);
-
+  AASSERT(!target.useName().isEmpty());
   STACKLINES::const_iterator cit = m_StackWalkResult.begin();
   while(cit != m_StackWalkResult.end())
   {
-    target.addElement(ASW("stack",5), *(*cit), AXmlElement::ENC_CDATASAFE);
+    thisRoot.addElement(ASW("stack",5), *(*cit), AXmlElement::ENC_CDATASAFE);
     ++cit;
   }
+
+  return thisRoot;
 }

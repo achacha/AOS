@@ -2189,10 +2189,12 @@ void AString::emit(AOutputBuffer& target) const
     target.append(mp_Buffer, m_Length);
 }
 
-void AString::emitXml(AXmlElement& target) const
+AXmlElement& AString::emitXml(AXmlElement& thisRoot) const
 {
-  target.addAttribute(ASW("class",5), ASW("AString",7));
-  target.addData(*this, AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addAttribute(ASW("length",6), AString::fromSize_t(m_Length));
+  thisRoot.addAttribute(ASW("class",5), ASW("AString",7));
+  thisRoot.addData(*this, AXmlElement::ENC_CDATADIRECT);
+  return thisRoot;
 }
 
 size_t AString::split(

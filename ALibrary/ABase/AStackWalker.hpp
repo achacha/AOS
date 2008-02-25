@@ -72,7 +72,6 @@ public:
   std::cerr << rope << std::endl;
   
   */
-  
   AStackWalker(
     u4 options = AStackWalker::SWO_SET_ALL,
     const AString& symbolPath = AConstant::ASTRING_EMPTY, 
@@ -126,7 +125,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
 ////////////////////// INTERNAL STUFF BELOW THIS LINE/////////////////////////
 

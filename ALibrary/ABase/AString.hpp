@@ -120,7 +120,7 @@ public:
   AString accessors toString returns a copy, emit appends contents
   */
   virtual void emit(AOutputBuffer&) const;
-  virtual void emitXml(AXmlElement& target) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   Non modifying operators

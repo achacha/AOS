@@ -59,8 +59,8 @@ public:
   Ability to flush the entire content into AFile&
   Whatever was written will be removed from the buffer
   @return bytes written (0 or more)
-          AConstant::unavail if partial write done but AFile will block on more
-          AConstant::npos if error
+          AConstant::unavail if the call did not write anything and should be retried (non-blocking IO)
+          AConstant::npos if target EOF or unable to write
   */
   virtual size_t flush(AFile&) = 0;
 
