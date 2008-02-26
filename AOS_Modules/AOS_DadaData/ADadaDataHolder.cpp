@@ -48,12 +48,14 @@ void ADadaDataHolder::emit(AOutputBuffer& target) const
   }
 }
 
-void ADadaDataHolder::emitXml(AXmlElement& element) const
+AXmlElement& ADadaDataHolder::emitXml(AXmlElement& thisRoot) const
 {
+  AASSERT(this, !thisRoot.useName().isEmpty());
+  
   WORDMAP::const_iterator cit = m_wordmap.begin();
   while (m_wordmap.end() != cit)
   {
-    AXmlElement& elemType = element.addElement(ASW("type",4));
+    AXmlElement& elemType = thisRoot.addElement(ASW("type",4));
     AXmlElement& elem = elemType.addElement((*cit).first);
     const VECTOR_AString& vec = (*cit).second;
     for (size_t i=0; i<vec.size(); ++i)
@@ -62,6 +64,8 @@ void ADadaDataHolder::emitXml(AXmlElement& element) const
     }
     ++cit;
   }
+
+  return thisRoot;
 }
 
 void ADadaDataHolder::resetData()
