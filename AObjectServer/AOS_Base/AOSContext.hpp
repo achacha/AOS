@@ -287,10 +287,8 @@ public:
 
   /*!
   AXmlEmittable
-
-  @param element to receive the XML dump of this object
   */
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   Checks if dumpContext is specified and is allowed

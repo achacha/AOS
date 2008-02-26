@@ -45,14 +45,15 @@ bool AOSSessionData::getSessionId(AOutputBuffer& target) const
     return false;
 }
 
-void AOSSessionData::emitXml(AXmlElement& target) const
+AXmlElement& AOSSessionData::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign(ASW("AOSSessionData",14));
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
-  m_AgeTimer.emitXml(target.addElement(ASW("session-age",11)));
-  m_LastUsedTimer.emitXml(target.addElement(ASW("last-used",9)));
-  m_Data.getRoot().emitXml(target.addElement(ASW("data",4)));
+  m_AgeTimer.emitXml(thisRoot.addElement(ASW("session-age",11)));
+  m_LastUsedTimer.emitXml(thisRoot.addElement(ASW("last-used",9)));
+  m_Data.getRoot().emitXml(thisRoot.addElement(ASW("data",4)));
+
+  return thisRoot;
 }
 
 const ATimer& AOSSessionData::getAgeTimer() const

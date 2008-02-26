@@ -34,10 +34,10 @@ const AString& AOSDirectoryConfig::getClass() const
   return CLASS;
 }
 
-void AOSDirectoryConfig::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSDirectoryConfig::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader& request)
 {
   //a_Display the command name (which is the path)
-  eBase.addAttribute(ASW("display",7), m_Path);
+  thisRoot.addAttribute(ASW("display",7), m_Path);
 
   ARope rope;
   AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.use().begin();
@@ -47,13 +47,13 @@ void AOSDirectoryConfig::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHead
     ARope ropeName(AOSCommand::S_MODULE);
     ropeName.append('.');
     ropeName.append(AString::fromInt(i));
-    adminAddProperty(eBase, ropeName, (*cit)->getModuleClass());
+    adminAddProperty(thisRoot, ropeName, (*cit)->getModuleClass());
     ropeName.append(".params",7);
 
     rope.clear();
     (*cit)->useParams().emit(rope, 0);
     
-    adminAddProperty(eBase, ropeName, rope, AXmlElement::ENC_CDATASAFE);
+    adminAddProperty(thisRoot, ropeName, rope, AXmlElement::ENC_CDATASAFE);
     ++cit;
     ++i;
   }
@@ -71,20 +71,17 @@ void AOSDirectoryConfig::adminRegisterObject(AOSAdminRegistry& registry)
   registry.insert(str, *this);
 }
 
-void AOSDirectoryConfig::emitXml(AXmlElement& target) const
+AXmlElement& AOSDirectoryConfig::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign(ASW("AOSDirectoryConfig",18));
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
   //a_Modules
-  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.get().begin();
-  while (cit != m_Modules.get().end())
+  for (AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.get().begin(); cit != m_Modules.get().end(); ++cit)
   {
-    AXmlElement& eModule = target.addElement(AOSCommand::S_MODULE);
+    AXmlElement& eModule = thisRoot.addElement(AOSCommand::S_MODULE);
     eModule.addAttribute(AOSCommand::S_CLASS, (*cit)->getModuleClass());
     if ((*cit)->getParams().hasElements())
       eModule.addContent((*cit)->getParams().clone());
-    ++cit;
   }
 }
 

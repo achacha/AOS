@@ -41,7 +41,7 @@ public:
   /*!
   AXmlEmittable
   */
-  virtual void emitXml(AXmlElement&) const;
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   Determines if a command is enabled

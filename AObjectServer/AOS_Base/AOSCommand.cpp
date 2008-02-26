@@ -76,20 +76,20 @@ const AString& AOSCommand::getClass() const
   return CLASS;
 }
 
-void AOSCommand::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSCommand::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader& request)
 {
   //a_Display the commadn name (which is the path)
-  eBase.addAttribute(ASW("display",7), m_CommandPath);
+  thisRoot.addAttribute(ASW("display",7), m_CommandPath);
 
   //a_Alias if any
-  eBase.addAttribute(S_ALIAS, m_CommandAlias);
+  thisRoot.addAttribute(S_ALIAS, m_CommandAlias);
 
   ARope rope;
   if (!m_InputProcessor.isEmpty())
   {
-    adminAddProperty(eBase, S_INPUT, m_InputProcessor);
+    adminAddProperty(thisRoot, S_INPUT, m_InputProcessor);
     m_InputParams.emit(rope, 0);
-    adminAddProperty(eBase, S_INPUT+ASW(".params",7), rope, AXmlElement::ENC_CDATASAFE);
+    adminAddProperty(thisRoot, S_INPUT+ASW(".params",7), rope, AXmlElement::ENC_CDATASAFE);
   }
 
   AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.use().begin();
@@ -99,27 +99,27 @@ void AOSCommand::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& requ
     ARope ropeName(S_MODULE);
     ropeName.append('.');
     ropeName.append(AString::fromInt(i));
-    adminAddProperty(eBase, ropeName, (*cit)->getModuleClass());
+    adminAddProperty(thisRoot, ropeName, (*cit)->getModuleClass());
     ropeName.append(".params",7);
 
     rope.clear();
     (*cit)->useParams().emit(rope, 0);
     
-    adminAddProperty(eBase, ropeName, rope, AXmlElement::ENC_CDATASAFE);
+    adminAddProperty(thisRoot, ropeName, rope, AXmlElement::ENC_CDATASAFE);
     ++cit;
     ++i;
   }
 
   if (!m_OutputGenerator.isEmpty())
   {
-    adminAddProperty(eBase, S_OUTPUT, m_OutputGenerator);
+    adminAddProperty(thisRoot, S_OUTPUT, m_OutputGenerator);
     rope.clear();
     m_OutputParams.emit(rope, 0);
-    adminAddProperty(eBase, S_OUTPUT+ASW(".params",7), rope, AXmlElement::ENC_CDATASAFE);
+    adminAddProperty(thisRoot, S_OUTPUT+ASW(".params",7), rope, AXmlElement::ENC_CDATASAFE);
   }
 
   adminAddPropertyWithAction(
-    eBase, 
+    thisRoot, 
     S_ENABLED, 
     AString::fromBool(m_Enabled),
     ASW("Update",6), 
@@ -127,7 +127,7 @@ void AOSCommand::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& requ
     ASW("Set",3));
   
   adminAddPropertyWithAction(
-    eBase, 
+    thisRoot, 
     S_AJAX, 
     AString::fromBool(m_ForceAjax),
     ASW("Update",6), 
@@ -136,7 +136,7 @@ void AOSCommand::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& requ
   );
 
   adminAddPropertyWithAction(
-    eBase, 
+    thisRoot, 
     S_GZIP, 
     AString::fromInt(m_GZipLevel),
     ASW("Update",6), 
@@ -164,20 +164,19 @@ void AOSCommand::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader
   }
 }
 
-void AOSCommand::emitXml(AXmlElement& target) const
+AXmlElement& AOSCommand::emitXml(AXmlElement& thisRoot) const
 {
-  if (target.useName().isEmpty())
-    target.useName().assign(S_COMMAND);
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
   if (!m_CommandAlias.isEmpty())
-    target.addAttribute(S_ALIAS, m_CommandAlias);
+    thisRoot.addAttribute(S_ALIAS, m_CommandAlias);
   
-  target.addAttribute(S_ENABLED, m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
-  target.addAttribute(S_AJAX, m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
-  target.addAttribute(S_GZIP, AString::fromInt(m_GZipLevel));
+  thisRoot.addAttribute(S_ENABLED, m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
+  thisRoot.addAttribute(S_AJAX, m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
+  thisRoot.addAttribute(S_GZIP, AString::fromInt(m_GZipLevel));
   
   //a_Input
-  AXmlElement& eInput = target.addElement(S_INPUT);
+  AXmlElement& eInput = thisRoot.addElement(S_INPUT);
   eInput.addAttribute(S_CLASS, m_InputProcessor);
   if (m_InputParams.hasElements()) 
     eInput.addContent(m_InputParams.clone());
@@ -186,7 +185,7 @@ void AOSCommand::emitXml(AXmlElement& target) const
   AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.get().begin();
   while (cit != m_Modules.get().end())
   {
-    AXmlElement& eModule = target.addElement(S_MODULE);
+    AXmlElement& eModule = thisRoot.addElement(S_MODULE);
     eModule.addAttribute(S_CLASS, (*cit)->getModuleClass());
     if ((*cit)->getParams().hasElements())
       eModule.addContent((*cit)->getParams().clone());
@@ -194,7 +193,7 @@ void AOSCommand::emitXml(AXmlElement& target) const
   }
 
   //a_Output
-  AXmlElement& eOutput = target.addElement(S_OUTPUT);
+  AXmlElement& eOutput = thisRoot.addElement(S_OUTPUT);
   eOutput.addAttribute(S_CLASS, m_OutputGenerator);
   if (m_OutputParams.hasElements())
     eOutput.addContent(m_OutputParams.clone());

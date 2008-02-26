@@ -687,30 +687,32 @@ AOSContext::Status AOSContext::_processHttpHeader()
   return AOSContext::STATUS_OK;
 }
 
-void AOSContext::emitXml(AXmlElement& target) const
+AXmlElement& AOSContext::emitXml(AXmlElement& thisRoot) const
 {  
-  AASSERT(this, !target.useName().isEmpty());
+  AASSERT(this, !thisRoot.useName().isEmpty());
 
-  target.useAttributes().insert(ASW("this",4), AString::fromPointer(this));
-  target.useAttributes().insert(ASW("request_timer",13), AString::fromDouble(m_RequestTimer.getInterval()));
-  target.useAttributes().insert(ASW("context_timer",13), AString::fromDouble(m_ContextTimer.getInterval()));
+  thisRoot.useAttributes().insert(ASW("this",4), AString::fromPointer(this));
+  thisRoot.useAttributes().insert(ASW("request_timer",13), AString::fromDouble(m_RequestTimer.getInterval()));
+  thisRoot.useAttributes().insert(ASW("context_timer",13), AString::fromDouble(m_ContextTimer.getInterval()));
 
-  m_EventVisitor.emitXml(target.addElement(ASW("AEventVisitor",13)));
-  m_Services.useGlobalObjects().emitXml(target.addElement(ASW("GlobalObjects",13)));
-  m_ContextObjects.emitXml(target.addElement(ASW("ContextObjects",14)));
-  m_RequestHeader.emitXml(target.addElement(ASW("RequestHeader",13)));
-  m_ResponseHeader.emitXml(target.addElement(ASW("ResponseHeader",14)));
-  m_ConnectionFlags.emitXml(target.addElement(ASW("ConnectionFlags",15)));
-  m_ContextFlags.emitXml(target.addElement(ASW("ContextFlags",12)));
+  m_EventVisitor.emitXml(thisRoot.addElement(ASW("EventVisitor",12)));
+  m_Services.useGlobalObjects().emitXml(thisRoot.addElement(ASW("GlobalObjects",13)));
+  m_ContextObjects.emitXml(thisRoot.addElement(ASW("ContextObjects",14)));
+  m_RequestHeader.emitXml(thisRoot.addElement(ASW("RequestHeader",13)));
+  m_ResponseHeader.emitXml(thisRoot.addElement(ASW("ResponseHeader",14)));
+  m_ConnectionFlags.emitXml(thisRoot.addElement(ASW("ConnectionFlags",15)));
+  m_ContextFlags.emitXml(thisRoot.addElement(ASW("ContextFlags",12)));
 
   if (mp_SessionObject)
-    mp_SessionObject->emitXml(target.addElement(ASW("Session",7)));
+    mp_SessionObject->emitXml(thisRoot.addElement(ASW("Session",7)));
 
   //a_Check if command exists, if not it could be static content
   if (mp_Command)
-    mp_Command->emitXml(target.addElement(ASW("Command",7)));
+    mp_Command->emitXml(thisRoot.addElement(ASW("Command",7)));
   else
-    target.addElement(ASW("Command",7), ASW("NULL",4));
+    thisRoot.addElement(ASW("Command",7), ASW("NULL",4));
+
+  return thisRoot;
 }
 
 AFile_Socket& AOSContext::useSocket()
