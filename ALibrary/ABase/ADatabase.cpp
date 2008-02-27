@@ -37,6 +37,8 @@ AXmlElement& ADatabase::emitXml(AXmlElement& thisRoot) const
 
   thisRoot.addElement(ASW("url",3)).addData(m_urlConnection);
   thisRoot.addElement(ASW("isInitialized", 13)).addData(mbool_Initialized);
+
+  return thisRoot;
 }
 
 const AUrl& ADatabase::getUrl() const
