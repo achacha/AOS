@@ -83,6 +83,8 @@ AXmlElement& AOSDirectoryConfig::emitXml(AXmlElement& thisRoot) const
     if ((*cit)->getParams().hasElements())
       eModule.addContent((*cit)->getParams().clone());
   }
+
+  return thisRoot;
 }
 
 void AOSDirectoryConfig::fromXml(const AXmlElement& element)

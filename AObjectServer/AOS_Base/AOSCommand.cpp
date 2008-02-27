@@ -197,6 +197,8 @@ AXmlElement& AOSCommand::emitXml(AXmlElement& thisRoot) const
   eOutput.addAttribute(S_CLASS, m_OutputGenerator);
   if (m_OutputParams.hasElements())
     eOutput.addContent(m_OutputParams.clone());
+
+  return thisRoot;
 }
 
 void AOSCommand::fromXml(const AXmlElement& element)
