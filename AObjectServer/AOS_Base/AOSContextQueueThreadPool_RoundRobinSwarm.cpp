@@ -98,8 +98,14 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
   m_Queues.at(currentQueue)->push(pContext);
 
 //  std::cout << typeid(*this).name() << ":" << getClass() <<  "::add(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
-
-  pContext->setExecutionState(ARope(getClass())+"::add["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
+  
+  AString str;
+  str.append(getClass());
+  str.append("::add[",6);
+  str.append(AString::fromInt(currentQueue));
+  str.append("]=",2);
+  str.append(AString::fromPointer(pContext));
+  pContext->setExecutionState();
 }                                                                                                                                                                                                 
 
 AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
@@ -110,7 +116,13 @@ AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
   {
     //    std::cout << typeid(*this).name() << ":" << getClass() <<  "::next(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
 
-    pContext->setExecutionState(ARope(getClass())+"::_nextContext["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
+    AString str;
+    str.append(getClass());
+    str.append("::_nextContext[",15);
+    str.append(AString::fromInt(currentQueue));
+    str.append("]=",2);
+    str.append(AString::fromPointer(pContext));
+    pContext->setExecutionState(rope);
   }
   return pContext;
 }
