@@ -28,7 +28,7 @@ AOSContext::ReturnCode AOSModule_LoginController::execute(AOSContext& context, c
     if (moduleParams.emitString(AOS_User_Constants::PARAM_REDIRECT_LOGINPAGE, str))
     {
       //a_Redirect to login page
-      context.setExecutionState(ASW("User not logged in, redirecting",31));
+      context.useEventVisitor().startEvent(ASW("User not logged in, redirecting",31));
       if (moduleParams.exists(AOS_User_Constants::PARAM_SECURE))
       {
         AUrl url(str);

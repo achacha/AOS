@@ -64,7 +64,7 @@ AOSContext::ReturnCode AOSModule_AuthenticateUser::execute(AOSContext& context, 
         }
         else
         {
-          context.setExecutionState(ARope("Login failure #")+attempts);
+          context.useEventVisitor().startEvent(ARope("Login failure #")+attempts);
         }
       }
     }
