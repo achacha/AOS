@@ -148,9 +148,38 @@ void AOSCommand::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader& r
 void AOSCommand::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   AString str;
+  if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
+  {
+    AString value;
+    if (request.getUrl().getParameterPairs().get(ASW("Set",3), value))
+    {
+      //a_Toggle cache state and clear when disabled
+      if (str.endsWith(S_ENABLED))
+      {
+        m_Enabled = value.toBool();
+      }
+      else if (str.endsWith(S_AJAX))
+      {
+        m_ForceAjax = value.toBool();
+      }
+      else if (str.endsWith(S_GZIP))
+      {
+        int level = value.toInt();
+        if (level >=0 && level <=9)
+          m_GZipLevel = level;
+      }
+      else
+        adminAddError(eBase, ARope("Unknown property: ")+str);
+    }
+    else
+      adminAddError(eBase, ARope("Set value not found: ")+value);
+  }
+  else
+    adminAddError(eBase, ARope("Property not found: ")+str);
+
+
   if (request.getUrl().getParameterPairs().get(S_ENABLED, str))
   {
-    m_Enabled = (str.at(0) == '0' ? false : true);
   }
   else if (request.getUrl().getParameterPairs().get(S_AJAX, str))
   {
