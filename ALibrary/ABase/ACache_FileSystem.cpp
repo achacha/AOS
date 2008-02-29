@@ -274,11 +274,14 @@ ACache_FileSystem::STATUS ACache_FileSystem::get(
     (*it).second->hit();
     
     //a_Reset for reading
-    it->second->pData->setReadPos(0);
     pFile.reset(it->second->pData, false);
     if (pFile.isNull())
       return ACacheInterface::NOT_FOUND;
 
+    //a_Rewind the string file
+    it->second->pData->setReadPos(0);
+    
+    //a_Set modified time
     modified = it->second->lastModified;
     if (modified > ifModifiedSince)
       return ACacheInterface::FOUND;
