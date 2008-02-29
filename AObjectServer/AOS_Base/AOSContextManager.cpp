@@ -161,7 +161,7 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
       rope.append(", pFile=",8);
       rope.append(AString::fromPointer(pSocket));
       rope.append("] freestore",11);
-      p->setExecutionState(rope);
+      p->useEventVisitor().addEvent(rope);
     }
     else
     {
@@ -172,7 +172,7 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
       rope.append(", pFile=",8);
       rope.append(AString::fromPointer(pSocket));
       rope.append("] new create",12);
-      p->setExecutionState(rope);
+      p->useEventVisitor().startEvent(rope);
     }
   }
 
@@ -209,10 +209,9 @@ void AOSContextManager::deallocate(AOSContext *p)
   ARope rope("AOSContextManager::deallocate[",30);
   rope.append(AString::fromPointer(p));
   rope.append(']');
-  p->setExecutionState(rope);
+  p->useEventVisitor().startEvent(rope);
   
-  //a_Stop event visitor timer and clear current event, then log to log
-  p->useEventVisitor().reset();
+  //a_Write to log
   if (p->useEventVisitor().getErrorCount() > 0)
   {
     m_Services.useLog().add(p->useEventVisitor(), ALog::CRITICAL_ERROR);

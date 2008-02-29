@@ -101,20 +101,20 @@ void AOSInputExecutor::execute(AOSContext& context)
   if (!context.useRequestHeader().useUrl().useParameterPairs().get(OVERRIDE_INPUT, command))
   {
     command = context.getInputCommand();
-    context.setExecutionState(ARope("Input processor: ")+command);
+    context.useEventVisitor().startEvent(ARope("Input processor: ")+command);
   }
 
   if (command.isEmpty())
   {
     if (m_Services.useConfiguration().getAosDefaultInputProcessor().isEmpty())
     {
-      context.setExecutionState(ASW("No input processor", 18));
+      context.useEventVisitor().startEvent(ASW("No input processor", 18));
       return;                                 //a_Do nothing, no command and no default
     }
     else
     {
       command.assign(m_Services.useConfiguration().getAosDefaultInputProcessor());
-      context.setExecutionState(ARope("No input processor, using default: ")+command);
+      context.useEventVisitor().startEvent(ARope("No input processor, using default: ")+command);
     }
   }
 
@@ -137,18 +137,16 @@ void AOSInputExecutor::execute(AOSContext& context)
       switch (retCode)
       {
         case AOSContext::RETURN_ERROR:
-          context.addError((*it).second->getClass()+"::execute", "Returned false");
-          context.useEventVisitor().reset();
+          context.addError((*it).second->getClass()+"::execute", ASW("Returned false",14));
         break;
 
         case AOSContext::RETURN_REDIRECT:
           context.useContextFlags().setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
-          context.useEventVisitor().set(ASW("Redirect detected.",18));
-          context.useEventVisitor().reset();
+          context.useEventVisitor().addEvent(ASW("Redirect detected.",18));
         break;
 
         default:
-          context.useEventVisitor().reset();
+          context.useEventVisitor().endEvent();
         break;
       }
     }
@@ -160,15 +158,15 @@ void AOSInputExecutor::execute(AOSContext& context)
     strWhere.append(')');
     context.addError(strWhere, ex.what());
 
-    context.setExecutionState(strWhere, true);
+    context.useEventVisitor().addEvent(strWhere, AEventVisitor::EL_ERROR);
   }
   catch(...)
   {
     AString strWhere("AOSInputExecutor::execute(", 26);
     strWhere.append(command);
     strWhere.append(')');
-    context.addError(strWhere, "Unknown Exception");
+    context.addError(strWhere, ASWNL("Unknown Exception"));
 
-    context.setExecutionState(strWhere, true);
+    context.useEventVisitor().addEvent(strWhere, AEventVisitor::EL_ERROR);
   }
 }

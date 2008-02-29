@@ -177,28 +177,6 @@ public:
   bool processStaticPage();
 
   /*!
-  Set execution state of the context
-  The old state is pushed into the queue with time in event
-  @param execution state
-  @param if this state is an error
-  @param maximum time it should stay in this state (used in some cases to detect timeout)
-  */
-  void setExecutionState(const AEmittable&, bool isError = false, double maxTimeInState = INVALID_TIME_INTERVAL);
-  
-  /*!
-  Set execution state of the context to the what() of the exception, this is always an error state
-  The old state is pushed into the queue with time in event
-  @param execution state exception treated as an error
-  */
-  void setExecutionState(const AException&);
-
-  /*!
-  Reset the execution state
-  Pushes current state into the queue and stops the timer of the state
-  */
-  void resetExecutionState();
-
-  /*!
   True if the current state max time is exceeded (timeout set by setExecutionState)
   @return true if the current state is over the max time specified
   */
@@ -311,16 +289,25 @@ public:
   Gets the session object
   */
   void setSessionObject(AOSSessionData *);
+    
+  /*!
+  Access the event visitor
+  This is where all events for the context get added
+  */
+  AEventVisitor& useEventVisitor();
   
   /*!
   Error message handling
+  Adds error to AEventVisitor of this context
+  Adds error to the running log file and flushes it
+
   Calling this will include context dump in log
-  addDebugDump will force a debugDump on this context and add it to the log (can be long and mainly for critical errors)
+  @param where Location of the error
+  @param what Error type
+  @param addDebugDump will force a debugDump on this context and add it to the log (can be long and mainly for critical errors)
   */
-  void addError(const AString& where, const AString& what, bool addDebugDump = false);
-  void addError(const AString& where, const AException& what, bool addDebugDump = false);
-  AEventVisitor& useEventVisitor();
-  
+  void addError(const AString& where, const AEmittable& what, bool addDebugDump = false);
+
   /*!
   Set response header to do a 302 redirect
   Does NOT set the context flag CTX_IS_REDIRECTING (that is set when AOSContext::RETURN_REDIRECT is detected by executor)

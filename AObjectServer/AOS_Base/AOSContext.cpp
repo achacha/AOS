@@ -164,7 +164,7 @@ void AOSContext::finalize()
   {
     if (m_ConnectionFlags.isClear(AOSContext::CONFLAG_IS_SOCKET_CLOSED))
     {
-      setExecutionState(ASW("AOSContextManager::deallocate: Closing socket connection",56));
+      m_EventVisitor.startEvent(ASW("AOSContextManager::deallocate: Closing socket connection",56));
       mp_RequestFile->close();
     }
     
@@ -172,17 +172,20 @@ void AOSContext::finalize()
   }
 
   //a_Clear ouput model and buffer and stop event timer
-  m_EventVisitor.set(ASW("Finalizing context.",19));
+  m_EventVisitor.startEvent(ASW("Finalizing context",18));
+
   m_OutputBuffer.clear();
   m_OutputXmlDocument.clear();
   m_ContextObjects.clear();
-  m_EventVisitor.reset(true);
+
+  m_EventVisitor.endEvent();
+  m_EventVisitor.useLifespanTimer().stop();
 }
 
 void AOSContext::clear()
 {
   reset(NULL);
-  m_EventVisitor.set(ASW("Clearing context.",17));
+  m_EventVisitor.startEvent(ASW("Clearing context",17));
   m_EventVisitor.clear();
   m_ConnectionFlags.clear();
 }
@@ -219,13 +222,13 @@ AOSContext::Status AOSContext::init()
   {
     ARope rope("AOSContext: Socket exception: ",30);
     rope.append(AString::fromU4(ex.getErrno()));
-    m_EventVisitor.set(rope);
+    m_EventVisitor.startEvent(rope);
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
     mp_RequestFile->close();
     return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
   }
 
-  setExecutionState(ASW("AOSContext: Processing HTTP header",34), false);
+  m_EventVisitor.startEvent(ASW("AOSContext: Processing HTTP header",34));
 
   m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
   m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
@@ -252,7 +255,7 @@ AOSContext::Status AOSContext::init()
   //a_Set the command
   if (!setCommandFromRequestUrl())
   {
-    m_EventVisitor.set(ARope("AOSContext::init: ")+ASWNL("Unable to find the command for request URL: ")+m_RequestHeader.useUrl());
+    m_EventVisitor.startEvent(ARope("AOSContext::init: ")+ASWNL("Unable to find the command for request URL: ")+m_RequestHeader.useUrl());
   }
 
   //a_Initialize response header
@@ -273,7 +276,7 @@ bool AOSContext::_waitForFirstChar()
   {
     ARope rope("AOSContext: Sleep cycle ",24);
     rope.append(AString::fromInt(tries));
-    setExecutionState(rope);
+    m_EventVisitor.startEvent(rope);
 
     AThread::sleep(sleeptime);
     sleeptime += SLEEP_INCREMENT;
@@ -302,7 +305,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   if (!mp_RequestFile)
     ATHROW(this, AException::InvalidObject);
 
-  setExecutionState(ASW("AOSContext: Reading HTTP method",31), false, 30000.0);  //a_Read header for 60 seconds
+  m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP method",31), 30000.0);  //a_Read header for 60 seconds
   AString str(8188, 1024);
 
   // Sum( N * sleeptime, 0 to N-1)
@@ -318,7 +321,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
       //a_Data not available, try and read-wait to get it
       if (!_waitForFirstChar())
       {
-        m_EventVisitor.set(ASW("AOSContext: Unable to read first char after retires",51));
+        m_EventVisitor.startEvent(ASW("AOSContext: Unable to read first char after retires",51));
         return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
       }
       else
@@ -327,7 +330,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
     break;
 
     case AConstant::npos:
-      m_EventVisitor.set(ASW("AOSContext: Error reading first char",36));
+      m_EventVisitor.startEvent(ASW("AOSContext: Error reading first char",36));
       return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
 
     case 0:
@@ -336,7 +339,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
       if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_ISAVAILABLE_PENDING))
       {
         //a_If select thinks there is data but we cannot read any then socket is dead
-        m_EventVisitor.set(ASWNL("AOSContext: Handling closed socket (should be in isAvailable)"));
+        m_EventVisitor.startEvent(ASWNL("AOSContext: Handling closed socket (should be in isAvailable)"));
         mp_RequestFile->close();
         return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
       }
@@ -346,7 +349,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
         
         if (!_waitForFirstChar())
         {
-          m_EventVisitor.set(ASW("AOSContext: Zero data read looking for first char",49));
+          m_EventVisitor.startEvent(ASW("AOSContext: Zero data read looking for first char",49));
           return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
         }
         else
@@ -556,7 +559,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
     //a_Not enough data to read the method
     mp_RequestFile->putBack(str);
 
-    m_EventVisitor.set(AString("AOSContext: Insufficiet data reading HTTP method: ",50)+str);
+    m_EventVisitor.startEvent(AString("AOSContext: Insufficiet data reading HTTP method: ",50)+str);
     return AOSContext::STATUS_HTTP_INCOMPLETE_METHOD;
   }
 
@@ -571,7 +574,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
       rope.append(c);
       rope.append("\': ",3);
       rope.append(str);
-      m_EventVisitor.set(rope, true);
+      m_EventVisitor.startEvent(rope, true);
       return AOSContext::STATUS_HTTP_INVALID_AFTER_METHOD_CHAR;
     }
     else
@@ -585,14 +588,14 @@ AOSContext::Status AOSContext::_processHttpHeader()
     rope.append(AString::fromInt((int)c));
     rope.append(": ",2);
     ATextConverter::makeAsciiPrintable(str, rope);
-    m_EventVisitor.set(rope, true);
+    m_EventVisitor.startEvent(rope, true);
     return AOSContext::STATUS_HTTP_INVALID_FIRST_CHAR;
   }
 
-  setExecutionState(ASW("AOSContext: Reading HTTP line zero",34), false, 2000.0);
+  m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP line zero",34), 2000.0);
   if (AConstant::npos == (bytesRead = mp_RequestFile->readLine(str, 4096, false)))
   {
-    m_EventVisitor.set(AString("Line zero incomplete: '",22)+str+'\'');
+    m_EventVisitor.startEvent(AString("Line zero incomplete: '",22)+str+'\'');
 
     //a_Put the stuff we read back
     mp_RequestFile->putBack(str);
@@ -602,7 +605,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   str.append(AConstant::ASTRING_CRLF);
 
   //a_Read until only 2 bytes (CR and LF) are read which signifies a blank line and end of http header
-  setExecutionState(ASW("AOSContext: Reading HTTP header",31), false, 60000.0);  //a_Read header for 60 seconds
+  m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP header",31), 60000.0);  //a_Read header for 60 seconds
   size_t headerBytes = mp_RequestFile->readUntil(str, AConstant::ASTRING_CRLF, true, false);
   while (2 != headerBytes && AConstant::npos != headerBytes)
   {
@@ -612,7 +615,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   //a_Check if header not done
   if (AConstant::npos == headerBytes || headerBytes > 2)
   {
-    m_EventVisitor.set(ARope("Incomplete HTTP header or CRLF CRLF not found: '", 45)+str+'\'');
+    m_EventVisitor.startEvent(ARope("Incomplete HTTP header or CRLF CRLF not found: '", 45)+str+'\'');
     
     //a_Put the stuff we read back
     mp_RequestFile->putBack(str);
@@ -623,7 +626,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   }
 
   //a_Parse the header
-  setExecutionState(ASW("AOSContext: Parsing HTTP header",31), false, 5000.0);
+  m_EventVisitor.startEvent(ASW("AOSContext: Parsing HTTP header",31), 5000.0);
   m_RequestHeader.parse(str);
 
   //a_Check if valid HTTP version
@@ -634,39 +637,39 @@ AOSContext::Status AOSContext::_processHttpHeader()
   switch (m_RequestHeader.getMethodId())
   {
     case AHTTPRequestHeader::METHOD_ID_OPTIONS:
-      setExecutionState(ASW("AOSContext: OPTIONS request",27), false);
+      m_EventVisitor.startEvent(ASW("AOSContext: OPTIONS request",27));
       return AOSContext::STATUS_HTTP_METHOD_OPTIONS;
 
     case AHTTPRequestHeader::METHOD_ID_CONNECT:
-      setExecutionState(ASW("AOSContext: CONNECT not allowed",31), true);
+      m_EventVisitor.startEvent(ASW("AOSContext: CONNECT not allowed",31), AEventVisitor::EL_ERROR);
       return AOSContext::STATUS_HTTP_METHOD_NOT_ALLOWED;
 
     case AHTTPRequestHeader::METHOD_ID_DELETE:
-      setExecutionState(ASW("AOSContext: DELETE not allowed",30), true);
+      m_EventVisitor.startEvent(ASW("AOSContext: DELETE not allowed",30), AEventVisitor::EL_ERROR);
       return AOSContext::STATUS_HTTP_METHOD_NOT_ALLOWED;
 
     case AHTTPRequestHeader::METHOD_ID_PUT:
-      setExecutionState(ASW("AOSContext: PUT not allowed",27), true);
+      m_EventVisitor.startEvent(ASW("AOSContext: PUT not allowed",27), AEventVisitor::EL_ERROR);
       return AOSContext::STATUS_HTTP_METHOD_NOT_ALLOWED;
 
     case AHTTPRequestHeader::METHOD_ID_TRACE:
-      setExecutionState(ASW("AOSContext: TRACE not allowed",29), true);
+      m_EventVisitor.startEvent(ASW("AOSContext: TRACE not allowed",29), AEventVisitor::EL_ERROR);
       return AOSContext::STATUS_HTTP_METHOD_NOT_ALLOWED;
 
     case AHTTPRequestHeader::METHOD_ID_UNKNOWN:
-      setExecutionState(ASW("AOSContext: Unknown method",26), true);
+      m_EventVisitor.startEvent(ASW("AOSContext: Unknown method",26), AEventVisitor::EL_ERROR);
       return AOSContext::STATUS_HTTP_UNKNOWN_METHOD;
   }
 
   if (!m_RequestHeader.isValidPath())
   {
-    setExecutionState(ASW("AOSContext: Invalid path",24), true);
+    m_EventVisitor.startEvent(ASW("AOSContext: Invalid path",24), AEventVisitor::EL_ERROR);
     return AOSContext::STATUS_HTTP_INVALID_REQUEST_PATH;
   }
 
   if (!m_RequestHeader.isValidHttp())
   {
-    setExecutionState(ASW("AOSContext: Invalid http header",31), true);
+    m_EventVisitor.startEvent(ASW("AOSContext: Invalid http header",31), AEventVisitor::EL_ERROR);
     return AOSContext::STATUS_HTTP_INVALID_HEADER;
   }
 
@@ -682,7 +685,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   
   ARope rope("AOSContext: HTTP request header\r\n",33);
   rope.append(m_RequestHeader);
-  setExecutionState(rope);
+  m_EventVisitor.startEvent(rope);
 
   return AOSContext::STATUS_OK;
 }
@@ -779,7 +782,7 @@ AOSServices& AOSContext::useServices()
 
 void AOSContext::addError(
   const AString& where,
-  const AString& what,
+  const AEmittable& what,
   bool addDebugDump // = false
 )
 {
@@ -793,16 +796,7 @@ void AOSContext::addError(
     m_RequestHeader.getUrl().emit(rope, true);
   }
   m_Services.useLog().add(where, what, rope, ALog::CRITICAL_ERROR);
-  m_EventVisitor.set(where+":"+what, true);
-}
-
-void AOSContext::addError(
-  const AString& where,
-  const AException& what,
-  bool addDebugDump // = false
-)
-{
-  addError(where, what.what(), addDebugDump);
+  m_EventVisitor.startEvent(where+":"+what, true);
 }
 
 void AOSContext::setResponseMimeTypeFromRequestExtension()
@@ -896,21 +890,6 @@ ABasePtrContainer& AOSContext::useContextObjects()
   return m_ContextObjects;
 }
 
-void AOSContext::setExecutionState(const AEmittable& state, bool isError, double maxTimeInState)
-{
-  m_EventVisitor.set(state, isError, maxTimeInState);
-}
-
-void AOSContext::resetExecutionState()
-{
-  m_EventVisitor.reset();
-}
-
-void AOSContext::setExecutionState(const AException& ex)
-{
-  m_EventVisitor.set(ex);
-}
-
 size_t AOSContext::getModuleNames(LIST_AString& names) const
 {
   if (!mp_Command)
@@ -968,7 +947,7 @@ void AOSContext::writeResponseHeader()
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
     ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
 
-  m_EventVisitor.set(ASW("Sending HTTP response header",28));
+  m_EventVisitor.startEvent(ASW("Sending HTTP response header",28));
 
   AString str(10240, 4096);
 
@@ -983,19 +962,18 @@ void AOSContext::writeResponseHeader()
 
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
 
-  m_EventVisitor.set(str);
-  m_EventVisitor.reset();
+  m_EventVisitor.addEvent(str);
 }
 
 void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 {
-  m_EventVisitor.set(ASW("AOSContext: write output",24));
+  m_EventVisitor.startEvent(ASW("AOSContext: write output",24));
   AASSERT(this, mp_RequestFile);
   int gzipLevel = calculateGZipLevel();
   if (gzipLevel > 0 && gzipLevel < 10 && !forceXmlDocument)
   {
     AASSERT_EX(this, m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT), ASWNL("Response header already written, incompatible with gzip output"));
-    m_EventVisitor.set(ASW("Compressing",11));
+    m_EventVisitor.startEvent(ASW("Compressing",11));
 
     AString original(m_OutputBuffer);
     AString compressed(m_OutputBuffer.getSize()+16, 1024);
@@ -1009,7 +987,7 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 
     //a_The writing of the output
     writeResponseHeader();
-    m_EventVisitor.set(ASW("AOSContext: Writing compressed",30));
+    m_EventVisitor.startEvent(ASW("AOSContext: Writing compressed",30));
     
     size_t originalSize = compressed.getSize();
     size_t written = _write(compressed);
@@ -1038,13 +1016,13 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
       writeResponseHeader();  //a_Sets flag that it was sent
     }
 
-    m_EventVisitor.set(ASW("AOSContext: Writing uncompressed",32));
+    m_EventVisitor.startEvent(ASW("AOSContext: Writing uncompressed",32));
     size_t originalSize = m_OutputBuffer.getSize();
     size_t written = _write(m_OutputBuffer);
     AASSERT(this, written == originalSize);
   }
 
-  m_EventVisitor.reset();
+  m_EventVisitor.endEvent();
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
 }
 
@@ -1130,7 +1108,7 @@ bool AOSContext::setCommandFromRequestUrl()
   const AString& alias = mp_Command->getCommandAlias();
   if (!alias.isEmpty())
   {
-    setExecutionState(ARope("Aliased: ",9)+mp_Command->getCommandAlias());
+    m_EventVisitor.startEvent(ARope("Aliased: ",9)+mp_Command->getCommandAlias());
     
     if ('/' == alias.at(0))
     {
@@ -1143,13 +1121,13 @@ bool AOSContext::setCommandFromRequestUrl()
       AString str;
       mp_Command->emitCommandBasePath(str);
       str.append(alias);
-      setExecutionState(ARope("Relative aliased to: ")+str);
+      m_EventVisitor.startEvent(ARope("Relative aliased to: ")+str);
       mp_Command = m_Services.useConfiguration().getCommand(str);
     }
 
     if (!mp_Command->getCommandAlias().isEmpty())
     {
-      setExecutionState(ASWNL("Aliased command is also an alias, which is not supported."));
+      m_EventVisitor.startEvent(ASWNL("Aliased command is also an alias, which is not supported."));
       mp_Command = NULL;
     }
 
@@ -1251,7 +1229,7 @@ size_t AOSContext::getOutputBufferSize() const
 
 bool AOSContext::processStaticPage()
 {
-  setExecutionState(ASW("Serving static content",22));
+  m_EventVisitor.startEvent(ASW("Serving static content",22));
   AFilename httpFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
 
   static const AString ROOT_PATH("/", 1);
@@ -1287,7 +1265,7 @@ bool AOSContext::processStaticPage()
   {
     case ACache_FileSystem::NOT_FOUND:
       //a_Handle file not found
-      setExecutionState(ARope("File not found (HTTP-404 static): ",34)+httpFilename);
+      m_EventVisitor.startEvent(ARope("File not found (HTTP-404 static): ",34)+httpFilename);
       m_Services.useLog().add(ASW("File not found (HTTP-404 static): ",34), httpFilename, ALog::INFO);
       
       //a_Set response status and return with failed (display error template)
@@ -1295,7 +1273,7 @@ bool AOSContext::processStaticPage()
     return false;
 
     case ACache_FileSystem::FOUND_NOT_MODIFIED:
-      setExecutionState(ARope("File not modified (HTTP-304): ",30)+httpFilename);
+      m_EventVisitor.startEvent(ARope("File not modified (HTTP-304): ",30)+httpFilename);
       
       //a_Set status 304 and return true (no need to display error template)
       m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_304_Not_Modified);
@@ -1319,14 +1297,14 @@ bool AOSContext::processStaticPage()
         writeResponseHeader();
 
         //a_Stream content
-        setExecutionState(ARope("Streaming file: ",16)+httpFilename);
+        m_EventVisitor.startEvent(ARope("Streaming file: ",16)+httpFilename);
         contentLength = _write(*pFile);
 
         if (AConstant::npos == contentLength)
-          setExecutionState(ASW("Failed to write",15));
+          m_EventVisitor.addEvent(ASW("Failed to write",15));
         else
-          setExecutionState(ARope("Streamed bytes: ",16)+AString::fromSize_t(contentLength));
-        m_EventVisitor.reset();
+          m_EventVisitor.addEvent(ARope("Streamed bytes: ",16)+AString::fromSize_t(contentLength));
+
         m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
         return true;
       }
@@ -1339,10 +1317,9 @@ bool AOSContext::processStaticPage()
         m_ResponseHeader.setLastModified(modified);
 
         //a_Buffer the file, Content-Length set in the write header
-        setExecutionState(ARope("Sending file: ",14)+httpFilename);
+        m_EventVisitor.startEvent(ARope("Sending file: ",14)+httpFilename);
         pFile->emit(m_OutputBuffer);
-        setExecutionState(ARope("Output buffer bytes: ",21)+AString::fromSize_t(m_OutputBuffer.getSize()));
-        m_EventVisitor.reset();
+        m_EventVisitor.addEvent(ARope("Output buffer bytes: ",21)+AString::fromSize_t(m_OutputBuffer.getSize()));
       }
     break;
 
@@ -1366,10 +1343,10 @@ bool AOSContext::processStaticPage()
   catch(ASocketException& ex)
   {
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-    m_EventVisitor.set(ex, false);
+    m_EventVisitor.addEvent(ex, AEventVisitor::EL_INFO);
     return false;
   }
-
-  m_EventVisitor.reset();
+  
+  m_EventVisitor.endEvent();
   return true;
 }

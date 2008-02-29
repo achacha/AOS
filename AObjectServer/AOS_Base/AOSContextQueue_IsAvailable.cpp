@@ -227,7 +227,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   {
                     //a_No data to read, socket is closed
                     (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_CLOSED);
-                    (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: Detected closed remote socket",58));
+                    (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: Detected closed remote socket",58));
                     (*itMove)->useSocket().close();
 
                     {
@@ -246,9 +246,9 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                       (*itMove)->useTimeoutTimer().emit(str);
 
                       //a_We are done with this request, still no data
-                      (*itMove)->setExecutionState(
+                      (*itMove)->useEventVisitor().startEvent(
                         str, 
-                        !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
+                        ((*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING) ? AEventVisitor::EL_EVENT : AEventVisitor::EL_ERROR)
                       );
                       {
                         ALock lock(pThis->sync);
@@ -262,7 +262,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   {
                     //a_Add to next queue
                     (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
-                    (*itMove)->setExecutionState(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54));
+                    (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54));
 
                     {
                       ALock lock(pThis->sync);
@@ -287,9 +287,9 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   (*itMove)->useTimeoutTimer().emit(str);
 
                   //a_We are done with this request, still no data
-                  (*itMove)->setExecutionState(
+                  (*itMove)->useEventVisitor().startEvent(
                     str, 
-                    !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
+                    ((*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING) ? AEventVisitor::EL_EVENT : AEventVisitor::EL_ERROR)
                   );
                   {
                     ALock lock(pThis->sync);
@@ -322,9 +322,9 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
 
                 //a_We are done with this request, still no data
                 ALock lock(pThis->sync);
-                (*itMove)->setExecutionState(
+                (*itMove)->useEventVisitor().startEvent(
                   str, 
-                  !(*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING)
+                  ((*itMove)->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING) ? AEventVisitor::EL_EVENT : AEventVisitor::EL_ERROR)
                 );
                 pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &(*itMove));
                 pThis->queue.erase(itMove);
@@ -369,7 +369,7 @@ void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
   pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
 
   static const AString LOG_MSG("AOSContextQueue_IsAvailable::add");
-  pContext->setExecutionState(LOG_MSG);
+  pContext->useEventVisitor().startEvent(LOG_MSG);
 
   volatile long currentQueue = ::InterlockedIncrement(&m_currentQueue) % m_queueCount;
 
@@ -380,7 +380,7 @@ void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
     pContext->useTimeoutTimer().start();
     m_Queues.at(currentQueue)->queue.push_back(pContext);
     ++m_Queues.at(currentQueue)->count;
-    pContext->setExecutionState(ARope(getClass())+"::add["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
+    pContext->useEventVisitor().addEvent(ARope(getClass())+"::add["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
   }
 }
 

@@ -73,6 +73,6 @@ void ATemplateNodeHandler_SESSION::Node::process(ABasePtrContainer& objects, AOu
   }
   else
   {
-    pContext->useEventVisitor().set(ARope("Unable to find SESSION element: ")+m_BlockData);
+    pContext->useEventVisitor().startEvent(ARope("Unable to find SESSION element: ")+m_BlockData);
   }
 }

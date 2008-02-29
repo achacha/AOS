@@ -28,7 +28,7 @@ AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
   if (context.getOutputParams().emitString(REDIRECT_URL, str))
   {
     //a_Url in command   
-    context.useEventVisitor().set(ARope("Redirect URL: ",14)+str);
+    context.useEventVisitor().startEvent(ARope("Redirect URL: ",14)+str);
     context.setResponseRedirect(str);
   }
   else if (context.getOutputParams().emitString(REDIRECT_PATH, path))
@@ -37,7 +37,7 @@ AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
     if (context.useModel().emitString(path, str))
     {
       //a_Redirect to URL
-      context.useEventVisitor().set(ARope("Model Redirect[",15)+path+ASW("]: ",3)+str);
+      context.useEventVisitor().startEvent(ARope("Model Redirect[",15)+path+ASW("]: ",3)+str);
     }
     else
     {
@@ -51,7 +51,7 @@ AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
     if (context.useSessionData().useData().emitString(path, str))
     {
       //a_Redirect to URL
-      context.useEventVisitor().set(ARope("Session Redirect[",17)+path+ASW("]: ",3)+str);
+      context.useEventVisitor().startEvent(ARope("Session Redirect[",17)+path+ASW("]: ",3)+str);
     }
     else
     {
@@ -89,7 +89,7 @@ AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
   }
   else
   {
-    context.setExecutionState(ASW("Redirect location is empty, continuing",38));
+    context.useEventVisitor().startEvent(ASW("Redirect location is empty, continuing",38));
     return AOSContext::RETURN_OK;
   }
 }

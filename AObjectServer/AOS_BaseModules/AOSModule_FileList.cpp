@@ -21,7 +21,7 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
   AString str(1536, 1024);
   if (!moduleParams.emitString(ASW("path", 4), str))
   {
-    context.useEventVisitor().set(ASWNL("AOSModule_FileList: Unable to find 'path' parameter"), true);
+    context.useEventVisitor().addEvent(ASWNL("AOSModule_FileList: Unable to find 'path' parameter"), AEventVisitor::EL_ERROR);
     return AOSContext::RETURN_ERROR;
   }
   

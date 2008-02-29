@@ -82,7 +82,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_REDIRECTING) &&  pContext->getCommand())
           pThis->m_Services.useModuleExecutor().execute(*pContext, pContext->getCommand()->getModules());
         else
-          pContext->useEventVisitor().set(ASW("Command not found, skipping module execution.",45), true);
+          pContext->useEventVisitor().startEvent(ASW("Command not found, skipping module execution.",45), AEventVisitor::EL_ERROR);
 
         //a_If error is logged stop and go to error handler
         if (pContext->useEventVisitor().getErrorCount() > 0)
@@ -111,8 +111,9 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           // Generate output
           // Unless redirecting
           //
-          pContext->setExecutionState(ASW("Executing output generator",26));
+          pContext->useEventVisitor().startEvent(ASW("Executing output generator",26));
           pThis->m_Services.useOutputExecutor().execute(*pContext);
+          pContext->useEventVisitor().endEvent();
 
           //a_Dump context as XML instead of usual output
           if (dumpContextLevel > 0)
@@ -132,8 +133,9 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           //
           if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT) && pContext->useEventVisitor().getErrorCount() > 0)
           {
-            pContext->setExecutionState(ASW("Emitting event visitor",22));
+            pContext->useEventVisitor().startEvent(ASW("Emitting event visitor",22));
             pContext->useEventVisitor().emitXml(pContext->useModel().addElement(ASW("AEventVisitor",13)));
+            pContext->useEventVisitor().endEvent();
           }
         }
 
@@ -146,7 +148,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           }
           catch(ASocketException& ex)
           {
-            pContext->useEventVisitor().set(ex);
+            pContext->useEventVisitor().addEvent(ex, AEventVisitor::EL_ERROR);
             pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
             m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
             continue;
@@ -154,7 +156,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         }
         else
         {
-          pContext->setExecutionState(ASW("AOSContextQueue_Executor: Output already sent",45));
+          pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Output already sent",45));
         }
 
         //a_Force a close connection if output got committed and the content-length was not set 
@@ -163,7 +165,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
              && !pContext->useResponseHeader().exists(AHTTPHeader::HT_ENT_Content_Length)
         )
         {
-          pContext->setExecutionState(ASW("AOSContextQueue_Executor: Forcing a close since response Content-Length was not specified",89));
+          pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Forcing a close since response Content-Length was not specified",89));
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
           continue;
         }
@@ -171,13 +173,13 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         if (pContext->useRequestHeader().isHttpPipeliningEnabled())
         {
           //a_keep-alive found, pipelining enabled
-          pContext->setExecutionState(ASW("AOSContextQueue_Executor: Pipelining detected, going into preExecute",68));
+          pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Pipelining detected, going into preExecute",68));
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &pContext);
         }
         else
         {
           //a_No pipelining
-          pContext->setExecutionState(ASW("AOSContextQueue_Executor: Pipelining not detected, terminating request",70));
+          pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Pipelining not detected, terminating request",70));
           pContext->useSocket().close();
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
         }
@@ -187,19 +189,19 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
     }
     catch(AException& e)
     {
-      pContext->setExecutionState(e, true);
+      pContext->useEventVisitor().addEvent(e, AEventVisitor::EL_ERROR);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }
     catch(std::exception& e)
     {
-      pContext->setExecutionState(ASWNL(e.what()), true);
+      pContext->useEventVisitor().addEvent(ASWNL(e.what()), AEventVisitor::EL_ERROR);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }
     catch(...)
     {
-      pContext->setExecutionState(ASW("Unknown exception caught in AOSContextQueue_Executor::threadproc",64), true);
+      pContext->useEventVisitor().addEvent(ASW("Unknown exception caught in AOSContextQueue_Executor::threadproc",64), AEventVisitor::EL_ERROR);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
       break;

@@ -106,13 +106,13 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
       ModuleContainer::iterator it = m_Modules.find((*cit)->getModuleClass());
       if (it == m_Modules.end())
       {
-        context.setExecutionState(ARope("Skipping unknown module: ",25)+(*cit)->getModuleClass());
+        context.useEventVisitor().startEvent(ARope("Skipping unknown module: ",25)+(*cit)->getModuleClass());
         m_Services.useLog().add(AString("AOSModuleExecutor::execute:Skipping unknown module"), (*cit)->getModuleClass(), ALog::WARNING);
       }
       else
       {
         //a_Start timer and execute module
-        context.setExecutionState(ARope("Executing module: ",18)+(*cit)->getModuleClass());
+        context.useEventVisitor().startEvent(ARope("Executing module: ",18)+(*cit)->getModuleClass());
 
         if (context.useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
         {
@@ -127,12 +127,12 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
         {
           case AOSContext::RETURN_ERROR:
             //a_Error occured
-            context.addError((*cit)->getModuleClass()+"::execute", "Returned false");
+            context.addError((*cit)->getModuleClass()+"::execute", ASWNL("Returned false"));
           return;
 
           case AOSContext::RETURN_REDIRECT:
             context.useContextFlags().setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
-            context.useEventVisitor().set(ARope("Redirect detected for module: ",30)+(*it).second->getClass());
+            context.useEventVisitor().startEvent(ARope("Redirect detected for module: ",30)+(*it).second->getClass());
           return;
         }
       }
@@ -155,7 +155,7 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
       else
         strWhere.append("NULL",4);
       strWhere.append(')');
-      context.addError(strWhere, "UnknownException");    //a_This will og it also
+      context.addError(strWhere, ASWNL("UnknownException"));    //a_This will og it also
     }
     ++cit;
   }

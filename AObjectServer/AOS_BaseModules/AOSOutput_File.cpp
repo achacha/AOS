@@ -20,7 +20,7 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
   AString str(1536, 1024);
   if (!context.getOutputParams().emitString(ASW("path", 4), str))
   {
-    context.useEventVisitor().set(ASWNL("AOSOutput_File: Unable to find 'path' parameter"), true);
+    context.useEventVisitor().addEvent(ASWNL("AOSOutput_File: Unable to find 'path' parameter"), AEventVisitor::EL_ERROR);
     return AOSContext::RETURN_ERROR;
   }
   

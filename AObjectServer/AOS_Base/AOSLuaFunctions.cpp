@@ -292,7 +292,7 @@ static int aos_setEvent(lua_State *L)
 
   //a_Add Event
   if (!data.isEmpty())
-    pContext->useEventVisitor().set(data, (isError ? true : false));
+    pContext->useEventVisitor().startEvent(data, (isError ? AEventVisitor::EL_ERROR : AEventVisitor::EL_EVENT));
 
   return 0;
 }
@@ -322,7 +322,7 @@ static int aos_resetEvent(lua_State *L)
   AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   AASSERT(NULL, pContext);
 
-  pContext->useEventVisitor().reset();
+  pContext->useEventVisitor().endEvent();
 
   return 0;
 }

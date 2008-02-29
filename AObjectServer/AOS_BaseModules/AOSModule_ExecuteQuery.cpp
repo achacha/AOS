@@ -35,13 +35,13 @@ AOSContext::ReturnCode AOSModule_ExecuteQuery::execute(AOSContext& context, cons
     }
     else
     {
-      context.addError("AOSModule_ExecuteQuery::execute", strError);
+      context.addError(ASWNL("AOSModule_ExecuteQuery::execute"), strError);
       return AOSContext::RETURN_ERROR;
     }
   }
   else
   {
-    context.addError("AOSModule_ExecuteQuery::execute", "/module/sql not found");
+    context.addError(ASWNL("AOSModule_ExecuteQuery::execute"), ASWNL("/module/sql not found"));
     context.useModel().addElement("error").addElement(getClass()).addElement("params").addContent(params);
   }
 

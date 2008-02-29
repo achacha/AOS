@@ -63,7 +63,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           continue;
         }
 #endif
-        pContext->setExecutionState(ASW("AOSContextQueue_ErrorExecutor: Processing error condition", 57));
+        pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_ErrorExecutor: Processing error condition", 57));
 
         //a_Should only be here if an error occured, if status not set >200, then assume 500
         if (pContext->useResponseHeader().getStatusCode() == AHTTPResponseHeader::SC_200_Ok)
@@ -129,11 +129,11 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
               objects.insert(ATemplate::OBJECTNAME_MODEL, &pContext->useModelXmlDocument());
               objects.insert(AOSContext::OBJECTNAME, pContext);
               pTemplate->process(objects, pContext->useOutputBuffer(), true);
-              pContext->setExecutionState(ARope("Using error template for status ")+AString::fromInt(statusCode));
+              pContext->useEventVisitor().startEvent(ARope("Using error template for status ")+AString::fromInt(statusCode));
             }
             else
             {
-              pContext->setExecutionState(ARope("Did not find error template for status ")+AString::fromInt(statusCode));
+              pContext->useEventVisitor().startEvent(ARope("Did not find error template for status ")+AString::fromInt(statusCode));
             }
 
             if (pContext->isOutputBufferEmpty())
@@ -159,7 +159,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
             }
             catch(ASocketException& ex)
             {
-              pContext->useEventVisitor().set(ex);
+              pContext->useEventVisitor().addEvent(ex, AEventVisitor::EL_ERROR);
               pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
               m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
               continue;
@@ -178,20 +178,20 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
     }
     catch(AException& e)
     {
-      pContext->setExecutionState(e, true);
+      pContext->useEventVisitor().addEvent(e, AEventVisitor::EL_ERROR);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
     }
     catch(std::exception& e)
     {
-      pContext->setExecutionState(ASWNL(e.what()), true);
+      pContext->useEventVisitor().addEvent(ASWNL(e.what()), AEventVisitor::EL_ERROR);
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
     }
     catch(...)
     {
       m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
-      pContext->setExecutionState(ASWNL("Unknown exception caught in AOSContextQueue_ErrorExecutor::_threadproc"), true);
+      pContext->useEventVisitor().addEvent(ASWNL("Unknown exception caught in AOSContextQueue_ErrorExecutor::_threadproc"), AEventVisitor::EL_ERROR);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
       break;
     }

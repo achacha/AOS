@@ -27,7 +27,7 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
   if (pNode)
   {
     strSource.assign("inline", 6);
-    context.setExecutionState(ASW("Executing inlined Lua script",28));
+    context.useEventVisitor().startEvent(ASW("Executing inlined Lua script",28));
 
     //a_Element contains script
     pFile.reset(new AFile_AString());
@@ -41,7 +41,7 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
     if (pNode)
     {
       pNode->emitContent(strSource);
-      context.setExecutionState(ARope("Executing Lua script: ",22)+strSource);
+      context.useEventVisitor().startEvent(ARope("Executing Lua script: ",22)+strSource);
 
       //a_File to be used (may need caching for it, but for now keep it dynamic)
       AFilename f(m_Services.useConfiguration().getAosBaseDataDirectory(), true);

@@ -66,7 +66,7 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
         //a_Check condition, if not met continue with next template
         if (!context.useModel().exists(ifElement))
         {
-          context.useEventVisitor().set(ARope("Skipping conditional template for ")+ifElement);
+          context.useEventVisitor().startEvent(ARope("Skipping conditional template for ")+ifElement, AEventVisitor::EL_DEBUG);
           continue;
         }
       }
@@ -82,7 +82,7 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
     if (ACacheInterface::NOT_FOUND == m_Services.useCacheManager().getTemplate(context, filename, pTemplate))
     {
       //a_Not found add error and continue
-      context.useEventVisitor().set(ARope(getClass())+ASWNL(": Unable to find a template file: ")+filename+ASWNL(", ignoring and continuing"));
+      context.useEventVisitor().startEvent(ARope(getClass())+ASWNL(": Unable to find a template file: ")+filename+ASWNL(", ignoring and continuing"), AEventVisitor::EL_WARN);
       continue;
     }
 

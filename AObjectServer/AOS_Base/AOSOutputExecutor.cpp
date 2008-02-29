@@ -110,14 +110,14 @@ void AOSOutputExecutor::execute(AOSContext& context)
   else
   {
     command = context.getOutputCommand();
-    context.setExecutionState(ARope("Default output generator overridden to: ")+command);
+    context.useEventVisitor().startEvent(ARope("Default output generator overridden to: ")+command);
   }
 
   if (command.equals("NOP"))
   {
     //a_If NOP was used force XML
     context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
-    context.setExecutionState(ASWNL("NOP detected, defaulting to XML output"));
+    context.useEventVisitor().startEvent(ASWNL("NOP detected, defaulting to XML output"));
   }
 
   if (command.isEmpty())
@@ -125,11 +125,11 @@ void AOSOutputExecutor::execute(AOSContext& context)
     if (!m_Services.useConfiguration().getAosDefaultOutputGenerator().isEmpty())
     {
       command.assign(m_Services.useConfiguration().getAosDefaultOutputGenerator());
-      context.setExecutionState(ARope("No output generator specified, defaulting to: ")+command);
+      context.useEventVisitor().startEvent(ARope("No output generator specified, defaulting to: ")+command);
     }
     else
     {
-      context.setExecutionState(ASW("No output generator, defaulting to XML",38));
+      context.useEventVisitor().startEvent(ASW("No output generator, defaulting to XML",38));
       return;
     }
   }
@@ -140,7 +140,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
     OutputGeneratorContainer::iterator it = m_OutputGenerators.find(command);
     if (it == m_OutputGenerators.end())
     {
-      context.setExecutionState(ARope("Skipping unknown output generator: ",35)+command);
+      context.useEventVisitor().startEvent(ARope("Skipping unknown output generator: ",35)+command, AEventVisitor::EL_WARN);
       m_Services.useLog().add(AString("AOSOutputExecutor::execute:Skipping unknown output generator"), command, ALog::WARNING);
     }
     else
@@ -148,7 +148,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
       ATimer timer(true);
 
       //a_Generate output
-      context.setExecutionState(ARope("Generating output: ",19)+(*it).first);
+      context.useEventVisitor().startEvent(ARope("Generating output: ",19)+(*it).first);
 
       if (context.useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
       {
@@ -162,12 +162,12 @@ void AOSOutputExecutor::execute(AOSContext& context)
       //a_Generate output
       if (AOSContext::RETURN_OK != (*it).second->execute(context))
       {
-        context.addError((*it).second->getClass(), "Output generator failed");
+        context.addError((*it).second->getClass(), ASWNL("Output generator failed"));
         return;
       }
 
       //a_Event over
-      context.useEventVisitor().reset();
+      context.useEventVisitor().endEvent();
 
       //a_Add execution time
       (*it).second->addExecutionTimeSample(timer.getInterval());
@@ -189,7 +189,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
     AString strWhere("AOSOutputExecutor::execute(", 27);
     strWhere.append(command);
     strWhere.append(')');
-    context.addError(strWhere, "Unknown Exception");
+    context.addError(strWhere, ASWNL("Unknown Exception"));
 
     context.useModel().addElement("output_error").addData("Unknown Exception");
   }
