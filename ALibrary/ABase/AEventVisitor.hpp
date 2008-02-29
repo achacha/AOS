@@ -8,7 +8,11 @@
 #include "ATimer.hpp"
 
 class AException;
+class AEventVisitor;
 
+/*!
+Macro for logging events based on level
+*/
 #define INVALID_TIME_INTERVAL -1.0
 
 /*!
@@ -21,11 +25,26 @@ Unsynchronized by default
 class ABASE_API AEventVisitor : public ADebugDumpable, public AXmlEmittable
 {
 public:
+  /*!
+  Levels of the event
+  */
+  enum EventLevel
+  {
+    EL_ERROR  = 1,   // Error (this increments the error counter)
+    EL_EVENT  = 2,   // Event (DEFAULT) - Event message
+    EL_WARN   = 3,   // Warning - Warning, non-critical error
+    EL_INFO   = 4,   // Informational message
+    EL_DEBUG  = 5    // Debug trace
+  };
+  
+public:
   /*! 
   ctor
-  name - User defined name for this visitor that appears in the emit calls
+  
+  @param name  - User defined name for this visitor that appears in the emit calls
+  @param level - Minimum level of the messages to log, default is events and errors
   */
-  AEventVisitor(const AString& name = AConstant::ASTRING_EMPTY);
+  AEventVisitor(const AString& name = AConstant::ASTRING_EMPTY, AEventVisitor::EventLevel threshold = AEventVisitor::EL_EVENT);
   
   /*! dtor */
   ~AEventVisitor();
@@ -36,6 +55,12 @@ public:
   */
   virtual void emit(AOutputBuffer& target) const;
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
+
+  /*!
+  Emit based on threshold
+  */
+  void emit(AOutputBuffer& target, AEventVisitor::EventLevel threshold) const;
+  AXmlElement& emitXml(AXmlElement& thisRoot, AEventVisitor::EventLevel threshold) const;
 
   /*!
   The name of this event visitor
@@ -49,28 +74,59 @@ public:
   ATimer& useLifespanTimer();
 
   /*!
-  Sets the new state, saving the old
-  If isError is true, the error count is incremented
-  State time limit is used as a test mark when calling isStateOverTimeLimit() and is used controlled
+  Sets the new state, stopping and saving current one
+  State time limit is used as a test mark when calling isStateOverTimeLimit() and is user controlled
+
+  @param message - Message of the event
+  @param level - EventLevel of this event
+  @param timeLimit - How long should this state be active, when over the limit isStateOverTimeLimit returns true
   */
-  void set(const AEmittable& state, bool isError = false, double stateTimeLimit = INVALID_TIME_INTERVAL);
+  void startEvent(const AEmittable& message, EventLevel level = AEventVisitor::EL_EVENT, double timeLimit = INVALID_TIME_INTERVAL);
   
   /*!
-  Stop the timer
-  Current state is saved as the last one
-  Stop interval is reset to INVALID_TIME_INTERVAL (not on)
-  stopLifespanTimer - if true will also stop the lifespan timer, effectively ending this object's use
+  Sets new event and time limit (defaults level to EL_EVENT)
+  
+  @param message - Message of the event
+  @param timeLimit - How long should this state be active, when over the limit isStateOverTimeLimit returns true
   */
-  void reset(bool stopLifespanTimer = false);
+  void startEvent(const AEmittable& message, double timeLimit);
 
   /*!
+  End the current event and associated timer, current event is saved as the last one
+  Stop interval is reset to INVALID_TIME_INTERVAL (not on)
+  Does not stop lifespan timer (which is associated with the entire event visitor)
+  */
+  void endEvent();
+
+  /*!
+  Start and stop event effectively adding it
+  The currect event is saved, then this new event is started and ended
+  There is no current event after this call
+
+  @param message - Message of the event
+  @param level - EventLevel of this event
+  */
+  void addEvent(const AEmittable& message, EventLevel level = AEventVisitor::EL_EVENT);
+
+  /*!
+  Clear the event visitor
   Clear all events
-  Clears timer
-  Clears name
+  Clear all timers
+  Clear name
   Sets interval to INVALID_TIME_INTERVAL (not on)
   Does not re-enable the visitor (disabled visitors stay disabled and have to be explicitly enabled)
   */
   void clear();
+
+  /*!
+  Sets new logging level threshold (does not retroactively remove old events below the current threshold)
+  */
+  void setEventThresholdLevel(AEventVisitor::EventLevel newLevelThreshold);
+  
+  /*!
+  Get current logging level threshold
+  */
+  AEventVisitor::EventLevel getEventThresholdLevel() const;
 
   /*!
   Number of events
@@ -88,20 +144,21 @@ public:
   void enable(bool);
 
   /*!
-  Access to the state
+  Access to the current 
   State is completely user defined and gives a way to change states and maintain time in state
+  @return Current message or AConstant::
   */
-  const AString &getCurrentState();
+  const AString &getCurrentEventMessage() const;
   
   /*!
-  Milliseconds spent in the current state
+  Milliseconds spent in the current event state
   */
-  double getTimeIntervalInState() const;
+  double getCurrentEventTimeInterval() const;
 
   /*!
-  Is the current state ove max time
+  Is the current state over max time for the event
   */
-  bool isStateOverTimeLimit() const;
+  bool isCurrentEventOverTimeLimit() const;
 
   /*!
   ADebugDumpable
@@ -113,7 +170,7 @@ private:
   class Event : public ADebugDumpable, public AXmlEmittable
   {
   public:
-    Event(const AEmittable& state, double interval, bool isError = false);
+    Event(const AEmittable& state, AEventVisitor::EventLevel level, double interval);
 
     /*!
     AEmittable
@@ -124,7 +181,7 @@ private:
 
     double m_interval;
     AString m_state;
-    bool m_isError;
+    AEventVisitor::EventLevel m_level;
 
     /*!
     ADebugDumpable
@@ -146,11 +203,14 @@ private:
   ATimer m_stateTimer;
   double m_stateTimeLimit;
 
-  //a_Allows all m_stateTimerging to be disabled
+  //a_Allows all event logging to be disabled
   bool m_isEnabled;
+  
+  //a_Event logging threshold
+  AEventVisitor::EventLevel m_LevelThreshold;
 
   //a_Set if at least one error occured
-  size_t m_errorCount;
+  size_t m_ErrorCount;
 };
 
 #endif //INCLUDED__AEventVisitor_HPP__

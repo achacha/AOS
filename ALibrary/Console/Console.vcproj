@@ -212,7 +212,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tFileSystem.cpp"
+			RelativePath=".\tEventVisitor.cpp"
 			>
 		</File>
 	</Files>
