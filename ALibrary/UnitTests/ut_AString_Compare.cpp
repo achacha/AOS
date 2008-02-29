@@ -93,5 +93,13 @@ int ut_AString_Compare()
   str1 = "AbCd";
   ASSERT_UNIT_TEST(str1.equals(str0), "equals", "1", iRet);
 
+  str0.assign("FileName.ext", 12);
+  str1 = ".ext";
+  ASSERT_UNIT_TEST(str0.endsWith(str1), "endsWith", "0", iRet);
+
+  str0.assign("FileName.ExT", 12);
+  str1 = ".eXt";
+  ASSERT_UNIT_TEST(str0.endsWithNoCase(str1), "endsWith", "1", iRet);
+
   return iRet;
 }

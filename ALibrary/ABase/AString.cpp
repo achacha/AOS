@@ -2808,3 +2808,34 @@ size_t AString::flush(AFile& file)
   
   return 0;
 }
+
+bool AString::endsWith(const AString& source) const
+{
+  if (!m_Length || source.m_Length > m_Length)
+    return false;
+
+  return !strncmp(mp_Buffer + m_Length - source.m_Length, source.mp_Buffer, source.m_Length);
+}
+
+bool AString::endsWithNoCase(const AString& source) const
+{
+  if (!m_Length || source.m_Length > m_Length)
+    return false;
+
+  return !_strnicmp(mp_Buffer + m_Length - source.m_Length, source.mp_Buffer, source.m_Length);
+}
+
+bool AString::toBool() const
+{
+  if (
+    m_Length > 0
+    && (
+      '1' == *mp_Buffer
+      || !_strnicmp(mp_Buffer, "true", 4)
+      || !_strnicmp(mp_Buffer, "yes", 3)
+    )
+  )
+    return true;
+  else
+    return false;
+}

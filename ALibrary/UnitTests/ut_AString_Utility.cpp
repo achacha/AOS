@@ -81,6 +81,14 @@ void testConversion(int& iRet)
   size_t ii1 = 999999;
   ASSERT_UNIT_TEST(str0 == AString::fromSize_t(ii1), "AString::fromSize_t", "0", iRet);
   ASSERT_UNIT_TEST(ii1 == str0.toSize_t(), "AString::toSize_t", "0", iRet);
+
+  ASSERT_UNIT_TEST(ASWNL("tRuE").toBool(), "AString::toBool", "0", iRet);
+  ASSERT_UNIT_TEST(ASWNL("YeS").toBool(), "AString::toBool", "1", iRet);
+  ASSERT_UNIT_TEST(ASWNL("1").toBool(), "AString::toBool", "2", iRet);
+  ASSERT_UNIT_TEST(!ASWNL("tRu").toBool(), "AString::toBool", "3", iRet);
+  ASSERT_UNIT_TEST(!ASWNL("").toBool(), "AString::toBool", "4", iRet);
+  ASSERT_UNIT_TEST(!ASWNL("false").toBool(), "AString::toBool", "3", iRet);
+  ASSERT_UNIT_TEST(!ASWNL("0").toBool(), "AString::toBool", "3", iRet);
 }
 
 void testTrim(int& iRet)

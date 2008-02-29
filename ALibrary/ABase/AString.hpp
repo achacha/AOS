@@ -211,6 +211,12 @@ public:
   int toInt() const;
 
   /*!
+  Convert to bool
+  "1" OR no case of "true" OR no case of "yes" = true, all else is false
+  */
+  bool toBool() const;
+
+  /*!
   Convert to signed 4 byte
   Follows strtol format if base is other than 10, signed 4 byte
   */
@@ -306,6 +312,16 @@ public:
   */
   bool equalsNoCase(const char *pccSource, size_t length = AConstant::npos) const;
   
+  /*!
+  Checks if the string ends with another
+  */
+  bool endsWith(const AString&) const;
+
+  /*!
+  Checks if the string ends with another (ignores case)
+  */
+  bool endsWithNoCase(const AString&) const;
+
   /*!
   Difference
    returns the first position after index at which the strings are different
