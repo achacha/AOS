@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?> 
-<command name='Test2'>
+<controller name='Test2'>
 	<input/>
 	<module class='Test' name='step0'>
 		<name>foo</name>
@@ -16,4 +16,4 @@
 		<value>teal</value>
 	</module>
 	<output/>
-</command>
+</controller>

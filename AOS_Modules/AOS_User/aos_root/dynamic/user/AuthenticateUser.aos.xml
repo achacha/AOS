@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<command>
+<controller>
   <input class="application/x-www-form-urlencoded"/>
 	<module class="User.Authenticate"/>
 	<!--output class="Redirect">
 	  <session-path>user/ru</session-path>
 		<secure>true</secure>
 	</output-->
-</command>
+</controller>

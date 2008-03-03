@@ -1,4 +1,4 @@
-<command>
+<controller>
   <input class="application/x-www-form-urlencoded"/>
   <module class="WikiViewFromFileSystem">
 		<base-path desc="Actual location where wiki data is saved">wiki/filesystem</base-path>
@@ -7,4 +7,4 @@
     <filename if="/root/wiki/edit-url" desc="If edit URL is present we are in view mode">wiki/view.template.html</filename>
     <filename if="/root/wiki/view-url" desc="If view URL is present we are in edit mode">wiki/edit.template.html</filename>
   </output>
-</command>
+</controller>

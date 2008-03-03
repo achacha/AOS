@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<command>
+<controller>
 	<input/>
 	<module class="forum_list"/>
 	<output/>
-</command>
+</controller>

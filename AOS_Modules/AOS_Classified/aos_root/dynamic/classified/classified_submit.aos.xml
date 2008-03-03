@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<command>
+<controller>
 	<input class="application/x-www-form-urlencoded"/>
 	<module class="classified_submit"/>
 	<output class="Xslt">
 		<filename>classified/xsl/submit.xsl</filename>
 	</output>
-</command>
+</controller>

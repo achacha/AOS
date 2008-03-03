@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?> 
-<command name='Dada'>
+<controller name='Dada'>
 	<input/>
 	<module class='DadaDataTemplate'/>
 	<output class='Xslt'>
 		<filename>dada/xsl/dada.xsl</filename>
 	</output>
-</command>
+</controller>

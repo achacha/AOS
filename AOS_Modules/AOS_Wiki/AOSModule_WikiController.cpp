@@ -21,10 +21,10 @@ AOSContext::ReturnCode AOSModule_WikiController::execute(AOSContext& context, co
     return AOSContext::RETURN_ERROR;
   }
 
-  const AXmlElement *pWikiCommand = moduleParams.findElement(ASW("wiki-command",12));
-  if (!pWikiCommand)
+  const AXmlElement *pWikiController = moduleParams.findElement(ASW("wiki-controller",15));
+  if (!pWikiController)
   {
-    context.addError(getClass(), ASWNL("missing 'module/wiki-command' parameter"));
+    context.addError(getClass(), ASWNL("missing 'module/wiki-controller' parameter"));
     return AOSContext::RETURN_ERROR;
   }
 
@@ -43,9 +43,9 @@ AOSContext::ReturnCode AOSModule_WikiController::execute(AOSContext& context, co
     context.useModel().overwriteElement(ASW("wiki/edit-url",13)).addData(editUrl.getPathFileAndQueryString(), AXmlElement::ENC_CDATADIRECT);
   }
 
-  //a_Command to execute
-  AString strWikiCommandPath;
-  pWikiCommand->emitContent(strWikiCommandPath);
+  //a_Controller to execute
+  AString strWikiControllerPath;
+  pWikiController->emitContent(strWikiControllerPath);
 
   //a_Check base path and add parameter with path
   AString strBasePath;
@@ -59,12 +59,12 @@ AOSContext::ReturnCode AOSModule_WikiController::execute(AOSContext& context, co
   }
 
   //a_Set new command location and change URL path/filename
-  if (!context.setNewCommandPath(strWikiCommandPath))
+  if (!context.setNewControllerPath(strWikiControllerPath))
   {
     context.addError(getClass(), ARope("Unable to find the command for new request URL: ")+context.useRequestUrl());
     return AOSContext::RETURN_ERROR;
   }
-  context.useModel().overwriteElement("wiki/command").addData(strWikiCommandPath);
+  context.useModel().overwriteElement("wiki/command").addData(strWikiControllerPath);
 
     //a_Add new parameter with path
   AString strParam;

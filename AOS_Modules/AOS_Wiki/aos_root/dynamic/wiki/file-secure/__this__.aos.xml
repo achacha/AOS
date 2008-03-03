@@ -4,6 +4,6 @@
 	</module>
 	<module class="WikiController">
 		<base-path desc="Base part of the request URL that signifies that it is from a wiki">/wiki/file-secure</base-path>
-		<wiki-command desc="Command to call when a requested URL is part of the above path">/wiki/wiki-file-secure</wiki-command>
+		<wiki-controller desc="Command to call when a requested URL is part of the above path">/wiki/wiki-file-secure</wiki-controller>
 	</module>
 </config>

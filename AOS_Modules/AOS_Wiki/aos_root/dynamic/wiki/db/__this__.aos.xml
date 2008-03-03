@@ -1,6 +1,6 @@
 <config>
 	<module class="WikiController">
-		<base-path>/wiki/db</base-path>
-		<wiki-command>/wiki/wiki-db</wiki-command>
+		<base-path desc="Base part of the request URL that signifies that it is from a wiki">/wiki/db</base-path>
+		<wiki-controller desc="Controller to call when a requested URL is part of the above path">/wiki/wiki-db</wiki-controller>
 	</module>
 </config>
