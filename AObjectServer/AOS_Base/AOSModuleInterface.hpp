@@ -23,8 +23,11 @@ public:
 
   /*!
   Process input and manupulate the request and module objects as needed
+
+  @param context of the request
+  @param params of the module
   */
-  virtual AOSContext::ReturnCode execute(AOSContext& context, const AXmlElement& moduleParams) = 0;
+  virtual AOSContext::ReturnCode execute(AOSContext& context, const AXmlElement& params) = 0;
 
   /*!
   De-initialization routine for the module

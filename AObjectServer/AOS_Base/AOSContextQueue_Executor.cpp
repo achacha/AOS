@@ -3,6 +3,7 @@
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
 #include "ASocketException.hpp"
+#include "AOSController.hpp"
 
 const AString& AOSContextQueue_Executor::getClass() const
 {
@@ -79,8 +80,8 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         // Process modules
         // Unless we are in redirect mode
         //
-        if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_REDIRECTING) &&  pContext->getCommand())
-          pThis->m_Services.useModuleExecutor().execute(*pContext, pContext->getCommand()->getModules());
+        if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_REDIRECTING) &&  pContext->getController())
+          pThis->m_Services.useModuleExecutor().execute(*pContext, pContext->getController()->getModules());
         else
           pContext->useEventVisitor().startEvent(ASW("Command not found, skipping module execution.",45), AEventVisitor::EL_ERROR);
 

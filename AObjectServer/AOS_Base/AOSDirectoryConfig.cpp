@@ -1,7 +1,7 @@
 
 #include "pchAOS_Base.hpp"
 #include "AOSDirectoryConfig.hpp"
-#include "AOSCommand.hpp"
+#include "AOSController.hpp"
 #include "AOSAdminRegistry.hpp"
 #include "AXmlElement.hpp"
 #include "ALog.hpp"
@@ -44,7 +44,7 @@ void AOSDirectoryConfig::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestH
   int i=0;
   while (cit != m_Modules.use().end())
   {
-    ARope ropeName(AOSCommand::S_MODULE);
+    ARope ropeName(AOSController::S_MODULE);
     ropeName.append('.');
     ropeName.append(AString::fromInt(i));
     adminAddProperty(thisRoot, ropeName, (*cit)->getModuleClass());
@@ -78,8 +78,8 @@ AXmlElement& AOSDirectoryConfig::emitXml(AXmlElement& thisRoot) const
   //a_Modules
   for (AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.get().begin(); cit != m_Modules.get().end(); ++cit)
   {
-    AXmlElement& eModule = thisRoot.addElement(AOSCommand::S_MODULE);
-    eModule.addAttribute(AOSCommand::S_CLASS, (*cit)->getModuleClass());
+    AXmlElement& eModule = thisRoot.addElement(AOSController::S_MODULE);
+    eModule.addAttribute(AOSController::S_CLASS, (*cit)->getModuleClass());
     if ((*cit)->getParams().hasElements())
       eModule.addContent((*cit)->getParams().clone());
   }
@@ -94,13 +94,13 @@ void AOSDirectoryConfig::fromXml(const AXmlElement& element)
   //a_Get module names
   m_Modules.use().clear();
   AXmlElement::CONST_CONTAINER nodes;
-  element.find(AOSCommand::S_MODULE, nodes);
+  element.find(AOSController::S_MODULE, nodes);
   
   AString strClass, strName;
   for(AXmlElement::CONST_CONTAINER::const_iterator citModule = nodes.begin(); citModule != nodes.end(); ++citModule)
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
-    if ((*citModule)->getAttributes().get(AOSCommand::S_CLASS, strClass) && !strClass.isEmpty())
+    if ((*citModule)->getAttributes().get(AOSController::S_CLASS, strClass) && !strClass.isEmpty())
     {
       //a_Add new module info object
       AASSERT(*citModule, *citModule);

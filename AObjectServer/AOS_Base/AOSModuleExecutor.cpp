@@ -4,7 +4,7 @@
 #include "ATimer.hpp"
 #include "AOSModuleInterface.hpp"
 #include "AOSServices.hpp"
-#include "AOSCommand.hpp"
+#include "AOSController.hpp"
 
 void AOSModuleExecutor::debugDump(std::ostream& os, int indent) const
 {
@@ -65,18 +65,18 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
   if (!pModule)
     ATHROW(this, AException::InvalidParameter);
 
-  AString command = pModule->getClass();
+  AString controller = pModule->getClass();
   {
-    AString str("  Module Registered: ");
-    str.append(command);
+    AString str("  Controller registered: ");
+    str.append(controller);
     AOS_DEBUGTRACE(str.c_str(), NULL);
   }
 
-  ModuleContainer::iterator it = m_Modules.find(command);
+  ModuleContainer::iterator it = m_Modules.find(controller);
   if (it != m_Modules.end())
   {
-    //a_Command already has modules
-    m_Services.useLog().add(AString("AOSModuleExecutor::registerModule:replacing module"), (*it).first, command, ALog::WARNING);
+    //a_Controller already has modules
+    m_Services.useLog().add(AString("AOSModuleExecutor::registerModule:replacing controller"), (*it).first, controller, ALog::WARNING);
     (*it).second->deinit();
     delete (*it).second;
     (*it).second = pModule;
@@ -84,8 +84,8 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
   else
   {
     //a_Add new command
-    m_Services.useLog().add(AString("AOSModuleExecutor::registerModule"), command, ALog::INFO);
-    m_Modules[command] = pModule;
+    m_Services.useLog().add(AString("AOSModuleExecutor::registerModule"), controller, ALog::INFO);
+    m_Modules[controller] = pModule;
   }
 
   //a_Initialize it
@@ -97,9 +97,8 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
 
 void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
 {
-  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = modules.get().begin();
   int i = 0;
-  while(cit != modules.get().end())
+  for (AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = modules.get().begin(); cit != modules.get().end(); ++cit)
   {
     try
     {
@@ -111,8 +110,15 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
       }
       else
       {
+        //a_Check if the module should execute based on this context
+        if (!(*cit)->isExecute(context))
+        {
+          context.useEventVisitor().startEvent(AString("Skipping (condition) module: ",29)+(*cit)->getModuleClass());
+          continue;
+        }
+
         //a_Start timer and execute module
-        context.useEventVisitor().startEvent(ARope("Executing module: ",18)+(*cit)->getModuleClass());
+        context.useEventVisitor().startEvent(AString("Executing module: ",18)+(*cit)->getModuleClass());
 
         if (context.useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
         {
@@ -127,12 +133,12 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
         {
           case AOSContext::RETURN_ERROR:
             //a_Error occured
-            context.addError((*cit)->getModuleClass()+"::execute", ASWNL("Returned false"));
+            context.addError((*cit)->getModuleClass()+ASW("::execute",9), ASWNL("Returned false"));
           return;
 
           case AOSContext::RETURN_REDIRECT:
             context.useContextFlags().setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
-            context.useEventVisitor().startEvent(ARope("Redirect detected for module: ",30)+(*it).second->getClass());
+            context.useEventVisitor().startEvent(AString("Redirect detected for module: ",30)+(*it).second->getClass());
           return;
         }
       }
@@ -157,6 +163,5 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
       strWhere.append(')');
       context.addError(strWhere, ASWNL("UnknownException"));    //a_This will og it also
     }
-    ++cit;
   }
 }

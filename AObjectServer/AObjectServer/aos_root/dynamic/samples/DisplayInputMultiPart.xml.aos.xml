@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?> 
-<command name='DisplayInputMultiPart'>
+<controller name='DisplayInputMultiPart'>
 	<input class='multipart/form-data'/>
 	<module class='PublishInput'/>
 	<output/>
-</command>
+</controller>
 	

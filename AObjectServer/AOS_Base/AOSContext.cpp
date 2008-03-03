@@ -1,7 +1,7 @@
 #include "pchAOS_Base.hpp"
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
-#include "AOSCommand.hpp"
+#include "AOSController.hpp"
 #include "ALock.hpp"
 #include "AThread.hpp"
 #include "AOSConfiguration.hpp"
@@ -34,13 +34,13 @@ void AOSContext::debugDump(std::ostream& os, int indent) const
     ADebugDumpable::indent(os, indent+1) << "mp_DirConfig=NULL" << std::endl;
 
   //a_Associated command
-  if (mp_Command)
+  if (mp_Controller)
   {
-    ADebugDumpable::indent(os, indent+1) << "m_Command=" << std::endl;
-    mp_Command->debugDump(os, indent+2);
+    ADebugDumpable::indent(os, indent+1) << "m_Controller=" << std::endl;
+    mp_Controller->debugDump(os, indent+2);
   }
   else
-    ADebugDumpable::indent(os, indent+1) << "mp_Command=NULL" << std::endl;
+    ADebugDumpable::indent(os, indent+1) << "mp_Controller=NULL" << std::endl;
 
   //a_HTTP data
   ADebugDumpable::indent(os, indent+1) << "m_RequestHeader=" << std::endl;
@@ -106,7 +106,7 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   m_Services(services),
   m_OutputBuffer(10240),
   m_OutputXmlDocument(XML_ROOT),
-  mp_Command(NULL),
+  mp_Controller(NULL),
   mp_DirConfig(NULL),
   mp_RequestFile(NULL),
   m_ConnectionFlags(AOSContext::CONFLAG_LAST),
@@ -152,7 +152,7 @@ void AOSContext::reset(AFile_Socket *pFile)
   m_OutputBuffer.clear();
   m_OutputXmlDocument.clear();
   m_OutputXmlDocument.useRoot().useName().assign(XML_ROOT);
-  mp_Command = NULL;
+  mp_Controller = NULL;
 
   m_ContextFlags.clear();
 }
@@ -253,7 +253,7 @@ AOSContext::Status AOSContext::init()
   mp_DirConfig = m_Services.useConfiguration().getDirectoryConfig(m_RequestHeader.getUrl());
 
   //a_Set the command
-  if (!setCommandFromRequestUrl())
+  if (!setControllerFromRequestUrl())
   {
     m_EventVisitor.startEvent(ARope("AOSContext::init: ")+ASWNL("Unable to find the command for request URL: ")+m_RequestHeader.useUrl());
   }
@@ -710,10 +710,10 @@ AXmlElement& AOSContext::emitXml(AXmlElement& thisRoot) const
     mp_SessionObject->emitXml(thisRoot.addElement(ASW("Session",7)));
 
   //a_Check if command exists, if not it could be static content
-  if (mp_Command)
-    mp_Command->emitXml(thisRoot.addElement(ASW("Command",7)));
+  if (mp_Controller)
+    mp_Controller->emitXml(thisRoot.addElement(ASW("Controller",10)));
   else
-    thisRoot.addElement(ASW("Command",7), ASW("NULL",4));
+    thisRoot.addElement(ASW("Controller",10), ASW("NULL",4));
 
   return thisRoot;
 }
@@ -728,9 +728,9 @@ AFile_Socket& AOSContext::useSocket()
 
 AString AOSContext::getInputCommand() const
 {
-  AASSERT(this, mp_Command);
-  if (mp_Command)
-    return mp_Command->getInputProcessorName();
+  AASSERT(this, mp_Controller);
+  if (mp_Controller)
+    return mp_Controller->getInputProcessorName();
   else
   {
     AString contentType;
@@ -742,27 +742,27 @@ AString AOSContext::getInputCommand() const
 
 AString AOSContext::getOutputCommand() const
 {
-  AASSERT(this, mp_Command);
-  if (mp_Command)
-    return mp_Command->getOutputGeneratorName();
+  AASSERT(this, mp_Controller);
+  if (mp_Controller)
+    return mp_Controller->getOutputGeneratorName();
   else 
     return AConstant::ASTRING_EMPTY;
 }
 
 const AXmlElement& AOSContext::getInputParams() const
 {
-  if (!mp_Command)
+  if (!mp_Controller)
     ATHROW(this, AException::DoesNotExist);
 
-  return mp_Command->getInputParams();
+  return mp_Controller->getInputParams();
 }
 
 const AXmlElement& AOSContext::getOutputParams() const
 {
-  if (!mp_Command)
+  if (!mp_Controller)
     ATHROW(this, AException::DoesNotExist);
 
-  return mp_Command->getOutputParams();
+  return mp_Controller->getOutputParams();
 }
 
 const AOSDirectoryConfig *AOSContext::getDirConfig() const
@@ -770,9 +770,9 @@ const AOSDirectoryConfig *AOSContext::getDirConfig() const
   return mp_DirConfig;
 }
 
-const AOSCommand *AOSContext::getCommand() const
+const AOSController *AOSContext::getController() const
 {
-  return mp_Command;
+  return mp_Controller;
 }
 
 AOSServices& AOSContext::useServices()
@@ -892,12 +892,12 @@ ABasePtrContainer& AOSContext::useContextObjects()
 
 size_t AOSContext::getModuleNames(LIST_AString& names) const
 {
-  if (!mp_Command)
-    ATHROW_EX(this, AException::DoesNotExist, ASWNL("Command does not exist"));
+  if (!mp_Controller)
+    ATHROW_EX(this, AException::DoesNotExist, ASWNL("Controller does not exist"));
 
   size_t ret = 0;
-  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = mp_Command->getModules().get().begin();
-  while (cit != mp_Command->getModules().get().end())
+  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = mp_Controller->getModules().get().begin();
+  while (cit != mp_Controller->getModules().get().end())
   {
     names.push_back((*cit)->getModuleClass());
     ++ret;
@@ -908,11 +908,11 @@ size_t AOSContext::getModuleNames(LIST_AString& names) const
 
 const AXmlElement& AOSContext::getModuleParams(const AString& moduleName) const
 {
-  if (!mp_Command)
-    ATHROW_EX(this, AException::DoesNotExist, ASWNL("Command does not exist"));
+  if (!mp_Controller)
+    ATHROW_EX(this, AException::DoesNotExist, ASWNL("Controller does not exist"));
 
-  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = mp_Command->getModules().get().begin();
-  while (cit != mp_Command->getModules().get().end())
+  AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = mp_Controller->getModules().get().begin();
+  while (cit != mp_Controller->getModules().get().end())
   {
     if (moduleName.equals((*cit)->getModuleClass()))
       return (*cit)->getParams();
@@ -1097,55 +1097,55 @@ void AOSContext::dumpContext(int dumpContextLevel)
   }
 }
 
-bool AOSContext::setCommandFromRequestUrl()
+bool AOSContext::setControllerFromRequestUrl()
 {
   //a_Get the new command
-  mp_Command = m_Services.useConfiguration().getCommand(m_RequestHeader.getUrl());
-  if (!mp_Command)
+  mp_Controller = m_Services.useConfiguration().getController(m_RequestHeader.getUrl());
+  if (!mp_Controller)
     return false;
 
   //a_Check if this is an alias
-  const AString& alias = mp_Command->getCommandAlias();
+  const AString& alias = mp_Controller->getAlias();
   if (!alias.isEmpty())
   {
-    m_EventVisitor.startEvent(ARope("Aliased: ",9)+mp_Command->getCommandAlias());
+    m_EventVisitor.startEvent(ARope("Aliased: ",9)+mp_Controller->getAlias());
     
     if ('/' == alias.at(0))
     {
       //a_Abosulte path
-      mp_Command = m_Services.useConfiguration().getCommand(mp_Command->getCommandAlias());
+      mp_Controller = m_Services.useConfiguration().getController(mp_Controller->getAlias());
     }
     else
     {
       //a_Relative path, get base and add alias
       AString str;
-      mp_Command->emitCommandBasePath(str);
+      mp_Controller->emitBasePath(str);
       str.append(alias);
       m_EventVisitor.startEvent(ARope("Relative aliased to: ")+str);
-      mp_Command = m_Services.useConfiguration().getCommand(str);
+      mp_Controller = m_Services.useConfiguration().getController(str);
     }
 
-    if (!mp_Command->getCommandAlias().isEmpty())
+    if (!mp_Controller->getAlias().isEmpty())
     {
       m_EventVisitor.startEvent(ASWNL("Aliased command is also an alias, which is not supported."));
-      mp_Command = NULL;
+      mp_Controller = NULL;
     }
 
-    if (!mp_Command)
+    if (!mp_Controller)
       return false;
   }
 
   //a_AJAX style output (terse)
-  if (mp_Command->isForceAjax() || m_RequestHeader.useUrl().useParameterPairs().exists(ASW("ajax",4)))
+  if (mp_Controller->isForceAjax() || m_RequestHeader.useUrl().useParameterPairs().exists(ASW("ajax",4)))
     m_ContextFlags.setBit(CTXFLAG_IS_AJAX);
 
   return true;
 }
 
-bool AOSContext::setNewCommandPath(const AString& commandpath)
+bool AOSContext::setNewControllerPath(const AString& commandpath)
 {
   m_RequestHeader.useUrl().setPathAndFilename(commandpath);
-  return setCommandFromRequestUrl();
+  return setControllerFromRequestUrl();
 }
 
 void AOSContext::persistSession()
@@ -1174,9 +1174,9 @@ int AOSContext::calculateGZipLevel()
     if (m_RequestHeader.useUrl().useParameterPairs().get(GZIP, strDeflateLevel))
       return strDeflateLevel.toInt();
     
-    //a_Command definition
-    if (mp_Command && mp_Command->getGZipLevel() > 0)
-      return mp_Command->getGZipLevel();
+    //a_Controller definition
+    if (mp_Controller && mp_Controller->getGZipLevel() > 0)
+      return mp_Controller->getGZipLevel();
     
     //a_Match extension and minimum size
     if (

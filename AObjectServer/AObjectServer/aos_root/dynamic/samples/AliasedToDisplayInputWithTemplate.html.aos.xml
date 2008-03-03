@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<command alias="/samples/DisplayInputWithTemplate.html"/>
+<controller alias="/samples/DisplayInputWithTemplate.html"/>

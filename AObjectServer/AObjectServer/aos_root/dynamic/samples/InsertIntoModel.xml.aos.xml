@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<command>
+<controller>
 	<module class="InsertIntoModel">
 		<path>/inserted</path>
 		<data>
@@ -29,5 +29,5 @@
 			</insert-root-2>
 		</data>
 	</module>
-</command>
+</controller>
 	

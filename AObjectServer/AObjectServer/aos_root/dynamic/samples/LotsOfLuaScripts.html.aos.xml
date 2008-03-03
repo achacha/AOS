@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<command>
+<controller>
 	<output class="Template">
 		<filename>template/LotsOfLuaScripts.html</filename>
 	</output>
-</command>
+</controller>

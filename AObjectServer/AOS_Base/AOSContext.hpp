@@ -20,7 +20,7 @@ class AUrl;
 class AQueryString;
 class ACookies;
 class AOSServices;
-class AOSCommand;
+class AOSController;
 class AThread;
 class AOSDirectoryConfig;
 
@@ -320,20 +320,20 @@ public:
   const AOSDirectoryConfig *getDirConfig() const;
 
   /*!
-  Sets new command from path/commandname
+  Sets new controller from path/controllername
   */
-  bool setNewCommandPath(const AString& commandpath);
+  bool setNewControllerPath(const AString& path);
 
   /*!
   Lookup the command based on current request URL
   @return true if command is found
   */
-  bool setCommandFromRequestUrl();
+  bool setControllerFromRequestUrl();
 
   /*!
-  Command object (NULL if does not exist)
+  Controller object (NULL if does not exist)
   */
-  const AOSCommand *getCommand() const;
+  const AOSController *getController() const;
 
   /*!
   Input Processor command (usually Content-Type of the HTTP header)
@@ -462,9 +462,9 @@ private:
   AOSSessionData *mp_SessionObject;
 
   /*!
-  Command of this context (cached to prevent constant lookup in AOSConfiguration)
+  Controller of this context (cached to prevent constant lookup in AOSConfiguration)
   */
-  const AOSCommand *mp_Command;
+  const AOSController *mp_Controller;
   
   /*!
   Directory config of this context (cached to prevent constant lookup in AOSConfiguration)

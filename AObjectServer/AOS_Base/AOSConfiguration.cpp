@@ -2,7 +2,7 @@
 #include "AOSConfiguration.hpp"
 #include "ALock.hpp"
 #include "AOSAdmin.hpp"
-#include "AOSCommand.hpp"
+#include "AOSController.hpp"
 #include "AFile_Physical.hpp"
 #include "AXmlDocument.hpp"
 #include "AXmlElement.hpp"
@@ -45,14 +45,12 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_ReportedHttpsPort=" << m_ReportedHttpsPort << std::endl;
 
   {
-    //a_Commands
-    ADebugDumpable::indent(os, indent+1) << "m_CommandPtrs={" << std::endl;
-    MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.begin();
-    while (cit != m_CommandPtrs.end())
+    //a_Controllers
+    ADebugDumpable::indent(os, indent+1) << "m_ControllerPtrs={" << std::endl;
+    for (MAP_ASTRING_CONTROLLERPTR::const_iterator cit = m_ControllerPtrs.begin(); cit != m_ControllerPtrs.end(); ++cit)
     {
       ADebugDumpable::indent(os, indent+2) << (*cit).first << "={" << std::endl;
       (*cit).second->debugDump(os, indent+3);
-      ++cit;
       ADebugDumpable::indent(os, indent+2) << "}" << std::endl;
     }
     ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
@@ -134,23 +132,21 @@ void AOSConfiguration::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader
     getAosDefaultOutputGenerator()
   );
 
-  //a_Commands
+  //a_Controllers
   {
     ARope rope;
-    MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.begin();
-    while (cit != m_CommandPtrs.end())
+    for (MAP_ASTRING_CONTROLLERPTR::const_iterator cit = m_ControllerPtrs.begin(); cit != m_ControllerPtrs.end(); ++cit)
     {
-      rope.append((*cit).second->getCommandPath());
-      if (!(*cit).second->getCommandAlias().isEmpty())
+      rope.append((*cit).second->getPath());
+      if (!(*cit).second->getAlias().isEmpty())
       {
         rope.append("(",1);
-        rope.append((*cit).second->getCommandAlias());
+        rope.append((*cit).second->getAlias());
         rope.append(")",1);
       }
       rope.append(AConstant::ASTRING_CRLF);
-      ++cit;
     }
-    adminAddProperty(eBase, ASWNL("Commands"), rope);
+    adminAddProperty(eBase, ASW("Controllers",11), rope);
   }
 
   {
@@ -171,8 +167,8 @@ void AOSConfiguration::adminProcessAction(AXmlElement& eBase, const AHTTPRequest
   AString str;
   if (request.getUrl().getParameterPairs().get(ASW("display_name",12), str))
   {
-    MAP_ASTRING_COMMANDPTR::iterator it = m_CommandPtrs.find(str);
-    if (it != m_CommandPtrs.end())
+    MAP_ASTRING_CONTROLLERPTR::iterator it = m_ControllerPtrs.find(str);
+    if (it != m_ControllerPtrs.end())
       (*it).second->adminProcessAction(eBase, request);
     else
       adminAddError(eBase, "command not found");
@@ -243,7 +239,7 @@ AOSConfiguration::AOSConfiguration(
   try
   {
     _readMIMETypes();
-    _loadCommands();
+    _loadControllers();
   }
   catch(AException& ex)
   {
@@ -258,8 +254,8 @@ AOSConfiguration::~AOSConfiguration()
   try
   {
     {
-      MAP_ASTRING_COMMANDPTR::iterator it = m_CommandPtrs.begin();
-      while (it != m_CommandPtrs.end())
+      MAP_ASTRING_CONTROLLERPTR::iterator it = m_ControllerPtrs.begin();
+      while (it != m_ControllerPtrs.end())
       {
         delete it->second;
         ++it;
@@ -353,7 +349,7 @@ void AOSConfiguration::loadConfig(const AString& name)
     m_Services.useLog().add(ASW("XML config does not exist: ",27), filename, ALog::WARNING);
 }
 
-void AOSConfiguration::_loadCommands()
+void AOSConfiguration::_loadControllers()
 {
   AFileSystem::LIST_FileInfo fileList, directoryConfigs;
   const AString& EXT1 = ASW("aos",3);
@@ -373,11 +369,11 @@ void AOSConfiguration::_loadCommands()
       }
       else
       {
-        _readCommand(it->filename);
+        _readController(it->filename);
       }
     }
 
-    _postProcessCommandAndConfig(directoryConfigs);
+    _postProcessControllerAndConfig(directoryConfigs);
   }
   else
   {
@@ -420,8 +416,10 @@ void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
   p->adminRegisterObject(m_Services.useAdminRegistry());
 }
 
-void AOSConfiguration::_readCommand(AFilename& filename)
+void AOSConfiguration::_readController(AFilename& filename)
 {
+  static const AString CONTROLLER_ROOT(AString("/",1)+AOSController::S_CONTROLLER);
+  
   //a_Load from all XML command files
   AFile_Physical commandFile(filename);
   commandFile.open();
@@ -429,7 +427,7 @@ void AOSConfiguration::_readCommand(AFilename& filename)
   commandFile.close();
 
   AXmlElement::CONST_CONTAINER nodes;
-  doc.useRoot().find(ASW("/command",8), nodes);
+  doc.useRoot().find(CONTROLLER_ROOT, nodes);
   
   //a_Parse each /command/command type
   AString strPath(1536, 512);
@@ -454,10 +452,10 @@ void AOSConfiguration::_readCommand(AFilename& filename)
       }  
 
       //a_Parse command and associate to relative path
-      AAutoPtr<AOSCommand> p(new AOSCommand(strPath, m_Services.useLog()));
+      AAutoPtr<AOSController> p(new AOSController(strPath, m_Services.useLog()));
       p->fromXml(*pElement);
-      AASSERT(this, m_CommandPtrs.end() == m_CommandPtrs.find(strPath));
-      m_CommandPtrs[strPath] = p;
+      AASSERT(this, m_ControllerPtrs.end() == m_ControllerPtrs.find(strPath));
+      m_ControllerPtrs[strPath] = p;
       p.setOwnership(false);
 
       //a_Register the command with admin
@@ -469,7 +467,7 @@ void AOSConfiguration::_readCommand(AFilename& filename)
   }
 }
 
-void AOSConfiguration::_postProcessCommandAndConfig(AFileSystem::LIST_FileInfo& directoryConfigs)
+void AOSConfiguration::_postProcessControllerAndConfig(AFileSystem::LIST_FileInfo& directoryConfigs)
 {
   AString strPath(1536, 512);
   for (AFileSystem::LIST_FileInfo::iterator it = directoryConfigs.begin(); it != directoryConfigs.end(); ++it)
@@ -478,14 +476,14 @@ void AOSConfiguration::_postProcessCommandAndConfig(AFileSystem::LIST_FileInfo& 
   }
 }
 
-const AOSCommand * const AOSConfiguration::getCommand(const AUrl& commandUrl) const
+const AOSController * const AOSConfiguration::getController(const AUrl& commandUrl) const
 {
   AString command(commandUrl.getPathAndFilename());
   if (commandUrl.getFilename().isEmpty())
     command.append(m_AosDefaultFilename);
 
-  MAP_ASTRING_COMMANDPTR::const_iterator cit = m_CommandPtrs.find(command);
-  if (cit != m_CommandPtrs.end())
+  MAP_ASTRING_CONTROLLERPTR::const_iterator cit = m_ControllerPtrs.find(command);
+  if (cit != m_ControllerPtrs.end())
     return (*cit).second;
   else
     return NULL;

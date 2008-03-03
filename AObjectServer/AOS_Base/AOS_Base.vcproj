@@ -219,10 +219,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSCommand.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AOSConfiguration.cpp"
 				>
 			</File>
@@ -260,6 +256,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSContextQueueThreadPool_RoundRobinSwarm.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSController.cpp"
 				>
 			</File>
 			<File
@@ -377,10 +377,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSCommand.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AOSConfiguration.hpp"
 				>
 			</File>
@@ -418,6 +414,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSContextQueueThreadPool_RoundRobinSwarm.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSController.hpp"
 				>
 			</File>
 			<File

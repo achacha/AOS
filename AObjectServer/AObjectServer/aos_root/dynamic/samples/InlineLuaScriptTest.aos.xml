@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<command>
+<controller>
   <input/>
   <module class="LuaScript">
     <filename>lua/LuaTestScript_1.lua</filename>
@@ -20,4 +20,4 @@
   <output class="Template">
 	  <filename>template/InlineLuaScriptTest.template</filename>
 	</output>
-</command>
+</controller>

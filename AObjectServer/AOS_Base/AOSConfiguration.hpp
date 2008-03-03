@@ -11,7 +11,7 @@
 
 class AUrl;
 class AFile_Socket;
-class AOSCommand;
+class AOSController;
 class ASynchronization;
 class ALog;
 class AOSServices;
@@ -128,7 +128,7 @@ public:
   Paths
   */
   const AFilename& getAosBaseConfigDirectory() const;    // Location of the config files
-  const AFilename& getAosBaseDynamicDirectory() const;   // Commands
+  const AFilename& getAosBaseDynamicDirectory() const;   // Controllers
   const AFilename& getAosBaseDataDirectory() const;      // Data dir that is base for all command filename parameters
   const AFilename& getAosBaseStaticDirectory() const;    // Filesystem (fallback if command not found)
 
@@ -148,9 +148,9 @@ public:
   u4 getDynamicModuleLibraries(LIST_AString&) const;
   
   /*!
-  Commands
+  Controllers
   */
-  const AOSCommand* const getCommand(const AUrl&) const;
+  const AOSController* const getController(const AUrl&) const;
 
   /*!
   Directory config
@@ -186,9 +186,9 @@ private:
   //a_Configuration bits and Ini profile
   ABitArray m_ConfigBits;
 
-  //a_Commands
-  typedef std::map<AString, AOSCommand *> MAP_ASTRING_COMMANDPTR;
-  MAP_ASTRING_COMMANDPTR m_CommandPtrs;
+  //a_Controllers
+  typedef std::map<AString, AOSController *> MAP_ASTRING_CONTROLLERPTR;
+  MAP_ASTRING_CONTROLLERPTR m_ControllerPtrs;
   
   //a_Directory configs
   //a_Maps absolute path (relative to dynamic root) to AXmlDocument with config
@@ -198,10 +198,10 @@ private:
   /*!
   Load commands
   */
-  void _loadCommands();
-  void _readCommand(AFilename&);               //a_May alter the passed filename
+  void _loadControllers();
+  void _readController(AFilename&);               //a_May alter the passed filename
   void _readDirectoryConfig(AFilename&);       //a_May alter the passed filename
-  void _postProcessCommandAndConfig(AFileSystem::LIST_FileInfo&);
+  void _postProcessControllerAndConfig(AFileSystem::LIST_FileInfo&);
 
   //a_MIME type lookup
   MAP_AString_AString m_ExtToMimeType;

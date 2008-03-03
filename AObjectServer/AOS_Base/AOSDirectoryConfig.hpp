@@ -6,7 +6,6 @@
 #include "AXmlEmittable.hpp"
 #include "AXmlParsable.hpp"
 #include "AOSAdminInterface.hpp"
-#include "AOSCommand.hpp"
 #include "AOSModules.hpp"
 
 class AFile;

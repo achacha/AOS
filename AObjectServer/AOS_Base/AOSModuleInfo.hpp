@@ -6,8 +6,14 @@
 #include "AString.hpp"
 #include "AXmlElement.hpp"
 
+class AOSContext;
+
 class AOS_BASE_API AOSModuleInfo : public ADebugDumpable
 {
+public:
+  static AString COND_IF;
+  static AString COND_IF_NOT;
+
 public:
   /*!
   Create module info
@@ -30,6 +36,13 @@ public:
   AXmlElement& useParams();
 
   /*!
+  Checks if the module should execute for this context
+
+  @param context of the request
+  */
+  bool isExecute(AOSContext& context);
+
+  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
@@ -40,6 +53,10 @@ private:
   
   //! Classname
   AString m_Class;
+
+  //! If or If-Not of the module
+  AString m_If;
+  AString m_IfNot;
   
   //! Module parameters
   AXmlElement m_ModuleParams;

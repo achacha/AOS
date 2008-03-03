@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<command>
+<controller>
 	<input class="application/x-www-form-urlencoded"/>
 	<module class="PublishInput"/>
 	<output/>
-</command>
+</controller>
 	

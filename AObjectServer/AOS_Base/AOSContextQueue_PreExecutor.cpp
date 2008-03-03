@@ -2,7 +2,7 @@
 #include "AOSContextQueue_PreExecutor.hpp"
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
-#include "AOSCommand.hpp"
+#include "AOSController.hpp"
 #include "AOSConfiguration.hpp"
 #include "ASocketException.hpp"
 
@@ -277,10 +277,10 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         }
 
         //
-        //a_Command processing
+        //a_Controller processing
         //
-        const AOSCommand *pCommand = pContext->getCommand();
-        if (pCommand && pCommand->isEnabled())
+        const AOSController *pController = pContext->getController();
+        if (pController && pController->isEnabled())
         {
           //
           //a_Send context to execution queue

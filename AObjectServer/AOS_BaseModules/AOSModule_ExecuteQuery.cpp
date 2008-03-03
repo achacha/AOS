@@ -1,6 +1,5 @@
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_ExecuteQuery.hpp"
-#include "AOSCommand.hpp"
 #include "AResultSet.hpp"
 #include "ADatabase.hpp"
 

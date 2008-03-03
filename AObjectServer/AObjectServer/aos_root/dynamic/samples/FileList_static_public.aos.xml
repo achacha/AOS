@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<command>
+<controller>
 	<input/>
 	<module class="FileList">
 	  <path>public/*.*</path>
@@ -7,5 +7,5 @@
 	<output class="Xslt">
 		<filename>xsl/FileList.xsl</filename>
 	</output>
-</command>
+</controller>
 	

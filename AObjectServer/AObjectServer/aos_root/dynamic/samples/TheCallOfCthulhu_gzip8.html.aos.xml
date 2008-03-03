@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<command gzip="8">
+<controller gzip="8">
 	<module class="InsertIntoModel">
 		<path>/gzip/level</path>
 		<data>
@@ -11,5 +11,5 @@
 	<output class="File">
 		<path>samples/TheCallOfCthulhu.html</path>
 	</output>
-</command>
+</controller>
 	

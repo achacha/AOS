@@ -4,7 +4,6 @@
 #include "apiAOS_Base.hpp"
 #include "AString.hpp"
 #include "AOSAdminInterface.hpp"
-#include "AOSCommand.hpp"
 
 class AOSServices;
 class AOSModuleInterface;
