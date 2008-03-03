@@ -1,32 +1,32 @@
 
 #include "pchAOS_Base.hpp"
-#include "AOSCommand.hpp"
+#include "AOSController.hpp"
 #include "AXmlDocument.hpp"
 #include "ALog.hpp"
 #include "AOSAdminRegistry.hpp"
 #include "AOSModules.hpp"
 
-const AString AOSCommand::S_COMMAND("command",7);
-const AString AOSCommand::S_INPUT("input",5);
-const AString AOSCommand::S_MODULE("module",6);
-const AString AOSCommand::S_OUTPUT("output",6);
+const AString AOSController::S_COMMAND("controller",10);
+const AString AOSController::S_INPUT("input",5);
+const AString AOSController::S_MODULE("module",6);
+const AString AOSController::S_OUTPUT("output",6);
 
-const AString AOSCommand::S_CLASS("class",5);
-const AString AOSCommand::S_ENABLED("enabled",7);
-const AString AOSCommand::S_AJAX("ajax",4);
-const AString AOSCommand::S_ALIAS("alias",5);
-const AString AOSCommand::S_GZIP("gzip",4);
+const AString AOSController::S_CLASS("class",5);
+const AString AOSController::S_ENABLED("enabled",7);
+const AString AOSController::S_AJAX("ajax",4);
+const AString AOSController::S_ALIAS("alias",5);
+const AString AOSController::S_GZIP("gzip",4);
 
-void AOSCommand::debugDump(std::ostream& os, int indent) const
+void AOSController::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSCommand @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_CommandPath=" << m_CommandPath << std::endl;
+  ADebugDumpable::indent(os, indent) << "(AOSController @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Path=" << m_Path << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Enabled=" << (m_Enabled ? "true" : "false") << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ForceAjax=" << (m_ForceAjax ? "true" : "false") << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_GZipLevel=" << m_GZipLevel << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_CommandAlias=" << m_CommandAlias << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Alias=" << m_Alias << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_InputProcessor=" << m_InputProcessor << std::endl;
   if (m_InputParams.hasElements())
@@ -55,8 +55,8 @@ void AOSCommand::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-AOSCommand::AOSCommand(const AString& path, ALog& log) :
-  m_CommandPath(path),
+AOSController::AOSController(const AString& path, ALog& log) :
+  m_Path(path),
   m_InputParams(S_INPUT),
   m_OutputParams(S_OUTPUT),
   m_Enabled(true),
@@ -66,23 +66,23 @@ AOSCommand::AOSCommand(const AString& path, ALog& log) :
 {
 }
 
-AOSCommand::~AOSCommand()
+AOSController::~AOSController()
 {
 }
 
-const AString& AOSCommand::getClass() const
+const AString& AOSController::getClass() const
 {
-  static const AString CLASS("AOSCommand");
+  static const AString CLASS("AOSController");
   return CLASS;
 }
 
-void AOSCommand::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader& request)
+void AOSController::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader& request)
 {
   //a_Display the commadn name (which is the path)
-  thisRoot.addAttribute(ASW("display",7), m_CommandPath);
+  thisRoot.addAttribute(ASW("display",7), m_Path);
 
   //a_Alias if any
-  thisRoot.addAttribute(S_ALIAS, m_CommandAlias);
+  thisRoot.addAttribute(S_ALIAS, m_Alias);
 
   ARope rope;
   if (!m_InputProcessor.isEmpty())
@@ -145,7 +145,7 @@ void AOSCommand::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader& r
   );
 }
 
-void AOSCommand::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+void AOSController::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   AString str;
   if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
@@ -193,12 +193,12 @@ void AOSCommand::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader
   }
 }
 
-AXmlElement& AOSCommand::emitXml(AXmlElement& thisRoot) const
+AXmlElement& AOSController::emitXml(AXmlElement& thisRoot) const
 {
   AASSERT(this, !thisRoot.useName().isEmpty());
 
-  if (!m_CommandAlias.isEmpty())
-    thisRoot.addAttribute(S_ALIAS, m_CommandAlias);
+  if (!m_Alias.isEmpty())
+    thisRoot.addAttribute(S_ALIAS, m_Alias);
   
   thisRoot.addAttribute(S_ENABLED, m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   thisRoot.addAttribute(S_AJAX, m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
@@ -230,12 +230,12 @@ AXmlElement& AOSCommand::emitXml(AXmlElement& thisRoot) const
   return thisRoot;
 }
 
-void AOSCommand::fromXml(const AXmlElement& element)
+void AOSController::fromXml(const AXmlElement& element)
 {
   AString str(256,128);
 
   //a_Set command alias
-  element.getAttributes().get(S_ALIAS, m_CommandAlias);
+  element.getAttributes().get(S_ALIAS, m_Alias);
 
   //a_Enabled?
   element.getAttributes().get(S_ENABLED, str);
@@ -299,70 +299,70 @@ void AOSCommand::fromXml(const AXmlElement& element)
   }
 }
 
-void AOSCommand::adminRegisterObject(AOSAdminRegistry& registry)
+void AOSController::adminRegisterObject(AOSAdminRegistry& registry)
 {
   AString str(getClass());
   str.append(':');
-  str.append(m_CommandPath);
+  str.append(m_Path);
   registry.insert(str, *this);
 }
 
-const AOSModules& AOSCommand::getModules() const
+const AOSModules& AOSController::getModules() const
 {
   return m_Modules;
 }
 
-const AXmlElement& AOSCommand::getInputParams() const
+const AXmlElement& AOSController::getInputParams() const
 {
   return m_InputParams;
 }
 
-const AXmlElement& AOSCommand::getOutputParams() const
+const AXmlElement& AOSController::getOutputParams() const
 {
   return m_OutputParams;
 }
 
-const AString& AOSCommand::getCommandAlias() const
+const AString& AOSController::getAlias() const
 { 
-  return m_CommandAlias;
+  return m_Alias;
 }
 
-const AString& AOSCommand::getCommandPath() const
+const AString& AOSController::getPath() const
 { 
-  return m_CommandPath;
+  return m_Path;
 }
 
-void AOSCommand::emitCommandBasePath(AOutputBuffer& target) const
+void AOSController::emitBasePath(AOutputBuffer& target) const
 {
-  size_t pos = m_CommandPath.rfind('/');
+  size_t pos = m_Path.rfind('/');
   AASSERT(this, AConstant::npos != pos);       //a_command path must all be absolute from server perspective
   if (AConstant::npos != pos)
   {
-    m_CommandPath.peek(target, 0, pos+1);
+    m_Path.peek(target, 0, pos+1);
   }
 }
 
-bool AOSCommand::isEnabled() const
+bool AOSController::isEnabled() const
 {
   return m_Enabled;
 }
 
-bool AOSCommand::isForceAjax() const
+bool AOSController::isForceAjax() const
 {
   return m_ForceAjax;
 }
 
-int AOSCommand::getGZipLevel() const
+int AOSController::getGZipLevel() const
 {
   return m_GZipLevel;
 }
 
-const AString& AOSCommand::getInputProcessorName() const
+const AString& AOSController::getInputProcessorName() const
 { 
   return m_InputProcessor;
 }
 
-const AString& AOSCommand::getOutputGeneratorName() const 
+const AString& AOSController::getOutputGeneratorName() const 
 { 
   return m_OutputGenerator;
 }

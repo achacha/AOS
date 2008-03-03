@@ -1,5 +1,5 @@
-#ifndef INCLUDED__AOSCommand_HPP__
-#define INCLUDED__AOSCommand_HPP__
+#ifndef INCLUDED__AOSController_HPP__
+#define INCLUDED__AOSController_HPP__
 
 #include "apiAOS_Base.hpp"
 #include "AString.hpp"
@@ -12,7 +12,7 @@
 class AFile;
 class ALog;
 
-class AOS_BASE_API AOSCommand : public AXmlEmittable, public AXmlParsable, public AOSAdminInterface
+class AOS_BASE_API AOSController : public AXmlEmittable, public AXmlParsable, public AOSAdminInterface
 {
 public:
   /*!
@@ -30,8 +30,8 @@ public:
   static const AString S_GZIP;
 
 public:
-  AOSCommand(const AString& name, ALog&);
-  virtual ~AOSCommand();
+  AOSController(const AString& name, ALog&);
+  virtual ~AOSController();
 
   /*!
   Parse from XML element
@@ -69,7 +69,7 @@ public:
 
   @return absolute base path + command name
   */
-  const AString& getCommandPath() const;
+  const AString& getPath() const;
 
   /*!
   Gets the absolute base path of the request URL
@@ -77,13 +77,13 @@ public:
 
   @return absolute base path (without command name)
   */
-  void emitCommandBasePath(AOutputBuffer&) const;
+  void emitBasePath(AOutputBuffer&) const;
 
   /*!
   Returns alias to use instead of this command
   If empty then this is a valid command else lookup the alias name
   */
-  const AString& getCommandAlias() const;
+  const AString& getAlias() const;
   
   /*!
   Name of the input processor
@@ -126,10 +126,10 @@ public:
 
 private:
   //a_Command alias
-  AString m_CommandPath;
+  AString m_Path;
 
   //a_Command alias
-  AString m_CommandAlias;
+  AString m_Alias;
   
   //a_Input processor
   AString m_InputProcessor;
@@ -155,24 +155,28 @@ private:
 XML for each command (example below)
 
 <?xml version="1.0" encoding="UTF-8"?>
-<command ajax='1' gzip='3' enabled='true'>
+<controller ajax='1' gzip='3' enabled='true'>
 	<input class='application/x-www-form-urlencoded'/>
   <module class='PublishInput'>
     <name>foo</name>
     <param>0</param>
   </module>
-  <module class='somemodule'>
+  <module class='somemodule' if='/root/context/model/path/found'>
     <name>bar</name>
     <state>2</state>
+  </module>
+  <module class='somemodule' ifnot='/root/context/model/path/missing'>
+    <name>baz</name>
+    <state>3</state>
   </module>
 	<output class='xslt'>
     <filename>aos.xsl</filename>
   </output>
-</command>
+</controller>
 
 <?xml version="1.0" encoding="UTF-8"?>
-<command alias='/somepath/anothercommand'/>
+<controller alias='/somepath/anothercontroller'/>
 
 */
 
-#endif // INCLUDED__AOSCommand_HPP__
+#endif // INCLUDED__AOSController_HPP__
