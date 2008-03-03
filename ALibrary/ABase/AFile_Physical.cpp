@@ -11,6 +11,18 @@
 const AString AFile_Physical::sm_DefaultOpenFlags("rb");          //a_Read binary file by default
 const int AFile_Physical::sm_DefaultShareFlags = _SH_DENYNO;
 
+void AFile_Physical::debugDump(std::ostream& os, int indent) const
+{
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
+  
+  ADebugDumpable::indent(os, indent+1) << "m_filename=" << m_filename << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_openflags=" << m_openflags << "  m_shareflags=" << m_shareflags << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_fid=" << m_fid << "  mp_file=" << AString::fromPointer(mp_file) << std::endl;
+
+  AFile::debugDump(os, indent+1);
+  ADebugDumpable::indent(os, indent) << "}" << std::endl;
+}
+
 AFile_Physical::AFile_Physical() :
   mp_file(NULL)
 {

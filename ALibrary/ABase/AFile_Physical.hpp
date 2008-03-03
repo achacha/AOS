@@ -65,6 +65,11 @@ public:
   AString& useOpenFlags();
   int& useShareFlags();
 
+  /*!
+  ADebugDumpable
+  */
+  virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
 protected :
   //a_Implement raw read/write methods that AFile will use
   virtual size_t _write(const void *, size_t);
