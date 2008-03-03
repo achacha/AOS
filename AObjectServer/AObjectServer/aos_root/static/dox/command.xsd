@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 (http://www.altova.com) by *^&%#)( (()@!)) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="command">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence minOccurs="0">
+				<xs:element name="input" minOccurs="0">
+					<xs:complexType>
+						<xs:attribute name="class" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:sequence minOccurs="0">
+					<xs:element name="module" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:attribute name="class" type="xs:string" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:element name="output" minOccurs="0">
+					<xs:complexType>
+						<xs:attribute name="class" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="class" type="xs:string" use="required"/>
+			<xs:attribute name="ajax" type="xs:boolean" default="false"/>
+			<xs:attribute name="alias" type="xs:string"/>
+			<xs:attribute name="enabled" type="xs:boolean" default="true"/>
+			<xs:attribute name="gzip" type="xs:integer" default="0"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
