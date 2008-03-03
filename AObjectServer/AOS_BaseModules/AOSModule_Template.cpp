@@ -45,7 +45,7 @@ AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AX
     }
     else
     {
-      context.addError(ASWNL("AOSModule_Template"), ASWNL("Unable to find module/template nor module/filename, Template module did not execute, params"));
+      context.addError(getClass(), ASWNL("Unable to find module/template nor module/filename, Template module did not execute, params"));
       return AOSContext::RETURN_ERROR;  //a_Did not find either module/template or module/filename
     }
   }  

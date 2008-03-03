@@ -241,7 +241,7 @@
 			>
 			<Filter
 				Name="Header Files"
-				Filter="hpp;h;"
+				Filter="h;hpp;hxx;hm;inl;inc;xsd"
 				>
 				<File
 					RelativePath=".\AOSInput_HtmlForm.hpp"
@@ -258,7 +258,8 @@
 			</Filter>
 			<Filter
 				Name="Source Files"
-				Filter="cpp;c"
+				Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+				UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FC}"
 				>
 				<File
 					RelativePath=".\AOSInput_HtmlForm.cpp"
@@ -279,7 +280,7 @@
 			>
 			<Filter
 				Name="Header Files"
-				Filter="hpp;h;"
+				Filter="h;hpp;hxx;hm;inl;inc;xsd"
 				>
 				<File
 					RelativePath=".\AOSOutput_File.hpp"
@@ -312,7 +313,8 @@
 			</Filter>
 			<Filter
 				Name="Source Files"
-				Filter="cpp;c;"
+				Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+				UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FE}"
 				>
 				<File
 					RelativePath=".\AOSOutput_File.cpp"
@@ -349,7 +351,7 @@
 			>
 			<Filter
 				Name="Header Files"
-				Filter="hpp;h;"
+				Filter="h;hpp;hxx;hm;inl;inc;xsd"
 				>
 				<File
 					RelativePath=".\AOSModule_AlterContext.hpp"
@@ -380,13 +382,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\AOSModule_SaveToFile.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\AOSModule_Template.hpp"
 					>
 				</File>
 			</Filter>
 			<Filter
 				Name="Source Files"
-				Filter="cpp;c;"
+				Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+				UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FD}"
 				>
 				<File
 					RelativePath=".\AOSModule_AlterContext.cpp"
@@ -414,6 +421,10 @@
 				</File>
 				<File
 					RelativePath=".\AOSModule_PublishInput.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSModule_SaveToFile.cpp"
 					>
 				</File>
 				<File

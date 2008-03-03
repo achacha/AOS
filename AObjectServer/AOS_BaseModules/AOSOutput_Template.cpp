@@ -71,6 +71,19 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
         }
       }
     }
+    ifElement.clear();
+    if ((*cit)->getAttributes().getDelimited(ASW("ifnot",5), ifElement) > 0)
+    {
+      if (ifElement.getSize() > 0)
+      {
+        //a_Check condition, if not met continue with next template
+        if (context.useModel().exists(ifElement))
+        {
+          context.useEventVisitor().startEvent(ARope("Skipping conditional template for ")+ifElement, AEventVisitor::EL_DEBUG);
+          continue;
+        }
+      }
+    }
    
     //a_Process and output template
     AFilename filename(m_Services.useConfiguration().getAosBaseDataDirectory());

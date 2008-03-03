@@ -18,6 +18,7 @@
 #include "AOSModule_Template.hpp"
 #include "AOSModule_LuaScript.hpp"
 #include "AOSModule_FileList.hpp"
+#include "AOSModule_SaveToFile.hpp"
 
 //a_Output generators
 #include "AOSOutput_NOP.hpp"
@@ -69,6 +70,7 @@ extern "C" AOS_BASEMODULES_API int aos_register(
   moduleExecutor.registerModule(new AOSModule_Template(services));
   moduleExecutor.registerModule(new AOSModule_LuaScript(services));
   moduleExecutor.registerModule(new AOSModule_FileList(services));
+  moduleExecutor.registerModule(new AOSModule_SaveToFile(services));
   
   //Register output generators
   outputExecutor.registerOutputGenerator(new AOSOutput_NOP(services));

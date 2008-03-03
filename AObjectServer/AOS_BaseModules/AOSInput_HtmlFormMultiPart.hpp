@@ -4,14 +4,14 @@
 #include "apiAOS_BaseModules.hpp"
 
 /*!
-Parse the multi-part post and place result into specified destination
+Parse the multi-part post and place result into specified destination as a model element
 
 <input class="multipart/form-data"/>
 
 Objects read as file type are stored in the request objects container and their name is stored as value in the query parameter pair
 Existing objects are overwritten.
 
-To access data stored in the objects repository (if your file input name="fileinput"):
+To access data stored (if your file input name="fileinput"):
   AString objectname;
   if (context.useRequestParameterPairs().get(ASW("fileinput",9), objectname)
   {
