@@ -276,95 +276,95 @@
 			Name="Lua Header Files"
 			>
 			<File
-				RelativePath=".\lua-5.1.2\src\lapi.h"
+				RelativePath=".\lua-5.1.3\src\lapi.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lauxlib.h"
+				RelativePath=".\lua-5.1.3\src\lauxlib.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lcode.h"
+				RelativePath=".\lua-5.1.3\src\lcode.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ldebug.h"
+				RelativePath=".\lua-5.1.3\src\ldebug.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ldo.h"
+				RelativePath=".\lua-5.1.3\src\ldo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lfunc.h"
+				RelativePath=".\lua-5.1.3\src\lfunc.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lgc.h"
+				RelativePath=".\lua-5.1.3\src\lgc.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\llex.h"
+				RelativePath=".\lua-5.1.3\src\llex.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\llimits.h"
+				RelativePath=".\lua-5.1.3\src\llimits.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lmem.h"
+				RelativePath=".\lua-5.1.3\src\lmem.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lobject.h"
+				RelativePath=".\lua-5.1.3\src\lobject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lopcodes.h"
+				RelativePath=".\lua-5.1.3\src\lopcodes.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lparser.h"
+				RelativePath=".\lua-5.1.3\src\lparser.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lstate.h"
+				RelativePath=".\lua-5.1.3\src\lstate.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lstring.h"
+				RelativePath=".\lua-5.1.3\src\lstring.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ltable.h"
+				RelativePath=".\lua-5.1.3\src\ltable.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ltm.h"
+				RelativePath=".\lua-5.1.3\src\ltm.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lua.h"
+				RelativePath=".\lua-5.1.3\src\lua.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\luaconf.h"
+				RelativePath=".\lua-5.1.3\src\luaconf.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lualib.h"
+				RelativePath=".\lua-5.1.3\src\lualib.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lundump.h"
+				RelativePath=".\lua-5.1.3\src\lundump.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lvm.h"
+				RelativePath=".\lua-5.1.3\src\lvm.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lzio.h"
+				RelativePath=".\lua-5.1.3\src\lzio.h"
 				>
 			</File>
 		</Filter>
@@ -372,7 +372,7 @@
 			Name="Lua Source Files"
 			>
 			<File
-				RelativePath=".\lua-5.1.2\src\lapi.c"
+				RelativePath=".\lua-5.1.3\src\lapi.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -384,7 +384,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lauxlib.c"
+				RelativePath=".\lua-5.1.3\src\lauxlib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -396,7 +396,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lbaselib.c"
+				RelativePath=".\lua-5.1.3\src\lbaselib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -408,7 +408,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lcode.c"
+				RelativePath=".\lua-5.1.3\src\lcode.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -420,7 +420,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ldblib.c"
+				RelativePath=".\lua-5.1.3\src\ldblib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -432,7 +432,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ldebug.c"
+				RelativePath=".\lua-5.1.3\src\ldebug.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -444,7 +444,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ldo.c"
+				RelativePath=".\lua-5.1.3\src\ldo.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -456,7 +456,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ldump.c"
+				RelativePath=".\lua-5.1.3\src\ldump.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -468,7 +468,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lfunc.c"
+				RelativePath=".\lua-5.1.3\src\lfunc.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -480,7 +480,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lgc.c"
+				RelativePath=".\lua-5.1.3\src\lgc.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -492,7 +492,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\linit.c"
+				RelativePath=".\lua-5.1.3\src\linit.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -504,7 +504,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\liolib.c"
+				RelativePath=".\lua-5.1.3\src\liolib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -516,7 +516,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\llex.c"
+				RelativePath=".\lua-5.1.3\src\llex.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -528,7 +528,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lmathlib.c"
+				RelativePath=".\lua-5.1.3\src\lmathlib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -540,7 +540,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lmem.c"
+				RelativePath=".\lua-5.1.3\src\lmem.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -552,7 +552,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\loadlib.c"
+				RelativePath=".\lua-5.1.3\src\loadlib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -564,7 +564,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lobject.c"
+				RelativePath=".\lua-5.1.3\src\lobject.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -576,7 +576,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lopcodes.c"
+				RelativePath=".\lua-5.1.3\src\lopcodes.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -588,7 +588,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\loslib.c"
+				RelativePath=".\lua-5.1.3\src\loslib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -600,7 +600,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lparser.c"
+				RelativePath=".\lua-5.1.3\src\lparser.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -612,7 +612,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lstate.c"
+				RelativePath=".\lua-5.1.3\src\lstate.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -624,7 +624,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lstring.c"
+				RelativePath=".\lua-5.1.3\src\lstring.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -636,7 +636,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lstrlib.c"
+				RelativePath=".\lua-5.1.3\src\lstrlib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -648,7 +648,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ltable.c"
+				RelativePath=".\lua-5.1.3\src\ltable.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -660,7 +660,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ltablib.c"
+				RelativePath=".\lua-5.1.3\src\ltablib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -672,7 +672,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\ltm.c"
+				RelativePath=".\lua-5.1.3\src\ltm.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -684,7 +684,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lundump.c"
+				RelativePath=".\lua-5.1.3\src\lundump.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -696,7 +696,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lvm.c"
+				RelativePath=".\lua-5.1.3\src\lvm.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -708,7 +708,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\lzio.c"
+				RelativePath=".\lua-5.1.3\src\lzio.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -720,7 +720,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.2\src\print.c"
+				RelativePath=".\lua-5.1.3\src\print.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

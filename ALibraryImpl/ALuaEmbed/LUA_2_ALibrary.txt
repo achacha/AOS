@@ -1,3 +1,8 @@
+Add all *.h files
+Add all *.c files except lua.c and luac.c
+
+===================================
+
 Modify the following lua source files:
 
 lstate.h:
@@ -12,7 +17,7 @@ struct lua_State {
 ==================================
 lauxlib.h
 ---------
-Add ALibrary specific declaration:
+Add ALibrary specific declaration (before "some useful macros":
 
 //a_Added for ALibrary
 LUALIB_API void (luaL_stringappender)(lua_State *L, const char *s);
@@ -54,4 +59,8 @@ static int luaB_print (lua_State *L) {
 #else
 ...original here...
 #endif
+==================================
+
+Select all lua .c files and in properties disable precompiled headers
+
 ==================================

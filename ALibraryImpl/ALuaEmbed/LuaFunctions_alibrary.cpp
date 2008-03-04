@@ -5,7 +5,7 @@
 /*!
 Appender used to overwrite print() and write to output buffer
 */
-extern "C" void luaL_stringappender(lua_State *L, const char *s)
+extern "C" void luaA_stringappender(lua_State *L, const char *s)
 {
   ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
   if (pLuaEmbed)
