@@ -83,6 +83,7 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             {
               pePart->addElement(ASW("context-object-name",19), strObjectName);
               context.useRequestParameterPairs().insert(strName, strObjectName);
+              context.useRequestParameterPairs().insert(strName+".filename", strFilename);
               context.useContextObjects().insert(strObjectName, pData.use(), true, true);
               pData.setOwnership(false);
             }

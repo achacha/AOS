@@ -2,34 +2,36 @@
 <head>
 <style>
 .generic-message { 
-	background: #d6deff;
-	font: 12 Arial, Helvetica, sans-serif;
-  color: blue;
+	background: #B0FF90;
+	font: 14 Arial, Helvetica, sans-serif;
+  color: #000000;
+}
+.error-message { 
+	background: #600000;
+	font: 18 Arial, Helvetica, sans-serif;
+  color: #FFFFFF;
 }
 </style>
 </head>
 <body bgcolor="#f0f0ff">
 
+<div class="error-message">
+%[LUA]{{{
+if (model.existElement("/root/ERROR")) then
+  print(model.emitContentFromPath("/root/ERROR"));
+end
+}}}[LUA]%
+</div>
 <div class="generic-message">
-%[LUA]{{{ print(model.getText("/root/generic-message")); }}}[LUA]%
+%[LUA]{{{ 
+if (model.existElement("/root/MESSAGE")) then
+	print(model.getText("/root/MESSAGE")); 
+end
+}}}[LUA]%
 </div>
 <br/>
 <br/>
-<small><font color="blue">Request time: %[LUA]{{{ print(model.getText("/root/request_time)); }}}[LUA]% milliseconds</font></small><br/>
-<small><font color="blue">Context time: %[LUA]{{{ print(model.getText("/root/context_time)); }}}[LUA]% milliseconds</font></small><br/>
-<br/>
-<h2>Embedded Lua script</h2>
-<table border='1'><tr><td><pre>
-local var x=5;
-x = x+2;
-print(x);
-</pre></td></tr></table>
-<table border='1'><tr><td>
-%[LUA]{{{
-local var x=5;
-x = x+2;
-print(x);
-}}}[LUA]%
-</td></tr></table>
+<small><font color="blue">Request time: %[LUA]{{{ print(model.getText("/root/request_time")); }}}[LUA]% milliseconds</font></small><br/>
+<small><font color="blue">Context time: %[LUA]{{{ print(model.getText("/root/context_time")); }}}[LUA]% milliseconds</font></small><br/>
 </body>
 </html>

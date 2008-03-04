@@ -27,6 +27,14 @@ class AOSDirectoryConfig;
 class AOS_BASE_API AOSContext : public ADebugDumpable, public AXmlEmittable
 {
 public:
+  static const AString S_REQUEST;
+  static const AString S_RESPONSE;
+  static const AString S_SESSION;
+  static const AString S_OUTPUT;
+  static const AString S_ERROR;
+  static const AString S_MESSAGE;
+
+public:
   /*!
   ctor
   */

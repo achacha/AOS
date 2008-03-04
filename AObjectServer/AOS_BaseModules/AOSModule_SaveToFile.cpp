@@ -39,17 +39,22 @@ AOSContext::ReturnCode AOSModule_SaveToFile::execute(AOSContext& context, const 
 
   //TODO: build aos_data based path and save content
   AFilename f(m_Services.useConfiguration().getAosBaseDataDirectory(), filename, false);
-  AFile_Physical outfile(f, "w");
-
   ARope rope;
   if (objectReference.equals(ASW("context-object",14)))
-  {
+  {       
     //a_Reference to context object
-    const AEmittable *pObject = context.useContextObjects().getAsPtr<const AEmittable>(path);
+    AString variable;
+    context.useModel().emitContentFromPath(path, variable);
+    const AEmittable *pObject = context.useContextObjects().getAsPtr<const AEmittable>(variable);
     if (pObject)
       pObject->emit(rope);
     else
-      context.addError(getClass(), ARope("Context object not found or not AEmittable-type at: ")+path);
+      context.addError(getClass(), ARope("Context object named '")+variable+ASWNL("' not found or not AEmittable-type at path: ")+path);
+
+    //a_Set filename to the one from upload
+    filename.clear();
+    if (context.useModel().emitContentFromPath(path+".filename", filename))
+      f.useFilename().assign(filename);
   }
   else
   {
@@ -57,16 +62,25 @@ AOSContext::ReturnCode AOSModule_SaveToFile::execute(AOSContext& context, const 
     context.useModel().emitContentFromPath(path, rope);
   }
 
-  try
+  if (AFileSystem::exists(f))
   {
-    outfile.open();
-    outfile.write(rope);
-    outfile.close();
+    context.useModel().overwriteElement(AOSContext::S_ERROR).addData(ARope("File by that name already exists: ")+f);
+    return AOSContext::RETURN_OK;
   }
-  catch(AException& ex)
+  else
   {
-    context.addError(getClass(), ARope("Unable to write file: ")+outfile.useFilename());
-    return AOSContext::RETURN_ERROR;
+    AFile_Physical outfile(f, "w");
+    try
+    {
+      outfile.open();
+      outfile.write(rope);
+      outfile.close();
+    }
+    catch(AException& ex)
+    {
+      context.addError(getClass(), ARope("Unable to write file: ")+outfile.useFilename());
+      return AOSContext::RETURN_ERROR;
+    }
   }
 
   return AOSContext::RETURN_OK;

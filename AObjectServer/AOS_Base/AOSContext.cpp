@@ -12,6 +12,13 @@ const AString AOSContext::CONTEXT("context");
 const AString AOSContext::XML_ROOT("root");
 const AString AOSContext::OBJECTNAME("__AOSContext__");
 
+const AString AOSContext::S_REQUEST("REQUEST",7);
+const AString AOSContext::S_RESPONSE("RESPONSE",8);
+const AString AOSContext::S_SESSION("SESSION",7);
+const AString AOSContext::S_OUTPUT("OUTPUT",6);
+const AString AOSContext::S_ERROR("ERROR",5);
+const AString AOSContext::S_MESSAGE("MESSAGE",7);
+
 void AOSContext::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSContext @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -701,19 +708,19 @@ AXmlElement& AOSContext::emitXml(AXmlElement& thisRoot) const
   m_EventVisitor.emitXml(thisRoot.addElement(ASW("EventVisitor",12)));
   m_Services.useGlobalObjects().emitXml(thisRoot.addElement(ASW("GlobalObjects",13)));
   m_ContextObjects.emitXml(thisRoot.addElement(ASW("ContextObjects",14)));
-  m_RequestHeader.emitXml(thisRoot.addElement(ASW("RequestHeader",13)));
-  m_ResponseHeader.emitXml(thisRoot.addElement(ASW("ResponseHeader",14)));
+  m_RequestHeader.emitXml(thisRoot.addElement(S_REQUEST));
+  m_ResponseHeader.emitXml(thisRoot.addElement(S_RESPONSE));
   m_ConnectionFlags.emitXml(thisRoot.addElement(ASW("ConnectionFlags",15)));
   m_ContextFlags.emitXml(thisRoot.addElement(ASW("ContextFlags",12)));
 
   if (mp_SessionObject)
-    mp_SessionObject->emitXml(thisRoot.addElement(ASW("Session",7)));
+    mp_SessionObject->emitXml(thisRoot.addElement(S_SESSION));
 
   //a_Check if command exists, if not it could be static content
   if (mp_Controller)
-    mp_Controller->emitXml(thisRoot.addElement(ASW("Controller",10)));
+    mp_Controller->emitXml(thisRoot.addElement(AOSController::S_CONTROLLER));
   else
-    thisRoot.addElement(ASW("Controller",10), ASW("NULL",4));
+    thisRoot.addElement(AOSController::S_CONTROLLER, AConstant::ASTRING_NULL);
 
   return thisRoot;
 }
@@ -796,7 +803,8 @@ void AOSContext::addError(
     m_RequestHeader.getUrl().emit(rope, true);
   }
   m_Services.useLog().add(where, what, rope, ALog::CRITICAL_ERROR);
-  m_EventVisitor.startEvent(where+":"+what, true);
+  m_EventVisitor.startEvent(where+":"+what, AEventVisitor::EL_ERROR);
+  m_OutputXmlDocument.useRoot().addElement(S_ERROR).addData(what);
 }
 
 void AOSContext::setResponseMimeTypeFromRequestExtension()
@@ -1002,7 +1010,7 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     //a_This allows override of XML emit by manually adding data to the output buffer in output generator
     if (m_OutputBuffer.isEmpty() || forceXmlDocument)
     {
-      m_OutputXmlDocument.useRoot().addElement(ASW("OUTPUTBUFFER",12)).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
+      m_OutputXmlDocument.useRoot().addElement(S_OUTPUT).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
       m_OutputBuffer.clear();
       m_OutputXmlDocument.emit(m_OutputBuffer);
       m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
