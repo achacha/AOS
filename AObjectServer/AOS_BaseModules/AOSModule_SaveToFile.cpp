@@ -37,7 +37,7 @@ AOSContext::ReturnCode AOSModule_SaveToFile::execute(AOSContext& context, const 
     return AOSContext::RETURN_ERROR;
   }
 
-  //TODO: build aos_data based path and save content
+  //a_data based path
   AFilename f(m_Services.useConfiguration().getAosBaseDataDirectory(), filename, false);
   ARope rope;
   if (objectReference.equals(ASW("context-object",14)))
