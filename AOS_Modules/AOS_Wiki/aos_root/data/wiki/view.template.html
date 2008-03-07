@@ -10,7 +10,7 @@ local editUrl;
 
 if model.existElement('/root/wiki/SecureEdit') then
   print( '<small>secure TODO</small>&nbsp;' );
-  editUrl = "https:" .. model.emitContentFromPath('/root/REQUEST/AUrl/server') .. editUrlBase;
+  editUrl = "https:" .. model.emitContentFromPath('/root/REQUEST/url/server') .. editUrlBase;
 else
   editUrl = editUrlBase;
 end

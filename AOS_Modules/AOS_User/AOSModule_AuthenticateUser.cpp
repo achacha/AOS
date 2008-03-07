@@ -14,6 +14,39 @@ AOSModule_AuthenticateUser::AOSModule_AuthenticateUser(AOSServices& services) :
 
 AOSContext::ReturnCode AOSModule_AuthenticateUser::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
+  AString strSuccessPath;
+  const AXmlElement *pSuccess = moduleParams.findElement(AOS_User_Constants::PARAM_REDIRECT_RETRYPAGE);
+  if (!pSuccess)
+  {
+    context.addError(getClass(), ARope("Missing module parameter for redirect on retry: ")+AOS_User_Constants::PARAM_REDIRECT_FAILURE);
+    return AOSContext::RETURN_ERROR;
+  }
+  else
+  {
+    AString str;
+    if (pSuccess->getAttributes().get(AOS_User_Constants::PARAM_REDIRECT_LOGINPAGE_RELATIVEATTR, str))
+    {
+      str.clear();
+      pSuccess->emitContent(str);
+      if (!context.useModel().emitContentFromPath(str, strSuccessPath))
+      {
+        context.useEventVisitor().startEvent(ARope("AOSModule_AuthenticateUser: Missing model parameter for redirect: ")+str, AEventVisitor::EL_WARN);
+      }
+    }
+    else
+    {
+      //a_Path in content
+      pSuccess->emitContent(strSuccessPath);
+    }
+  }
+
+  AString strFailurePath;
+  if (!moduleParams.emitContentFromPath(AOS_User_Constants::PARAM_REDIRECT_FAILURE, strFailurePath))
+  {
+    context.addError(getClass(), ARope("Missing module parameter for redirect on login failure: ")+AOS_User_Constants::PARAM_REDIRECT_FAILURE);
+    return AOSContext::RETURN_ERROR;
+  }
+
   //
   //TODO: This is where the check will go, for now just set the LoggedIn regardless of input
   //
@@ -25,14 +58,9 @@ AOSContext::ReturnCode AOSModule_AuthenticateUser::execute(AOSContext& context, 
     context.useSessionData().useData().remove(AOS_User_Constants::SESSION_LOGINFAILCOUNT);
     context.useSessionData().useData().overwriteElement(AOS_User_Constants::SESSION_ISLOGGEDIN);
 
-    AString str;
-    if (context.useSessionData().useData().emitString(AOS_User_Constants::SESSION_REDIRECTURL, str))
-    {
-      context.setResponseRedirect(str);
-      context.useSessionData().useData().remove(AOS_User_Constants::SESSION_REDIRECTURL);
-
-      return AOSContext::RETURN_REDIRECT;
-    }
+    context.setResponseRedirect(strSuccessPath);
+    context.useSessionData().useData().remove(AOS_User_Constants::SESSION_REDIRECTURL);
+    return AOSContext::RETURN_REDIRECT;
   }
   else
   {
@@ -47,24 +75,18 @@ AOSContext::ReturnCode AOSModule_AuthenticateUser::execute(AOSContext& context, 
         if (attempts.toInt() < str.toInt())
         {
           //a_Increment count
+          context.useEventVisitor().startEvent(ARope("Login attempt #")+attempts);
           context.useSessionData().useData().setInt(AOS_User_Constants::SESSION_LOGINFAILCOUNT, attempts.toInt()+1);
 
           //a_Try again
-          str.clear();
-          if (moduleParams.emitContentFromPath(AOS_User_Constants::PARAM_REDIRECT_LOGINPAGE, str))
-          {
-            context.setResponseRedirect(str);
-            return AOSContext::RETURN_REDIRECT;
-          }
-          else
-          {
-            context.addError(getClass(), ARope("Missing module parameter for redirect on login failure: ")+AOS_User_Constants::PARAM_REDIRECT_FAILURE);
-            return AOSContext::RETURN_ERROR;
-          }
+          context.setResponseRedirect(strFailurePath);
+          return AOSContext::RETURN_REDIRECT;
         }
         else
         {
           context.useEventVisitor().startEvent(ARope("Login failure #")+attempts);
+          context.setResponseRedirect(strFailurePath);
+          return AOSContext::RETURN_REDIRECT;
         }
       }
     }
@@ -72,24 +94,8 @@ AOSContext::ReturnCode AOSModule_AuthenticateUser::execute(AOSContext& context, 
     {
       //a_First failure
       context.useSessionData().useData().setInt(AOS_User_Constants::SESSION_LOGINFAILCOUNT, 1);
-    }
-
-      
-    //a_Login failed
-    str.clear();
-    if (moduleParams.emitContentFromPath(AOS_User_Constants::PARAM_REDIRECT_FAILURE, str))
-    {
-      context.setResponseRedirect(str);
+      context.setResponseRedirect(strFailurePath);
       return AOSContext::RETURN_REDIRECT;
     }
-    else
-    {
-      context.addError(getClass(), ARope("Missing module parameter for redirect on login failure: ")+AOS_User_Constants::PARAM_REDIRECT_FAILURE);
-      return AOSContext::RETURN_ERROR;
-    }
-
   }
-
-
-  return AOSContext::RETURN_OK;
 }

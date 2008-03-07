@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <controller>
   <input class="application/x-www-form-urlencoded"/>
-	<module class="User.Authenticate"/>
+	<module class="User.Authenticate">
+		<redirect>
+			<retry reference="context">SESSION/user/ru</retry>
+			<failure>/login</failure>
+		</redirect>
+	</module>
 	<!--output class="Redirect">
 	  <session-path>user/ru</session-path>
 		<secure>true</secure>

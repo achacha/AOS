@@ -4,7 +4,7 @@
 	<xsl:template match="/root">
 		<html>
 			<head>
-				<title></title>
+				<title>DaDa</title>
 			</head>
 			<body>
 				<xsl:apply-templates select="dada/line"/>
@@ -18,19 +18,12 @@
 		<xsl:choose>
 			<xsl:when test="@type='title'">
 				<h1>
-					<xsl:apply-templates select="image"/>
-					<xsl:copy-of select="."/>
+					<xsl:copy-of select="node()"/>
 				</h1>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:apply-templates select="image"/>
-				<xsl:copy-of select="."/>
+					<xsl:copy-of select="node()"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	<xsl:template match="image">
-		<img src="{@url}" alt="{@alt}"/>
-	</xsl:template>
-
 </xsl:stylesheet>

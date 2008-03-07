@@ -4,7 +4,7 @@
 
 const AString& AOSModule_WikiViewFromDatabase::getClass() const
 {
-  static const AString CLASS("WikiViewFromDatabase");
+  static const AString CLASS("Wiki.ViewFromDatabase");
   return CLASS;
 }
 

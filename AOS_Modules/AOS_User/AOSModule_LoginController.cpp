@@ -43,7 +43,7 @@ AOSContext::ReturnCode AOSModule_LoginController::execute(AOSContext& context, c
     else
     {
       //a_Missing parameter for redirect
-      context.addError(getClass(), ASWNL("Missing required module parameter 'redirect'"));
+      context.addError(getClass(), AString("Missing required module parameter:")+AOS_User_Constants::PARAM_REDIRECT_LOGINPAGE);
       return AOSContext::RETURN_ERROR;
     }
   }

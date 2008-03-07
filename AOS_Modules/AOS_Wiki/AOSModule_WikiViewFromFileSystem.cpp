@@ -7,7 +7,7 @@
 
 const AString& AOSModule_WikiViewFromFileSystem::getClass() const
 {
-  static const AString CLASS("WikiViewFromFileSystem");
+  static const AString CLASS("Wiki.ViewFromFileSystem");
   return CLASS;
 }
 

@@ -1,4 +1,4 @@
-<h2>"Before The {%noun:$dawn,proper}" <small>originally by Judas Priest</small></h2>
+{&type:title}"Before The {%noun:$dawn,proper}" <small>originally by Judas Priest</small>
 <br/>
 Before the {$dawn}, I hear you {%verb:$wisper}<br/>
 In your sleep "don't let the {%noun:$morning} {%verb:$take} him"<br/>

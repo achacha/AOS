@@ -3,7 +3,7 @@
 
 const AString& AOSModule_WikiController::getClass() const
 {
-  static const AString CLASS("WikiController");
+  static const AString CLASS("Wiki.Controller");
   return CLASS;
 }
 

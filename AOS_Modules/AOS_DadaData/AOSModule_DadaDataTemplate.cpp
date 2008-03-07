@@ -150,6 +150,8 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
 {
   static const AString delimStart("{");
   static const AString delimEnd("}");
+  static const AString DADA("dada",4);
+  static const AString LINE("line",4);
   
   if (format.isEmpty())
     return;
@@ -160,6 +162,7 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
   char c = '\x0';
   AString target(1024, 1024), strType(64,128);
   AAttributes attributes;
+  AXmlElement& eDada = element.overwriteElement(DADA);
   while (AConstant::npos != file.readUntil(target, delimStart, true, true))
   {
     file.read(c);
@@ -167,7 +170,7 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
     if (0 == readresult)
     {
       file.readUntilEOF(target);
-      element.addElement(ASW("/dada/line",10), target).addAttributes(attributes);
+      eDada.addElement(LINE).addData(target).addAttributes(attributes);
       target.clear();
       attributes.clear();
       break;
@@ -207,7 +210,7 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
     }
   }
   file.readUntilEOF(target);
-  element.addElement(ASW("dada/line",9), target).addAttributes(attributes);
+  eDada.addElement(LINE).addData(target).addAttributes(attributes);
   target.clear();
   attributes.clear();
 }
