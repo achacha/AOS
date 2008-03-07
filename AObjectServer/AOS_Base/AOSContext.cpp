@@ -212,12 +212,17 @@ AOSContext::Status AOSContext::init()
   //a_Start the timer
   m_RequestTimer.start();
 
-  //a_Reset context if pipelining, else it was already reset
+  //a_Reset context if pipelining, else this is a new or already reset context (from freestore)
   if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
   {
-    //a_Reset if pipelining, if not this object woulod have been reset with a new socket prior to this call
+    //a_If not this object would have been reset with a new socket prior to this call
     reset(NULL);
   }
+
+  m_EventVisitor.startEvent(ASW("AOSContext: Processing HTTP header",34));
+  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
+  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_REDIRECTING);
 
   try
   {
@@ -235,11 +240,11 @@ AOSContext::Status AOSContext::init()
     return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
   }
 
-  m_EventVisitor.startEvent(ASW("AOSContext: Processing HTTP header",34));
-
-  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
-  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
-  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_REDIRECTING);
+  //a_Add Date: to the response
+  ATime timeNow;
+  AString str;
+  timeNow.emitRFCtime(str);
+  m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Date, str);
 
   m_RequestHeader.useUrl().setServer(m_Services.useConfiguration().getReportedHostname());
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_HTTPS))
@@ -267,7 +272,7 @@ AOSContext::Status AOSContext::init()
 
   //a_Initialize response header
   m_ResponseHeader.setPair(AHTTPHeader::HT_RES_Server, m_Services.useConfiguration().getReportedServer());
-
+			
   return AOSContext::STATUS_OK;
 }
 
@@ -680,14 +685,24 @@ AOSContext::Status AOSContext::_processHttpHeader()
     return AOSContext::STATUS_HTTP_INVALID_HEADER;
   }
 
+  //a_Check if to keep the connection alive
   static bool isHttpPipeliningEnabled = m_Services.useConfiguration().useConfigRoot().getBool("/config/server/http/http11-pipelining-enabled", true);
   if (
-       isHttpPipeliningEnabled
-    && m_RequestHeader.isHttpPipeliningEnabled()
+       isHttpPipeliningEnabled                                                 // user enabled
+    && m_RequestHeader.isHttpPipeliningEnabled()                               // request header allows it 
+    && AHTTPRequestHeader::METHOD_ID_PUT != m_RequestHeader.getMethodId()      // method is not POST
   )
   {
     //a_HTTP pipelining turned on
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_HTTP11_PIPELINING);
+    m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
+    m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Keep_Alive, ASW("timeout=15, max=100",19));
+  }
+  else
+  {
+    //a_Connection close
+    m_ConnectionFlags.clearBit(AOSContext::CONFLAG_IS_HTTP11_PIPELINING);
+    m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Connection, ASW("close",5));
   }
   
   ARope rope("AOSContext: HTTP request header\r\n",33);
@@ -1165,6 +1180,8 @@ void AOSContext::setResponseRedirect(const AString& url)
 {
   m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_302_Moved_Temporarily);
   m_ResponseHeader.setPair(AHTTPResponseHeader::HT_RES_Location, url);
+  m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AConstant::ASTRING_ZERO);
+  m_OutputBuffer.clear();
 }
 
 int AOSContext::calculateGZipLevel()

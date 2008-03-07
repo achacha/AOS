@@ -266,8 +266,8 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         if (pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_REDIRECTING))
         {
           //a_The writing of the output header
-          pContext->useResponseHeader().emit(pContext->useSocket());
-          pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+          pContext->writeResponseHeader();
+          pContext->useContextFlags().setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
 
           //a_No error and pipelining, we handled request, do not continue
           if (!pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
@@ -290,15 +290,6 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         }
         else
         {
-          //a_Static file detected
-          //a_Add Date: to the response
-          {
-            ATime timeNow;
-            AString str;
-            timeNow.emitRFCtime(str);
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Date, str);
-          }
-
           //
           //a_Serve page (static)
           //

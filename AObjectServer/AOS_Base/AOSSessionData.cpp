@@ -19,7 +19,7 @@ void AOSSessionData::debugDump(std::ostream& os, int indent) const
 AOSSessionData::AOSSessionData(const AString& sessionId, size_t defaultDataHashSize) :
   m_AgeTimer(true),
   m_LastUsedTimer(true),
-  m_Data(ASW("SESSION",7))
+  m_Data(ASW("data",4))
 {
   m_Data.useRoot().setString(SESSIONID, sessionId);
 }
@@ -27,7 +27,7 @@ AOSSessionData::AOSSessionData(const AString& sessionId, size_t defaultDataHashS
 AOSSessionData::AOSSessionData(AFile& aFile) :
   m_AgeTimer(true),
   m_LastUsedTimer(true),
-  m_Data(ASW("SESSION",7))
+  m_Data(ASW("data",4))
 {
   fromAFile(aFile);
   AASSERT_EX(this, m_Data.useRoot().exists(SESSIONID), ASWNL("Session ID was not found after session was restored"));
@@ -51,7 +51,7 @@ AXmlElement& AOSSessionData::emitXml(AXmlElement& thisRoot) const
 
   m_AgeTimer.emitXml(thisRoot.addElement(ASW("session-age",11)));
   m_LastUsedTimer.emitXml(thisRoot.addElement(ASW("last-used",9)));
-  m_Data.getRoot().emitXml(thisRoot.addElement(ASW("data",4)));
+  m_Data.getRoot().emitXml(thisRoot);
 
   return thisRoot;
 }
