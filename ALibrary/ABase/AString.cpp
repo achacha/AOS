@@ -2804,8 +2804,12 @@ size_t AString::findPattern(
 size_t AString::flush(AFile& file)
 {
   if (m_Length > 0)
-    return file.write(mp_Buffer, m_Length);
-  
+  {
+    size_t written = file.write(mp_Buffer, m_Length);
+    file.flush();
+    return written;
+  }
+
   return 0;
 }
 

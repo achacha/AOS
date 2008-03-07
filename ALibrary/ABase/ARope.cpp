@@ -283,6 +283,7 @@ size_t ARope::flush(AFile& file)
   }
 
   AASSERT(this, bytesTotalWritten);
+  file.flush();
   return bytesTotalWritten;
 }
 

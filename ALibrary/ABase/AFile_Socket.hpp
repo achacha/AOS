@@ -55,7 +55,7 @@ public:
   virtual ~AFile_Socket();
 
   virtual void open();
-  virtual void flush() {}  //a_Does not apply for sockets
+  virtual void flush();
   virtual void close();
 
   /*!

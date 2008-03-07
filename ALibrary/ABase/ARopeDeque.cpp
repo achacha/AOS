@@ -1935,6 +1935,7 @@ size_t ARopeDeque::flush(AFile& file)
     m_BackBlockFree = 0;
   }
 
+  file.flush();
   return totalBytesWritten;
 }
 
