@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <controller>
-  <input/>
-  <module class="LuaScript">
-    <script><![CDATA[
-model.addText("/root/to-be-saved", "This will be saved to a file");
-model.addText("/root/generic-message", "/root/to-be-saved written to tmp/SaveModelElementToFile.output.txt");
-]]></script>
-  </module>
+	<input/>
+	
+	<module class="LuaScript">
+		<script>
+<![CDATA[model.addText("/root/to-be-saved", "This will be saved to a file");
+model.addText("/root/generic-message", "/root/to-be-saved written to tmp/SaveModelElementToFile.output.txt");]]>
+		</script>
+	</module>
+	
 	<module class="SaveToFile">
 	  <model-path>/root/to-be-saved</model-path>
-		<output-filename>tmp/SaveModelElementToFile.output.txt</output-filename>
+		<output-filename overwrite='true'>tmp/SaveModelElementToFile.output.txt</output-filename>
 	</module>
-  <output class="Template">
+	
+	<output class="Template">
 		<filename>template/GenericMessage.html</filename>
 	</output>
 </controller>

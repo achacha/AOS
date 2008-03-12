@@ -220,7 +220,18 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                 (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_ISAVAILABLE_SELECT_SET);
 
                 //a_Attempt to read some data to check if it actually has data, if not then connection is closed
-                switch((*itMove)->useSocket().readBlockIntoLookahead())
+                size_t bytesRead = AConstant::npos;
+                try
+                {
+                  bytesRead = (*itMove)->useSocket().readBlockIntoLookahead();
+                }
+                catch(AException e)
+                {
+                  bytesRead = AConstant::npos;  //a_Following switch will handle this
+                  (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: Exception reading from socket",58));
+                }
+
+                switch(bytesRead)
                 {
                   case AConstant::npos:
                   case 0:

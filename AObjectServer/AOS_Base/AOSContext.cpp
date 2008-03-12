@@ -696,7 +696,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
     //a_HTTP pipelining turned on
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_HTTP11_PIPELINING);
     m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
-    m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Keep_Alive, ASW("timeout=15, max=100",19));
+    //m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Keep_Alive, ASW("timeout=15, max=100",19));
   }
   else
   {

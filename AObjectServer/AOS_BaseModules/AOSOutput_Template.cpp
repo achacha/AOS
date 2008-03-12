@@ -59,7 +59,7 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
   {
     //a_Check "if" condition
     AString ifElement;
-    if ((*cit)->getAttributes().getDelimited(ASW("if",2), ifElement) > 0)
+    if ((*cit)->getAttributes().get(ASW("if",2), ifElement) > 0)
     {
       if (ifElement.getSize() > 0)
       {
@@ -72,7 +72,7 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
       }
     }
     ifElement.clear();
-    if ((*cit)->getAttributes().getDelimited(ASW("ifnot",5), ifElement) > 0)
+    if ((*cit)->getAttributes().get(ASW("ifnot",5), ifElement) > 0)
     {
       if (ifElement.getSize() > 0)
       {

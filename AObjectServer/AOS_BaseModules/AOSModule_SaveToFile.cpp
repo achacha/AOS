@@ -31,10 +31,15 @@ AOSContext::ReturnCode AOSModule_SaveToFile::execute(AOSContext& context, const 
   }
 
   AString filename;
-  if (!params.emitContentFromPath(ASW("output-filename",15), filename))
+  const AXmlElement *pOutputFilename = params.findElement(ASW("output-filename",15));
+  if (!pOutputFilename)
   {
     context.addError(getClass(), ASWNL("Unable to find module/output-filename"));
     return AOSContext::RETURN_ERROR;
+  }
+  else
+  {
+    pOutputFilename->emitContent(filename);
   }
 
   //a_data based path
@@ -62,25 +67,23 @@ AOSContext::ReturnCode AOSModule_SaveToFile::execute(AOSContext& context, const 
     context.useModel().emitContentFromPath(path, rope);
   }
 
-  if (AFileSystem::exists(f))
+  if (AFileSystem::exists(f) && !pOutputFilename->getAttributes().getBool(ASW("overwrite",9)))
   {
     context.useModel().overwriteElement(AOSContext::S_ERROR).addData(ARope("File by that name already exists: ")+f);
     return AOSContext::RETURN_OK;
   }
-  else
+
+  AFile_Physical outfile(f, "w");
+  try
   {
-    AFile_Physical outfile(f, "w");
-    try
-    {
-      outfile.open();
-      outfile.write(rope);
-      outfile.close();
-    }
-    catch(AException& ex)
-    {
-      context.addError(getClass(), ARope("Unable to write file: ")+outfile.useFilename());
-      return AOSContext::RETURN_ERROR;
-    }
+    outfile.open();
+    outfile.write(rope);
+    outfile.close();
+  }
+  catch(AException& ex)
+  {
+    context.addError(getClass(), ARope("Unable to write file: ")+outfile.useFilename());
+    return AOSContext::RETURN_ERROR;
   }
 
   return AOSContext::RETURN_OK;
