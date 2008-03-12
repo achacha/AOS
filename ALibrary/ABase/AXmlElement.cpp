@@ -42,7 +42,7 @@ AXmlElement::AXmlElement(const AString& name, AXmlElement *pParent) :
 {
 }
 
-AXmlElement::AXmlElement(const AString& name, const AAttributes& attrs, AXmlElement *pParent) :
+AXmlElement::AXmlElement(const AString& name, const AXmlAttributes& attrs, AXmlElement *pParent) :
   mp_Parent(pParent),
   m_Name(name),
   m_Attributes(attrs)
@@ -282,12 +282,12 @@ AString& AXmlElement::useName()
   return m_Name; 
 }
 
-const AAttributes& AXmlElement::getAttributes() const
+const AXmlAttributes& AXmlElement::getAttributes() const
 {
   return m_Attributes; 
 }
 
-AAttributes& AXmlElement::useAttributes() 
+AXmlAttributes& AXmlElement::useAttributes() 
 { 
   return m_Attributes; 
 }
@@ -616,7 +616,7 @@ AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParen
   }
   
   //a_strName not found, create it
-  AXmlElement *p = new AXmlElement(strName);
+  AXmlElement *p = new AXmlElement(strName, pParent);
   addContent(p);
   xparts.pop_front();
   if (xparts.size() == 0)
@@ -632,7 +632,7 @@ AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParen
 AXmlElement *AXmlElement::_createAndAppend(LIST_AString& xparts, AXmlElement *pParent)
 {
   AString& strName = xparts.front();
-  AXmlElement *p = new AXmlElement(strName, this);
+  AXmlElement *p = new AXmlElement(strName, pParent);
   addContent(p);
   xparts.pop_front();
   if (xparts.size() > 0)
@@ -864,7 +864,7 @@ AXmlElement& AXmlElement::addAttribute(const AString& name, const u4 value)
   return addAttribute(name, AString::fromU4(value));
 }
 
-AXmlElement& AXmlElement::addAttributes(const AAttributes& attrs)
+AXmlElement& AXmlElement::addAttributes(const AXmlAttributes& attrs)
 {
   m_Attributes.append(attrs);
 
@@ -1021,14 +1021,14 @@ void AXmlElement::emitJson(
   {
     SET_AString names;
     m_Attributes.getNames(names);
-    LIST_NVPair::const_iterator cit = m_Attributes.getAttributeContainer().begin();
-    const LIST_NVPair& container = m_Attributes.getAttributeContainer();
+    AXmlAttributes::CONTAINER::const_iterator cit = m_Attributes.getAttributeContainer().begin();
+    const AXmlAttributes::CONTAINER& container = m_Attributes.getAttributeContainer();
     while(cit != container.end())
     {
       if (indent >=0) _indent(target, indent+1);
-      target.append(cit->getName());
+      target.append((*cit)->getName());
       target.append(":'",2);
-      target.append(cit->getValue());
+      target.append((*cit)->getValue());
       target.append('\'');
       ++cit;
       if (cit != container.end())

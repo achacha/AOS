@@ -3,7 +3,7 @@
 
 #include "apiABase.hpp"
 #include "ASynchronization.hpp"
-#include "AAttributes.hpp"
+#include "AXmlAttributes.hpp"
 #include "ADebugDumpable.hpp"
 #include "AString.hpp"
 #include "AXmlEmittable.hpp"
@@ -55,7 +55,7 @@ public:
   /*!
   Attributes
   */
-  AAttributes& useAttributes() { return m_Attributes; }
+  AXmlAttributes& useAttributes() { return m_Attributes; }
 
   /*!
   Synchronization to wrap by this object
@@ -95,8 +95,13 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
-  AString m_Name;                     //a_Name of this object
-  AAttributes m_Attributes;           //a_Attributes of this object
+  //a_Name of this object
+  AString m_Name;
+  
+  //a_Attributes of this object
+  AXmlAttributes m_Attributes;
+  
+  //a_Access synchronization (if any)
   ASynchronization *mp_SynchObject;
 };
 

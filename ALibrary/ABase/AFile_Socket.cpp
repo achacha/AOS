@@ -191,7 +191,7 @@ size_t AFile_Socket::_read(void *buf, size_t size)
 
   //a_Cannot read zero bytes, return of 0 means EOF
   if (!size)
-    ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::InvalidParameter);
+    return AConstant::npos;
 
   if (mbool_Blocking)
     return _readBlocking(buf, size);
@@ -218,10 +218,17 @@ size_t AFile_Socket::_readNonBlocking(void *buf, size_t size)
   if (bytesReceived == SOCKET_ERROR)
   {
     int err = ::WSAGetLastError();
-    if (err == WSAEWOULDBLOCK)
-      return AConstant::unavail;      //Operation would block so return not available
+    switch(err)
+    {
+      case WSAEWOULDBLOCK:
+        return AConstant::unavail;      //Operation would block so return not available
+      
+      case WSAECONNRESET:
+        return AConstant::npos;         //Remote connection closed
 
-    ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
+      default:
+        ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
+    }
   }
   
   AASSERT(this, bytesReceived >= 0);
@@ -249,10 +256,17 @@ size_t AFile_Socket::_writeNonBlocking(const void *buf, size_t size)
   if (bytesWritten == SOCKET_ERROR)
   {
     int err = ::WSAGetLastError();
-    if (err == WSAEWOULDBLOCK)
-      return AConstant::unavail;      //Operation would block so return not available
+    switch(err)
+    {
+      case WSAEWOULDBLOCK:
+        return AConstant::unavail;      //Operation would block so return not available
+      
+      case WSAECONNRESET:
+        return AConstant::npos;        //Remote connection closed
 
-    ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
+      default:
+        ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
+    }
   }
 
   return bytesWritten;

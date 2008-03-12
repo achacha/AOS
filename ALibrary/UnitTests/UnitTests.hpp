@@ -37,7 +37,7 @@ int ut_AFixedSizeCounter_General();       // 60
 int ut_ATimer_General();                  // 65
 int ut_ATime_General();                   // 67
 int ut_ANamePointerPair_General();        // 70
-int ut_AAttributes_General();             // 75
+int ut_AXmlAttributes_General();          // 75
 int ut_AXmlElement_General();             // 80
 int ut_AXmlDocument_General();            // 82
 int ut_AUrl_General();                    // 100

@@ -87,15 +87,15 @@ private:
 //a_Inlines
 inline char ATextGenerator::generateRandomLowercaseLetter()
 {
-  return ARandomNumberGenerator::get().nextRange(char('z') + 1, char('a'));
+  return (char)ARandomNumberGenerator::get().nextRange(char('z') + 1, char('a'));
 }
 inline char ATextGenerator::generateRandomUppercaseLetter()
 {
-  return ARandomNumberGenerator::get().nextRange(char('Z') + 1, char('A'));
+  return (char)ARandomNumberGenerator::get().nextRange(char('Z') + 1, char('A'));
 }
 inline char ATextGenerator::generateRandomNumeral()
 {
-  return ARandomNumberGenerator::get().nextRange(char('9') + 1, char('0'));
+  return (char)ARandomNumberGenerator::get().nextRange(char('9') + 1, char('0'));
 }
 
 #endif //INCLUDED__ATextGenerator_HPP__

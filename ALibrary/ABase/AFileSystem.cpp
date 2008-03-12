@@ -378,7 +378,6 @@ s8 AFileSystem::length(const AFilename& source)
 {
 #ifdef __WINDOWS__
   AString str;
-  AFilename::FTYPE ftype = source.getType();
   source.emit(str, AFilename::FTYPE_WIN32, true);
   WIN32_FIND_DATA findData;
   HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
@@ -401,7 +400,6 @@ bool AFileSystem::getCreatedTime(const AFilename& source, ATime& ftime)
 {
 #ifdef __WINDOWS__
   AString str;
-  AFilename::FTYPE ftype = source.getType();
   source.emit(str, AFilename::FTYPE_WIN32, true);
   WIN32_FIND_DATA findData;
   HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
@@ -429,7 +427,6 @@ bool AFileSystem::getLastAccessedTime(const AFilename& source, ATime& ftime)
 {
 #ifdef __WINDOWS__
   AString str;
-  AFilename::FTYPE ftype = source.getType();
   source.emit(str, AFilename::FTYPE_WIN32, true);
   WIN32_FIND_DATA findData;
   HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
@@ -457,7 +454,6 @@ bool AFileSystem::getLastModifiedTime(const AFilename& source, ATime& ftime)
 {
 #ifdef __WINDOWS__
   AString str;
-  AFilename::FTYPE ftype = source.getType();
   source.emit(str, AFilename::FTYPE_WIN32, true);
   WIN32_FIND_DATA findData;
   HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);

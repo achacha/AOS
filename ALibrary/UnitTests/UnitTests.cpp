@@ -45,7 +45,7 @@ void display()
   std::cout << "65  : ATimer" << std::endl;
   std::cout << "67  : ATime" << std::endl;
   std::cout << "70  : ANamePointerPair" << std::endl;
-  std::cout << "75  : AAttributes" << std::endl;
+  std::cout << "75  : AXmlAttributes" << std::endl;
   std::cout << "80  : AXmlElement" << std::endl;
   std::cout << "82  : AXmlDocument" << std::endl;
   std::cout << "100 : AUrl" << std::endl;
@@ -93,7 +93,7 @@ int executeTest(int iTestNumber)
     case  65 : pfnX = ut_ATimer_General; break;
     case  67 : pfnX = ut_ATime_General; break;
     case  70 : pfnX = ut_ANamePointerPair_General; break;
-    case  75 : pfnX = ut_AAttributes_General; break;
+    case  75 : pfnX = ut_AXmlAttributes_General; break;
     case  80 : pfnX = ut_AXmlElement_General; break;
     case  82 : pfnX = ut_AXmlDocument_General; break;
     case 100 : pfnX = ut_AUrl_General; break;

@@ -8,7 +8,13 @@
 
 void AObjectBase::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AObjectBase[\"" << m_Name << "\"] @ " << std::hex << this << std::dec << ")" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "[\"" << m_Name << "\"] @ " << std::hex << this << std::dec << ")" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_Attributes={" << std::endl;
+  m_Attributes.debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
 AObjectBase::AObjectBase() :

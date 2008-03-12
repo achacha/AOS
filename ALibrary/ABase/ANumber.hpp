@@ -10,23 +10,23 @@ class AOutputBuffer;
 
 #define NUMBER_DEFAULT_PRECISION 20
 
-/**
- * Arbitrary length number class
- * Object initializes to 0
-**/
+/*!
+Arbitrary length number class
+Object initializes to 0
+*/
 class ABASE_API ANumber : public ASerializable, public ADebugDumpable
 {
 public:
-  //a_Special number constructors
+  //! Special number constructors
   enum ANumberSpecial {
     Infinity,
     NAN
   };
 
 public:
-  /**
-   * ctor, ~dtor, cctor, cop=
-  **/
+  /*!
+  ctor, ~dtor, cctor, cop=
+  */
   ANumber()                                  { _clearNumber(); }
   ANumber(const ANumber& nThat)              { operator=(nThat); }
   explicit ANumber(ANumberSpecial eNum);
@@ -36,9 +36,9 @@ public:
   explicit ANumber(u4 source)                { operator=(source); }
   explicit ANumber(double source)            { operator=(source); }
 
-  /**
-   * Copy operators, precisioon copies only when another ANumber object is being copied
-  **/
+  /*!
+  Copy operators, precisioon copies only when another ANumber object is being copied
+  */
   ANumber& operator=(const ANumber& nThat);
   ANumber& operator=(const AString& strSource) { setNumber(strSource); return *this; }
   ANumber& operator=(int source)               { setNumber(AString::fromInt(source)); return *this; }
@@ -46,37 +46,37 @@ public:
   ANumber& operator=(u4 source)                { setNumber(AString::fromU4(source)); return *this; }
   ANumber& operator=(double source);
 
-  /**
-   * Destructor
-  **/
+  /*!
+  Destructor
+  */
   ~ANumber() {}
   
-  /**
-   * Set to 0
-  **/
+  /*!
+  Set to 0
+  */
   void clear() { _clearNumber(); }
   
-  /**
-   * Setting/Parsing
-  **/
+  /*!
+  Setting/Parsing
+  */
   void cleanNumber(void) { if (!isInfinite() && !isNAN()) _cleanString(mstr__Number); }
   
-  /**
-   * Given a string (and an optional new precision) this method will parse
-   *   the number and store it internally, supports integer/float looking strings and
-   *  nnnn.nnnnnE+-eeeee scientific notation as well
-  **/
+  /*!
+  Given a string (and an optional new precision) this method will parse
+    the number and store it internally, supports integer/float looking strings and
+   nnnn.nnnnnE+-eeeee scientific notation as well
+  */
   void setNumber(const AString& strSource, int iPrecision = -1);
   
-  /**
-   * Precision (force will pad with '0' if needed)
-  **/
+  /*!
+  Precision (force will pad with '0' if needed)
+  */
   void setPrecision(const int iP);
   void forcePrecision(const int iP = -1);        //a_-1 means pad the current number with 0s using the current precision so with precision of 4, 1.3 will become 1.3000
 
-  /**
-   * Properties
-  **/
+  /*!
+  Properties
+  */
   void setInfinite()   { mstr__Number = sstr_Infinity; }
   void setNAN()        { mstr__Number = sstr_NAN; }
   void toggleSign()    { mc__Sign = (mc__Sign == '+' ? '-' : '+'); }
@@ -84,9 +84,9 @@ public:
   void forceNegative() { mc__Sign = '-'; }
   void forceWhole()    { mstr__Number.truncateAt('.'); }
 
-  /**
-   * Checking
-  **/
+  /*!
+  Checking
+  */
   bool isInfinite() const { return (mstr__Number == ANumber::sstr_Infinity ? true : false); }
   bool isNAN() const      { return (mstr__Number == ANumber::sstr_NAN ? true : false); }
   bool isNegative() const { return (mc__Sign == '+' ? false : true); }
@@ -94,50 +94,47 @@ public:
   bool isZero() const;             //a_Fast comparison for processor intensive algoroithms
   bool isPrime() const;            //a_Checks primeness of a number (rigorous check at this moment, may not be the quickest)
 
-  /**
-   * Unary operators
-  **/
+  /*!
+  Unary operators
+  */
   ANumber& operator +=(const ANumber& nThat);
   ANumber& operator *=(const ANumber& nThat);
   ANumber& operator -=(const ANumber& nThat);
   ANumber& operator /=(const ANumber& nThat);
   ANumber& power(const ANumber& nThat);
   
-  /**
-   * Unary power of 10 shift, decimal point shift in direction of arrows
-  **/
+  /*!
+  Unary power of 10 shift, decimal point shift in direction of arrows
+  */
   ANumber& shiftDecimalRight(const int iShift);
   ANumber& shiftDecimalLeft(const int iShift);
 
-  /**
-   * Sign operators
-  **/
+  /*!
+  Sign operators
+  */
   ANumber& operator +(void) { return *this; }
   ANumber& operator -(void) { if (mc__Sign == '-') mc__Sign = '+'; else mc__Sign = '-'; return *this; }
 
-  /**
-   * Postfix, prefix operators
-  **/
-  //a_Prefix ++nX
+  //! Prefix ++nX
   ANumber& operator ++(void) { *this += ANumber(1); return *this; }
-  //a_Prefix --nX
+  //! Prefix --nX
   ANumber& operator --(void) { *this -= ANumber(1); return *this; }
-  //a_Postfix nX++
+  //! Postfix nX++
   ANumber  operator ++(int)  { ANumber nRet(*this); *this += ANumber(1); return nRet; }
-  //a_Postfix nX--
+  //! Postfix nX--
   ANumber  operator --(int)  { ANumber nRet(*this); *this -= ANumber(1); return nRet; }
 
-  /**
-   * Binary operators
-  **/
+  /*!
+  Binary operators
+  */
   ANumber operator +(const ANumber& nThat) const;
   ANumber operator *(const ANumber& nThat) const;
   ANumber operator -(const ANumber& nThat) const;
   ANumber operator /(const ANumber& nThat) const;
 
-  /**
-   * Comparative operators
-  **/
+  /*!
+  Comparative operators
+  */
   bool operator ==(const ANumber& nThat) const;
   bool operator !=(const ANumber& nThat) const;
   bool operator  >(const ANumber& nThat) const;
@@ -145,9 +142,9 @@ public:
   bool operator >=(const ANumber& nThat) const;
   bool operator <=(const ANumber& nThat) const;
 
-  /**
-   * Helper methods (precision of -1 means use 'double' precision)
-  **/
+  /*!
+  Helper methods (precision of -1 means use 'double' precision)
+  */
   static ANumber factorial(const ANumber &nSource);                    //a_Factorial=(N * (N-1) * (N-2) * ... * 1)
   static ANumber e(const ANumber &nSource, int iPrecision = -0x1);     //a_e ^ N
   static ANumber sin(const ANumber &nSource, int iPrecision = -0x1);   //a_sine of N where N is in radians
@@ -156,9 +153,9 @@ public:
   //a_Functions
   ANumber& sqrt();              //a_Square root, returns reference to self, uses involution method (long hand) to calculate arbitrary length result
 
-  /**
-   * I/O methods
-  **/
+  /*!
+  I/O methods
+  */
   virtual void emit(AOutputBuffer&) const;     //a_Append
   AString toAString() const;                   //a_Convert to AString
   
@@ -186,58 +183,58 @@ private:
 //#pragma message("public: used for testing only, remove when done...")
 //#define __UT_ANUMBER_INTERNAL__
 
-  /** 
-   * R = A + B
-   * boolAdjustPrecision is used to prevent adjustment during internal adds
-  **/
+  /*! 
+  R = A + B
+  boolAdjustPrecision is used to prevent adjustment during internal adds
+  */
   void _strAdd(const AString& strA, const AString& strB, AString& strR, bool boolAdjustPrecision = true);
   
-  /**
-   * R = A - B
-   * Returns non-zero if result is negative
-  **/
+  /*!
+  R = A - B
+  Returns non-zero if result is negative
+  */
   int _strSubtract(const AString& strA, const AString& strB, AString& strR);
 
 
-  /**
-   * R = A * B
-  **/
+  /*!
+  R = A * B
+  */
   void _strMultiply(const AString& strA, const AString& strB, AString& strR);
 
-  /**
-   * R = A / B
-  **/
+  /*!
+  R = A / B
+  */
   void _strDivide(const AString& strA, const AString& strB, AString& strR, int iDesiredPrecision = 2);
 
-  /**
-   * R = A ^ B
-  **/
+  /*!
+  R = A ^ B
+  */
   void _strPower(const AString& strA, const AString& strB, AString& strR);
 
 
-  /**
-   * Compare A and B: >0 if A>B; ==0 if A == B; <0 if A<B
-  **/
+  /*!
+  Compare A and B: >0 if A>B; ==0 if A == B; <0 if A<B
+  */
   int _strCompare(const AString& strA, const AString& strB) const;
 
 
-  /**
-   * Raises to the power of 10 (left and right shift in Base-10 world)
-  **/
+  /*!
+  Raises to the power of 10 (left and right shift in Base-10 world)
+  */
   void _strPow10(AString& strA, int iShift = 1);
 
 
-  /**
-   * Worker functions
-  **/
+  /*!
+  Worker functions
+  */
   void _clearNumber(void);
   void _cleanString(AString& strR, bool boolSpaceOnly = false);   //a_Removes leading spaces and zeros, if string ends up empty sets it to "0"
   void _fixPrecision(AString& strR, int iForce = 0);              //a_Adjusts precision
 
 public:
-  /**
-   * String constants
-  **/
+  /*!
+  String constants
+  */
   static const AString sstr_NumberWhiteSpace;
   static const AString sstr_Infinity;
   static const AString sstr_NAN;

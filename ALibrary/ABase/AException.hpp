@@ -252,15 +252,15 @@ Otherwise it will do nothing
 #if defined(_DEBUG)
 //#define AASSERT(this, condition) assert(condition)
 //#define AASSERT_EX(this, condition,msg) assert(condition && msg)
-#define AASSERT(debugdumpable, condition)          do { if (!(condition)) { throw AException(debugdumpable, AException::AssertionFailed, __FILE__, __LINE__); } } while(false)
-#define AASSERT_EX(debugdumpable, condition, msg)  do { if (!(condition)) { throw AException(debugdumpable, AException::AssertionFailed, __FILE__, __LINE__, msg); } } while(false)
-#define AVERIFY(debugdumpable, condition)          AASSERT(debugdumpable, condition)
-#define AVERIFY_EX(debugdumpable, condition, msg)  AASSERT(debugdumpable, condition && msg)
+#define AASSERT(debugdumpable, condition)          if (!(condition)) { throw AException(debugdumpable, AException::AssertionFailed, __FILE__, __LINE__); }
+#define AASSERT_EX(debugdumpable, condition, msg)  if (!(condition)) { throw AException(debugdumpable, AException::AssertionFailed, __FILE__, __LINE__, msg); }
+#define AVERIFY(debugdumpable, condition)          if (!(condition)) { throw AException(debugdumpable, AException::AssertionFailed, __FILE__, __LINE__); }
+#define AVERIFY_EX(debugdumpable, condition, msg)  if (!(condition)) { throw AException(debugdumpable, AException::AssertionFailed, __FILE__, __LINE__, msg); }
 #elif defined(NDEBUG)
 #define AASSERT(debugdumpable, condition)          ((void *)0x0)
 #define AASSERT_EX(debugdumpable, condition, msg)  ((void *)0x0)
-#define AVERIFY(debugdumpable, condition)          do { condition; } while(0)
-#define AVERIFY_EX(debugdumpable, condition, msg)  do { condition; } while(0)
+#define AVERIFY(debugdumpable, condition)          if (!(condition)) { throw AException(debugdumpable, AException::AssertionFailed, __FILE__, __LINE__); }
+#define AVERIFY_EX(debugdumpable, condition, msg)  if (!(condition)) { throw AException(debugdumpable, AException::AssertionFailed, __FILE__, __LINE__, msg); }
 #else
 #error Must define either _DEBUG (debug mode, assertions ON) or NDEBUG (release mode, no assertions)
 #endif

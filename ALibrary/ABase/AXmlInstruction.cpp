@@ -38,12 +38,12 @@ AXmlInstruction::AXmlInstruction(const AString& name, AXmlElement *pParent /* = 
   else if (name.equals("!ELEMENT", 8))
     setType(AXmlInstruction::DTD_ELEMENT);
   else
-    ATHROW_EX(this, AException::InvalidParameter, ASWNL("Unknown instruction name: ")+name);
+    ATHROW_EX(this, AException::InvalidParameter, AString("Unknown instruction name: ")+name);
 }
 
 AXmlInstruction::AXmlInstruction(
   AXmlInstruction::TYPE type, 
-  const AAttributes& attrs, 
+  const AXmlAttributes& attrs, 
   const AString& data,      // = AConstant::ASTRING_EMPTY
   AXmlElement *pParent         // = NULL
 ) :
@@ -168,7 +168,7 @@ void AXmlInstruction::emit(AOutputBuffer& target) const
   emit(target, -1);
 }
 
-void AXmlInstruction::emit(AOutputBuffer& target, int indent) const
+void AXmlInstruction::emit(AOutputBuffer& target, int) const
 {
   //a_No indent on instructions
   target.append(AXmlElement::sstr_Start);

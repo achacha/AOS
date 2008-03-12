@@ -3,7 +3,7 @@
 
 #include "apiABase.hpp"
 #include "AXmlElement.hpp"
-#include "AAttributes.hpp"
+#include "AXmlAttributes.hpp"
 
 class AOutputBuffer;
 
@@ -49,7 +49,7 @@ public:
   AXmlInstruction() {}
   AXmlInstruction(const AXmlInstruction::TYPE type, AXmlElement *pParent = NULL);
   AXmlInstruction(const AString& name, AXmlElement *pParent = NULL);
-  AXmlInstruction(const AXmlInstruction::TYPE type, const AAttributes& attrs, const AString& data = AConstant::ASTRING_EMPTY, AXmlElement *pParent = NULL);
+  AXmlInstruction(const AXmlInstruction::TYPE type, const AXmlAttributes& attrs, const AString& data = AConstant::ASTRING_EMPTY, AXmlElement *pParent = NULL);
   AXmlInstruction(const AXmlInstruction&);
   virtual ~AXmlInstruction() {}
 

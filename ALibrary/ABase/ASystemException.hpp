@@ -53,14 +53,10 @@ private:
  * Throws a system exception based on last error code
  * If we already know the error # (if we called GetLastError or similar, 2nd macro is to be used
 **/
-#define ATHROW_LAST_OS_ERROR(debugdumpable) \
-  do { throw ASystemException(debugdumpable, ASystemException::SystemError, __FILE__, __LINE__); } while(0x0)
-#define ATHROW_LAST_OS_ERROR_EX(debugdumpable, msg) \
-  do { throw ASystemException(debugdumpable, ASystemException::SystemError, __FILE__, __LINE__, msg); } while(0x0)
-#define ATHROW_LAST_OS_ERROR_KNOWN(debugdumpable, n) \
-  do { throw ASystemException(n, debugdumpable, __FILE__, __LINE__); } while(0x0)
-#define ATHROW_LAST_OS_ERROR_KNOWN_EX(debugdumpable, n, msg) \
-  do { throw ASystemException(n, debugdumpable, __FILE__, __LINE__, msg); } while(0x0)
+#define ATHROW_LAST_OS_ERROR(debugdumpable) throw ASystemException(debugdumpable, ASystemException::SystemError, __FILE__, __LINE__);
+#define ATHROW_LAST_OS_ERROR_EX(debugdumpable, msg) throw ASystemException(debugdumpable, ASystemException::SystemError, __FILE__, __LINE__, msg);
+#define ATHROW_LAST_OS_ERROR_KNOWN(debugdumpable, n) throw ASystemException(n, debugdumpable, __FILE__, __LINE__);
+#define ATHROW_LAST_OS_ERROR_KNOWN_EX(debugdumpable, n, msg) throw ASystemException(n, debugdumpable, __FILE__, __LINE__, msg);
 
 #endif
 

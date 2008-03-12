@@ -290,6 +290,6 @@ void AQueryString::emitDelimeted(
     ++it;
     
     if (appendSeparatorAtEnd || it != m_Pairs.end())
-      target.append(valueSeparator);
+      target.append(pairSeparator);
   }
 }

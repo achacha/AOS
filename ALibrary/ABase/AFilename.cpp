@@ -128,7 +128,7 @@ void AFilename::set(
   AString& first = m_PathNames.front();
   if (first.getSize() > 1 && ':' == first.at(1))
   {
-    m_Drive = tolower(m_PathNames.front().at(0));
+    m_Drive = (char)tolower(m_PathNames.front().at(0));
     first.remove(2);
     if (first.isEmpty())
       m_PathNames.pop_front();

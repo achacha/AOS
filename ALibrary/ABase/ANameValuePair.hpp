@@ -9,11 +9,14 @@
 class ANameValuePair;
 
 //a_Containers involving ANameValuePair
-typedef std::vector<ANameValuePair>                  VECTOR_NVPair;
 typedef std::list<ANameValuePair>                    LIST_NVPair;
+typedef std::list<ANameValuePair *>                  LIST_NVPairPtr;
+typedef std::vector<ANameValuePair>                  VECTOR_NVPair;
 typedef std::vector<ANameValuePair *>                VECTOR_NVPairPtr;
 typedef std::map<const AString, ANameValuePair>      MAP_AString_NVPair;
+typedef std::map<const AString, ANameValuePair>      MAP_AString_NVPairPtr;
 typedef std::multimap<const AString, ANameValuePair> MMAP_AString_NVPair;
+typedef std::multimap<const AString, ANameValuePair> MMAP_AString_NVPairPtr;
 
 class ABASE_API ANameValuePair : virtual public ASerializable, virtual public ADebugDumpable
 {

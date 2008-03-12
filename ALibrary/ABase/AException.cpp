@@ -335,7 +335,7 @@ AXmlElement& AException::emitXml(AXmlElement& thisRoot) const
   getDescription(rope);
   thisRoot.addElement(ASW("desc",4)).addData(rope, AXmlElement::ENC_CDATADIRECT);
   thisRoot.addElement(ASW("id",2)).addData(m_ID);
-  thisRoot.addElement(ASW("filename",8)).addData(ASWNL(mp_Filename), AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addElement(ASW("filename",8)).addData(AString(*mp_Filename), AXmlElement::ENC_CDATADIRECT);
   thisRoot.addElement(ASW("linenum",7)).addData(m_LineNumber);
   thisRoot.addElement(ASW("extra",5)).addData(m_ExtraText, AXmlElement::ENC_CDATADIRECT);
   thisRoot.addElement(ASW("errno",5)).addData(m_errno);

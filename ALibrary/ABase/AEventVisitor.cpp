@@ -211,7 +211,7 @@ void AEventVisitor::emit(AOutputBuffer& target, AEventVisitor::EventLevel thresh
 void AEventVisitor::Event::emit(AOutputBuffer& target) const
 {
   target.append(' ');
-  target.append('0'+m_level);
+  target.append('0'+(char)m_level);
   target.append(':');
 
   target.append(AString::fromDouble(m_interval));

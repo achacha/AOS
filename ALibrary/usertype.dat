@@ -1,4 +1,3 @@
-AAttributes
 ABase
 ABasePtrHolder
 ABasePtrContainer
@@ -101,6 +100,7 @@ ATime
 ATimer
 AUrl
 AWordUtility
+AXmlAttributes
 AXmlData
 AXmlDocument
 AXmlElement
@@ -122,12 +122,14 @@ VECTOR_NVPairPtr
 LIST_AString
 LIST_ARope
 LIST_NVPair
+LIST_NVPairPtr
 LIST_AFilename
 MAP_AString_AString
 MAP_AString_NVPair
+MAP_AString_NVPairPtr
 MMAP_AString_AString
 MMAP_AString_NVPair
-MAP_AString_AAttributes
+MMAP_AString_NVPairPtr
 SET_AString
 
 AAutoPtr

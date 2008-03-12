@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="ABase"
 	ProjectGUID="{1AEE01DF-B02A-4B19-8A4D-256157FE0320}"
 	RootNamespace="ABase"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -62,9 +63,8 @@
 				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
 				BrowseInformation="1"
 				BrowseInformationFile="$(IntDir)/"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="false"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
 				EnablePREfast="true"
@@ -88,6 +88,8 @@
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/$(TargetName).lib"
 				TargetMachine="1"
 			/>
@@ -108,9 +110,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -188,6 +187,8 @@
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				GenerateMapFile="true"
 				MapFileName="$(OutDir)/$(TargetName).map"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/$(TargetName).lib"
 				TargetMachine="1"
 			/>
@@ -210,9 +211,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -224,10 +222,6 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
-			<File
-				RelativePath=".\AAttributes.cpp"
-				>
-			</File>
 			<File
 				RelativePath=".\ABase.cpp"
 				>
@@ -871,6 +865,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AXmlAttributes.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AXmlData.cpp"
 				>
 			</File>
@@ -930,10 +928,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-			<File
-				RelativePath=".\AAttributes.hpp"
-				>
-			</File>
 			<File
 				RelativePath=".\ABase.hpp"
 				>
@@ -1340,6 +1334,10 @@
 			</File>
 			<File
 				RelativePath=".\AWordUtility.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AXmlAttributes.hpp"
 				>
 			</File>
 			<File

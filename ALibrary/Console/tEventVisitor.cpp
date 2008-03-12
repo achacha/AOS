@@ -14,7 +14,7 @@ void testCheckpoints()
   visitor.startEvent(ASWNL("main: Adding first error"), AEventVisitor::EL_ERROR);
   visitor.startEvent(ASWNL("main: Oops, another error"), AEventVisitor::EL_ERROR);
   visitor.startEvent(ASWNL("main: Last event"));
-  visitor.stopEvent();
+  visitor.endEvent();
 
   std::cout << "----Textual current----" << std::endl;
   ARope rope;

@@ -65,7 +65,7 @@
 #define DEBUG_MAXSIZE_AXmlElement 3000
 
 // Attributes items
-#define DEBUG_MAXSIZE_AAttributes 500
+#define DEBUG_MAXSIZE_AXmlAttributes 300
 
 // Max items per cache
 #define DEBUG_MAXSIZE_ACache_FileSystem 100000

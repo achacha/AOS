@@ -43,14 +43,13 @@ ANameValuePair::ANameValuePair(const AString& strName, const AString& strValue, 
   m_valueWrap('\x0'),
   m_nvtype(ANameValuePair::CGI)
 {
+  AASSERT(this, !strName.isEmpty());
+
   if (ANameValuePair::CGI != eType)
     setType(eType);
-  
-  if (!strName.isEmpty())
-  {
-    m_name.assign(strName); 
-    m_value.assign(strValue);
-  }
+
+  m_name.assign(strName); 
+  m_value.assign(strValue);
 }
 
 ANameValuePair::ANameValuePair(NameValueType eType) :

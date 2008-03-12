@@ -3,7 +3,7 @@
 
 #include "apiABase.hpp"
 #include "ADebugDumpable.hpp"
-#include "AAttributes.hpp"
+#include "AXmlAttributes.hpp"
 #include "AXmlEmittable.hpp"
 #include "AJsonEmittable.hpp"
 
@@ -43,7 +43,7 @@ public:
   AXmlElement(const AString& name, AXmlElement *pParent = NULL);
   
   //! ctor with name and attributes
-  AXmlElement(const AString& name, const AAttributes& attrs, AXmlElement *pParent = NULL);
+  AXmlElement(const AString& name, const AXmlAttributes& attrs, AXmlElement *pParent = NULL);
   
   //! Copy ctor will clone content recursively
   AXmlElement(const AXmlElement& that, AXmlElement *pParent = NULL);
@@ -54,8 +54,8 @@ public:
   /*!
   Get attributes
   */
-  const AAttributes& getAttributes() const;
-  AAttributes& useAttributes();
+  const AXmlAttributes& getAttributes() const;
+  AXmlAttributes& useAttributes();
 
   /*!
   Name of this element
@@ -340,7 +340,7 @@ public:
   Add attribute (replaces any existing attribute names must be unique)
   Returns this element
   */
-  AXmlElement& addAttributes(const AAttributes& attrs);
+  AXmlElement& addAttributes(const AXmlAttributes& attrs);
   AXmlElement& addAttribute(const AString& name, const AString& value = AConstant::ASTRING_EMPTY);
   AXmlElement& addAttribute(const AString& name, const u4 value);
   AXmlElement& addAttribute(const AString& name, const u8 value);
@@ -422,8 +422,8 @@ protected:
   //! Content container
   CONTAINER m_Content;
 
-  //! Attributes
-  AAttributes m_Attributes;
+  //! XML attributes
+  AXmlAttributes m_Attributes;
 
   //! Parent element (NULL if none)
   AXmlElement *mp_Parent;
