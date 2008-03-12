@@ -37,7 +37,7 @@ private:
   void _generateLine(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& format, AXmlElement&);
   void _appendWordType(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer&);
   void _appendVariable(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer&);
-  void _parseAttributes(const AString& data, AAttributes&);
+  void _parseAttributes(const AString& data, AXmlAttributes&);
 };
 
 #endif // INCLUDED__AOSModule_DadaDataTemplate_HPP__

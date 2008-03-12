@@ -161,7 +161,7 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
   size_t readresult;
   char c = '\x0';
   AString target(1024, 1024), strType(64,128);
-  AAttributes attributes;
+  AXmlAttributes attributes;
   AXmlElement& eDada = element.overwriteElement(DADA);
   while (AConstant::npos != file.readUntil(target, delimStart, true, true))
   {
@@ -416,7 +416,7 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLE
   }
 }
 
-void AOSModule_DadaDataTemplate::_parseAttributes(const AString& data, AAttributes& attributes)
+void AOSModule_DadaDataTemplate::_parseAttributes(const AString& data, AXmlAttributes& attributes)
 {
   size_t pos = data.find(':');
   if (AConstant::npos != pos)
