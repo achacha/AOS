@@ -52,7 +52,7 @@
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				BrowseInformation="1"
-				WarningLevel="3"
+				WarningLevel="4"
 				DebugInformationFormat="4"
 				EnablePREfast="true"
 			/>

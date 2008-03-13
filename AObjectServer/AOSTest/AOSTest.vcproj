@@ -50,7 +50,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				BrowseInformation="1"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="false"
 				DebugInformationFormat="4"
 				CompileAs="0"
