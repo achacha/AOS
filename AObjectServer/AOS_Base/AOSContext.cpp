@@ -117,8 +117,10 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   mp_DirConfig(NULL),
   mp_RequestFile(NULL),
   m_ConnectionFlags(AOSContext::CONFLAG_LAST),
-  m_ContextFlags(AOSContext::CTXFLAG_LAST)
+  m_ContextFlags(AOSContext::CTXFLAG_LAST),
+  m_EventVisitor(ASW("AOSContext:",10), AEventVisitor::EL_DEBUG)
 {
+  m_EventVisitor.useName().append(AString::fromPointer(this));
   reset(pFile);
 }
 
@@ -1051,6 +1053,7 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 
 size_t AOSContext::_write(AOutputBuffer& data)
 {
+  m_EventVisitor.startEvent(ASW("AOSContext: write",17));
   size_t originalSize = data.getSize();
   size_t bytesToWrite = originalSize;
   size_t bytesWritten = 0;
@@ -1061,11 +1064,16 @@ size_t AOSContext::_write(AOutputBuffer& data)
     {
       //a_Finished writing or EOF on read
       case 0:
+        m_EventVisitor.addEvent(AString("AOSContext: flush returned 0, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
+        return (bytesWritten > 0 ? bytesWritten : ret);
+
       case AConstant::npos:
+        m_EventVisitor.addEvent(AString("AOSContext: flush returned npos, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
         return (bytesWritten > 0 ? bytesWritten : ret);
 
       //a_Would block
       case AConstant::unavail:
+        m_EventVisitor.addEvent(AString("AOSContext: flush returned unavail, sleeping and retrying, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
         AThread::sleep(1);
       break;
         
@@ -1077,6 +1085,7 @@ size_t AOSContext::_write(AOutputBuffer& data)
   }
 
   AASSERT(this, bytesWritten == originalSize);
+  m_EventVisitor.addEvent(AString("AOSContext: writen bytes: ",26)+AString::fromSize_t(bytesWritten), AEventVisitor::EL_INFO);
   return bytesWritten;
 }
 
@@ -1314,7 +1323,8 @@ bool AOSContext::processStaticPage()
         
         //a_Set modified date
         m_ResponseHeader.setLastModified(modified);
-        m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AString::fromS8(AFileSystem::length(httpFilename)));
+        size_t bytesToSend = (size_t)AFileSystem::length(httpFilename);
+        m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AString::fromS8(bytesToSend));
         
         AString ext;
         httpFilename.emitExtension(ext);
@@ -1322,14 +1332,16 @@ bool AOSContext::processStaticPage()
         writeResponseHeader();
 
         //a_Stream content
+        m_EventVisitor.startEvent(ARope("File found:",16)+(*pFile));
         m_EventVisitor.startEvent(ARope("Streaming file: ",16)+httpFilename);
-        contentLength = _write(*pFile);
+        size_t bytesWritten = _write(*pFile);
 
         if (AConstant::npos == contentLength)
           m_EventVisitor.addEvent(ASW("Failed to write",15));
         else
-          m_EventVisitor.addEvent(ARope("Streamed bytes: ",16)+AString::fromSize_t(contentLength));
+          m_EventVisitor.addEvent(ARope("Streamed bytes: ",16)+AString::fromSize_t(bytesWritten));
 
+        AASSERT(this, bytesWritten == bytesToSend);
         m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
         return true;
       }

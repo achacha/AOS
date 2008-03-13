@@ -27,17 +27,17 @@ class ALog;
 class ASync_CriticalSection;
 AOS_BASE_API extern ASync_CriticalSection g_DebugTraceSync; 
 #include <debugFileTracer.hpp>
-#define AOS_DEBUGTRACE(msg, ptr) do { \
+#define AOS_DEBUGTRACE(msg, ptr) { \
   ALock lock(g_DebugTraceSync); \
   AFILE_TRACER_DEBUG_MESSAGE(msg, ptr); \
   std::cout << msg << std::endl; \
-} while(0)
+}
 
 typedef int (PROC_AOS_Register)(AOSInputExecutor&, AOSModuleExecutor&, AOSOutputExecutor&, AOSServices&);
 
 #ifdef WIN32
-#define AOS_SERVER_NAME "WarWall/1.4.0.1 [en]"
-#define AOS_ADMIN_SERVER_NAME "WarWall Admin Server/1.2.0.1 [en]"
+#define AOS_SERVER_NAME "Rhino/1.5.0.0"
+#define AOS_ADMIN_SERVER_NAME "Rhino Admin Server/1.3.0.0"
 
 #endif
 

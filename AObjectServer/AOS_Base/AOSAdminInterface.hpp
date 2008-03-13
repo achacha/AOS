@@ -80,7 +80,7 @@ public:
   virtual void adminRegisterObject(AOSAdminRegistry& registry);
   virtual void adminRegisterObject(AOSAdminRegistry& registry, const AString& parentClassName);
   virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
-  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request) {}
+  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
 
   /*!
   Classname, MUST be unique to all AOSAdminInterface based classes

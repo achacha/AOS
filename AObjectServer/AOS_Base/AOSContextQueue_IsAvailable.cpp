@@ -380,7 +380,7 @@ void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
   pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
 
   static const AString LOG_MSG("AOSContextQueue_IsAvailable::add");
-  pContext->useEventVisitor().startEvent(LOG_MSG);
+  pContext->useEventVisitor().startEvent(LOG_MSG, AEventVisitor::EL_INFO);
 
   volatile long currentQueue = ::InterlockedIncrement(&m_currentQueue) % m_queueCount;
 

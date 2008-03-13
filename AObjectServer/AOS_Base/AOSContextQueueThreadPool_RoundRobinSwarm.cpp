@@ -105,7 +105,7 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
   str.append(AString::fromInt(currentQueue));
   str.append("]=",2);
   str.append(AString::fromPointer(pContext));
-  pContext->useEventVisitor().startEvent(str);
+  pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
 }                                                                                                                                                                                                 
 
 AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
@@ -122,7 +122,7 @@ AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
     str.append(AString::fromInt(currentQueue));
     str.append("]=",2);
     str.append(AString::fromPointer(pContext));
-    pContext->useEventVisitor().startEvent(str);
+    pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
   }
   return pContext;
 }

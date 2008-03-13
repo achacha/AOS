@@ -138,6 +138,10 @@ void AOSAdminInterface::adminRegisterObject(AOSAdminRegistry& registry, const AS
   registry.insert(parentClassName+ASW(".",1)+getClass(), *this);
 }
 
+void AOSAdminInterface::adminProcessAction(AXmlElement&, const AHTTPRequestHeader&)
+{
+}
+
 void AOSAdminInterface::addExecutionTimeSample(double milliseconds)
 {
   m_ExecutionTimeAverage.addSample(milliseconds);
