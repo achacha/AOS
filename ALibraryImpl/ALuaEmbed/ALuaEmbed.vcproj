@@ -380,6 +380,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -392,6 +393,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -404,6 +406,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -416,6 +419,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -428,6 +432,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -440,6 +445,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -452,6 +458,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -464,6 +471,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -476,6 +484,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -488,6 +497,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -500,6 +510,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -512,6 +523,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -524,6 +536,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -536,6 +549,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -548,6 +562,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -560,6 +575,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -572,6 +588,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -584,6 +601,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -596,6 +614,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -608,6 +627,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -620,6 +640,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -632,6 +653,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -644,6 +666,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -656,6 +679,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -668,6 +692,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -680,6 +705,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -692,6 +718,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -704,6 +731,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -716,6 +744,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>
@@ -728,6 +757,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"
+						GenerateXMLDocumentationFiles="false"
 					/>
 				</FileConfiguration>
 			</File>

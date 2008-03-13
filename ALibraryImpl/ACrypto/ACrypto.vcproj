@@ -299,7 +299,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="openssl"
+			Name="openssl Header Files"
 			>
 			<File
 				RelativePath=".\openssl\aes.h"
