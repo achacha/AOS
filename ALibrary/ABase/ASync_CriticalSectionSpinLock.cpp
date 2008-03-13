@@ -25,7 +25,7 @@ ASync_CriticalSectionSpinLock::~ASync_CriticalSectionSpinLock()
   delete mp_CriticalSection;
 }
 
-ASync_CriticalSectionSpinLock::ASync_CriticalSectionSpinLock(const ASync_CriticalSectionSpinLock& that) :
+ASync_CriticalSectionSpinLock::ASync_CriticalSectionSpinLock(const ASync_CriticalSectionSpinLock&) :
   m_SpinCount(AConstant::npos)
 {
 }

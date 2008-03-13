@@ -830,8 +830,6 @@ void ANameValuePair::_parseHtmlValue(const AString &strInput, size_t& pos, AStri
           if(stackD[0x0] == '\"')
           {
             ATHROW_EX(this, AException::InvalidData, AString("Mismatch of \" and > while parsing '")+strInput+"' near pos="+AString::fromSize_t(pos));
-            strReturn += '\"';
-            stackD.pop_front();
           }
           else
           {
@@ -845,8 +843,10 @@ void ANameValuePair::_parseHtmlValue(const AString &strInput, size_t& pos, AStri
           //a_Stack is empty, do not add the '>'
           //a_If slash was last remove it
           if (boolSlash)
+          {
             strReturn.remove(1, strReturn.getSize()-1);
-          break;
+            break;
+          }
         }
         
         //a_End tag

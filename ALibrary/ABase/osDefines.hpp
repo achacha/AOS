@@ -51,6 +51,7 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
   #pragma warning (disable:4786)  //a_identifier was truncated to '255' characters in the debug information
   #pragma warning (disable:4251)  //a_class 'xxx' needs to have dll-interface to be used by clients of class 'xxx'
 //  #pragma warning (disable:6011)  //a_Dereferencing NULL pointer (STL deque warning)
+  #pragma warning (disable:4245)  //a_'argument' : conversion from '' to 'size_t', signed/unsigned mismatch (due to use of enum in AConstant for npos/etc)
 
 #elif defined(_WIN64)
   //Win64 environment
@@ -135,15 +136,13 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
   #error No such OS configuration
 #endif
 
-/**
+/*!
 DEBUG/RELEASE compiler flag
 
 _DEBUG - debug mode
 NDEBUG - non-debug (release) mode
 
 */
-//a_Debugging (if __DEBUG_DUMP__ is defined)
-//a_Common classes
 #if !defined(__DEBUG_DUMP__)
   #define __DEBUG_DUMP__
   #pragma message("__osDefines.hpp: ADebugDumpable::debugDump enabled")

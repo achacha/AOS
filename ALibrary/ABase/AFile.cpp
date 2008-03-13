@@ -759,7 +759,6 @@ size_t AFile::peek(void *pTarget, size_t bytesLeft)
       return 0;
     
     //a_Read file memory until we have what we need
-    size_t bytesRead = 0;
     while (m_LookaheadBuffer.getSize() < bytesLeft && _isNotEof())
     {
       size_t ret = readBlockIntoLookahead();

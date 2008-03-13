@@ -502,7 +502,6 @@ void AElement_HTML::__parseTextBlock(const AString &strInput, size_t& position)
     return;   //a_Ran out of stuff to do, this is the end my friend
   }
 
-  bool boolLastIsWhiteSpace = false;
   position = strInput.peekUntil(m__strText, position, PARSE_START_ELEMENT);
   if (AConstant::npos == position)
   {

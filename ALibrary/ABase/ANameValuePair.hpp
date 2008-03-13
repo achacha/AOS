@@ -6,7 +6,7 @@
 #include "ADebugDumpable.hpp"
 #include "AString.hpp"
 
-class ANameValuePair;
+class ABASE_API ANameValuePair;
 
 //a_Containers involving ANameValuePair
 typedef std::list<ANameValuePair>                    LIST_NVPair;

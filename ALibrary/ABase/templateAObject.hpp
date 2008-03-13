@@ -115,18 +115,18 @@ private:
   AXmlElement::Encoding m_Encoding;
 };
 
-/**
- * a_Used to upcast from AObjectBase * to AOBject< ... > *
- * if upcast fails it returns a NULL
- *
- * Usage:
- *   AObject< AString > objectName(AString("somename"));
- *   AObjectBase *pbase = dynamic_cast<AObjectBase *>&objectNum;  //a_This is usually a result of some polymorphic storage (e.g. AObjectContainer, etc)
- *   ...
- *   AString *pname = asAObject<AString>(pbase);
- *   if (pname)
- *     std::cout << *pname << std::endl;
-**/
+/*!
+ Used to upcast from AObjectBase * to AOBject< ... > *
+ if upcast fails it returns a NULL
+
+ Usage:
+   AObject< AString > objectName(AString("somename"));
+   AObjectBase *pbase = dynamic_cast<AObjectBase *>&objectNum;  //a_This is usually a result of some polymorphic storage (e.g. AObjectContainer, etc)
+   ...
+   AString *pname = asAObject<AString>(pbase);
+   if (pname)
+     std::cout << *pname << std::endl;
+*/
 template<typename _type>
 _type *asAObject(AObjectBase *ptr)
 {
@@ -138,16 +138,16 @@ _type *asAObject(AObjectBase *ptr)
   return NULL;
 }
 
-/**
- * a_Used to upcast from AObjectBase * to AOBject< ... > and call the use() method
- * if upcast fails, exception is thrown
- *
- * Usage:
- *   AObject< ANumber > objectNum(ANumber("3.14"));
- *   AObjectBase *pbase = dynamic_cast<AObjectBase *>&objectNum;  //a_This is usually a result of some polymorphic storage (e.g. AObjectContainer, etc)
- *   ...
- *   ANumber& mynum = useAObject<ANumber>(pbase);
-**/
+/*!
+ Used to upcast from AObjectBase * to AOBject< ... > and call the use() method
+ if upcast fails, exception is thrown
+
+ Usage:
+   AObject< ANumber > objectNum(ANumber("3.14"));
+   AObjectBase *pbase = dynamic_cast<AObjectBase *>&objectNum;  //a_This is usually a result of some polymorphic storage (e.g. AObjectContainer, etc)
+   ...
+   ANumber& mynum = useAObject<ANumber>(pbase);
+*/
 template<typename _type>
 _type useAObject(AObjectBase *ptr)
 {

@@ -7,6 +7,10 @@ ADaemon *ADaemon::mp_This(NULL);
 AThread *ADaemon::smp_MainServiceThread(NULL);  //a_Main service thread
 
 #ifdef __WINDOWS__
+//a_Warnings due to conditional compile with unix code
+#pragma warning (disable:4100)  // unreferenced formal parameter
+#pragma warning (disable:4101)  // unreferenced local variable
+
 #pragma message("Compiling Windows service code.")
 
 int ADaemon::sm_iTIMEOUT = 6;            //a_6 seconds timeout (eternity for a computer sometimes)
@@ -117,7 +121,7 @@ void fcbServiceHandler(u4 dwControl, u4 dwEventType, void *lpEventData, void *lp
 
 //a_Main function called that will try to start a service
 #if defined(__WINDOWS__)
-VOID WINAPI ADaemon::fcbServiceMain(DWORD argc, LPTSTR *argv)
+VOID WINAPI ADaemon::fcbServiceMain(DWORD, LPTSTR *)
 {
   if (!mp_This)
   {
@@ -152,9 +156,8 @@ VOID WINAPI ADaemon::fcbServiceMain(DWORD argc, LPTSTR *argv)
   }
   catch(AException &eX)
   {
-    AString& str = eX.what().toAString();
-    AFILE_TRACER_DEBUG_MESSAGE(str.c_str(), NULL);
-    MessageBox(NULL,str.c_str(),"ADaemon::fcbServiceMain",MB_SERVICE_NOTIFICATION);
+    AFILE_TRACER_DEBUG_MESSAGE(eX.what().toAString().c_str(), NULL);
+    MessageBox(NULL,eX.what().toAString().c_str(),"ADaemon::fcbServiceMain",MB_SERVICE_NOTIFICATION);
     return;
   }
   catch(...)
@@ -253,7 +256,7 @@ u4 ADaemon::MainServiceThreadProc(AThread& thread)
   if (!mp_This)
   {
     MessageBox(NULL,"ADaemon global object does not exist, callbackMain not being called.","ADaemon::MainServiceThreadProc",MB_SERVICE_NOTIFICATION);
-    return -1;
+    return (u4)-1;
   }
   else
   {

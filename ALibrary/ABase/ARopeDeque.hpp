@@ -5,26 +5,20 @@
 #include "AString.hpp"
 #include "AOutputBuffer.hpp"
 
-/*
- * ARopeDeque - collection of string blocks that is optimized for adding/removing in front/back
- *         will grow by allocating extra blocks to avoid unneccessary movement of data
- *
- * All calls accepting ARopeDeque as a parameter will never clear it first, instead always append/insert
- *
- * Internal storage for "Rope container data store" (as example)
- * _ _ _ R O P E          (front)
- * C O N T A I N E        (conatiner)
- * R   D A T A   S        (container)
- * T O R E _ _ _ _        (back)
- *
-**/
+/*!
+ ARopeDeque - collection of string blocks that is optimized for adding/removing in front/back
+         will grow by allocating extra blocks to avoid unneccessary movement of data
 
-class AFile;
-class ARope;
+ All calls accepting ARopeDeque as a parameter will never clear it first, instead always append/insert
 
-/**
- * ARope type class optimized for removal of data from front and back
- */
+ Internal storage for "Rope container data store" (as example)
+ _ _ _ R O P E          (front)
+ C O N T A I N E        (conatiner)
+ R   D A T A   S        (container)
+ T O R E _ _ _ _        (back)
+
+ ARope type class optimized for removal of data from front and back
+*/
 class ABASE_API ARopeDeque : public AOutputBuffer
 {
 public:

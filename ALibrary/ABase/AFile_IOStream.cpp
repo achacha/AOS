@@ -88,7 +88,7 @@ size_t AFile_IOStream::readBlockIntoLookahead()
 
     while (mp_IStream->rdbuf()->in_avail())
     {
-      char c = mp_IStream->get();
+      char c = (char)mp_IStream->get();
       m_LookaheadBuffer.pushBack(&c, 1);
       ++totalBytesRead;
     }

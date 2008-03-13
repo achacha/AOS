@@ -239,7 +239,7 @@ void ALog::addException(const std::exception& ex)
   add(ASWNL(ex.what()), ALog::EXCEPTION);
 }
 
-size_t ALog::flush(AFile& file)
+size_t ALog::flush(AFile&)
 {
   return AConstant::npos;
 }

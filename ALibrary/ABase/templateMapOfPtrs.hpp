@@ -3,7 +3,7 @@
 
 #include "apiABase.hpp"
 
-/**
+/*!
 std::map wrapper that will delete all of its contents when done
 
 Usage:
@@ -14,8 +14,7 @@ Before:
 Now:
   AMapOfPtrs<int, AString> myMap;
   myMap._map[0] = new AString("foo");   // this class will delete this object in dtor
-**/
-
+*/
 template<class K, class T>
 class AMapOfPtrs
 {
@@ -23,9 +22,9 @@ public:
   typedef std::map<K, T*> TYPEDEF;
   TYPEDEF _map;
 
-  /**
+  /*!
   Will call delete on all members 
-  **/
+  */
   ~AMapOfPtrs()
   {
     TYPEDEF::iterator it = _map.begin();
@@ -38,4 +37,3 @@ public:
 };
 
 #endif // _templateMapOfPtrs_HPP_
-

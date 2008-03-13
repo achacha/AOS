@@ -12,8 +12,7 @@
  All calls accepting ARope as a parameter will never clear it first, instead always append
 */
 
-class AFile;
-class ARope;
+class ABASE_API ARope;
 
 typedef std::list<ARope>   LIST_ARope;
 typedef std::vector<ARope> VECTOR_ARope;

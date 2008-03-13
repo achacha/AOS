@@ -247,7 +247,6 @@ bool AFileSystem::isA(const AFilename& source, AFileSystem::PathType ptype)
 {
 #ifdef __WINDOWS__
   AString str;
-  AFilename::FTYPE ftype = source.getType();
   source.emit(str, AFilename::FTYPE_WIN32, true);
   WIN32_FIND_DATA findData;
   HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);
@@ -293,7 +292,6 @@ u4 AFileSystem::getType(const AFilename& source)
 {
 #ifdef __WINDOWS__
   AString str;
-  AFilename::FTYPE ftype = source.getType();
   source.emit(str, AFilename::FTYPE_WIN32, true);
   WIN32_FIND_DATA findData;
   HANDLE hFind = ::FindFirstFile(str.c_str(), &findData);

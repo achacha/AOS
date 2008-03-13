@@ -1416,8 +1416,8 @@ AString& AString::stripTrailing(const AString& strDelimeters)
 
 AString& AString::stripLeadingAndTrailing(const AString& strDelimeters)
 {
-  stripLeading();
-  return stripTrailing();
+  stripLeading(strDelimeters);
+  return stripTrailing(strDelimeters);
 }
 
 AString& AString::stripEntire(const AString& strDelimeters)
@@ -1629,8 +1629,8 @@ size_t AString::toSize_t(int iBase) const
 {
   switch(sizeof(size_t))
   {
-    case 8: return toU8(iBase);
-    case 4: return toU4(iBase);
+    case 8: return (size_t)toU8(iBase);
+    case 4: return (size_t)toU4(iBase);
     default: ATHROW(NULL, AException::ProgrammingError);
   }
 }

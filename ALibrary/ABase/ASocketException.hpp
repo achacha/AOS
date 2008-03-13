@@ -62,12 +62,9 @@ private:
 /*!
 Throws a socket exception based on the ::WSAGetLastError()
 */
-#define ATHROW_LAST_SOCKET_ERROR(debugdumpable) \
-  do { throw ASocketException(::GetLastError(), debugdumpable, __FILE__, __LINE__, AConstant::ASTRING_EMPTY); } while(0x0)
-#define ATHROW_LAST_SOCKET_ERROR_KNOWN(debugdumpable, errornum) \
-  do { throw ASocketException(errornum, debugdumpable, __FILE__, __LINE__, AConstant::ASTRING_EMPTY); } while(0x0)
-#define ATHROW_LAST_SOCKET_ERROR_KNOWN_EX(debugdumpable, errornum, extra) \
-  do { throw ASocketException(errornum, debugdumpable, __FILE__, __LINE__, extra); } while(0x0)
+#define ATHROW_LAST_SOCKET_ERROR(debugdumpable) throw ASocketException(::GetLastError(), debugdumpable, __FILE__, __LINE__, AConstant::ASTRING_EMPTY);
+#define ATHROW_LAST_SOCKET_ERROR_KNOWN(debugdumpable, errornum) throw ASocketException(errornum, debugdumpable, __FILE__, __LINE__, AConstant::ASTRING_EMPTY);
+#define ATHROW_LAST_SOCKET_ERROR_KNOWN_EX(debugdumpable, errornum, extra) throw ASocketException(errornum, debugdumpable, __FILE__, __LINE__, extra);
 
 #endif
 

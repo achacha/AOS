@@ -101,7 +101,9 @@ AString ASocketLibrary::getIPFromAddress(const AString &address)
     const AString& aIP = IPlist.front();
     addr = inet_addr(aIP.c_str());
     if( addr == INADDR_NONE )
+    {
       ATHROW_LAST_SOCKET_ERROR(NULL);
+    }
     else
       return aIP;
   }

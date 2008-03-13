@@ -41,7 +41,7 @@ void ALog::ScopeEvents::add(
   u4 event_type //= ALog::MESSAGE
 )
 {
-  m_ParentLog.add(m_ScopeName, source0, source2, event_type | ALog::SCOPE);
+  m_ParentLog.add(m_ScopeName, source0, source1, source2, event_type | ALog::SCOPE);
 }
 
 void ALog::ScopeEvents::_append(const char *pcc, size_t len)
@@ -51,7 +51,7 @@ void ALog::ScopeEvents::_append(const char *pcc, size_t len)
   m_ParentLog.add(m_ScopeName, ASW(pcc, len), ALog::MESSAGE | ALog::SCOPE);
 }
 
-size_t ALog::ScopeEvents::flush(AFile& file)
+size_t ALog::ScopeEvents::flush(AFile&)
 {
   return AConstant::npos;
 }

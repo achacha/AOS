@@ -49,10 +49,10 @@ private:
   u4 m_lastOSError;
 };
 
-/**
- * Throws a system exception based on last error code
- * If we already know the error # (if we called GetLastError or similar, 2nd macro is to be used
-**/
+/*!
+Throws a system exception based on last error code
+If we already know the error # (if we called GetLastError or similar, 2nd macro is to be used
+*/
 #define ATHROW_LAST_OS_ERROR(debugdumpable) throw ASystemException(debugdumpable, ASystemException::SystemError, __FILE__, __LINE__);
 #define ATHROW_LAST_OS_ERROR_EX(debugdumpable, msg) throw ASystemException(debugdumpable, ASystemException::SystemError, __FILE__, __LINE__, msg);
 #define ATHROW_LAST_OS_ERROR_KNOWN(debugdumpable, n) throw ASystemException(n, debugdumpable, __FILE__, __LINE__);

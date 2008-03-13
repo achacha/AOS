@@ -3,19 +3,24 @@
 
 #include "apiABase.hpp"
 
-class AString;
+class ABASE_API AString;
 
 class ABASE_API AConstant
 {
 public:
   enum
   {
-    npos    = -1,
+    //! Generic error/notfound result code
+    npos = -1,
+
+    //! Unavailable/unable to complete result code
     unavail = -2
   };
-  static const size_t MAX_SIZE_T;   //a_max value of size_t type
 
-  //a_Constants
+  //! Maximum size for size_t type
+  static const size_t MAX_SIZE_T;
+
+  //! Constants
   static const AString ASTRING_EMPTY;         //a_""  empty string
   static const AString ASTRING_ZERO;          //a_"0" zero
   static const AString ASTRING_ONE;           //a_"1" one

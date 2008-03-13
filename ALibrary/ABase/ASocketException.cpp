@@ -9,7 +9,7 @@ ASocketException::ASocketException
   int iLineNumber,                              // = 0x0
   const AEmittable& extra                       // = AConstant::ASTRING_EMPTY
 ) :
-  AException(pObject, AException::SocketError, pccFilename, iLineNumber, extra),
+  AException(pObject, type, pccFilename, iLineNumber, extra),
   m_iLastSocketError(0)
 {
 }

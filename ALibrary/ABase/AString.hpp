@@ -8,9 +8,9 @@
 #include "AXmlEmittable.hpp"
 #include "ABase.hpp"
 
-class AFile;
-class ARope;
-class AString;
+class ABASE_API AFile;
+class ABASE_API ARope;
+class ABASE_API AString;
 
 //a_Containers that involve AString
 typedef std::set<AString>               SET_AString;

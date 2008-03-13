@@ -9,21 +9,19 @@
 #include "ARope.hpp"
 #include "ASync_CriticalSection.hpp"
 
-/**********************************************************************
- * 
- * StackWalker.hpp
- *
- *
- * History:
- *  2005-07-27   v1 - First public release on http://www.codeproject.com/
- *
- *  2006_Mar_29  by achacha
- *               Heavily modified to fit into ALibrary (naming/build structure changes)
- *               Fixed string usage to avoid using the dangerous sprintf in a stack walker
- *               Added ability to store result and emit as text or XML
- *               Cleaned up message format
- *
- **********************************************************************/
+/*!
+ StackWalker.hpp
+
+
+ History:
+  2005-07-27   v1 - First public release on http://www.codeproject.com/
+
+  2006_Mar_29  by achacha
+               Heavily modified to fit into ALibrary (naming/build structure changes)
+               Fixed string usage to avoid using the dangerous sprintf in a stack walker
+               Added ability to store result and emit as text or XML
+               Cleaned up message format
+*/
 
 // special defines for VC5/6 (if no actual PSDK is installed):
 #if _MSC_VER < 1300
@@ -35,7 +33,7 @@ typedef unsigned long SIZE_T, *PSIZE_T;
 #endif
 #endif  // _MSC_VER < 1300
 
-class StackWalkerInternal;  // forward
+class ABASE_API StackWalkerInternal;  // forward
 class ABASE_API AStackWalker : public AEmittable, public AXmlEmittable
 {
 public:

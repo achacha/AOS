@@ -57,7 +57,7 @@ void AThread_NOP::start()
   mu4__ThreadId = 0x0;
 }
 
-void AThread_NOP::terminate(u4 uExitCode)
+void AThread_NOP::terminate(u4)
 {
   //a_Doesn't really do anything, just resets the object
   mbool_Run = false;
@@ -85,12 +85,12 @@ u4 AThread_NOP::suspend()
   return 0;
 }
 
-u4 AThread_NOP::resume(bool boolForceResume /* = false */)
+u4 AThread_NOP::resume(bool)
 {
   return 0;
 }
 
-u4 AThread_NOP::waitForThreadToExit(u4 sleepTime)
+u4 AThread_NOP::waitForThreadToExit(u4)
 {
   return 0;
 }
