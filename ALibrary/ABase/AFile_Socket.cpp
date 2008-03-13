@@ -237,9 +237,7 @@ size_t AFile_Socket::_readNonBlocking(void *buf, size_t size)
 
 size_t AFile_Socket::_writeBlocking(const void *buf, size_t size)
 {
-  //a_Cannot read zero bytes, return of 0 means EOF
-  if (!size)
-    ATHROW_LAST_SOCKET_ERROR_KNOWN(this, ASocketException::InvalidParameter);
+  AASSERT(this, size > 0);
   
   size_t bytesSent = ::send(m_SocketInfo.m_handle, (char *) buf, size, 0);
     
@@ -252,6 +250,8 @@ size_t AFile_Socket::_writeBlocking(const void *buf, size_t size)
 
 size_t AFile_Socket::_writeNonBlocking(const void *buf, size_t size)
 {
+  AASSERT(this, size > 0);
+
   size_t bytesWritten = ::send(m_SocketInfo.m_handle, (const char *) buf, size, 0);
   if (bytesWritten == SOCKET_ERROR)
   {

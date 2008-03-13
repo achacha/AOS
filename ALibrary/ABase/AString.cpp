@@ -2805,8 +2805,10 @@ size_t AString::flush(AFile& file)
 {
   if (m_Length > 0)
   {
+    //a_Flush is a destructive process
     size_t written = file.write(mp_Buffer, m_Length);
     file.flush();
+    remove(written);   //a_Remove from buffer
     return written;
   }
 

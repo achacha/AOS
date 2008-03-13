@@ -105,5 +105,12 @@ size_t AFile_AString::getSize() const
 
 size_t AFile_AString::flush(AFile& file)
 {
-  return m_Data.flush(file);
+  if (m_Data.getSize() > m_ReadPos)
+  {
+    size_t bytesWritten = file.write(m_Data.c_str()+m_ReadPos, m_Data.getSize()-m_ReadPos);
+    m_ReadPos += bytesWritten;
+    return bytesWritten;
+  }
+  else
+    return AConstant::npos;
 }
