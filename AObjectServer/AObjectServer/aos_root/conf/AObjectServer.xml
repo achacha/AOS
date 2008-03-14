@@ -107,7 +107,7 @@
 	<reported>
 		<!-- Reported overrides -->
 		<hostname desc="Hostname reported to clients"/>
-		<server desc="Server field in the response http header">WarWall 1.4.0.0 [en]</server>
+		<server desc="Server field in the response http header"/>
 		<http desc="Reported HTTP port, none means use 80"/>
 		<https desc="Reported HTTPS port, none means use 443"/>
 	</reported>

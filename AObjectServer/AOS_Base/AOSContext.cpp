@@ -1320,6 +1320,7 @@ bool AOSContext::processStaticPage()
       {
         //a_Context not dumped and no compression is needed
         AASSERT(this, !pFile.isNull());
+        AASSERT(this, pFile->isNotEof());
         
         //a_Set modified date
         m_ResponseHeader.setLastModified(modified);
@@ -1334,6 +1335,7 @@ bool AOSContext::processStaticPage()
         //a_Stream content
         m_EventVisitor.startEvent(ARope("File found:",16)+(*pFile));
         m_EventVisitor.startEvent(ARope("Streaming file: ",16)+httpFilename);
+        AASSERT(this, pFile->isNotEof());
         size_t bytesWritten = _write(*pFile);
 
         if (AConstant::npos == contentLength)

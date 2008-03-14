@@ -7,7 +7,7 @@
 #include <ANumber.hpp>
 #include <AException.hpp>
 #include <templateAutoPtr.hpp>
-#include <AAttributes.hpp>
+#include <AXmlAttributes.hpp>
 #include <AObjectContainer.hpp>
 #include <ALog.hpp>
 #include <ATextConverter.hpp>
