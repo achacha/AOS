@@ -156,6 +156,11 @@ bool AFile_Physical::seek(u8 offset, int origin)
 #endif
 }
 
+void AFile_Physical::rewind()
+{
+  AVERIFY(this, seek(0,0));
+}
+
 u8 AFile_Physical::tell()
 {
 #ifdef _ftelli64

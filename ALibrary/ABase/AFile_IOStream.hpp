@@ -38,6 +38,7 @@ public:
 
   virtual void open() {}
   virtual void flush();
+  virtual void rewind();
   virtual void close();
   virtual bool isOpen();
 

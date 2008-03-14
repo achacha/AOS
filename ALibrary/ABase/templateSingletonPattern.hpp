@@ -26,10 +26,10 @@ class ASingletonPattern
         get();
     }
     
-    /**
-     * Gets an instance of the singleton object and initializes it
-     * if it was never created
-    **/
+    /*!
+    Gets an instance of the singleton object and initializes it
+    if it was never created
+    */
     T &get();
 };
 

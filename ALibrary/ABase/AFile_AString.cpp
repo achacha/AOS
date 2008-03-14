@@ -114,3 +114,8 @@ size_t AFile_AString::flush(AFile& file)
   else
     return AConstant::npos;
 }
+
+void AFile_AString::rewind()
+{
+  m_ReadPos = 0;
+}

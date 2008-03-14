@@ -63,6 +63,10 @@ size_t AFile_IOStream::_read(void *pvBuffer, size_t length)
 	return mp_IStream->gcount();
 }
 
+void AFile_IOStream::rewind()
+{
+  mp_IStream->seekg(0, std::ios_base::beg);
+}
 
 void AFile_IOStream::flush()
 {

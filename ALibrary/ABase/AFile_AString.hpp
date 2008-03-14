@@ -74,6 +74,7 @@ public:
   */
   virtual bool isOpen() { return true; }
   virtual void open() {}
+  virtual void rewind();
   virtual void close() {}
   virtual void flush() {}
 

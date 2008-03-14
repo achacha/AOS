@@ -56,6 +56,8 @@ public:
 
   virtual void open();
   virtual void flush();
+  //! Rewind does nothing for sockets
+  virtual void rewind() {}
   virtual void close();
 
   /*!

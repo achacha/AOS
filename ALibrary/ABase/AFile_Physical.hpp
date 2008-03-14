@@ -43,6 +43,7 @@ public:
   */
   virtual bool isOpen();
   virtual void flush();
+  virtual void rewind();
   virtual void close();
 
   /*!

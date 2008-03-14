@@ -38,10 +38,16 @@ public:
   */
   void bind(int port=0, const AString& ipAddr = ASocketLibrary::ANY_ADDRESS);
 
-  virtual void open() {}     //a_Does not apply to datagrams
-  virtual void flush() {}    //a_Does not apply to datagrams
+  //! Does nothing
+  virtual void open() {}
+  
+  //! Does nothing
+  virtual void flush() {}
 
-  //a_Close the socket handle (in case explicit close is needed)
+  //! Does nothing
+  virtual void rewind() {}
+
+  //! Close the socket handle (in case explicit close is needed)
   virtual void close();
 
   /*!

@@ -224,7 +224,8 @@ public:
   IO control (useful in some file types)
   */
   virtual void open() = 0;          //a_Open
-  virtual void flush() = 0;         //a_Signals to flush the contents
+  virtual void flush() = 0;         //a_Signals to flush the contents (if applicable)
+  virtual void rewind() = 0;        //a_Rewinds the file to the begining (if applicable)
   virtual void close() = 0;         //a_Close
 
   /*!

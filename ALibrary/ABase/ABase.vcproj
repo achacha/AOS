@@ -227,30 +227,8 @@
 				>
 			</File>
 			<File
-				RelativePath="ABaseMain.cpp"
+				RelativePath=".\ABaseMain.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ABasePtrContainer.cpp"
@@ -377,60 +355,16 @@
 				>
 			</File>
 			<File
-				RelativePath="AFile.cpp"
+				RelativePath=".\AFile.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\AFile_AString.cpp"
 				>
 			</File>
 			<File
-				RelativePath="AFile_IOStream.cpp"
+				RelativePath=".\AFile_IOStream.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\AFile_Physical.cpp"
@@ -485,30 +419,8 @@
 				>
 			</File>
 			<File
-				RelativePath="AINIProfile.cpp"
+				RelativePath=".\AINIProfile.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\AJsonEmittable.cpp"
@@ -535,108 +447,20 @@
 				>
 			</File>
 			<File
-				RelativePath="ANamePointerPair.cpp"
+				RelativePath=".\ANamePointerPair.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ANameValuePair.cpp"
+				RelativePath=".\ANameValuePair.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ansiHelpers.cpp"
+				RelativePath=".\ansiHelpers.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ANumber.cpp"
+				RelativePath=".\ANumber.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\AObjectBase.cpp"
@@ -699,30 +523,8 @@
 				>
 			</File>
 			<File
-				RelativePath="AString.cpp"
+				RelativePath=".\AString.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\AStringHashMap.cpp"
@@ -753,30 +555,8 @@
 				>
 			</File>
 			<File
-				RelativePath="ASynchronization.cpp"
+				RelativePath=".\ASynchronization.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ASystemException.cpp"
@@ -803,30 +583,8 @@
 				>
 			</File>
 			<File
-				RelativePath="ATextConverter.cpp"
+				RelativePath=".\ATextConverter.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;_MBCS;$(NoInherit)"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ATextGenerator.cpp"
@@ -897,7 +655,7 @@
 				>
 			</File>
 			<File
-				RelativePath="pchABase.cpp"
+				RelativePath=".\pchABase.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1057,11 +815,11 @@
 				>
 			</File>
 			<File
-				RelativePath="AException.hpp"
+				RelativePath=".\AException.hpp"
 				>
 			</File>
 			<File
-				RelativePath="AFile.hpp"
+				RelativePath=".\AFile.hpp"
 				>
 			</File>
 			<File
@@ -1153,19 +911,19 @@
 				>
 			</File>
 			<File
-				RelativePath="ANamePointerPair.hpp"
+				RelativePath=".\ANamePointerPair.hpp"
 				>
 			</File>
 			<File
-				RelativePath="ANameValuePair.hpp"
+				RelativePath=".\ANameValuePair.hpp"
 				>
 			</File>
 			<File
-				RelativePath="ansiHelpers.hpp"
+				RelativePath=".\ansiHelpers.hpp"
 				>
 			</File>
 			<File
-				RelativePath="ANumber.hpp"
+				RelativePath=".\ANumber.hpp"
 				>
 			</File>
 			<File
@@ -1217,7 +975,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ASerializable.hpp"
+				RelativePath=".\ASerializable.hpp"
 				>
 			</File>
 			<File
@@ -1237,7 +995,7 @@
 				>
 			</File>
 			<File
-				RelativePath="AString.hpp"
+				RelativePath=".\AString.hpp"
 				>
 			</File>
 			<File
@@ -1269,7 +1027,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ASynchronization.hpp"
+				RelativePath=".\ASynchronization.hpp"
 				>
 			</File>
 			<File
@@ -1365,27 +1123,27 @@
 				>
 			</File>
 			<File
-				RelativePath="debugFileTracer.hpp"
+				RelativePath=".\debugFileTracer.hpp"
 				>
 			</File>
 			<File
-				RelativePath="extABase.hpp"
+				RelativePath=".\extABase.hpp"
 				>
 			</File>
 			<File
-				RelativePath="macroDelete.hpp"
+				RelativePath=".\macroDelete.hpp"
 				>
 			</File>
 			<File
-				RelativePath="osDefines.hpp"
+				RelativePath=".\osDefines.hpp"
 				>
 			</File>
 			<File
-				RelativePath="pchABase.hpp"
+				RelativePath=".\pchABase.hpp"
 				>
 			</File>
 			<File
-				RelativePath="templateAArrayCanvas.hpp"
+				RelativePath=".\templateAArrayCanvas.hpp"
 				>
 			</File>
 			<File
@@ -1393,7 +1151,7 @@
 				>
 			</File>
 			<File
-				RelativePath="templateAutoPtr.hpp"
+				RelativePath=".\templateAutoPtr.hpp"
 				>
 			</File>
 			<File
@@ -1405,11 +1163,11 @@
 				>
 			</File>
 			<File
-				RelativePath="templateSingletonPattern.hpp"
+				RelativePath=".\templateSingletonPattern.hpp"
 				>
 			</File>
 			<File
-				RelativePath="templatesRange.hpp"
+				RelativePath=".\templatesRange.hpp"
 				>
 			</File>
 			<File
@@ -1417,7 +1175,7 @@
 				>
 			</File>
 			<File
-				RelativePath="uTypes.hpp"
+				RelativePath=".\uTypes.hpp"
 				>
 			</File>
 		</Filter>
