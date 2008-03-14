@@ -20,14 +20,11 @@ int gdIOCtx_AOutputBuffer::getC(struct gdIOCtx *pThisBase)
   gdIOCtx_AOutputBuffer *pThis = (gdIOCtx_AOutputBuffer *)pThisBase;
   
   ATHROW(NULL, AException::ProgrammingError);
-  return -1;
 }
 
 int gdIOCtx_AOutputBuffer::getBuf(struct gdIOCtx *pThisBase, void *pData, int length)
 {
   ATHROW(NULL, AException::ProgrammingError);
-
-  return -1;
 }
 
 void gdIOCtx_AOutputBuffer::putC(struct gdIOCtx *pThisBase, int data)
@@ -48,13 +45,11 @@ int gdIOCtx_AOutputBuffer::putBuf(struct gdIOCtx *pThisBase, const void *pData, 
 int gdIOCtx_AOutputBuffer::seek(struct gdIOCtx *pThisBase, const int pos)
 {
   ATHROW(NULL, AException::ProgrammingError);
-  return 0;
 }
 
 long gdIOCtx_AOutputBuffer::tell(struct gdIOCtx *pThisBase)
 {
   ATHROW(NULL, AException::ProgrammingError);
-  return -1;
 }
 
 void gdIOCtx_AOutputBuffer::gd_free(struct gdIOCtx *pThisBase)
