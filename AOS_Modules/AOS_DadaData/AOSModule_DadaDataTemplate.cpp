@@ -4,8 +4,6 @@
 #include "AFile_AString.hpp"
 #include "AWordUtility.hpp"
 #include "ARandomNumberGenerator.hpp"
-#include "AXmlElement.hpp"
-#include "AAttributes.hpp"
 #include "AFile_Physical.hpp"
 
 const AString& AOSModule_DadaDataTemplate::getClass() const
