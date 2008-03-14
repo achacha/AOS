@@ -514,7 +514,13 @@ private:
   SET_AString _getGzipCompressionExtensions();
 
   //a_Write to the socket
-  size_t _write(AOutputBuffer&);
+  size_t _write(AFile&);
+
+  //a_Write to the socket
+  size_t _write(ARope&);
+
+  //a_Write to the socket
+  size_t _write(AString&);
 };
 
 #endif // INCLUDED__AContext_HPP__
