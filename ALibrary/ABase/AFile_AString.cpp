@@ -119,3 +119,13 @@ void AFile_AString::rewind()
 {
   m_ReadPos = 0;
 }
+
+size_t AFile_AString::peek(
+  AOutputBuffer& target, 
+  size_t index,          // = 0 
+  size_t bytes           // = AConstant::npos
+) const
+{
+  return m_Data.peek(target, index, bytes);
+}
+

@@ -176,3 +176,66 @@ size_t AFile_Physical::getSize() const
   AASSERT(this, size <= SIZE_MAX);             //a_If this ever happens getSize should be upgraded to s8
   return (size_t)size;
 }
+
+size_t AFile_Physical::peek(
+  AOutputBuffer& target, 
+  size_t index,          //= 0 
+  size_t bytes           // = AConstant::npos
+) const
+{
+  AASSERT_EX(this, m_fid >= 0, ASWNL("Probably forgot to call open() or invalid file handle after call to open"));   // m_fid == -1? forgot to call open()?
+  if (!mp_file)
+    ATHROW(this, AException::NotOpen);
+
+  //a_Get original position
+  u8 originalIndex = 0;
+#ifdef _ftelli64
+  originalIndex = _ftelli64(mp_file);
+#else
+  originalIndex = (u8)ftell(mp_file);
+#endif
+
+  //a_Seek to new position
+#ifdef _fseeki64
+  if (_fseeki64(mp_file, index, 0))
+    ATHROW_EX(this, AException::InvalidParameter, AString("Unable to seek position: ")+AString::fromSize_t(index));
+#else
+  if (fseek(mp_file, (long)index, 0))
+    ATHROW_EX(this, AException::InvalidParameter, AString("Unable to seek position: ")+AString::fromSize_t(index));
+#endif
+
+  //a_Peek some data
+  const size_t BUFFER_SIZE = 10240;
+  char buffer[BUFFER_SIZE];
+  size_t totalBytes = 0;
+  while (bytes)
+  {
+    size_t bytesToRead = (bytes > BUFFER_SIZE ? BUFFER_SIZE : bytes);
+    size_t bytesRead = ::_read(m_fid, buffer, bytesToRead);
+
+    //a_EOF or unavail
+    if (AConstant::npos == bytesRead || AConstant::unavail == bytesRead)
+      return bytesRead;
+    
+    //a_Partial read
+    if (bytesRead < bytesToRead)
+    {
+      totalBytes += bytesRead;
+      break;
+    }
+
+    target.append(buffer, bytesRead);
+    bytes -= bytesRead;
+    totalBytes += bytesRead;
+  }
+  
+#ifdef _fseeki64
+  if (_fseeki64(mp_file, originalIndex, 0))
+    ATHROW_EX(this, AException::InvalidParameter, AString("Unable to restore seek position: ")+AString::fromSize_t(originalIndex));
+#else
+  if (fseek(mp_file, (long)originalIndex, 0))
+    ATHROW_EX(this, AException::InvalidParameter, AString("Unable to restore seek position: ")+AString::fromSize_t(originalIndex));
+#endif
+
+  return totalBytes;
+}

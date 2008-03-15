@@ -4,6 +4,7 @@
 #include "apiABase.hpp"
 #include "AString.hpp"
 #include "AOutputBuffer.hpp"
+#include "APeekable.hpp"
 
 /*!
  ARope - collection of string blocks that is optimized to appending
@@ -20,7 +21,7 @@ typedef std::vector<ARope> VECTOR_ARope;
 /*!
 Output buffer class optimized for appending to end
 */
-class ABASE_API ARope : public AOutputBuffer
+class ABASE_API ARope : public AOutputBuffer, public APeekable
 {
 public:
   ARope(size_t blockSize = ARope::DEFAULT_BLOCK_SIZE);
@@ -81,6 +82,9 @@ public:
   AOutputBuffer
   */
   virtual size_t flush(AFile&);
+
+  //! APeekable
+  virtual size_t peek(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const;
 
 protected:
   /*!

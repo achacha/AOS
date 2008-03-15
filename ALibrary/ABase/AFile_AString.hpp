@@ -3,13 +3,14 @@
 
 #include "apiABase.hpp"
 #include "AFile.hpp"
+#include "APeekable.hpp"
 #include "AString.hpp"
 
 /*!
  AFile operations on AString buffer
  All write operations assume clobber and truncation (append at write position and cut the rest)
 */
-class ABASE_API AFile_AString : public AFile
+class ABASE_API AFile_AString : public AFile, public APeekable
 {
 public:
 	/*!
@@ -77,6 +78,11 @@ public:
   virtual void rewind();
   virtual void close() {}
   virtual void flush() {}
+
+  /*!
+  APeekable
+  */
+  virtual size_t peek(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const;
 
   /*!
   ADebugDumpable

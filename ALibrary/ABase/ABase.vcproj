@@ -62,12 +62,11 @@
 				GenerateXMLDocumentationFiles="true"
 				XMLDocumentationFileName="$(IntDir)\doc\"
 				BrowseInformation="1"
-				BrowseInformationFile="$(IntDir)/"
+				BrowseInformationFile="$(IntDir)\"
 				WarningLevel="4"
 				SuppressStartupBanner="false"
 				DebugInformationFormat="4"
 				CompileAs="0"
-				EnablePREfast="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -87,7 +86,6 @@
 				SuppressStartupBanner="false"
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/$(TargetName).lib"
@@ -164,7 +162,6 @@
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -472,6 +469,10 @@
 			</File>
 			<File
 				RelativePath=".\AOutputBuffer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\APeekable.cpp"
 				>
 			</File>
 			<File
@@ -936,6 +937,10 @@
 			</File>
 			<File
 				RelativePath=".\AOutputBuffer.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\APeekable.hpp"
 				>
 			</File>
 			<File

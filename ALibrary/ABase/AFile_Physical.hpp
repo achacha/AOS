@@ -5,6 +5,7 @@
 #include "AString.hpp"
 #include "AFile.hpp"
 #include "AFilename.hpp"
+#include "APeekable.hpp"
 
 #include <fcntl.h>       // open flags
 #include <share.h>       // share flags
@@ -13,7 +14,7 @@
 /*!
 Wrapper on _fsopen call, see API documentation for open flags and share flags
 */
-class ABASE_API AFile_Physical : public AFile
+class ABASE_API AFile_Physical : public AFile, public APeekable
 {
 public:
   /*!
@@ -57,6 +58,11 @@ public:
   */
   bool seek(u8 offset, int origin = 0);  // true if seek succeeded
   u8 tell();
+
+  /*!
+  APeekable
+  */
+  virtual size_t peek(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const;
 
   /*!
   Parameter overrides
