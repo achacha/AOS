@@ -51,9 +51,9 @@
 				GenerateXMLDocumentationFiles="true"
 				XMLDocumentationFileName="$(IntDir)\doc\"
 				BrowseInformation="1"
+				BrowseInformationFile="$(IntDir)\"
 				WarningLevel="4"
 				DebugInformationFormat="4"
-				EnablePREfast="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
