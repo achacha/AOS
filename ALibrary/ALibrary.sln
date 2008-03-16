@@ -1,43 +1,21 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C++ Express 2008
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ABase", "ABase\ABase.vcproj", "{1AEE01DF-B02A-4B19-8A4D-256157FE0320}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Console", "Console\Console.vcproj", "{F438D5AA-6868-4BC8-9972-252AD0D09524}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C52D1DD3-8B8C-4D34-8BE2-3102F67693CC} = {C52D1DD3-8B8C-4D34-8BE2-3102F67693CC}
 		{1AEE01DF-B02A-4B19-8A4D-256157FE0320} = {1AEE01DF-B02A-4B19-8A4D-256157FE0320}
 	EndProjectSection
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Isolation", "Isolation\Isolation.vcproj", "{15BAA815-CA5E-4DA3-8B85-420119DEB3E3}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab", "Lab\Lab.vcproj", "{CB33DB32-6F46-4284-A18E-992E55211B2A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1AEE01DF-B02A-4B19-8A4D-256157FE0320} = {1AEE01DF-B02A-4B19-8A4D-256157FE0320}
 	EndProjectSection
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcproj", "{C52D1DD3-8B8C-4D34-8BE2-3102F67693CC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1AEE01DF-B02A-4B19-8A4D-256157FE0320} = {1AEE01DF-B02A-4B19-8A4D-256157FE0320}
-	EndProjectSection
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
 Global
@@ -54,8 +32,6 @@ Global
 		{F438D5AA-6868-4BC8-9972-252AD0D09524}.Debug|Win32.Build.0 = Debug|Win32
 		{F438D5AA-6868-4BC8-9972-252AD0D09524}.Release|Win32.ActiveCfg = Release|Win32
 		{F438D5AA-6868-4BC8-9972-252AD0D09524}.Release|Win32.Build.0 = Release|Win32
-		{15BAA815-CA5E-4DA3-8B85-420119DEB3E3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{15BAA815-CA5E-4DA3-8B85-420119DEB3E3}.Release|Win32.ActiveCfg = Release|Win32
 		{CB33DB32-6F46-4284-A18E-992E55211B2A}.Debug|Win32.ActiveCfg = Debug|Win32
 		{CB33DB32-6F46-4284-A18E-992E55211B2A}.Debug|Win32.Build.0 = Debug|Win32
 		{CB33DB32-6F46-4284-A18E-992E55211B2A}.Release|Win32.ActiveCfg = Release|Win32

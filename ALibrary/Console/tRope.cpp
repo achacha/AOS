@@ -39,19 +39,43 @@ void testPeek()
   AFile_AString strfile;
   ARope rope(ASWNL("0123456789"), 4);
 
-  rope.peek(strfile, 3);
-  std::cout << strfile << std::endl;
+  size_t r;
+  r = rope.peek(strfile, 3);
+  std::cout << r << ":" << strfile << std::endl;
 
   AString str;
-  rope.peek(str, 7, 2);
-  std::cout << str << std::endl;
+  r = rope.peek(str);
+  std::cout << r << ":" << str << std::endl;
+
+  str.clear();
+  r = rope.peek(str, 7, 2);
+  std::cout << r << ":" << str << std::endl;
+
+  str.clear();
+  r = rope.peek(str, 7, 0);
+  std::cout << r << ":" << str << std::endl;
+
+  str.clear();
+  r = rope.peek(str, 1, 50);
+  std::cout << r << ":" << str << std::endl;
+
+  str.clear();
+  r = rope.peek(str, 10, 1);
+  std::cout << r << ":" << str << std::endl;
 }
 
 int main ()
 {
-  //testRope();
-  //testFileIO();
-  testPeek();
+  try
+  {
+    //testRope();
+    //testFileIO();
+    testPeek();
+  }
+  catch(AException& ex)
+  {
+    std::cerr << ex << std::endl;
+  }
 
   return 0;
 }
