@@ -335,7 +335,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
       //a_Data not available, try and read-wait to get it
       if (!_waitForFirstChar())
       {
-        m_EventVisitor.startEvent(ASW("AOSContext: Unable to read first char after retires",51));
+        m_EventVisitor.startEvent(ASW("AOSContext: Unable to read first char after retries",51));
         return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
       }
       else
@@ -971,7 +971,7 @@ void AOSContext::writeResponseHeader()
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
     ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
 
-  m_EventVisitor.startEvent(ASW("Sending HTTP response header",28));
+  m_EventVisitor.startEvent(ASW("Sending HTTP response header",28), AEventVisitor::EL_EVENT);
 
   AString str(10240, 4096);
 
@@ -986,14 +986,14 @@ void AOSContext::writeResponseHeader()
 
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
 
-  m_EventVisitor.addEvent(str);
+  m_EventVisitor.addEvent(str, AEventVisitor::EL_INFO);
 }
 
 void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 {
   m_EventVisitor.startEvent(ASW("AOSContext: write output",24));
   AASSERT(this, mp_RequestFile);
-  int gzipLevel = calculateGZipLevel();
+  int gzipLevel = _calculateGZipLevel(m_OutputBuffer.getSize());
   if (gzipLevel > 0 && gzipLevel < 10 && !forceXmlDocument)
   {
     AASSERT_EX(this, m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT), ASWNL("Response header already written, incompatible with gzip output"));
@@ -1154,7 +1154,7 @@ void AOSContext::setResponseRedirect(const AString& url)
   m_OutputBuffer.clear();
 }
 
-int AOSContext::calculateGZipLevel()
+int AOSContext::_calculateGZipLevel(size_t documentSize)
 {
   static bool IS_ENABLED = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/gzip-compression/enabled",39), true);
   static size_t MIN_SIZE = m_Services.useConfiguration().useConfigRoot().getSize_t(ASW("/config/server/gzip-compression/minimum-threshold",49), 32767);
@@ -1176,7 +1176,7 @@ int AOSContext::calculateGZipLevel()
     //a_Match extension and minimum size
     if (
          EXTENSIONS.end() != EXTENSIONS.find(m_RequestHeader.getUrl().getExtension())
-      && m_OutputBuffer.getSize() >= MIN_SIZE
+      && documentSize >= MIN_SIZE
     )
     {
       //a_Check if the client can accept gzip
@@ -1250,7 +1250,6 @@ bool AOSContext::processStaticPage()
   }
   
   int dumpContextLevel = getDumpContextLevel();
-  int gzipLevel = calculateGZipLevel();
 
   ACache_FileSystem::HANDLE pFile;
   size_t contentLength = AConstant::npos;
@@ -1277,6 +1276,9 @@ bool AOSContext::processStaticPage()
 
     case ACache_FileSystem::FOUND_NOT_CACHED:
     case ACache_FileSystem::FOUND:
+    {
+      size_t bytesToSend = pFile->getSize();
+      int gzipLevel = _calculateGZipLevel(bytesToSend);
       if (!dumpContextLevel && !gzipLevel)
       {
         //a_Context not dumped and no compression is needed
@@ -1284,8 +1286,8 @@ bool AOSContext::processStaticPage()
         
         //a_Set modified date
         m_ResponseHeader.setLastModified(modified);
-        size_t bytesToSend = (size_t)AFileSystem::length(httpFilename);
         m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AString::fromS8(bytesToSend));
+        //size_t bytesToSend = (size_t)AFileSystem::length(httpFilename);
         
         AString ext;
         httpFilename.emitExtension(ext);
@@ -1320,6 +1322,7 @@ bool AOSContext::processStaticPage()
         pFile->emit(m_OutputBuffer);
         m_EventVisitor.addEvent(ARope("Output buffer bytes: ",21)+AString::fromSize_t(m_OutputBuffer.getSize()));
       }
+    }
     break;
 
     default:

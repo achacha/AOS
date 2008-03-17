@@ -30,7 +30,11 @@
 		<extensions desc="Extensions which should be compress">
 		  <ext>html</ext>
 		  <ext>htm</ext>
+		  <ext>xhtml</ext>
+		  <ext>xml</ext>
 		  <ext>txt</ext>
+		  <ext>js</ext>
+		  <ext>css</ext>
 		</extensions>
 		<minimum-threshold desc="Compress files larger than this, in bytes">4096</minimum-threshold>
 	</gzip-compression>
