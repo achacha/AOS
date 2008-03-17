@@ -27,7 +27,7 @@ public:
   modified - returns the modified time for the file if found
   ifModifiedSince - is If-Modified: HTTP request header time
   */
-  ACacheInterface::STATUS getStaticFile(AOSContext&, const AFilename&, AAutoPtr<AFile>&, ATime& modified, const ATime& ifModifiedSince);
+  ACacheInterface::STATUS getStaticFile(AOSContext&, const AFilename&, ACache_FileSystem::HANDLE&, ATime& modified, const ATime& ifModifiedSince);
 
   /*!
   Get parsed ATemplate from cache or try to load it into the cache

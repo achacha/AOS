@@ -290,7 +290,7 @@ bool AOSContext::_waitForFirstChar()
   {
     ARope rope("AOSContext: Sleep cycle ",24);
     rope.append(AString::fromInt(tries));
-    m_EventVisitor.startEvent(rope);
+    m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
 
     AThread::sleep(sleeptime);
     sleeptime += SLEEP_INCREMENT;
@@ -606,7 +606,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
     return AOSContext::STATUS_HTTP_INVALID_FIRST_CHAR;
   }
 
-  m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP line zero",34), 2000.0);
+  m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP line zero",34), AEventVisitor::EL_DEBUG, 2000.0);
   if (AConstant::npos == (bytesRead = mp_RequestFile->readLine(str, 4096, false)))
   {
     m_EventVisitor.startEvent(AString("Line zero incomplete: '",22)+str+'\'');
@@ -619,7 +619,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   str.append(AConstant::ASTRING_CRLF);
 
   //a_Read until only 2 bytes (CR and LF) are read which signifies a blank line and end of http header
-  m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP header",31), 60000.0);  //a_Read header for 60 seconds
+  m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP header",31), AEventVisitor::EL_INFO, 60000.0);  //a_Read header for 60 seconds
   size_t headerBytes = mp_RequestFile->readUntil(str, AConstant::ASTRING_CRLF, true, false);
   while (2 != headerBytes && AConstant::npos != headerBytes)
   {
@@ -640,7 +640,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   }
 
   //a_Parse the header
-  m_EventVisitor.startEvent(ASW("AOSContext: Parsing HTTP header",31), 5000.0);
+  m_EventVisitor.startEvent(ASW("AOSContext: Parsing HTTP header",31), AEventVisitor::EL_DEBUG, 5000.0);
   m_RequestHeader.parse(str);
 
   //a_Check if valid HTTP version
@@ -709,7 +709,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
   
   ARope rope("AOSContext: HTTP request header\r\n",33);
   rope.append(m_RequestHeader);
-  m_EventVisitor.startEvent(rope);
+  m_EventVisitor.startEvent(rope, AEventVisitor::EL_INFO);
 
   return AOSContext::STATUS_OK;
 }
@@ -827,8 +827,7 @@ void AOSContext::addError(
 void AOSContext::setResponseMimeTypeFromRequestExtension()
 {
   AString str(64,16);
-  AString& ext = m_RequestHeader.useUrl().getExtension();
-  if (m_Services.useConfiguration().getMimeTypeFromExt(ext, str))
+  if (m_Services.useConfiguration().getMimeTypeFromExt(m_RequestHeader.useUrl().getExtension(), str))
     m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Type, str);
 }
 
@@ -983,7 +982,7 @@ void AOSContext::writeResponseHeader()
 
   str.clear();
   m_ResponseHeader.emit(str);
-  _write(str);
+  _write(str, str.getSize());
 
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
 
@@ -1015,7 +1014,7 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     m_EventVisitor.startEvent(ASW("AOSContext: Writing compressed",30));
     
     size_t originalSize = compressed.getSize();
-    size_t written = _write(compressed);
+    size_t written = _write(compressed, compressed.getSize());
     AASSERT(this, written == originalSize);
   }
   else
@@ -1043,7 +1042,7 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 
     m_EventVisitor.startEvent(ASW("AOSContext: Writing uncompressed",32));
     size_t originalSize = m_OutputBuffer.getSize();
-    size_t written = _write(m_OutputBuffer);
+    size_t written = _write(m_OutputBuffer, m_OutputBuffer.getSize());
     AASSERT(this, written == originalSize);
   }
 
@@ -1253,7 +1252,7 @@ bool AOSContext::processStaticPage()
   int dumpContextLevel = getDumpContextLevel();
   int gzipLevel = calculateGZipLevel();
 
-  AAutoPtr<AFile> pFile;
+  ACache_FileSystem::HANDLE pFile;
   size_t contentLength = AConstant::npos;
   const ATime& ifModifiedSince = m_RequestHeader.getIfModifiedSince();
   ATime modified;
@@ -1297,7 +1296,7 @@ bool AOSContext::processStaticPage()
         m_EventVisitor.startEvent(ARope("Streaming file: ",16)+httpFilename);
 
         AASSERT(this, pFile->isNotEof());
-        size_t bytesWritten = _write(*pFile);
+        size_t bytesWritten = _write(*pFile, pFile->getSize());
 
         if (AConstant::npos == contentLength)
           m_EventVisitor.addEvent(ASW("Failed to write",15));
@@ -1351,15 +1350,15 @@ bool AOSContext::processStaticPage()
   return true;
 }
 
-size_t AOSContext::_write(AFile& data)
+size_t AOSContext::_write(APeekable& data, size_t originalSize)
 {
   m_EventVisitor.startEvent(ASW("AOSContext: write file",22));
-  size_t originalSize = data.getSize();
   size_t bytesToWrite = originalSize;
   size_t bytesWritten = 0;
+  size_t index = 0;
   while (bytesToWrite)
   {
-    size_t ret = data.flush(*mp_RequestFile);
+    size_t ret = data.peek(*mp_RequestFile, index, bytesToWrite);
     switch(ret)
     {
       //a_Finished writing or EOF on read
@@ -1380,82 +1379,7 @@ size_t AOSContext::_write(AFile& data)
       default:
         bytesToWrite -= ret;
         bytesWritten += ret;
-      break;
-    }
-  }
-
-  AASSERT(this, bytesWritten == originalSize);
-  m_EventVisitor.addEvent(AString("AOSContext: writen bytes: ",26)+AString::fromSize_t(bytesWritten), AEventVisitor::EL_INFO);
-  return bytesWritten;
-}
-
-size_t AOSContext::_write(ARope& data)
-{
-  m_EventVisitor.startEvent(ASW("AOSContext: write rope",22));
-  size_t originalSize = data.getSize();
-  size_t bytesToWrite = originalSize;
-  size_t bytesWritten = 0;
-  while (bytesToWrite)
-  {
-    size_t ret = data.flush(*mp_RequestFile);
-    switch(ret)
-    {
-      //a_Finished writing or EOF on read
-      case 0:
-        m_EventVisitor.addEvent(AString("AOSContext: flush returned 0, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
-        return (bytesWritten > 0 ? bytesWritten : ret);
-
-      case AConstant::npos:
-        m_EventVisitor.addEvent(AString("AOSContext: flush returned npos, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
-        return (bytesWritten > 0 ? bytesWritten : ret);
-
-      //a_Would block
-      case AConstant::unavail:
-        m_EventVisitor.addEvent(AString("AOSContext: flush returned unavail, sleeping and retrying, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
-        AThread::sleep(1);
-      break;
-        
-      default:
-        bytesToWrite -= ret;
-        bytesWritten += ret;
-      break;
-    }
-  }
-
-  AASSERT(this, bytesWritten == originalSize);
-  m_EventVisitor.addEvent(AString("AOSContext: writen bytes: ",26)+AString::fromSize_t(bytesWritten), AEventVisitor::EL_INFO);
-  return bytesWritten;
-}
-
-size_t AOSContext::_write(AString& data)
-{
-  m_EventVisitor.startEvent(ASW("AOSContext: write string",22));
-  size_t originalSize = data.getSize();
-  size_t bytesToWrite = originalSize;
-  size_t bytesWritten = 0;
-  while (bytesToWrite)
-  {
-    size_t ret = data.flush(*mp_RequestFile);
-    switch(ret)
-    {
-      //a_Finished writing or EOF on read
-      case 0:
-        m_EventVisitor.addEvent(AString("AOSContext: flush returned 0, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
-        return (bytesWritten > 0 ? bytesWritten : ret);
-
-      case AConstant::npos:
-        m_EventVisitor.addEvent(AString("AOSContext: flush returned npos, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
-        return (bytesWritten > 0 ? bytesWritten : ret);
-
-      //a_Would block
-      case AConstant::unavail:
-        m_EventVisitor.addEvent(AString("AOSContext: flush returned unavail, sleeping and retrying, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
-        AThread::sleep(1);
-      break;
-        
-      default:
-        bytesToWrite -= ret;
-        bytesWritten += ret;
+        index += ret;
       break;
     }
   }

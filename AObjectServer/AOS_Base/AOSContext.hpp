@@ -513,7 +513,7 @@ private:
   //a_Reads extensions from config and puts into a string set
   SET_AString _getGzipCompressionExtensions();
 
-  //a_Write to the socket
+/*//a_Write to the socket
   size_t _write(AFile&);
 
   //a_Write to the socket
@@ -521,6 +521,10 @@ private:
 
   //a_Write to the socket
   size_t _write(AString&);
+  */
+  
+  //a_Peek to socket
+  size_t _write(APeekable&, size_t);
 };
 
 #endif // INCLUDED__AContext_HPP__

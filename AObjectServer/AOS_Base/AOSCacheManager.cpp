@@ -191,7 +191,7 @@ AOSCacheManager::~AOSCacheManager()
   catch(...) {}
 }
 
-ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filename, AAutoPtr<AFile>& pFile, ATime& modified, const ATime& ifModifiedSince)
+ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filename, ACache_FileSystem::HANDLE& pFile, ATime& modified, const ATime& ifModifiedSince)
 {
   AASSERT(this, mp_StaticFileCache);
   if (m_Services.useConfiguration().useConfigRoot().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))

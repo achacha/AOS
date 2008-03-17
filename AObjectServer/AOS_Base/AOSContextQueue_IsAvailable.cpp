@@ -228,7 +228,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                 catch(AException e)
                 {
                   bytesRead = AConstant::npos;  //a_Following switch will handle this
-                  (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: Exception reading from socket",58));
+                  (*itMove)->useEventVisitor().addEvent(ASW("AOSContextQueue_IsAvailable: Exception reading from socket",58), AEventVisitor::EL_ERROR);
                 }
 
                 switch(bytesRead)
@@ -238,7 +238,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   {
                     //a_No data to read, socket is closed
                     (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_CLOSED);
-                    (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: Detected closed remote socket",58));
+                    (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: Detected closed remote socket",58), AEventVisitor::EL_WARN);
                     (*itMove)->useSocket().close();
 
                     {
@@ -273,7 +273,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   {
                     //a_Add to next queue
                     (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
-                    (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54));
+                    (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54), AEventVisitor::EL_DEBUG);
 
                     {
                       ALock lock(pThis->sync);

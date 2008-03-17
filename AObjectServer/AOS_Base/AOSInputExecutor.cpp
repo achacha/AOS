@@ -101,20 +101,20 @@ void AOSInputExecutor::execute(AOSContext& context)
   if (!context.useRequestHeader().useUrl().useParameterPairs().get(OVERRIDE_INPUT, command))
   {
     command = context.getInputCommand();
-    context.useEventVisitor().startEvent(ARope("Input processor: ")+command);
+    context.useEventVisitor().startEvent(ARope("Input processor: ")+command, AEventVisitor::EL_INFO);
   }
 
   if (command.isEmpty())
   {
     if (m_Services.useConfiguration().getAosDefaultInputProcessor().isEmpty())
     {
-      context.useEventVisitor().startEvent(ASW("No input processor", 18));
+      context.useEventVisitor().startEvent(ASW("No input processor", 18), AEventVisitor::EL_DEBUG);
       return;                                 //a_Do nothing, no command and no default
     }
     else
     {
       command.assign(m_Services.useConfiguration().getAosDefaultInputProcessor());
-      context.useEventVisitor().startEvent(ARope("No input processor, using default: ")+command);
+      context.useEventVisitor().startEvent(ARope("No input processor, using default: ")+command, AEventVisitor::EL_DEBUG);
     }
   }
 
@@ -124,7 +124,11 @@ void AOSInputExecutor::execute(AOSContext& context)
     InputProcessorContainer::iterator it = m_InputProcessors.find(command);
     if (it == m_InputProcessors.end())
     {
-      m_Services.useLog().append(ARope("AOSInputExecutor::execute: Skipping unknown input processor '")+command+"'");
+      ARope rope("AOSInputExecutor::execute: Skipping unknown input processor '");
+      rope.append(command);
+      rope.append('\'');
+      context.useEventVisitor().startEvent(rope, AEventVisitor::EL_WARN);
+      m_Services.useLog().add(rope, ALog::WARNING);
     }
     else
     {
@@ -142,13 +146,10 @@ void AOSInputExecutor::execute(AOSContext& context)
 
         case AOSContext::RETURN_REDIRECT:
           context.useContextFlags().setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
-          context.useEventVisitor().addEvent(ASW("Redirect detected.",18));
-        break;
-
-        default:
-          context.useEventVisitor().endEvent();
+          context.useEventVisitor().startEvent(ASW("Redirect detected.",18), AEventVisitor::EL_INFO);
         break;
       }
+      context.useEventVisitor().endEvent();
     }
   }
   catch(AException& ex)
