@@ -205,7 +205,17 @@ size_t AFile_Socket::_readBlocking(void *buf, size_t size)
   size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf, size, 0);
     
   if (bytesReceived == SOCKET_ERROR)
-    ATHROW_LAST_SOCKET_ERROR(this);
+  {
+    int err = ::WSAGetLastError();
+    switch(err)
+    {
+      case WSAECONNRESET:
+        return AConstant::npos;         //Remote connection closed
+
+      default:
+        ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
+    }
+  }
   
   AASSERT(this, bytesReceived >= 0);
   return bytesReceived;
