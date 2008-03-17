@@ -306,35 +306,36 @@ size_t ARope::peek(
     index -= m_BlockSize;
   }
 
-  //a_Start copy at the current block
-  if (cit == m_Blocks.end())
-    ATHROW(this, AException::IndexOutOfBounds);
+  //a_Start copy at the current block (if there is one)
+  //a_Else try the last block if there is one
+  if (cit != m_Blocks.end())
+  {
+    if (bytes > m_BlockSize - index)
+    {
+      //a_Spans beyond current block
+      size_t bytesToCopy = m_BlockSize - index;
+      target.append((*cit)+index, bytesToCopy);
+      index = 0;
+      ++cit;
+      bytes -= bytesToCopy;
+      totalBytes += bytesToCopy;
+    }
+    else
+    {
+      //a_All data in current block
+      target.append((*cit)+index, bytes);
+      return bytes;
+    }
 
-  if (bytes > m_BlockSize - index)
-  {
-    //a_Spans beyond current block
-    size_t bytesToCopy = m_BlockSize - index;
-    target.append((*cit)+index, bytesToCopy);
-    index = 0;
-    ++cit;
-    bytes -= bytesToCopy;
-    totalBytes += bytesToCopy;
-  }
-  else
-  {
-    //a_All data in current block
-    target.append((*cit)+index, bytes);
-    return bytes;
-  }
-
-  //a_Copy rest of the bytes
-  while (cit != m_Blocks.end() && bytes)
-  {
-    size_t bytesToCopy = (bytes > m_BlockSize ? m_BlockSize : bytes);
-    target.append(*cit, bytesToCopy);
-    bytes -= bytesToCopy;
-    totalBytes += bytesToCopy;
-    ++cit;
+    //a_Copy rest of the bytes
+    while (cit != m_Blocks.end() && bytes)
+    {
+      size_t bytesToCopy = (bytes > m_BlockSize ? m_BlockSize : bytes);
+      target.append(*cit, bytesToCopy);
+      bytes -= bytesToCopy;
+      totalBytes += bytesToCopy;
+      ++cit;
+    }
   }
 
   //a_Do last block

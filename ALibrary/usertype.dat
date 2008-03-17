@@ -35,6 +35,7 @@ AEventVisitor
 ASync_Event
 ASync_EventVisitor
 AFile
+AFilePeekable
 AFilename
 AFile_AString
 AFile_IOStream

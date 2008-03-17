@@ -3,11 +3,10 @@
 
 #include "apiABase.hpp"
 #include "ADebugDumpable.hpp"
-#include "AEmittable.hpp"
 #include "AXmlEmittable.hpp"
 
 /*!
-Maps AFilename -> AString (which contains contents of the AFilename or whatever else)
+Base cache interface
 */
 class ABASE_API ACacheInterface : public ADebugDumpable, public AXmlEmittable
 {

@@ -3,9 +3,8 @@
 
 #include "apiABase.hpp"
 #include "AString.hpp"
-#include "AFile.hpp"
+#include "AFilePeekable.hpp"
 #include "AFilename.hpp"
-#include "APeekable.hpp"
 
 #include <fcntl.h>       // open flags
 #include <share.h>       // share flags
@@ -14,7 +13,7 @@
 /*!
 Wrapper on _fsopen call, see API documentation for open flags and share flags
 */
-class ABASE_API AFile_Physical : public AFile, public APeekable
+class ABASE_API AFile_Physical : public AFilePeekable
 {
 public:
   /*!

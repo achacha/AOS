@@ -1,3 +1,5 @@
+#ifndef INCLUDED__ACache_FileSystem_HPP__
+#define INCLUDED__ACache_FileSystem_HPP__
 
 #include "apiABase.hpp"
 #include "ACacheInterface.hpp"
@@ -6,9 +8,21 @@
 #include "ASync_CriticalSectionSpinLock.hpp"
 #include "templateAutoPtr.hpp"
 #include "ATime.hpp"
+#include "AFilePeekable.hpp"
 
+/*!
+Cache for AFilePeekable types (AFile with random access ability)
+*/
 class ABASE_API ACache_FileSystem : public ACacheInterface
 {
+public:
+  /*!
+  Handle to the AFilePeekable type that auto-cleans up
+  depending on item state (found are not erased, not found are)
+  Item is to be used, do NOT change ownership or bad things may happen
+  */
+  typedef AAutoPtr<AFilePeekable> HANDLE;
+
 public:
   /*!
   ctor
@@ -45,7 +59,7 @@ public:
   */
   ACacheInterface::STATUS get(
     const AFilename& key,                             // Filename to find
-    AAutoPtr<AFile>& pFile,                           // Set to AFile in the cache
+    HANDLE& pFile,                                    // Gets the handle to the item
     ATime& modified,                                  // Set to modified date of the file (the one in cache)
     const ATime& ifModifiedSince = ATime::GENESIS     // Controls the return status to include FOUND_NOT_MODIFIED if applies
   );
@@ -121,3 +135,5 @@ private:
 
   ASync_CriticalSectionSpinLock m_Sync;
 };
+
+#endif // INCLUDED__ACache_FileSystem_HPP__

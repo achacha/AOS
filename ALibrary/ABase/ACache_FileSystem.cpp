@@ -203,7 +203,7 @@ void ACache_FileSystem::emit(AOutputBuffer& target) const
 
 ACache_FileSystem::STATUS ACache_FileSystem::get(
   const AFilename& key, 
-  AAutoPtr<AFile>& pFile, 
+  AAutoPtr<AFilePeekable>& pFile, 
   ATime& modified,
   const ATime& ifModifiedSince   // = ATime::GENESIS
 )

@@ -380,6 +380,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AFilePeekable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AFileSystem.cpp"
 				>
 			</File>
@@ -845,6 +849,10 @@
 			</File>
 			<File
 				RelativePath=".\AFilename.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AFilePeekable.hpp"
 				>
 			</File>
 			<File

@@ -2,15 +2,14 @@
 #define INCLUDED__AFile_AString_HPP__
 
 #include "apiABase.hpp"
-#include "AFile.hpp"
-#include "APeekable.hpp"
+#include "AFilePeekable.hpp"
 #include "AString.hpp"
 
 /*!
  AFile operations on AString buffer
  All write operations assume clobber and truncation (append at write position and cut the rest)
 */
-class ABASE_API AFile_AString : public AFile, public APeekable
+class ABASE_API AFile_AString : public AFilePeekable
 {
 public:
 	/*!
