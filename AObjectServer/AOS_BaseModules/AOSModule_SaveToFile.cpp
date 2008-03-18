@@ -82,7 +82,7 @@ AOSContext::ReturnCode AOSModule_SaveToFile::execute(AOSContext& context, const 
   }
   catch(AException& ex)
   {
-    context.addError(getClass(), ARope("Unable to write file: ")+outfile.useFilename());
+    context.addError(getClass(), ARope("Unable to write file(")+outfile.useFilename()+ASW("):",2)+ex);
     return AOSContext::RETURN_ERROR;
   }
 

@@ -14,7 +14,8 @@
 #include "AXmlEmittable.hpp"
 #include "AOSSessionData.hpp"
 #include "AXmlDocument.hpp"
-#include "AbitArray.hpp"
+#include "ABitArray.hpp"
+#include "ARandomAccessBuffer.hpp"
 
 class AUrl;
 class AQueryString;
@@ -510,7 +511,7 @@ private:
   SET_AString _getGzipCompressionExtensions();
 
   //a_Peek to socket
-  size_t _write(APeekable&, size_t);
+  size_t _write(ARandomAccessBuffer&, size_t);
 };
 
 #endif // INCLUDED__AContext_HPP__

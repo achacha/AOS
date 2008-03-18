@@ -1224,7 +1224,7 @@ size_t AOSContext::getOutputBufferSize() const
 
 bool AOSContext::processStaticPage()
 {
-  m_EventVisitor.startEvent(ASW("Serving static content",22));
+  m_EventVisitor.startEvent(ASW("AOSContext::processStaticPage: Serving static content",53), AEventVisitor::EL_INFO);
   AFilename httpFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
 
   static const AString ROOT_PATH("/", 1);
@@ -1252,14 +1252,13 @@ bool AOSContext::processStaticPage()
   int dumpContextLevel = getDumpContextLevel();
 
   ACache_FileSystem::HANDLE pFile;
-  size_t contentLength = AConstant::npos;
   const ATime& ifModifiedSince = m_RequestHeader.getIfModifiedSince();
   ATime modified;
   switch (m_Services.useCacheManager().getStaticFile(*this, httpFilename, pFile, modified, ifModifiedSince))
   {
     case ACache_FileSystem::NOT_FOUND:
       //a_Handle file not found
-      m_EventVisitor.startEvent(ARope("File not found (HTTP-404 static): ",34)+httpFilename);
+      m_EventVisitor.startEvent(ARope("AOSContext::processStaticPage: File not found (HTTP-404 static): ",34)+httpFilename);
       m_Services.useLog().add(ASW("File not found (HTTP-404 static): ",34), httpFilename, ALog::INFO);
       
       //a_Set response status and return with failed (display error template)
@@ -1267,7 +1266,7 @@ bool AOSContext::processStaticPage()
     return false;
 
     case ACache_FileSystem::FOUND_NOT_MODIFIED:
-      m_EventVisitor.startEvent(ARope("File not modified (HTTP-304): ",30)+httpFilename);
+      m_EventVisitor.startEvent(ARope("AOSContext::processStaticPage: File not modified (HTTP-304): ",30)+httpFilename);
       
       //a_Set status 304 and return true (no need to display error template)
       m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_304_Not_Modified);
@@ -1287,7 +1286,6 @@ bool AOSContext::processStaticPage()
         //a_Set modified date
         m_ResponseHeader.setLastModified(modified);
         m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AString::fromS8(bytesToSend));
-        //size_t bytesToSend = (size_t)AFileSystem::length(httpFilename);
         
         AString ext;
         httpFilename.emitExtension(ext);
@@ -1295,15 +1293,15 @@ bool AOSContext::processStaticPage()
         writeResponseHeader();
 
         //a_Stream content
-        m_EventVisitor.startEvent(ARope("Streaming file: ",16)+httpFilename);
+        m_EventVisitor.startEvent(ARope("AOSContext::processStaticPage: Streaming file: ",16)+httpFilename, AEventVisitor::EL_DEBUG);
 
         AASSERT(this, pFile->isNotEof());
         size_t bytesWritten = _write(*pFile, pFile->getSize());
 
-        if (AConstant::npos == contentLength)
-          m_EventVisitor.addEvent(ASW("Failed to write",15));
+        if (AConstant::npos == bytesWritten)
+          m_EventVisitor.addEvent(ASW("AOSContext::processStaticPage: Failed to write",46));
         else
-          m_EventVisitor.addEvent(ARope("Streamed bytes: ",16)+AString::fromSize_t(bytesWritten));
+          m_EventVisitor.addEvent(ARope("AOSContext::processStaticPage: Streamed bytes: ",16)+AString::fromSize_t(bytesWritten), AEventVisitor::EL_INFO);
 
         AASSERT(this, bytesWritten == bytesToSend);
         m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
@@ -1318,9 +1316,9 @@ bool AOSContext::processStaticPage()
         m_ResponseHeader.setLastModified(modified);
 
         //a_Buffer the file, Content-Length set in the write header
-        m_EventVisitor.startEvent(ARope("Sending file: ",14)+httpFilename);
+        m_EventVisitor.startEvent(ARope("AOSContext::processStaticPage: Sending file: ",14)+httpFilename);
         pFile->emit(m_OutputBuffer);
-        m_EventVisitor.addEvent(ARope("Output buffer bytes: ",21)+AString::fromSize_t(m_OutputBuffer.getSize()));
+        m_EventVisitor.addEvent(ARope("AOSContext::processStaticPage: Output buffer bytes: ",21)+AString::fromSize_t(m_OutputBuffer.getSize()));
       }
     }
     break;
@@ -1333,6 +1331,7 @@ bool AOSContext::processStaticPage()
   bool forceXml = false;
   if (dumpContextLevel > 0)
   {
+    m_EventVisitor.startEvent(ASW("AOSContext::processStaticPage: Dumping context",46), AEventVisitor::EL_DEBUG);
     dumpContext(dumpContextLevel);
     forceXml = true;
   }
@@ -1340,6 +1339,7 @@ bool AOSContext::processStaticPage()
   //a_Write
   try
   {
+    m_EventVisitor.startEvent(ASW("AOSContext::processStaticPage: Writing output buffer",52));
     writeOutputBuffer(forceXml);
   }
   catch(ASocketException& ex)
@@ -1353,15 +1353,15 @@ bool AOSContext::processStaticPage()
   return true;
 }
 
-size_t AOSContext::_write(APeekable& data, size_t originalSize)
+size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
 {
-  m_EventVisitor.startEvent(ASW("AOSContext: write file",22));
+  m_EventVisitor.startEvent(ASW("AOSContext: write file",22), AEventVisitor::EL_INFO);
   size_t bytesToWrite = originalSize;
   size_t bytesWritten = 0;
   size_t index = 0;
   while (bytesToWrite)
   {
-    size_t ret = data.peek(*mp_RequestFile, index, bytesToWrite);
+    size_t ret = data.access(*mp_RequestFile, index, bytesToWrite);
     switch(ret)
     {
       //a_Finished writing or EOF on read
