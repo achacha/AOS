@@ -105,7 +105,6 @@ sqlite3 *ASQLiteServer::getDBHandle()
 
 size_t ASQLiteServer::executeSQL(const AString& query, AResultSet& target, AString& error)
 {
-  u4 rows = 0;
   char *zErrMsg = NULL;
 
   target.clear();
