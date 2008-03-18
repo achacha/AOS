@@ -154,7 +154,7 @@ void AOSConfiguration::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader
     m_Config.emit(rope, 0);
     AXmlElement& eObject = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("XMLConfig",9));
     adminAddProperty(
-      eBase,
+      eObject,
       ASW("config",6),
       rope,
       AXmlElement::ENC_CDATASAFE
@@ -573,11 +573,15 @@ const AString& AOSConfiguration::getReportedServer() const
 
 void AOSConfiguration::setReportedServer(const AString& configPath)
 {
-  if (m_Config.useRoot().exists(configPath))
+  AString str;
+  if (m_Config.useRoot().emitString(configPath, str))
   {
-    m_ReportedServer.clear();
-    m_Config.useRoot().emitString(configPath, m_ReportedServer);
-    m_Services.useLog().add(ARope("Setting reported server: ")+m_ReportedServer, ALog::DEBUG);
+    if (!str.isEmpty())
+    {
+      m_ReportedServer.clear();
+      m_Config.useRoot().emitString(configPath, m_ReportedServer);
+      m_Services.useLog().add(ARope("Setting reported server: ")+m_ReportedServer, ALog::DEBUG);
+    }
   }
   else
     m_Services.useLog().add(ARope("AOSConfiguration::setReportedServer: Unable to find path: ")+configPath, ALog::WARNING);

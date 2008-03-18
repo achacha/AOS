@@ -311,7 +311,7 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
     query.append("'",1);
 
     result.clear();
-    size_t resultRows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
+    m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
     if (!strError.isEmpty())
     {
       m_Services.useLog().add(strError, ALog::FAILURE);
@@ -326,7 +326,7 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
     query.append(datafile);
     query.append("')");
     result.clear();
-    size_t resultRows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
+    m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
     if (!strError.isEmpty())
     {
       m_Services.useLog().add(strError, ALog::FAILURE);

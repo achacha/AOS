@@ -17,9 +17,8 @@ public:
   /*!
   ctor
   @param sessionId of this data and is added to the data as 'id' parameter
-  @param number of buckets in the data hash map (prime number better)
   */
-  AOSSessionData(const AString& sessionId, size_t defaultDataHashSize = 5);
+  AOSSessionData(const AString& sessionId);
   
   /*!
   ctor calls fromAFile

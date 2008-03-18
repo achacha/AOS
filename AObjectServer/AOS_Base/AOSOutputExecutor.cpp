@@ -152,7 +152,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
 
       if (context.useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
       {
-        AXmlElement& e = context.useModel().overwriteElement(ASW("execute/output", 14)).addData(command);
+        context.useModel().overwriteElement(ASW("execute/output", 14)).addData(command);
 
         //a_Publish timers
         context.getRequestTimer().emitXml(context.useModel().overwriteElement(ASW("request_time",12)));

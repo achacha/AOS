@@ -16,7 +16,7 @@ void AOSSessionData::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-AOSSessionData::AOSSessionData(const AString& sessionId, size_t defaultDataHashSize) :
+AOSSessionData::AOSSessionData(const AString& sessionId) :
   m_AgeTimer(true),
   m_LastUsedTimer(true),
   m_Data(ASW("data",4))
