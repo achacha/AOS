@@ -8,7 +8,7 @@
 #include "ASync_CriticalSectionSpinLock.hpp"
 #include "templateAutoPtr.hpp"
 #include "ATime.hpp"
-#include "AFilePeekable.hpp"
+#include "AFileRandomAccess.hpp"
 
 /*!
 Cache for AFilePeekable types (AFile with random access ability)
@@ -21,7 +21,7 @@ public:
   depending on item state (found are not erased, not found are)
   Item is to be used, do NOT change ownership or bad things may happen
   */
-  typedef AAutoPtr<AFilePeekable> HANDLE;
+  typedef AAutoPtr<AFileRandomAccess> HANDLE;
 
 public:
   /*!

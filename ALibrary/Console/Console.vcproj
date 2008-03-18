@@ -209,7 +209,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tRope.cpp"
+			RelativePath=".\tStringSplit.cpp"
 			>
 		</File>
 	</Files>

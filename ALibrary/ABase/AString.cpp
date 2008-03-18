@@ -908,9 +908,7 @@ size_t AString::peek(AOutputBuffer& bufDestination, size_t sourceIndex, size_t b
     ATHROW(this, AException::ReadBeyondEndOfBuffer);
 
   //a_Copy needed bytes
-  bufDestination.append(mp_Buffer + sourceIndex, bytes);
-
-  return bytes;
+  return bufDestination.append(mp_Buffer + sourceIndex, bytes);
 }
 
 size_t AString::peekUntil(
@@ -1707,27 +1705,28 @@ wchar_t AString::toUnicode(size_t &startPos) const
   return 0;
 }
 
-void AString::_append(const char *pccSource, size_t length) 
+size_t AString::_append(const char *pccSource, size_t length) 
 { 
-  //a_Nothing to do
-  if (!length)
-    return;
+  if (length)
+  {
+    if (!pccSource)
+      ATHROW(this, AException::SourceBufferIsNull);
+    
+    //a_If a length was not provided use strlen()
+    if (length == AConstant::npos)
+      length = strlen(pccSource);
 
-  if (!pccSource)
-    ATHROW(this, AException::SourceBufferIsNull);
-  
-  //a_If a length was not provided use strlen()
-  if (length == AConstant::npos)
-    length = strlen(pccSource);
+    //a_Resize the buffer
+    size_t oldLength = m_Length;
+    _resize(oldLength + length);
+    m_Length = oldLength + length;
 
-  //a_Resize the buffer
-  size_t oldLength = m_Length;
-  _resize(oldLength + length);
-  m_Length = oldLength + length;
+    //aappend new content
+    memcpy(mp_Buffer + oldLength, pccSource, length);
+    mp_Buffer[m_Length] = '\x0';
+  }
 
-  //aappend new content
-  memcpy(mp_Buffer + oldLength, pccSource, length);
-  mp_Buffer[m_Length] = '\x0';
+  return length;
 }
 
 void AString::appendN(int N, char cSource) 
@@ -2801,20 +2800,6 @@ size_t AString::findPattern(
   return AConstant::npos;
 }
 
-size_t AString::flush(AFile& file)
-{
-  if (m_Length > 0)
-  {
-    //a_Flush is a destructive process
-    size_t written = file.write(mp_Buffer, m_Length);
-    file.flush();
-    remove(written);   //a_Remove from buffer
-    return written;
-  }
-
-  return 0;
-}
-
 bool AString::endsWith(const AString& source) const
 {
   if (!m_Length || source.m_Length > m_Length)
@@ -2844,4 +2829,13 @@ bool AString::toBool() const
     return true;
   else
     return false;
+}
+
+size_t AString::access(
+  AOutputBuffer& target, 
+  size_t index,          // = 0, 
+  size_t bytes           // = AConstant::npos
+) const
+{
+  return peek(target, index, bytes);
 }

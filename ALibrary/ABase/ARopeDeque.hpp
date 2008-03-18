@@ -166,7 +166,7 @@ protected:
   /*!
   Append methods for AOutputBuffer
   */
-  virtual void _append(const char *, size_t);
+  virtual size_t _append(const char *, size_t);
 
 private:
   size_t m_FrontBlockFree;                       //a_Bytes left in the front block

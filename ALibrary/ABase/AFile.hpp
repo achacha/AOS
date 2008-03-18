@@ -230,11 +230,6 @@ public:
 
   /*!
   AOutputBuffer
-  */
-  virtual size_t flush(AFile&);
-
-  /*!
-  AOutputBuffer
   @return AConstant::npos by default, derived classes may return actual size if applicable (sockets, iosteams, etc do not have actual sizes for this call)
   */
   virtual size_t getSize() const;
@@ -294,7 +289,7 @@ protected:
   /*!
   Append methods for AOutputBuffer
   */
-  virtual void _append(const char *, size_t);
+  virtual size_t _append(const char *, size_t);
 
   ARopeDeque m_LookaheadBuffer;
 

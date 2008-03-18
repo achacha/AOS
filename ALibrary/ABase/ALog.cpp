@@ -47,11 +47,12 @@ AXmlElement& ALog::emitXml(AXmlElement& thisRoot) const
   return thisRoot;
 }
 
-void ALog::_append(const char *pcc, size_t len)
+size_t ALog::_append(const char *pcc, size_t len)
 {
   AASSERT(this, AConstant::npos != len);
   AASSERT(this, NULL != pcc);
   add(ASW(pcc, len), ALog::MESSAGE);
+  return len;
 }
 
 void ALog::add(

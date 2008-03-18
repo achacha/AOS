@@ -103,24 +103,12 @@ size_t AFile_AString::getSize() const
   return m_Data.getSize();
 }
 
-size_t AFile_AString::flush(AFile& file)
-{
-  if (m_Data.getSize() > m_ReadPos)
-  {
-    size_t bytesWritten = file.write(m_Data.c_str()+m_ReadPos, m_Data.getSize()-m_ReadPos);
-    m_ReadPos += bytesWritten;
-    return bytesWritten;
-  }
-  else
-    return AConstant::npos;
-}
-
 void AFile_AString::rewind()
 {
   m_ReadPos = 0;
 }
 
-size_t AFile_AString::peek(
+size_t AFile_AString::access(
   AOutputBuffer& target, 
   size_t index,          // = 0 
   size_t bytes           // = AConstant::npos

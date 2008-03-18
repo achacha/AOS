@@ -1,5 +1,5 @@
-#ifndef INCLUDED__APeekable_HPP_
-#define INCLUDED__APeekable_HPP_
+#ifndef INCLUDED__ARandomAccessBuffer_HPP_
+#define INCLUDED__ARandomAccessBuffer_HPP_
 
 #include "apiABase.hpp"
 
@@ -10,14 +10,14 @@ class ABASE_API AOutputBuffer;
 
 -------------------START: HPP cup/past----------------------
 public:
-  //! APeekable
-  virtual size_t peek(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const;
+  //! ARandomAccessBuffer
+  virtual size_t access(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const;
 -------------------STOP: HPP cup/past-----------------------
 */
-class ABASE_API APeekable
+class ABASE_API ARandomAccessBuffer
 {
 public:
-  virtual ~APeekable();
+  virtual ~ARandomAccessBuffer();
 
   /*!
   Peek the contents of the file without changing read position
@@ -26,7 +26,7 @@ public:
   @param index start position of the read
   @param bytes to read  (AConstant::npos means all bytes to EOF)
   */
-  virtual size_t peek(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const = 0;
+  virtual size_t access(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const = 0;
 };
 
-#endif //INCLUDED__APeekable_HPP_
+#endif //INCLUDED__ARandomAccessBuffer_HPP_

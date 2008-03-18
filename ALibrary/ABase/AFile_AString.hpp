@@ -2,14 +2,14 @@
 #define INCLUDED__AFile_AString_HPP__
 
 #include "apiABase.hpp"
-#include "AFilePeekable.hpp"
+#include "AFileRandomAccess.hpp"
 #include "AString.hpp"
 
 /*!
  AFile operations on AString buffer
  All write operations assume clobber and truncation (append at write position and cut the rest)
 */
-class ABASE_API AFile_AString : public AFilePeekable
+class ABASE_API AFile_AString : public AFileRandomAccess
 {
 public:
 	/*!
@@ -79,9 +79,9 @@ public:
   virtual void flush() {}
 
   /*!
-  APeekable
+  AFileRandomAccess
   */
-  virtual size_t peek(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const;
+  virtual size_t access(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const;
 
   /*!
   ADebugDumpable
@@ -93,7 +93,6 @@ public:
   @return Size of the current internal buffer
   */
   virtual size_t getSize() const;
-  virtual size_t flush(AFile&);
 
 protected:
   /*!

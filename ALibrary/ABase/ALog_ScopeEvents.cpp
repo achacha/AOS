@@ -44,11 +44,12 @@ void ALog::ScopeEvents::add(
   m_ParentLog.add(m_ScopeName, source0, source1, source2, event_type | ALog::SCOPE);
 }
 
-void ALog::ScopeEvents::_append(const char *pcc, size_t len)
+size_t ALog::ScopeEvents::_append(const char *pcc, size_t len)
 {
   AASSERT(this, AConstant::npos != len);
   AASSERT(this, NULL != pcc);
   m_ParentLog.add(m_ScopeName, ASW(pcc, len), ALog::MESSAGE | ALog::SCOPE);
+  return len;
 }
 
 size_t ALog::ScopeEvents::flush(AFile&)

@@ -120,7 +120,7 @@ void ARope::clear()
   m_LastBlockFree = 0;
 }
 
-void ARope::_append(const char *pSource, size_t bytesLeft)
+size_t ARope::_append(const char *pSource, size_t bytesLeft)
 {
   size_t sourcePos = 0;
   if (AConstant::npos == bytesLeft)
@@ -147,6 +147,8 @@ void ARope::_append(const char *pSource, size_t bytesLeft)
       bytesLeft = 0;
     }
   }
+
+  return bytesLeft;
 }
 
 void ARope::__newBlock()
@@ -248,46 +250,7 @@ size_t ARope::write(AFile& file) const
   return bytesTotalWritten;
 }
 
-size_t ARope::flush(AFile& file)
-{
-  size_t bytesTotalWritten = 0;
-  while (m_Blocks.size() > 0)
-  {
-    char *pBlock = m_Blocks.front();
-
-    size_t bytesWritten = file.write(pBlock, m_BlockSize);
-    if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
-      return (bytesTotalWritten > 0 ? bytesTotalWritten : bytesWritten);   //a_Return partial written size
-
-    AASSERT(this, bytesWritten);                 //a_Zero bytes written?
-    AASSERT(this, bytesWritten == m_BlockSize);  //a_Unable to write the whole buffer?
-    bytesTotalWritten += bytesWritten;
-
-    //a_Release head block
-    m_Blocks.pop_front();
-    delete pBlock;
-  }
-
-  if (mp_LastBlock && m_LastBlockFree < m_BlockSize)
-  {
-    size_t bytesWritten = file.write(mp_LastBlock, m_BlockSize - m_LastBlockFree);
-    if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
-      return (bytesTotalWritten > 0 ? bytesTotalWritten : bytesWritten);   //a_Return partial written size
-
-    AASSERT(this, bytesWritten);                 //a_Zero bytes written?
-    AASSERT(this, bytesWritten == m_BlockSize - m_LastBlockFree);  //a_Unable to write the whole buffer?
-    bytesTotalWritten += bytesWritten;
-
-    //a_Release last block
-    pDelete(mp_LastBlock);
-  }
-
-  AASSERT(this, bytesTotalWritten);
-  file.flush();
-  return bytesTotalWritten;
-}
-
-size_t ARope::peek(
+size_t ARope::access(
   AOutputBuffer& target, 
   size_t index,          // = 0 
   size_t bytes           // = AConstant::npos

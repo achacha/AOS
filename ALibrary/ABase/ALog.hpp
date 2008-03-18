@@ -191,7 +191,7 @@ public:
     /*!
     AOutputBuffer
     */
-    virtual void _append(const char *, size_t);
+    virtual size_t _append(const char *, size_t);
 
   private:
     ALog& m_ParentLog;
@@ -242,7 +242,7 @@ protected:
   /*!
   Ability to log messages using AOutputBuffer interface (see AOutputBuffer.hpp)
   */
-  virtual void _append(const char *, size_t);
+  virtual size_t _append(const char *, size_t);
 
   //! Internal synchronization object used when logging
   ASynchronization *mp_SynchObject;

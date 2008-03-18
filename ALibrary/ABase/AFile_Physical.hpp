@@ -3,7 +3,7 @@
 
 #include "apiABase.hpp"
 #include "AString.hpp"
-#include "AFilePeekable.hpp"
+#include "AFileRandomAccess.hpp"
 #include "AFilename.hpp"
 
 #include <fcntl.h>       // open flags
@@ -13,7 +13,7 @@
 /*!
 Wrapper on _fsopen call, see API documentation for open flags and share flags
 */
-class ABASE_API AFile_Physical : public AFilePeekable
+class ABASE_API AFile_Physical : public AFileRandomAccess
 {
 public:
   /*!
@@ -59,9 +59,9 @@ public:
   u8 tell();
 
   /*!
-  APeekable
+  ARandomAccessBuffer
   */
-  virtual size_t peek(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const;
+  virtual size_t access(AOutputBuffer& target, size_t index = 0, size_t bytes = AConstant::npos) const;
 
   /*!
   Parameter overrides

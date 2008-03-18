@@ -62,8 +62,8 @@ AObjectBase
 AObjectContainer
 AObjectPtrHolder
 AOutputBuffer
-APeekable
 AQueryString
+ARandomAccessBuffer
 ARandomNumberGenerator
 ARng_Lecuyer
 ARng_Marsaglia

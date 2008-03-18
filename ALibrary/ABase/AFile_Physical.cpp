@@ -177,7 +177,7 @@ size_t AFile_Physical::getSize() const
   return (size_t)size;
 }
 
-size_t AFile_Physical::peek(
+size_t AFile_Physical::access(
   AOutputBuffer& target, 
   size_t index,          //= 0 
   size_t bytes           // = AConstant::npos
@@ -224,9 +224,17 @@ size_t AFile_Physical::peek(
       break;
     }
 
-    target.append(buffer, bytesRead);
-    bytes -= bytesRead;
-    totalBytes += bytesRead;
+    size_t written = target.append(buffer, bytesRead);
+    switch(written)
+    {
+      case AConstant::unavail:
+      case AConstant::npos:
+        return (totalBytes > 0 ? totalBytes : written);
+       
+      default:
+        bytes -= bytesRead;
+        totalBytes += bytesRead;
+    }
   }
   
 #ifdef _fseeki64

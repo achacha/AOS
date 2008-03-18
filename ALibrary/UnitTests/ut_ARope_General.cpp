@@ -2,36 +2,36 @@
 #include "ARope.hpp"
 #include "AString.hpp"
 
-void testPeek(int& iRet)
+void testRopeRandomAccess(int& iRet)
 {
   ARope rope(ASW("0123456789",10), 3);
   AString str;
-  size_t r = rope.peek(str);
+  size_t r = rope.access(str);
   ASSERT_UNIT_TEST(str.equals("0123456789"), "ARope::peek", "0", iRet);
   ASSERT_UNIT_TEST(r == 10, "ARope::peek", "01", iRet);
 
   str.clear();
-  r = rope.peek(str, 7, 2);
+  r = rope.access(str, 7, 2);
   ASSERT_UNIT_TEST(str.equals("78"), "ARope::peek", "1", iRet);
   ASSERT_UNIT_TEST(r == 2, "ARope::peek", "11", iRet);
 
   str.clear();
-  r = rope.peek(str, 7, 0);
+  r = rope.access(str, 7, 0);
   ASSERT_UNIT_TEST(str.isEmpty(), "ARope::peek", "2", iRet);
   ASSERT_UNIT_TEST(r == 0, "ARope::peek", "21", iRet);
 
   str.clear();
-  r = rope.peek(str, 1, 50);
+  r = rope.access(str, 1, 50);
   ASSERT_UNIT_TEST(str.equals("123456789"), "ARope::peek", "3", iRet);
   ASSERT_UNIT_TEST(r == 9, "ARope::peek", "31", iRet);
 
   str.clear();
-  r = rope.peek(str, 3, 3);
+  r = rope.access(str, 3, 3);
   ASSERT_UNIT_TEST(str.equals("345"), "ARope::peek", "4", iRet);
   ASSERT_UNIT_TEST(r == 3, "ARope::peek", "41", iRet);
 
   str.clear();
-  r = rope.peek(str, 9, 2);
+  r = rope.access(str, 9, 2);
   ASSERT_UNIT_TEST(str.equals("9"), "ARope::peek", "5", iRet);
   ASSERT_UNIT_TEST(r == 1, "ARope::peek", "51", iRet);
 }
@@ -84,7 +84,7 @@ int ut_ARope_General()
   rope += AString("to witness ")+ASWNL("such a violent ")+"show of "+ARope("power overthrown");
   ASSERT_UNIT_TEST(rope.toAString().equals("Existing on damnation's edge the priest had never known to witness such a violent show of power overthrown"), "ARope::inline concat", "0", iRet);
 
-  testPeek(iRet);
+  testRopeRandomAccess(iRet);
 
   return iRet;
 }

@@ -1089,12 +1089,12 @@ void AFile::putBack(const AEmittable& source)
   m_LookaheadBuffer.pushFront(rd);
 }
 
-void AFile::_append(const char *pcc, size_t length)
+size_t AFile::_append(const char *pcc, size_t length)
 {
   if (AConstant::npos == length)
     length = (size_t)strlen(pcc);
 
-  write(pcc, length);
+  return write(pcc, length);
 }
 
 void AFile::emit(AOutputBuffer& target) const
@@ -1102,45 +1102,6 @@ void AFile::emit(AOutputBuffer& target) const
   //a_Cast away the constness, because the object uses internal buffer to maintain readahead
   AFile *pFile = const_cast<AFile *>(this);
   pFile->readUntilEOF(target);
-}
-
-size_t AFile::flush(AFile& file)
-{  
-  size_t totalBytesWritten = 0;
-  while (m_LookaheadBuffer.getSize() > 0)
-  {
-    size_t bytesWritten = m_LookaheadBuffer.flush(file);
-    if (AConstant::npos == bytesWritten || AConstant::unavail == bytesWritten)
-      return bytesWritten;
-    
-    totalBytesWritten += bytesWritten;
-  }
-  
-  while (_isNotEof())
-  {
-    switch (readBlockIntoLookahead())
-    {
-      case AConstant::unavail:
-        return AConstant::unavail;
-
-      case AConstant::npos:
-        return totalBytesWritten;
-
-      default:
-      {
-        size_t bytesWritten = m_LookaheadBuffer.flush(file);
-        if (AConstant::unavail == bytesWritten)
-          return (totalBytesWritten > 0 ? totalBytesWritten : AConstant::unavail);
-        if (AConstant::npos == bytesWritten)
-          return totalBytesWritten;
-        totalBytesWritten += bytesWritten;
-        m_LookaheadBuffer.clear();
-      }
-      break;
-    }
-  }
-
-  return totalBytesWritten;
 }
 
 size_t AFile::getSize() const

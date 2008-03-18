@@ -380,7 +380,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AFilePeekable.cpp"
+				RelativePath=".\AFileRandomAccess.cpp"
 				>
 			</File>
 			<File
@@ -476,11 +476,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\APeekable.cpp"
+				RelativePath=".\AQueryString.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AQueryString.cpp"
+				RelativePath=".\ARandomAccessBuffer.cpp"
 				>
 			</File>
 			<File
@@ -852,7 +852,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AFilePeekable.hpp"
+				RelativePath=".\AFileRandomAccess.hpp"
 				>
 			</File>
 			<File
@@ -948,15 +948,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\APeekable.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\apiABase.hpp"
 				>
 			</File>
 			<File
 				RelativePath=".\AQueryString.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ARandomAccessBuffer.hpp"
 				>
 			</File>
 			<File

@@ -1673,12 +1673,13 @@ size_t ARopeDeque::removeFrontUntil(const AString& strPattern, bool boolRemovePa
   return AConstant::npos;
 }
 
-void ARopeDeque::_append(const char *pcc, size_t len)
+size_t ARopeDeque::_append(const char *pcc, size_t len)
 {
   if (AConstant::npos == len)
     len = strlen(pcc);
 
   pushBack(pcc, len);
+  return len;
 }
 
 size_t ARopeDeque::peekFrontUntil(
