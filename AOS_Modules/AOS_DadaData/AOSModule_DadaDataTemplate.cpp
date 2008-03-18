@@ -155,7 +155,6 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
     return;
   
   AFile_AString file(format);
-  size_t pos = 0;
   size_t readresult;
   char c = '\x0';
   AString target(1024, 1024), strType(64,128);
@@ -277,7 +276,7 @@ void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, VARIABLE
 
       if (!(*itN).compare("proper", 6))
       {
-        str.use(0) = toupper(str.at(0));
+        str.use(0) = (u1)toupper(str.at(0));
       }
 
       ++itN;
@@ -390,7 +389,7 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLE
 
       if (!(*itN).compare("proper", 6))
       {
-        str.use(0) = toupper(str.at(0));
+        str.use(0) = (u1)toupper(str.at(0));
       }
 
       ++itN;
