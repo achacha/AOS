@@ -158,16 +158,20 @@ void ASocketException::__getLastWSASocketError(AOutputBuffer& target) const thro
 	    target.append("Resource temporarily unavailable.\r\n This error is returned from operations on non-blocking sockets that cannot be completed immediately, for example recv when no data is queued to be read from the socket. It is a non-fatal error, and the operation should be retried later. It is normal for WSAEWOULDBLOCK to be reported as the result from calling connect on a non-blocking SOCK_STREAM socket, since some time must elapse for the connection to be established."); break;
 	  case WSAHOST_NOT_FOUND :
 	    target.append("Host not found.\r\n No such host is known. The name is not an official hostname or alias, or it cannot be found in the database(s) being queried. This error may also be returned for protocol and service queries, and means the specified name could not be found in the relevant database."); break;
-	  case WSA_INVALID_HANDLE :
+#if !defined(_WIN64) && defined(_WIN32)	  
+    case WSA_INVALID_HANDLE :
 	    target.append("Specified event object handle is invalid.\r\n An application attempts to use an event object, but the specified handle is not valid."); break;
-	  case WSA_INVALID_PARAMETER :
+    case WSA_INVALID_PARAMETER :
 	    target.append("One or more parameters are invalid.\r\n An application used a Windows Sockets function which directly maps to a Win32 function. The Win32 function is indicating a problem with one or more parameters."); break;
-	  case WSA_IO_INCOMPLETE :
-	    target.append("Overlapped I/O event object not in signaled state.\r\n The application has tried to determine the status of an overlapped operation which is not yet completed. Applications that use WSAGetOverlappedResult (with the fWait flag set to false) in a polling mode to determine when an overlapped operation has completed will get this error code until the operation is complete."); break;
 	  case WSA_IO_PENDING :
 	    target.append("Overlapped operations will complete later.\r\n The application has initiated an overlapped operation which cannot be completed immediately. A completion indication will be given at a later time when the operation has been completed."); break;
+	  case WSA_IO_INCOMPLETE :
+	    target.append("Overlapped I/O event object not in signaled state.\r\n The application has tried to determine the status of an overlapped operation which is not yet completed. Applications that use WSAGetOverlappedResult (with the fWait flag set to false) in a polling mode to determine when an overlapped operation has completed will get this error code until the operation is complete."); break;
 	  case WSA_NOT_ENOUGH_MEMORY :
 	    target.append("Insufficient memory available.\r\n An application used a Windows Sockets function which directly maps to a Win32 function. The Win32 function is indicating a lack of required memory resources."); break;
+	  case WSA_OPERATION_ABORTED :
+	    target.append("Overlapped operation aborted.\r\n An overlapped operation was canceled due to the closure of the socket, or the execution of the SIO_FLUSH command in WSAIoctl."); break;
+#endif 
 	  case WSANOTINITIALISED :
 	    target.append("Successful WSAStartup not yet performed (forgot global a ASocketLibrary object?).\r\n Either the application hasn't called WSAStartup or WSAStartup failed. The application may be accessing a socket which the current active task does not own (i.e. trying to share a socket between tasks), or WSACleanup has been called too many times. Create a global instance of ASocketLibrary object that will initialize sockets upon creation and de-initialize them when destroyed."); break;
 	  case WSANO_DATA :
@@ -184,19 +188,8 @@ void ASocketException::__getLastWSASocketError(AOutputBuffer& target) const thro
 	    target.append("WINSOCK.DLL version out of range.\r\n The current Windows Sockets implementation does not support the Windows Sockets specification version requested by the application. Check that no old Windows Sockets DLL files are being accessed."); break;
 	  case WSAEDISCON :
 	    target.append("Graceful shutdown in progress.\r\n Returned by WSARecv and WSARecvFrom to indicate the remote party has initiated a graceful shutdown sequence."); break;
-	  case WSA_OPERATION_ABORTED :
-	    target.append("Overlapped operation aborted.\r\n An overlapped operation was canceled due to the closure of the socket, or the execution of the SIO_FLUSH command in WSAIoctl."); break;
     default:
         target.append("Unknown error."); break;
-
-//a_Errors of unknown location (not in MSDEV 6.0...)
-//	  case WSAINVALIDPROCTABLE :
-//	    target.append("Invalid procedure table from service provider. A service provider returned a bogus proc table to WS2_32.DLL. (Usually caused by one or more of the function pointers being NULL.) "
-//	  case WSAINVALIDPROVIDER :
-//	    target.append("Invalid service provider version number. A service provider returned a version number other than 2.0."); break;
-//	  case WSAPROVIDERFAILEDINIT :
-//	    target.append("Unable to initialize a service provider. Either a service provider's DLL could not be loaded (LoadLibrary failed) or the provider's WSPStartup/NSPStartup function failed."); break;
-
   }
 }
 #else

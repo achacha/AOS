@@ -42,7 +42,7 @@ AXmlElement& ALog::emitXml(AXmlElement& thisRoot) const
 {
   AASSERT(this, !thisRoot.useName().isEmpty());
 
-  thisRoot.addElement(ASW("event_mask",10)).addData(m_EventMask);
+  thisRoot.addElement(ASW("event_mask",10)).addData(AString::fromU4(m_EventMask));
 
   return thisRoot;
 }

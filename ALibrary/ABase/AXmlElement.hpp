@@ -151,16 +151,6 @@ public:
   /*!
   Saves value into DOM at path, overwrites existing
   */
-  void setU4(const AString& path, u4 value);
-
-  /*!
-  Saves value into DOM at path, overwrites existing
-  */
-  void setU8(const AString& path, u8 value);
-
-  /*!
-  Saves value into DOM at path, overwrites existing
-  */
   void setSize_t(const AString& path, size_t value);
 
   /*!
@@ -234,26 +224,6 @@ public:
   AXmlElement& addData(const char value);
 
   /*!
-  Add unsigned 1-byte value to text/data of element (no encoding)
-  */
-  AXmlElement& addData(const u1 value);
-
-  /*!
-  Add unsigned 2-byte value to text/data of element (no encoding)
-  */
-  AXmlElement& addData(const u2 value);
-
-  /*!
-  Add unsigned 4-byte value to text/data of element (no encoding)
-  */
-  AXmlElement& addData(const u4 value);
-
-  /*!
-  Add unsigned 8-byte value to text/data of element (no encoding)
-  */
-  AXmlElement& addData(const u8 value);
-
-  /*!
   Add double value to text/data of element (no encoding)
   */
   AXmlElement& addData(const double value);
@@ -282,26 +252,6 @@ public:
   Set char value entered as is (no encoding)
   */
   AXmlElement& setData(const char value);
-
-  /*!
-  Set unsigned 1-byte value to text/data of element (no encoding)
-  */
-  AXmlElement& setData(const u1 value);
-
-  /*!
-  Set unsigned 2-byte value to text/data of element (no encoding)
-  */
-  AXmlElement& setData(const u2 value);
-
-  /*!
-  Set unsigned 4-byte value to text/data of element (no encoding)
-  */
-  AXmlElement& setData(const u4 value);
-
-  /*!
-  Set unsigned 8-byte value to text/data of element (no encoding)
-  */
-  AXmlElement& setData(const u8 value);
 
   /*!
   Set double value to text/data of element (no encoding)

@@ -163,7 +163,7 @@ AXmlElement& AMovingAverage::emitXml(AXmlElement& thisRoot) const
   AASSERT(this, !thisRoot.useName().isEmpty());
   
   thisRoot.addElement(ASW("average",7)).addData(m_Average);
-  thisRoot.addElement(ASW("count",5)).addData(m_Count);
+  thisRoot.addElement(ASW("count",5)).addData(AString::fromU4(m_Count));
 
   AXmlElement& keep = thisRoot.addElement(ASW("keep",4));
   if (mp_Keep)

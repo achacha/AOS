@@ -172,9 +172,9 @@ AXmlElement& ALog_AFile::emitXml(AXmlElement& thisRoot) const
 
   ALog::emitXml(thisRoot);
   thisRoot.addElement(ASW("current_filename",16)).addData(m_filenameRotation, AXmlElement::ENC_CDATADIRECT);
-  thisRoot.addElement(ASW("cycle_sleep",11)).addData(m_CycleSleep);
+  thisRoot.addElement(ASW("cycle_sleep",11)).addData(AString::fromU4(m_CycleSleep));
   thisRoot.addElement(ASW("file_rotation",13)).addData(m_enableLogFileRotate);
-  thisRoot.addElement(ASW("max_file_size",13)).addData(m_logMaxFileSize);
+  thisRoot.addElement(ASW("max_file_size",13)).addData(AString::fromU4(m_logMaxFileSize));
 
   return thisRoot;
 }

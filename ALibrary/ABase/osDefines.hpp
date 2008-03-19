@@ -7,7 +7,30 @@ HAS_MUTABLE - OS/C has 'mutable' keyword
 HAS_BOOL - OS/C has 'bool' keyword (will use unsigned long otherwise with 1 and 0 for true and false)
 LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endian, etc (default big endian)
 **/
-#if defined(_WIN32)
+#if defined(_WIN64)
+  //Win64 environment
+  #define __WINDOWS__
+  #pragma message("ABase (64bit): Windows OS detected")
+
+  //a_OS/C flags
+  #define HAS_MUTABLE
+  #define HAS_BOOL
+  
+  #define __CDECL __cdecl
+
+  //a_Predefine flags needed with Microsoft headers
+  #undef FD_SETSIZE
+  #define FD_SETSIZE 1024             //a_Allow 1024 simultaneous clients
+
+  //a_Include Microsoft Windows headers
+  //#define WIN64_LEAN_AND_MEAN		      // Exclude rarely-used stuff from Windows headers
+  #ifndef __AFX_H__
+    #pragma message("ABase (64 bit): Including windows.h")
+    #include <windows.h>   //a_Include windows.h if this is not an MFC app
+    //#pragma message("ASystem (64bit): Including winsock2.h")
+    //#include <winsock2.h>
+  #endif
+#elif defined(_WIN32)
   //Win32 environment
   #define __WINDOWS__
   #pragma message("ABase (32bit): Windows OS detected")
@@ -53,30 +76,6 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
 //  #pragma warning (disable:6011)  // Dereferencing NULL pointer (STL deque warning)
   #pragma warning (disable:4245)  // 'argument' : conversion from '' to 'size_t', signed/unsigned mismatch (due to use of enum in AConstant for npos/etc)
   #pragma warning(disable:4512)   // assignment operator could not be generated (some classes have reference members to prevent copy)
-
-#elif defined(_WIN64)
-  //Win64 environment
-  #define __WINDOWS__
-  #pragma message("ABase (64bit): Windows OS detected")
-
-  //a_OS/C flags
-  #define HAS_MUTABLE
-  #define HAS_BOOL
-  
-  #define __CDECL __cdecl
-
-  //a_Predefine flags needed with Microsoft headers
-  #undef FD_SETSIZE
-  #define FD_SETSIZE 1024             //a_Allow 1024 simultaneous clients
-
-  //a_Include Microsoft Windows headers
-  //#define WIN64_LEAN_AND_MEAN		      // Exclude rarely-used stuff from Windows headers
-  #ifndef __AFX_H__
-    #pragma message("ABase (64 bit): Including windows.h")
-    #include <windows.h>   //a_Include windows.h if this is not an MFC app
-    #pragma message("ASystem (64bit): Including winsock2.h")
-    #include <winsock2.h>
-  #endif
 
 #elif defined (__unix)
   //a_For all UNIX

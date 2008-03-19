@@ -721,30 +721,6 @@ AXmlElement& AXmlElement::addData(const double value)
   return *this;
 }
 
-AXmlElement& AXmlElement::addData(const u8 value)
-{
-  _addData(AString::fromU8(value), AXmlElement::ENC_NONE);
-  return *this;
-}
-
-AXmlElement& AXmlElement::addData(const u4 value)
-{
-  _addData(AString::fromU4(value), AXmlElement::ENC_NONE);
-  return *this;
-}
-
-AXmlElement& AXmlElement::addData(const u2 value)
-{
-  _addData(AString::fromU2(value), AXmlElement::ENC_NONE);
-  return *this;
-}
-
-AXmlElement& AXmlElement::addData(const u1 value)
-{
-  _addData(AString::fromU1(value), AXmlElement::ENC_NONE);
-  return *this;
-}
-
 AXmlElement& AXmlElement::addData(const int value)
 {
   _addData(AString::fromInt(value), AXmlElement::ENC_NONE);
@@ -782,30 +758,6 @@ AXmlElement& AXmlElement::setData(const AEmittable& data, AXmlElement::Encoding 
 AXmlElement& AXmlElement::setData(const double value)
 {
   _addData(AString::fromDouble(value), AXmlElement::ENC_NONE, true);
-  return *this;
-}
-
-AXmlElement& AXmlElement::setData(const u8 value)
-{
-  _addData(AString::fromU8(value), AXmlElement::ENC_NONE, true);
-  return *this;
-}
-
-AXmlElement& AXmlElement::setData(const u4 value)
-{
-  _addData(AString::fromU4(value), AXmlElement::ENC_NONE, true);
-  return *this;
-}
-
-AXmlElement& AXmlElement::setData(const u2 value)
-{
-  _addData(AString::fromU2(value), AXmlElement::ENC_NONE, true);
-  return *this;
-}
-
-AXmlElement& AXmlElement::setData(const u1 value)
-{
-  _addData(AString::fromU1(value), AXmlElement::ENC_NONE, true);
   return *this;
 }
 
@@ -1187,16 +1139,6 @@ void AXmlElement::setString(const AString& path, const AString& value, AXmlEleme
 }
 
 void AXmlElement::setInt(const AString& path, int value)
-{
-  _addElement(path, true)->setData(value);
-}
-
-void AXmlElement::setU4(const AString& path, u4 value)
-{
-  _addElement(path, true)->setData(value);
-}
-
-void AXmlElement::setU8(const AString& path, u8 value)
 {
   _addElement(path, true)->setData(value);
 }
