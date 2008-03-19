@@ -6,10 +6,6 @@
 #include "ASocketLibrary_SSL.hpp"
 #include "AFileSystem.hpp"
 
-#ifdef __WINDOWS__
-#include <winsock2.h>
-#endif
-
 /* Make these what you want for cert & key files */
 #define CERTF "aos_cert.pem"
 #define KEYF  "aos_key.pem"
