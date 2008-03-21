@@ -12,7 +12,9 @@
 #include <string.h>
 
 #define lbaselib_c
+#ifndef LUA_LIB
 #define LUA_LIB
+#endif
 
 #include "lua.h"
 
@@ -41,11 +43,11 @@ static int luaB_print (lua_State *L) {
       return luaL_error(L, LUA_QL("tostring") " must return a string to "
                            LUA_QL("print"));
     
-    if (i>1) luaA_stringappender(L, "\t");
-    luaA_stringappender(L, s);
+    if (i>1) luaL_stringappender(L, "\t");
+    luaL_stringappender(L, s);
     lua_pop(L, 1);
   }
-  luaA_stringappender(L, "\n");
+  luaL_stringappender(L, "\n");
 
   return 0;
 }
