@@ -208,6 +208,9 @@ AOSConfiguration::AOSConfiguration(
   //a_TODO: This needs to be a paremeter
   loadConfig("AObjectServer");
 
+  //a_Get compressed extensions
+  _populateGzipCompressionExtensions();
+
   //a_Configure server internals from config
   setAosDefaultFilename("/config/server/default-filename");
 
@@ -720,4 +723,22 @@ void AOSConfiguration::setConfigBits(
 const ABitArray& AOSConfiguration::getConfigBits() const 
 { 
   return m_ConfigBits; 
+}
+
+const SET_AString& AOSConfiguration::getCompressedExtensions() const
+{
+  return m_CompressedExtensions;
+}
+
+void AOSConfiguration::_populateGzipCompressionExtensions()
+{
+  AXmlElement::CONST_CONTAINER result;
+  m_Config.getRoot().find(ASW("/config/server/gzip-compression/extensions/ext",46), result);
+  AString str;
+  for(AXmlElement::CONST_CONTAINER::iterator it = result.begin(); it != result.end(); ++it)
+  {
+    (*it)->emitContent(str);
+    m_CompressedExtensions.insert(str);
+    str.clear();
+  }
 }

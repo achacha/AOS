@@ -158,6 +158,11 @@ public:
   const AOSDirectoryConfig* const getDirectoryConfig(const AUrl&) const;
 
   /*!
+  Get a set of extensions that are to be compressed based on config
+  */
+  const SET_AString& getCompressedExtensions() const;
+
+  /*!
   Context manager parameters
   @deprecated
   */
@@ -194,6 +199,12 @@ private:
   //a_Maps absolute path (relative to dynamic root) to AXmlDocument with config
   typedef std::map<AString, AOSDirectoryConfig *> MAP_ASTRING_CONFIG;
   MAP_ASTRING_CONFIG m_DirectoryConfigs;
+
+  //a_Extensions that should be compressed by default (assuming min size criterion is met)
+  SET_AString m_CompressedExtensions;
+
+  //a_Populate the extension set
+  void _populateGzipCompressionExtensions();
 
   /*!
   Load commands

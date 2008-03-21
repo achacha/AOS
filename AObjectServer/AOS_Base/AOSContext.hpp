@@ -507,9 +507,6 @@ private:
   //a_Determines if the current output should be gzip'd, 0 if not to compress, else 1-9 compression level
   int _calculateGZipLevel(size_t documentSize);
 
-  //a_Reads extensions from config and puts into a string set
-  SET_AString _getGzipCompressionExtensions();
-
   //a_Peek to socket
   size_t _write(ARandomAccessBuffer&, size_t);
 };

@@ -1159,7 +1159,6 @@ int AOSContext::_calculateGZipLevel(size_t documentSize)
   static bool IS_ENABLED = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/gzip-compression/enabled",39), true);
   static size_t MIN_SIZE = m_Services.useConfiguration().useConfigRoot().getSize_t(ASW("/config/server/gzip-compression/minimum-threshold",49), 32767);
   static int DEFAULT_LEVEL = m_Services.useConfiguration().useConfigRoot().getInt(ASW("/config/server/gzip-compression/default-level",45), 6);
-  static SET_AString EXTENSIONS = _getGzipCompressionExtensions(); 
   static const AString GZIP("gzip",4);
 
   if (IS_ENABLED)
@@ -1174,8 +1173,9 @@ int AOSContext::_calculateGZipLevel(size_t documentSize)
       return mp_Controller->getGZipLevel();
     
     //a_Match extension and minimum size
+    const SET_AString& exts = m_Services.useConfiguration().getCompressedExtensions();
     if (
-         EXTENSIONS.end() != EXTENSIONS.find(m_RequestHeader.getUrl().getExtension())
+         exts.end() != exts.find(m_RequestHeader.getUrl().getExtension())
       && documentSize >= MIN_SIZE
     )
     {
@@ -1190,21 +1190,6 @@ int AOSContext::_calculateGZipLevel(size_t documentSize)
   }
 
   return 0;
-}
-
-SET_AString AOSContext::_getGzipCompressionExtensions()
-{
-  SET_AString ret;
-  AXmlElement::CONST_CONTAINER result;
-  m_Services.useConfiguration().useConfigRoot().find(ASW("/config/server/gzip-compression/extensions/ext",46), result);
-  AString str;
-  for(AXmlElement::CONST_CONTAINER::iterator it = result.begin(); it != result.end(); ++it)
-  {
-    (*it)->emitContent(str);
-    ret.insert(str);
-    str.clear();
-  }
-  return ret;
 }
 
 bool AOSContext::isOutputBufferEmpty() const

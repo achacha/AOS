@@ -197,7 +197,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
         REQUESTS::iterator it = pThis->queue.begin();
         while (count < FD_SETSIZE && it != pThis->queue.end())
         {
-          FD_SET((*it)->useSocket().getSocketInfo().m_handle, &sockSet);
+          FD_SET((SOCKET)(*it)->useSocket().getSocketInfo().m_handle, &sockSet);
           ++count;
           ++it;
         }
