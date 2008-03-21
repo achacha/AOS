@@ -5,13 +5,13 @@
 void AThread::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AThread @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mp__ThreadProc=0x" << AString::fromPointer(mp__ThreadProc) << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mpv__This=0x" << std::hex << AString::fromPointer(mpv__This) << std::dec << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mpv__Parameter=0x" << std::hex << AString::fromPointer(mpv__Parameter) << std::dec << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mp__ThreadProc=" << AString::fromPointer(mp__ThreadProc) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mpv__This=" << AString::fromPointer(mpv__This) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mpv__Parameter=" << AString::fromPointer(mpv__Parameter) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mbool_Run=" << (mbool_Run ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mbool_Running=" << (mbool_Running ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mu4__ThreadId=" << mu4__ThreadId << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "mh__Thread=" << mh__Thread << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "mh__Thread=" << AString::fromPointer(mh__Thread) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ExecutionState=" << m_ExecutionState << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_UserTimerTimeout=" << m_UserTimerTimeout << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_BitArray=" << std::endl;

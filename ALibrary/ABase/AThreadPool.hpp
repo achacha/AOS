@@ -74,7 +74,7 @@ public:
   MUST lock when using getTheads() call to maintain some consistency
   @see AThreadPool::getThreads()
   */
-  ASynchronization& getSync();
+  ASynchronization& useSync();
 
   /*!
   ADebugDumpable

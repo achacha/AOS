@@ -363,7 +363,7 @@ void ATextConverter::makeHtmlSafe(const AString& strSource, AOutputBuffer& targe
       case '<' : target.append("&lt;"); break;
       case '>' : target.append("&gt;"); break;
       case '&' : target.append("&amp;"); break;
-      default : AASSERT(NULL, 0x0);
+      default : ATHROW(NULL, AException::ProgrammingError);
     }
 
     lastPos = newPos + 1;

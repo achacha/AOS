@@ -42,7 +42,7 @@ AFragmentSet::AFragmentSet(AFragmentSet::SetType t)
 			break;
 
 		default :
-			AASSERT(this, 0x0);			// Invalid type
+      ATHROW(this, AException::ProgrammingError);			// Invalid type
 			break;
 	}
 }

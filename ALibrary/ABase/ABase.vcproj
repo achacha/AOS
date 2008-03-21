@@ -150,6 +150,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="0"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32"
 				StringPooling="false"
@@ -165,6 +166,7 @@
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="0"
 				CompileAs="0"
 			/>
 			<Tool
@@ -184,9 +186,10 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir)"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				GenerateDebugInformation="false"
 				GenerateMapFile="true"
 				MapFileName="$(OutDir)/$(TargetName).map"
+				LinkTimeCodeGeneration="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/$(TargetName).lib"

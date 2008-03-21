@@ -181,7 +181,8 @@ void AXmlDocument::fromAFile(AFile& file)
   AString str(256, 128);
   char c;
 
-  while (true)
+  bool doLoop = true;
+  while (doLoop)
   {
     //a_Find < or break if EOF
     if (AConstant::npos == file.skipUntilOneOf('<'))

@@ -257,7 +257,7 @@ const AThreadPool::THREADS& AThreadPool::getThreads() const
   return m_Threads;
 }
 
-ASynchronization& AThreadPool::getSync()
+ASynchronization& AThreadPool::useSync()
 {
   return m_SynchObjectThreadPool;
 }

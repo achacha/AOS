@@ -142,6 +142,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="0"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../ABase"
 				PreprocessorDefinitions="NDEBUG;_CONSOLE;WIN32;"
 				StringPooling="false"
@@ -156,6 +157,7 @@
 				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="0"
 				CompileAs="0"
 			/>
 			<Tool
@@ -175,10 +177,11 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir)"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				GenerateDebugInformation="false"
 				GenerateMapFile="true"
 				MapFileName="$(OutDir)/$(TargetName).map"
 				SubSystem="1"
+				LinkTimeCodeGeneration="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
