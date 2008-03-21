@@ -126,6 +126,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../../ALibrary/include,../../AObjectServer/AOS_Base"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;AOS_FORUM_EXPORTS"
 				RuntimeLibrary="2"
@@ -133,9 +135,7 @@
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
-				BrowseInformationFile="$(IntDir)/"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"
 				CompileAs="0"
 			/>
@@ -154,10 +154,11 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir)/"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/AOS_Forum.lib"

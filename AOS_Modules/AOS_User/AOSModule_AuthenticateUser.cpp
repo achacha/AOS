@@ -98,4 +98,6 @@ AOSContext::ReturnCode AOSModule_AuthenticateUser::execute(AOSContext& context, 
       return AOSContext::RETURN_REDIRECT;
     }
   }
+  
+  return AOSContext::RETURN_OK;
 }
