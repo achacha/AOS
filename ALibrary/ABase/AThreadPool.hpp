@@ -17,8 +17,18 @@ public:
 public:
   /*!
   Create pool based on a threadproc (which becomes threadproc of the template thread)
+
+  @param threadproc for each newly created thread
+  @param threads to maintain active simultaneously
+  @param pThis pointer to the thread that is retrieved with thread.getThis()
+  @param pParameter pointer to the thread that is retrieved with thread.getParameter()
   */
-  AThreadPool(AThread::ATHREAD_PROC *threadproc, int threadCount = 1, ABase *pThis = NULL, ABase *pParameter = NULL);
+  AThreadPool(
+    AThread::ATHREAD_PROC *threadproc, 
+    int threads = 1, 
+    ABase *pThis = NULL, 
+    ABase *pParameter = NULL
+  );
   
   /*!
   dtor will signal threads to stop and after a short wait terminate them
@@ -27,14 +37,61 @@ public:
   virtual ~AThreadPool();
 
   /*!
-  Pool control
+  Set total number of threads to create after start() is called
+  After this # of threads is created over time the pool stops creating new threads
+  This is an iteration count that is independent of the thread count that run simultaneously
+  Once this count is zero equivalent to setCreatingNewThreads(false) is called
+  Initially set to AConstant::npos and equivalent to infinity
+  
+  @param count
+  */
+  void setTotalThreadCreationCount(size_t count);
+
+  /*!
+  Get total threads left to create
+  */
+  size_t getTotalThreadCreationCount() const;
+
+  /*!
+  Start thread pool
   */
   void start();
-  void stop();
-  void setThreadCount(size_t);             //a_How many threads to keep active
-  size_t getThreadCount() const;           //a_Threads at this moments
-  size_t getRunningThreadCount();          //a_How many have flagged themselves as running
   
+  /*
+  Stop new threads from being created if they exit
+  Allow existing threads to run their course
+  Use getRunningThreadCount() to see how many are still running
+  This is a graceful stop and terminate will never be called on any thread
+  Once all threads have been created and executed, the main threadpool manager stops
+
+  @param b true - Set thread monitor to create new threads if some threads exit
+           false - Do not create new threads after they exit
+  */
+  void setCreatingNewThreads(bool b = false);
+
+  /*!
+  Stop thread pool and terminate threads that refuse to stop
+  Should be used if graceful stop if not viable 
+  */
+  void stop();
+
+  /*!
+  How many threads to keep active
+  Will create new threads as need
+  If new count is less than existing threads will be signaled to stop and if they don't stop in time they will be terminated
+  */
+  void setThreadCount(size_t);
+  
+  /*!
+  Current active physical thread count
+  */
+  size_t getThreadCount() const;
+  
+  /*!
+  Number of th existing threads that are flagged as still running
+  */
+  size_t getRunningThreadCount();
+
   /*!
   How long the monitor sleeps between monitoring cycles
   */
@@ -77,6 +134,16 @@ public:
   ASynchronization& useSync();
 
   /*!
+  Thread pool timer, starts when manager starts and stops when it stops/exits
+  */
+  const ATimer& getThreadPoolTimer() const;
+
+  /*!
+  AEmittable
+  */
+  virtual void emit(AOutputBuffer&) const;
+
+  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
@@ -91,19 +158,27 @@ protected:
 private:
   AThreadPool() {}
 
-  //threadproc to monitor the thread pool
+  // threadproc to monitor the thread pool
   static u4 _threadprocMonitor(AThread& thread);
   AThread m_MonitorThread;
   u4 m_monitorCycleSleep;
 
-  /*
-  Parameters needed for creating new threads
-  */
+  // Flag if new threads are to be created
+  bool m_CreateNewThreads;
+  
+  // Total number of threads to create
+  size_t m_TotalThreadCreationCount;
+
+  // Parameters needed for creating new threads
   AThread::ATHREAD_PROC *mp_threadproc;
   ABase *mp_This;
   ABase *mp_Parameter;
 
+  // Synchronization for any pool related changes
   ASync_CriticalSection m_SynchObjectThreadPool;
+
+  // Timer for the runtime of the pool
+  ATimer m_ThreadPoolTimer;
 };
 
 #endif //INCLUDED__AThreadPool_HPP__

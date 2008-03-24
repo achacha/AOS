@@ -153,9 +153,12 @@ void AMovingAverage::toAFile(AFile& aFile) const
 
 void AMovingAverage::emit(AOutputBuffer& target) const
 {
+  target.append("average=");
   ANumber num(m_Average);
   num.setPrecision(4);
   num.emit(target);
+  target.append("  count=");
+  target.append(AString::fromU4(m_Count));
 }
 
 AXmlElement& AMovingAverage::emitXml(AXmlElement& thisRoot) const

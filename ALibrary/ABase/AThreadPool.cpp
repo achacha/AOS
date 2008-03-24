@@ -14,15 +14,22 @@ void AThreadPool::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "mp_This=" << AString::fromPointer(mp_This) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_Parameter=" << AString::fromPointer(mp_Parameter) << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_Threads={" << std::endl;
-  ADebugDumpable::indent(os, indent+2) << "size()=" << m_Threads.size() << std::endl;
-  THREADS::const_iterator cit = m_Threads.begin();
-  while (cit != m_Threads.end())
+  ADebugDumpable::indent(os, indent+1) << "m_TotalThreadCreationCount=" << m_TotalThreadCreationCount;
+  ADebugDumpable::indent(os, indent+1) << "  m_CreateNewThreads=" << AString::fromBool(m_CreateNewThreads) << std::endl;
+
   {
-    (*cit)->debugDump(os, indent+2);
-    ++cit;
+    ALock lock(const_cast<ASync_CriticalSection *>(&m_SynchObjectThreadPool));
+    ADebugDumpable::indent(os, indent+1) << "m_Threads={" << std::endl;
+    ADebugDumpable::indent(os, indent+2) << "size()=" << m_Threads.size() << std::endl;
+    THREADS::const_iterator cit = m_Threads.begin();
+    while (cit != m_Threads.end())
+    {
+      (*cit)->debugDump(os, indent+2);
+      ++cit;
+    }
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   }
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
@@ -37,7 +44,9 @@ AThreadPool::AThreadPool(
   mp_Parameter(pParameter),
   m_MonitorThread(AThreadPool::_threadprocMonitor, false),
   m_threadCount(threadCount),
-  m_monitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP)
+  m_monitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
+  m_CreateNewThreads(true),
+  m_TotalThreadCreationCount(AConstant::npos)
 {
   m_MonitorThread.setThis(this);
 
@@ -56,6 +65,10 @@ AThreadPool::~AThreadPool()
   catch(...) {}
 }
 
+void AThreadPool::emit(AOutputBuffer&) const
+{
+}
+
 u4 AThreadPool::_threadprocMonitor(AThread& thread)
 {
   AThreadPool *pThis = (AThreadPool *)thread.getThis();
@@ -63,17 +76,36 @@ u4 AThreadPool::_threadprocMonitor(AThread& thread)
 
   bool shouldSleepMore = false;
   thread.setRunning(true);
+  pThis->m_ThreadPoolTimer.start();
   try
   {
     do
     {
       size_t threadcount = pThis->m_Threads.size();  //a_all running threads
+
+      //a_Stopping condition
+      if (
+             !threadcount
+          && (
+               !pThis->m_TotalThreadCreationCount 
+            || !pThis->m_CreateNewThreads
+          )
+      )
+      {
+        pThis->m_ThreadPoolTimer.stop();
+        thread.setRun(false);
+        break;
+      }
+      
       if (threadcount < pThis->m_threadCount)
       {
-        //a_More
-        ALock lock(pThis->m_SynchObjectThreadPool);
-        while (threadcount < pThis->m_threadCount)
+        while (
+             pThis->m_CreateNewThreads 
+          && pThis->m_TotalThreadCreationCount > 0 
+          && threadcount < pThis->m_threadCount)
         {
+          //a_More
+          ALock lock(pThis->m_SynchObjectThreadPool);
           AASSERT(pThis, pThis->mp_threadproc);
           AASSERT(pThis, ADebugDumpable::isPointerValid(pThis->mp_threadproc));
 
@@ -81,6 +113,9 @@ u4 AThreadPool::_threadprocMonitor(AThread& thread)
           pThis->m_Threads.push_back(pthread);
           shouldSleepMore = true;
           ++threadcount;
+
+          if (AConstant::npos != pThis->m_TotalThreadCreationCount)
+            --pThis->m_TotalThreadCreationCount;
         }
       }
       else if (threadcount > pThis->m_threadCount)
@@ -155,8 +190,16 @@ void AThreadPool::start()
 {
   if (!m_MonitorThread.isThreadActive() || !m_MonitorThread.isRunning())
   {
+    m_CreateNewThreads = true;
     m_MonitorThread.start();
   }
+}
+
+void AThreadPool::setCreatingNewThreads(
+  bool b // = false
+)
+{
+  m_CreateNewThreads = b;
 }
 
 void AThreadPool::stop()
@@ -180,6 +223,7 @@ void AThreadPool::stop()
   if (!retry2 && m_MonitorThread.isRunning())
   {
     m_MonitorThread.terminate();
+    m_ThreadPoolTimer.stop();      //a_Only needed when a monitor thread is terminated
   }
 
   if (!retry1 && m_Threads.size() > 0)
@@ -260,4 +304,19 @@ const AThreadPool::THREADS& AThreadPool::getThreads() const
 ASynchronization& AThreadPool::useSync()
 {
   return m_SynchObjectThreadPool;
+}
+
+void AThreadPool::setTotalThreadCreationCount(size_t count)
+{
+  m_TotalThreadCreationCount = count;
+}
+
+size_t AThreadPool::getTotalThreadCreationCount() const
+{
+  return m_TotalThreadCreationCount;
+}
+
+const ATimer& AThreadPool::getThreadPoolTimer() const
+{
+  return m_ThreadPoolTimer;
 }
