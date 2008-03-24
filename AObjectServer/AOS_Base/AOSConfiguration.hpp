@@ -22,6 +22,22 @@ Global configuration
 class AOS_BASE_API AOSConfiguration : public AOSAdminInterface
 {
 public:
+  //! Number of times to retry reading first char in HTTP header
+  static int FIRST_CHAR_RETRIES;
+  //! Initial sleep time waiting on reading first char
+  static int SLEEP_STARTTIME;
+  //! Increment the sleep every retry if first char is not read
+  static int SLEEP_INCREMENT;
+  //! If HTTP pipelining is enabled
+  static bool IS_HTTP_PIPELINING_ENABLED;
+  //! If gzip compression is enabled
+  static bool GZIP_IS_ENABLED;
+  //! Minimum size of content to compress
+  static size_t GZIP_MIN_SIZE;
+  //! Default gzip compression level
+  static int GZIP_DEFAULT_LEVEL;
+
+public:
   AOSConfiguration(const AFilename& baseDir, AOSServices&);
   virtual ~AOSConfiguration();
 
@@ -202,6 +218,9 @@ private:
 
   //a_Extensions that should be compressed by default (assuming min size criterion is met)
   SET_AString m_CompressedExtensions;
+
+  //a_Initialize statics
+  void _initStatics();
 
   //a_Populate the extension set
   void _populateGzipCompressionExtensions();

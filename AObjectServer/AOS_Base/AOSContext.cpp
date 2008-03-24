@@ -280,20 +280,17 @@ AOSContext::Status AOSContext::init()
 
 bool AOSContext::_waitForFirstChar()
 {
-  static const int FIRST_CHAR_RETRIES = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/http/first-char-read-tries", 15);
-  static const int SLEEP_STARTTIME = m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/http/first-char-sleep-start",42), 30);
-  static const int SLEEP_INCREMENT = m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/http/first-char-sleep-increment",46), 20);
-  int sleeptime = SLEEP_STARTTIME;
+  int sleeptime = AOSConfiguration::SLEEP_STARTTIME;
   int tries = 0;
   char c;
-  while (tries < FIRST_CHAR_RETRIES)
+  while (tries < AOSConfiguration::FIRST_CHAR_RETRIES)
   {
     ARope rope("AOSContext: Sleep cycle ",24);
     rope.append(AString::fromInt(tries));
     m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
 
     AThread::sleep(sleeptime);
-    sleeptime += SLEEP_INCREMENT;
+    sleeptime += AOSConfiguration::SLEEP_INCREMENT;
     ++tries;
     size_t ret = mp_RequestFile->peek(c);
     switch(ret)
@@ -688,9 +685,8 @@ AOSContext::Status AOSContext::_processHttpHeader()
   }
 
   //a_Check if to keep the connection alive
-  static bool isHttpPipeliningEnabled = m_Services.useConfiguration().useConfigRoot().getBool("/config/server/http/http11-pipelining-enabled", true);
   if (
-       isHttpPipeliningEnabled                                                 // user enabled
+    AOSConfiguration::IS_HTTP_PIPELINING_ENABLED                                                 // user enabled
     && m_RequestHeader.isHttpPipeliningEnabled()                               // request header allows it 
     && AHTTPRequestHeader::METHOD_ID_PUT != m_RequestHeader.getMethodId()      // method is not POST
   )
@@ -698,7 +694,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
     //a_HTTP pipelining turned on
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_HTTP11_PIPELINING);
     m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
-    //m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Keep_Alive, ASW("timeout=15, max=100",19));
+    //TODO: do we really need this? m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Keep_Alive, ASW("timeout=15, max=100",19));
   }
   else
   {
@@ -1156,12 +1152,9 @@ void AOSContext::setResponseRedirect(const AString& url)
 
 int AOSContext::_calculateGZipLevel(size_t documentSize)
 {
-  static bool IS_ENABLED = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/gzip-compression/enabled",39), true);
-  static size_t MIN_SIZE = m_Services.useConfiguration().useConfigRoot().getSize_t(ASW("/config/server/gzip-compression/minimum-threshold",49), 32767);
-  static int DEFAULT_LEVEL = m_Services.useConfiguration().useConfigRoot().getInt(ASW("/config/server/gzip-compression/default-level",45), 6);
   static const AString GZIP("gzip",4);
 
-  if (IS_ENABLED)
+  if (AOSConfiguration::GZIP_IS_ENABLED)
   {
     //a_User override
     AString strDeflateLevel;
@@ -1176,7 +1169,7 @@ int AOSContext::_calculateGZipLevel(size_t documentSize)
     const SET_AString& exts = m_Services.useConfiguration().getCompressedExtensions();
     if (
          exts.end() != exts.find(m_RequestHeader.getUrl().getExtension())
-      && documentSize >= MIN_SIZE
+         && documentSize >= AOSConfiguration::GZIP_MIN_SIZE
     )
     {
       //a_Check if the client can accept gzip
@@ -1185,7 +1178,7 @@ int AOSContext::_calculateGZipLevel(size_t documentSize)
            m_RequestHeader.getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, strAcceptEncoding)
         && AConstant::npos != strAcceptEncoding.findNoCase(GZIP)
       )
-        return DEFAULT_LEVEL;
+      return AOSConfiguration::GZIP_DEFAULT_LEVEL;
     }
   }
 
