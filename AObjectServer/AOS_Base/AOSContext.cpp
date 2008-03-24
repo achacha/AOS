@@ -162,6 +162,8 @@ void AOSContext::reset(AFile_Socket *pFile)
   m_OutputXmlDocument.clear();
   m_OutputXmlDocument.useRoot().useName().assign(XML_ROOT);
   mp_Controller = NULL;
+  mp_SessionObject = NULL;
+  mp_DirConfig = NULL;
 
   m_ContextFlags.clear();
 }
@@ -312,7 +314,6 @@ bool AOSContext::_waitForFirstChar()
 
 AOSContext::Status AOSContext::_processHttpHeader()
 {
-  AASSERT(this, mp_RequestFile);
   if (!mp_RequestFile)
     ATHROW(this, AException::InvalidObject);
 
