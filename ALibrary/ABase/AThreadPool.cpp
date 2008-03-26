@@ -42,7 +42,30 @@ AThreadPool::AThreadPool(
   mp_threadproc(threadproc),
   mp_This(pThis),
   mp_Parameter(pParameter),
-  m_MonitorThread(AThreadPool::_threadprocMonitor, false),
+  m_MonitorThread(AThreadPool::_threadprocDefaultMonitor, false),
+  m_threadCount(threadCount),
+  m_monitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
+  m_CreateNewThreads(true),
+  m_TotalThreadCreationCount(AConstant::npos)
+{
+  m_MonitorThread.setThis(this);
+
+  //a_By default 'this' will be to the thread pool
+  if (!mp_This)
+    mp_This = this;
+}
+
+AThreadPool::AThreadPool(
+  AThread::ATHREAD_PROC *threadproc,
+  int threadCount,
+  ABase *pThis,
+  ABase *pParameter,
+  AThread::ATHREAD_PROC *threadprocMonitor
+) :
+  mp_threadproc(threadproc),
+  mp_This(pThis),
+  mp_Parameter(pParameter),
+  m_MonitorThread(threadprocMonitor, false),
   m_threadCount(threadCount),
   m_monitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
   m_CreateNewThreads(true),
@@ -69,7 +92,7 @@ void AThreadPool::emit(AOutputBuffer&) const
 {
 }
 
-u4 AThreadPool::_threadprocMonitor(AThread& thread)
+u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
 {
   AThreadPool *pThis = (AThreadPool *)thread.getThis();
   AASSERT(pThis, pThis);
@@ -82,6 +105,11 @@ u4 AThreadPool::_threadprocMonitor(AThread& thread)
     do
     {
       size_t threadcount = pThis->m_Threads.size();  //a_all running threads
+      if (threadcount == pThis->m_threadCount || !pThis->m_TotalThreadCreationCount)
+      {
+        //a_Short sleep since desired number of threads are running or we are not creating any more
+        AThread::sleep(pThis->m_monitorCycleSleep);
+      }
 
       //a_Stopping condition
       if (
@@ -167,9 +195,6 @@ u4 AThreadPool::_threadprocMonitor(AThread& thread)
         else
           ++it;
       }
-
-      //a_Short sleep to allow time for threads to shut down gracefully
-      AThread::sleep(pThis->m_monitorCycleSleep);
     }
     while (thread.isRun());
   }
@@ -202,8 +227,20 @@ void AThreadPool::setCreatingNewThreads(
   m_CreateNewThreads = b;
 }
 
+void AThreadPool::setRunStateOnThreads(bool isRun)
+{
+  //a_Sets run state on all threads
+  ALock lock(const_cast<ASync_CriticalSection *>(&m_SynchObjectThreadPool));
+  for (THREADS::iterator it = m_Threads.begin(); it != m_Threads.end(); ++it)
+    (*it)->setRun(isRun);
+}
+
 void AThreadPool::stop()
 {
+  //a_Signal threads to stop
+  setRunStateOnThreads(false);
+
+  //a_Wait a bit for threads to stop
   m_threadCount = 0;
   int retry1 = 10;
   while (retry1 && m_Threads.size() > 0)

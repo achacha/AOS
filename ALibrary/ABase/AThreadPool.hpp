@@ -55,7 +55,7 @@ public:
   /*!
   Start thread pool
   */
-  void start();
+  virtual void start();
   
   /*
   Stop new threads from being created if they exit
@@ -70,10 +70,17 @@ public:
   void setCreatingNewThreads(bool b = false);
 
   /*!
+  Sets the run flag on all running threads
+
+  @param isRun propagated to all running threads
+  */
+  void setRunStateOnThreads(bool isRun);
+  
+  /*!
   Stop thread pool and terminate threads that refuse to stop
   Should be used if graceful stop if not viable 
   */
-  void stop();
+  virtual void stop();
 
   /*!
   How many threads to keep active
@@ -149,17 +156,34 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
+  /*!
+  Create pool based on a threadproc (which becomes threadproc of the template thread)
+  Allows derived class to override monitor threadproc
+
+  @param threadproc for each newly created thread
+  @param threads to maintain active simultaneously
+  @param pThis pointer to the thread that is retrieved with thread.getThis()
+  @param pParameter pointer to the thread that is retrieved with thread.getParameter()
+  @param threadprocMonitor (leave as default for most cases) custom threadpool monitor thread
+         (if custom monitoring is required then copy existing _threadprocDefaultMonitor function and enhance it)
+  */
+  AThreadPool(
+    AThread::ATHREAD_PROC *threadproc, 
+    int threads, 
+    ABase *pThis, 
+    ABase *pParameter,
+    AThread::ATHREAD_PROC *threadprocMonitor
+  );
+
   //Thread container
   THREADS m_Threads;
 
   //Threads to run
   size_t m_threadCount;
 
-private:
-  AThreadPool() {}
-
   // threadproc to monitor the thread pool
-  static u4 _threadprocMonitor(AThread& thread);
+  static u4 _threadprocDefaultMonitor(AThread& thread);
+  AThread::ATHREAD_PROC *mp_threadprocMonitor;
   AThread m_MonitorThread;
   u4 m_monitorCycleSleep;
 
@@ -179,6 +203,9 @@ private:
 
   // Timer for the runtime of the pool
   ATimer m_ThreadPoolTimer;
+
+private:
+  AThreadPool() {}
 };
 
 #endif //INCLUDED__AThreadPool_HPP__
