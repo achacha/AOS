@@ -198,6 +198,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
           pSocket->open();
           pContext = pThis->m_Services.useContextManager().allocate(pSocket.use());
           pSocket.setOwnership(false);
+          pThis->m_Services.useContextManager().changeQueueState(pThis->m_FirstQueue, &pContext);
         }
         catch(ASocketException& e)
         {
@@ -221,8 +222,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
 
           throw;
         }
-
-        pThis->m_Services.useContextManager().changeQueueState(pThis->m_FirstQueue, &pContext);
+        
         pSocket.reset();
       }
       else

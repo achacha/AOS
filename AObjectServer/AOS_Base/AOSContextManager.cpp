@@ -155,6 +155,7 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
     {
       p = m_Freestore.back();
       m_Freestore.pop_back();
+      p->reset(pSocket);
 
       ARope rope("AOSContextManager::allocate[",28);
       rope.append(AString::fromPointer(p));
@@ -182,6 +183,7 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
     m_InUse[p] = 1;
   }
 
+  AASSERT(this, &p->useSocket());
   return p;
 }
 

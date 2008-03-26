@@ -95,6 +95,8 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
   //a_Add context to the next queue
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
   ++m_AddCounters.at(currentQueue);
+  if (NULL == &(pContext->useSocket()))
+    std::cout << "AAAAAAAA" << std::endl;
   m_Queues.at(currentQueue)->push(pContext);
 
 //  std::cout << typeid(*this).name() << ":" << getClass() <<  "::add(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;

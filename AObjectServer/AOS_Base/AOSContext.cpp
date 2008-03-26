@@ -27,9 +27,14 @@ void AOSContext::debugDump(std::ostream& os, int indent) const
   m_EventVisitor.debugDump(os, indent+2);
   
   //a_Input file
-  ADebugDumpable::indent(os, indent+1) << "*mp_File=" << std::endl;
   if (mp_RequestFile)
+  {
+    ADebugDumpable::indent(os, indent+1) << "*mp_RequestFile={" << std::endl;
     mp_RequestFile->debugDump(os, indent+2);
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+  }
+  else
+    ADebugDumpable::indent(os, indent+1) << "*mp_RequestFile=NULL" << std::endl;
 
   //a_Associated directory config
   if (mp_DirConfig)
