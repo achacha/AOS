@@ -37,6 +37,34 @@ public:
     EL_DEBUG  = 5    // Debug trace
   };
   
+  class ABASE_API ScopedEvent
+  {
+  public:
+    /*!
+    Create an event during construction of this object and one during destruction
+
+    @param visitor to use for event logging
+    @param where the event is occuring
+    @param message optional message
+    */
+    ScopedEvent(
+      AEventVisitor& visitor, 
+      const AString& strWhere, 
+      const AString& strMessage = AConstant::ASTRING_EMPTY, 
+      const AEventVisitor::EventLevel level = AEventVisitor::EL_DEBUG);
+    
+    /*!
+    Logs to visitor the destructor message
+    */
+    ~ScopedEvent();
+
+  private:
+    AEventVisitor& m_Visitor;
+    AString mstr_Where;
+    AString mstr_Message;
+    AEventVisitor::EventLevel m_Level;
+  };
+
 public:
   /*! 
   ctor
@@ -73,6 +101,14 @@ public:
   */
   ATimer& useLifespanTimer();
 
+  /*!
+  Check if the level specified will be logged by the visitor and it is also enabled
+
+  @param level of the event
+  @return if the visitor will log event of this level based on current threshold level and that it is enabled
+  */
+  bool isLogging(EventLevel level) const;
+  
   /*!
   Sets the new state, stopping and saving current one
   State time limit is used as a test mark when calling isStateOverTimeLimit() and is user controlled

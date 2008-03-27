@@ -54,6 +54,39 @@ void AEventVisitor::Event::debugDump(std::ostream& os, int indent) const
     << "  m_level=" << m_level << "  }" << std::endl;
 }
 
+AEventVisitor::ScopedEvent::ScopedEvent(
+  AEventVisitor& visitor, 
+  const AString& strWhere, 
+  const AString& strMessage,             //= AConstant::ASTRING_EMPTY
+  const AEventVisitor::EventLevel level  // = AEventVisitor::EL_DEBUG
+) :
+  m_Visitor(visitor),
+  mstr_Where(strWhere),
+  mstr_Message(strMessage),
+  m_Level(level)
+{
+  if (m_Visitor.isLogging(m_Level))
+  {
+    ARope message("+++ctor[",8);
+    message.append(mstr_Where);
+    message.append("]",1);
+    message.append(mstr_Message);
+    m_Visitor.startEvent(message, m_Level);
+  }
+}
+
+AEventVisitor::ScopedEvent::~ScopedEvent()
+{
+  if (m_Visitor.isLogging(m_Level))
+  {
+    ARope message("---dtor[",8);
+    message.append(mstr_Where);
+    message.append("]",1);
+    message.append(mstr_Message);
+    m_Visitor.startEvent(message, m_Level);
+  }
+}
+
 AEventVisitor::AEventVisitor
 (
   const AString& name,                 // = AConstant::ASTRING_EMPTY
@@ -84,12 +117,15 @@ AEventVisitor::Event::Event(
 AEventVisitor::~AEventVisitor()
 {
   delete mp_CurrentEvent;
-  EVENTS::iterator it = m_Events.begin();
-  while(it != m_Events.end())
+  for (EVENTS::iterator it = m_Events.begin(); it != m_Events.end(); ++it)
   {
     delete *it;
-    ++it;
   }
+}
+
+bool AEventVisitor::isLogging(EventLevel level) const
+{
+  return (level <= m_LevelThreshold && m_isEnabled);
 }
 
 void AEventVisitor::startEvent(
