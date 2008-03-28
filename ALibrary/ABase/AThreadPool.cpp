@@ -43,7 +43,7 @@ AThreadPool::AThreadPool(
   mp_This(pThis),
   mp_Parameter(pParameter),
   m_MonitorThread(AThreadPool::_threadprocDefaultMonitor, false),
-  m_threadCount(threadCount),
+  m_DesiredThreadCount(threadCount),
   m_monitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
   m_CreateNewThreads(true),
   m_TotalThreadCreationCount(AConstant::npos)
@@ -66,7 +66,7 @@ AThreadPool::AThreadPool(
   mp_This(pThis),
   mp_Parameter(pParameter),
   m_MonitorThread(threadprocMonitor, false),
-  m_threadCount(threadCount),
+  m_DesiredThreadCount(threadCount),
   m_monitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
   m_CreateNewThreads(true),
   m_TotalThreadCreationCount(AConstant::npos)
@@ -105,7 +105,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
     do
     {
       size_t threadcount = pThis->m_Threads.size();  //a_all running threads
-      if (threadcount == pThis->m_threadCount || !pThis->m_TotalThreadCreationCount)
+      if (threadcount == pThis->m_DesiredThreadCount || !pThis->m_TotalThreadCreationCount)
       {
         //a_Short sleep since desired number of threads are running or we are not creating any more
         AThread::sleep(pThis->m_monitorCycleSleep);
@@ -125,12 +125,12 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
         break;
       }
       
-      if (threadcount < pThis->m_threadCount)
+      if (threadcount < pThis->m_DesiredThreadCount)
       {
         while (
              pThis->m_CreateNewThreads 
           && pThis->m_TotalThreadCreationCount > 0 
-          && threadcount < pThis->m_threadCount)
+          && threadcount < pThis->m_DesiredThreadCount)
         {
           //a_More
           ALock lock(pThis->m_SynchObjectThreadPool);
@@ -146,11 +146,11 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
             --pThis->m_TotalThreadCreationCount;
         }
       }
-      else if (threadcount > pThis->m_threadCount)
+      else if (threadcount > pThis->m_DesiredThreadCount)
       {
         //a_Less
         ALock lock(pThis->m_SynchObjectThreadPool);
-        size_t diff = threadcount - pThis->m_threadCount;
+        size_t diff = threadcount - pThis->m_DesiredThreadCount;
         THREADS::iterator it = pThis->m_Threads.begin();
         while (diff > 0)
         {
@@ -241,7 +241,6 @@ void AThreadPool::stop()
   setRunStateOnThreads(false);
 
   //a_Wait a bit for threads to stop
-  m_threadCount = 0;
   int retry1 = 10;
   while (retry1 && m_Threads.size() > 0)
   {
@@ -279,7 +278,7 @@ void AThreadPool::stop()
 
 void AThreadPool::setThreadCount(size_t count)
 {
-  m_threadCount = count;
+  m_DesiredThreadCount = count;
 }
 
 void AThreadPool::setThis(ABase *p)
@@ -307,19 +306,21 @@ size_t AThreadPool::getRunningThreadCount()
   size_t ret = 0;
 
   ALock lock(m_SynchObjectThreadPool);
-  THREADS::const_iterator cit = m_Threads.begin();
-  while (cit != m_Threads.end())
-  {
+  for (THREADS::const_iterator cit = m_Threads.begin(); cit != m_Threads.end(); ++cit)
     if ((*cit)->isRunning())
       ++ret;
 
-    ++cit;
-  }
   return ret;
 }
 
 size_t AThreadPool::getThreadCount() const
 {
+  return m_DesiredThreadCount;
+}
+
+size_t AThreadPool::getActiveThreadCount()
+{
+  ALock lock(m_SynchObjectThreadPool);
   return m_Threads.size();
 }
 

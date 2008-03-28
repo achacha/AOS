@@ -159,6 +159,19 @@ void AMovingAverage::emit(AOutputBuffer& target) const
   num.emit(target);
   target.append("  count=");
   target.append(AString::fromU4(m_Count));
+  if (mp_Keep)
+  {
+    target.append("  samples={");
+    u4 i=0;
+    while(i<m_KeepSize)
+    {
+      target.append(AString::fromDouble(mp_Keep[i]));
+      ++i;
+      if (i<m_KeepSize)
+        target.append(",");
+    }
+    target.append("}");
+  }
 }
 
 AXmlElement& AMovingAverage::emitXml(AXmlElement& thisRoot) const

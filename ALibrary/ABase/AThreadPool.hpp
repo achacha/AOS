@@ -90,12 +90,18 @@ public:
   void setThreadCount(size_t);
   
   /*!
-  Current active physical thread count
+  Current desired thread count
+  This is the thread count to maintain not how many are active or running
   */
   size_t getThreadCount() const;
   
+  /*
+  Number of active threads (may or may not be running)
+  */
+  size_t getActiveThreadCount();
+
   /*!
-  Number of th existing threads that are flagged as still running
+  Number of the active threads that are flagged as also still running
   */
   size_t getRunningThreadCount();
 
@@ -179,7 +185,7 @@ protected:
   THREADS m_Threads;
 
   //Threads to run
-  size_t m_threadCount;
+  size_t m_DesiredThreadCount;
 
   // threadproc to monitor the thread pool
   static u4 _threadprocDefaultMonitor(AThread& thread);

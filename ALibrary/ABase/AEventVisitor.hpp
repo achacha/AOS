@@ -182,9 +182,10 @@ public:
   /*!
   Access to the current 
   State is completely user defined and gives a way to change states and maintain time in state
-  @return Current message or AConstant::
+  
+  @param Target of the message
   */
-  const AString &getCurrentEventMessage() const;
+  void getCurrentEventMessage(AOutputBuffer& target) const;
   
   /*!
   Milliseconds spent in the current event state

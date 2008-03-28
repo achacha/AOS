@@ -356,9 +356,10 @@ AString& AEventVisitor::useName()
   return m_Name;
 }
 
-const AString &AEventVisitor::getCurrentEventMessage() const
+void AEventVisitor::getCurrentEventMessage(AOutputBuffer& target) const
 {
-  return (mp_CurrentEvent ? mp_CurrentEvent->m_state : AConstant::ASTRING_NULL);
+  if (mp_CurrentEvent)
+    target.append(mp_CurrentEvent->m_state);
 }
 
 void AEventVisitor::setEventThresholdLevel(AEventVisitor::EventLevel newLevelThreshold)
