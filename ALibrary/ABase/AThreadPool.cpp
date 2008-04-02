@@ -4,6 +4,7 @@
 #include "ALock.hpp"
 
 #define DEFAULT_MONITOR_CYCLE_SLEEP 1000
+#define DEFAULT_STOP_CYCLE_SLEEP 100
 
 void AThreadPool::debugDump(std::ostream& os, int indent) const
 {
@@ -241,19 +242,19 @@ void AThreadPool::stop()
   setRunStateOnThreads(false);
 
   //a_Wait a bit for threads to stop
-  int retry1 = 10;
+  int retry1 = 30;
   while (retry1 && m_Threads.size() > 0)
   {
-    AThread::sleep(m_monitorCycleSleep);
+    AThread::sleep(DEFAULT_STOP_CYCLE_SLEEP);
     --retry1;
   }
   
   //a_Stop monitor and wait for it to exit
   m_MonitorThread.setRun(false);
-  int retry2 = 3;
+  int retry2 = 10;
   while (retry2 && m_MonitorThread.isRunning())
   {
-    AThread::sleep(m_monitorCycleSleep);
+    AThread::sleep(DEFAULT_STOP_CYCLE_SLEEP);
     --retry2;
   }
   if (!retry2 && m_MonitorThread.isRunning())
@@ -266,8 +267,7 @@ void AThreadPool::stop()
   {
     ALock lock(m_SynchObjectThreadPool);
     //a_Now that monitor is dead, kill anything that is still alive
-    THREADS::iterator it = m_Threads.begin();
-    while (it != m_Threads.end())
+    for (THREADS::iterator it = m_Threads.begin(); it != m_Threads.end(); ++it)
     {
       (*it)->terminate();
       delete (*it);

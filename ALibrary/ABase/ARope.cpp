@@ -277,7 +277,18 @@ size_t ARope::access(
     {
       //a_Spans beyond current block
       size_t bytesToCopy = m_BlockSize - index;
-      target.append((*cit)+index, bytesToCopy);
+      size_t written = target.append((*cit)+index, bytesToCopy);
+      switch(written)
+      {
+        case AConstant::unavail:
+        case AConstant::npos:
+          return (totalBytes ? totalBytes : written);
+        
+        default:
+          if (written < bytesToCopy)
+            return totalBytes + written;
+      }
+
       index = 0;
       ++cit;
       bytes -= bytesToCopy;
@@ -286,17 +297,34 @@ size_t ARope::access(
     else
     {
       //a_All data in current block
-      target.append((*cit)+index, bytes);
-      return bytes;
+      size_t written = target.append((*cit)+index, bytes);
+      switch(written)
+      {
+        case AConstant::unavail:
+        case AConstant::npos:
+          return (totalBytes ? totalBytes : written);
+      }
+      return totalBytes + written;
     }
 
     //a_Copy rest of the bytes
     while (cit != m_Blocks.end() && bytes)
     {
       size_t bytesToCopy = (bytes > m_BlockSize ? m_BlockSize : bytes);
-      target.append(*cit, bytesToCopy);
-      bytes -= bytesToCopy;
-      totalBytes += bytesToCopy;
+      size_t written = target.append(*cit, bytesToCopy);
+      switch(written)
+      {
+        case AConstant::unavail:
+        case AConstant::npos:
+          return (totalBytes ? totalBytes : written);
+        
+        default:
+          if (written < bytesToCopy)
+            return totalBytes + written;
+      }
+
+      bytes -= written;
+      totalBytes += written;
       ++cit;
     }
   }
@@ -305,8 +333,19 @@ size_t ARope::access(
   if (mp_LastBlock && m_LastBlockFree < m_BlockSize)
   {
     size_t bytesToCopy = (m_BlockSize - m_LastBlockFree < bytes ? m_BlockSize - m_LastBlockFree : bytes);
-    target.append(mp_LastBlock, bytesToCopy);
-    totalBytes += bytesToCopy;
+    size_t written = target.append(mp_LastBlock, bytesToCopy);
+    switch(written)
+    {
+      case AConstant::unavail:
+      case AConstant::npos:
+        return (totalBytes ? totalBytes : written);
+      
+      default:
+        if (written < bytesToCopy)
+          return totalBytes + written;
+    }
+
+    totalBytes += written;
   }
 
   return totalBytes;

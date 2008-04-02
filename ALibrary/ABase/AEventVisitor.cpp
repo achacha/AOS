@@ -230,7 +230,7 @@ void AEventVisitor::emit(AOutputBuffer& target, AEventVisitor::EventLevel thresh
 
   for(EVENTS::const_iterator cit = m_Events.begin(); cit != m_Events.end(); ++cit)
   {
-    if ((*cit)->m_level <= threshold)
+    if ((*cit) && (*cit)->m_level <= threshold)
       (*cit)->emit(target);
   }
 
@@ -322,12 +322,9 @@ void AEventVisitor::clear()
   m_LifespanTimer.start();
   m_stateTimer.clear();
 
-  EVENTS::iterator it = m_Events.begin();
-  while(it != m_Events.end())
-  {
-    delete *it;
-    ++it;
-  }
+  for (EVENTS::iterator it = m_Events.begin(); it != m_Events.end(); ++it)
+    pDelete(*it);
+
   pDelete(mp_CurrentEvent);
 }
 

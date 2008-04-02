@@ -294,7 +294,7 @@ protected:
   ARopeDeque m_LookaheadBuffer;
 
   size_t m_ReadBlock;
-  enum { DefaultReadBlock = 4096  };
+  enum { DefaultReadBlock = 32767 };
 
 private:
   AFile(const AFile&);  //a_Prevent copying of file objects due to handle sharing problems
