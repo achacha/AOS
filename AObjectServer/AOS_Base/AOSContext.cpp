@@ -123,7 +123,7 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   mp_RequestFile(NULL),
   m_ConnectionFlags(AOSContext::CONFLAG_LAST),
   m_ContextFlags(AOSContext::CTXFLAG_LAST),
-  m_EventVisitor(ASW("AOSContext:",10), AEventVisitor::EL_DEBUG)
+  m_EventVisitor(ASW("AOSContext:",11), AEventVisitor::EL_DEBUG)
 {
   m_EventVisitor.useName().append(AString::fromPointer(this));
   reset(pFile);
@@ -201,7 +201,7 @@ void AOSContext::finalize()
 void AOSContext::clear()
 {
   reset(NULL);
-  m_EventVisitor.startEvent(ASW("Clearing context",17));
+  m_EventVisitor.startEvent(ASW("Clearing context",16));
   m_EventVisitor.clear();
   m_ConnectionFlags.clear();
 }

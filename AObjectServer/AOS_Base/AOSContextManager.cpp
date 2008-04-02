@@ -128,7 +128,6 @@ AOSContextManager::~AOSContextManager()
     for (CONTEXT_HISTORY::iterator itH = m_History.begin(); itH != m_History.end(); ++itH)
     {
       delete (*itH);
-      
     }
     
     for (CONTEXT_INUSE::iterator itU = m_InUse.begin(); itU != m_InUse.end(); ++itU)
