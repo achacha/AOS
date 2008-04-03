@@ -157,21 +157,21 @@ function toggleDisplay(elementId)
 					</td>
 				</xsl:when>
 				<xsl:when test="@name='context'">
-					<td bgcolor="#d0ffd0" align="left">
+					<td bgcolor="#e0ffe0" align="left">
 <img id="pid.{$obj_parent_name}.context.{position()}" src="/images/arrow_blue_right.gif">
 	<xsl:attribute name="onclick"><xsl:text>javascript:return toggleDisplay('pid.</xsl:text><xsl:value-of select="$obj_parent_name"/><xsl:text>.context.</xsl:text><xsl:value-of select="position()"/><xsl:text>');</xsl:text></xsl:attribute>
 </img>
 <xsl:text disable-output-escaping="yes">  </xsl:text>
 <div id="pid.{$obj_parent_name}.context.{position()}.url">
-<xsl:attribute name="style">display: inline; background-color: #f82828; color: #000030;</xsl:attribute>
-<xsl:if test="@errors > 0"><xsl:value-of select="@errors"/> errors<br/></xsl:if>
+<xsl:attribute name="style">display: inline; color: #000030;</xsl:attribute>
+<xsl:if test="@errors > 0"><xsl:value-of select="@errors"/> error(s) <img alt="!" src="/images/exclamation.gif"/><br/></xsl:if>
 <xsl:choose>
 	<xsl:when test="url"><pre><xsl:value-of select="url"/></pre></xsl:when>
 	<xsl:otherwise>Unknown</xsl:otherwise>
 </xsl:choose>
 </div>
 <div id="pid.{$obj_parent_name}.context.{position()}.data">
-	<xsl:attribute name="style">display: none; background-color: #f8f8f8; color: #000030;border: thin dotted; border-width: 1px;</xsl:attribute>
+	<xsl:attribute name="style">display: none; color: #000030;border: thin dotted; border-width: 1px;</xsl:attribute>
 	<pre><xsl:value-of select="value"/></pre></div>
 					</td>
 					<td bgcolor="#d0ffd0" align="left" valign="center">

@@ -25,8 +25,6 @@ void AOSContextManager::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_Freestore.size()=" << m_Freestore.size() << std::endl;
-
   ADebugDumpable::indent(os, indent+1) << "m_InUse.size()=" << m_InUse.size() << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_InUse={" << std::endl;
   {
@@ -41,10 +39,10 @@ void AOSContextManager::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_History.size()=" << m_History.size() << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_History={" << std::endl;
   {
-    ALock lock(const_cast<ASync_CriticalSection *>(&m_HistorySync));
-    for (CONTEXT_HISTORY::const_iterator citH = m_History.begin(); citH != m_History.end(); ++citH)
+    ALock lock(const_cast<ABasePtrQueue *>(&m_History)->useSync());
+    for (const ABase *p = m_History.getHead(); p; p = p->getNext())
     {
-      (*citH)->debugDump(os, indent+2);
+      dynamic_cast<const ADebugDumpable *>(p)->debugDump(os, indent+2);
     }
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
@@ -72,7 +70,6 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
   }
 
   adminAddProperty(eBase, "history_max_size", AString::fromSize_t(m_HistoryMaxSize));
-  adminAddProperty(eBase, "freestore_max_size", AString::fromSize_t(m_FreestoreMaxSize));
 
   AXmlElement& eInUse = eBase.addElement("object");
   eInUse.addAttribute("name", "InUse");
@@ -90,26 +87,24 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     }
   }
 
-  AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "History");
-  CONTEXT_HISTORY::const_iterator citH = m_History.begin();
-  if (citH != m_History.end())
   {
-    ALock lock(m_HistorySync);
-    while(citH != m_History.end())
+    AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "History");
+    ALock lock(m_History.useSync());
+    for (ABase *p = m_History.useHead(); p; p = p->useNext())
     {
-      AXmlElement& eProp = adminAddProperty(eHistory, ASW("context",7), (*citH)->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
-      eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citH)->useEventVisitor().getErrorCount()));
-      eProp.addElement(ASW("url",3), (*citH)->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
-      ++citH;
+      AOSContext *pContext = dynamic_cast<AOSContext *>(p);
+      AXmlElement& eProp = adminAddProperty(eHistory, ASW("context",7), pContext->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
+      eProp.addAttribute(ASW("errors",6), AString::fromSize_t(pContext->useEventVisitor().getErrorCount()));
+      eProp.addElement(ASW("url",3), pContext->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
     }
   }
 }
 
 AOSContextManager::AOSContextManager(AOSServices& services) :
-  m_Services(services)
+  m_Services(services),
+  m_History(new ASync_CriticalSection())
 {
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
-  m_FreestoreMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/freestore-maxsize", 50);
 
   m_Queues.resize(AOSContextManager::STATE_LAST, NULL);
 
@@ -120,16 +115,6 @@ AOSContextManager::~AOSContextManager()
 {
   try
   {
-    for (CONTEXT_FREESTORE::iterator itF = m_Freestore.begin(); itF != m_Freestore.end(); ++itF)
-    {
-      delete (*itF);
-    }
-
-    for (CONTEXT_HISTORY::iterator itH = m_History.begin(); itH != m_History.end(); ++itH)
-    {
-      delete (*itH);
-    }
-    
     for (CONTEXT_INUSE::iterator itU = m_InUse.begin(); itU != m_InUse.end(); ++itU)
     {
       delete (*itU).first;
@@ -146,35 +131,14 @@ AOSContextManager::~AOSContextManager()
 AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
 {
   AASSERT(this, pSocket);
+  AOSContext *p = new AOSContext(pSocket, m_Services);
 
-  AOSContext *p = NULL;
-  {
-    ALock lock(m_FreestoreSync);
-    if (m_Freestore.size() > 0)
-    {
-      p = m_Freestore.back();
-      m_Freestore.pop_back();
-      p->reset(pSocket);
-
-      ARope rope("AOSContextManager::allocate[",28);
-      rope.append(AString::fromPointer(p));
-      rope.append(", pFile=",8);
-      rope.append(AString::fromPointer(pSocket));
-      rope.append("] freestore",11);
-      p->useEventVisitor().addEvent(rope);
-    }
-    else
-    {
-      p = new AOSContext(pSocket, m_Services);
-
-      ARope rope("AOSContextManager::allocate[",28);
-      rope.append(AString::fromPointer(p));
-      rope.append(", pFile=",8);
-      rope.append(AString::fromPointer(pSocket));
-      rope.append("] new create",12);
-      p->useEventVisitor().startEvent(rope);
-    }
-  }
+  ARope rope("AOSContextManager::allocate[",28);
+  rope.append(AString::fromPointer(p));
+  rope.append(", pFile=",8);
+  rope.append(AString::fromPointer(pSocket));
+  rope.append("] new create",12);
+  p->useEventVisitor().startEvent(rope);
 
   {
     ALock lock(m_InUseSync);
@@ -223,36 +187,12 @@ void AOSContextManager::deallocate(AOSContext *p)
   }
 
   //a_Add to history
+  if (m_History.size() >= m_HistoryMaxSize)
   {
-    ALock lock(m_HistorySync);
-    if (m_History.size() >= m_HistoryMaxSize)
-    {
-      //a_Remove last and put into free store
-      pFree = m_History.back();
-      m_History.pop_back();
-    }
-    m_History.push_front(p);
+    //a_Remove last first
+    delete m_History.pop();
   }
-
-  //a_Freestore
-  if (pFree)
-  {
-    //a_Check if freestore has room
-    {
-      ALock lock(m_FreestoreSync);
-      if (m_Freestore.size() < m_FreestoreMaxSize)
-      {
-        pFree->clear();
-        m_Freestore.push_front(pFree);
-        pFree = NULL;
-      }
-      else
-      {
-        //a_Release it we do not need it
-        delete pFree;
-      }
-    }
-  }
+  m_History.push(p);
 }
 
 void AOSContextManager::setQueueForState(AOSContextManager::ContextQueueState state, AOSContextQueueInterface *pQueue)

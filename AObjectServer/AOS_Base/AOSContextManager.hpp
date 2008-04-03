@@ -5,6 +5,7 @@
 #include "AOSAdminInterface.hpp"
 #include "AOSContext.hpp"
 #include "ASync_CriticalSection.hpp"
+#include "ABasePtrQueue.hpp"
 
 class AOSServices;
 class AOSContextQueueInterface;
@@ -77,16 +78,8 @@ private:
   ASync_CriticalSection m_InUseSync;
   
   //! Context history, after they scroll off here they go into the freestore
-  typedef std::list<AOSContext *> CONTEXT_HISTORY;
-  CONTEXT_HISTORY m_History;
-  ASync_CriticalSection m_HistorySync;
+  ABasePtrQueue m_History;
   size_t m_HistoryMaxSize;
-
-  //! Contexts available for reuse
-  typedef std::deque<AOSContext *> CONTEXT_FREESTORE;
-  CONTEXT_FREESTORE m_Freestore;
-  ASync_CriticalSection m_FreestoreSync;
-  size_t m_FreestoreMaxSize;
 
   //! Reference to the services
   AOSServices& m_Services;
