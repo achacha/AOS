@@ -10,3 +10,23 @@ ABase::ABase() :
 ABase::~ABase()
 {
 }
+
+ABase *ABase::useNext()
+{
+  return pNext;
+}
+
+ABase *ABase::usePrev()
+{
+  return pPrev;
+}
+
+const ABase *ABase::getNext() const
+{
+  return pNext;
+}
+
+const ABase *ABase::getPrev() const
+{
+  return pPrev;
+}

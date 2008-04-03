@@ -86,6 +86,18 @@ public:
   ABase *useTail();
 
   /*!
+  Access the head pointer
+  Use sync to guarantee thread safety
+  */
+  const ABase *getHead() const;
+
+  /*!
+  Access the head pointer
+  Use sync to guarantee thread safety
+  */
+  const ABase *getTail() const;
+
+  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;

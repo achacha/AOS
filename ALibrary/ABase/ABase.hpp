@@ -27,6 +27,30 @@ public:
   //! dtor
   virtual ~ABase();
 
+  /*!
+  Get the next item in the chain
+  @return NULL if none
+  */
+  ABase *useNext();
+
+  /*!
+  Get the previous item in the chain
+  @return NULL if none
+  */
+  ABase *usePrev();
+
+  /*!
+  Get the next item in the chain
+  @return NULL if none
+  */
+  const ABase *getNext() const;
+
+  /*!
+  Get the previous item in the chain
+  @return NULL if none
+  */
+  const ABase *getPrev() const;
+
 protected:
   /*!
   Next pointer in some collection

@@ -113,3 +113,13 @@ ABase *ABasePtrQueue::useTail()
 {
   return mp_Tail;
 }
+
+const ABase *ABasePtrQueue::getHead() const
+{
+  return mp_Head;
+}
+
+const ABase *ABasePtrQueue::getTail() const
+{
+  return mp_Tail;
+}
