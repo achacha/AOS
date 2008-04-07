@@ -1287,7 +1287,15 @@ bool AOSContext::processStaticPage()
         else
           m_EventVisitor.addEvent(ARope("AOSContext::processStaticPage: Streamed bytes: ",16)+AString::fromSize_t(bytesWritten), AEventVisitor::EL_INFO);
 
-        AASSERT(this, bytesWritten == bytesToSend);
+        if (bytesWritten != bytesToSend)
+        {
+          AString str("AOSContext::processStaticPage: Failed to write complete data: ");
+          str.append(AString::fromSize_t(bytesWritten));
+          str.append('/');
+          str.append(AString::fromSize_t(bytesToSend));
+          m_EventVisitor.addEvent(str, AEventVisitor::EL_ERROR);
+        }
+        
         m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
         return true;
       }

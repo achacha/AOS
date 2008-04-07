@@ -168,8 +168,6 @@ void AOSContextManager::deallocate(AOSContext *p)
   else
     return;
 
-  AOSContext *pFree = NULL;
-
   //a_Log
   ARope rope("AOSContextManager::deallocate[",30);
   rope.append(AString::fromPointer(p));
