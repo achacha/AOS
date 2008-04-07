@@ -274,7 +274,6 @@ AXmlElement& AEventVisitor::emitXml(AXmlElement& thisRoot, AEventVisitor::EventL
 
   //a_Emit events
   AXmlElement& events = thisRoot.addElement(ASW("events",6));
-  EVENTS::const_iterator cit = m_Events.begin();
   for(EVENTS::const_iterator cit = m_Events.begin(); cit != m_Events.end(); ++cit)
   {
     if ((*cit)->m_level <= threshold)

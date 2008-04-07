@@ -42,7 +42,7 @@ if (TARGET_PATH == "/?" or TARGET_PATH == "?"):
 
 # Create local _debug and _release
 print "|=================================================CREATE LOCAL ENVIRONMENT===|";
-CMD = "create_distribution.py";
+CMD = "gather_distribution.py";
 if (verbose == 1):
 	CMD += " verbose";
 if (clean == 1):
@@ -59,7 +59,7 @@ makeSystemCall(CMD);
 
 # Create target _debug and _release with build output
 print "|=======================================================CREATE DISTRIBUTION===|";
-CMD = "create_distribution.py "+output_path;
+CMD = "gather_distribution.py "+output_path;
 if (verbose == 1):
 	CMD += " verbose";
 if (clean == 1):

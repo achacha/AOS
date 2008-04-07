@@ -210,7 +210,7 @@ bool ADebugDumpable::isPointerValid(void *p)
     }
 
     default:
-      AASSERT(NULL, 0);  //a_not a 32bit or 64bit machine?
+      ATHROW(NULL, AException::ProgrammingError);  //a_Neither 32 or 64 bit?
   }
 
   return true;

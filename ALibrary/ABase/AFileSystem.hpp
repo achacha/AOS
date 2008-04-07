@@ -14,7 +14,6 @@ public:
   Path types used by isA, getType
   */
   enum PathType {
-    DoesNotExist = 0x0000,
     Exists       = 0x0001,
     Directory    = 0x0002,
     File         = 0x0004,
@@ -23,7 +22,8 @@ public:
     Encrypted    = 0x0020,
     System       = 0x0040,
     Hidden       = 0x0080,
-    Temporary    = 0x0100
+    Temporary    = 0x0100,
+    DoesNotExist = 0xFFFF
   };
 
   class FileInfo : public AXmlEmittable, public ADebugDumpable

@@ -604,7 +604,7 @@ size_t AFile::write(
 )
 {
   AASSERT(this, length <= line.getSize());
-  if (AConstant::npos)
+  if (length != AConstant::npos)
     return _write(line.data(), length);
   else
     return _write(line.data(), line.getSize());

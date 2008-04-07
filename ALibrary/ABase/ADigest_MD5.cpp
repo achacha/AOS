@@ -301,9 +301,6 @@ void ADigest_MD5::_transform(const AString& strData, u4 offset)
 
 u4 ADigest_MD5::_rotate_left(u4 x, int n)
 {
-  //check that u4 is 4 bytes long - true in Visual C++ 6 and 32 bit Windows
-  AASSERT(NULL, sizeof(x) == 4);
-
   //rotate and return x
   return (x << n) | (x >> (32-n));
 }

@@ -251,7 +251,7 @@ void AStringHashMap::fromAFile(AFile& afile)
 
   if (size > 0)
   {
-    AString str(size, 128);
+    str.clear();
     afile.read(str, size);
     _parse(str);
   }

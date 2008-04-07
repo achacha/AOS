@@ -174,6 +174,7 @@ private:
   char *mp_FrontBlock;                       //a_Back line is not added to list until it is full
   char *mp_BackBlock;                        //a_Front line is not added to list until it is full
 
+  //a_TODO: Convert to use ABasePtrQueue and create holder for char * based on ABase (or use AString)
   typedef std::deque<char *> BlockContainer;
   BlockContainer m_Blocks;                   //a_Collection of memory blocks
   BlockContainer m_FreeStore;                //a_Storage for released blocks

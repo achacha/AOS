@@ -177,9 +177,9 @@ class ElRocho
 #undef AFILE_TRACER_DEBUG_OBJECT
 
 #ifdef ENABLE_AFILE_TRACER_DEBUG
-#  define AFILE_TRACER_DEBUG_MESSAGE(pccMessage, pcvAddress)  do{ElRocho tacoPico(pccMessage, pcvAddress, 0x1, AFILE_TRACER_FILENAME);}while(0)
-#  define AFILE_TRACER_DEBUG_SCOPE(pccMessage, pcvAddress)  ElRocho tacoGrande(pccMessage, pcvAddress, 0x0, AFILE_TRACER_FILENAME);
-#  define AFILE_TRACER_DEBUG_OBJECT(pccMessage, pvObject, iObjectSize) do{ElRocho::dumpObject(pccMessage, pvObject, iObjectSize, AFILE_TRACER_FILENAME);}while(0)
+#  define AFILE_TRACER_DEBUG_MESSAGE(pccMessage, pcvAddress)  { ElRocho tacoPico(pccMessage, pcvAddress, 0x1, AFILE_TRACER_FILENAME); }
+#  define AFILE_TRACER_DEBUG_SCOPE(pccMessage, pcvAddress)  ElRocho tacoGrande(pccMessage, pcvAddress, 0x0, AFILE_TRACER_FILENAME)
+#  define AFILE_TRACER_DEBUG_OBJECT(pccMessage, pvObject, iObjectSize) ElRocho::dumpObject(pccMessage, pvObject, iObjectSize, AFILE_TRACER_FILENAME)
 #else
 #  define AFILE_TRACER_DEBUG_MESSAGE(pccMessage, pcvAddress) ((void *)NULL)
 #  define AFILE_TRACER_DEBUG_SCOPE(pccMessage, pcvAddress) ((void *)NULL)
