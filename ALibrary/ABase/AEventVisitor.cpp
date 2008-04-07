@@ -33,11 +33,9 @@ void AEventVisitor::debugDump(std::ostream& os, int indent) const
     os << "NULL" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Events={" << std::endl;
-  EVENTS::const_iterator cit = m_Events.begin();
-  while(cit != m_Events.end()) 
+  for (const ABase *p = m_Events.getHead(); p; p = p->getNext())
   {
-    (*cit)->debugDump(os, indent+2);
-    ++cit;
+    dynamic_cast<const AEventVisitor::Event *>(p)->debugDump(os, indent+2);
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
@@ -116,11 +114,12 @@ AEventVisitor::Event::Event(
 
 AEventVisitor::~AEventVisitor()
 {
-  delete mp_CurrentEvent;
-  for (EVENTS::iterator it = m_Events.begin(); it != m_Events.end(); ++it)
+  try
   {
-    delete *it;
+    delete mp_CurrentEvent;
+    m_Events.clear();
   }
+  catch(...) {}
 }
 
 bool AEventVisitor::isLogging(EventLevel level) const
@@ -144,7 +143,7 @@ void AEventVisitor::startEvent(
     mp_CurrentEvent->m_interval = m_stateTimer.getInterval();
 
     //a_Push current event into event list
-    m_Events.push_back(mp_CurrentEvent);
+    m_Events.push(mp_CurrentEvent);
   }
 
   //a_New event
@@ -180,7 +179,7 @@ void AEventVisitor::endEvent()
 
   //a_Push current event into event list
   if (mp_CurrentEvent)
-    m_Events.push_back(mp_CurrentEvent);
+    m_Events.push(mp_CurrentEvent);
 
   //a_New event
   mp_CurrentEvent = NULL;
@@ -228,10 +227,11 @@ void AEventVisitor::emit(AOutputBuffer& target, AEventVisitor::EventLevel thresh
   target.append('{');
   target.append(AConstant::ASTRING_EOL);
 
-  for(EVENTS::const_iterator cit = m_Events.begin(); cit != m_Events.end(); ++cit)
+  for (const ABase *p = m_Events.getHead(); p; p = p->getNext())
   {
-    if ((*cit) && (*cit)->m_level <= threshold)
-      (*cit)->emit(target);
+    const AEventVisitor::Event *pEvent = dynamic_cast<const AEventVisitor::Event *>(p);
+    if (pEvent->m_level <= threshold)
+      pEvent->emit(target);
   }
 
   //a_Emit current event
@@ -274,10 +274,11 @@ AXmlElement& AEventVisitor::emitXml(AXmlElement& thisRoot, AEventVisitor::EventL
 
   //a_Emit events
   AXmlElement& events = thisRoot.addElement(ASW("events",6));
-  for(EVENTS::const_iterator cit = m_Events.begin(); cit != m_Events.end(); ++cit)
+  for (const ABase *p = m_Events.getHead(); p; p = p->getNext())
   {
-    if ((*cit)->m_level <= threshold)
-      (*cit)->emitXml(events.addElement(ASW("event",5)));
+    const AEventVisitor::Event *pEvent = dynamic_cast<const AEventVisitor::Event *>(p);
+    if (pEvent->m_level <= threshold)
+      pEvent->emitXml(events.addElement(ASW("event",5)));
   }
   if (mp_CurrentEvent)
   {
@@ -320,9 +321,6 @@ void AEventVisitor::clear()
   m_LifespanTimer.clear();
   m_LifespanTimer.start();
   m_stateTimer.clear();
-
-  for (EVENTS::iterator it = m_Events.begin(); it != m_Events.end(); ++it)
-    pDelete(*it);
 
   pDelete(mp_CurrentEvent);
 }

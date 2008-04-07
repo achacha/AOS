@@ -6,9 +6,7 @@
 #include "ADebugDumpable.hpp"
 #include "AXmlEmittable.hpp"
 #include "ATimer.hpp"
-
-class AException;
-class AEventVisitor;
+#include "ABasePtrQueue.hpp"
 
 /*!
 Macro for logging events based on level
@@ -226,8 +224,7 @@ private:
     virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
   };
 
-  typedef std::list<Event *> EVENTS;
-  EVENTS m_Events;
+  ABasePtrQueue m_Events;
 
   //a_Event visitor's name and overall lifespan timer
   AString m_Name;

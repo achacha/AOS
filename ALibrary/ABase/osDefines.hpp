@@ -76,6 +76,7 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
 //  #pragma warning (disable:6011)  // Dereferencing NULL pointer (STL deque warning)
   #pragma warning (disable:4245)  // 'argument' : conversion from '' to 'size_t', signed/unsigned mismatch (due to use of enum in AConstant for npos/etc)
   #pragma warning(disable:4512)   // assignment operator could not be generated (some classes have reference members to prevent copy)
+  #pragma warning(disable:4100)   // unreferenced formal parameter
 
 #elif defined (__unix)
   //a_For all UNIX
