@@ -91,6 +91,7 @@ AThreadPool::~AThreadPool()
 
 void AThreadPool::emit(AOutputBuffer&) const
 {
+  //TODO: display status, may need a safe way to do this
 }
 
 u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
@@ -119,9 +120,9 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
                !pThis->m_TotalThreadCreationCount 
             || !pThis->m_CreateNewThreads
           )
+          || !thread.isRun()
       )
       {
-        pThis->m_ThreadPoolTimer.stop();
         thread.setRun(false);
         break;
       }
@@ -198,6 +199,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
       }
     }
     while (thread.isRun());
+    pThis->m_ThreadPoolTimer.stop();
   }
   catch(AException& ex)
   {
@@ -217,7 +219,11 @@ void AThreadPool::start()
   if (!m_MonitorThread.isThreadActive() || !m_MonitorThread.isRunning())
   {
     m_CreateNewThreads = true;
+    if (!m_TotalThreadCreationCount)
+      m_TotalThreadCreationCount = AConstant::npos;
+    
     m_MonitorThread.start();
+
   }
 }
 
@@ -238,6 +244,9 @@ void AThreadPool::setRunStateOnThreads(bool isRun)
 
 void AThreadPool::stop()
 {
+  m_CreateNewThreads = false;
+  m_TotalThreadCreationCount = 0;
+
   //a_Signal threads to stop
   setRunStateOnThreads(false);
 
@@ -278,16 +287,19 @@ void AThreadPool::stop()
 
 void AThreadPool::setThreadCount(size_t count)
 {
+  ALock lock(m_SynchObjectThreadPool);
   m_DesiredThreadCount = count;
 }
 
 void AThreadPool::setThis(ABase *p)
 {
+  ALock lock(m_SynchObjectThreadPool);
   mp_This = p;
 }
 
 void AThreadPool::setParameter(ABase *p)
 {
+  ALock lock(m_SynchObjectThreadPool);
   mp_Parameter = p;
 }
 
@@ -320,8 +332,12 @@ size_t AThreadPool::getThreadCount() const
 
 size_t AThreadPool::getActiveThreadCount()
 {
-  ALock lock(m_SynchObjectThreadPool);
-  return m_Threads.size();
+  size_t ret = 0;
+  {
+    ALock lock(m_SynchObjectThreadPool);
+    ret = m_Threads.size();
+  }
+  return ret;
 }
 
 u4 AThreadPool::getMonitorCycleSleep() const
@@ -346,6 +362,7 @@ ASynchronization& AThreadPool::useSync()
 
 void AThreadPool::setTotalThreadCreationCount(size_t count)
 {
+  ALock lock(m_SynchObjectThreadPool);
   m_TotalThreadCreationCount = count;
 }
 
