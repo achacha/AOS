@@ -51,13 +51,17 @@ AXmlElement& AFileSystem::FileInfo::emitXml(AXmlElement& thisRoot) const
   else
     thisRoot.useAttributes().insert(ASW("file",4), AConstant::ASTRING_ONE);
 
-  if (typemask & AFileSystem::ReadOnly) thisRoot.useAttributes().insert(ASW("read-only",9), AConstant::ASTRING_TRUE);
-  if (typemask & AFileSystem::Compressed) thisRoot.useAttributes().insert(ASW("compressed",10), AConstant::ASTRING_TRUE);
-  if (typemask & AFileSystem::Encrypted) thisRoot.useAttributes().insert(ASW("encrypted",9), AConstant::ASTRING_TRUE);
-  if (typemask & AFileSystem::System) thisRoot.useAttributes().insert(ASW("system",6), AConstant::ASTRING_TRUE);
-  if (typemask & AFileSystem::Hidden) thisRoot.useAttributes().insert(ASW("hidden",6), AConstant::ASTRING_TRUE);
-  if (typemask & AFileSystem::Temporary) thisRoot.useAttributes().insert(ASW("temporary",9), AConstant::ASTRING_TRUE);
-  if (typemask & AFileSystem::DoesNotExist) thisRoot.useAttributes().insert(ASW("exist",5), AConstant::ASTRING_FALSE);
+  if (!typemask)
+    thisRoot.useAttributes().insert(ASW("exist",5), AConstant::ASTRING_FALSE);
+  else
+  {
+    if (typemask & AFileSystem::ReadOnly) thisRoot.useAttributes().insert(ASW("read-only",9), AConstant::ASTRING_TRUE);
+    if (typemask & AFileSystem::Compressed) thisRoot.useAttributes().insert(ASW("compressed",10), AConstant::ASTRING_TRUE);
+    if (typemask & AFileSystem::Encrypted) thisRoot.useAttributes().insert(ASW("encrypted",9), AConstant::ASTRING_TRUE);
+    if (typemask & AFileSystem::System) thisRoot.useAttributes().insert(ASW("system",6), AConstant::ASTRING_TRUE);
+    if (typemask & AFileSystem::Hidden) thisRoot.useAttributes().insert(ASW("hidden",6), AConstant::ASTRING_TRUE);
+    if (typemask & AFileSystem::Temporary) thisRoot.useAttributes().insert(ASW("temporary",9), AConstant::ASTRING_TRUE);
+  }
 
   thisRoot.useAttributes().insert(ASW("typemask",8), AString::fromS4(typemask, 16));
   thisRoot.useAttributes().insert(ASW("length",6), AString::fromS8(length));
