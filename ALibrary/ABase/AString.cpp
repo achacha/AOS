@@ -2794,10 +2794,26 @@ size_t AString::findPattern(
 {
   for (size_t pos = startIndex; pos < m_Length; ++pos)
   {
-    if (matchPattern(pattern))
+    if (matchPattern(pattern, pos))
       return pos;
   }
   return AConstant::npos;
+}
+
+bool AString::startsWith(const AString& source) const
+{
+  if (!m_Length || source.m_Length > m_Length)
+    return false;
+
+  return !strncmp(mp_Buffer, source.mp_Buffer, source.m_Length);
+}
+
+bool AString::startsWithNoCase(const AString& source) const
+{
+  if (!m_Length || source.m_Length > m_Length)
+    return false;
+
+  return !_strnicmp(mp_Buffer, source.mp_Buffer, source.m_Length);
 }
 
 bool AString::endsWith(const AString& source) const

@@ -226,6 +226,17 @@ void testReverse(int& iRet)
   ASSERT_UNIT_TEST(str.equals(ASWNL("somefile")), "AString::rremove", "0", iRet);
 }
 
+void testStringPartial(int& iRet)
+{
+  AString str("foo/bar");
+  ASSERT_UNIT_TEST(str.startsWith(ASWNL("foo")), "AString::startsWith", "0", iRet);
+  ASSERT_UNIT_TEST(str.startsWithNoCase(ASWNL("Foo")), "AString::startsWith", "1", iRet);
+  ASSERT_UNIT_TEST(str.startsWith(ASWNL("f")), "AString::startsWith", "2", iRet);
+  ASSERT_UNIT_TEST(str.endsWith(ASWNL("bar")), "AString::endsWith", "0", iRet);
+  ASSERT_UNIT_TEST(str.endsWithNoCase(ASWNL("O/BaR")), "AString::endsWith", "1", iRet);
+  ASSERT_UNIT_TEST(str.endsWith(ASWNL("ar")), "AString::endsWith", "2", iRet);
+}
+
 void testPattern(int& iRet)
 {
   AString base("HTTP/1.0 200 Ok?");
@@ -254,6 +265,8 @@ int ut_AString_Search()
 
   testSearchBasic(iRet);
   testReverse(iRet);
+  testStringPartial(iRet);
+  testPattern(iRet);
 
   return iRet;
 }

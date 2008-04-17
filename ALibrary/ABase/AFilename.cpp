@@ -582,7 +582,7 @@ void AFilename::removeExtension(int count)
   }
 }
 
-void AFilename::compactPath()
+bool AFilename::compactPath()
 {
   LIST_AString pathNames(m_PathNames.begin(), m_PathNames.end());
   m_PathNames.clear();
@@ -597,18 +597,32 @@ void AFilename::compactPath()
     while(it != pathNames.end())
     {
       if (it->equals(AConstant::ASTRING_PERIOD))
+      {
+        ++it;
         continue;
+      }
       else if (it->equals(AConstant::ASTRING_DOUBLEPERIOD))
       {
         if (
-          m_PathNames.size() == 1 
-          || (
+          (
+            m_PathNames.size() == 1 
+            && !m_PathNames.back().equals(AConstant::ASTRING_DOUBLEPERIOD)
+          )
+          ||
+          (
             m_PathNames.size() > 1 
             && !m_PathNames.back().equals(AConstant::ASTRING_PERIOD)
             && !m_PathNames.back().equals(AConstant::ASTRING_DOUBLEPERIOD)
           )
         )
-          m_PathNames.pop_back();
+        {
+          if (m_PathNames.back().equals(AConstant::ASTRING_PERIOD))
+            m_PathNames.back().assign(AConstant::ASTRING_DOUBLEPERIOD);
+          else
+            m_PathNames.pop_back();
+        }
+        else
+          m_PathNames.push_back(*it);
       }
       else
         m_PathNames.push_back(*it);
@@ -616,4 +630,6 @@ void AFilename::compactPath()
       ++it;
     }
   }
+
+  return (!m_PathNames.front().startsWith(AConstant::ASTRING_DOUBLEPERIOD));
 }

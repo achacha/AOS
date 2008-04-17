@@ -165,8 +165,12 @@ public:
 
   /*!
   Compact the path removing any /./ and substituting a/../b/ with b/
+
+  @return false if the relative path  is negative, when added to a base path will re-compact below the base (starts with ../)
+                i.e. if after compacting something like ../foo results
+          true if the first path ofset is not a negative redirect
   */
-  void compactPath();
+  bool compactPath();
 
   /*!
   Removes base path from given path

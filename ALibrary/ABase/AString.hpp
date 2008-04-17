@@ -315,6 +315,16 @@ public:
   bool equalsNoCase(const char *pccSource, size_t length = AConstant::npos) const;
   
   /*!
+  Checks if the string starts with another
+  */
+  bool startsWith(const AString&) const;
+
+  /*!
+  Checks if the string starts with another (ignores case)
+  */
+  bool startsWithNoCase(const AString&) const;
+
+  /*!
   Checks if the string ends with another
   */
   bool endsWith(const AString&) const;

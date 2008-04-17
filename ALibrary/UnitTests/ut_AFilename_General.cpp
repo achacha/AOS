@@ -142,6 +142,40 @@ void testManipulate(int& iRet)
   ASSERT_UNIT_TEST(f.isRelativePath(), "AFilename::removeBasePath", "1", iRet);
 }
 
+void testCompact(int& iRet)
+{
+  AString str("./../foo/../bar/../baz/");
+  AFilename f(str, true);
+  ASSERT_UNIT_TEST(false == f.compactPath(), "AFilename::compactPath", "0", iRet);
+  str.clear();
+  f.emit(str);
+  ASSERT_UNIT_TEST(str.equals(ASWNL("../baz/")), "AFilename::compactPath", "1", iRet);
+
+  str.assign("../../foo/bar/baz/.././gaz/");
+  f.clear();
+  f.set(str, false);
+  ASSERT_UNIT_TEST(false == f.compactPath(), "AFilename::compactPath", "2", iRet);
+  str.clear();
+  f.emit(str);
+  ASSERT_UNIT_TEST(str.equals(ASWNL("../../foo/bar/gaz/")), "AFilename::compactPath", "3", iRet);
+
+  str.assign("foo/bar/../../../baz/");
+  f.clear();
+  f.set(str, false);
+  ASSERT_UNIT_TEST(false == f.compactPath(), "AFilename::compactPath", "2", iRet);
+  str.clear();
+  f.emit(str);
+  ASSERT_UNIT_TEST(str.equals(ASWNL("../baz/")), "AFilename::compactPath", "3", iRet);
+
+  str.assign("foo/bar/.././baz/../gaz/eee/");
+  f.clear();
+  f.set(str, false);
+  ASSERT_UNIT_TEST(true == f.compactPath(), "AFilename::compactPath", "2", iRet);
+  str.clear();
+  f.emit(str);
+  ASSERT_UNIT_TEST(str.equals(ASWNL("foo/gaz/eee/")), "AFilename::compactPath", "3", iRet);
+}
+
 int ut_AFilename_General()
 {
   std::cerr << "ut_AFilename_General" << std::endl;
@@ -151,6 +185,7 @@ int ut_AFilename_General()
   testCompare(iRet);
   testValid(iRet);
   testManipulate(iRet);
+  testCompact(iRet);
 
   return iRet;
 }
