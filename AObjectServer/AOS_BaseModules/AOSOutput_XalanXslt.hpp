@@ -4,6 +4,15 @@
 #include "apiAOS_BaseModules.hpp"
 #include "AXsl.hpp"
 
+/*!
+Xalan XSL transform
+
+<output class="XalanXslt">
+	<filename>xsl/file.xsl</filename>
+</output>
+
+Filename relative to the data directory.
+*/
 class AOS_BASEMODULES_API AOSOutput_XalanXslt : public AOSOutputGeneratorInterface
 {
 public:

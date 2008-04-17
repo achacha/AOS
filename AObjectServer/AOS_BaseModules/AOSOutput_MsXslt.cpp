@@ -156,7 +156,7 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
       context.useOutputBuffer().append((LPCSTR)xmlStr);
     }
   }
-  catch(_com_error &e)
+  catch(_com_error& e)
 	{
    	_bstr_t err = _bstr_t("COM_Error\n") + _bstr_t( e.Error()) + _bstr_t("\n") + e.ErrorMessage() + _bstr_t("\n") + e.Source()+ _bstr_t("\n") + e.Description() ;
     context.addError(getClass(), AString((LPCSTR)err));

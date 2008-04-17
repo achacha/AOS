@@ -4,6 +4,15 @@
 #ifdef AOS__USE_MSXML4__
 #include "apiAOS_BaseModules.hpp"
 
+/*!
+XSL transform
+
+<output class="Xslt">
+	<filename>xsl/file.xsl</filename>
+</output>
+
+Filename relative to the data directory.
+*/
 class AOS_BASEMODULES_API AOSOutput_MsXslt : public AOSOutputGeneratorInterface
 {
 public:

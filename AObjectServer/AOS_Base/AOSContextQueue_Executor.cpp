@@ -142,6 +142,8 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
             pContext->useEventVisitor().startEvent(ASW("Emitting event visitor",22), AEventVisitor::EL_INFO);
             pContext->useEventVisitor().emitXml(pContext->useModel().addElement(ASW("AEventVisitor",13)));
             pContext->useEventVisitor().endEvent();
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
+            continue;
           }
         }
 
