@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- /config/base-modules -->
-<base-modules/>
+<base-modules>
+  <AOSOutput_MsXslt>
+    <cache desc="XSL stylesheet cache">false</cache>
+  </AOSOutput_MsXslt>
+</base-modules>

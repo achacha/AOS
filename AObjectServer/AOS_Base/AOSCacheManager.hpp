@@ -13,10 +13,6 @@ class AOSContext;
 class AOS_BASE_API AOSCacheManager : public AOSAdminInterface
 {
 public:
-  static const AString STATIC_CACHE_ENABLED;    //a_Path to static cache enabled
-  static const AString TEMPLATE_CACHE_ENABLED;  //a_Path to template cache enabled
-
-public:
   AOSCacheManager(AOSServices&);
   virtual ~AOSCacheManager();
   
@@ -62,11 +58,13 @@ private:
 
   //a_Static file cache
   ACache_FileSystem *mp_StaticFileCache;
+  bool m_IsStaticFileCacheEnabled;
 
   //a_Parsed template cache
   typedef std::map<AFilename, ATemplate *> TEMPLATE_CACHE;
   TEMPLATE_CACHE *mp_TemplateCache;
   ASync_CriticalSectionSpinLock m_TemplateSync;
+  bool m_IsTemplateCacheEnabled;
 
   //a_Status template cache
   typedef std::map<int, ATemplate *> STATUS_TEMPLATE_CACHE;

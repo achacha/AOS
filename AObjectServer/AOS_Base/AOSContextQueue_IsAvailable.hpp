@@ -73,6 +73,11 @@ private:
 
   // Queue and synch
   volatile long m_currentQueue;
+
+  // Sleep times
+  int m_NoDataTimeout;
+  int m_EmptyQueueDelay;
+  int m_LoopDelay;
 };
 
 #endif // INCLUDED__AOSContextQueue_IsAvailable_HPP__

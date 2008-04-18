@@ -27,6 +27,8 @@
           </a><br/>
         </xsl:if>
         <xsl:apply-templates select="file"/>
+        <br/>
+        <i><small>Request time: <xsl:value-of select="/root/SESSION/last-used/interval"/>ms</small></i>
       </body>
     </html>
   </xsl:template>

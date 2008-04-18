@@ -3,6 +3,7 @@
 
 #ifdef AOS__USE_MSXML4__
 #include "apiAOS_BaseModules.hpp"
+#include "ASync_CriticalSection.hpp"
 
 /*!
 XSL transform
@@ -35,6 +36,12 @@ public:
   //! Deinitialization
   virtual void deinit();
 
+  /*!
+  AOSAdminInterface
+  */
+  void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
+  void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
+
 private:
   struct XslDocHolder
   {
@@ -43,9 +50,14 @@ private:
   };
   typedef std::map<AString, XslDocHolder> DocContainer;
   DocContainer m_Dox;
+  bool m_IsCacheEnabled;
+  ASync_CriticalSection m_CacheSync;
 
+  //a_Wrapper to cache
+  AOSOutput_MsXslt::XslDocHolder *_getXslDocHolder(const AFilename&);
+  
   //a_Read Xslt file to the cache
-  AOSOutput_MsXslt::XslDocHolder *_readXslFile(const AString& filename);
+  AOSOutput_MsXslt::XslDocHolder *_readXslFile(const AString&);
   void _dumpToFile(ARope&);
 };
 

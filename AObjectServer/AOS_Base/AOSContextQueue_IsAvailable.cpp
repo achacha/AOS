@@ -36,6 +36,10 @@ AOSContextQueue_IsAvailable::AOSContextQueue_IsAvailable(
   for (size_t i=0; i<m_queueCount; ++i)
     m_Queues.at(i) = new AOSContextQueue_IsAvailable::QueueWithThread();
 
+  m_NoDataTimeout = m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/no-data-timeout",57), 60000);
+  m_EmptyQueueDelay = m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/empty-queue-sleep-delay",65), 20);
+  m_LoopDelay = m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/loop-delay",52), 5);
+
   adminRegisterObject(services.useAdminRegistry());
 }
 
@@ -64,6 +68,24 @@ void AOSContextQueue_IsAvailable::adminEmitXml(AXmlElement& eBase, const AHTTPRe
     eBase,
     ASW("CurrentQueue",12),
     AString::fromInt(m_currentQueue % m_queueCount)
+  );
+
+  adminAddProperty(
+    eBase,
+    ASW("NoDataTimeout",13),
+    AString::fromInt(m_NoDataTimeout)
+  );
+
+  adminAddProperty(
+    eBase,
+    ASW("EmptyQueueDelay",15),
+    AString::fromInt(m_EmptyQueueDelay)
+  );
+
+  adminAddProperty(
+    eBase,
+    ASW("LoopDelay",9),
+    AString::fromInt(m_LoopDelay)
   );
 
   adminAddProperty(
@@ -179,10 +201,6 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
   timeout.tv_sec  = 0;
   timeout.tv_usec = 0;
 
-  static const int NO_DATA_TIMEOUT = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/no-data-timeout",57), 60000);
-  static const int SLEEP_DELAY = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/empty-queue-sleep-delay",65), 20);
-  static const int LOOP_DELAY = pOwner->m_Services.useConfiguration().getConfigRoot().getInt(ASW("/config/server/context-queue/is-available/loop-delay",52), 5);
-
   thread.setRunning(true);
   while (thread.isRun())
   {
@@ -250,7 +268,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   break;
 
                   case AConstant::unavail:
-                    if ((*itMove)->useTimeoutTimer().getInterval() > NO_DATA_TIMEOUT)
+                    if ((*itMove)->useTimeoutTimer().getInterval() > pOwner->m_NoDataTimeout)
                     {
                       AString str;
                       str.append("AOSContextQueue_IsAvailable: No data (non-blocking) after timeout: ",67);
@@ -288,7 +306,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
               else
               {
                 //a_Select called on this AOSContext and no data available
-                if ((*it)->useTimeoutTimer().getInterval() > NO_DATA_TIMEOUT)
+                if ((*it)->useTimeoutTimer().getInterval() > pOwner->m_NoDataTimeout)
                 {
                   REQUESTS::iterator itMove = it;
                   ++it;
@@ -323,7 +341,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
             it = pThis->queue.begin();
             while (it != pThis->queue.end())
             {
-              if ((*it)->useTimeoutTimer().getInterval() > NO_DATA_TIMEOUT)
+              if ((*it)->useTimeoutTimer().getInterval() > pOwner->m_NoDataTimeout)
               {
                 REQUESTS::iterator itMove = it;
                 ++it;
@@ -349,10 +367,10 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
         }
         
         //a_Sleep between selects, requests in this queue are already slow
-        AThread::sleep(LOOP_DELAY);
+        AThread::sleep(pOwner->m_LoopDelay);
       }
       else
-        AThread::sleep(SLEEP_DELAY);    //a_Nothing in queue, deep sleep
+        AThread::sleep(pOwner->m_EmptyQueueDelay);    //a_Nothing in queue, deep sleep
     }
     catch(AException& e)
     {

@@ -10,9 +10,6 @@
 #include "ATextOdometer.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 
-const AString AOSCacheManager::STATIC_CACHE_ENABLED("/config/server/static-file-cache/enabled");
-const AString AOSCacheManager::TEMPLATE_CACHE_ENABLED("/config/server/template-cache/enabled");
-
 void AOSCacheManager::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSCacheManager @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -62,7 +59,7 @@ void AOSCacheManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader&
     adminAddPropertyWithAction(
       elem, 
       ASW("enabled",7), 
-      AString::fromBool(m_Services.useConfiguration().useConfigRoot().getBool(STATIC_CACHE_ENABLED, false)),
+      AString::fromBool(m_IsStaticFileCacheEnabled),
       ASW("Update",6), 
       ASWNL("1:Enable static content caching, 0:Disable and clear, -1:Clear only"),
       ASW("Set",3)
@@ -81,18 +78,14 @@ void AOSCacheManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader&
     }
   }
 
-  {
-    AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("template_cache",14));
-
-    adminAddPropertyWithAction(
-      elem, 
-      ASW("enabled",7), 
-      AString::fromBool(m_Services.useConfiguration().useConfigRoot().getBool(TEMPLATE_CACHE_ENABLED, false)),
-      ASW("Update",6), 
-      ASWNL("1:Enable template caching, 0:Disable and clear, -1:Clear only"),
-      ASW("Set",3)
-    );
-  }
+  adminAddPropertyWithAction(
+    eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("template_cache",14)), 
+    ASW("enabled",7), 
+    AString::fromBool(m_IsTemplateCacheEnabled),
+    ASW("Update",6), 
+    ASWNL("1:Enable template caching, 0:Disable and clear, -1:Clear only"),
+    ASW("Set",3)
+  );
 }
 
 void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
@@ -109,7 +102,7 @@ void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestH
         if (str.equals("0"))
         {
           //a_Clear and disable
-          m_Services.useConfiguration().useConfigRoot().setBool(STATIC_CACHE_ENABLED, false);
+          m_IsStaticFileCacheEnabled = false;
           mp_StaticFileCache->clear();  //a_Cache uses internal sync
         }
         else if (str.equals("-1"))
@@ -119,7 +112,7 @@ void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestH
         else
         {
           //a_Enable
-          m_Services.useConfiguration().useConfigRoot().setBool(STATIC_CACHE_ENABLED, true);
+          m_IsStaticFileCacheEnabled = true;
         }
       }
     }
@@ -131,7 +124,7 @@ void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestH
         if (str.equals("0"))
         {
           //a_Clear and disable
-          m_Services.useConfiguration().useConfigRoot().setBool(TEMPLATE_CACHE_ENABLED, false);
+          m_IsTemplateCacheEnabled = false;
           
           ALock lock(m_TemplateSync);
           mp_TemplateCache->clear();
@@ -144,7 +137,7 @@ void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestH
         else
         {
           //a_Enable
-          m_Services.useConfiguration().useConfigRoot().setBool(TEMPLATE_CACHE_ENABLED, true);
+          m_IsTemplateCacheEnabled = true;
         }
       }
     }
@@ -158,12 +151,14 @@ AOSCacheManager::AOSCacheManager(AOSServices& services) :
   int maxFileSizeInK = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/max-filesize", 512 * 1024);
   int cacheCount = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/cache-count", 97);
   mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
+  m_IsStaticFileCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/static-file-cache/enabled",40), false);
 
   //a_Status template cache
   mp_StatusTemplateCache = new STATUS_TEMPLATE_CACHE();
 
   //a_Parsed template cache
   mp_TemplateCache = new TEMPLATE_CACHE();
+  m_IsTemplateCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/template-cache/enabled", 37), true);
 
   adminRegisterObject(m_Services.useAdminRegistry());
 }
@@ -194,7 +189,7 @@ AOSCacheManager::~AOSCacheManager()
 ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filename, ACache_FileSystem::HANDLE& pFile, ATime& modified, const ATime& ifModifiedSince)
 {
   AASSERT(this, mp_StaticFileCache);
-  if (m_Services.useConfiguration().useConfigRoot().getBool(AOSCacheManager::STATIC_CACHE_ENABLED, false))
+  if (m_IsStaticFileCacheEnabled)
   {
     //a_Get from cache
     return mp_StaticFileCache->get(filename, pFile, modified, ifModifiedSince);
@@ -223,7 +218,7 @@ ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, cons
 ACacheInterface::STATUS AOSCacheManager::getTemplate(AOSContext& context, const AFilename& filename, AAutoPtr<ATemplate>& pTemplate)
 {
   AASSERT(this, mp_TemplateCache);
-  if (m_Services.useConfiguration().useConfigRoot().getBool(AOSCacheManager::TEMPLATE_CACHE_ENABLED, false))
+  if (m_IsTemplateCacheEnabled)
   {
     TEMPLATE_CACHE::iterator it;
     

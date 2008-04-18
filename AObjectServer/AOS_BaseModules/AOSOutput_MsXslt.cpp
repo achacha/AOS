@@ -16,10 +16,64 @@ const AString& AOSOutput_MsXslt::getClass() const
   return CLASS;
 }
 
+void AOSOutput_MsXslt::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
+{
+  {
+    AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("cache",5));
+
+    adminAddPropertyWithAction(
+      elem, 
+      ASW("enabled",7), 
+      AString::fromBool(m_IsCacheEnabled),
+      ASW("Update",6), 
+      ASWNL("1:Enable template caching, 0:Disable and clear, -1:Clear only"),
+      ASW("Set",3)
+    );
+
+    adminAddProperty(elem, ASW("size",4), AString::fromSize_t(m_Dox.size()));
+  }
+}
+
+void AOSOutput_MsXslt::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+{
+  AString str;
+  if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
+  {
+    //a_Toggle cache state and clear when disabled
+    if (str.equals(ASW("AOSOutputExecutor.Xslt.cache.enabled",36)))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
+      {
+        if (str.equals("0"))
+        {
+          //a_Clear and disable
+          m_IsCacheEnabled = false;
+          
+          ALock lock(m_CacheSync);
+          m_Dox.clear();
+        }
+        else if (str.equals("-1"))
+        {
+          ALock lock(m_CacheSync);
+          m_Dox.clear();
+        }
+        else
+        {
+          //a_Enable
+          m_IsCacheEnabled = true;
+        }
+      }
+    }
+  }
+}
+
 AOSOutput_MsXslt::AOSOutput_MsXslt(AOSServices& services) :
   AOSOutputGeneratorInterface(services)
 {
 	CoInitialize(NULL);
+
+  m_IsCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/base-modules/AOSOutput_MsXslt/cache",43), true);
 }
 
 AOSOutput_MsXslt::~AOSOutput_MsXslt()
@@ -36,9 +90,6 @@ AOSOutput_MsXslt::~AOSOutput_MsXslt()
 
 void AOSOutput_MsXslt::init()
 {
-#pragma message("FIX: AOSOutput_MsXslt::init: XSLT loading hardcoded")
-//  addXslDocument(ASW("aos", 3), ASW("q:/aos.xsl", 10));
-//  addXslDocument(ASW("dada", 4), ASW("q:/dada.xsl", 11));
 }
 
 void AOSOutput_MsXslt::deinit()
@@ -48,7 +99,7 @@ void AOSOutput_MsXslt::deinit()
 AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& filename)
 {
   MSXML2::IXMLDOMDocument2Ptr *p = new MSXML2::IXMLDOMDocument2Ptr;
-  *p= NULL;
+  *p = NULL;
 
   if (filename.isEmpty())
   {
@@ -81,6 +132,30 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& fi
   return &(m_Dox[filename]);
 }
 
+AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_getXslDocHolder(const AFilename& filename)
+{
+  XslDocHolder *pXslDocHolder = NULL;
+  AString xsltPathName;
+  filename.emit(xsltPathName);
+
+  ALock lock(m_CacheSync);
+  DocContainer::iterator it = m_Dox.find(xsltPathName);
+  if (
+    it == m_Dox.end() 
+    || m_IsCacheEnabled
+  )
+  {
+    pXslDocHolder = _readXslFile(xsltPathName);
+  }
+  else
+  {
+    pXslDocHolder = (XslDocHolder *)(&(*it).second);
+  }
+  
+  AASSERT(this, pXslDocHolder);
+  return pXslDocHolder;
+}
+
 AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
 {
 	CoInitialize(NULL);
@@ -95,23 +170,9 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
   xsltFile.join(xsltName, false);
 
   MSXML2::IXMLDOMDocument2Ptr *p = NULL;
-  AString xsltPathName(xsltFile.toAString());
-  DocContainer::iterator it = m_Dox.find(xsltPathName);
-  XslDocHolder *pXslDocHolder = NULL;
-  if (
-    it == m_Dox.end() 
-    || context.useRequestParameterPairs().exists(ASW("disableXslCache", 15))
-  )
-  {
-    pXslDocHolder = _readXslFile(xsltPathName);
-  }
-  else
-  {
-    pXslDocHolder = (XslDocHolder *)(&(*it).second);
-  }
+  XslDocHolder *pXslDocHolder = _getXslDocHolder(xsltFile);
 
   //a_Document exists in cache
-  AASSERT(this, pXslDocHolder);
   p = (MSXML2::IXMLDOMDocument2Ptr *)pXslDocHolder->m_ComPtr;
   AASSERT(this, p);
 

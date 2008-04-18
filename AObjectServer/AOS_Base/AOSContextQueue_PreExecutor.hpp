@@ -38,6 +38,10 @@ protected:
 
   //a_Serve a static page and deallocate the AOSContext
   bool _processStaticPage(AOSContext *pContext);
+
+private:
+  //a_Timeout waiting for HTTP data
+  int m_WaitForHttpDataTimeout;
 };
 
 #endif //INCLUDED__AOSContextQueue_PreExecutor_HPP__

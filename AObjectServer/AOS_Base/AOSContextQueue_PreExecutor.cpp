@@ -14,6 +14,12 @@ const AString& AOSContextQueue_PreExecutor::getClass() const
 
 void AOSContextQueue_PreExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
+  adminAddProperty(
+    eBase,
+    ASW("WaitForHttpDataTimeout",22),
+    AString::fromInt(m_WaitForHttpDataTimeout)
+  );
+
   BASECLASS_AOSContextQueue_PreExecutor::adminEmitXml(eBase, request);
 }
 
@@ -30,6 +36,9 @@ AOSContextQueue_PreExecutor::AOSContextQueue_PreExecutor(
   BASECLASS_AOSContextQueue_PreExecutor(services, threadCount, queueCount)
 {
   useThreadPool().setThis(this);
+
+  m_WaitForHttpDataTimeout = m_Services.useConfiguration().useConfigRoot().getInt(ASW("/config/server/http/wait-for-http-data-timeout",46), 10000);
+
   adminRegisterObject(m_Services.useAdminRegistry());
 }
 
@@ -53,7 +62,6 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
   AASSERT(&thread, pThis);
   AOSContext *pContext = NULL;
 
-  const int iWaitForHttpDataTimeout = pThis->m_Services.useConfiguration().useConfigRoot().getInt(ASW("/config/server/http/wait-for-http-data-timeout",46), 10000);
   thread.setRunning(true);
   while(thread.isRun())
   {
@@ -87,7 +95,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         switch (pContext->init())
         {
           case AOSContext::STATUS_HTTP_INCOMPLETE_NODATA:
-            if (pContext->getRequestTimer().getInterval() > iWaitForHttpDataTimeout)
+            if (pContext->getRequestTimer().getInterval() > pThis->m_WaitForHttpDataTimeout)
             {
               //a_Waited long enough
               pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_PreExecutor: HTTP header started but did not complete before timeout, abandoning wait",101));
