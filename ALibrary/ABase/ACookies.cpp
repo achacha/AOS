@@ -41,21 +41,16 @@ ACookies::~ACookies()
   {
     clear();    //a_Free memory
   }
-  catch (...)
-  {
-#pragma message("Log exception in destructor")
-  }
+  catch (...) {}
 }
 
 void ACookies::__copy(const ACookies &cookiesSource)
 {
   clear();
 
-  ACookie *pcookieNew;
   for (size_t i=0; i < cookiesSource.mvector__Cookies.size(); ++i)
   {
-    pcookieNew = new ACookie(*cookiesSource.mvector__Cookies[i]);
-    mvector__Cookies.push_back(pcookieNew);
+    mvector__Cookies.push_back(new ACookie(*cookiesSource.mvector__Cookies[i]));
   }
 }
 
