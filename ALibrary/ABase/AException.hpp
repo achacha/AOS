@@ -232,18 +232,23 @@ Necessary macro for throwing diffent types of exceptions
  when the macro is expanded and if these were generalized
  as a default parameter then all exceptions would point to
  the AException.hpp to the line of the constructor.
+
+ @param debugdumpable ADebugDumpable * to include in exception (calls debugDump())
+ @param _exceptionID AException::XXX enum
+ @param _exceptionExtraEmittableText AEmittable type that contains extra info
+ @param errornum errno.h based error number
 */
 #define ATHROW(debugdumpable, _exceptionID) \
   throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__)
 
-#define ATHROW_EX(debugdumpable, _exceptionID, _exceptionExtraText) \
-  throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__, _exceptionExtraText)
+#define ATHROW_EX(debugdumpable, _exceptionID, _exceptionExtraEmittableText) \
+  throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__, _exceptionExtraEmittableText)
 
 #define ATHROW_ERRNO(debugdumpable, _exceptionID, errornum) \
   throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__, AConstant::ASTRING_EMPTY, errornum)
 
-#define ATHROW_ERRNO_EX(debugdumpable, _exceptionID, _exceptionExtraText, errornum) \
-  throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__, _exceptionExtraText, errornum)
+#define ATHROW_ERRNO_EX(debugdumpable, _exceptionID, _exceptionExtraEmittableText, errornum) \
+  throw AException(debugdumpable, _exceptionID, __FILE__, __LINE__, _exceptionExtraEmittableText, errornum)
 
 /*!
 AASERT_xxx() will throw an exception if debugging is turned on and if the condition is true

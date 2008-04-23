@@ -95,10 +95,17 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
+  // No copy ctor
+  ACache_FileSystem(const ACache_FileSystem&) {}
+  
+  // No assignment operator
+  ACache_FileSystem& operator=(const ACache_FileSystem&) { return *this; }
+
+  
   size_t m_MaxItems;
   size_t m_MaxFileSize;
 
-  //a_Item container inside the cache
+  // Item container inside the cache
   struct CACHE_ITEM
   {
     AFile_AString *pData;
@@ -113,7 +120,7 @@ private:
 
   typedef std::map<AString, CACHE_ITEM *> CONTAINER;
   
-  //a_Contains the cache, sync, byte count, etc
+  // Contains the cache, sync, byte count, etc
   struct CONTAINER_ITEM
   {
     ASync_CriticalSectionSpinLock m_Sync;

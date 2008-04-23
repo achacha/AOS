@@ -40,12 +40,13 @@ public:
 
   /*!
   Network order (Big endian, MSB) append of internal types
+  Appends actual bytes to the buffer
+  Not to be confused with converting a number to string and appending, that is done by AString::fromXXXX() methods
   */
   size_t appendU1(u1);
   size_t appendU2(u2);
   size_t appendU4(u4);
   size_t appendU8(u8);
-  size_t appendInt(int);
 
   /*!
   Little endian (LSB) append of internal types
@@ -55,7 +56,6 @@ public:
   size_t appendU2_LSB(u2);
   size_t appendU4_LSB(u4);
   size_t appendU8_LSB(u8);
-  size_t appendInt_LSB(int);
 
   /*!
   Append string and EOL

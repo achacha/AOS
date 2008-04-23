@@ -115,7 +115,7 @@ void ARope::clear()
   }
   m_Blocks.clear();
 
-  pDelete(mp_LastBlock);
+  pDeleteArray(mp_LastBlock);
 
   m_LastBlockFree = 0;
 }
@@ -131,6 +131,7 @@ size_t ARope::_append(const char *pSource, size_t bytesLeft)
     if (!m_LastBlockFree)
       __newBlock();  
     
+    AASSERT(this, mp_LastBlock);
     if (bytesLeft > m_LastBlockFree)
     {
       //a_Write whatever we can in the current buffer
@@ -188,6 +189,12 @@ AString ARope::toAString() const
 size_t ARope::read(AFile& file, size_t length /* = AConstant::npos */)
 {
   size_t bytesRead = 0;
+
+  //a_Make sure we have something to read into
+  if (!m_LastBlockFree)
+    __newBlock();  
+
+  AASSERT(this, mp_LastBlock);
 
   //a_Bytes to read is <= bytes free in last block
   if (length <= m_LastBlockFree)

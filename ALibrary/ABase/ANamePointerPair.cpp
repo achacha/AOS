@@ -73,11 +73,11 @@ int ANamePointerPair::compare(const ANamePointerPair& nvSource) const
 
   //a_Pointers compared
   if (mp__Value > nvSource.mp__Value)
-    return 0x1;
+    return 1;
   else if (mp__Value < nvSource.mp__Value)
-    return -0x1;
+    return -1;
 
-  return 0x0;
+  return 0;
 }
 
 bool ANamePointerPair::isName(const AString& str) const

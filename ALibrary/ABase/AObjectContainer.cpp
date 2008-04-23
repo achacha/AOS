@@ -119,6 +119,9 @@ void AObjectContainer::remove(const AString& path)
 
 AObjectBase &AObjectContainer::_insertObjectPtr(const AString& path, AObjectBase *pobject)
 {
+  if (!pobject)
+    ATHROW(this, AException::InvalidParameter);
+
   AUrl url(path);
   LIST_AString names;
   url.getPath().split(names, '/');
@@ -178,13 +181,15 @@ AObjectContainer *AObjectContainer::_getContainer(LIST_AString& names, bool bool
     }
     return pObjects;
   }
-  else {
+  else
+  {
     //a_Container exists
     AObjectBase *p = (*it).second;
     AObjectContainer *pObjects = dynamic_cast<AObjectContainer *>(p);
     if (p == pObjects)
     {
-      if (names.size() > 0)
+      AASSERT(this, pObjects);
+      if (pObjects && names.size() > 0)
         return pObjects->_getContainer(names, boolCreate);
       else
         return pObjects;

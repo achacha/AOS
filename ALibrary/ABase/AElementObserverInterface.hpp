@@ -9,7 +9,10 @@
 class ABASE_API AElementObserverInterface : public ADebugDumpable
 {
 public:
-  //a_ctor/dtor
+  /*!
+  ctor
+  This object does NOT own or free the passed in parameters
+  */
   AElementObserverInterface(AElementInterface *pElement, const AUrl *purlRequest);
   virtual ~AElementObserverInterface();
 
@@ -39,7 +42,7 @@ private:
   //a_The subject element
   AElementInterface *m__peHead;       //a_Pointer to the observed element
 
-  //a_URL used to aquire this element (the AHtmlPage object that is)
+  //a_URL used to aquire this element
   const AUrl *m__purlRequest;         //a_Pointer to the AUrl that generated this element
   AUrl        m__urlSubmit;           //a_Submission AUrl that is based on the request URL
 };

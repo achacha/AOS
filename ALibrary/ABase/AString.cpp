@@ -1885,6 +1885,9 @@ char *AString::startUsingCharPtr(size_t neededSize)
 
 size_t AString::stopUsingCharPtr(size_t newSize)
 {
+  if (!mp_Buffer)
+    ATHROW_EX(this, AException::InvalidObject, ASWNL("Internal buffer not allocated, was AString::startUsingCharPtr called?"));
+
   //a_Add the trailing null
   if (newSize == AConstant::npos)
   {
@@ -1939,6 +1942,7 @@ void AString::assignDoubleByte(const wchar_t* pwccSource, size_t wideCharCount)
     wideCharCount = wcslen(pwccSource);
 
   _resize(wideCharCount * 0x3);    //a_Maximum possible length
+  AASSERT(this, mp_Buffer);
 
   wchar_t wcWork;
   size_t pos = 0x0;
@@ -2068,7 +2072,12 @@ AString AString::fromUnicode(wchar_t wcValue)
 
 void AString::fill(u1 uByte)
 {
-	memset(mp_Buffer, uByte, m_Length);
+  //a_Empty string fill does nothing
+  if (!m_Length)
+    return;
+
+  AASSERT(this, mp_Buffer);
+  memset(mp_Buffer, uByte, m_Length);
 	mp_Buffer[m_Length] = '\x0';
 }
 
@@ -2413,7 +2422,8 @@ void AString::justifyRight(
 
   size_t oldSize = m_Length;
   _resize(size);   //a_Allocate space
-  
+  AASSERT(this, mp_Buffer);
+
   size_t t;
   for (t=0; t < oldSize; ++t)
     mp_Buffer[size-t-1] = mp_Buffer[oldSize-t-1];
@@ -2805,6 +2815,7 @@ bool AString::startsWith(const AString& source) const
   if (!m_Length || source.m_Length > m_Length)
     return false;
 
+  AASSERT(this, mp_Buffer);
   return !strncmp(mp_Buffer, source.mp_Buffer, source.m_Length);
 }
 
@@ -2813,6 +2824,7 @@ bool AString::startsWithNoCase(const AString& source) const
   if (!m_Length || source.m_Length > m_Length)
     return false;
 
+  AASSERT(this, mp_Buffer);
   return !_strnicmp(mp_Buffer, source.mp_Buffer, source.m_Length);
 }
 
@@ -2821,6 +2833,7 @@ bool AString::endsWith(const AString& source) const
   if (!m_Length || source.m_Length > m_Length)
     return false;
 
+  AASSERT(this, mp_Buffer);
   return !strncmp(mp_Buffer + m_Length - source.m_Length, source.mp_Buffer, source.m_Length);
 }
 
@@ -2829,22 +2842,25 @@ bool AString::endsWithNoCase(const AString& source) const
   if (!m_Length || source.m_Length > m_Length)
     return false;
 
+  AASSERT(this, mp_Buffer);
   return !_strnicmp(mp_Buffer + m_Length - source.m_Length, source.mp_Buffer, source.m_Length);
 }
 
 bool AString::toBool() const
 {
-  if (
-    m_Length > 0
-    && (
-      '1' == *mp_Buffer
+  if (m_Length > 0)
+  {
+    AASSERT(this, mp_Buffer);
+    if (
+        '1' == *mp_Buffer
       || !_strnicmp(mp_Buffer, "true", 4)
       || !_strnicmp(mp_Buffer, "yes", 3)
     )
-  )
-    return true;
-  else
-    return false;
+      return true;
+    else
+      return false;
+  }
+  return false;
 }
 
 size_t AString::access(

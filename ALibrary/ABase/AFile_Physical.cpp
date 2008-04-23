@@ -149,11 +149,16 @@ int& AFile_Physical::useShareFlags()
 
 bool AFile_Physical::seek(u8 offset, int origin)
 {
+  if (mp_file)
+  {
 #ifdef _fseeki64
-  return (!_fseeki64(mp_file, offset, origin));
+    return (!_fseeki64(mp_file, offset, origin));
 #else
-  return (!fseek(mp_file, (long)offset, origin));
+    return (!fseek(mp_file, (long)offset, origin));
 #endif
+  }
+  else
+    ATHROW(this, AException::NotOpen);
 }
 
 void AFile_Physical::rewind()
@@ -163,11 +168,16 @@ void AFile_Physical::rewind()
 
 u8 AFile_Physical::tell()
 {
+  if (mp_file)
+  {
 #ifdef _ftelli64
-  return _ftelli64(mp_file);
+    return _ftelli64(mp_file);
 #else
-  return (u8)ftell(mp_file);
+    return (u8)ftell(mp_file);
 #endif
+  }
+  else
+    ATHROW(this, AException::NotOpen);
 }
 
 size_t AFile_Physical::getSize() const

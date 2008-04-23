@@ -134,15 +134,17 @@ ALog_AFile::~ALog_AFile()
     {
       BufferContainer::iterator it = m_BuffersToWrite.begin();
       if (it != m_BuffersToWrite.end())
-        mp_File->open();
-      while (it != m_BuffersToWrite.end())
       {
-        if (mp_File && (*it)->m_ReadyToWrite)
-          mp_File->write((*it)->m_Buffer);
-        delete (*it);
-        ++it;
+        mp_File->open();
+        while (it != m_BuffersToWrite.end())
+        {
+          if (mp_File && (*it)->m_ReadyToWrite)
+            mp_File->write((*it)->m_Buffer);
+          delete (*it);
+          ++it;
+        }
+        mp_File->close();
       }
-      mp_File->close();
 
       //a_Cleanup
       if (m_DeleteFileObject)

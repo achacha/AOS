@@ -5,6 +5,10 @@
 #include "AElementInterface.hpp"
 #include "ANameValuePair.hpp"
 
+/*!
+DEPRECATED (pending rewrite or removal)
+DO NOT USE
+*/
 class ABASE_API AElement_HTML : public AElementInterface
 {
 public:

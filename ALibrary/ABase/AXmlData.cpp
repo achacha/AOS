@@ -30,6 +30,7 @@ AXmlData::AXmlData(const AEmittable& data, AXmlElement::Encoding encoding /*  = 
 }
 
 AXmlData::AXmlData(const AXmlData& that) :
+  AXmlElement(that),
   m_Data(that.m_Data),
   m_Encoding(that.m_Encoding)
 {

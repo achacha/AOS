@@ -123,7 +123,7 @@ AXmlElement& ACookie::emitXml(AXmlElement& thisRoot) const
   thisRoot.addElement(ASW("path",4)).addData(m_strPath);
   thisRoot.addElement(ASW("version",7)).addData(m_iVersion);
   thisRoot.addElement(ASW("comment",7)).addData(m_strComment);
-  thisRoot.addElement(ASW("maxage",6)).addData(m_lMaxAge);
+  thisRoot.addElement(ASW("maxage",6)).addData(AString::fromS4(m_lMaxAge));
   
   AString str;
   m_timeExpires.emitRFCtime(str);

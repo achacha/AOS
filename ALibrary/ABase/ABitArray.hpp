@@ -57,7 +57,7 @@ public:
   Size is in bits always
   */
   void setSize(size_t newsize);
-  size_t getSize() const { return m_size; }
+  size_t getSize() const;
 
   /*!
   Bitwise access
@@ -65,7 +65,7 @@ public:
   bool isSet(size_t index) const;
   bool isClear(size_t index) const;
   void setBit(size_t index, bool value = true);
-  void clearBit(size_t index) { setBit(index, 0); }
+  void clearBit(size_t index);
 
   /*!
   Sets the entire array and sets value to 'value'
@@ -112,26 +112,5 @@ private:
   size_t m_size;          //a_Size 2^N max (N is the number of bits of the processor compiled on ie. sizeof(size_t))
   Mode m_OutputMode;      //a_How output is to be displayed
 };
-
-ABASE_API inline void ABitArray::_setBit(size_t cell, size_t offset, bool value)
-{
-  if (value) mp_bits[cell] |= u4(0x1) << offset;
-  else mp_bits[cell] &= ~(u4(0x1) << offset);
-}
-
-ABASE_API inline void ABitArray::_setByte(size_t cell, u1 value)
-{
-  mp_bits[cell] = value;
-}
-
-ABASE_API inline bool ABitArray::_getBit(size_t cell, size_t offset) const
-{
-  return (((mp_bits[cell] >> offset) & 0x1) != 0);
-}
-
-ABASE_API inline u4 ABitArray::_getByte(size_t cell) const
-{
-  return mp_bits[cell];
-}
 
 #endif //INCLUDED_ABitArray_HPP_

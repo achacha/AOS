@@ -230,15 +230,14 @@ void AEventVisitor::emit(AOutputBuffer& target, AEventVisitor::EventLevel thresh
   for (const ABase *p = m_Events.getHead(); p; p = p->getNext())
   {
     const AEventVisitor::Event *pEvent = dynamic_cast<const AEventVisitor::Event *>(p);
-    if (pEvent->m_level <= threshold)
+    AASSERT(this, pEvent);
+    if (pEvent && pEvent->m_level <= threshold)
       pEvent->emit(target);
   }
 
   //a_Emit current event
   if (mp_CurrentEvent)
-  {
     mp_CurrentEvent->emit(target);
-  }
 
   target.append("}}",2);
   target.append(AConstant::ASTRING_EOL);
@@ -277,7 +276,8 @@ AXmlElement& AEventVisitor::emitXml(AXmlElement& thisRoot, AEventVisitor::EventL
   for (const ABase *p = m_Events.getHead(); p; p = p->getNext())
   {
     const AEventVisitor::Event *pEvent = dynamic_cast<const AEventVisitor::Event *>(p);
-    if (pEvent->m_level <= threshold)
+    AASSERT(this, pEvent);
+    if (pEvent && pEvent->m_level <= threshold)
       pEvent->emitXml(events.addElement(ASW("event",5)));
   }
   if (mp_CurrentEvent)

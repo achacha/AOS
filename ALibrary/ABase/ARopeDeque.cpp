@@ -211,6 +211,7 @@ size_t ARopeDeque::fromAFile(AFile& file, size_t length /* = AConstant::npos */)
     _newBackBlock();  
 
   //a_Bytes to read is <= bytes in last block
+  AASSERT(this, mp_BackBlock);
   if (length <= size_t(m_BlockSize - m_BackBlockFree))
   {
     bytesRead = file.read(mp_BackBlock + m_BlockSize - m_BackBlockFree, length);
@@ -391,6 +392,7 @@ size_t ARopeDeque::popBack(char *pcTarget, size_t bytesLeft)
         //a_Use back block after poping it
         _popBackBlock();
         offset -= bytesLeft;
+        AASSERT(this, mp_BackBlock);
         memcpy(pcTarget + offset, mp_BackBlock + m_BlockSize - bytesLeft, bytesLeft);
         m_BackBlockFree += bytesLeft;
       }
@@ -398,11 +400,13 @@ size_t ARopeDeque::popBack(char *pcTarget, size_t bytesLeft)
       {
         //a_Use front block
         offset -= bytesLeft;
+        AASSERT(this, mp_FrontBlock);
         memcpy(pcTarget + offset, mp_FrontBlock + m_BlockSize - bytesLeft, bytesLeft);
 
         if (m_FrontBlockFree + bytesLeft < m_BlockSize)
         {
           size_t bytesCopy = m_BlockSize - m_FrontBlockFree - bytesLeft;
+          AASSERT(this, mp_FrontBlock);
           for (size_t j = 0; j < bytesCopy ; ++j)
             *(mp_FrontBlock + m_BlockSize - 1 - j) = *(mp_FrontBlock + m_FrontBlockFree + bytesCopy - 1 - j);
         }

@@ -53,24 +53,6 @@ size_t AOutputBuffer::append(char d)
   return _append((const char *)&d, 1);
 }
 
-size_t AOutputBuffer::appendInt(int d)
-{
-#ifdef _WIN64
-  return appendU8(u8(d));
-#else
-  return appendU4(u4(d));
-#endif
-}
-
-size_t AOutputBuffer::appendInt_LSB(int d)
-{
-#ifdef _WIN64
-  return appendU8_LSB(u8(d));
-#else
-  return appendU4_LSB(u4(d));
-#endif
-}
-
 size_t AOutputBuffer::appendU1(u1 d)
 {
   return _append((const char *)&d, 1);

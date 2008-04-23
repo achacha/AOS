@@ -171,7 +171,7 @@ private:
   NODES m_Nodes;
 
   //! Handlers
-  typedef std::map<AString, AAutoPtr<ATemplateNodeHandler>> HANDLERS;
+  typedef std::map< AString, AAutoPtr<ATemplateNodeHandler> > HANDLERS;
   HANDLERS m_Handlers;
 };
 

@@ -248,7 +248,8 @@ protected:
   ASynchronization *mp_SynchObject;
 
 private:
-  ALog();  // do default ctor
+  // No default ctor
+  ALog() {}
 
   u4 m_EventMask;
 

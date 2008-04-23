@@ -76,6 +76,13 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
+  // no copy ctor
+  AMovingAverage(const AMovingAverage&) {}
+
+  // no assign operator
+  AMovingAverage& operator =(const AMovingAverage&) { return *this; }
+
+  // The average
   double m_Average;
   
   //a_Count of the samples

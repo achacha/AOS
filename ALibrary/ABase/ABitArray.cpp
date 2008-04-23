@@ -82,7 +82,7 @@ void ABitArray::setSize(size_t newsize)
   if (allocsize > m_physical)
   {
     AASSERT(this, allocsize < DEBUG_MAXSIZE_ABitArray);
-    pnew = new u1[allocsize];
+    pnew = new u1[allocsize+1];
     if (mp_bits)
       memcpy(pnew, mp_bits, m_physical);
 
@@ -245,3 +245,47 @@ void ABitArray::setOutputMode(
   m_OutputMode = mode;
 }
 
+void ABitArray::clearBit(size_t index)
+{
+  setBit(index, 0); 
+}
+
+size_t ABitArray::getSize() const
+{ 
+  return m_size;
+}
+
+void ABitArray::_setBit(size_t cell, size_t offset, bool value)
+{
+  if (mp_bits)
+  {
+    if (value) mp_bits[cell] |= u4(0x1) << offset;
+    else mp_bits[cell] &= ~(u4(0x1) << offset);
+  }
+  else
+    ATHROW(this, AException::InvalidObject);
+}
+
+void ABitArray::_setByte(size_t cell, u1 value)
+{
+  if (mp_bits)
+    mp_bits[cell] = value;
+  else
+    ATHROW(this, AException::InvalidObject);
+}
+
+bool ABitArray::_getBit(size_t cell, size_t offset) const
+{
+  if (mp_bits)
+    return (((mp_bits[cell] >> offset) & 0x1) != 0);
+  else
+    ATHROW(this, AException::InvalidObject);
+}
+
+u4 ABitArray::_getByte(size_t cell) const
+{
+  if (mp_bits)
+    return mp_bits[cell];
+  else
+    ATHROW(this, AException::InvalidObject);
+}
