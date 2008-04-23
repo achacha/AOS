@@ -101,20 +101,32 @@ void AOSInputExecutor::execute(AOSContext& context)
   if (!context.useRequestHeader().useUrl().useParameterPairs().get(OVERRIDE_INPUT, command))
   {
     command = context.getInputCommand();
-    context.useEventVisitor().startEvent(ARope("Input processor: ")+command, AEventVisitor::EL_INFO);
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+    {
+      ARope rope("Input processor: ",17);
+      rope.append(command);
+      context.useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
+    }
   }
 
   if (command.isEmpty())
   {
     if (m_Services.useConfiguration().getAosDefaultInputProcessor().isEmpty())
     {
-      context.useEventVisitor().startEvent(ASW("No input processor", 18), AEventVisitor::EL_DEBUG);
-      return;                                 //a_Do nothing, no command and no default
+      //a_Do nothing, no command and no default
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+        context.useEventVisitor().startEvent(ASW("No input processor", 18), AEventVisitor::EL_DEBUG);
+      return;
     }
     else
     {
       command.assign(m_Services.useConfiguration().getAosDefaultInputProcessor());
-      context.useEventVisitor().startEvent(ARope("No input processor, using default: ")+command, AEventVisitor::EL_DEBUG);
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+      {
+        ARope rope("No input processor, using default: ",35);
+        rope.append(command);
+        context.useEventVisitor().startEvent(rope, AEventVisitor::EL_DEBUG);
+      }
     }
   }
 
@@ -124,11 +136,13 @@ void AOSInputExecutor::execute(AOSContext& context)
     InputProcessorContainer::iterator it = m_InputProcessors.find(command);
     if (it == m_InputProcessors.end())
     {
-      ARope rope("AOSInputExecutor::execute: Skipping unknown input processor '");
-      rope.append(command);
-      rope.append('\'');
-      context.useEventVisitor().startEvent(rope, AEventVisitor::EL_WARN);
-      m_Services.useLog().add(rope, ALog::WARNING);
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_WARN))
+      {
+        ARope rope("AOSInputExecutor::execute: Skipping unknown input processor '",61);
+        rope.append(command);
+        rope.append('\'');
+        context.useEventVisitor().startEvent(rope, AEventVisitor::EL_WARN);
+      }
     }
     else
     {
@@ -146,7 +160,8 @@ void AOSInputExecutor::execute(AOSContext& context)
 
         case AOSContext::RETURN_REDIRECT:
           context.useContextFlags().setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
-          context.useEventVisitor().startEvent(ASW("Redirect detected.",18), AEventVisitor::EL_INFO);
+          if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+            context.useEventVisitor().startEvent(ASW("Redirect detected.",18), AEventVisitor::EL_INFO);
         break;
       }
       context.useEventVisitor().endEvent();

@@ -116,7 +116,8 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           case AOSContext::STATUS_HTTP_INCOMPLETE_CRLFCRLF:
           {
             //a_Go into waiting queue
-            pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, going into waiting queue",79), AEventVisitor::EL_DEBUG);
+            if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+              pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_PreExecutor: HTTP header not complete, going into waiting queue",79), AEventVisitor::EL_DEBUG);
             if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_SOCKET_ERROR))
             {
               //a_Socket error occured, just terminate and keep processing
@@ -139,7 +140,8 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AConstant::ASTRING_ZERO);
 
             //a_Send header and no body
-            pContext->useEventVisitor().startEvent(ASW("Writing OPTIONS response",24), AEventVisitor::EL_INFO);
+            if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+              pContext->useEventVisitor().startEvent(ASW("Writing OPTIONS response",24), AEventVisitor::EL_INFO);
             pContext->useResponseHeader().emit(pContext->useSocket());
             
             //a_Flag that all is done
@@ -229,7 +231,8 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         if (!strSessionId.isEmpty() && m_Services.useSessionManager().exists(strSessionId))
         {
           //a_Fetch session
-          pContext->useEventVisitor().startEvent(AString("Using existing session ",23)+strSessionId, AEventVisitor::EL_INFO);
+          if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+            pContext->useEventVisitor().startEvent(AString("Using existing session ",23)+strSessionId, AEventVisitor::EL_INFO);
           AOSSessionData *pSessionData = m_Services.useSessionManager().getSessionData(strSessionId);
           pContext->setSessionObject(pSessionData);
         }
@@ -238,7 +241,12 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           //a_Create session
           if (!strSessionId.isEmpty())
           {
-            pContext->useEventVisitor().startEvent(ARope("Creating new session, existing session not found: ",50)+strSessionId, AEventVisitor::EL_INFO);
+            if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+            {
+              ARope rope("Creating new session, existing session not found: ",50);
+              rope.append(strSessionId);
+              pContext->useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
+            }
             strSessionId.clear();
           }
           
@@ -250,7 +258,12 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           ACookie& cookie = pContext->useResponseCookies().addCookie(ASW("AOSSession", 10), strSessionId);
           cookie.setMaxAge(3600);
           cookie.setPath(ASW("/",1));
-          pContext->useEventVisitor().startEvent(ASW("Created new session ",20)+strSessionId, AEventVisitor::EL_INFO);
+          if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+          {
+            AString str("Created new session ",20);
+            str.append(strSessionId);
+            pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
+          }
         }
 
         //
@@ -259,7 +272,10 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         if (pContext->getDirConfig())
           m_Services.useModuleExecutor().execute(*pContext, pContext->getDirConfig()->getModules());
         else
-          pContext->useEventVisitor().startEvent(ASW("No directory config for this path, skipping.",44), AEventVisitor::EL_INFO);
+        {
+          if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+            pContext->useEventVisitor().startEvent(ASW("No directory config for this path, skipping.",44), AEventVisitor::EL_INFO);
+        }
 
         //a_If error is logged stop and go to error handler
         if (pContext->useEventVisitor().getErrorCount() > 0)

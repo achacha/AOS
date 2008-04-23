@@ -291,7 +291,8 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                   {
                     //a_Add to next queue
                     (*itMove)->useConnectionFlags().setBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
-                    (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54), AEventVisitor::EL_DEBUG);
+                    if ((*itMove)->useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+                      (*itMove)->useEventVisitor().startEvent(ASW("AOSContextQueue_IsAvailable: HTTP header has more data",54), AEventVisitor::EL_DEBUG);
 
                     {
                       ALock lock(pThis->sync);
@@ -392,13 +393,12 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
 
 void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
 {
+  AASSERT(NULL, pContext);
+  
   //a_Clear these in case this is not the first trip here
   //a_More than one trip can result if some bytes were read but not enough
   pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_ISAVAILABLE_SELECT_SET);
   pContext->useConnectionFlags().clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
-
-  static const AString LOG_MSG("AOSContextQueue_IsAvailable::add");
-  pContext->useEventVisitor().startEvent(LOG_MSG, AEventVisitor::EL_INFO);
 
   volatile long currentQueue = ::InterlockedIncrement(&m_currentQueue) % m_queueCount;
 
@@ -409,7 +409,16 @@ void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
     pContext->useTimeoutTimer().start();
     m_Queues.at(currentQueue)->queue.push_back(pContext);
     ++m_Queues.at(currentQueue)->count;
-    pContext->useEventVisitor().addEvent(ARope(getClass())+"::add["+AString::fromInt(currentQueue)+"]="+AString::fromPointer(pContext));
+    
+    if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+    {
+      ARope rope(getClass());
+      rope.append("::add[",6);
+      rope.append(AString::fromInt(currentQueue));
+      rope.append("]=",2);
+      rope.append(AString::fromPointer(pContext));
+      pContext->useEventVisitor().addEvent(rope, AEventVisitor::EL_DEBUG);
+    }
   }
 }
 

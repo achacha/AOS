@@ -245,7 +245,8 @@ AOSContext::Status AOSContext::init()
     rope.append(AString::fromU4(ex.getErrno()));
     m_EventVisitor.startEvent(rope);
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-    mp_RequestFile->close();
+    if (mp_RequestFile)
+      mp_RequestFile->close();
     return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
   }
 
@@ -276,7 +277,12 @@ AOSContext::Status AOSContext::init()
   //a_Set the command
   if (!setControllerFromRequestUrl())
   {
-    m_EventVisitor.startEvent(ARope("AOSContext::init: ")+ASWNL("Unable to find the command for request URL: ")+m_RequestHeader.useUrl());
+    if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+    {
+      ARope rope("AOSContext::init: Unable to find the command for request URL: ");
+      rope.append(m_RequestHeader.useUrl());
+      m_EventVisitor.startEvent(rope, AEventVisitor::EL_INFO);
+    }
   }
 
   //a_Initialize response header
@@ -292,9 +298,12 @@ bool AOSContext::_waitForFirstChar()
   char c;
   while (tries < AOSConfiguration::FIRST_CHAR_RETRIES)
   {
-    ARope rope("AOSContext: Sleep cycle ",24);
-    rope.append(AString::fromInt(tries));
-    m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
+    if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+    {
+      ARope rope("AOSContext: Sleep cycle ");
+      rope.append(AString::fromInt(tries));
+      m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
+    }
 
     AThread::sleep(sleeptime);
     sleeptime += AOSConfiguration::SLEEP_INCREMENT;
@@ -357,7 +366,8 @@ AOSContext::Status AOSContext::_processHttpHeader()
       {
         //a_If select thinks there is data but we cannot read any then socket is dead
         m_EventVisitor.startEvent(ASWNL("AOSContext: Handling closed socket (should be in isAvailable)"));
-        mp_RequestFile->close();
+        if (mp_RequestFile)
+          mp_RequestFile->close();
         return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
       }
       else
@@ -576,7 +586,10 @@ AOSContext::Status AOSContext::_processHttpHeader()
     //a_Not enough data to read the method
     mp_RequestFile->putBack(str);
 
-    m_EventVisitor.startEvent(AString("AOSContext: Insufficiet data reading HTTP method: ",50)+str);
+    AString strEvent("AOSContext: Insufficiet data reading HTTP method: ",50);
+    strEvent.append(str);
+    m_EventVisitor.startEvent(strEvent);
+
     return AOSContext::STATUS_HTTP_INCOMPLETE_METHOD;
   }
 
@@ -612,7 +625,12 @@ AOSContext::Status AOSContext::_processHttpHeader()
   m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP line zero",34), AEventVisitor::EL_DEBUG, 2000.0);
   if (AConstant::npos == (bytesRead = mp_RequestFile->readLine(str, 4096, false)))
   {
-    m_EventVisitor.startEvent(AString("Line zero incomplete: '",22)+str+'\'');
+    {
+      AString strEvent("Line zero incomplete: '",23);
+      strEvent.append(str);
+      strEvent.append('\'');
+      m_EventVisitor.startEvent(strEvent);
+    }
 
     //a_Put the stuff we read back
     mp_RequestFile->putBack(str);
@@ -622,7 +640,9 @@ AOSContext::Status AOSContext::_processHttpHeader()
   str.append(AConstant::ASTRING_CRLF);
 
   //a_Read until only 2 bytes (CR and LF) are read which signifies a blank line and end of http header
-  m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP header",31), AEventVisitor::EL_INFO, 60000.0);  //a_Read header for 60 seconds
+  if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+    m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP header",31), AEventVisitor::EL_INFO, 60000.0);  //a_Read header for 60 seconds
+  
   size_t headerBytes = mp_RequestFile->readUntil(str, AConstant::ASTRING_CRLF, true, false);
   while (2 != headerBytes && AConstant::npos != headerBytes)
   {
@@ -632,8 +652,13 @@ AOSContext::Status AOSContext::_processHttpHeader()
   //a_Check if header not done
   if (AConstant::npos == headerBytes || headerBytes > 2)
   {
-    m_EventVisitor.startEvent(ARope("Incomplete HTTP header or CRLF CRLF not found: '", 45)+str+'\'');
-    
+    {
+      ARope rope("Incomplete HTTP header or CRLF CRLF not found: '", 48);
+      rope.append(str);
+      rope.append('\'');
+      m_EventVisitor.startEvent(rope);
+    }
+
     //a_Put the stuff we read back
     mp_RequestFile->putBack(str);
     
@@ -643,7 +668,8 @@ AOSContext::Status AOSContext::_processHttpHeader()
   }
 
   //a_Parse the header
-  m_EventVisitor.startEvent(ASW("AOSContext: Parsing HTTP header",31), AEventVisitor::EL_DEBUG, 5000.0);
+  if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+    m_EventVisitor.startEvent(ASW("AOSContext: Parsing HTTP header",31), AEventVisitor::EL_DEBUG, 5000.0);
   m_RequestHeader.parse(str);
 
   //a_Check if valid HTTP version
@@ -709,9 +735,12 @@ AOSContext::Status AOSContext::_processHttpHeader()
     m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Connection, ASW("close",5));
   }
   
-  ARope rope("AOSContext: HTTP request header\r\n",33);
-  rope.append(m_RequestHeader);
-  m_EventVisitor.startEvent(rope, AEventVisitor::EL_INFO);
+  if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+  {
+    ARope rope("AOSContext: HTTP request header\r\n",33);
+    rope.append(m_RequestHeader);
+    m_EventVisitor.startEvent(rope, AEventVisitor::EL_INFO);
+  }
 
   return AOSContext::STATUS_OK;
 }
@@ -945,7 +974,10 @@ const AXmlElement& AOSContext::getModuleParams(const AString& moduleName) const
 
     ++cit;
   }
-  ATHROW_EX(this, AException::DoesNotExist, ARope("Module does not exist: ")+moduleName);
+  
+  ARope rope("Module does not exist: ");
+  rope.append(moduleName);
+  ATHROW_EX(this, AException::DoesNotExist, rope);
 }
 
 const ATimer& AOSContext::getContextTimer() const
@@ -973,7 +1005,7 @@ void AOSContext::writeResponseHeader()
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
     ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
 
-  m_EventVisitor.startEvent(ASW("Sending HTTP response header",28), AEventVisitor::EL_EVENT);
+  m_EventVisitor.startEvent(ASW("Sending HTTP response header",28));
 
   AString str(10240, 4096);
 
@@ -1103,8 +1135,12 @@ bool AOSContext::setControllerFromRequestUrl()
   const AString& alias = mp_Controller->getAlias();
   if (!alias.isEmpty())
   {
-    m_EventVisitor.startEvent(ARope("Aliased: ",9)+mp_Controller->getAlias());
-    
+    {
+      ARope str("Aliased: ",9);
+      str.append(mp_Controller->getAlias());
+      m_EventVisitor.startEvent(str);
+    }
+
     if ('/' == alias.at(0))
     {
       //a_Abosulte path
@@ -1116,7 +1152,13 @@ bool AOSContext::setControllerFromRequestUrl()
       AString str;
       mp_Controller->emitBasePath(str);
       str.append(alias);
-      m_EventVisitor.startEvent(ARope("Relative aliased to: ")+str);
+      
+      {
+        AString strEvent("Relative aliased to: ");
+        strEvent.append(str);
+        m_EventVisitor.startEvent(strEvent);
+      }
+      
       mp_Controller = m_Services.useConfiguration().getController(str);
     }
 
@@ -1208,7 +1250,9 @@ size_t AOSContext::getOutputBufferSize() const
 
 bool AOSContext::processStaticPage()
 {
-  m_EventVisitor.startEvent(ASW("AOSContext::processStaticPage: Serving static content",53), AEventVisitor::EL_INFO);
+  if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+    m_EventVisitor.startEvent(ASW("AOSContext::processStaticPage: Serving static content",53), AEventVisitor::EL_INFO);
+  
   AFilename httpFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
 
   static const AString ROOT_PATH("/", 1);
@@ -1241,20 +1285,27 @@ bool AOSContext::processStaticPage()
   switch (m_Services.useCacheManager().getStaticFile(*this, httpFilename, pFile, modified, ifModifiedSince))
   {
     case ACache_FileSystem::NOT_FOUND:
+    {
       //a_Handle file not found
-      m_EventVisitor.startEvent(ARope("AOSContext::processStaticPage: File not found (HTTP-404 static): ",34)+httpFilename);
-      m_Services.useLog().add(ASW("File not found (HTTP-404 static): ",34), httpFilename, ALog::INFO);
+      ARope rope("AOSContext::processStaticPage: File not found (HTTP-404 static): ",65);
+      rope.append(httpFilename);
+      m_EventVisitor.startEvent(rope);
       
       //a_Set response status and return with failed (display error template)
       m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);
+    }
     return false;
 
     case ACache_FileSystem::FOUND_NOT_MODIFIED:
-      m_EventVisitor.startEvent(ARope("AOSContext::processStaticPage: File not modified (HTTP-304): ",30)+httpFilename);
+    {
+      ARope rope("AOSContext::processStaticPage: File not modified (HTTP-304): ",61);
+      rope.append(httpFilename);
+      m_EventVisitor.startEvent(rope);
       
       //a_Set status 304 and return true (no need to display error template)
       m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_304_Not_Modified);
       writeResponseHeader();
+    }
     return true;
 
     case ACache_FileSystem::FOUND_NOT_CACHED:
@@ -1277,8 +1328,14 @@ bool AOSContext::processStaticPage()
         writeResponseHeader();
 
         //a_Stream content
-        m_EventVisitor.startEvent(ARope("AOSContext::processStaticPage: Streaming file: ",16)+httpFilename, AEventVisitor::EL_DEBUG);
+        if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+        {
+          ARope rope("AOSContext::processStaticPage: Streaming file: ",47);
+          rope.append(httpFilename);
+          m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
+        }
 
+        AASSERT(this, pFile);
         AASSERT(this, pFile->isNotEof());
         size_t bytesWritten = _write(*pFile, pFile->getSize());
 
@@ -1337,7 +1394,8 @@ bool AOSContext::processStaticPage()
   catch(ASocketException& ex)
   {
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_SOCKET_ERROR);
-    m_EventVisitor.addEvent(ex, AEventVisitor::EL_INFO);
+    if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+      m_EventVisitor.addEvent(ex, AEventVisitor::EL_INFO);
     return false;
   }
   
@@ -1347,7 +1405,10 @@ bool AOSContext::processStaticPage()
 
 size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
 {
-  m_EventVisitor.startEvent(ASW("AOSContext: write file",22), AEventVisitor::EL_INFO);
+  if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+    m_EventVisitor.startEvent(ASW("AOSContext: write file",22), AEventVisitor::EL_INFO);
+  
+  AASSERT(this, mp_RequestFile);
   size_t bytesToWrite = originalSize;
   size_t bytesWritten = 0;
   size_t index = 0;
@@ -1358,17 +1419,38 @@ size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
     {
       //a_Finished writing or EOF on read
       case 0:
-        m_EventVisitor.addEvent(AString("AOSContext: flush returned 0, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
-        return (bytesWritten > 0 ? bytesWritten : ret);
+      {
+        if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+        {
+          AString str("AOSContext: flush returned 0, written bytes so far: ");
+          str.append(AString::fromSize_t(bytesWritten));
+          m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
+        }
+      }
+      return (bytesWritten > 0 ? bytesWritten : ret);
 
       case AConstant::npos:
-        m_EventVisitor.addEvent(AString("AOSContext: flush returned npos, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
-        return (bytesWritten > 0 ? bytesWritten : ret);
+      {
+        if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+        {
+          AString str("AOSContext: flush returned npos, written bytes so far: ");
+          str.append(AString::fromSize_t(bytesWritten));
+          m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
+        }
+      }
+      return (bytesWritten > 0 ? bytesWritten : ret);
 
       //a_Would block
       case AConstant::unavail:
-        m_EventVisitor.addEvent(AString("AOSContext: flush returned unavail, sleeping and retrying, written bytes so far: ")+AString::fromSize_t(bytesWritten), AEventVisitor::EL_DEBUG);
+      {
+        if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+        {
+          AString str("AOSContext: flush returned unavail, sleeping and retrying, written bytes so far: ");
+          str.append(AString::fromSize_t(bytesWritten));
+          m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
+        }
         AThread::sleep(1);
+      }
       break;
         
       default:
@@ -1380,6 +1462,11 @@ size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
   }
 
   AASSERT(this, bytesWritten == originalSize);
-  m_EventVisitor.addEvent(AString("AOSContext: writen bytes: ",26)+AString::fromSize_t(bytesWritten), AEventVisitor::EL_INFO);
+  if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+  {
+    AString str("AOSContext: writen bytes: ",26);
+    str.append(AString::fromSize_t(bytesWritten));
+    m_EventVisitor.addEvent(str, AEventVisitor::EL_INFO);
+  }
   return bytesWritten;
 }

@@ -110,14 +110,20 @@ void AOSOutputExecutor::execute(AOSContext& context)
   else
   {
     command = context.getOutputCommand();
-    context.useEventVisitor().startEvent(ARope("Default output generator overridden to: ")+command, AEventVisitor::EL_DEBUG);
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+    {
+      ARope rope("Default output generator overridden to: ",40);
+      rope.append(command);
+      context.useEventVisitor().startEvent(rope, AEventVisitor::EL_DEBUG);
+    }
   }
 
   if (command.equals("NOP"))
   {
     //a_If NOP was used force XML
     context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
-    context.useEventVisitor().startEvent(ASWNL("NOP detected, defaulting to XML output"), AEventVisitor::EL_DEBUG);
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+      context.useEventVisitor().startEvent(ASWNL("NOP detected, defaulting to XML output"), AEventVisitor::EL_DEBUG);
   }
 
   if (command.isEmpty())
@@ -125,11 +131,17 @@ void AOSOutputExecutor::execute(AOSContext& context)
     if (!m_Services.useConfiguration().getAosDefaultOutputGenerator().isEmpty())
     {
       command.assign(m_Services.useConfiguration().getAosDefaultOutputGenerator());
-      context.useEventVisitor().startEvent(ARope("No output generator specified, defaulting to: ")+command, AEventVisitor::EL_DEBUG);
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+      {
+        ARope rope("No output generator specified, defaulting to: ",46);
+        rope.append(command);
+        context.useEventVisitor().startEvent(rope, AEventVisitor::EL_DEBUG);
+      }
     }
     else
     {
-      context.useEventVisitor().startEvent(ASW("No output generator, defaulting to XML",38), AEventVisitor::EL_DEBUG);
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+        context.useEventVisitor().startEvent(ASW("No output generator, defaulting to XML",38), AEventVisitor::EL_DEBUG);
       return;
     }
   }
@@ -140,15 +152,24 @@ void AOSOutputExecutor::execute(AOSContext& context)
     OutputGeneratorContainer::iterator it = m_OutputGenerators.find(command);
     if (it == m_OutputGenerators.end())
     {
-      context.useEventVisitor().startEvent(ARope("Skipping unknown output generator: ",35)+command, AEventVisitor::EL_WARN);
-      m_Services.useLog().add(AString("AOSOutputExecutor::execute:Skipping unknown output generator"), command, ALog::WARNING);
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_WARN))
+      {
+        ARope rope("Skipping unknown output generator: ",35);
+        rope.append(command);
+        context.useEventVisitor().startEvent(rope, AEventVisitor::EL_WARN);
+      }
     }
     else
     {
       ATimer timer(true);
 
       //a_Generate output
-      context.useEventVisitor().startEvent(ARope("Generating output: ",19)+(*it).first, AEventVisitor::EL_INFO);
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+      {
+        ARope rope("Generating output: ",19);
+        rope.append((*it).first);
+        context.useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
+      }
 
       if (context.useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
       {

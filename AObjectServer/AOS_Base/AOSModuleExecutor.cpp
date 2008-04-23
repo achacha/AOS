@@ -105,20 +105,34 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
       ModuleContainer::iterator it = m_Modules.find((*cit)->getModuleClass());
       if (it == m_Modules.end())
       {
-        context.useEventVisitor().startEvent(ARope("Skipping unknown module: ",25)+(*cit)->getModuleClass(), AEventVisitor::EL_WARN);
-        m_Services.useLog().add(AString("AOSModuleExecutor::execute:Skipping unknown module"), (*cit)->getModuleClass(), ALog::WARNING);
+        if (context.useEventVisitor().isLogging(AEventVisitor::EL_WARN))
+        {
+          ARope rope("Skipping unknown module: ",25);
+          rope.append((*cit)->getModuleClass());
+          context.useEventVisitor().startEvent(rope, AEventVisitor::EL_WARN);
+        }
       }
       else
       {
         //a_Check if the module should execute based on this context
         if (!(*cit)->isExecute(context))
         {
-          context.useEventVisitor().startEvent(AString("Skipping (condition) module: ",29)+(*cit)->getModuleClass(), AEventVisitor::EL_DEBUG);
+          if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+          {
+            ARope rope("Skipping (condition) module: ",29);
+            rope.append((*cit)->getModuleClass());
+            context.useEventVisitor().startEvent(rope, AEventVisitor::EL_DEBUG);
+          }
           continue;
         }
 
         //a_Start timer and execute module
-        context.useEventVisitor().startEvent(AString("Executing module: ",18)+(*cit)->getModuleClass(), AEventVisitor::EL_INFO);
+        if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+        {
+          ARope rope("Executing module: ",18);
+          rope.append((*cit)->getModuleClass());
+          context.useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
+        }
 
         if (context.useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
         {
@@ -138,7 +152,12 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
 
           case AOSContext::RETURN_REDIRECT:
             context.useContextFlags().setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
-            context.useEventVisitor().startEvent(AString("Redirect detected for module: ",30)+(*it).second->getClass(), AEventVisitor::EL_INFO);
+            if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+            {
+              ARope rope("Redirect detected for module: ",30);
+              rope.append((*it).second->getClass());
+              context.useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
+            }
           return;
         }
       }

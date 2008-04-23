@@ -93,9 +93,14 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     for (ABase *p = m_History.useHead(); p; p = p->useNext())
     {
       AOSContext *pContext = dynamic_cast<AOSContext *>(p);
-      AXmlElement& eProp = adminAddProperty(eHistory, ASW("context",7), pContext->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
-      eProp.addAttribute(ASW("errors",6), AString::fromSize_t(pContext->useEventVisitor().getErrorCount()));
-      eProp.addElement(ASW("url",3), pContext->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
+      if (pContext)
+      {
+        AXmlElement& eProp = adminAddProperty(eHistory, ASW("context",7), pContext->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
+        eProp.addAttribute(ASW("errors",6), AString::fromSize_t(pContext->useEventVisitor().getErrorCount()));
+        eProp.addElement(ASW("url",3), pContext->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
+      }
+      else
+        ATHROW(this, AException::InvalidObject);
     }
   }
 }

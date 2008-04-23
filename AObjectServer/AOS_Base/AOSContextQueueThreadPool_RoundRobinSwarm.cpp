@@ -97,22 +97,25 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
   ++m_AddCounters.at(currentQueue);
   m_Queues.at(currentQueue)->push(pContext);
 
-//  std::cout << typeid(*this).name() << ":" << getClass() <<  "::add(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
+  if (pContext && pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+  {
+    //  std::cout << typeid(*this).name() << ":" << getClass() <<  "::add(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
   
-  AString str;
-  str.append(getClass());
-  str.append("::add[",6);
-  str.append(AString::fromInt(currentQueue));
-  str.append("]=",2);
-  str.append(AString::fromPointer(pContext));
-  pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
+    AString str;
+    str.append(getClass());
+    str.append("::add[",6);
+    str.append(AString::fromInt(currentQueue));
+    str.append("]=",2);
+    str.append(AString::fromPointer(pContext));
+    pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
+  }
 }                                                                                                                                                                                                 
 
 AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
 {
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
   AOSContext *pContext = (AOSContext *)m_Queues.at(currentQueue)->pop();
-  if (pContext)
+  if (pContext && pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
   {
     //    std::cout << typeid(*this).name() << ":" << getClass() <<  "::next(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
 

@@ -605,11 +605,17 @@ void AOSConfiguration::setReportedServer(const AString& configPath)
     {
       m_ReportedServer.clear();
       m_Config.useRoot().emitString(configPath, m_ReportedServer);
-      m_Services.useLog().add(ARope("Setting reported server: ")+m_ReportedServer, ALog::DEBUG);
+      AString str("Setting reported server: ");
+      str.append(m_ReportedServer);
+      m_Services.useLog().add(str, ALog::DEBUG);
     }
   }
   else
-    m_Services.useLog().add(ARope("AOSConfiguration::setReportedServer: Unable to find path: ")+configPath, ALog::WARNING);
+  {
+    AString str("AOSConfiguration::setReportedServer: Unable to find path: ");
+    str.append(configPath);
+    m_Services.useLog().add(str, ALog::WARNING);
+  }
 }
 
 void AOSConfiguration::setReportedHostname(const AString& configPath)
@@ -623,7 +629,10 @@ void AOSConfiguration::setReportedHostname(const AString& configPath)
     if (!str.isEmpty())
     {
       m_ReportedHostname.assign(str);
-      m_Services.useLog().add(ARope("Setting reported hostname: ")+m_ReportedHostname, ALog::DEBUG);
+      
+      AString str("Setting reported hostname: ");
+      str.append(m_ReportedHostname);
+      m_Services.useLog().add(str, ALog::DEBUG);
     }
     else
     {
@@ -631,7 +640,11 @@ void AOSConfiguration::setReportedHostname(const AString& configPath)
     }
   }
   else
-    m_Services.useLog().add(ARope("AOSConfiguration::setReportedHostname: Unable to find path: ")+configPath, ALog::WARNING);
+  {
+    AString str("AOSConfiguration::setReportedHostname: Unable to find path: ");
+    str.append(configPath);
+    m_Services.useLog().add(str, ALog::WARNING);
+  }
 }
 
 void AOSConfiguration::setReportedHttpPort(const AString& configPath)
@@ -639,10 +652,17 @@ void AOSConfiguration::setReportedHttpPort(const AString& configPath)
   if (m_Config.useRoot().exists(configPath))
   {
     m_ReportedHttpPort = m_Config.useRoot().getInt(configPath, 80);
-    m_Services.useLog().add(ARope("Setting reported http port: ")+AString::fromInt(m_ReportedHttpPort), ALog::DEBUG);
+    
+    AString str("Setting reported http port: ");
+    str.append(AString::fromInt(m_ReportedHttpPort));
+    m_Services.useLog().add(str, ALog::DEBUG);
   }
   else
-    m_Services.useLog().add(ARope("AOSConfiguration::setReportedHttpPort: Unable to find path: ")+configPath, ALog::WARNING);
+  {
+    AString str("AOSConfiguration::setReportedHttpPort: Unable to find path: ");
+    str.append(configPath);
+    m_Services.useLog().add(str, ALog::WARNING);
+  }
 }
 
 void AOSConfiguration::setReportedHttpsPort(const AString& configPath)
@@ -650,10 +670,17 @@ void AOSConfiguration::setReportedHttpsPort(const AString& configPath)
   if (m_Config.useRoot().exists(configPath))
   {
     m_ReportedHttpsPort = m_Config.useRoot().getInt(configPath, 443);
-    m_Services.useLog().add(ARope("Setting reported https port: ")+AString::fromInt(m_ReportedHttpsPort), ALog::DEBUG);
+    
+    AString str("Setting reported https port: ");
+    str.append(AString::fromInt(m_ReportedHttpsPort));
+    m_Services.useLog().add(str, ALog::DEBUG);
   }
   else
-    m_Services.useLog().add(ARope("AOSConfiguration::setReportedHttpsPort: Unable to find path: ")+configPath, ALog::WARNING);
+  {
+    AString str("AOSConfiguration::setReportedHttpsPort: Unable to find path: ");
+    str.append(configPath);
+    m_Services.useLog().add(str, ALog::WARNING);
+  }
 }
 
 void AOSConfiguration::setAosDefaultFilename(const AString& configPath)
@@ -661,7 +688,10 @@ void AOSConfiguration::setAosDefaultFilename(const AString& configPath)
   if (m_Config.useRoot().exists(configPath))
   {
     m_Config.useRoot().emitString(configPath, m_AosDefaultFilename);
-    m_Services.useLog().add(ARope("Setting default filename: ")+m_AosDefaultFilename, ALog::DEBUG);
+    
+    AString str("Setting default filename: ");
+    str.append(m_AosDefaultFilename);
+    m_Services.useLog().add(str, ALog::DEBUG);
   }
   else
     m_Services.useLog().add(ARope("AOSConfiguration::setAosDefaultFilename: Unable to find path: ")+configPath, ALog::WARNING);
@@ -672,10 +702,17 @@ void AOSConfiguration::setAosDefaultInputProcessor(const AString& configPath)
   if (m_Config.useRoot().exists(configPath))
   {
     m_Config.useRoot().emitString(configPath, m_AosDefaultInputProcessor);
-    m_Services.useLog().add(ARope("Setting default input processor: ")+m_AosDefaultInputProcessor, ALog::DEBUG);
+    
+    AString str("Setting default input processor: ");
+    str.append(m_AosDefaultInputProcessor);
+    m_Services.useLog().add(str, ALog::DEBUG);
   }
   else
-    m_Services.useLog().add(ARope("AOSConfiguration::setAosDefaultInputProcessor: Unable to find path: ")+configPath, ALog::WARNING);
+  {
+    AString str("AOSConfiguration::setAosDefaultInputProcessor: Unable to find path: ");
+    str.append(configPath);
+    m_Services.useLog().add(str, ALog::WARNING);
+  }
 }
 
 void AOSConfiguration::setAosDefaultOutputGenerator(const AString& configPath)
@@ -683,10 +720,17 @@ void AOSConfiguration::setAosDefaultOutputGenerator(const AString& configPath)
   if (m_Config.useRoot().exists(configPath))
   {
     m_Config.useRoot().emitString(configPath, m_AosDefaultOutputGenerator);
-    m_Services.useLog().add(ARope("Setting default output generator: ")+m_AosDefaultOutputGenerator, ALog::DEBUG);
+    
+    AString str("Setting default output generator: ");
+    str.append(m_AosDefaultOutputGenerator);
+    m_Services.useLog().add(str, ALog::DEBUG);
   }
   else
-    m_Services.useLog().add(ARope("AOSConfiguration::setAosDefaultOutputGenerator: Unable to find path: ")+configPath, ALog::WARNING);
+  {
+    AString str("AOSConfiguration::setAosDefaultOutputGenerator: Unable to find path: ");
+    str.append(configPath);
+    m_Services.useLog().add(str, ALog::WARNING);
+  }
 }
 
 const AString& AOSConfiguration::getAosDefaultInputProcessor() const

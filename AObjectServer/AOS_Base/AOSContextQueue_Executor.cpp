@@ -139,7 +139,8 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           //
           if (!pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT) && pContext->useEventVisitor().getErrorCount() > 0)
           {
-            pContext->useEventVisitor().startEvent(ASW("Emitting event visitor",22), AEventVisitor::EL_INFO);
+            if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+              pContext->useEventVisitor().startEvent(ASW("Emitting event visitor",22), AEventVisitor::EL_INFO);
             pContext->useEventVisitor().emitXml(pContext->useModel().addElement(ASW("AEventVisitor",13)));
             pContext->useEventVisitor().endEvent();
             m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
@@ -173,7 +174,8 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
              && !pContext->useResponseHeader().exists(AHTTPHeader::HT_ENT_Content_Length)
         )
         {
-          pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Forcing a close since response Content-Length was not specified",89), AEventVisitor::EL_WARN);
+          if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_WARN))
+            pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Forcing a close since response Content-Length was not specified",89), AEventVisitor::EL_WARN);
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
           continue;
         }
@@ -181,13 +183,15 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         if (pContext->useRequestHeader().isHttpPipeliningEnabled())
         {
           //a_keep-alive found, pipelining enabled
-          pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Pipelining detected, going into preExecute",68), AEventVisitor::EL_INFO);
+          if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+            pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Pipelining detected, going into preExecute",68), AEventVisitor::EL_INFO);
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &pContext);
         }
         else
         {
           //a_No pipelining
-          pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Pipelining not detected, terminating request",70), AEventVisitor::EL_INFO);
+          if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+            pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Pipelining not detected, terminating request",70), AEventVisitor::EL_INFO);
           pContext->useSocket().close();
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
         }

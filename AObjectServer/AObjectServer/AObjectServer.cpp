@@ -104,38 +104,38 @@ int main(int argc, char **argv)
       //
       //a_Create and configure the queues
       //
-      AOSContextQueueInterface *pQueueIsAvail = new AOSContextQueue_IsAvailable(
+      AAutoPtr<AOSContextQueueInterface> pQueueIsAvail(new AOSContextQueue_IsAvailable(
         services,
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/is-available/queues", 2)
-      );
+      ));
       
-      AOSContextQueueThreadPool *pQueueError = new AOSContextQueue_ErrorExecutor(
+      AAutoPtr<AOSContextQueueThreadPool> pQueueError(new AOSContextQueue_ErrorExecutor(
         services,
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/threads", 16), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/queues", 4)
-      );
+      ));
       int sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueError->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for error-executor/sleep-delay is invalid, using default", NULL);
 
-      AOSContextQueueThreadPool *pQueuePre = new AOSContextQueue_PreExecutor(
+      AAutoPtr<AOSContextQueueThreadPool> pQueuePre(new AOSContextQueue_PreExecutor(
         services, 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/threads", 16), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/queues", 4)
-      );
+      ));
       sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/pre-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueuePre->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for pre-executor/sleep-delay is invalid, using default", NULL);
 
-      AOSContextQueueThreadPool *pQueueExecutor = new AOSContextQueue_Executor(
+      AAutoPtr<AOSContextQueueThreadPool> pQueueExecutor(new AOSContextQueue_Executor(
         services, 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/threads", 64), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/queues", 3)
-      );
+      ));
       sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueExecutor->setSleepDelay(sleepDelay);
@@ -147,6 +147,12 @@ int main(int argc, char **argv)
       services.useContextManager().setQueueForState(AOSContextManager::STATE_EXECUTE, pQueueExecutor);
       services.useContextManager().setQueueForState(AOSContextManager::STATE_IS_AVAILABLE, pQueueIsAvail);
       services.useContextManager().setQueueForState(AOSContextManager::STATE_ERROR, pQueueError);
+
+      //a_Release local ownership, context manager now owns the queues and will delete them when done
+      pQueuePre.setOwnership(false);
+      pQueueIsAvail.setOwnership(false);
+      pQueueExecutor.setOwnership(false);
+      pQueueError.setOwnership(false);
 
       //a_Associate queue for the listener
       AOSRequestListener listener(services, AOSContextManager::STATE_PRE_EXECUTE);

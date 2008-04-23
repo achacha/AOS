@@ -129,11 +129,21 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
               objects.insert(ATemplate::OBJECTNAME_MODEL, &pContext->useModelXmlDocument());
               objects.insert(AOSContext::OBJECTNAME, pContext);
               pTemplate->process(objects, pContext->useOutputBuffer(), true);
-              pContext->useEventVisitor().startEvent(ARope("Using error template for status ")+AString::fromInt(statusCode), AEventVisitor::EL_DEBUG);
+              if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+              {
+                ARope rope("Using error template for status ");
+                rope.append(AString::fromInt(statusCode));
+                pContext->useEventVisitor().startEvent(rope, AEventVisitor::EL_DEBUG);
+              }
             }
             else
             {
-              pContext->useEventVisitor().startEvent(ARope("Did not find error template for status ")+AString::fromInt(statusCode), AEventVisitor::EL_WARN);
+              if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_WARN))
+              {
+                ARope rope("Did not find error template for status ");
+                rope.append(AString::fromInt(statusCode));
+                pContext->useEventVisitor().startEvent(rope, AEventVisitor::EL_WARN);
+              }
             }
 
             if (pContext->isOutputBufferEmpty())
