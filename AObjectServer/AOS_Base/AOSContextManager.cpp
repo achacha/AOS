@@ -71,6 +71,15 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
 
   adminAddProperty(eBase, "history_max_size", AString::fromSize_t(m_HistoryMaxSize));
 
+  adminAddPropertyWithAction(
+    eBase,
+    ASW("log_level",9), 
+    AString::fromInt(m_DefaultEventLogLevel),
+    ASW("Update",6), 
+    ASWNL("Maximum event to log 1:Error, 2:Event, 3:Warning, 4:Info, 5:Debug"),
+    ASW("Set",3)
+  );
+
   AXmlElement& eInUse = eBase.addElement("object");
   eInUse.addAttribute("name", "InUse");
   eInUse.addAttribute("size", AString::fromSize_t(m_InUse.size()));
@@ -105,11 +114,36 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
   }
 }
 
+void AOSContextManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+{
+  AString str;
+  if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
+  {
+    if (str.equals(ASW("AOSContextManager.log_level",27)))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
+      {
+        int level = str.toInt();
+        if (level > 0 && level < 6)
+        {
+          m_DefaultEventLogLevel = level;
+        }
+        else
+        {
+          adminAddError(eBase, ASWNL("Invalid log level, must be (1-5)"));
+        }
+      }
+    }
+  }
+}
+
 AOSContextManager::AOSContextManager(AOSServices& services) :
   m_Services(services),
   m_History(new ASync_CriticalSection())
 {
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
+  m_DefaultEventLogLevel = services.useConfiguration().useConfigRoot().getInt("/config/server/log-level", 2);
 
   m_Queues.resize(AOSContextManager::STATE_LAST, NULL);
 
@@ -137,6 +171,18 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
 {
   AASSERT(this, pSocket);
   AOSContext *p = new AOSContext(pSocket, m_Services);
+  
+  //a_Set logging level
+  switch(m_DefaultEventLogLevel)
+  {
+    case AEventVisitor::EL_DEBUG: p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_DEBUG); break;
+    case AEventVisitor::EL_INFO: p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_INFO); break;
+    case AEventVisitor::EL_WARN: p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_WARN); break;
+    case AEventVisitor::EL_ERROR: p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_ERROR); break;
+    default: 
+      p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_EVENT);
+
+  }
 
   ARope rope("AOSContextManager::allocate[",28);
   rope.append(AString::fromPointer(p));

@@ -171,7 +171,7 @@ function toggleDisplay(elementId)
 </xsl:choose>
 </div>
 <div id="pid.{$obj_parent_name}.context.{position()}.data">
-	<xsl:attribute name="style">display: none; color: #000030;border: thin dotted; border-width: 1px;</xsl:attribute>
+	<xsl:attribute name="style">display: none; color: #000030;</xsl:attribute>
 	<pre><xsl:value-of select="value"/></pre></div>
 					</td>
 					<td bgcolor="#d0ffd0" align="left" valign="center">

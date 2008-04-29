@@ -60,6 +60,7 @@ public:
   AOSAdminInterface
   */
   virtual void adminEmitXml(AXmlElement& base, const AHTTPRequestHeader& request);
+  virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
 
   /*!
@@ -80,6 +81,9 @@ private:
   //! Context history, after they scroll off here they go into the freestore
   ABasePtrQueue m_History;
   size_t m_HistoryMaxSize;
+
+  //! Logging level for all event visitors in the context
+  int m_DefaultEventLogLevel;
 
   //! Reference to the services
   AOSServices& m_Services;
