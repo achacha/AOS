@@ -86,13 +86,13 @@ if (not os.path.exists(DEBUG_INPUT_PATH)):
 	os.makedirs(DEBUG_INPUT_PATH);
 	if (not os.path.exists(DEBUG_INPUT_PATH)):
 		print "Unable to create '"+DEBUG_INPUT_PATH+"', may need manual intervention.";
-	sys.exit(-1);
+		sys.exit(-1);
 
 if (not os.path.exists(RELEASE_INPUT_PATH)):
 	os.makedirs(RELEASE_INPUT_PATH);
 	if (not os.path.exists(RELEASE_INPUT_PATH)):
 		print "Unable to create '"+RELEASE_INPUT_PATH+"', may need manual intervention.";
-	sys.exit(-1);
+		sys.exit(-1);
 	
 base_path = os.path.join(os.getcwd());
 base_path = os.path.split(base_path)[0];
