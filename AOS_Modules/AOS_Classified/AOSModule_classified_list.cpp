@@ -42,6 +42,7 @@ AOSContext::ReturnCode AOSModule_classified_list::execute(AOSContext& context, c
     const VECTOR_AString& fieldData = rs.getRow(i);
     for (size_t j = 0; j < fieldNames.size(); ++j)
     {
+      //a_Decode URL the data which was encoded during insert
       ATextConverter::decodeURL(fieldData.at(j), str);
       row.addElement(fieldNames.at(j)).addData(str, AXmlElement::ENC_CDATADIRECT);
       str.clear();

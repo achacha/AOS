@@ -26,7 +26,8 @@ AOSContext::ReturnCode AOSModule_classified_submit::execute(AOSContext& context,
   // title
   if (context.useRequestParameterPairs().get("title", str))
   {
-    query.append(str);
+    //a_Encode URL to hide any special characters
+    ATextConverter::encodeURL(str, query);
   }
   else
   {
@@ -39,7 +40,8 @@ AOSContext::ReturnCode AOSModule_classified_submit::execute(AOSContext& context,
   str.clear();
   if (context.useRequestParameterPairs().get("contact_email", str))
   {
-    query.append(str);
+    //a_Encode URL to hide any special characters
+    ATextConverter::encodeURL(str, query);
   }
   else
   {
@@ -52,7 +54,8 @@ AOSContext::ReturnCode AOSModule_classified_submit::execute(AOSContext& context,
   str.clear();
   if (context.useRequestParameterPairs().get("price", str))
   {
-    query.append(str);
+    //a_Encode URL to hide any special characters
+    ATextConverter::encodeURL(str, query);
   }
   query.append("','",3);
 
@@ -60,10 +63,8 @@ AOSContext::ReturnCode AOSModule_classified_submit::execute(AOSContext& context,
   str.clear();
   if (context.useRequestParameterPairs().get("descript", str))
   {
-    str.replace('\'', '`');
-    ARope rope;
-    ATextConverter::encodeURL(str, rope, true);
-    query.append(rope);
+    //a_Encode URL to hide any special characters
+    ATextConverter::encodeURL(str, query);
   }
   else
   {
