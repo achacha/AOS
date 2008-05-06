@@ -16,37 +16,105 @@ public:
   ACookies &operator =(const ACookies& cookiesSource);
   ~ACookies();                               //a_Make virtual if adding virtual functions
 
+  /*!
+  Clear (remove all) the cookies
+  */
   virtual void clear();
-  virtual void parse(const AString &strLine);
   
-  //a_Response header's output (Cookie: NAME=VALUE; parameters ...) multiple lines
-  virtual void emitResponseHeaderString(AOutputBuffer&) const;
-
-  //a_Request header's output (NAME=VALUE; NAME=VALUE; ...) one line
-  void emitRequestHeaderString(AOutputBuffer&) const;
-
-  //a_Default output is request header one line
-  virtual void emit(AOutputBuffer&) const;
-  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
-
-  //a_Specialized method used to parse 'Set-Cookie' token in the response header
-  //a_This line contains cookie name=value and parameters (which are for that cookie)
+  /*!
+  Parse a 'Cookie:' line
+  Given a header with "Cookie: DATA", the DATA part is what gets parsed, the HTTP token is assumed to be removed
+  */
+  virtual void parse(const AString &);
+  
+  /*!
+  Specialized method used to parse 'Set-Cookie:' token in the response header
+  This line contains cookie name=value and parameters (which are for that cookie)
+  */
   void parseSetCookieLine(const AString &);
 
-  //a_Access to cookies
-  u4 size() const { return (u4)mvector__Cookies.size(); }
-  bool exists(const AString& name) const;
-  bool getValue(const AString& name, AString&) const;
-  bool getValue(const AString& name, AString&, const AString &strDefault) const;
+  /*!
+  Response header's output (Cookie: NAME=VALUE; parameters ...) multiple lines
+  */
+  virtual void emitResponseHeaderString(AOutputBuffer&) const;
+
+  /*!
+  Request header's output (NAME=VALUE; NAME=VALUE; ...) one line
+  */
+  void emitRequestHeaderString(AOutputBuffer&) const;
+
+  /*!
+  AEmittable
+  Default output is request header one line
+  */
+  virtual void emit(AOutputBuffer&) const;
   
-  //a_Returns true if found and copies the cookies
-  //a_If not found only false is returned and cookie is not touched
+  /*!
+  AXmlEmittable
+  */
+  virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
+
+  /*!
+  Number of cookie objects
+  */
+  size_t size() const;
+  
+  /*!
+  Check if a cookie exists
+  */
+  bool exists(const AString& name) const;
+  
+  /*!
+  Get value of the cookie
+
+  @param name of the cookie
+  @paran value will be appended if found
+  @return true if found
+  */
+  bool getValue(const AString& name, AString& value) const;
+  
+  /*!
+  Get value of cookie or default if not found
+  
+  @param name of the cookie
+  @param value will be appended if found or default
+  @param strDefault value to use if cookie not found
+  @return true if found
+  */
+  bool getValue(const AString& name, AString& value, const AString &strDefault) const;
+  
+  /*!
+  Returns true if found and copies the cookies
+  If not found only false is returned and cookie is not touched
+  
+  @param name of the cookie
+  @param cookieTarget that will receive a copy of the cookie if it exists
+  @return true if found
+  */
   bool getCookie(const AString& name, ACookie& cookieTarget) const;
 
-  //a_Adds a cookie of given name and returns the reference of the new cookie object
-  ACookie &addCookie(const AString& name, const AString &strValue = AConstant::ASTRING_EMPTY);
+  /*!
+  Adds a cookie of given name and returns the reference of the new cookie object
 
-  void expireCookie(const AString& name);     //a_Expires/Removes it on the client-side
+  @param name of the cookie (must not be empty)
+  @param value of the cookie can be empty
+
+  @return reference to the newly created cookie that is also added to this collection
+  */
+  ACookie &addCookie(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);
+
+  /*!
+  Expire a cookie by setting expiration date in the past
+
+  @param name of the cookie (must not be empty)
+  */
+  void expireCookie(const AString& name);
+  
+  /*!
+  Remove the cookie from the collection
+
+  @param name of the cookie (must not be empty)
+  */
   void removeCookie(const AString& name);     //a_Deletes locally
 
   /*!

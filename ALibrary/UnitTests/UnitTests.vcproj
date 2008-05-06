@@ -552,6 +552,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ut_ACookie_General.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ut_AException_General.cpp"
 				>
 				<FileConfiguration

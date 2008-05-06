@@ -49,6 +49,7 @@ void display()
   std::cout << "80  : AXmlElement" << std::endl;
   std::cout << "82  : AXmlDocument" << std::endl;
   std::cout << "100 : AUrl" << std::endl;
+  std::cout << "105 : ACookie" << std::endl;
   std::cout << "200 : Macros" << std::endl;
   std::cout << std::endl;
 }
@@ -97,6 +98,7 @@ int executeTest(int iTestNumber)
     case  80 : pfnX = ut_AXmlElement_General; break;
     case  82 : pfnX = ut_AXmlDocument_General; break;
     case 100 : pfnX = ut_AUrl_General; break;
+    case 105 : pfnX = ut_ACookie_General; break;
     case 200 : pfnX = ut_Macros; break;
     default:
       pfnX = NULL;

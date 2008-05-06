@@ -8,13 +8,13 @@ ACache_FileSystem
 AConstant
 AChecksum
 AConstant
-AContentType_TextHtml
 AContentType_TextXml
 AContentType_Binary
 AContentType_Form
 AContentTypeFactory
 AContentTypeInterface
 ACookie
+ACookieJar
 ACookies
 ADaemon
 ADatabase
@@ -24,12 +24,6 @@ ADigestInterface
 ADigest_MD5
 ADigest_SHA1
 ADynamicLibrary
-AElement_HTML
-AElementInterface
-AElementObserver_HREF
-AElementObserver_FORM
-AElementObserver_SRC
-AElementObserverInterface
 AEmittable
 AEventVisitor
 ASync_Event

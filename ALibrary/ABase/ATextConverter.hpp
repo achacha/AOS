@@ -68,6 +68,14 @@ public:
   static void makeAsciiPrintable(const AString& strSource, AOutputBuffer&);
 
   /*!
+  Make the string somewhat database safe by removing some special characters
+  Helps prevent SQL injection
+  Currently replaes ' with ` characters
+  It is safer to use encodeURL and write that into the database and decode on the way out
+  */
+  static void makeSQLSafe(const AString& strSource, AOutputBuffer&);
+
+  /*!
   String conversion to hex dump (ratio input:output=1:2)
   */
   static void convertStringToHexDump(const AString& source, AOutputBuffer&, bool boolIncludeNonAscii = false);    

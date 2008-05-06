@@ -313,3 +313,8 @@ AXmlElement& ACookies::emitXml(AXmlElement& thisRoot) const
 
   return thisRoot;
 }
+
+size_t ACookies::size() const
+{ 
+  return mvector__Cookies.size();
+}

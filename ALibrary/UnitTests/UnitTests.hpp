@@ -41,10 +41,11 @@ int ut_AXmlAttributes_General();          // 75
 int ut_AXmlElement_General();             // 80
 int ut_AXmlDocument_General();            // 82
 int ut_AUrl_General();                    // 100
+int ut_ACookie_General();                 // 105
 int ut_Macros();                          // 200
 
 //a_Max testcase ID
-#define MAX_TESTCASE 100
+#define MAX_TESTCASE 200
 
 //a_Define a type for the callbacks test functions
 typedef int(_fnTEST)();

@@ -1,95 +1,95 @@
 #include <AString.hpp>
 #include <ACookie.hpp>
-#include <AClientCookieJar.hpp>
-#include <ATime.hpp>
+#include <ACookies.hpp>
+#include <ACookieJar.hpp>
+#include <AException.hpp>
 
-/*
-void testJar0()
+void testRequestCookies()
 {
-  AClientCookieJar cj;
+  ACookies cookies;
+  cookies.parseSetCookieLine("c=isforcookie; path=/foo; secure;");
+  cookies.parseSetCookieLine("cuz=cookiestarts; path=/foo2;");
+  cookies.parseSetCookieLine("with=c; path=/foo3; max-age=100;");
 
-  ACookie c0("name","value0");
-  c0.setDomain("foo.com");
-  cj.setValue("foo.com/Section0", "NAME", c0);
-  cj.setValue("foo.com/Section0", "ADDRESS", ACookie("address","value1"));
-  cj.setValue("foo.com/Section0", "CITY", ACookie("city","value2"));
-  cj.setValue("foo.com/Section0", "STATE", ACookie("state","value3"));
-  cj.setValue("bar.com/Section0", "CITY", ACookie("city","value2"));
-  cj.setValue("bar.com/Section0", "STATE", ACookie("state","value3"));
+  AString str;
+  cookies.emit(str);
+  std::cout << str << std::endl;
 
-  cj.setValue("/Section1", "NAMES", ACookie("names","value4"));
-  
-  cj.debugDump(cout);
-  
-  AClientCookieJar::RecursiveIterator it = cj.getRecursiveIterator("foo.com");
-  ACookie cT;
-  while (it.next())
-  {
-    it.getValue(cT);
-    cout << cT.toRequestString().c_str() << flush;
-  }
+  str.clear();
+  cookies.emitRequestHeaderString(str);
+  std::cout << str << std::endl;
 
-  cout << "----------------" << endl;
-
-  it = cj.getRecursiveIterator("bar.com/Section0");
-  while (it.next())
-  {
-    it.getValue(cT);
-    cout << cT.toRequestString().c_str() << flush;
-  }
-}
-*/
-
-void testCookiejar()
-{
-//  AClientCookieJar j;
-
-//  j.m_CookieJar.setValue("com.domain.www
-  APathMap<ACookie> pmJar;
-
-  pmJar.setValue("com.domain.www/", "0", ACookie("root", "1"));
-  pmJar.setValue("com.domain.www/dir0/", "0", ACookie("session", "9832749326221698424"));
-  pmJar.setValue("com.domain.www/dir0/dir1/", "0", ACookie("name", "Alex"));
-  pmJar.setValue("com.domain.www/dir0/dir1/", "1", ACookie("age", "173"));
-  pmJar.setValue("com.domain.www/dir0/dir1/", "2", ACookie("race", "dark elf"));
-  pmJar.setValue("com.domain.www/dir0/dir1/", "2", ACookie("alignment", "neutral evil"));
-  pmJar.setValue("com.domain.www/dir0/dir1/dir2", "0", ACookie("name", "Alex"));
-
-//  pmJar.debugDump(cout);
-
-  ACookie cookie;
-  APathMap<ACookie>::RecursiveIterator it = pmJar.getRecursiveIterator("com.domain.www");
-  cout << "Cookie: ";
-  while (it.next())
-  {
-    it.getValue(cookie);
-    cout << cookie.toRequestString();
-  }
-  cout << endl;
-
-  it = pmJar.getRecursiveIterator("com.domain.www/dir0/dir1");
-  cout << "Cookie: ";
-  while (it.next())
-  {
-    it.getValue(cookie);
-    cout << cookie.toRequestString();
-  }
-  cout << endl;
-
-  it = pmJar.getRecursiveIterator("com.domain.www/401/");
-  cout << "Cookie: ";
-  while (it.next())
-  {
-    it.getValue(cookie);
-    cout << cookie.toRequestString();
-  }
-  cout << endl;
+  str.clear();
+  cookies.emitResponseHeaderString(str);
+  std::cout << str << std::endl;
 }
 
-#undef main
+void testResponseCookies()
+{
+  ACookies cookies;
+  cookies.parse("c=isforcookies; cuz=cookiestrart; with=c;");
+
+  AString str;
+  cookies.emit(str);
+  std::cout << str << std::endl;
+
+  str.clear();
+  cookies.emitRequestHeaderString(str);
+  std::cout << str << std::endl;
+
+  str.clear();
+  cookies.emitResponseHeaderString(str);
+  std::cout << str << std::endl;
+}
+
+void testCookieJar()
+{
+  ACookieJar cookieJar;
+  ACookie *pcookie = new ACookie("root0", "val");
+  pcookie->setSecure(true);
+  cookieJar.add(pcookie);
+  cookieJar.add(new ACookie("dir1", "val", "/dir"));
+  cookieJar.add(new ACookie("dir2", "val", "/dir/folder/"));
+
+  cookieJar.debugDump();
+  
+  AString str;
+  cookieJar.emit(str, "/dir");
+  std::cout << "Cookie: " << str << std::endl;
+
+  str.clear();
+  cookieJar.emit(str, "/dir/folder");
+  std::cout << "Cookie: " << str << std::endl;
+
+  str.clear();
+  cookieJar.emit(str, "/dir/folder2");
+  std::cout << "Cookie: " << str << std::endl;
+
+  str.clear();
+  cookieJar.emit(str, "/");
+  std::cout << "Cookie: " << str << std::endl;
+
+  str.clear();
+  cookieJar.emit(str, "/dir/folder2", true);
+  std::cout << "Cookie: " << str << std::endl;
+}
+
 int main()
 {
-  testCookiejar();
+  try
+  {
+    //testRequestCookies();
+    //testResponseCookies();
+    testCookieJar();
+  }
+  catch(AException& e)
+  {
+    std::cerr << e << std::endl;
+  }
+  catch(...)
+  {
+    std::cerr << "Unknown exception" << std::endl;
+  }
 
   return 0x0;
 }

@@ -466,10 +466,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AContentType_TextHtml.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AContentType_TextXml.cpp"
 				>
 			</File>
@@ -483,6 +479,14 @@
 			</File>
 			<File
 				RelativePath=".\ACookie.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ACookieJar.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ACookieJar_Node.cpp"
 				>
 			</File>
 			<File
@@ -515,30 +519,6 @@
 			</File>
 			<File
 				RelativePath=".\ADynamicLibrary.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElement_HTML.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementInterface.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementObserver_FORM.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementObserver_HREF.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementObserver_SRC.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementObserverInterface.cpp"
 				>
 			</File>
 			<File
@@ -957,10 +937,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AContentType_TextHtml.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AContentType_TextXml.hpp"
 				>
 			</File>
@@ -974,6 +950,10 @@
 			</File>
 			<File
 				RelativePath=".\ACookie.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ACookieJar.hpp"
 				>
 			</File>
 			<File
@@ -1010,30 +990,6 @@
 			</File>
 			<File
 				RelativePath=".\ADynamicLibrary.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElement_HTML.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementInterface.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementObserver_FORM.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementObserver_HREF.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementObserver_SRC.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AElementObserverInterface.hpp"
 				>
 			</File>
 			<File

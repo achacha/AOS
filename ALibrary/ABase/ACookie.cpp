@@ -36,12 +36,13 @@ ACookie::ACookie() :
 {
 }
 
-ACookie::ACookie(const AString &strName, const AString &strValue) :
+ACookie::ACookie(const AString &name, const AString &value, const AString& path) :
   m_boolExpired(false),
   m_iVersion(DEFAULT_VERSION),
   m_boolSecure(false),
-  m_strName(strName),
-  m_strValue(strValue),
+  m_strName(name),
+  m_strValue(value),
+  m_strPath(path),
   m_boolExpirationSet(false), //a_Indefinite cookie
   m_lMaxAge(-1)
 {

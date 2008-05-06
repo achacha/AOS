@@ -526,3 +526,20 @@ void ATextConverter::makeAsciiPrintable(const AString& strSource, AOutputBuffer&
   }
 }
 
+void ATextConverter::makeSQLSafe(const AString& strSource, AOutputBuffer& target)
+{
+  char c = 0;
+  for(size_t i=0; i<strSource.getSize(); ++i)
+  {
+    c = strSource.at(i);
+    switch(c)
+    {
+      case '\'':
+        target.append('`');
+        break;
+
+      default:
+        target.append(c);
+    }
+  }
+}

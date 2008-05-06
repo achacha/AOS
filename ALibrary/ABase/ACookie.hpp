@@ -15,8 +15,24 @@ public:
   Default version is 1.0
   */
   ACookie();
+  
+  /*!
+  Copy ctor
+  */
   ACookie(const ACookie& cookieSource);
-  ACookie(const AString &strName, const AString &strValue = "");
+  
+  /*!
+  ctor
+
+  @param name of the cookie
+  @param value of the cookie (can be empty)
+  @param path of the cookie (defaults to empty which implies root)
+  */
+  ACookie(
+    const AString &name, 
+    const AString &value = AConstant::ASTRING_EMPTY,
+    const AString &path = AConstant::ASTRING_EMPTY
+  );
   
   /*!
   dtor

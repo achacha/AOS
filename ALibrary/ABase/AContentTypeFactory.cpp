@@ -4,7 +4,6 @@
 #include "AContentType_Binary.hpp"
 #include "AContentType_Form.hpp"
 #include "AContentType_TextXml.hpp"
-#include "AContentType_TextHtml.hpp"
 #include "AContentTypeFactory.hpp"
 #include "AHTTPHeader.hpp"
 
@@ -24,8 +23,7 @@ AContentTypeInterface* AContentTypeFactory::createContentTypeDocument(const AHTT
 AContentTypeInterface *AContentTypeFactory::createContentTypeDocument(const AString& strType)
 {
   AContentTypeInterface *pDoc = NULL;
-  if (!strType.compareNoCase(AContentType_TextHtml::CONTENT_TYPE)) pDoc = new AContentType_TextHtml();
-  else if (!strType.compareNoCase(AContentType_TextXml::CONTENT_TYPE)) pDoc = new AContentType_TextXml();
+  if (!strType.compareNoCase(AContentType_TextXml::CONTENT_TYPE)) pDoc = new AContentType_TextXml();
   else if (!strType.compareNoCase(AContentType_Form::CONTENT_TYPE)) pDoc = new AContentType_Form();
   else pDoc = new AContentType_Binary();     //a_Default case is always binary data
 

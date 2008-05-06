@@ -3,7 +3,7 @@
 
 #include "apiABase.hpp"
 
-/**
+/*!
 std::list wrapper that will delete all of its contents when done
 
 Usage:
@@ -16,8 +16,7 @@ Before:
 Now:
   AListOfPtrs<AString> myList;
   myVector._list.push_back(new AString("foo"));   // this class will delete this object in dtor
-**/
-
+*/
 template<class T>
 class AListOfPtrs
 {
@@ -25,9 +24,9 @@ public:
   typedef std::list<T*> TYPEDEF;
   TYPEDEF _list;
 
-  /**
+  /*!
   Will call delete on all members 
-  **/
+  */
   ~AListOfPtrs()
   {
     TYPEDEF::iterator it = _list.begin();
