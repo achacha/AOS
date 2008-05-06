@@ -185,6 +185,12 @@ public:
   bool isStateTimedOut() const;
 
   /*!
+  Is the connection forced to Close via request or response header
+  @return true if we are to close the connection after processing
+  */
+  bool isConnectionClose() const;
+
+  /*!
   Access to the socket associated with this context
   This is provided for flexibility but XML document should be the preferred output
   Output buffer should be used when output is not XML

@@ -16,9 +16,6 @@ AOSContext::ReturnCode AOSInput_HtmlForm::execute(AOSContext& context)
 {
   if (AHTTPRequestHeader::METHOD_ID_POST == context.useRequestHeader().getMethodId())
   {
-    //a_Force a close since this is a POST
-    context.useResponseHeader().setPair(AHTTPResponseHeader::HT_GEN_Connection, ASW("close",5));
-
     //a_Read FORM data if any
     AString strLength;
     if (context.useRequestHeader().getPairValue(AHTTPHeader::HT_ENT_Content_Length, strLength))
@@ -60,6 +57,8 @@ AOSContext::ReturnCode AOSInput_HtmlForm::execute(AOSContext& context)
       if (AHTTPRequestHeader::METHOD_ID_POST == context.useRequestHeader().getMethodId())
       {
         //a_411 Length Required if POST
+        context.useEventVisitor().startEvent(getClass()+ASW(": Content-Length missing, http error 411",40), AEventVisitor::EL_WARN);
+        context.useResponseHeader().setPair(AHTTPResponseHeader::HT_GEN_Connection, ASW("close",5));
         context.useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_411_Length_Required);
         return AOSContext::RETURN_ERROR;
       }

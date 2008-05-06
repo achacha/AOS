@@ -250,7 +250,8 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
     else
     {
       //a_411 Length Required for POST
-      context.useEventVisitor().startEvent(ASW("Content-Length missing, http error 411",38));
+      context.useEventVisitor().startEvent(getClass()+ASW(": Content-Length missing, http error 411",40), AEventVisitor::EL_WARN);
+      context.useResponseHeader().setPair(AHTTPResponseHeader::HT_GEN_Connection, ASW("close",5));
       context.useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_411_Length_Required);
       return AOSContext::RETURN_ERROR;
     }

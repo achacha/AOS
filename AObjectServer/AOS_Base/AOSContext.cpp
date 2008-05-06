@@ -728,12 +728,16 @@ AOSContext::Status AOSContext::_processHttpHeader()
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_HTTP11_PIPELINING);
     m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
     //TODO: do we really need this? m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Keep_Alive, ASW("timeout=15, max=100",19));
+    if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+      m_EventVisitor.startEvent(ASW("Connection: keep-alive set on response header",45), AEventVisitor::EL_DEBUG);
   }
   else
   {
     //a_Connection close
     m_ConnectionFlags.clearBit(AOSContext::CONFLAG_IS_HTTP11_PIPELINING);
     m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Connection, ASW("close",5));
+    if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+      m_EventVisitor.startEvent(ASW("Connection: Close set on response header",40), AEventVisitor::EL_DEBUG);
   }
   
   if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
@@ -1469,4 +1473,12 @@ size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
     m_EventVisitor.addEvent(str, AEventVisitor::EL_INFO);
   }
   return bytesWritten;
+}
+
+bool AOSContext::isConnectionClose() const
+{
+  const AString close("close", 5);
+  bool is = m_RequestHeader.equalsNoCase(AHTTPHeader::HT_GEN_Connection, close);
+  is |= m_ResponseHeader.equalsNoCase(AHTTPHeader::HT_GEN_Connection, close);
+  return is;
 }

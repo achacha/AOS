@@ -323,19 +323,27 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             //a_Socket error occured, just terminate and keep processing
             pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_PreExecutor: Client socket error detected, terminating request",78));
             m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
+            continue;
           }
-          else
+          
+          //a_Connection: Close was specified for request or response
+          if (pContext->isConnectionClose())
           {
-            //a_If an error occured, send context to error handler and continue
-            if (!processSuccess)
-            {
-              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
-            }
-            else if (!pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
-            {
-              //a_No error, but not pipelining, terminate and continue
-              m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
-            }
+            if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+              pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_PreExecutor: Forcing a close since Connection: Close was detected on request or response",104), AEventVisitor::EL_INFO);
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
+            continue;
+          }
+          
+          //a_If an error occured, send context to error handler and continue
+          if (!processSuccess)
+          {
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
+          }
+          else if (!pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
+          {
+            //a_No error, but not pipelining, terminate and continue
+            m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
           }
 
           //a_Handle next request in the pipeline

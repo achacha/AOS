@@ -170,12 +170,21 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
 
         //a_Force a close connection if output got committed and the content-length was not set 
         if (
-             pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT)
-             && !pContext->useResponseHeader().exists(AHTTPHeader::HT_ENT_Content_Length)
+            pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT)
+         && !pContext->useResponseHeader().exists(AHTTPHeader::HT_ENT_Content_Length)
         )
         {
           if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_WARN))
             pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Forcing a close since response Content-Length was not specified",89), AEventVisitor::EL_WARN);
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
+          continue;
+        }
+
+        //a_Connection: Close was specified for request or response
+        if (pContext->isConnectionClose())
+        {
+          if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+            pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Forcing a close since Connection: Close was detected on request or response",101), AEventVisitor::EL_INFO);
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
           continue;
         }
