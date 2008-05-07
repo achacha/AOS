@@ -22,6 +22,8 @@ bool AOSConfiguration::IS_HTTP_PIPELINING_ENABLED(true);
 bool AOSConfiguration::GZIP_IS_ENABLED(true);
 size_t AOSConfiguration::GZIP_MIN_SIZE(10240);
 int AOSConfiguration::GZIP_DEFAULT_LEVEL(6);
+int AOSConfiguration::UNAVAILABLE_SLEEP_TIME(50);
+int AOSConfiguration::UNAVAILABLE_RETRIES(100);
 
 #define DEFAULT_AOSCONTEXTMANAGER_HISTORY_MAX_SIZE 100
 #define DEFAULT_AOSCONTEXTMANAGER_FREESTORE_MAX_SIZE 50
@@ -268,6 +270,8 @@ void AOSConfiguration::_initStatics()
   FIRST_CHAR_RETRIES = m_Config.useRoot().getInt(ASWNL("/config/server/http/first-char-read-tries"), FIRST_CHAR_RETRIES);
   SLEEP_STARTTIME = m_Config.useRoot().getInt(ASWNL("/config/server/http/first-char-sleep-start"), SLEEP_STARTTIME);
   SLEEP_INCREMENT = m_Config.useRoot().getInt(ASWNL("/config/server/http/first-char-sleep-increment"), SLEEP_INCREMENT);
+  UNAVAILABLE_SLEEP_TIME = m_Config.useRoot().getInt(ASWNL("/config/server/http/unavailable-sleep-time"), UNAVAILABLE_SLEEP_TIME);
+  UNAVAILABLE_RETRIES = m_Config.useRoot().getInt(ASWNL("/config/server/http/unavailable-retries"), UNAVAILABLE_RETRIES);
   IS_HTTP_PIPELINING_ENABLED = m_Config.useRoot().getBool(ASWNL("/config/server/http/http11-pipelining-enabled"), IS_HTTP_PIPELINING_ENABLED);
   GZIP_IS_ENABLED = m_Config.useRoot().getBool(ASWNL("/config/server/gzip-compression/enabled"), GZIP_IS_ENABLED);
   GZIP_MIN_SIZE = m_Config.useRoot().getSize_t(ASWNL("/config/server/gzip-compression/minimum-threshold"), GZIP_MIN_SIZE);

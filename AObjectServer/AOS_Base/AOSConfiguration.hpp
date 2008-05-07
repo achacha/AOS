@@ -36,6 +36,10 @@ public:
   static size_t GZIP_MIN_SIZE;
   //! Default gzip compression level
   static int GZIP_DEFAULT_LEVEL;
+  //! Sleep time when flushing data and socket is unavailable
+  static int UNAVAILABLE_SLEEP_TIME;
+  //! Number of retries before considering socket unavailable for too long
+  static int UNAVAILABLE_RETRIES;
 
 public:
   AOSConfiguration(const AFilename& baseDir, AOSServices&);

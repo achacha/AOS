@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- /config/server -->
 <server>
-	<log-level>5</log-level>
+	<log-level>3</log-level>
 	<debug>
 		<allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page">true</allow-dumpContext>
 		<allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command">true</allow-overrideOutput>
@@ -65,8 +65,10 @@
 		<first-char-read-tries desc="Number of times to try and read the first character">15</first-char-read-tries>
 		<first-char-sleep-start desc="Initial sleep time trying to read first character">30</first-char-sleep-start>
 		<first-char-sleep-increment desc="Amount to increment the sleep time for each try">20</first-char-sleep-increment>
-		<wait-for-http-data-timeout desc="Time to wait for complete header after initial byte before giving up, in ms">10000</wait-for-http-data-timeout>
+		<wait-for-http-data-timeout desc="Milliseconds to wait for complete header after initial byte before giving up, in ms">10000</wait-for-http-data-timeout>
 		<http11-pipelining-enabled desc="Enabled pipelining if keep-alive is specified">true</http11-pipelining-enabled>
+		<unavailable-sleep-time desc="Milliseconds to sleep while trying to flush the output and the socket is unavailable (would block)">50</unavailable-sleep-time>
+		<unavailable-retries desc="Number of retries (sleeps) while waiting for an unavailable socket">100</unavailable-retries>
 	</http>
 	<context-queues>
 		<is-available>

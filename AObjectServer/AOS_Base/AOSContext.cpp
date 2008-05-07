@@ -1416,6 +1416,7 @@ size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
   size_t bytesToWrite = originalSize;
   size_t bytesWritten = 0;
   size_t index = 0;
+  int sleepRetries = 0;
   while (bytesToWrite)
   {
     size_t ret = data.access(*mp_RequestFile, index, bytesToWrite);
@@ -1453,7 +1454,13 @@ size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
           str.append(AString::fromSize_t(bytesWritten));
           m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
         }
-        AThread::sleep(1);
+        if (sleepRetries < AOSConfiguration::UNAVAILABLE_RETRIES)
+        {
+          ++sleepRetries;
+          AThread::sleep(AOSConfiguration::UNAVAILABLE_SLEEP_TIME);
+        }
+        else
+          return (bytesWritten > 0 ? bytesWritten : ret);
       }
       break;
         
@@ -1461,6 +1468,7 @@ size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
         bytesToWrite -= ret;
         bytesWritten += ret;
         index += ret;
+        sleepRetries = 0;
       break;
     }
   }
