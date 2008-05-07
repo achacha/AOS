@@ -10,19 +10,19 @@
 void ACookie::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ACookie @ " << std::hex << this << std::dec << ") { " << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_strName=" << m_strName << std::endl;   
-  ADebugDumpable::indent(os, indent+1) << "m_strValue=" << m_strValue << std::endl;  
-  ADebugDumpable::indent(os, indent+1) << "m_strPath=" << m_strPath << std::endl;   
-  ADebugDumpable::indent(os, indent+1) << "m_strDomain=" << m_strDomain << std::endl; 
-  ADebugDumpable::indent(os, indent+1) << "m_boolSecure=" << m_boolSecure << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_boolExpired=" << m_boolExpired << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_boolExpirationSet=" << m_boolExpirationSet << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_iVersion=" << m_iVersion << std::endl;  
+  ADebugDumpable::indent(os, indent+1) << "m_strName=" << m_strName   
+                                       << "  m_strValue=" << m_strValue << std::endl;  
+  ADebugDumpable::indent(os, indent+1) << "m_strDomain=" << m_strDomain 
+                                       << "m_strPath=" << m_strPath << std::endl;   
+  ADebugDumpable::indent(os, indent+1) << "m_iVersion=" << m_iVersion
+                                       << "m_strComment=" << m_strComment << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_lMaxAge=" << m_lMaxAge << std::endl;  
-  ADebugDumpable::indent(os, indent+1) << "m_strComment=" << m_strComment << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_timeExpires={";
   m_timeExpires.debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent+1) <<"}" << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_boolSecure=" << m_boolSecure
+                                       << "  m_boolExpired=" << m_boolExpired
+                                       << "  m_boolExpirationSet=" << m_boolExpirationSet << std::endl;
   
   ADebugDumpable::indent(os, indent) <<"}" << std::endl;
 }
@@ -36,13 +36,19 @@ ACookie::ACookie() :
 {
 }
 
-ACookie::ACookie(const AString &name, const AString &value, const AString& path) :
+ACookie::ACookie(
+  const AString &name, 
+  const AString &value, 
+  const AString& domain,
+  const AString& path
+) :
   m_boolExpired(false),
   m_iVersion(DEFAULT_VERSION),
   m_boolSecure(false),
   m_strName(name),
   m_strValue(value),
   m_strPath(path),
+  m_strDomain(domain),
   m_boolExpirationSet(false), //a_Indefinite cookie
   m_lMaxAge(-1)
 {

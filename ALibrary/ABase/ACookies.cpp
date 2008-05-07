@@ -7,9 +7,9 @@
 void ACookies::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(ACookies @ " << std::hex << this << std::dec << ") { " << std::endl;
-  for (size_t u=0; u<mvector__Cookies.size(); ++u)
+  for (size_t u=0; u<m_Cookies.size(); ++u)
   {
-    mvector__Cookies[u]->debugDump(os, indent+1);
+    m_Cookies[u]->debugDump(os, indent+1);
   }
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
@@ -48,24 +48,24 @@ void ACookies::__copy(const ACookies &cookiesSource)
 {
   clear();
 
-  for (size_t i=0; i < cookiesSource.mvector__Cookies.size(); ++i)
+  for (size_t i=0; i < cookiesSource.m_Cookies.size(); ++i)
   {
-    mvector__Cookies.push_back(new ACookie(*cookiesSource.mvector__Cookies[i]));
+    m_Cookies.push_back(new ACookie(*cookiesSource.m_Cookies[i]));
   }
 }
 
 void ACookies::clear()
 {
-  size_t iSize = mvector__Cookies.size();
+  size_t iSize = m_Cookies.size();
   for (size_t iX = 0x0; iX < iSize; iX++)
-    pDelete(mvector__Cookies[iX]);
+    pDelete(m_Cookies[iX]);
 
-  mvector__Cookies.clear();
+  m_Cookies.clear();
 }
 
 ACookie &ACookies::addCookie(const AString& name, const AString &value)
 {
-  AASSERT(this, mvector__Cookies.size() < DEBUG_MAXSIZE_ACache_FileSystem);  //a_Debug only limit
+  AASSERT(this, m_Cookies.size() < DEBUG_MAXSIZE_ACache_FileSystem);  //a_Debug only limit
 
   ACookie *pcookieNew = __findCookie(name);
   if (pcookieNew)
@@ -78,7 +78,7 @@ ACookie &ACookies::addCookie(const AString& name, const AString &value)
   {  
     //a_Will URL encode the value
     pcookieNew = new ACookie(name, value);
-    mvector__Cookies.push_back(pcookieNew);
+    m_Cookies.push_back(pcookieNew);
   }
 
   return *pcookieNew;
@@ -239,10 +239,10 @@ ACookie *ACookies::__findCookie(const AString& name) const
   if (name.isEmpty())
     return NULL;
 
-  for (size_t i = 0x0; i < mvector__Cookies.size(); ++i)
+  for (size_t i = 0x0; i < m_Cookies.size(); ++i)
   {
-    if (!mvector__Cookies[i]->getName().compareNoCase(name))
-      return mvector__Cookies[i];
+    if (!m_Cookies[i]->getName().compareNoCase(name))
+      return m_Cookies[i];
   }
 
   return NULL;
@@ -252,11 +252,11 @@ void ACookies::emitResponseHeaderString(AOutputBuffer& target) const
 {
   //a_This is what should be included in the HTTP response header (most common use for this object)
   //a_Format: Set-Cookie: NAME1=VALUE1 <parameters>   (1 cookie per line)
-  for (size_t i = 0; i < mvector__Cookies.size(); ++i)
+  for (size_t i = 0; i < m_Cookies.size(); ++i)
   {
     target.append("Set-Cookie: ", 12);
     
-    mvector__Cookies[i]->emitResponseHeaderString(target);
+    m_Cookies[i]->emitResponseHeaderString(target);
     target.append(AConstant::ASTRING_CRLF);
   }
 }
@@ -267,9 +267,9 @@ void ACookies::emitRequestHeaderString(AOutputBuffer& target) const
 
   //a_This is what should be included in the HTTP request header
   //a_Format: Cookie: NAME1=VALUE1; NAME2=VALUE2; ...  (many cookies per line)
-  for (size_t i=0; i < mvector__Cookies.size(); ++i)
+  for (size_t i=0; i < m_Cookies.size(); ++i)
   {
-    mvector__Cookies[i]->emitRequestHeaderString(target);
+    m_Cookies[i]->emitRequestHeaderString(target);
   }
   target.append(AConstant::ASTRING_CRLF);
 }
@@ -286,13 +286,13 @@ void ACookies::expireCookie(const AString& name)
 
 void ACookies::removeCookie(const AString& name)
 {
-  VECTOR_CookiePointers::iterator viCookie = mvector__Cookies.begin();
-  while (viCookie != mvector__Cookies.end())
+  CONTAINER::iterator viCookie = m_Cookies.begin();
+  while (viCookie != m_Cookies.end())
   {
     if (!(*viCookie)->getName().compareNoCase(name))
     {
       pDelete(*viCookie);
-      mvector__Cookies.erase(viCookie);
+      m_Cookies.erase(viCookie);
       return;
     }
     viCookie++;
@@ -308,13 +308,18 @@ AXmlElement& ACookies::emitXml(AXmlElement& thisRoot) const
 {
   AASSERT(this, !thisRoot.useName().isEmpty());
 
-  for (size_t i = 0; i < mvector__Cookies.size(); ++i)
-    mvector__Cookies[i]->emitXml(thisRoot.addElement(ASW("cookie",6)));
+  for (size_t i = 0; i < m_Cookies.size(); ++i)
+    m_Cookies[i]->emitXml(thisRoot.addElement(ASW("cookie",6)));
 
   return thisRoot;
 }
 
 size_t ACookies::size() const
 { 
-  return mvector__Cookies.size();
+  return m_Cookies.size();
+}
+
+const ACookies::CONTAINER& ACookies::getContainer() const
+{
+  return m_Cookies;
 }

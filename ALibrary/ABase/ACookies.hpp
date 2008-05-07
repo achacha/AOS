@@ -9,6 +9,10 @@
 class ABASE_API ACookies: public ADebugDumpable, public AXmlEmittable
 {
 public:
+  //! Container used to store the cookie pointers
+  typedef std::vector<ACookie *> CONTAINER;
+
+public:
   //a_Ctors, and dtor
   ACookies();
   ACookies(const AString &strLine);           //a_This is the HTTP_COOKIE line that the browser sends
@@ -118,14 +122,18 @@ public:
   void removeCookie(const AString& name);     //a_Deletes locally
 
   /*!
+  Get the cookie container
+  */
+  const ACookies::CONTAINER& getContainer() const;
+
+  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
   //a_Internal cookie storage
-  typedef std::vector<ACookie *> VECTOR_CookiePointers;
-  VECTOR_CookiePointers mvector__Cookies;
+  CONTAINER m_Cookies;
 
   //a_Object maintenance
   void __copy(const ACookies &cookiesSource);

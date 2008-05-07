@@ -31,6 +31,7 @@ public:
   ACookie(
     const AString &name, 
     const AString &value = AConstant::ASTRING_EMPTY,
+    const AString &domain = AConstant::ASTRING_EMPTY,
     const AString &path = AConstant::ASTRING_EMPTY
   );
   

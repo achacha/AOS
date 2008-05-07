@@ -3,6 +3,8 @@
 #include <ACookies.hpp>
 #include <ACookieJar.hpp>
 #include <AException.hpp>
+#include <AHTTPResponseHeader.hpp>
+#include <AFile_AString.hpp>
 
 void testRequestCookies()
 {
@@ -44,34 +46,55 @@ void testResponseCookies()
 
 void testCookieJar()
 {
+  const AString DOMAIN("foo.nil");
   ACookieJar cookieJar;
-  ACookie *pcookie = new ACookie("root0", "val");
+  ACookie *pcookie = new ACookie("root0", "val", DOMAIN);
   pcookie->setSecure(true);
   cookieJar.add(pcookie);
-  cookieJar.add(new ACookie("dir1", "val", "/dir"));
-  cookieJar.add(new ACookie("dir2", "val", "/dir/folder/"));
+  cookieJar.add(new ACookie("dir1", "val", DOMAIN, "/dir"));
+  cookieJar.add(new ACookie("dir2", "val", DOMAIN, "/dir/folder/"));
 
   cookieJar.debugDump();
   
   AString str;
-  cookieJar.emit(str, "/dir");
+  cookieJar.emit(str, DOMAIN, "/dir");
   std::cout << "Cookie: " << str << std::endl;
 
   str.clear();
-  cookieJar.emit(str, "/dir/folder");
+  cookieJar.emit(str, DOMAIN, "/dir/folder");
   std::cout << "Cookie: " << str << std::endl;
 
   str.clear();
-  cookieJar.emit(str, "/dir/folder2");
+  cookieJar.emit(str, DOMAIN, "/dir/folder2");
   std::cout << "Cookie: " << str << std::endl;
 
   str.clear();
-  cookieJar.emit(str, "/");
+  cookieJar.emit(str, DOMAIN, "/");
   std::cout << "Cookie: " << str << std::endl;
 
   str.clear();
-  cookieJar.emit(str, "/dir/folder2", true);
+  cookieJar.emit(str, DOMAIN, "/dir/folder2", true);
   std::cout << "Cookie: " << str << std::endl;
+}
+
+void testCookieJarFromHeader()
+{
+  AHTTPResponseHeader header(
+"\
+HTTP/1.1 200 Ok\r\n\
+Server: Rhino 1.5.0\r\n\
+Set-Cookie: color=red; domain=something.foo.com; path=/;\r\n\
+Set-Cookie: GV=SET;Domain=foo.com;Path=/;\r\n\
+Set-Cookie: GV=EXPIRED;Domain=foo.com;Path=/;Expires=Mon, 01-Jan-1990 00:00:00 GMT\r\n\
+Set-Cookie: SV=Set;Domain=foo.com;Path=/mail;Expires=Mon, 01-Jan-2010 00:00:00 GMT\r\n\
+Cache-Control: no-cache, no-store\r\n\
+Pragma: no-cache\r\n\
+\r\n");
+
+  ACookieJar jar;
+  jar.parse(header);
+
+  jar.debugDump();
 }
 
 int main()
@@ -80,8 +103,9 @@ int main()
   {
     //testRequestCookies();
     //testResponseCookies();
-    testCookieJar();
-  }
+    //testCookieJar();
+    testCookieJarFromHeader();
+  } 
   catch(AException& e)
   {
     std::cerr << e << std::endl;
