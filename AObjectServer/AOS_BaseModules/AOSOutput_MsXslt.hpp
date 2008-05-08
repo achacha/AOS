@@ -1,7 +1,7 @@
 #ifndef INCLUDED__AOSOutput_MsXslt_HPP__
 #define INCLUDED__AOSOutput_MsXslt_HPP__
 
-#ifdef AOS__USE_MSXML4__
+#ifdef AOS__USE_MSXML6__
 #include "apiAOS_BaseModules.hpp"
 #include "ASync_CriticalSection.hpp"
 
@@ -61,5 +61,5 @@ private:
   void _dumpToFile(ARope&);
 };
 
-#endif //AOS__USE_MSXML4__
+#endif //AOS__USE_MSXML6__
 #endif //INCLUDED__AOSOutput_MsXslt_HPP__

@@ -1,6 +1,6 @@
 #include "pchAOS_BaseModules.hpp"
 
-#ifdef AOS__USE_MSXML4__
+#ifdef AOS__USE_MSXML6__
 #include "AOSOutput_MsXslt.hpp"
 #include "ASystemException.hpp"
 #include "AObjectContainer.hpp"
@@ -8,7 +8,7 @@
 #include "ATextGenerator.hpp"
 #include "AOSServices.hpp"
 
-#import <msxml4.dll>
+#import <msxml6.dll>
 
 const AString& AOSOutput_MsXslt::getClass() const
 {
@@ -107,7 +107,7 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& fi
     ATHROW_EX(this, AException::InvalidParameter, AString("Empty filename"));
   }
 
-  HRESULT hr = (*p).CreateInstance(__uuidof(MSXML2::DOMDocument40));
+  HRESULT hr = (*p).CreateInstance(__uuidof(MSXML2::DOMDocument60));
   if (FAILED(hr))
   {
     delete p;
@@ -189,7 +189,7 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
   try
   {
     MSXML2::IXMLDOMDocument2Ptr pXMLDoc = NULL;
-    HRESULT h = pXMLDoc.CreateInstance(__uuidof(MSXML2::DOMDocument40));
+    HRESULT h = pXMLDoc.CreateInstance(__uuidof(MSXML2::DOMDocument60));
     if (FAILED(h))
       ATHROW_LAST_OS_ERROR(this);
 
@@ -246,4 +246,4 @@ void AOSOutput_MsXslt::_dumpToFile(ARope& rope)
   outfile.close();
 }
 
-#endif //AOS__USE_MSXML4__
+#endif //AOS__USE_MSXML6__
