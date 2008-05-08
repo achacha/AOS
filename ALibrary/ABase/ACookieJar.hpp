@@ -6,6 +6,7 @@
 #include "templateListOfPtrs.hpp"
 #include "templateMapOfPtrs.hpp"
 
+class AHTTPRequestHeader;
 class AHTTPResponseHeader;
 
 /*!
@@ -52,6 +53,14 @@ public:
   void parse(const AHTTPResponseHeader& header);
 
   /*!
+  Emit the appropriate cookies into a given request header that were added via the parse method
+  Adds cookie pairs as Cookie: HTTP parameter that match the domain and path
+
+  @param header HTTP request
+  */
+  void emit(AHTTPRequestHeader& header);
+
+  /*!
   Emit cookies for a given path
   All cookies from a given path to root will be emitted
 
@@ -74,6 +83,10 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
+  //! No copy ctor or assign operator
+  ACookieJar& operator=(const ACookieJar&) { return *this; }
+  
+  //! Path node that contains cookies and sub-path nodes (aka directory node)
   class Node : public ADebugDumpable
   {
   public:

@@ -209,7 +209,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tCookieJar.cpp"
+			RelativePath=".\tVectorPerf.cpp"
 			>
 		</File>
 	</Files>

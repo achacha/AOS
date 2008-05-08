@@ -1,7 +1,5 @@
 #include "pchABase.hpp"
 #include "ALog.hpp"
-#include "ARope.hpp"
-#include "ATime.hpp"
 
 ALog::ScopeEvents::ScopeEvents(const AString& scopeName, ALog& parentLog) :
   m_ParentLog(parentLog),

@@ -4,8 +4,6 @@
 #include "AFile.hpp"
 #include "AString.hpp"
 #include "AXmlInstruction.hpp"
-#include "AXmlData.hpp"
-#include "ARope.hpp"
 #include "AException.hpp"
 
 const AString AXmlElement::sstr_Start("<");

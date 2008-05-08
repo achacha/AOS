@@ -3,7 +3,6 @@
 
 #include "AXmlData.hpp"
 #include "ATextConverter.hpp"
-#include "ARope.hpp"
 #include "AException.hpp"
 #include "AXmlElement.hpp"
 

@@ -13,27 +13,36 @@ Before:
          
 Now:
   AMapOfPtrs<int, AString> myMap;
-  myMap._map[0] = new AString("foo");   // this class will delete this object in dtor
+  myMap[0] = new AString("foo");   // this class will delete this object in dtor
 */
 template<class K, class T>
-class AMapOfPtrs
+class AMapOfPtrs : public std::map<K, T*>
 {
 public:
-  typedef std::map<K, T*> TYPEDEF;
-  TYPEDEF _map;
+  /*!
+  Default ctor
+  */
+  AMapOfPtrs() {}
 
   /*!
   Will call delete on all members 
   */
   ~AMapOfPtrs()
   {
-    TYPEDEF::iterator it = _map.begin();
-    while (it != _map.end())
+    try
     {
-      delete (*it).second;
-      ++it;
-    }
+      for (iterator it = begin(); it != end(); ++it)
+        delete (*it).second;
+    } catch(...) {}
   }
+
+private:
+  /*!
+  No default copy ctor or assignment
+  Should be done explicitly to properly copy the contained pointers
+  */
+  AMapOfPtrs(const AMapOfPtrs&) {}
+  AMapOfPtrs& operator=(const AMapOfPtrs&) { return *this }
 };
 
 #endif // _templateMapOfPtrs_HPP_

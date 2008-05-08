@@ -1,6 +1,5 @@
 #include "pchABase.hpp"
 #include "AString.hpp"
-#include "AEventVisitor.hpp"
 #include "AContentType_Binary.hpp"
 #include "AContentType_Form.hpp"
 #include "AContentType_TextXml.hpp"

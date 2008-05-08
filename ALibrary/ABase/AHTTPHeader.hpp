@@ -12,7 +12,7 @@ public:
   //a_Tokens from RFC-2068
   enum HEADER_TOKENS
   {
-    HT_INVALID                  = 0x0000000,
+    HT_INVALID                  = 0x00000000,
     
     //a_General-header
     HT_GEN_Cache_Control        = 0x10000001,
@@ -25,50 +25,56 @@ public:
     HT_GEN_Keep_Alive           = 0x10000008,
 
     //a_Request-header
-    HT_REQ_Accept               = 0x10000010,
-    HT_REQ_Accept_Charset       = 0x10000011,
-    HT_REQ_Accept_Encoding      = 0x10000012,
-    HT_REQ_Accept_Language      = 0x10000013,
-    HT_REQ_Accept_Ranges        = 0x10000014,
-    HT_REQ_Authorization        = 0x10000015,
-    HT_REQ_From                 = 0x10000016,
-    HT_REQ_Host                 = 0x10000017,
-    HT_REQ_If_Modified_Since    = 0x10000018,
-    HT_REQ_If_Match             = 0x10000019,
-    HT_REQ_If_None_Match        = 0x1000001A,
-    HT_REQ_If_Range             = 0x1000001B,
-    HT_REQ_If_Unmodified_Since  = 0x1000001C,
-    HT_REQ_Max_Forwards         = 0x1000001D,
-    HT_REQ_Proxy_Authorization  = 0x1000001E,
-    HT_REQ_Range                = 0x1000001F,
-    HT_REQ_Referer              = 0x10000020,
-    HT_REQ_User_Agent           = 0x10000021,
-    HT_RES_TE                   = 0x10000022,      
-                                            
+    HT_REQ_Accept               = 0x10000020,
+    HT_REQ_Accept_Charset       = 0x10000021,
+    HT_REQ_Accept_Encoding      = 0x10000022,
+    HT_REQ_Accept_Language      = 0x10000023,
+    HT_REQ_Accept_Ranges        = 0x10000024,
+    HT_REQ_Authorization        = 0x10000025,
+    HT_REQ_From                 = 0x10000026,
+    HT_REQ_Host                 = 0x10000027,
+    HT_REQ_If_Modified_Since    = 0x10000028,
+    HT_REQ_If_Match             = 0x10000029,
+    HT_REQ_If_None_Match        = 0x1000002A,
+    HT_REQ_If_Range             = 0x1000002B,
+    HT_REQ_If_Unmodified_Since  = 0x1000002C,
+    HT_REQ_Max_Forwards         = 0x1000002D,
+    HT_REQ_Proxy_Authorization  = 0x1000002E,
+    HT_REQ_Range                = 0x1000002F,
+    HT_REQ_Referer              = 0x10000030,
+    HT_REQ_User_Agent           = 0x10000031,
+    
+    //a_Special request-header
+    HT_REQ_Cookie               = 0x1000003A,
+
     //a_Response-header
-    HT_RES_Age                  = 0x10000030,
-    HT_RES_Location             = 0x10000031,
-    HT_RES_Proxy_Authenticate   = 0x10000032,
-    HT_RES_Public               = 0x10000033,
-    HT_RES_Retry_After          = 0x10000034,
-    HT_RES_Server               = 0x10000035,
-    HT_RES_Vary                 = 0x10000036,
-    HT_RES_Warning              = 0x10000037,
-    HT_RES_WWW_Authenticate     = 0x10000038,
+    HT_RES_Age                  = 0x10000040,
+    HT_RES_Location             = 0x10000041,
+    HT_RES_Proxy_Authenticate   = 0x10000042,
+    HT_RES_Public               = 0x10000043,
+    HT_RES_Retry_After          = 0x10000044,
+    HT_RES_Server               = 0x10000045,
+    HT_RES_TE                   = 0x10000046,      
+    HT_RES_Vary                 = 0x10000047,
+    HT_RES_Warning              = 0x10000048,
+    HT_RES_WWW_Authenticate     = 0x10000049,
+
+    //a_Special response-header
+    HT_RES_Set_Cookie           = 0x1000004A,
 
     //a_Entity-header
-    HT_ENT_Allow                = 0x10000050,
-    HT_ENT_Content_Base         = 0x10000051,
-    HT_ENT_Content_Encoding     = 0x10000052,
-    HT_ENT_Content_Language     = 0x10000053,
-    HT_ENT_Content_Length       = 0x10000054,
-    HT_ENT_Content_Location     = 0x10000055,
-    HT_ENT_Content_MD5          = 0x10000056,
-    HT_ENT_Content_Range        = 0x10000057,
-    HT_ENT_Content_Type         = 0x10000058,
-    HT_ENT_ETag                 = 0x10000059,
-    HT_ENT_Expires              = 0x10000060,
-    HT_ENT_Last_Modified        = 0x10000061
+    HT_ENT_Allow                = 0x10000060,
+    HT_ENT_Content_Base         = 0x10000061,
+    HT_ENT_Content_Encoding     = 0x10000062,
+    HT_ENT_Content_Language     = 0x10000063,
+    HT_ENT_Content_Length       = 0x10000064,
+    HT_ENT_Content_Location     = 0x10000065,
+    HT_ENT_Content_MD5          = 0x10000066,
+    HT_ENT_Content_Range        = 0x10000067,
+    HT_ENT_Content_Type         = 0x10000068,
+    HT_ENT_ETag                 = 0x10000069,
+    HT_ENT_Expires              = 0x1000006A,
+    HT_ENT_Last_Modified        = 0x1000006B
   };
 
 public:

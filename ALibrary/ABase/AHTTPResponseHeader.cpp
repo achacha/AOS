@@ -1,7 +1,5 @@
 #include "pchABase.hpp"
 #include "AHTTPResponseHeader.hpp"
-#include "AException.hpp"
-#include "ARope.hpp"
 #include "AXmlElement.hpp"
 
 void AHTTPResponseHeader::debugDump(std::ostream& os, int indent) const

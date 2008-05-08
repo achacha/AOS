@@ -2,7 +2,6 @@
 
 #include "ASocketLibrary.hpp"
 #include "ASocketException.hpp"
-#include "ALock.hpp"
 #include "ATextConverter.hpp"
 #include <Iphlpapi.h>
 

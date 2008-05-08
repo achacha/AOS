@@ -15,28 +15,42 @@ Before:
          
 Now:
   AVectorOfPtrs<AString> myVector;
-  myVector._vector.push_back(new AString("foo"));   // this class will delete this object in dtor
+  myVector.push_back(new AString("foo"));   // this class will delete this object in dtor
 **/
 
 template<class T>
-class AVectorOfPtrs
+class AVectorOfPtrs : public std::vector<T*>
 {
 public:
-  typedef std::vector<T*> TYPEDEF;
-  TYPEDEF _vector;
+  /*!
+  Default ctor
+  */
+  AVectorOfPtrs() {}
+
+  /*!
+  ctor with initial size
+  */
+  AVectorOfPtrs(size_t initialSize) : std::vector<T*>(initialSize) {}
 
   /**
   Will call delete on all members 
   **/
   ~AVectorOfPtrs()
   {
-    TYPEDEF::iterator it = _vector.begin();
-    while (it != _vector.end())
+    try
     {
-      delete *it;
-      ++it;
-    }
+      for (iterator it = begin(); it != end(); ++it)
+        delete *it;
+    } catch(...) {}
   }
+
+private:
+  /*!
+  No default copy ctor or assignment
+  Should be done explicitly to properly copy the contained pointers
+  */
+  AVectorOfPtrs(const AVectorOfPtrs&) {}
+  AVectorOfPtrs& operator=(const AVectorOfPtrs&) { return *this }
 };
 
 #endif // _templateVectorOfPtrs_HPP_

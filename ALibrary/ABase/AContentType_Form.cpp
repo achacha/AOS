@@ -1,6 +1,5 @@
 #include "pchABase.hpp"
 #include "AContentType_Form.hpp"
-#include "AHTTPResponseHeader.hpp"
 #include "ARope.hpp"
 
 const AString AContentType_Form::CONTENT_TYPE("application/x-www-form-urlencoded");

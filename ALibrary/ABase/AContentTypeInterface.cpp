@@ -1,8 +1,6 @@
 #include "pchABase.hpp"
 #include "AContentTypeInterface.hpp"
 #include "AFile.hpp"
-#include "AException.hpp"
-#include "AUrl.hpp"
 #include "AHTTPHeader.hpp"
 
 void AContentTypeInterface::debugDump(std::ostream& os, int indent) const

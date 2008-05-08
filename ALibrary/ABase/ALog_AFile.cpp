@@ -1,5 +1,4 @@
 #include "pchABase.hpp"
-#include "macroDelete.hpp"
 #include "ALog_AFile.hpp"
 #include "AFile_Physical.hpp"
 #include "AException.hpp"

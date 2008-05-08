@@ -1,15 +1,9 @@
-//
-// ANumber
-//
-
 #include "pchABase.hpp"
 
 #include "ANumber.hpp"
-#include "AException.hpp"
 #include "AFile.hpp"
 #include "AOutputBuffer.hpp"
 #include <float.h>
-#include "templateAutoPtr.hpp"
 
 void ANumber::debugDump(std::ostream& os, int indent) const
 {

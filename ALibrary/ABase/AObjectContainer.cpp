@@ -1,9 +1,6 @@
 #include "pchABase.hpp"
 
 #include "AObjectContainer.hpp"
-#include "AException.hpp"
-#include "ARope.hpp"
-#include "ATextGenerator.hpp"
 #include "AUrl.hpp"
 
 const AString AObjectContainer::ID("id");

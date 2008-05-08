@@ -1,7 +1,5 @@
 #include "pchABase.hpp"
 #include "ATemplateNodeHandler.hpp"
-#include "AXmlElement.hpp"
-#include "AFile.hpp"
 
 #ifdef __DEBUG_DUMP__
 void ATemplateNodeHandler::debugDump(std::ostream& os, int indent) const

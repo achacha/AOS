@@ -1,10 +1,8 @@
 #include "pchABase.hpp"
-#pragma hdrstop
 
 #include "AFile.hpp"
 #include "AException.hpp"
 #include "ARope.hpp"
-#include "AThread.hpp"
 
 void AFile::debugDump(std::ostream& os, int indent) const
 {

@@ -1,8 +1,6 @@
 #include "pchABase.hpp"
 #include "AOutputBuffer.hpp"
 #include "AString.hpp"
-#include "ARope.hpp"
-#include "AException.hpp"
 
 size_t AOutputBuffer::append(const char *pcc)
 {

@@ -1,7 +1,6 @@
 #include "pchABase.hpp"
 #include "AString.hpp"
 #include "ANumber.hpp"
-#include "templateSingletonPattern.hpp"
 #include "AException.hpp"
 #include "AFile.hpp"
 #include "ARope.hpp"

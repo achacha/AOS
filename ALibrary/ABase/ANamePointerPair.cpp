@@ -6,8 +6,6 @@
 
 #include "ANamePointerPair.hpp"
 #include "AException.hpp"
-#include "AFile.hpp"
-#include "templateAutoPtr.hpp"
 #include "AOutputBuffer.hpp"
 
 void ANamePointerPair::debugDump(std::ostream& os, int indent) const

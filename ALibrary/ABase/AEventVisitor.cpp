@@ -1,10 +1,7 @@
 
 #include "pchABase.hpp"
 #include "AEventVisitor.hpp"
-#include "AFile.hpp"
 #include "AXmlElement.hpp"
-#include "AXmlData.hpp"
-#include "AException.hpp"
 
 void AEventVisitor::debugDump(std::ostream& os, int indent) const
 {

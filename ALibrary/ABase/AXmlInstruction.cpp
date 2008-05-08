@@ -1,8 +1,6 @@
 
 #include "pchABase.hpp"
 #include "AXmlInstruction.hpp"
-#include "AXmlDocument.hpp"
-#include "ARope.hpp"
 #include "AException.hpp"
 
 void AXmlInstruction::debugDump(std::ostream& os, int indent) const

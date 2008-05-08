@@ -1,9 +1,7 @@
 #include "pchABase.hpp"
 #include "AHTTPRequestHeader.hpp"
-#include "AException.hpp"
 #include "AOutputBuffer.hpp"
 #include "AXmlElement.hpp"
-#include "ATextConverter.hpp"
 
 const AString AHTTPRequestHeader::METHOD_CONNECT("CONNECT",7);
 const AString AHTTPRequestHeader::METHOD_GET("GET",3);

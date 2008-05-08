@@ -1,7 +1,6 @@
 #include "pchABase.hpp"
 #include "AResultSet.hpp"
 #include "AXmlElement.hpp"
-#include "AObjectContainer.hpp"
 
 const AString AResultSet::ROW("row");
 

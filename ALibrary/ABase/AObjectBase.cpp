@@ -3,8 +3,6 @@
 
 #include "AObjectBase.hpp"
 #include "AException.hpp"
-#include "AXmlElement.hpp"
-#include "AFile.hpp"
 
 void AObjectBase::debugDump(std::ostream& os, int indent) const
 {

@@ -1,6 +1,5 @@
 #include "pchABase.hpp"
 #include "AContentType_Binary.hpp"
-#include "ATextConverter.hpp"
 
 const AString AContentType_Binary::CONTENT_TYPE("application/octet-stream",24);
 

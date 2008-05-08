@@ -2,9 +2,6 @@
 
 #include "ABasePtrContainer.hpp"
 #include "AException.hpp"
-#include "ARope.hpp"
-#include "ATextGenerator.hpp"
-#include "AUrl.hpp"
 #include "AXmlElement.hpp"
 
 void ABasePtrContainer::debugDump(std::ostream& os, int indent) const

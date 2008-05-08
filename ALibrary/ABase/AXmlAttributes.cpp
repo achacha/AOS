@@ -2,7 +2,6 @@
 
 #include "AXmlAttributes.hpp"
 #include "ANameValuePair.hpp"
-#include "AException.hpp"
 #include "AOutputBuffer.hpp"
 
 void AXmlAttributes::debugDump(std::ostream& os, int indent) const

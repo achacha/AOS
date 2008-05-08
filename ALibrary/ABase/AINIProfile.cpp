@@ -5,9 +5,7 @@
 #include "templateAutoPtr.hpp"
 #include "AINIProfile.hpp"
 #include "AException.hpp"
-#include "templateSingletonPattern.hpp"
 #include "AFile_IOStream.hpp"
-#include "ARope.hpp"
 #include "AFilename.hpp"
 
 //a_Leaf of the node that builds the tree

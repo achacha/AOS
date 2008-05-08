@@ -1,13 +1,9 @@
 import sys, os;
 
-def processASW(asw):
-	global lineno;
-
-
 def process(file):
 	lineno = 0;
 	if (verbose != 0):
-		print "Processing: "+file;
+		print "  Processing file: "+file;
 	f = open(file,"r");
 	for line in f.readlines():
 		lineno += 1;
@@ -60,4 +56,4 @@ if (os.path.exists(path)):
 		if (file[-4:] == ".cpp"):
 			process(os.path.join(path,file));
 else:
-	print "Path does not exist: "+cpp_path;
+	print "Path does not exist: "+path;

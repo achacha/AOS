@@ -4,9 +4,7 @@
 #include "AOutputBuffer.hpp"
 #include "ATextConverter.hpp"
 #include "AException.hpp"
-#include "templateAutoPtr.hpp"
 #include "AXmlElement.hpp"
-#include "ARope.hpp"
 
 const AString AUrl::sstr__PathSeparator("/");
 const AString AUrl::sstr__PathSelf("/./");

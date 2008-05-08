@@ -1,7 +1,5 @@
 #include "pchABase.hpp"
 #include "AContentType_TextXml.hpp"
-#include "ATextConverter.hpp"
-#include "AFile_Astring.hpp"
 
 const AString AContentType_TextXml::CONTENT_TYPE("text/xml",8);  // text/xml
 

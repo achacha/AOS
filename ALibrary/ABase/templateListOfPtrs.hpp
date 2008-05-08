@@ -15,27 +15,36 @@ Before:
          
 Now:
   AListOfPtrs<AString> myList;
-  myVector._list.push_back(new AString("foo"));   // this class will delete this object in dtor
+  myVector.push_back(new AString("foo"));   // this class will delete this object in dtor
 */
 template<class T>
-class AListOfPtrs
+class AListOfPtrs : public std::list<T*>
 {
 public:
-  typedef std::list<T*> TYPEDEF;
-  TYPEDEF _list;
+  /*!
+  default ctor
+  */
+  AListOfPtrs() {}
 
   /*!
   Will call delete on all members 
   */
   ~AListOfPtrs()
   {
-    TYPEDEF::iterator it = _list.begin();
-    while (it != _list.end())
+    try
     {
-      delete *it;
-      ++it;
-    }
+      for (iterator it = begin(); it != end(); ++it)
+        delete *it;
+    } catch(...) {}
   }
+
+private:
+  /*!
+  No default copy ctor or assignment
+  Should be done explicitly to properly copy the contained pointers
+  */
+  AListOfPtrs(const AListOfPtrs&) {}
+  AListOfPtrs& operator=(const AListOfPtrs&) { return *this }
 };
 
 #endif // _templateListOfPtrs_HPP_

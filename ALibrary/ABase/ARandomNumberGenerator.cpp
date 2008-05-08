@@ -13,9 +13,9 @@ void ARandomNumberGenerator::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
   ADebugDumpable::indent(os, indent) << "(ARandomNumberGenerator @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "sm_rngMap._map.size=" << (u4)sm_rngMap._map.size() << std::endl;
-  AMapOfPtrs<int, ARandomNumberGenerator>::TYPEDEF::const_iterator cit = sm_rngMap._map.begin();
-  while (sm_rngMap._map.end() != cit)
+  ADebugDumpable::indent(os, indent+1) << "sm_rngMap.size=" << (u4)sm_rngMap.size() << std::endl;
+  AMapOfPtrs<int, ARandomNumberGenerator>::const_iterator cit = sm_rngMap.begin();
+  while (sm_rngMap.end() != cit)
   {
     ADebugDumpable::indent(os, indent+1) << "sm_rngMap[" << (*cit).first << "]=";
     (*cit).second->debugDump(os, indent+2);
@@ -29,38 +29,39 @@ ARandomNumberGenerator& ARandomNumberGenerator::get(
   ASynchronization *pSyncObject /* = NULL */
 )
 {
-  if (sm_rngMap._map.find(rng) == sm_rngMap._map.end())
+  if (sm_rngMap.find(rng) == sm_rngMap.end())
   {
-    //a_Create (lock if not NULL)
-    switch(rng)
+    //a_Create (lock if not NULL), enforce double locking
+    ALock lock(pSyncObject);
+    if (sm_rngMap.find(rng) == sm_rngMap.end())
     {
-      case ARandomNumberGenerator::Uniform:
+      switch(rng)
       {
-        ALock lock(pSyncObject);
-        sm_rngMap._map[ARandomNumberGenerator::Uniform] = new ARng_Uniform();
-      }
-      break;
+        case ARandomNumberGenerator::Uniform:
+        {
+          sm_rngMap[ARandomNumberGenerator::Uniform] = new ARng_Uniform();
+        }
+        break;
 
-      case ARandomNumberGenerator::Lecuyer:
-      {
-        ALock lock(pSyncObject);
-        sm_rngMap._map[ARandomNumberGenerator::Lecuyer] = new ARng_Lecuyer();
-      }
-      break;
+        case ARandomNumberGenerator::Lecuyer:
+        {
+          sm_rngMap[ARandomNumberGenerator::Lecuyer] = new ARng_Lecuyer();
+        }
+        break;
 
-      case ARandomNumberGenerator::Marsaglia:
-      {
-        ALock lock(pSyncObject);
-        sm_rngMap._map[ARandomNumberGenerator::Marsaglia] = new ARng_Marsaglia();
-      }
-      break;
+        case ARandomNumberGenerator::Marsaglia:
+        {
+          sm_rngMap[ARandomNumberGenerator::Marsaglia] = new ARng_Marsaglia();
+        }
+        break;
 
-      default:
-        ATHROW(NULL, AException::NotImplemented);
+        default:
+          ATHROW(NULL, AException::NotImplemented);
+      }
     }
   }
 
-  return *(sm_rngMap._map[rng]);
+  return *(sm_rngMap[rng]);
 }
 
 double ARandomNumberGenerator::nextUnit()

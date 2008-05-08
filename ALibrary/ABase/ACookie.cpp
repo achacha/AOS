@@ -1,7 +1,6 @@
 #include "pchABase.hpp"
 #include "ACookie.hpp"
 #include "AException.hpp"
-#include "ATextConverter.hpp"
 #include "AOutputBuffer.hpp"
 #include "AXmlElement.hpp"
 

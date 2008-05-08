@@ -1,7 +1,5 @@
 #include "pchABase.hpp"
 #include "AHTTPHeader.hpp"
-#include "AException.hpp"
-#include "templateAutoPtr.hpp"
 #include "AOutputBuffer.hpp"
 #include "AFile.hpp"
 #include "ARope.hpp"
@@ -301,6 +299,7 @@ const AString AHTTPHeader::_mapTypeToString(AHTTPHeader::HEADER_TOKENS eToken) c
     case HT_REQ_Range               : return ASW("Range",5);
     case HT_REQ_Referer             : return ASW("Referer",7);
     case HT_REQ_User_Agent          : return ASW("User-Agent",10);
+    case HT_REQ_Cookie              : return ASW("Cookie",6);
     case HT_RES_Age                 : return ASW("Age",3);
     case HT_RES_Location            : return ASW("Location",8);
     case HT_RES_Proxy_Authenticate  : return ASW("Proxy-Authenticate",18);
@@ -311,6 +310,7 @@ const AString AHTTPHeader::_mapTypeToString(AHTTPHeader::HEADER_TOKENS eToken) c
     case HT_RES_Warning             : return ASW("Warning",7);
     case HT_RES_WWW_Authenticate    : return ASW("WWW-Authenticate",16);
     case HT_RES_TE                  : return ASW("TE",2);
+    case HT_RES_Set_Cookie          : return ASW("Set-Cookie",10);
     case HT_ENT_Allow               : return ASW("Allow",5);
     case HT_ENT_Content_Base        : return ASW("Content-Base",12);
     case HT_ENT_Content_Encoding    : return ASW("Content-Encoding",16);
@@ -334,13 +334,15 @@ AHTTPHeader::HEADER_TOKENS AHTTPHeader::_mapStringToType(const AString &strToken
   if (!strToken.compareNoCase(ASW("Content-Type",12)))        return HT_ENT_Content_Type;
   if (!strToken.compareNoCase(ASW("Content-Length",14)))      return HT_ENT_Content_Length;
   if (!strToken.compareNoCase(ASW("Content-Encoding",16)))    return HT_ENT_Content_Encoding;
-  if (!strToken.compareNoCase(ASW("Authorization",13)))       return HT_REQ_Authorization;
   if (!strToken.compareNoCase(ASW("User-Agent",10)))          return HT_REQ_User_Agent;
   if (!strToken.compareNoCase(ASW("Referer",7)))              return HT_REQ_Referer;
-  if (!strToken.compareNoCase(ASW("WWW-Authenticate",16)))    return HT_RES_WWW_Authenticate;
   if (!strToken.compareNoCase(ASW("Connection",10)))          return HT_GEN_Connection;
   if (!strToken.compareNoCase(ASW("Host",4)))                 return HT_REQ_Host;
   if (!strToken.compareNoCase(ASW("Keep-Alive",10)))          return HT_GEN_Keep_Alive;
+  if (!strToken.compareNoCase(ASW("Cookie",6)))               return HT_REQ_Cookie;
+  if (!strToken.compareNoCase(ASW("Set-Cookie",10)))          return HT_RES_Set_Cookie;
+  if (!strToken.compareNoCase(ASW("WWW-Authenticate",16)))    return HT_RES_WWW_Authenticate;
+  if (!strToken.compareNoCase(ASW("Authorization",13)))       return HT_REQ_Authorization;
 
   //a_Entity                                                  
   if (!strToken.compareNoCase(ASW("Allow",5)))                return HT_ENT_Allow;

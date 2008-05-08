@@ -5,7 +5,6 @@
 #include "ATextConverter.hpp"
 #include "AException.hpp"
 #include "AFile.hpp"
-#include "templateAutoPtr.hpp"
 #include "AOutputBuffer.hpp"
 #include "ATextConverter.hpp"
 #include <deque>

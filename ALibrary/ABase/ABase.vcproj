@@ -161,8 +161,6 @@
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				AssemblerListingLocation=""
-				ObjectFile="$(IntDir)/"
-				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
 				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -183,15 +181,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
-				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="false"
 				GenerateMapFile="true"
-				MapFileName="$(OutDir)/$(TargetName).map"
+				MapFileName="$(OutDir)/$(ProjectName).map"
 				LinkTimeCodeGeneration="0"
 				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/$(TargetName).lib"
 				TargetMachine="1"
 			/>
@@ -861,10 +857,8 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						Optimization="2"
 						AdditionalIncludeDirectories=""
 						UsePrecompiledHeader="1"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 				<FileConfiguration

@@ -1,6 +1,5 @@
 #include "pchABase.hpp"
 #include "ATextOdometer.hpp"
-#include "AException.hpp"
 #include "ATextGenerator.hpp"
 
 void ATextOdometer::debugDump(std::ostream& os, int indent) const
