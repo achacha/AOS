@@ -347,7 +347,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
       //a_Data not available, try and read-wait to get it
       if (!_waitForFirstChar())
       {
-        m_EventVisitor.startEvent(ASW("AOSContext: Unable to read first char after retries",51));
+        m_EventVisitor.startEvent(ASW("AOSContext: Unable to read first char after retries",51), AEventVisitor::EL_WARN);
         return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
       }
       else

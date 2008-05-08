@@ -211,7 +211,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             ARope rope("RequestURL[",11);
             pContext->useRequestUrl().emit(rope);
             rope.append(']');
-            pContext->useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
+            pContext->useEventVisitor().startEvent(rope);
             m_Services.useLog().add(rope, ALog::INFO);
           }
           break;

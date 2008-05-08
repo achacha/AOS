@@ -149,16 +149,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
-				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir)/"
 				GenerateDebugInformation="false"
+				GenerateMapFile="true"
+				MapFileName="$(OutDir)/$(ProjectName).map"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="0"
 				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
