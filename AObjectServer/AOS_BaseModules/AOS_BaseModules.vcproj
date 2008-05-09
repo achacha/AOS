@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../ALibrary/include,../AOS_Base"
+				AdditionalIncludeDirectories="../../include,../AOS_Base"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;AOS_BASEMODULES_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -131,7 +131,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="../../ALibrary/include,../AOS_Base"
+				AdditionalIncludeDirectories="../../include,../AOS_Base"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;AOS_BASEMODULES_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"

@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOS_BaseModules", "AOS_BaseModules\AOS_BaseModules.vcproj", "{ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5D653A10-2A01-4DAD-AB60-59294DF36DF2} = {5D653A10-2A01-4DAD-AB60-59294DF36DF2}

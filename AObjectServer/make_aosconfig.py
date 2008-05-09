@@ -1,6 +1,11 @@
-#!/bin/python
+#!/usr/bin/python
+#
+# Synchronize content
+#
 import os,sys;
 
+THIS_PATH=os.path.dirname(sys.argv[0]);
+BASE_ENV_PATH=os.path.normpath(os.path.join(THIS_PATH,"..","_devtools","bin"));
 def makeSystemCall(param):
 	if (verbose == 1):
 		print "Executing: "+param;
@@ -8,7 +13,7 @@ def makeSystemCall(param):
 		os.system(param);
 
 # rsync.py base command
-RSYNC_BASE=".\\rsync.py -rtuC --exclude=.svn ";
+RSYNC_BASE=BASE_ENV_PATH+os.sep+"rsync.py -rtuC --exclude=.svn ";
 def syncModule(module_source_path):
 	EXEC_RSYNC_BASE = RSYNC_BASE + " ";
 	if (dryrun == 1):
@@ -31,13 +36,13 @@ def syncModule(module_source_path):
 
 def showUsage():
 	print "AOS configuration and content synchronization script.";
-	print sys.argv[0]+" <verbose|dryrun> <-basepath BASEPATH>";
-	print "  verbose - extra information";
-	print "  clean - removes previous version";
-	print "  dryrun - only show what is going to be copied, but do not copy";
+	print sys.argv[0]+" <-verbose|-dryrun|-clean> <-basepath BASEPATH>";
+	print "  -verbose - extra information";
+	print "  -clean - removes previous version";
+	print "  -dryrun - only show what is going to be copied, but do not copy";
 	print "  -basepath BASEPATH - uses BASEPATH/_debug/ and BASEPATH/_release for deployment";
 	print "\r\nExample:";
-	print " verbose -basepath /output/dir/";
+	print " -verbose -basepath /output/dir/";
 	print " -target /tmp dryrun";
 	
 ######################################################################
@@ -52,11 +57,11 @@ verbose = 0;
 argc = 1;
 clean = 0;
 while (len(sys.argv) > argc):
-	if (sys.argv[argc] == "dryrun"):
+	if (sys.argv[argc] == "-dryrun"):
 		dryrun = 1;
-	elif (sys.argv[argc] == "verbose"):
+	elif (sys.argv[argc] == "-v"):
 		verbose = 1;
-	elif (sys.argv[argc] == "clean"):
+	elif (sys.argv[argc] == "-clean"):
 		clean = 1;
 	elif (sys.argv[argc] == "-basepath"):
 		target_path = sys.argv[argc+1];
