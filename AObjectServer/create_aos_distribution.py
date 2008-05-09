@@ -36,17 +36,14 @@ def makeSystemCall_remove(filename):
 ########################## MAIN ######################################
 ######################################################################
 
-TARGET_PATH = "c:\\aos\\";
+TARGET_PATH = os.sep+"aos";
 
 if (len(sys.argv) > 1):
 	TARGET_PATH = sys.argv[1];
 
-if (TARGET_PATH == "/?" or TARGET_PATH == "?"):
+if (TARGET_PATH == "-help" or TARGET_PATH == "?"):
 	print "Usage: "+sys.argv[0]+" <target path>";
-	print " target path = where everything is copied to";
-	print " debug output path = location of the debug build";
-	print " release output path = location of the release build";
-	print "e.g. this C:\\aos\\ c:\\Code\\_debug\\ c:\\Code\\_release\\";
+	print " <target path> = where everything is copied to";
 	sys.exit(0);
 
 base_path = os.path.split(os.path.join(os.getcwd()))[0];

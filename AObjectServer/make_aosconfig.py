@@ -36,14 +36,14 @@ def syncModule(module_source_path):
 
 def showUsage():
 	print "AOS configuration and content synchronization script.";
-	print sys.argv[0]+" <-verbose|-dryrun|-clean> <-basepath BASEPATH>";
-	print "  -verbose - extra information";
+	print sys.argv[0]+" <-verbose|-dryrun|-clean> <-p BASEPATH>";
+	print "  -v     - verbose mode";
 	print "  -clean - removes previous version";
 	print "  -dryrun - only show what is going to be copied, but do not copy";
-	print "  -basepath BASEPATH - uses BASEPATH/_debug/ and BASEPATH/_release for deployment";
+	print "  -p BASEPATH - uses BASEPATH/_debug/ and BASEPATH/_release for deployment";
 	print "\r\nExample:";
-	print " -verbose -basepath /output/dir/";
-	print " -target /tmp dryrun";
+	print " -v -p /output/dir/";
+	print " -p /tmp dryrun";
 	
 ######################################################################
 ########################## MAIN ######################################
@@ -63,7 +63,7 @@ while (len(sys.argv) > argc):
 		verbose = 1;
 	elif (sys.argv[argc] == "-clean"):
 		clean = 1;
-	elif (sys.argv[argc] == "-basepath"):
+	elif (sys.argv[argc] == "-p"):
 		target_path = sys.argv[argc+1];
 		argc += 1;
 	else:
