@@ -274,6 +274,20 @@
 #pragma warn -spa /* Suspicous pointer arithmetic */
 #endif
 
+#if _MSC_VER > 1000
+//a_Some warning that I don't want to see
+#pragma warning (disable:4018)
+#pragma warning (disable:4055)
+#pragma warning (disable:4100)
+#pragma warning (disable:4127)
+#pragma warning (disable:4132)
+#pragma warning (disable:4152)
+#pragma warning (disable:4244)
+#pragma warning (disable:4389)
+#pragma warning (disable:4701)
+#endif
+
+
 /* Needed for various definitions... */
 #define _GNU_SOURCE
 
