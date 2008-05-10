@@ -1,0 +1,306 @@
+;#######################################
+;Norwegian Translation by Glenn O Larsen
+;#######################################
+
+[frmMain]
+tsSQL=SQL spørring
+tsResult=Resultat
+tsEdit=Editer data
+pEditTop=
+lblTable=Tabell:
+lblFilterField=Filter felt:
+lblFilter=Filter:
+miDatabase=Database
+miNew=Ny
+miOpen=Åpne
+miCleanUp=Opprydding
+miClose=Lukk
+miCreationSQL=Database SQL
+miMigrate=Migrere til SQLite3
+miRecentList=Nylig
+miExit=Avslutt
+miTable=Tabell
+miNewTable=Ny
+miEditTable=Editer
+miDeleteTable=Slett
+miIndex=Indeks
+miNewIndex=Ny
+miEditIndex=Editer
+miDeleteIndex=Slett
+miView=Vis
+miNewView=Ny
+miEditView=Editer
+miDeleteView=Slett
+miTrigger=Trigger
+miNewTrigger=Ny
+miEditTrigger=Editer
+miDeleteTrigger=Slett
+Abfrage1=Spørring
+miAddQuery=Legg til
+miShowQuery=Åpne
+miSaveQueryMain=Lagre
+miDelQuery=Slett
+miOpenSQL=Utfør med Resultat
+miExecSQL=Utfør uten Resultat
+miInsertInNewViewMain=Bruk i ny Visning
+miInsertInNewTriggerMain=Bruk i ny Trigger
+Daten1=Data
+miExport=Eksporter
+miSendToExcel=Send til Excel
+miImport=Importer Data
+miHelp=Hjelp
+miInfo=Info
+Fehlerbericht1=Logg
+pmiRefresh=Oppdatere
+pmiShowSQL=Vis SQL
+pmiNewTable=Lag Tabell
+pmiEditTable=Editer Tabell
+pmiDelTable=Slett Tabell
+pmiNewIndex=Lag Indeks
+pmiEditIndex=Editer Indeks
+pmiDelIndex=Slett Indeks
+pmiNewView=Lag Visning
+pmiEditView=Editer Visning
+pmiDelView=Slett Visning
+pmiNewTrigger=Lag Trigger
+pmiEditTrigger=Editer Trigger
+pmiDelTrigger=Slett Trigger
+pmiFindQuery=Finn Spørring
+pmiAddQuery=Legg til Spørring
+pmiShowQuery=Åpne Spørring
+pmiDelQuery=Slett Spørring
+miAddTab=Lag ny Spørring
+miSaveQuery=Lagre til Database
+miSaveToFile=Lagre til fil
+miUndo=Angre
+miRedo=Gjenta
+miCut=Klipp ut
+miCopy=Kopier
+miPaste=Lim inn
+miSelAll=Marker alt
+miCopyToDelphi=Kopier som Delphi Kilde
+miComment=Toggle Kommentar
+miInsertInNewView=Bruk i ny Visning
+miInsertInNewTrigger=Bruk i ny Trigger
+miDeleteTab=Steng Spørring
+miMemo=Vis Notat
+miPicture=Vis Bilde
+tbbNewDatabase=Opprett Database
+tbbOpenDatabase=Åpne ( Nylig ) Database
+tbbCleanUp=Database opprydding
+tbbCloseDatabase=Lukk Database
+tbbNewTable=Oprett Tabell
+tbbEditTable=Editer Tabell
+tbbDeleteTable=Slett Tabell
+tbbNewIndex=Opprett Indeks
+tbbEditIndex=Editer Indeks
+tbbDeleteIndex=Slett Indeks
+tbbNewView=Opprett Visning
+tbbEditView=Editer Visning
+tbbDeleteView=Slett Visning
+tbbNewTrigger=Opprett Trigger
+tbbEditTrigger=Editer Trigger
+tbbDeleteTrigger=Slett Trigger
+tbbAddSQL=Legg til ny Spørring
+tbbSaveSQL=Lagre Spørring til Database
+tbbOpenSQL=Kjør SQL Spørring med Resultat (select) F9
+tbbExecSQL=Kjør SQL Spørring uten Resultat (insert,update,delete) F8 
+
+tbbViewHierarchy=Hierarki Visning
+tbbShowTables=Vis Tabeller
+tbbShowFields=Vis Felt
+tbbShowTriggers=Vis Triggere
+tbbShowIndexes=Vis Indekser
+tbbShowViews=Vis Visninger
+tbbShowSysEntrys=Vis System Oppføringer 
+tbbShowQueries=Vis Spørringer
+
+[frmTable]
+lblTablename=Tabellnavn:
+gbFields="     Tabellfelt"
+btnAdd=Legg til Felt
+btnDel=Slett Felt
+btnChange=Editer Felt
+btnOK=Opprett
+btnCancel=Avbryt
+btnPrimaryKey=Primær Nøkkel
+
+[frmField]
+lblFieldName=Feltnavn:
+lblFieldType=Felttype:
+lblDefaultValue=Standard Verdi:
+cbUnique=Unik
+cbNotNull=Not NULL
+cbPrimaryKey=Primær Nøkkel
+cbAutoInc=Automatisk økning
+btnAdd=Legg til
+btnCancel=Avbryt
+
+[frmIndex]
+lblIndexName=Indeksnavn:
+lblTable=Tabell:
+cbUnique=Unik
+gbFields="     Felter"
+lblSrcFields=Tilgjenglige Felter:
+lblDestFields=Indekserte Felter:
+btnCreate=Opprett
+btnCancel=Avbryt
+
+[frmView]
+lblViewName=Visningsnavn:
+gbSQL="     SQL Spørring"
+btnCreate=Opprett
+btnCancel=Avbryt
+[frmPicture]
+btnPic=Endre Bilde
+btnDel=Slett Bilde
+btnSave=Lagre Bilde som
+
+[frmTrigger]
+lblTriggername=Triggernavn:
+tsEvent=Trigger Event
+lblTable=Tabell:
+lblView=Vis:
+gbFields="     Felter"
+lblSrcFields=Tilgjenlige Felter:
+lblDestFields=Event Felter:
+gbTriggerEvent=Trigger Event
+rbBefore=Før
+rbAfter=Etter
+rbInsteadOf=Isteden for
+gbEvents=Event
+gbFOR=Aksjon
+rbEachRow=Hver Rad
+rbEachStatement=Hvert Uttrykk
+tsSQL=Utfør SQL
+gbTriggerSQL="     SQL Source wich execute at Trigger Event (OLD. / NEW. = Ref)"
+lblCondition=Vilkår:
+btnCreate=Opprett
+btnCancel=Avbryt
+
+[frmImport]
+Caption=Importer Data
+gbMapping=Felt Kartlegging
+lblSourceFields=Kilde Felter:
+lblTargetFields=Mål Felter:
+lblDestTable=Mål Tabell:
+cbClearTable=Tøm Tabellen før Importeringen
+btnLoadFile=Åpne fil
+btnImport=Importer Data
+btnClose=Abvryt
+
+[frmLog]
+Caption=Error Logg
+
+[frmMemoEdit]
+Caption=Editer Notat
+
+[MessageStrings]
+lngInfo=Info
+lngWarning=Advarsel:
+lngCreate=Opprett
+lngEdit=Editer
+lngAdd=Legg til
+
+lngNameAlreadyExists=Navn er allerede opptatt !
+lngInvalidChars=Navn kan ikke inneholde 'sqlite_' prefiks, spesiltegn eller blankt! 
+lngEnterSQLSource=Vennligst skriv inn SQL utrykk
+
+lngCreateView=Lag Visning
+lngEditView=Editer Visning
+lngEnterViewName=Vennligst skriv inn Visnings Navn!
+lngEnterTriggerName=Vennligst skriv inn Triggernavn!
+lngSelectTable=Vennligst velg Tabell!
+lngSelectView=Vennligst velg Visning!
+lngSelectEvent=Venligst velg Aksjon!
+lngSelectFields=Vennligst velg Felter!
+lngSemiNotFound=Fant ingen semikolon etter SQL utrykket! 
+lngCreateTrigger=Opprett Trigger
+lngEditTrigger=Editer Trigger
+lngBlobFileSize=Av sikkerhets grunner maksimum FilStørrelse er begrenset til 500kb. SQLite 2.8 x supporterer maks. 1 MB pr. data rad
+lngSeperator=Skilletegn
+lngEnterSeperatorChar=Vennligst skriv inn tegn som skal brukes som skilletegn!
+lngContainsHeaderFieldNames=Inneholder første rad Feltnavn?
+lngFieldAlreadyChoosen=Felt er allerede valgt!
+lngSeperatedValues=Separate Verdier
+lngEnterFieldName=Vennligst skriv inn Feltnavn!
+lngEnterFieldType=Vennligst skriv inn eller velg Felttype!
+lngPKAlreadyExist=Primær Nøkkel er allerede definert!
+lngFieldSize=Feltstørrelse:
+lngEnterFieldSize=Vennligst skriv inn Feltstørrelse:
+lngEditField=Editer Felt
+lngAddField=Legg til Felt
+lngEnterIndexName=Vennligst skriv inn Indeks Navn!
+lngEditIndex=Editer Indeks
+lngCreateIndex=Opprett Indeks
+lngEnterTableName=Vennligst skriv inn Tabellnavn!
+lngAddTableFields=Vennligst legg til Tabell felter!
+lngEditTable=Editer Tabell
+lngCreateTable=Opprett Tabelll
+lngTableFieldName=Feltnavn
+lngTableFieldType=Felttype
+lngTableFieldConstraint=Felt restriksjon 
+lngSendToExcelSuccess=Sending av Data til Excel var vellykket.
+lngSendToExcelWait=Sender Data til Excel, vennligst vent ...
+lngNoDataToSend=Fant ikke Data for sending!
+lngFailToSave=Klarte ikke å lagre filen!
+lngError=Error:
+lngNoDataToExport=Fant ikke Data for Eksport!
+lngExcelFormat=Excel Kompatibelt Format
+lngCSVFormat=Separat Verdi Format
+lngXMLFormat=XML Format
+lngHTMLFormat=HTML Format
+lngCCFunction="Funksjon"
+lngCCField=   "Felt    "
+lngCCTable=   "Tabell  "
+lngCCView=    "Vis     "
+lngCCIndex=   "Indeks  "
+lngCCTrigger= "Trigger "
+lngReservedWordQuery=%s er et reservert ord
+lngQueryIdent=Spørring
+lngEnterName=Skriv inn Navn!
+lngSaveQuery=Lagre Spørring:
+lngEnterQueryNamePrompt=Vennligst skriv inn ett Navn for denne Spørringen:
+lngCleanUpMessage=Database oppryddningen fjernet %s unødvendig data. 
+lngDeleteConfirmation=Er du sikker du vil slette?
+lngConfirmation=Bekreftelse:
+lngDBDisconnected=Databasen ble frakoblet
+lngDBConnected=Database tilkoplet
+lngDisconnected=Ikke tilkoplet
+lngOpenDatabase=Åpne Database:
+lngTVQueries=Spørringer
+lngTVTriggers=Triggere
+lngTVViews=Visninger
+lngTVIndexes=Indekser
+lngTVTables=Tabeller
+lngTVFields=Felter
+lngQueryExecTime=Spørring ble kjørt innenfor %dms
+lngQueryExecuted=Spørring kjørt
+lngDBCreated=Database opprettet
+lngSelectDBSaveTarget=Velg mål for ny Database:
+lngTableFieldDefault=Standard Verdi
+lngMultiPrimaryKey=Mange Felts Primær Nøkkel kan bare brukes om ingen Enkelt Felts Primær Nøkkel er valgt!
+lngMigrationSuccess=Database Migreringen var vellykket!
+lngMigrationInProgress=Tabell "%s" migrerer, vennligst vent...
+lngSQLiteDB=SQLite Database
+lngAnyFile=Alle Filer
+lngImportDone=Importering er ferdig!
+
+
+[StrfTimeHint]
+Line0=
+Line1=Formatkonstanter:
+Line2=
+Line3=%d   dag i måneden
+Line4=%f   ** brøksekunder SS.SSS
+Line5=%H   time 00-24
+Line6=%j   dag i året 001-366
+Line7=%J   ** Juliansk tidberegning
+Line8=%m   måned 01-12
+Line9=%M   minutt 00-59
+Line10=%s   sekunder siden 1970-01-01
+Line11=%S   sekunder 00-59
+Line12=%w   dag i uken 0-6  sunday==0
+Line13=%W   uke i året 00-53
+Line14=%Y   år 0000-9999
+Line15=%%   %
