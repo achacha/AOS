@@ -141,7 +141,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
 
           AThread *pthread = new AThread(pThis->mp_threadproc, true, pThis->mp_This, pThis->mp_Parameter);
           pThis->m_Threads.push_back(pthread);
-          shouldSleepMore = true;
+          shouldSleepMore = true;                //a_Allow the thread to start
           ++threadcount;
 
           if (AConstant::npos != pThis->m_TotalThreadCreationCount)
@@ -164,7 +164,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
         }
       }
 
-      //a_Short sleep to allow time for threads to shut down gracefully
+      //a_Short sleep to allow time for threads to start up or shut down gracefully
       if (shouldSleepMore)
       {
         AThread::sleep(pThis->m_monitorCycleSleep);
