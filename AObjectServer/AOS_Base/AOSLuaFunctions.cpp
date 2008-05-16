@@ -12,6 +12,7 @@ extern "C"
 #include "ATemplate.hpp"
 #include "AOSContext.hpp"
 #include "ALuaEmbed.hpp"
+#include "ATemplateContext.hpp"
 
 /*!
 Gets HTTP request header parameter
@@ -44,11 +45,11 @@ static int aos_getRequestHeader(lua_State *L)
   static AString ALL("_ALL");
   
   //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
+  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext); 
+  AASSERT(NULL, pLuaContext);
 
   //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AOSContext *pContext = pLuaContext->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   AASSERT(NULL, pContext);
 
   AASSERT_EX(NULL, lua_gettop(L) >= 1, ASWNL("Not enough actual parameters, expected at least 1"));
@@ -111,11 +112,11 @@ foo  (if request header had parameter:  Cookie: username=foo)
 static int aos_getRequestCookie(lua_State *L)
 {
   //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
+  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext); 
+  AASSERT(NULL, pLuaContext);
 
   //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AOSContext *pContext = pLuaContext->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   AASSERT(NULL, pContext);
 
   AASSERT_EX(NULL, lua_gettop(L) >= 1, ASWNL("Not enough actual parameters, expected at least 1"));
@@ -155,11 +156,11 @@ aos.getRequestParameter("baz");  -->  nil
 static int aos_getRequestParameter(lua_State *L)
 {
   //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
+  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext); 
+  AASSERT(NULL, pLuaContext);
 
   //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AOSContext *pContext = pLuaContext->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   AASSERT(NULL, pContext);
 
   AASSERT_EX(NULL, lua_gettop(L) >= 1, ASWNL("Not enough actual parameters, expected at least 1"));
@@ -200,11 +201,11 @@ aos.getRequestParameterNames();  -->  "foo", "bar"
 static int aos_getRequestParameterNames(lua_State *L)
 {
   //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
+  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext); 
+  AASSERT(NULL, pLuaContext);
 
   //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AOSContext *pContext = pLuaContext->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   AASSERT(NULL, pContext);
 
   SET_AString names;
@@ -231,11 +232,11 @@ aos.setResponseHeader("Set-Cookie", "name=foo; max-ago=1000;");
 static int aos_setResponseHeader(lua_State *L)
 {
   //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
+  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext); 
+  AASSERT(NULL, pLuaContext);
 
   //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AOSContext *pContext = pLuaContext->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   AASSERT(NULL, pContext);
 
   AASSERT_EX(NULL, lua_gettop(L) >= 1, ASWNL("Not enough actual parameters, expected at least 1"));
@@ -270,11 +271,11 @@ aos.addEvent("Error from Lua!", 1);   --> Will cause error 500
 static int aos_setEvent(lua_State *L)
 {
   //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
+  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext); 
+  AASSERT(NULL, pLuaContext);
 
   //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AOSContext *pContext = pLuaContext->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   AASSERT(NULL, pContext);
 
   AASSERT_EX(NULL, lua_gettop(L) >= 1, ASWNL("Not enough actual parameters, expected at least 1"));
@@ -315,11 +316,11 @@ aos.resetEvent();      --> Sets current event to nothing, moves current into old
 static int aos_resetEvent(lua_State *L)
 {
   //a_Get reference to ALuaEmbed object
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
+  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext); 
+  AASSERT(NULL, pLuaContext);
 
   //a_Get AOSContext stored in /context
-  AOSContext *pContext = pLuaEmbed->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AOSContext *pContext = pLuaContext->useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   AASSERT(NULL, pContext);
 
   pContext->useEventVisitor().endEvent();
