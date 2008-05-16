@@ -66,11 +66,6 @@ public:
   virtual ATemplateNode *create(AFile&);
 
   /*!
-  Access to Lua interpreter
-  */
-  ALuaEmbed& useLua();
-
-  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
@@ -80,11 +75,6 @@ protected:
   Libraries to load when ALuaEmbed is created\
   */
   u4 m_LibrariesToLoad;
-
-  /*!
-  Lua embedded interpreter
-  */
-  AAutoPtr<ALuaEmbed> mp_Lua;
 
   /*!
   Queue up the library methods to call when Lua is initialized
@@ -118,16 +108,13 @@ public:
     Process the template node that contains the data for this tag to handle
     Output should go to the output buffer in ATemplate
     */
-    virtual void process(ABasePtrContainer& objects, AOutputBuffer& output);
+    virtual void process(ATemplateContext& context);
 
     /*!
     ADebugDumpable
     */
     virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
   };
-
-private:
-  ASync_CriticalSection m_LuaCreateSync;
 };
 
 #endif //INCLUDED__ATemplateNodeHandler_LUA_HPP__

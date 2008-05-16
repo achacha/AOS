@@ -1,16 +1,18 @@
 #include "pchALuaEmbed.hpp"
 #include "ALuaEmbed.hpp"
 #include "AThread.hpp"
+#include "ATemplateContext.hpp"
 
 /*!
 Appender used to overwrite print() and write to output buffer
 */
 extern "C" void luaL_stringappender(lua_State *L, const char *s)
 {
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  if (pLuaEmbed)
+  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext);
+  AASSERT(NULL, pLuaContext);
+  if (pLuaContext)
   {
-    pLuaEmbed->useOutput().append(s);
+    pLuaContext->useOutput().append(s);
   }
 }
 
@@ -23,11 +25,7 @@ Sleeps for N milliseconds
 */
 static int alibrary_Sleep(lua_State *L)
 {
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
   u4 sleeptime = (u4)luaL_checkint(L, 1);
-
   AThread::sleep(sleeptime);
 
   return 0;

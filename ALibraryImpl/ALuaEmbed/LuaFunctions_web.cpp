@@ -22,9 +22,6 @@ static int web_HttpGet(lua_State *L)
   const AString& url = AString::wrap(s, len);
   lua_pop(L,1);
 
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
-
   AHTTPRequestHeader request;
   AHTTPResponseHeader response;
 
@@ -65,9 +62,6 @@ static int web_HttpGetStatusCode(lua_State *L)
   const char *s = luaL_checklstring(L, 1, &len);
   const AString& url = AString::wrap(s, len);
   lua_pop(L,1);
-
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
 
   AHTTPRequestHeader request;
   AHTTPResponseHeader response;

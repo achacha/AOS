@@ -1,5 +1,6 @@
 #include "pchALuaEmbed.hpp"
 #include "ALuaEmbed.hpp"
+#include "ATemplateContext.hpp"
 
 /*!
 Looks up an object as AEmittable and emits it
@@ -12,14 +13,14 @@ thisfunction("<object name of AEmittable type>")
 */
 static int alibrary_Objects_emit(lua_State *L)
 {
-  ALuaEmbed *pLuaEmbed = (ALuaEmbed *)(L->mythis);
-  AASSERT(NULL, pLuaEmbed);
+  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext); 
+  AASSERT(NULL, pLuaContext);
 
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
   const AString& objectName = AString::wrap(s, len);
 
-  AEmittable *p = pLuaEmbed->useObjects().useAsPtr<AEmittable>(objectName);
+  AEmittable *p = pLuaContext->useObjects().useAsPtr<AEmittable>(objectName);
   if (p)
   {
     AString str;

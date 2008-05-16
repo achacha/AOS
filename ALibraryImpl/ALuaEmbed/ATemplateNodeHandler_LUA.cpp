@@ -10,12 +10,6 @@ const AString ATemplateNodeHandler_LUA::TAGNAME("LUA",3);
 void ATemplateNodeHandler_LUA::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_Lua={" << std::endl;
-  if (mp_Lua.isNull())
-    mp_Lua.debugDump(os, indent+2);
-  else
-    mp_Lua->debugDump(os, indent+2);
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
@@ -41,21 +35,10 @@ void ATemplateNodeHandler_LUA::addUserDefinedLibrary(ALuaEmbed::LUA_OPENLIBRARY_
 
 void ATemplateNodeHandler_LUA::init()
 {
-  ALock lock(m_LuaCreateSync);
-  if (mp_Lua.isNull())
-  {
-    mp_Lua.reset(new ALuaEmbed(m_LibrariesToLoad));
-  }
-
-  //a_Load queued up user defined libraries
-  for (USER_DEFINED_FPTRS::iterator it = m_UserDefinedLibFunctions.begin(); it != m_UserDefinedLibFunctions.end(); ++it)
-    mp_Lua.use()->loadUserLibrary(*it);
 }
 
 void ATemplateNodeHandler_LUA::deinit()
 {
-  ALock lock(m_LuaCreateSync);
-  mp_Lua.reset(NULL);
 }
 
 const AString& ATemplateNodeHandler_LUA::getTagName() const
@@ -68,17 +51,6 @@ ATemplateNode *ATemplateNodeHandler_LUA::create(AFile& file)
   ATemplateNodeHandler_LUA::Node *pNode = new ATemplateNodeHandler_LUA::Node(this);
   pNode->fromAFile(file);
   return pNode;
-}
-
-ALuaEmbed& ATemplateNodeHandler_LUA::useLua()
-{
-  ALock lock(m_LuaCreateSync);
-  if (mp_Lua.isNull())
-  {
-    mp_Lua.reset(new ALuaEmbed(m_LibrariesToLoad));
-  }
-
-  return *mp_Lua;
 }
 
 ///////////////////////////////////////// ATemplateNodeHandler_LUA::Node ///////////////////////////////////////////////////////////////////////////
@@ -97,15 +69,21 @@ ATemplateNodeHandler_LUA::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_LUA::Node::process(ABasePtrContainer& objects, AOutputBuffer& output)
+void ATemplateNodeHandler_LUA::Node::process(ATemplateContext& context)
 {
   ATemplateNodeHandler_LUA *pHandler = dynamic_cast<ATemplateNodeHandler_LUA *>(mp_Handler);
   AASSERT(this, pHandler);
 
-  if (!pHandler->useLua().execute(m_BlockData, objects, output))
+  ALuaEmbed lua(pHandler->m_LibrariesToLoad);
+
+  //a_Load queued up user defined libraries
+  for (ATemplateNodeHandler_LUA::USER_DEFINED_FPTRS::iterator it = pHandler->m_UserDefinedLibFunctions.begin(); it != pHandler->m_UserDefinedLibFunctions.end(); ++it)
+    lua.loadUserLibrary(*it);
+
+  if (!lua.execute(m_BlockData, context))
   {
-    output.append(" block={{{\r\n",12);
-    output.append(m_BlockData);
-    output.append("}}}\r\n",5);
+    context.useOutput().append(" block={{{\r\n",12);
+    context.useOutput().append(m_BlockData);
+    context.useOutput().append("}}}\r\n",5);
   }
 }

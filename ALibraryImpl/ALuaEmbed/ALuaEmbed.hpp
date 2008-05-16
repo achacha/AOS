@@ -3,9 +3,7 @@
 
 #include "apiALuaEmbed.hpp"
 #include "ADebugDumpable.hpp"
-#include "ABasePtrContainer.hpp"
-#include "templateAutoPtr.hpp"
-#include "AXmlDocument.hpp"
+#include "ATemplateContext.hpp"
 
 class AOutputBuffer;
 class AEmittable;
@@ -13,6 +11,40 @@ struct lua_State;
 
 /*!
 Lua interpreter
+
+NOTE: objects provided MUST include the AXmlDocument model at ATemplate::OBJECTNAME_MODEL
+
+
+Usage example
+-------------
+int somefunction()
+{
+  // model with just <root>HelloWorld</root>
+  AXmlDocument model("root");
+  model.addData("HelloWorld");
+
+  // output
+  AString output;
+
+  // objects
+  ABasePtrContainer objects;
+  
+  // create context
+  ATemplateContext tctx(objects, model, output);
+
+  // Some code
+  AString code("print(model.getText('/root/child'));");
+
+  ALuaEmbed lua;
+  if (!lua.execute(code, context))
+    std::cerr << "Error occured: " << output << std::endl;
+
+  // Display results
+  std::cout << output << std::endl;
+}
+
+When this function goes out of scope objects destructor will delete pOutput but not the model.
+
 */
 class ALuaEMBED_API ALuaEmbed : public ADebugDumpable
 {
@@ -28,9 +60,9 @@ public:
     LUALIB_STRING  = 0x0004,
     LUALIB_MATH    = 0x0008,
     LUALIB_DEBUG   = 0x0010,
-    //LUALIB_OS      = 0x0020,     //Not supported (security)
-    //LUALIB_PACKAGE = 0x0100,     //Not supported (security)
-    //LUALIB_IO      = 0x0200,     //Not supported (security)
+    //LUALIB_OS      = 0x0020,     // Not supported (security)
+    //LUALIB_PACKAGE = 0x0100,     // Not supported (security)
+    //LUALIB_IO      = 0x0200,     // Not supported (security)
     LUALIB_ALL     = 0xffff        // Mask to load all libraries
   };
 
@@ -42,32 +74,13 @@ public:
   Initialize Lua interpreter
   Load libraries into this instance
     Can use LUALIB_CORE|LUALIB_MATH|etc to load some
-  
-  AXmlDocument at ATemplate::OBJECTNAME_MODEL will be added by default with single /root
   */
-  ALuaEmbed(
-    u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE
-  );
-  
-  /*!
-  Initialize Lua interpreter
-  Load libraries into this instance
-    Can use LUALIB_CORE|LUALIB_MATH|etc to load some
-
-  Configure to use external objects and output buffer
-
-  objects provided MUST include the model AXmlDocument at ATemplate::OBJECTNAME_MODEL
-  */
-  ALuaEmbed(
-    ABasePtrContainer& objects,
-    AOutputBuffer& output,
-    u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE
-  );
+  ALuaEmbed(u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE);
   
   /*!
   De-initialize and unload the Lua interpreter
   */
-  ~ALuaEmbed();
+  virtual ~ALuaEmbed();
 
   /*!
   Load user defined library
@@ -90,36 +103,14 @@ public:
   
   /*!
   Execute Lua code
-  If you provided objects and output durig creation they will be used
-  If default ctor was used then there were defaults created and will be used
-
-  Returns true if all is well, false if error occured (written to outputbuffer)
-  */
-  bool ALuaEmbed::execute(const AEmittable& code);
-
-  /*!
-  Execute Lua code
-  Use objects and output provided
+  Use the provided objects and output (see top for example)
   
-  Returns true if all is well, false if error occured (written to outputbuffer)
-  */
-  bool ALuaEmbed::execute(const AEmittable& code, ABasePtrContainer& objects, AOutputBuffer& output);
+  @param code to execute
+  @param context for the execution
 
-  /*!
-  Output buffer used by lua print command when LUALIB_BASE is loaded
-  This can be accssed from Lua via lua_State::outputbuffer
+  @return true if all is well, false if error occured (written to outputbuffer)
   */
-  AOutputBuffer& useOutput();
-
-  /*!
-  ABasePtrContainer helper functions that can be called from the python exported ones
-  */
-  ABasePtrContainer& useObjects();
-
-  /*!
-  AXmlDocument at ATemplate::OBJECTNAME_MODEL
-  */
-  AXmlDocument& useModel();
+  bool execute(const AEmittable& code, ATemplateContext& context);
 
   /*!
   Lua panic function
@@ -128,22 +119,11 @@ public:
   static int callbackPanic(lua_State *);
 
   /*!
-  AEmittable
-  */
-  virtual void emit(AOutputBuffer&) const;
-
-  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
-  //a_Simple AString -> ABase map
-  AAutoPtr<ABasePtrContainer> mp_Objects;
-
-  //a_Output buffer
-  AAutoPtr<AOutputBuffer> mp_Output;
-
   //a_The Lua state pointer
   struct lua_State *mp_LuaState;
 

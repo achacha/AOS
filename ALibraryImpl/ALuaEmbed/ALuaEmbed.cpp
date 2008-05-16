@@ -8,25 +8,6 @@ void ALuaEmbed::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_LuaState=" << AString::fromPointer(mp_LuaState) << std::endl;
-
-  if (!mp_Objects.isNull())
-  {
-    ADebugDumpable::indent(os, indent+1) << "mp_Objects={" << std::endl;
-    mp_Objects->debugDump(os, indent+2);
-    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-  }
-  else
-    ADebugDumpable::indent(os, indent+1) << "mp_Objects=NULL" << std::endl;
-
-  if (!mp_Output.isNull())
-  {
-    ADebugDumpable::indent(os, indent+1) << "mp_Output={" << std::endl;
-    mp_Output->debugDump(os, indent+2);
-    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-  }
-  else
-    ADebugDumpable::indent(os, indent+1) << "mp_Output=NULL" << std::endl;
-
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
@@ -35,29 +16,6 @@ ALuaEmbed::ALuaEmbed(
 ):
   mp_LuaState(NULL)
 {
-  mp_Objects.reset(new ABasePtrContainer());
-  mp_Objects->insert(ATemplate::OBJECTNAME_MODEL, new AXmlDocument(ASW("root",4)), true);
-  
-  mp_Output.reset(new ARope());
-
-  //a_Initialize Lua
-  _init(maskLibrariesToLoad);
-}
-
-ALuaEmbed::ALuaEmbed(
-  ABasePtrContainer& objects,
-  AOutputBuffer& output,
-  u4 maskLibrariesToLoad
-):
-  mp_LuaState(NULL)
-{
-  //a_We do not own these
-  mp_Objects.reset(&objects, false);
-  mp_Output.reset(&output, false);
-
-  //a_Verify that model is in place since objects are provided externally
-  useModel();
-
   //a_Initialize Lua
   _init(maskLibrariesToLoad);
 }
@@ -76,7 +34,6 @@ void ALuaEmbed::_init(u4 maskLibrariesToLoad)
 {
   mp_LuaState = lua_open();
   AASSERT(NULL, mp_LuaState);
-  mp_LuaState->mythis = this;  //a_Attach out output buffer
   lua_atpanic(mp_LuaState, ALuaEmbed::callbackPanic);
 
   //a_Explicit NONE selected, no libraries loaded
@@ -113,17 +70,14 @@ int ALuaEmbed::callbackPanic(lua_State *L)
   ATHROW_EX(NULL, AException::OperationFailed, ASWNL("Lua has had a panic attack."));
 }
 
-void ALuaEmbed::emit(AOutputBuffer& target) const
-{
-  AASSERT(this, !mp_Output.isNull());
-  mp_Output->emit(target);
-}
-
-bool ALuaEmbed::execute(const AEmittable& code)
+bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context)
 {
   AASSERT(NULL, mp_LuaState);
   try
   {
+    //a_Assign current context to lua state
+    mp_LuaState->acontext = &context;
+
     ARope rope;
     code.emit(rope);
     const AString& buffer = rope.toAString();
@@ -132,7 +86,8 @@ bool ALuaEmbed::execute(const AEmittable& code)
     {
       AString strError(lua_tostring(mp_LuaState, -1));
       lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      mp_Output->append(strError);
+      context.useOutput().append(strError);
+      mp_LuaState->acontext = NULL;
       return false;
     }
 
@@ -144,7 +99,8 @@ bool ALuaEmbed::execute(const AEmittable& code)
         AString strError("Runtime Error: ");
         strError.append(lua_tostring(mp_LuaState, -1));
         lua_pop(mp_LuaState, 1);  // pop error message from the stack
-        mp_Output->append(strError);
+        context.useOutput().append(strError);
+        mp_LuaState->acontext = NULL;
         return false;
       } 
       break;
@@ -154,7 +110,8 @@ bool ALuaEmbed::execute(const AEmittable& code)
         AString strError("Memory Allocation Error: ");
         strError.append(lua_tostring(mp_LuaState, -1));
         lua_pop(mp_LuaState, 1);  // pop error message from the stack
-        mp_Output->append(strError);
+        context.useOutput().append(strError);
+        mp_LuaState->acontext = NULL;
         return false;
       } 
       break;
@@ -164,47 +121,19 @@ bool ALuaEmbed::execute(const AEmittable& code)
         AString strError("Error in error handler: ");
         strError.append(lua_tostring(mp_LuaState, -1));
         lua_pop(mp_LuaState, 1);  // pop error message from the stack
-        mp_Output->append(strError);
+        context.useOutput().append(strError);
+        mp_LuaState->acontext = NULL;
         return false;
       }
       break;
     }
+    mp_LuaState->acontext = NULL;
   }
   catch(AException& ex)
   {
-    ex.emit(*mp_Output);
+    ex.emit(context.useOutput());
+    mp_LuaState->acontext = NULL;
+    return false;
   }
   return true;
 }
-
-bool ALuaEmbed::execute(const AEmittable& code, ABasePtrContainer& objects, AOutputBuffer& output)
-{
-  //a_Override the defailts
-  mp_Objects.reset(&objects, false);
-  mp_Output.reset(&output, false);
-  
-  return execute(code);
-}
-
-AOutputBuffer& ALuaEmbed::useOutput()
-{
-  AASSERT(this, !mp_Output.isNull());
-  return *mp_Output;
-}
-
-ABasePtrContainer& ALuaEmbed::useObjects()
-{
-  AASSERT(this, !mp_Objects.isNull());
-  return *mp_Objects;
-}
-
-AXmlDocument& ALuaEmbed::useModel()
-{
-  AASSERT(this, !mp_Objects.isNull());
-  AXmlDocument *pDoc = mp_Objects->useAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
-  if (pDoc)
-    return *pDoc;
-  else
-    ATHROW_EX(this, AException::NotFound, ATemplate::OBJECTNAME_MODEL);
-}
-

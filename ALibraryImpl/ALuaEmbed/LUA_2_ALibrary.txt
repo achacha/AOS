@@ -10,7 +10,9 @@ lstate.h:
 Add to:
 struct lua_State {
 ...
-  void *mythis;  /* (ALuaEmbed *) if not NULL */
+
+  /** ALibrary customization */
+  void *acontext;  /* (ATemplateContext *) for the execution*/
 };
 
 
@@ -31,7 +33,7 @@ Add ALibrary specific print function:
 #ifdef ALuaEMBED_EXPORTS
 /*
 ALibrary customization
-Reaplce stdout with AOutputBuffer
+Replace stdout with AOutputBuffer
 Calls luaA_stringappender which uses L->mythis to write to AOutputBuffer
 */
 static int luaB_print (lua_State *L) {
