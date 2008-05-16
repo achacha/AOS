@@ -6,3 +6,5 @@ Possibly remove the CODE block in templates
 AOS directory chain loaded into AOSCommand
 AOS directory post-controller modules
 Session manager session cleaner
+SQL table create for MySQL (user, classified, session)
+Move aos_root up one level to peer _debug and _release (adjust lookup)
