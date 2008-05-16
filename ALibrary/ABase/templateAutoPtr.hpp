@@ -71,11 +71,13 @@ public:
   /*!
   Pointer to an object (NOT to be used with arrays, see below templates)
   */
-	explicit AAutoPtr(T* pointer = NULL) : m_Pointer(pointer), m_Ownership(true) {}
+	explicit AAutoPtr(T* pointer = NULL, bool ownership = true) : m_Pointer(pointer), m_Ownership(ownership) {}
 	~AAutoPtr()
   { 
-    if (m_Ownership)
+    if (m_Ownership && m_Pointer)
+    {
       delete m_Pointer;
+    }
   }
  
   /*!
@@ -93,7 +95,9 @@ public:
   void reset(T* pointer = NULL, bool ownership = true)
   { 
     if (m_Ownership)
+    {
       delete m_Pointer;
+    }
     m_Pointer = pointer;
     m_Ownership = ownership;
   }
@@ -166,13 +170,19 @@ public:
   }
 
 private:
+  //! No copy ctor
+  AAutoPtr(AAutoPtr&) {}
+
+  //! No operator=
+  AAutoPtr& operator=(const AAutoPtr&) { return *this; }
+
 	T*   m_Pointer;
 	bool m_Ownership;
 
 public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const
   {
-    ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership);
+    ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership) << std::endl;
   }
 };
 
@@ -184,7 +194,7 @@ template <class T>
 class AAutoArrayPtr : public ADebugDumpable
 {
 public:
-	explicit AAutoArrayPtr(T* pointer = NULL) : m_Pointer(pointer), m_Ownership(true) {}
+	explicit AAutoArrayPtr(T* pointer = NULL, bool ownership = true) : m_Pointer(pointer), m_Ownership(ownership) {}
 	~AAutoArrayPtr()
   { 
     if (m_Ownership) delete []m_Pointer;
@@ -273,13 +283,19 @@ public:
   }
 
 private:
-	T*   m_Pointer;
+  //! No copy ctor
+  AAutoArrayPtr(AAutoArrayPtr&) {}
+
+  //! No operator=
+  AAutoArrayPtr& operator=(const AAutoArrayPtr&) { return *this; }
+
+  T*   m_Pointer;
 	bool m_Ownership;
 
 public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const
   {
-    ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership);
+    ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership) << std::endl;
   }
 };
 
@@ -291,7 +307,7 @@ template <class T>
 class AAutoBasicArrayPtr : public ADebugDumpable
 {
 public:
-  explicit AAutoBasicArrayPtr(T* pointer = NULL) : m_Pointer(pointer), m_Ownership(true) {}
+  explicit AAutoBasicArrayPtr(T* pointer = NULL, bool ownership = true) : m_Pointer(pointer), m_Ownership(ownership) {}
   ~AAutoBasicArrayPtr()
   { 
     if (m_Ownership)
@@ -382,13 +398,19 @@ public:
   }
 
 private:
+  //! No copy ctor
+  AAutoBasicArrayPtr(AAutoBasicArrayPtr&) {}
+
+  //! No operator=
+  AAutoBasicArrayPtr& operator=(const AAutoBasicArrayPtr&) { return *this; }
+
   T*   m_Pointer;
   bool m_Ownership;
 
 public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const
   {
-    ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership);
+    ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << ") ptr=" << AString::fromPointer(m_Pointer) << " owned=" << AString::fromBool(m_Ownership) << std::endl;
   }
 };
 

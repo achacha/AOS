@@ -9,9 +9,7 @@
 #include "ATemplateNodeHandler.hpp"
 #include "AOutputBuffer.hpp"
 #include "ABasePtrContainer.hpp"
-#include "templateAutoPtr.hpp"
-
-class ABasePtrContainer;
+#include "ATemplateContext.hpp"
 
 /*!
 Generic template parser/processor
@@ -49,11 +47,6 @@ Usage:
 class ABASE_API ATemplate : public ADebugDumpable, public ASerializable, public AXmlEmittable
 {
 public:
-  /*!
-  Well known object name
-  */
-  static const AString OBJECTNAME_MODEL;      //a_This is where AXmlDocument* will be stored in ABasePtrContainer
-  
   /*!
   Delimiters
   */
@@ -118,8 +111,7 @@ public:
   If hibernateHandlersWhenDone is true, hibernate is called when done with processing
   */
   virtual void process(
-    ABasePtrContainer& objects, 
-    AOutputBuffer& output,   
+    ATemplateContext& context, 
     bool hibernateHandlersWhenDone = false
   );
 
@@ -171,7 +163,7 @@ private:
   NODES m_Nodes;
 
   //! Handlers
-  typedef std::map< AString, AAutoPtr<ATemplateNodeHandler> > HANDLERS;
+  typedef std::map< AString, ATemplateNodeHandler* > HANDLERS;
   HANDLERS m_Handlers;
 };
 

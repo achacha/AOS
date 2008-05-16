@@ -750,6 +750,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ATemplateContext.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ATemplateNode.cpp"
 				>
 			</File>
@@ -1224,6 +1228,10 @@
 			</File>
 			<File
 				RelativePath=".\ATemplate.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ATemplateContext.hpp"
 				>
 			</File>
 			<File

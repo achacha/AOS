@@ -12,12 +12,12 @@ void ABasePtrContainer::debugDump(std::ostream& os, int indent) const
   HOLDER::const_iterator cit = m_BasePtrs.begin();
   while (cit != m_BasePtrs.end())
   {
+    const ABase *p = (*cit).second->get();
     ADebugDumpable::indent(os, indent+2) << 
       (*cit).first << 
       "=[" << 
-      typeid(*((*cit).second)).name() << 
+      typeid(*p).name() << 
       "]:";
-    cit->second.debugDump(os, 0);
     os << std::endl;
     ++cit;
   }
@@ -34,7 +34,8 @@ ABasePtrContainer::~ABasePtrContainer()
 {
   try
   {
-    m_BasePtrs.clear();  //a_Explicit
+    for (HOLDER::iterator it = m_BasePtrs.begin(); it != m_BasePtrs.end(); ++it)
+      delete it->second;
   }
   catch(...) {}
 }
@@ -60,12 +61,12 @@ void ABasePtrContainer::insert(
   {
     //a_Exists
     if (overwrite)
-      m_BasePtrs[name].reset(pBase, ownership);  //a_Replace
+      m_BasePtrs[name]->reset(pBase, ownership);  //a_Replace
     else
       ATHROW(this, AException::ObjectContainerCollision);
   }
   else
-    m_BasePtrs[name].reset(pBase, ownership);  //a_Insert new item
+    m_BasePtrs[name] = new ITEM(pBase, ownership);  //a_Insert new item
 }
 
 void ABasePtrContainer::setOwnership(
@@ -75,7 +76,7 @@ void ABasePtrContainer::setOwnership(
 {
   HOLDER::iterator it = m_BasePtrs.find(name);
   if (it != m_BasePtrs.end())
-    m_BasePtrs[name].setOwnership(ownership);
+    m_BasePtrs[name]->setOwnership(ownership);
   else
     ATHROW_EX(this, AException::NotFound, name);
 }
@@ -84,7 +85,7 @@ const ABase *ABasePtrContainer::get(const AString& name) const
 {
   HOLDER::const_iterator cit = m_BasePtrs.find(name);
   if (cit != m_BasePtrs.end())
-    return cit->second.get();
+    return cit->second->get();
   else
     return NULL;
 }
@@ -93,7 +94,7 @@ ABase *ABasePtrContainer::use(const AString& name)
 {
   HOLDER::iterator it = m_BasePtrs.find(name);
   if (it != m_BasePtrs.end())
-    return it->second.use();
+    return it->second->use();
   else
     return NULL;
 }

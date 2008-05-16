@@ -9,14 +9,13 @@
 
 /*!
 A way to associate a name to an ABase auto pointer
-
-NOTE: ABasePtrContainer only holds pointers to ABase types, it does NOT delete and may point to stale data, caveat emptor
 */
 class ABASE_API ABasePtrContainer : public ADebugDumpable, public AXmlEmittable
 {
 public:
-  //! Holder of AString -> ABase *
-  typedef std::map< AString, AAutoPtr<ABase> > HOLDER;
+  //! Holder
+  typedef AAutoPtr<ABase> ITEM;
+  typedef std::map< AString, ITEM * > HOLDER;
 
 public:
   //! ctor

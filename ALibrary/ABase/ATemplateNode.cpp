@@ -141,7 +141,7 @@ const AString& ATemplateNode::getTagName() const
   return (mp_Handler ? mp_Handler->getTagName() : AConstant::ASTRING_EMPTY);
 }
 
-void ATemplateNode::process(ABasePtrContainer&, AOutputBuffer& output)
+void ATemplateNode::process(ATemplateContext& context)
 {
-  m_BlockData.emit(output);
+  m_BlockData.emit(context.useOutput());
 }

@@ -56,22 +56,17 @@ ATemplateNodeHandler_OBJECT::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_OBJECT::Node::process(ABasePtrContainer& objects, AOutputBuffer& output)
+void ATemplateNodeHandler_OBJECT::Node::process(ATemplateContext& context)
 {
-  //a_If this assert failed, theis object was not constructed correctly
-//  AXmlDocument *pDoc = objects.useAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
-//  if (!pDoc)
-//    ATHROW_EX(this, AException::NotFound, ARope("Must have AXmlDocument model object named: ")+ATemplate::OBJECTNAME_MODEL);
-
-  const AEmittable *pObject = objects.getAsPtr<const AEmittable>(m_BlockData);
+  const AEmittable *pObject = context.useObjects().getAsPtr<const AEmittable>(m_BlockData);
   if (pObject)
   {
     //a_Found object
-    pObject->emit(output);
+    pObject->emit(context.useOutput());
   }
   else
   {
-    output.append(ARope("Unable to find object or not AEmittable: '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
+    context.useOutput().append(ARope("Unable to find object or not AEmittable type: '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
   }
 }
 

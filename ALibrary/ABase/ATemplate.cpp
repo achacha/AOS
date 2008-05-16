@@ -6,8 +6,6 @@
 #include "ATemplateNodeHandler_OBJECT.hpp"
 #include "ATemplateNodeHandler_MODEL.hpp"
 
-const AString ATemplate::OBJECTNAME_MODEL("_AXmlDocument_Model_");     // AXmlDocument that acts as a model for template lookup
-
 const AString ATemplate::TAG_START("%[",2);
 const AString ATemplate::BLOCK_START("]{{{",4);
 const AString ATemplate::BLOCK_END("}}}[",4);
@@ -68,7 +66,12 @@ ATemplate::~ATemplate()
     //a_Delete nodes
     for (NODES::iterator it = m_Nodes.begin(); it != m_Nodes.end(); ++it)
       delete (*it);
-  } catch(...) {}
+  
+    //a_Delete handlers
+    for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
+      delete it->second;
+  }
+  catch(...) {}
 }
 
 void ATemplate::_loadDefaultHandlers(ATemplate::HandlerMask mask)
@@ -163,8 +166,7 @@ void ATemplate::fromAFile(AFile& aFile)
 }
 
 void ATemplate::process(
-  ABasePtrContainer& objects, 
-  AOutputBuffer& output,
+  ATemplateContext& context, 
   bool hibernateHandlersWhenDone  // = false
 )
 {
@@ -180,7 +182,7 @@ void ATemplate::process(
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
   {
-    (*cit)->process(objects, output);
+    (*cit)->process(context);
     ++cit;
   }
 

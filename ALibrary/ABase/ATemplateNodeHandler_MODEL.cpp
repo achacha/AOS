@@ -58,22 +58,17 @@ ATemplateNodeHandler_MODEL::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_MODEL::Node::process(ABasePtrContainer& objects, AOutputBuffer& output)
+void ATemplateNodeHandler_MODEL::Node::process(ATemplateContext& context)
 {
-  //a_If this assert failed, theis object was not constructed correctly
-  AXmlDocument *pDoc = objects.useAsPtr<AXmlDocument>(ATemplate::OBJECTNAME_MODEL);
-  if (!pDoc)
-    ATHROW_EX(this, AException::NotFound, ARope("Must have AXmlDocument model object named: ")+ATemplate::OBJECTNAME_MODEL);
-
-  AXmlElement *pElement = pDoc->useRoot().findElement(m_BlockData);
+  AXmlElement *pElement = context.useModel().useRoot().findElement(m_BlockData);
   if (pElement)
   {
     //a_Found object
-    pElement->emitContent(output);
+    pElement->emitContent(context.useOutput());
   }
   else
   {
-    output.append(ARope("Unable to find element for '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
+    context.useOutput().append(ARope("Unable to find element for '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
   }
 }
 

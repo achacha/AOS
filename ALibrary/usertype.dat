@@ -80,6 +80,7 @@ ASync_Event
 ASync_ReadWriteLock
 ASync_Semaphore
 ATemplate
+ATemplateContext
 ATemplateNode
 ATemplateNodeHandler
 ATemplateNodeHandler_CODE
@@ -149,6 +150,7 @@ AXsl
 ACrypto
 
 ALuaEmbed
+
 APythonEmbed
 
 AFile_Socket_SSL

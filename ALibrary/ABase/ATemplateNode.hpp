@@ -8,6 +8,7 @@
 #include "AString.hpp"
 
 class ATemplate;
+class ATemplateContext;
 class ATemplateNodeHandler;
 class ABasePtrContainer;
 
@@ -61,9 +62,8 @@ public:
 
   /*!
   Process the template node that contains the data for this tag to handle
-  Output should go to the output buffer in ATemplate
   */
-  virtual void process(ABasePtrContainer& objects, AOutputBuffer& output);
+  virtual void process(ATemplateContext& context);
 
   /*!
   ADebugDumpable
