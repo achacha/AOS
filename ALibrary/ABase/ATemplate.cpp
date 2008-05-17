@@ -166,7 +166,8 @@ void ATemplate::fromAFile(AFile& aFile)
 }
 
 void ATemplate::process(
-  ATemplateContext& context, 
+  ATemplateContext& context,
+  AOutputBuffer& output,
   bool hibernateHandlersWhenDone  // = false
 )
 {
@@ -182,7 +183,7 @@ void ATemplate::process(
   NODES::const_iterator cit = m_Nodes.begin();
   while (cit != m_Nodes.end())
   {
-    (*cit)->process(context);
+    (*cit)->process(context, output);
     ++cit;
   }
 

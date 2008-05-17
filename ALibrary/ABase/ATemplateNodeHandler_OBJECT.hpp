@@ -87,7 +87,7 @@ public:
     /*!
     Process the template node that contains the data for this tag to handle
     */
-    virtual void process(ATemplateContext& context);
+    virtual void process(ATemplateContext& context, AOutputBuffer& output);
   
   protected:
     /*!

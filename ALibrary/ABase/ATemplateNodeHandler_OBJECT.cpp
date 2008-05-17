@@ -56,17 +56,17 @@ ATemplateNodeHandler_OBJECT::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_OBJECT::Node::process(ATemplateContext& context)
+void ATemplateNodeHandler_OBJECT::Node::process(ATemplateContext& context, AOutputBuffer& output)
 {
   const AEmittable *pObject = context.useObjects().getAsPtr<const AEmittable>(m_BlockData);
   if (pObject)
   {
     //a_Found object
-    pObject->emit(context.useOutput());
+    pObject->emit(output);
   }
   else
   {
-    context.useOutput().append(ARope("Unable to find object or not AEmittable type: '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
+    output.append(ARope("Unable to find object or not AEmittable type: '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
   }
 }
 

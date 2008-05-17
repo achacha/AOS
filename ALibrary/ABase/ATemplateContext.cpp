@@ -11,16 +11,12 @@ void ATemplateContext::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_Model={" << std::endl;
   m_Model.debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_Output={" << std::endl;
-  m_Output.debugDump(os, indent+2);
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-ATemplateContext::  ATemplateContext(ABasePtrContainer& objects, AXmlDocument& model, AOutputBuffer& output) :
+ATemplateContext::  ATemplateContext(ABasePtrContainer& objects, AXmlDocument& model) :
   m_Objects(objects),
-  m_Model(model),
-  m_Output(output)
+  m_Model(model)
 {
 }
 
@@ -36,9 +32,4 @@ ABasePtrContainer& ATemplateContext::useObjects()
 AXmlDocument& ATemplateContext::useModel()
 {
   return m_Model;
-}
-
-AOutputBuffer& ATemplateContext::useOutput()
-{
-  return m_Output;
 }

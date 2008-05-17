@@ -111,7 +111,8 @@ public:
   If hibernateHandlersWhenDone is true, hibernate is called when done with processing
   */
   virtual void process(
-    ATemplateContext& context, 
+    ATemplateContext& context,
+    AOutputBuffer& output,
     bool hibernateHandlersWhenDone = false
   );
 

@@ -58,17 +58,17 @@ ATemplateNodeHandler_MODEL::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_MODEL::Node::process(ATemplateContext& context)
+void ATemplateNodeHandler_MODEL::Node::process(ATemplateContext& context, AOutputBuffer& output)
 {
   AXmlElement *pElement = context.useModel().useRoot().findElement(m_BlockData);
   if (pElement)
   {
     //a_Found object
-    pElement->emitContent(context.useOutput());
+    pElement->emitContent(output);
   }
   else
   {
-    context.useOutput().append(ARope("Unable to find element for '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
+    output.append(ARope("Unable to find element for '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
   }
 }
 

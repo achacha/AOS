@@ -5,14 +5,12 @@
 #include "ADebugDumpable.hpp"
 #include "ABasePtrContainer.hpp"
 #include "AXmlDocument.hpp"
-#include "AOutputBuffer.hpp"
 
 /*!
 Template context that is passed along to template node
 
 objects - Contains ABase* types
 model - XML model used by handlers 
-output - destination of the result of the handler
 */
 class ABASE_API ATemplateContext : public ADebugDumpable
 {
@@ -24,7 +22,7 @@ public:
   @param model XML data
   @param output buffer
   */
-  ATemplateContext(ABasePtrContainer& objects, AXmlDocument& model, AOutputBuffer& output);
+  ATemplateContext(ABasePtrContainer& objects, AXmlDocument& model);
   
   /*!
   */
@@ -45,23 +43,13 @@ public:
   AXmlDocument& useModel();
   
   /*!
-  Use the output buffer
-
-  @return AOutputBuffer for output
-  */
-  AOutputBuffer& useOutput();
-
-  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
-private:
+protected:
   //! Objects available to the template nodes
   ABasePtrContainer& m_Objects;  
-  
-  //! Output buffer
-  AOutputBuffer& m_Output;
   
   //! XML data model
   AXmlDocument& m_Model;

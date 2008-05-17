@@ -62,8 +62,11 @@ public:
 
   /*!
   Process the template node that contains the data for this tag to handle
+
+  @param context of the execution
+  @param output buffer
   */
-  virtual void process(ATemplateContext& context);
+  virtual void process(ATemplateContext& context, AOutputBuffer& output);
 
   /*!
   ADebugDumpable
