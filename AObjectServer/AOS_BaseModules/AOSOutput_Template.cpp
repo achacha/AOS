@@ -101,10 +101,7 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
 
     //a_Process template
     AASSERT(this, pTemplate.isNotNull());
-    ABasePtrContainer objects;
-    ATemplateContext tctx(objects, context.useModelXmlDocument(), context.useOutputBuffer());
-    objects.insert(AOSContext::OBJECTNAME, &context);
-    pTemplate->process(tctx);
+    pTemplate->process(context.useLuaTemplateContext(), context.useOutputBuffer());
     ++templatesDisplayed;
   }
 

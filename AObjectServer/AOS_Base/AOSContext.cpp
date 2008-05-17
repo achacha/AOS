@@ -8,6 +8,8 @@
 #include "ASocketException.hpp"
 #include "AZlib.hpp"
 
+extern "C" int luaopen_aos(lua_State *L);
+
 const AString AOSContext::CONTEXT("context");
 const AString AOSContext::XML_ROOT("root");
 const AString AOSContext::OBJECTNAME("__AOSContext__");
@@ -123,7 +125,9 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   mp_RequestFile(NULL),
   m_ConnectionFlags(AOSContext::CONFLAG_LAST),
   m_ContextFlags(AOSContext::CTXFLAG_LAST),
-  m_EventVisitor(ASW("AOSContext:",11), AEventVisitor::EL_DEBUG)
+  m_EventVisitor(ASW("AOSContext:",11), AEventVisitor::EL_DEBUG),
+  mp_LuaTemplateContext(NULL),
+  m_DefaultLuaLibraries(ALuaEmbed::LUALIB_ALL_SAFE)
 {
   m_EventVisitor.useName().append(AString::fromPointer(this));
   reset(pFile);
@@ -160,6 +164,8 @@ void AOSContext::reset(AFile_Socket *pFile)
 
     m_ConnectionFlags.clear();
   }
+
+  pDelete(mp_LuaTemplateContext);
 
   m_RequestHeader.clear();
   m_ResponseHeader.clear();
@@ -1489,4 +1495,17 @@ bool AOSContext::isConnectionClose() const
   bool is = m_RequestHeader.equalsNoCase(AHTTPHeader::HT_GEN_Connection, close);
   is |= m_ResponseHeader.equalsNoCase(AHTTPHeader::HT_GEN_Connection, close);
   return is;
+}
+
+ALuaTemplateContext& AOSContext::useLuaTemplateContext()
+{
+  if (!mp_LuaTemplateContext)
+  {
+    mp_LuaTemplateContext = new ALuaTemplateContext(m_ContextObjects, m_OutputXmlDocument, m_DefaultLuaLibraries);
+    mp_LuaTemplateContext->addUserDefinedLibrary(luaopen_aos);  //a_Add AOS function library loader
+
+    //a_Reference self from inside the objects
+    mp_LuaTemplateContext->useObjects().insert(OBJECTNAME, this, false);
+  }
+  return *mp_LuaTemplateContext;
 }

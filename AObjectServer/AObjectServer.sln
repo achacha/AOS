@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C++ Express 2008
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOS_BaseModules", "AOS_BaseModules\AOS_BaseModules.vcproj", "{ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5D653A10-2A01-4DAD-AB60-59294DF36DF2} = {5D653A10-2A01-4DAD-AB60-59294DF36DF2}
@@ -166,6 +166,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOS_Classified", "..\AOS_Mo
 	ProjectSection(ProjectDependencies) = postProject
 		{5D653A10-2A01-4DAD-AB60-59294DF36DF2} = {5D653A10-2A01-4DAD-AB60-59294DF36DF2}
 	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{6F555674-9F97-4048-AA9F-486FC5B5150A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -367,6 +369,10 @@ Global
 		{A5D2C184-A340-4F46-852A-A69866312F00}.Release|Win32.Build.0 = Release|Win32
 		{A5D2C184-A340-4F46-852A-A69866312F00}.Release|x64.ActiveCfg = Release|x64
 		{A5D2C184-A340-4F46-852A-A69866312F00}.Release|x64.Build.0 = Release|x64
+		{6F555674-9F97-4048-AA9F-486FC5B5150A}.Debug|Win32.ActiveCfg = Debug
+		{6F555674-9F97-4048-AA9F-486FC5B5150A}.Debug|x64.ActiveCfg = Debug
+		{6F555674-9F97-4048-AA9F-486FC5B5150A}.Release|Win32.ActiveCfg = Release
+		{6F555674-9F97-4048-AA9F-486FC5B5150A}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

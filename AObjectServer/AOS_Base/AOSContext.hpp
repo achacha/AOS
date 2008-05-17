@@ -16,6 +16,7 @@
 #include "AXmlDocument.hpp"
 #include "ABitArray.hpp"
 #include "ARandomAccessBuffer.hpp"
+#include "ALuaTemplateContext.hpp"
 
 class AUrl;
 class AQueryString;
@@ -339,6 +340,11 @@ public:
   bool setControllerFromRequestUrl();
 
   /*!
+  Access the context specific Lua template context
+  */
+  ALuaTemplateContext& useLuaTemplateContext();
+
+  /*!
   Controller object (NULL if does not exist)
   */
   const AOSController *getController() const;
@@ -503,6 +509,12 @@ private:
   Timeout timer used in context processing
   */
   ATimer m_TimeoutTimer;
+
+  /*!
+  Lua template context
+  */
+  ALuaTemplateContext *mp_LuaTemplateContext;
+  u4 m_DefaultLuaLibraries;
 
   //a_No copying
   AOSContext& operator =(const AOSContext&) { return *this; }

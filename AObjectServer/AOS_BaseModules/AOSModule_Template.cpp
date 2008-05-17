@@ -50,16 +50,13 @@ AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AX
     }
   }  
 
-  //a_Objects
-  ARope ropeOutput;
-  ABasePtrContainer objects;
-  ATemplateContext tctx(objects, context.useModelXmlDocument(), ropeOutput);
-  objects.insert(AOSContext::OBJECTNAME, &context);                              //a_Add AOS required AOSContext
-
-  //a_Process and save output
+  //a_Template
   AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate());
   pTemplate->fromAFile(*pFile);
-  pTemplate->process(tctx);
+
+  //a_Process and save output
+  ARope ropeOutput;
+  pTemplate->process(context.useLuaTemplateContext(), ropeOutput);
   
   //a_Add template to debug
   if (context.getDumpContextLevel() > 0)

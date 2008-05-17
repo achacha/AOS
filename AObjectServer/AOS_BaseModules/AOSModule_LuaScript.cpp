@@ -57,20 +57,15 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
     }
   }
   
-  //a_Context
-  ARope ropeOutput;
-  ABasePtrContainer objects;
-  ATemplateContext tctx(objects, context.useModelXmlDocument(), ropeOutput);
-  objects.insert(AOSContext::OBJECTNAME, &context);                              //a_Add AOS required AOSContext
-
   //a_Process and save output
   AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate());
 
-  //a_Read script and insert nodes into template
+  //a_Read script and insert it as nodes into template
   pTemplate->addNode(ATemplateNodeHandler_LUA::TAGNAME, *pFile);
 
   //a_Process template
-  pTemplate->process(tctx);
+  ARope ropeOutput;
+  pTemplate->process(context.useLuaTemplateContext(), ropeOutput);
   
   //a_Insert output into outpath (if any)
   pNode = params.findElement(ASW("outpath",7));
