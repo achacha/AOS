@@ -8,11 +8,10 @@ Appender used to overwrite print() and write to output buffer
 */
 extern "C" void luaL_stringappender(lua_State *L, const char *s)
 {
-  ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext);
-  AASSERT(NULL, pLuaContext);
-  if (pLuaContext)
+  AOutputBuffer *pOutput = static_cast<AOutputBuffer *>(L->aoutputbuffer);
+  if (pOutput)
   {
-    pLuaContext->useOutput().append(s);
+    pOutput->append(s);
   }
 }
 

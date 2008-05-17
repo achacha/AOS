@@ -1,9 +1,6 @@
 #include "pchALuaEmbed.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
-#include "AXmlDocument.hpp"
-#include "AXmlElement.hpp"
-#include "AFile_AString.hpp"
-#include "ATemplate.hpp"
+#include "ALuaTemplateContext.hpp"
 
 const AString ATemplateNodeHandler_LUA::TAGNAME("LUA",3);
 
@@ -19,25 +16,11 @@ void ATemplateNodeHandler_LUA::Node::debugDump(std::ostream& os, int indent) con
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-ATemplateNodeHandler_LUA::ATemplateNodeHandler_LUA(u4 maskLibrariesToLoad) :
-  m_LibrariesToLoad(maskLibrariesToLoad)
+ATemplateNodeHandler_LUA::ATemplateNodeHandler_LUA()
 {
 }
 
 ATemplateNodeHandler_LUA::~ATemplateNodeHandler_LUA()
-{
-}
-
-void ATemplateNodeHandler_LUA::addUserDefinedLibrary(ALuaEmbed::LUA_OPENLIBRARY_FPTR fptr)
-{
-  m_UserDefinedLibFunctions.push_back(fptr);
-}
-
-void ATemplateNodeHandler_LUA::init()
-{
-}
-
-void ATemplateNodeHandler_LUA::deinit()
 {
 }
 
@@ -51,6 +34,14 @@ ATemplateNode *ATemplateNodeHandler_LUA::create(AFile& file)
   ATemplateNodeHandler_LUA::Node *pNode = new ATemplateNodeHandler_LUA::Node(this);
   pNode->fromAFile(file);
   return pNode;
+}
+
+void ATemplateNodeHandler_LUA::init()
+{
+}
+
+void ATemplateNodeHandler_LUA::deinit()
+{
 }
 
 ///////////////////////////////////////// ATemplateNodeHandler_LUA::Node ///////////////////////////////////////////////////////////////////////////
@@ -69,21 +60,28 @@ ATemplateNodeHandler_LUA::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_LUA::Node::process(ATemplateContext& context)
+void ATemplateNodeHandler_LUA::Node::process(ATemplateContext& context, AOutputBuffer& output)
 {
-  ATemplateNodeHandler_LUA *pHandler = dynamic_cast<ATemplateNodeHandler_LUA *>(mp_Handler);
-  AASSERT(this, pHandler);
-
-  ALuaEmbed lua(pHandler->m_LibrariesToLoad);
-
-  //a_Load queued up user defined libraries
-  for (ATemplateNodeHandler_LUA::USER_DEFINED_FPTRS::iterator it = pHandler->m_UserDefinedLibFunctions.begin(); it != pHandler->m_UserDefinedLibFunctions.end(); ++it)
-    lua.loadUserLibrary(*it);
-
-  if (!lua.execute(m_BlockData, context))
+  ALuaTemplateContext *pLuaTemplateContext = dynamic_cast<ALuaTemplateContext *>(&context);
+  if (pLuaTemplateContext)
   {
-    context.useOutput().append(" block={{{\r\n",12);
-    context.useOutput().append(m_BlockData);
-    context.useOutput().append("}}}\r\n",5);
+    //a_Have a Lua context with its own interpreter
+    if (!pLuaTemplateContext->useLua().execute(m_BlockData, context, output))
+    {
+      output.append(" block(context)={{{\r\n",21);
+      output.append(m_BlockData);
+      output.append("}}}\r\n",5);
+    }
+  }
+  else
+  {
+    //a_Create a temporary interpreter, this is the less efficient way of doing it
+    ALuaEmbed lua;
+    if (!lua.execute(m_BlockData, context, output))
+    {
+      output.append(" block(local)={{{\r\n",19);
+      output.append(m_BlockData);
+      output.append("}}}\r\n",5);
+    }
   }
 }

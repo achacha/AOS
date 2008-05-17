@@ -126,7 +126,8 @@ struct lua_State {
   ptrdiff_t errfunc;  /* current error handling function (stack index) */
   
   /** ALibrary customization */
-  void *acontext;  /* (ATemplateContext *) for the execution*/
+  void *acontext;      /* (ATemplateContext * or ALuaTemplateContext *) for the execution */
+  void *aoutputbuffer; /* (AOutputBuffer *) for output */
 };
 
 

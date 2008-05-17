@@ -23,20 +23,22 @@ int somefunction()
   AXmlDocument model("root");
   model.addData("HelloWorld");
 
-  // output
-  AString output;
 
   // objects
   ABasePtrContainer objects;
   
   // create context
-  ATemplateContext tctx(objects, model, output);
+  ATemplateContext tctx(objects, model);
 
   // Some code
   AString code("print(model.getText('/root/child'));");
 
+  // output
+  AString output;
+  
+  // lua interpreter
   ALuaEmbed lua;
-  if (!lua.execute(code, context))
+  if (!lua.execute(code, context, output))
     std::cerr << "Error occured: " << output << std::endl;
 
   // Display results
@@ -54,16 +56,17 @@ public:
   */
   enum LuaLibrary
   {
-    LUALIB_NONE    = 0x0000,       // Mask to load no libraries
-    LUALIB_BASE    = 0x0001,       // print() modified to write to ALuaEmbed output buffer
-    LUALIB_TABLE   = 0x0002,
-    LUALIB_STRING  = 0x0004,
-    LUALIB_MATH    = 0x0008,
-    LUALIB_DEBUG   = 0x0010,
-    //LUALIB_OS      = 0x0020,     // Not supported (security)
-    //LUALIB_PACKAGE = 0x0100,     // Not supported (security)
-    //LUALIB_IO      = 0x0200,     // Not supported (security)
-    LUALIB_ALL     = 0xffff        // Mask to load all libraries
+    LUALIB_NONE     = 0x0000,       // Mask to load no libraries
+    LUALIB_BASE     = 0x0001,       // print() modified to write to ALuaEmbed output buffer
+    LUALIB_TABLE    = 0x0002,
+    LUALIB_STRING   = 0x0004,
+    LUALIB_MATH     = 0x0008,
+    LUALIB_DEBUG    = 0x0010,
+    //LUALIB_OS       = 0x0020,     // Not supported (security)
+    //LUALIB_PACKAGE  = 0x0100,     // Not supported (security)
+    //LUALIB_IO       = 0x0200,     // Not supported (security)
+    LUALIB_ALL_SAFE = 0x000f,       // All web safe libraries (no OS access)
+    LUALIB_ALL      = 0xffff        // Mask to load all libraries
   };
 
   typedef int (LUA_OPENLIBRARY_FUNCTION)(lua_State *);
@@ -107,10 +110,11 @@ public:
   
   @param code to execute
   @param context for the execution
+  @param output buffer
 
   @return true if all is well, false if error occured (written to outputbuffer)
   */
-  bool execute(const AEmittable& code, ATemplateContext& context);
+  bool execute(const AEmittable& code, ATemplateContext& context, AOutputBuffer& output);
 
   /*!
   Lua panic function

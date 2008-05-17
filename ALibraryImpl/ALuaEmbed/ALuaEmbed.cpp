@@ -70,13 +70,14 @@ int ALuaEmbed::callbackPanic(lua_State *L)
   ATHROW_EX(NULL, AException::OperationFailed, ASWNL("Lua has had a panic attack."));
 }
 
-bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context)
+bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context, AOutputBuffer& output)
 {
   AASSERT(NULL, mp_LuaState);
   try
   {
     //a_Assign current context to lua state
     mp_LuaState->acontext = &context;
+    mp_LuaState->aoutputbuffer = &output;
 
     ARope rope;
     code.emit(rope);
@@ -86,8 +87,9 @@ bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context)
     {
       AString strError(lua_tostring(mp_LuaState, -1));
       lua_pop(mp_LuaState, 1);  // pop error message from the stack
-      context.useOutput().append(strError);
+      output.append(strError);
       mp_LuaState->acontext = NULL;
+      mp_LuaState->aoutputbuffer = NULL;
       return false;
     }
 
@@ -99,8 +101,9 @@ bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context)
         AString strError("Runtime Error: ");
         strError.append(lua_tostring(mp_LuaState, -1));
         lua_pop(mp_LuaState, 1);  // pop error message from the stack
-        context.useOutput().append(strError);
+        output.append(strError);
         mp_LuaState->acontext = NULL;
+        mp_LuaState->aoutputbuffer = NULL;
         return false;
       } 
       break;
@@ -110,8 +113,9 @@ bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context)
         AString strError("Memory Allocation Error: ");
         strError.append(lua_tostring(mp_LuaState, -1));
         lua_pop(mp_LuaState, 1);  // pop error message from the stack
-        context.useOutput().append(strError);
+        output.append(strError);
         mp_LuaState->acontext = NULL;
+        mp_LuaState->aoutputbuffer = NULL;
         return false;
       } 
       break;
@@ -121,18 +125,21 @@ bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context)
         AString strError("Error in error handler: ");
         strError.append(lua_tostring(mp_LuaState, -1));
         lua_pop(mp_LuaState, 1);  // pop error message from the stack
-        context.useOutput().append(strError);
+        output.append(strError);
         mp_LuaState->acontext = NULL;
+        mp_LuaState->aoutputbuffer = NULL;
         return false;
       }
       break;
     }
     mp_LuaState->acontext = NULL;
+    mp_LuaState->aoutputbuffer = NULL;
   }
   catch(AException& ex)
   {
-    ex.emit(context.useOutput());
+    ex.emit(output);
     mp_LuaState->acontext = NULL;
+    mp_LuaState->aoutputbuffer = NULL;
     return false;
   }
   return true;

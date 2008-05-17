@@ -12,7 +12,8 @@ struct lua_State {
 ...
 
   /** ALibrary customization */
-  void *acontext;  /* (ATemplateContext *) for the execution*/
+  void *acontext;      /* (ATemplateContext * or ALuaTemplateContext *) for the execution */
+  void *aoutputbuffer; /* (AOutputBuffer *) for output */
 };
 
 
