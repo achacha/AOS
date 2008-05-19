@@ -230,10 +230,6 @@ void AOSContextManager::deallocate(AOSContext *p)
   {
     m_Services.useLog().add(p->useEventVisitor(), ALog::CRITICAL_ERROR);
   }
-  else
-  {
-    m_Services.useLog().add(p->useEventVisitor(), ALog::DEBUG);
-  }
 
   //a_Add to history
   if (m_History.size() >= m_HistoryMaxSize)

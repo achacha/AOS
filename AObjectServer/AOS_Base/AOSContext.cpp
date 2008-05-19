@@ -137,7 +137,8 @@ AOSContext::~AOSContext()
 {
   try
   {
-    delete mp_RequestFile;  //a_Context owns the file object
+    delete mp_RequestFile;
+    delete mp_LuaTemplateContext;
   }
   catch(...) {}
 }
