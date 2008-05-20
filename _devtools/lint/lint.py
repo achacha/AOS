@@ -8,6 +8,8 @@ import os,sys,stat;
 CURRENT_DIR=os.getcwd();
 THIS_DIR=os.path.dirname(sys.argv[0]);
 os.chdir(THIS_DIR);
+print "Current working directory: "+THIS_DIR;
+flexe = os.path.join(THIS_DIR, "flexelint.exe");
 
 def isDirectory(path):
   return stat.S_ISDIR(os.stat(path)[stat.ST_MODE]);
@@ -51,7 +53,7 @@ def removeFile(filename):
     print "  Not removing, file does not exist: "+filename;
     
 def showUsage():
-  print "Usage: "+os.path.split(sys.argv[0])[1]+" <project base directory, all .cpp files in all directories will be analyzed> [clean | verbose | nolint]";
+  print "Usage: "+os.path.split(sys.argv[0])[1]+" <project base directory, all .cpp files in all directories will be analyzed> [-clean | -verbose | -nolint]";
   
 
 #================================================================================
@@ -65,12 +67,14 @@ clean = 0;
 nolint = 0;
 argc = 1;
 while (len(sys.argv) > argc):
-  if (sys.argv[argc] == "clean"):
+  if (sys.argv[argc] == "-clean"):
     clean = 1;
-  elif (sys.argv[argc] == "verbose"):
+  elif (sys.argv[argc] == "-verbose"):
     verbose = 1;
-  elif (sys.argv[argc] == "nolint"):
+    print "Verbose mode";
+  elif (sys.argv[argc] == "-nolint"):
     nolint = 1;
+    print "Cnnfiguring only, not executing lint";
   else:
     if ("" == PROJECT):
       PROJECT_PATH = sys.argv[argc];
@@ -94,13 +98,19 @@ while (len(sys.argv) > argc):
 if ("" == PROJECT):
   showUsage();
   sys.exit(-1);
-  
-flexe = "flexelint.exe "
 
-BASE_OUTPUT_DIR = os.path.normpath(os.path.join(THIS_DIR,"..","..","..","_lint"));
+BASE_DIR=os.path.normpath(os.path.join(THIS_DIR,"..",".."));
+BASE_OUTPUT_DIR = os.path.join(BASE_DIR,"_lint");
 LINT_CONFIG_FILE = os.path.join(BASE_OUTPUT_DIR, PROJECT+".lnt");
 RAW_OUTPUT_FILE = LINT_CONFIG_FILE+".raw";
 OUT_OUTPUT_FILE = LINT_CONFIG_FILE+".out.txt";
+
+if (verbose == 1):
+  print "BASE_DIR="+BASE_DIR;
+  print "BASE_OUTPUT_DIR="+BASE_OUTPUT_DIR;
+  print "LINT_CONFIG_FILE="+LINT_CONFIG_FILE;
+  print "RAW_OUTPUT_FILE="+RAW_OUTPUT_FILE;
+  print "OUT_OUTPUT_FILE="+OUT_OUTPUT_FILE;
 
 makeSystemCall_mkdir(BASE_OUTPUT_DIR);
 
@@ -125,7 +135,11 @@ if (not os.path.exists(LINT_CONFIG_FILE)):
     flint.write(line);
   f.close();
   
-  #Lint output information
+  # Includes
+  print >>flint, "-i"+os.path.join(BASE_DIR, "include");
+  print >>flint, "-i"+os.path.join(BASE_DIR, "AObjectServer", "AOS_Base");
+  
+  # Lint output information
   print "  Raw output: "+RAW_OUTPUT_FILE;
   print >>flint,"-os("+RAW_OUTPUT_FILE+")";
   
@@ -151,7 +165,7 @@ if (0 == nolint):
     os.rename(RAW_OUTPUT_FILE, RAW_OUTPUT_FILE+".bak");
   
   print "===============Executing lint===============";
-  makeSystemCall(flexe+LINT_CONFIG_FILE);
+  makeSystemCall(flexe+" "+LINT_CONFIG_FILE);
 else:
   print "Skipping lint execution, assuming output exists";
 

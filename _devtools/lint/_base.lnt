@@ -152,7 +152,5 @@ lib-stl.lnt
 -D_DEBUG
 -D_WINDOWS
 -D_USRDLL
--i../include
--i../../AObjectServer/AOS_Base
 
 +ffn              // Use full filenames
