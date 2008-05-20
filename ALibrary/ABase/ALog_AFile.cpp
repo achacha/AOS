@@ -10,7 +10,6 @@
 
 #define DEFAULT_CYCLE_SLEEP 10000
 #define DEFAULT_MAX_FILE_SIZE 1024 * 1024
-#define FREESTORE_SIZE 13
 
 void ALog_AFile::debugDump(std::ostream& os, int indent) const
 {
@@ -26,7 +25,6 @@ void ALog_AFile::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "mp_File=" << std::endl;
   mp_File->debugDump(os, indent+2);
 
-  ADebugDumpable::indent(os, indent+1) << "m_BufferFreeStore.size()=" << m_BuffersFreeStore.size() << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_BufferToWrite.size()=" << m_BuffersToWrite.size() << std::endl;
   BufferContainer::const_iterator cit = m_BuffersToWrite.begin();
   while (cit != m_BuffersToWrite.end())
@@ -84,11 +82,8 @@ ALog_AFile::ALog_AFile(
   
   mp_File = new AFile_Physical(f, ASW("ab+",3));
   
-  //a_Initialize free buffers
+  //a_Initialize thread
   m_LoggerThread.setThis(this);
-  for (int i=0; i<FREESTORE_SIZE; ++i)
-    m_BuffersFreeStore.push_back(new LogBuffer());
-
   m_LoggerThread.start();
 }
 
@@ -105,11 +100,8 @@ ALog_AFile::ALog_AFile(
   m_enableLogFileRotate(false),
   m_DeleteFileObject(false)
 {
-  //a_Initialize free buffers
+  //a_Initialize thread
   m_LoggerThread.setThis(this);
-  for (int i=0; i<FREESTORE_SIZE; ++i)
-    m_BuffersFreeStore.push_back(new LogBuffer());
-
   m_LoggerThread.start();
 }
 
@@ -148,15 +140,6 @@ ALog_AFile::~ALog_AFile()
       //a_Cleanup
       if (m_DeleteFileObject)
         pDelete(mp_File);
-    }
-
-    {
-      BufferContainer::iterator it = m_BuffersFreeStore.begin();
-      while (it != m_BuffersFreeStore.end())
-      {
-        delete (*it);
-        ++it;
-      }
     }
   } 
   catch(...) {}
@@ -204,7 +187,7 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
             pThis->mp_File->write(pBuffer->m_Buffer);
             pThis->m_BuffersToWrite.pop_front();
             pBuffer->clear();
-            pThis->m_BuffersFreeStore.push_back(pBuffer);
+            delete pBuffer;
           }
           else
           {
@@ -284,15 +267,8 @@ void ALog_AFile::_add(
     }
   }
 
-  //a_Get log buffer
-  ALock lock(mp_SynchObject);
-  if (m_BuffersFreeStore.size() > 0)
-  {
-    pBuffer = m_BuffersFreeStore.front();
-    m_BuffersFreeStore.pop_front();
-  }
-  if (!pBuffer)
-    pBuffer = new LogBuffer();
+  //a_Create new buffer
+  pBuffer = new LogBuffer();
 
   //a_Add new event
   m_BuffersToWrite.push_back(pBuffer);

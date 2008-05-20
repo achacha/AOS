@@ -39,7 +39,7 @@ public:
   /*!
   Push object to back
 
-  @param ABase * to add to the queue
+  @param ABase * to add to the queue, object is OWNED and DELETED by the queue
   */
   void push(ABase *);
 
@@ -51,7 +51,7 @@ public:
   /*!
   Clear the queue
 
-  @param deleteContent if true will call delete on all contained objects
+  @param deleteContent if true will call delete on all contained objects, if not the queue is just cleared (which may leak memory if objects are owned)
   */
   void clear(bool deleteContent = true);
 

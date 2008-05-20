@@ -80,11 +80,10 @@ void ABasePtrQueue::clear(bool deleteContent)
       delete pKill;
       pKill = pNext;
     } 
-    mp_Head = NULL;
   }
+  mp_Head = NULL;
   mp_Tail = NULL;
   m_Size = 0;
-
 }
 
 bool ABasePtrQueue::isEmpty() const

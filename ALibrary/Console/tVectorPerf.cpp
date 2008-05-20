@@ -1,5 +1,8 @@
-#include "templateVectorOfPtrs.hpp"
+
 #include "ABase.hpp"
+#include "templateVectorOfPtrs.hpp"
+#include "ABasePtrQueue.hpp"
+#include "AString.hpp"
 
 class Echo : public ABase
 {
@@ -14,8 +17,16 @@ void testEcho()
   v.push_back(new Echo());
 }
 
+void testQueue()
+{
+  ABasePtrQueue q;
+  q.push(new Echo());
+  q.clear();
+}
+
 int main()
 {
-  testEcho();
+  //testEcho();
+  testQueue();
   return 0x0;
 }

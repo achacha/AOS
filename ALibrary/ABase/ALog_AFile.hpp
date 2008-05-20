@@ -116,7 +116,6 @@ private:
     bool m_ReadyToWrite;
   };
   typedef std::list<LogBuffer *> BufferContainer;
-  BufferContainer m_BuffersFreeStore;
   BufferContainer m_BuffersToWrite;
 
   //a_Pointer to the AFile based object and filename of this log
