@@ -234,7 +234,7 @@ void AOSContextManager::deallocate(AOSContext *p)
   //a_Add to history
   if (m_History.size() >= m_HistoryMaxSize)
   {
-    //a_Remove last first
+    //a_Remove last
     delete m_History.pop();
   }
   m_History.push(p);

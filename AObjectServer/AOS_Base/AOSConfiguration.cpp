@@ -26,7 +26,6 @@ int AOSConfiguration::UNAVAILABLE_SLEEP_TIME(50);
 int AOSConfiguration::UNAVAILABLE_RETRIES(100);
 
 #define DEFAULT_AOSCONTEXTMANAGER_HISTORY_MAX_SIZE 100
-#define DEFAULT_AOSCONTEXTMANAGER_FREESTORE_MAX_SIZE 50
 
 void AOSConfiguration::debugDump(std::ostream& os, int indent) const
 {
