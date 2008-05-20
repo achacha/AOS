@@ -120,13 +120,13 @@ if (verbose == 1):
 
   
 # Base libraries
-print "|---------EXTERNAL: ALibrary-----------|";
+print "|---------EXTERNAL: ABase-----------|";
 if (clean == 1):
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibrary", "lib", "release", "*.*"), target_bin_path_RELEASE);
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibrary", "lib", "debug", "*.*"), target_bin_path_DEBUG);
+  syncPathWithDelete(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "release", "*.*"), target_bin_path_RELEASE);
+  syncPathWithDelete(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "debug", "*.*"), target_bin_path_DEBUG);
 else:
-  syncPath(os.path.join(BASE_PATH, "ALibrary", "lib", "release", "*.*"), target_bin_path_RELEASE);
-  syncPath(os.path.join(BASE_PATH, "ALibrary", "lib", "debug", "*.*"), target_bin_path_DEBUG);
+  syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "release", "*.*"), target_bin_path_RELEASE);
+  syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "debug", "*.*"), target_bin_path_DEBUG);
 
 # ACrypto
 print "|---------EXTERNAL: ALibraryImpl/ACrypto-----------|";
