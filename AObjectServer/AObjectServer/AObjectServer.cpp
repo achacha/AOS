@@ -288,6 +288,6 @@ int main(int argc, char **argv)
   {
     AOS_DEBUGTRACE("main: Unknown exception caught", NULL);
   }
- 
+
   return 0;
 }
