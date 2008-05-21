@@ -1,6 +1,5 @@
 #include "pchAOS_Base.hpp"
 #include "AOSCacheManager.hpp"
-#include "ASync_CriticalSection.hpp"
 #include "ALock.hpp"
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"
@@ -8,7 +7,6 @@
 #include "AFile_Physical.hpp"
 #include "AFileSystem.hpp"
 #include "ATextOdometer.hpp"
-#include "ATemplateNodeHandler_LUA.hpp"
 
 void AOSCacheManager::debugDump(std::ostream& os, int indent) const
 {
@@ -78,14 +76,20 @@ void AOSCacheManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader&
     }
   }
 
-  adminAddPropertyWithAction(
-    eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("template_cache",14)), 
-    ASW("enabled",7), 
-    AString::fromBool(m_IsTemplateCacheEnabled),
-    ASW("Update",6), 
-    ASWNL("1:Enable template caching, 0:Disable and clear, -1:Clear only"),
-    ASW("Set",3)
-  );
+  {
+    AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("template_cache",14));
+
+    adminAddPropertyWithAction(
+      elem, 
+      ASW("enabled",7), 
+      AString::fromBool(m_IsTemplateCacheEnabled),
+      ASW("Update",6), 
+      ASWNL("1:Enable template caching, 0:Disable and clear, -1:Clear only"),
+      ASW("Set",3)
+    );
+
+    adminAddProperty(elem, ASW("item_count",10), AString::fromSize_t(mp_TemplateCache->size()));  
+  }
 }
 
 void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)

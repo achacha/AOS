@@ -17,12 +17,12 @@
 #include "ABitArray.hpp"
 #include "ARandomAccessBuffer.hpp"
 #include "ALuaTemplateContext.hpp"
+#include "AOSController.hpp"
 
 class AUrl;
 class AQueryString;
 class ACookies;
 class AOSServices;
-class AOSController;
 class AThread;
 class AOSDirectoryConfig;
 

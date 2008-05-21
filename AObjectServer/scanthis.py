@@ -5,7 +5,7 @@
 import os,sys;
 
 THIS_DIR=os.path.dirname(sys.argv[0]);
-SCAN_SCRIPT=os.path.join(THIS_DIR,"..","devtools","bin","scan.py");
+SCAN_SCRIPT=os.path.normpath(os.path.join(THIS_DIR,"..","_devtools","bin","scan.py"));
 
 if (not os.path.exists(SCAN_SCRIPT)):
   print "Unable to find scan script: "+SCAN_SCRIPT;

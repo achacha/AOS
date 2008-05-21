@@ -1,6 +1,5 @@
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_InsertIntoModel.hpp"
-#include "AQueryString.hpp"
 
 const AString& AOSModule_InsertIntoModel::getClass() const
 {

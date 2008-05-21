@@ -2,7 +2,6 @@
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
 #include "AOSController.hpp"
-#include "ALock.hpp"
 #include "AThread.hpp"
 #include "AOSConfiguration.hpp"
 #include "ASocketException.hpp"
@@ -151,17 +150,16 @@ void AOSContext::reset(AFile_Socket *pFile)
     m_EventVisitor.useLifespanTimer().start();
   }
 
+
   if (pFile)
   {
     delete mp_RequestFile;
     mp_RequestFile = pFile;
     
-    ARope rope("AOSContext[",11);
-    rope.append(mp_RequestFile->getSocketInfo().m_address);
-    rope.append(':');
-    rope.append(AString::fromInt(mp_RequestFile->getSocketInfo().m_port));
-    rope.append(']');
-    m_EventVisitor.useName().assign(rope);
+    if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+    {
+      m_EventVisitor.useName().assign(ASWNL("AOSContext::reset: Replacing file"), AEventVisitor::EL_DEBUG);
+    }
 
     m_ConnectionFlags.clear();
   }
@@ -178,6 +176,16 @@ void AOSContext::reset(AFile_Socket *pFile)
   mp_DirConfig = NULL;
 
   m_ContextFlags.clear();
+
+  if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+  {
+    ARope rope("AOSContext::reset[",18);
+    rope.append(mp_RequestFile->getSocketInfo().m_address);
+    rope.append(':');
+    rope.append(AString::fromInt(mp_RequestFile->getSocketInfo().m_port));
+    rope.append(']');
+    m_EventVisitor.useName().assign(rope, AEventVisitor::EL_DEBUG);
+  }
 }
 
 void AOSContext::finalize()

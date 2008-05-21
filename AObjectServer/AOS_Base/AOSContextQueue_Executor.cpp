@@ -3,7 +3,6 @@
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
 #include "ASocketException.hpp"
-#include "AOSController.hpp"
 
 const AString& AOSContextQueue_Executor::getClass() const
 {

@@ -22,6 +22,8 @@
 #include "AXmlElement.hpp"
 #include "AXmlData.hpp"
 #include "AXmlDocument.hpp"
+#include "ADatabase.hpp"
+#include "AResultSet.hpp"
 #include "AOSInputExecutor.hpp"
 #include "AOSModuleExecutor.hpp"
 #include "AOSOutputExecutor.hpp"

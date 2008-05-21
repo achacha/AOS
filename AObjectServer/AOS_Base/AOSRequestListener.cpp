@@ -5,8 +5,6 @@
 #include "AFile_Socket_SSL.hpp"
 #include "ASocketException.hpp"
 #include "AOSServices.hpp"
-#include "ALock.hpp"
-#include "AOSContextQueueInterface.hpp"
 #include "AOSConfiguration.hpp"
 
 #define WAIT_FOR_CONNECTION_DELAY 100

@@ -1,7 +1,5 @@
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_ExecuteQuery.hpp"
-#include "AResultSet.hpp"
-#include "ADatabase.hpp"
 
 const AString& AOSModule_ExecuteQuery::getClass() const
 {

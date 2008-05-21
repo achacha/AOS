@@ -10,7 +10,9 @@ int main()
 
   file.debugDump();
   std::cout << data0 << std::endl;
+  std::cout << sizeof(data0) << std::endl;
   std::cout << data1 << std::endl;
+  std::cout << sizeof(data1) << std::endl;
 
   return 0;
 }

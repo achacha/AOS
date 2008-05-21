@@ -91,7 +91,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     {
       AXmlElement& eProp = adminAddProperty(eInUse, ASW("context",7), (*citU).first->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
       eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citU).first->useEventVisitor().getErrorCount()));
-      eProp.addElement(ASW("url",3), (*citU).first->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
+      eProp.addElement(ASW("url",3)).addData((*citU).first->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
       ++citU;
     }
   }

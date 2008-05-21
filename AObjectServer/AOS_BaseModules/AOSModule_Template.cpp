@@ -1,9 +1,6 @@
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_Template.hpp"
-#include "AFile_AString.hpp"
 #include "AFile_Physical.hpp"
-#include "ABasePtrContainer.hpp"
-#include "AXmlElement.hpp"
 
 const AString& AOSModule_Template::getClass() const
 {

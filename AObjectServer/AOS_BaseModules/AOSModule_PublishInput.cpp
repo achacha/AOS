@@ -1,6 +1,5 @@
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_PublishInput.hpp"
-#include "AQueryString.hpp"
 
 const AString& AOSModule_PublishInput::getClass() const
 {

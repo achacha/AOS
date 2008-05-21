@@ -3,7 +3,6 @@
 #ifdef AOS__USE_MSXML6__
 #include "AOSOutput_MsXslt.hpp"
 #include "ASystemException.hpp"
-#include "AObjectContainer.hpp"
 #include "AFile_Physical.hpp"
 #include "ATextGenerator.hpp"
 #include "AOSServices.hpp"

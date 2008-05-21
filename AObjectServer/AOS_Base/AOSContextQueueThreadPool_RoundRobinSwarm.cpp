@@ -2,11 +2,6 @@
 #include "AOSContextQueueThreadPool_RoundRobinSwarm.hpp"
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
-#include "AOSController.hpp"
-#include "AFileSystem.hpp"
-#include "AFile_Physical.hpp"
-#include "AZlib.hpp"
-#include "AOSConfiguration.hpp"
 
 const AString& AOSContextQueueThreadPool_RoundRobinSwarm::getClass() const
 {

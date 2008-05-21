@@ -1,7 +1,5 @@
 #include "pchAOS_BaseModules.hpp"
 #include "AOSOutput_Redirect.hpp"
-#include "AFile_Physical.hpp"
-#include "AFileSystem.hpp"
 
 const AString& AOSOutput_Redirect::getClass() const
 {

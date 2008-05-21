@@ -1,11 +1,5 @@
 #include "pchAOS_BaseModules.hpp"
 #include "AOSOutput_Template.hpp"
-#include "ATemplate.hpp"
-#include "AFile_Physical.hpp"
-#include "AException.hpp"
-#include "ASync_Mutex.hpp"
-#include "ALock.hpp"
-#include "ATemplateNodeHandler_LUA.hpp"
 
 void AOSOutput_Template::debugDump(std::ostream& os, int indent) const
 {

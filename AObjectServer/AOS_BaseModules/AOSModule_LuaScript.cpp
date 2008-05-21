@@ -1,9 +1,6 @@
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_LuaScript.hpp"
-#include "AFile_AString.hpp"
 #include "AFile_Physical.hpp"
-#include "ABasePtrContainer.hpp"
-#include "AXmlElement.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 
 const AString& AOSModule_LuaScript::getClass() const
