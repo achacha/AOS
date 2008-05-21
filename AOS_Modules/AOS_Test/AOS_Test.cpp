@@ -1,6 +1,5 @@
 #include "pchAOS_Test.hpp"
 #include "apiAOS_Test.hpp"
-#include "AObjectContainer.hpp"
 
 #include "AOSModule_Test.hpp"
 #include "AOSModule_TestFail.hpp"

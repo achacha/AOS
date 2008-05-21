@@ -1,7 +1,5 @@
 #include "pchAOS_Example.hpp"
 #include "AOSModule_rss20.hpp"
-#include "ADatabase.hpp"
-#include "AResultSet.hpp"
 
 const AString& AOSModule_rss20::getClass() const
 {
