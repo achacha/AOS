@@ -1,61 +1,27 @@
 #include "apiABase.hpp"
 #include "apiALuaEmbed.hpp"
-#include "AString.hpp"
-#include "AException.hpp"
-#include "AFile_AString.hpp"
+#include "ALuaTemplateContext.hpp"
+#include "ALuaEmbed.hpp"
 #include "AXmlDocument.hpp"
-#include "AXmlElement.hpp"
-#include "ABasePtrContainer.hpp"
-#include "ATemplate.hpp"
-#include "ATemplateNodeHandler_LUA.hpp"
 
 int main()
 {
-  AFile_AString strf(
-"\
-%[LUA]{{{\
-local val = model.getText(\"/root/data\"); \n\
-val = val + 3; \n\
-val = val .. \" and more\"; \n\
-model.setText(\"newElement/item0\", val); \n\
-model.setText(\"newElement/item1\", val); \n\
-print(model.emitXml(0)); \n\
-}}}[LUA]%\r\n\
-\r\ncode[print(/root/newElement)]=%[CODE]{{{print(/root/newElement);}}}[CODE]%\
-\r\nobject[rootelem]=%[OBJECT]{{{rootelem}}}[OBJECT]%\
-\r\nmodel[/root/newElement]=%[MODEL]{{{/root/newElement}}}[MODEL]%\
-\r\nmodel[/root/newElement/item0]=%[MODEL]{{{/root/newElement/item0}}}[MODEL]%\
-\r\nmodel[/root/newElement/item1]=%[MODEL]{{{/root/newElement/item1}}}[MODEL]%\
+  AString code(
+"result=web.HttpGet(\"http://192.168.0.128/iw-cc/command/iw.ui\");\
+print result;\
 ");
 
   ABasePtrContainer objects;
-  AXmlDocument *pdoc = new AXmlDocument(ASW("root",4));
-  pdoc->useRoot().addElement("swiper").addData(ASWNL("swiper no swiping! 0"));
-  pdoc->useRoot().addElement("swiper").addData(ASWNL("swiper No swiping! 1"));
-  pdoc->useRoot().addElement("swiper").addData(ASWNL("Swiper NO Swiping! 2"));
-  pdoc->useRoot().addElement("data").addData(ASWNL("5"));
-  objects.insert(ATemplate::OBJECTNAME_MODEL, pdoc, true);
+  AXmlDocument model("root");
+  
+  ALuaTemplateContext ctx(objects, model);
 
-  ATemplate t;
-  t.addHandler(new ATemplateNodeHandler_LUA());
-
-  {
-    AXmlElement *pElement = new AXmlElement(ASW("root",4));
-    pElement->addElement("sub0").addAttribute("attr", "zero");
-    objects.insert("rootelem", new AXmlElement(*pElement), true);
-  }
+  AString output;
+  ALuaEmbed lua;
   
-  objects.insert("simplestring", new AString("Simple string I added"), true);
-  
-  t.fromAFile(strf);
-  std::cout << "\r\n------------------------------------ debugDump -----------------------------------------" << std::endl;
-  t.debugDump(); 
-  std::cout << "\r\n------------------------------------ debugDump -----------------------------------------" << std::endl;
-  
-  ARope rope;
   try
   {
-    t.process(objects, rope);
+    lua.execute(code, ctx, output);
   }
   catch(AException& ex)
   {
@@ -67,7 +33,7 @@ print(model.emitXml(0)); \n\
   }
 
   std::cout << "\r\n------------------------------------ output -----------------------------------------" << std::endl;
-  std::cout << rope << std::endl;
+  std::cout << output << std::endl;
   std::cout << "\r\n------------------------------------ output -----------------------------------------" << std::endl;
 
   return 1;

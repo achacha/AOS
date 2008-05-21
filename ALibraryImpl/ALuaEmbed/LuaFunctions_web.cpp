@@ -5,7 +5,7 @@
 #include "AFile_Socket.hpp"
 
 /*!
-Request from web via HTTP
+Request from web via HTTP GET
 
 web.HttpGet("http://www.achacha.org/");
 
@@ -16,6 +16,50 @@ web.HttpGet("http://www.achacha.org/");
 @return (string) HTTP document
 */
 static int web_HttpGet(lua_State *L)
+{
+  size_t len = AConstant::npos;
+  const char *s = luaL_checklstring(L, 1, &len);
+  const AString& url = AString::wrap(s, len);
+  lua_pop(L,1);
+
+  AHTTPRequestHeader request;
+  AHTTPResponseHeader response;
+
+  request.parseUrl(url);
+  AFile_Socket httpSocket(request, true);
+  httpSocket.open();
+  request.toAFile(httpSocket);
+  response.fromAFile(httpSocket);
+
+  //a_Return status code
+  lua_pushinteger(L, response.getStatusCode());
+
+  //a_Return HTTP response header
+  AString str(10240, 8188);  
+  response.emit(str);
+  lua_pushlstring(L, str.c_str(), str.getSize());
+  str.clear();
+
+  //a_Return HTTP response document
+  httpSocket.emit(str);
+  lua_pushlstring(L, str.c_str(), str.getSize());
+
+  return 2;
+}
+
+/*!
+TODO: NOT YET DONE!
+Request from web via HTTP POST
+
+web.HttpPost("http://www.achacha.org/", "post query string here");
+
+@namespace web
+@param (string) URL
+@return (int) Status code
+@return (string) HTTP header
+@return (string) HTTP document
+*/
+static int web_HttpPost(lua_State *L)
 {
   size_t len = AConstant::npos;
   const char *s = luaL_checklstring(L, 1, &len);
@@ -79,7 +123,8 @@ static int web_HttpGetStatusCode(lua_State *L)
 }
 
 static const luaL_Reg web_funcs[] = {
-  {"getHttp", web_HttpGet},
+  {"HttpGet", web_HttpGet},
+  {"HttpPost", web_HttpPost},
   {"getHttpStatusCode", web_HttpGetStatusCode},
   {NULL, NULL}
 };
