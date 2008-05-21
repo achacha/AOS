@@ -6,6 +6,11 @@ def handleClass(clazz, includes):
       print "    Ignoring PCH header: "+clazz;
     return;
   
+  if (clazz.startswith("api")):
+    if (verbose != 0):
+      print "    Ignoring API header: "+clazz;
+    return;
+
   if (clazz == "ansiHelpers"):
     if (verbose != 0):
       print "    Ignoring ansiHelpers";
@@ -77,7 +82,9 @@ if (verbose != 0):
   print "verbose = "+str(verbose);
 
 if (os.path.exists(path)):
-  print "-------Checking for possible unused headers: "+path;
+  if (verbose != 0):
+    print "-------Checking for possible unused headers: "+path;
+  
   files = os.listdir(path);
   for file in files:
     if (file[-4:] == ".cpp"):

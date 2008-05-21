@@ -43,7 +43,9 @@ def processDirectory(fullpath, targets):
       print "  Ignoring .svn: "+fullpath;
     return 0;
   
-  print "+++Directory detected, adding: "+fullpath;
+  if (verbose != 0):
+    print "+++Directory detected, adding: "+fullpath;
+  
   targets.append(fullpath);
   return 1;
   
