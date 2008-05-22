@@ -7,6 +7,9 @@
 
 const AString AHTTPHeader::DEFAULT_HTTP_VERSION("HTTP/1.1",8);
 
+const AString AHTTPHeader::CONTENT_TYPE_HTML_FORM("application/x-www-form-urlencoded");
+const AString AHTTPHeader::CONTENT_TYPE_HTML_FORM_MULTIPART("multipart/form-data");
+
 void AHTTPHeader::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AHTTPHeader @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -149,8 +152,11 @@ bool AHTTPHeader::getPairValue(const AString& strTokenName, AString& strDest) co
   }
 }
 
-void AHTTPHeader::parse(const AString &strHeader)
+void AHTTPHeader::parse(const AEmittable& source)
 {
+  AString strHeader;
+  source.emit(strHeader);
+  
   //a_Nothing to do
   if (strHeader.isEmpty())
     return;
@@ -479,4 +485,13 @@ size_t AHTTPHeader::getKeepAliveTimeout() const
 const AString& AHTTPHeader::getVersion() const
 { 
   return mstr_HTTPVersion;
+}
+
+size_t AHTTPHeader::getContentLength() const
+{
+  AString str;
+  if (getPairValue(AHTTPHeader::HT_ENT_Content_Length, str))
+    return str.toSize_t();
+  else
+    return AConstant::npos;
 }

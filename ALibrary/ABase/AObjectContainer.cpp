@@ -293,7 +293,7 @@ void AObjectContainer::emitXml(AXmlElement& thisRoot, const AString& strPath) co
     //a_Recurse objects
     while (cit != m_Objects.end())
     {
-      AAutoPtr<AXmlElement> pself(new AXmlElement((*cit).first));     //a_Create a child
+      AAutoPtr<AXmlElement> pself(new AXmlElement((*cit).first), true);     //a_Create a child
       (*cit).second->emitXml(*pself);
       thisRoot.addContent(pself);
       pself.setOwnership(false);

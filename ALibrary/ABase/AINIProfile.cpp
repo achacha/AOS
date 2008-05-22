@@ -459,7 +459,7 @@ _INILeaf* AINIProfile::_addLeaf(_ININode* pNode, const AString& str, bool boolOv
   AASSERT(this, pNode);
   _INILeaf* pLeaf = pNode->mp_Leaf;
 
-  AAutoPtr<_INILeaf> pNew(new _INILeaf);
+  AAutoPtr<_INILeaf> pNew(new _INILeaf, true);
   size_t pos = 0x0;
   pNew->mnv_Pair.parse(str, pos);
 

@@ -190,7 +190,7 @@ void ATime::strftime(const AString& strTemplate, AOutputBuffer& target) const
     return;
 
   //a_If there is no time, then it is invalid
-  AAutoPtr<tm> ptmX(_getTM());
+  AAutoPtr<tm> ptmX(_getTM(), true);
   if (!ptmX.get())
     ATHROW(this, AException::InvalidObject);
 
@@ -541,12 +541,12 @@ int ATime::getEffectiveTimeZone() const
 	if (smi_TimeZone == 666)
   {
 #if (_MSC_VER >= 1400)
-	  AAutoPtr<tm> ptmGMT(new tm());
+	  AAutoPtr<tm> ptmGMT(new tm(), true);
     errno_t errornum = ::gmtime_s(ptmGMT.use(), &mt_Time);        //a_Get GMT
     if (errornum)
       ATHROW_ERRNO(this, AException::APIFailure, errornum);
 
-    AAutoPtr<tm> ptmLocal(new tm());
+    AAutoPtr<tm> ptmLocal(new tm(), true);
     errornum = ::localtime_s(ptmLocal.use(), &mt_Time);           //a_Get Local
     if (errornum)
       ATHROW_ERRNO(this, AException::APIFailure, errornum);
@@ -573,7 +573,7 @@ int ATime::getEffectiveTimeZone() const
 
 bool ATime::isDaylightSavingTime() const
 {
-  AAutoPtr<tm> ptmLocal( new tm());
+  AAutoPtr<tm> ptmLocal( new tm(), true);
   errno_t errornum = ::localtime_s(ptmLocal.use(), &mt_Time);           //a_Get Local
   if (errornum)
     ATHROW_ERRNO(this, AException::APIFailure, errornum);

@@ -5,8 +5,9 @@
 #include "ANameValuePair.hpp"
 #include "ADebugDumpable.hpp"
 #include "AXmlEmittable.hpp"
+#include "AParsable.hpp"
 
-class ABASE_API AHTTPHeader : public ADebugDumpable, public ASerializable, public AXmlEmittable
+class ABASE_API AHTTPHeader : public ADebugDumpable, public ASerializable, public AXmlEmittable, public AParsable
 {
 public:
   //a_Tokens from RFC-2068
@@ -77,17 +78,25 @@ public:
     HT_ENT_Last_Modified        = 0x1000006B
   };
 
+  //! HTML POST form: application/x-www-form-urlencoded
+  static const AString CONTENT_TYPE_HTML_FORM;
+
+  //! HTML multi-part POST form: multipart/form-data
+  static const AString CONTENT_TYPE_HTML_FORM_MULTIPART;
+
 public:
   virtual ~AHTTPHeader();
 
   //a_Presentation
   virtual void emit(AOutputBuffer&) const;
   
-  //a_Parse and clear
+  //! Clear
   virtual void clear();
-  virtual void parse(const AString& strHeader);
+  
+  //! Parse from AEmittable
+  virtual void parse(const AEmittable&);
 
-  /*
+  /*!
   ASerializable (reading and writing to AFile type)
   */
   virtual void toAFile(AFile&) const;
@@ -170,7 +179,12 @@ public:
   */
   size_t AHTTPHeader::getKeepAliveTimeout() const;
 
-  //a_String that denotes default HTTP version supported "HTTP/1.1"
+  /*!
+  Helper to get Content-Length
+  */
+  size_t getContentLength() const;
+
+  //! String that denotes default HTTP version supported "HTTP/1.1"
   static const AString DEFAULT_HTTP_VERSION;
 
   /*!

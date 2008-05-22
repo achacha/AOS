@@ -71,8 +71,14 @@ public:
   /*!
   Pointer to an object (NOT to be used with arrays, see below templates)
   */
-	explicit AAutoPtr(T* pointer = NULL, bool ownership = true) : m_Pointer(pointer), m_Ownership(ownership) {}
-	~AAutoPtr()
+	explicit AAutoPtr(T* pointer, bool ownership) : m_Pointer(pointer), m_Ownership(ownership)
+  {
+  }
+
+  /*!
+  dtor
+  */
+  ~AAutoPtr()
   { 
     if (m_Ownership && m_Pointer)
     {
@@ -194,8 +200,15 @@ template <class T>
 class AAutoArrayPtr : public ADebugDumpable
 {
 public:
-	explicit AAutoArrayPtr(T* pointer = NULL, bool ownership = true) : m_Pointer(pointer), m_Ownership(ownership) {}
-	~AAutoArrayPtr()
+	/*!
+  ctor
+  */
+  explicit AAutoArrayPtr(T* pointer, bool ownership) : m_Pointer(pointer), m_Ownership(ownership) {}
+	
+  /*!
+  dtor
+  */
+  ~AAutoArrayPtr()
   { 
     if (m_Ownership) delete []m_Pointer;
   }
@@ -307,7 +320,14 @@ template <class T>
 class AAutoBasicArrayPtr : public ADebugDumpable
 {
 public:
+  /*!
+  ctor
+  */
   explicit AAutoBasicArrayPtr(T* pointer = NULL, bool ownership = true) : m_Pointer(pointer), m_Ownership(ownership) {}
+  
+  /*!
+  dtor
+  */
   ~AAutoBasicArrayPtr()
   { 
     if (m_Ownership)

@@ -207,7 +207,7 @@ void AXmlDocument::fromAFile(AFile& file)
       }
         
       //a_Xml instruction (singular by default)
-      AAutoPtr<AXmlInstruction> p(new AXmlInstruction(str));
+      AAutoPtr<AXmlInstruction> p(new AXmlInstruction(str), true);
       
       str.clear();
       if (AConstant::npos == file.readUntil(str, p->getTypeTerminator()))

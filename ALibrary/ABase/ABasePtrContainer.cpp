@@ -57,16 +57,22 @@ void ABasePtrContainer::insert(
   if (!pBase)
     ATHROW(this, AException::InvalidParameter);
 
-  if (m_BasePtrs.find(name) != m_BasePtrs.end())
+  HOLDER::iterator it = m_BasePtrs.find(name);
+  if (it != m_BasePtrs.end())
   {
     //a_Exists
     if (overwrite)
-      m_BasePtrs[name]->reset(pBase, ownership);  //a_Replace
+    {
+      it->second->reset(pBase, ownership);  //a_Replace
+    }
     else
       ATHROW(this, AException::ObjectContainerCollision);
   }
   else
-    m_BasePtrs[name] = new ITEM(pBase, ownership);  //a_Insert new item
+  {
+    ITEM *pitem = new ITEM(pBase, ownership);
+    m_BasePtrs[name] = pitem;  //a_Insert new item
+  }
 }
 
 void ABasePtrContainer::setOwnership(
@@ -94,7 +100,10 @@ ABase *ABasePtrContainer::use(const AString& name)
 {
   HOLDER::iterator it = m_BasePtrs.find(name);
   if (it != m_BasePtrs.end())
-    return it->second->use();
+  {
+    ITEM *pitem = it->second;
+    return pitem->use();
+  }
   else
     return NULL;
 }

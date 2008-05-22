@@ -1268,7 +1268,7 @@ void AStackWalker::OnLoadModule(LPCSTR img, LPCSTR mod, DWORD64 baseAddr, DWORD 
 {
   if (m_options & AStackWalker::SWO_SYM_ALL)
   {
-    AAutoPtr<ARope> pRope(new ARope());
+    AAutoPtr<ARope> pRope(new ARope(), true);
 
     pRope->append(img);
     pRope->append(':');
@@ -1295,7 +1295,7 @@ void AStackWalker::OnCallstackEntry(CallstackEntryType eType, CallstackEntry &en
 {
   if ((eType != lastEntry) && (entry.offset != 0))
   {
-    AAutoPtr<ARope> pRope(new ARope());
+    AAutoPtr<ARope> pRope(new ARope(), true);
     
     //a_Module name
     if (!entry.moduleName.isEmpty())
@@ -1335,7 +1335,7 @@ void AStackWalker::OnCallstackEntry(CallstackEntryType eType, CallstackEntry &en
 
 void AStackWalker::OnDbgHelpErr(LPCSTR szFuncName, DWORD gle, DWORD64 addr)
 {
-  AAutoPtr<ARope> pRope(new ARope());
+  AAutoPtr<ARope> pRope(new ARope(), true);
 
   pRope->append("ERROR: ");
   pRope->append(szFuncName);
@@ -1352,7 +1352,7 @@ void AStackWalker::OnSymInit(LPCSTR szSearchPath, DWORD symOptions, const AStrin
 {
   if (m_options & AStackWalker::SWO_INIT_INFO)
   {
-    AAutoPtr<ARope> pRope(new ARope());
+    AAutoPtr<ARope> pRope(new ARope(), true);
 
     OSVERSIONINFOEXA ver;
     ZeroMemory(&ver, sizeof(OSVERSIONINFOEXA));

@@ -232,7 +232,7 @@ ACache_FileSystem::STATUS ACache_FileSystem::get(
       else
       {
         //a_File exists cache it
-        AAutoPtr<CACHE_ITEM> p(new CACHE_ITEM());
+        AAutoPtr<CACHE_ITEM> p(new CACHE_ITEM(), true);
         p->pData = new AFile_AString((size_t)AFileSystem::length(key), 256);
         
         if (!AFileSystem::getLastModifiedTime(key, p->lastModified))

@@ -90,7 +90,7 @@ void ATemplate::addNode(const AString& tagname, AFile& source)
 {
   AASSERT_EX(this, m_Handlers.end() != m_Handlers.find(tagname), ARope("Tag handler not found: ")+tagname);
   ATemplateNodeHandler *pHandler = m_Handlers[tagname];
-  AAutoPtr<ATemplateNode> pNode(pHandler->create(source));
+  AAutoPtr<ATemplateNode> pNode(pHandler->create(source), true);
   m_Nodes.push_back(pNode);
   pNode.setOwnership(false);
 }
@@ -114,7 +114,7 @@ void ATemplate::toAFile(AFile& aFile) const
 void ATemplate::fromAFile(AFile& aFile)
 {
   AString tagName;
-  AAutoPtr<ATemplateNode> pText(new ATemplateNode());  //a_Text block accumulator
+  AAutoPtr<ATemplateNode> pText(new ATemplateNode(), true);  //a_Text block accumulator
   size_t ret = AConstant::npos;
   while(AConstant::npos != (ret = aFile.readUntil(pText->useBlockData(), ATemplate::TAG_START)))
   {

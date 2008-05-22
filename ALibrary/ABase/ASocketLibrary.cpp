@@ -184,7 +184,7 @@ u4 ASocketLibrary::convertStringToIp4(const AString& ip)
 AString ASocketLibrary::getMACfromIP(const AString& strIP)
 {
   const int arraySize = 32;
-  AAutoArrayPtr<IP_ADAPTER_INFO> pInfo(new IP_ADAPTER_INFO[arraySize]);
+  AAutoArrayPtr<IP_ADAPTER_INFO> pInfo(new IP_ADAPTER_INFO[arraySize], true);
   DWORD dwLen = sizeof(IP_ADAPTER_INFO) * arraySize;
 
   DWORD ret = GetAdaptersInfo(pInfo.use(), &dwLen);
