@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AContext_HPP__
 #define INCLUDED__AContext_HPP__
 
@@ -106,8 +111,10 @@ public:
 
   /*!
   Write response header and set response header sent flag
+
+  @return bytes written
   */
-  void writeResponseHeader();
+  size_t writeResponseHeader();
 
   /*!
   Writes output buffer

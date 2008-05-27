@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_LuaScript.hpp"
 #include "AFile_Physical.hpp"
@@ -20,7 +25,7 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
 
   const AXmlElement *pNode = params.findElement(ASW("script",6));
   AString strSource;
-  AAutoPtr<AFile> pFile;
+  AAutoPtr<AFile> pFile(NULL, false);
   if (pNode)
   {
     strSource.assign("inline", 6);
@@ -55,7 +60,7 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
   }
   
   //a_Process and save output
-  AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate());
+  AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate(), true);
 
   //a_Read script and insert it as nodes into template
   pTemplate->addNode(ATemplateNodeHandler_LUA::TAGNAME, *pFile);

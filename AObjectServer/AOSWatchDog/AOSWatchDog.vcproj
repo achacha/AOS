@@ -363,10 +363,16 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\AOSWatchDogDaemon.hpp"
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D732A7FF}"
 			>
-		</File>
+			<File
+				RelativePath=".\AOSWatchDogDaemon.hpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

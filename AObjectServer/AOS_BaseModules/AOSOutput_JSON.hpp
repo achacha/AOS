@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSOutput_JSON_HPP__
 #define INCLUDED__AOSOutput_JSON_HPP__
 

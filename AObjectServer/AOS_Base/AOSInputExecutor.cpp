@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSInputExecutor.hpp"
 #include "AOSContext.hpp"

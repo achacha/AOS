@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSRequestListener_HPP__
 #define INCLUDED__AOSRequestListener_HPP__
 

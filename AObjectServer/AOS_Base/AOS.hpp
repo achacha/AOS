@@ -1,3 +1,9 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
+
 // This file contains all the included needed to build on top of AOS_Base
 // Exists purely for convenience
 

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSContext.hpp"
 #include "AOSContextQueueInterface.hpp"

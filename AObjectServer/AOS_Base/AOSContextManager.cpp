@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSContextManager.hpp"
 #include "ASync_CriticalSection.hpp"
@@ -99,7 +104,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
   {
     AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "History");
     ALock lock(m_History.useSync());
-    for (ABase *p = m_History.useHead(); p; p = p->useNext())
+    for (ABase *p = m_History.useTail(); p; p = p->usePrev())
     {
       AOSContext *pContext = dynamic_cast<AOSContext *>(p);
       if (pContext)

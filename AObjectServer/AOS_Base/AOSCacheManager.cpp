@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSCacheManager.hpp"
 #include "ALock.hpp"
@@ -203,7 +208,7 @@ ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, cons
     //a_No caching, read fom file system
     if (AFileSystem::isA(filename, AFileSystem::File))
     {
-      context.useEventVisitor().startEvent(ARope("Reading physical file: ",25)+filename);
+      context.useEventVisitor().startEvent(ARope("Reading physical file: ",23)+filename);
       pFile.reset(new AFile_Physical(filename));
       pFile->open();
       if (!AFileSystem::getLastModifiedTime(filename, modified))
@@ -238,7 +243,7 @@ ACacheInterface::STATUS AOSCacheManager::getTemplate(AOSContext& context, const 
       if (AFileSystem::exists(filename))
       {
         //a_File exists, parse and cache
-        AAutoPtr<ATemplate> pNewTemplate(m_Services.createTemplate());
+        AAutoPtr<ATemplate> pNewTemplate(m_Services.createTemplate(), true);
         AFile_Physical file(filename);
         file.open();
         pNewTemplate->fromAFile(file);
@@ -367,7 +372,7 @@ ATemplate* AOSCacheManager::_putFileIntoStatusTemplateCache(int key, const AStri
   file.open();
 
   //a_Process error template
-  AAutoPtr<ATemplate> p(m_Services.createTemplate());
+  AAutoPtr<ATemplate> p(m_Services.createTemplate(), true);
   p->fromAFile(file);
 
   (*mp_StatusTemplateCache)[key] = p.use();

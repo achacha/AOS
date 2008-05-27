@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSServices.hpp"
 #include "AOSAdminRegistry.hpp"
@@ -202,7 +207,7 @@ AOSCacheManager& AOSServices::useCacheManager()
 
 ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
 {
-  AAutoPtr<ATemplate> pTemplate(new ATemplate());
+  AAutoPtr<ATemplate> pTemplate(new ATemplate(), true);
   
   //a_Add Lua handler
   pTemplate->addHandler(new ATemplateNodeHandler_LUA());

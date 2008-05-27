@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSDatabaseConnectionPool_HPP__
 #define INCLUDED__AOSDatabaseConnectionPool_HPP__
 

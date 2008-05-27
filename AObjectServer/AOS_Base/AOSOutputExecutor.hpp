@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSOutputExecutor_HPP__
 #define INCLUDED__AOSOutputExecutor_HPP__
 

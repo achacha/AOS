@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSOutputGeneratorInterface_HPP__
 #define INCLUDED__AOSOutputGeneratorInterface_HPP__
 

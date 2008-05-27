@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_Template.hpp"
 #include "AFile_Physical.hpp"
@@ -16,7 +21,7 @@ AOSModule_Template::AOSModule_Template(AOSServices& services) :
 AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
 {
   const AXmlElement *pNode = params.findElement(ASW("template",8));
-  AAutoPtr<AFile> pFile;
+  AAutoPtr<AFile> pFile(NULL, false);
   if (pNode)
   {
     //a_Element contains script
@@ -48,7 +53,7 @@ AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AX
   }  
 
   //a_Template
-  AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate());
+  AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate(), true);
   pTemplate->fromAFile(*pFile);
 
   //a_Process and save output

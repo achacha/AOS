@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_BaseModules.hpp"
 #include "AOSInput_HtmlFormMultiPart.hpp"
 
@@ -113,7 +118,7 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             AASSERT(&context, !strName.isEmpty());
 
             //a_From here until boundary is pure data of this part
-            AAutoPtr<AString> pData(new AString());
+            AAutoPtr<AString> pData(new AString(), true);
 
             bytesRead = AConstant::unavail;
             while (AConstant::unavail == bytesRead)

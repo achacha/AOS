@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSRequestListener.hpp"
 #include "ASocketListener.hpp"
@@ -162,7 +167,7 @@ void AOSRequestListener::stopListening()
 u4 AOSRequestListener::threadprocListener(AThread& thread)
 {
   AOSRequestListener *pThis = dynamic_cast<AOSRequestListener *>(thread.getThis());
-  AAutoPtr<LISTEN_DATA> pData(dynamic_cast<LISTEN_DATA *>(thread.getParameter()));
+  AAutoPtr<LISTEN_DATA> pData(dynamic_cast<LISTEN_DATA *>(thread.getParameter()), true);
 
   AASSERT(NULL, pThis);
   AASSERT(NULL, pData.get());
@@ -189,7 +194,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
     {
       if (listener.isAcceptWaiting())
       {
-        AAutoPtr<AFile_Socket> pSocket(NULL);
+        AAutoPtr<AFile_Socket> pSocket(NULL, false);
         try
         {
           pSocket.reset(new AFile_Socket(listener, httpBlockingMode));
@@ -250,7 +255,7 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
 u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
 {
   AOSRequestListener *pThis = dynamic_cast<AOSRequestListener *>(thread.getThis());
-  AAutoPtr<LISTEN_DATA> pData(dynamic_cast<LISTEN_DATA *>(thread.getParameter()));
+  AAutoPtr<LISTEN_DATA> pData(dynamic_cast<LISTEN_DATA *>(thread.getParameter()), true);
   AASSERT(NULL, pThis);
   AASSERT(NULL, pData.get());
 
@@ -279,7 +284,7 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
     {
       if (listener.isAcceptWaiting())
       {
-        AAutoPtr<AFile_Socket> pSocket(NULL);
+        AAutoPtr<AFile_Socket> pSocket(NULL, false);
         try
         {
           pSocket.reset(new AFile_Socket_SSL(listener));

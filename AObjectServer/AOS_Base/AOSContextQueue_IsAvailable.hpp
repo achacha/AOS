@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSContextQueue_IsAvailable_HPP__
 #define INCLUDED__AOSContextQueue_IsAvailable_HPP__
 

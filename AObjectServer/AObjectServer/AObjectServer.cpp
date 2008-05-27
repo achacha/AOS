@@ -1,4 +1,8 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchAObjectServer.hpp"
 
 #include "AOS.hpp"
@@ -107,13 +111,13 @@ int main(int argc, char **argv)
       AAutoPtr<AOSContextQueueInterface> pQueueIsAvail(new AOSContextQueue_IsAvailable(
         services,
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/is-available/queues", 2)
-      ));
+      ), true);
       
       AAutoPtr<AOSContextQueueThreadPool> pQueueError(new AOSContextQueue_ErrorExecutor(
         services,
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/threads", 16), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/queues", 4)
-      ));
+      ), true);
       int sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueError->setSleepDelay(sleepDelay);
@@ -124,7 +128,7 @@ int main(int argc, char **argv)
         services, 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/threads", 16), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/queues", 4)
-      ));
+      ), true);
       sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/pre-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueuePre->setSleepDelay(sleepDelay);
@@ -135,7 +139,7 @@ int main(int argc, char **argv)
         services, 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/threads", 64), 
         services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/queues", 3)
-      ));
+      ), true);
       sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueExecutor->setSleepDelay(sleepDelay);

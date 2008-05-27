@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__preBaseModules_HPP__
 #define INCLUDED__preBaseModules_HPP__
 

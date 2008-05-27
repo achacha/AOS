@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSServices_HPP__
 #define INCLUDED__AOSServices_HPP__
 

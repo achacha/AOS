@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSContextQueueThreadPool_HPP__
 #define INCLUDED__AOSContextQueueThreadPool_HPP__
 

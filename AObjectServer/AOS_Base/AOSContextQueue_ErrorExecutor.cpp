@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSContextQueue_ErrorExecutor.hpp"
 #include "AOSContext.hpp"
@@ -120,7 +125,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
 
             int statusCode = pContext->useResponseHeader().getStatusCode();
             
-            AAutoPtr<ATemplate> pTemplate;  //a_Call to cache manager will set a template
+            AAutoPtr<ATemplate> pTemplate(NULL, false);  //a_Call to cache manager will set a template
             pContext->clearOutputBuffer();
             if (m_Services.useCacheManager().getStatusTemplate(statusCode, pTemplate))
             {

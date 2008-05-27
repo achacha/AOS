@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSSessionManager_HPP__
 #define INCLUDED__AOSSessionManager_HPP__
 

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSModuleInterface_HPP__
 #define INCLUDED__AOSModuleInterface_HPP__
 

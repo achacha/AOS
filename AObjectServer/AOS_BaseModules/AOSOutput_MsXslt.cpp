@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_BaseModules.hpp"
 
 #ifdef AOS__USE_MSXML6__

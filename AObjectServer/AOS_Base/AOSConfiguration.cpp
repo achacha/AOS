@@ -1,6 +1,10 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSConfiguration.hpp"
-#include "ALock.hpp"
 #include "AOSAdmin.hpp"
 #include "AOSController.hpp"
 #include "AFile_Physical.hpp"
@@ -432,7 +436,7 @@ void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
 
   //a_Parse XML document
   configFile.open();
-  AAutoPtr<AXmlDocument> pDoc(new AXmlDocument(configFile));
+  AAutoPtr<AXmlDocument> pDoc(new AXmlDocument(configFile), true);
   configFile.close();
   AASSERT_EX(pDoc, pDoc->useRoot().getName().equals(ASW("config",6)), ARope("Expected <config> as a root element: ")+filename);
   
@@ -480,7 +484,7 @@ void AOSConfiguration::_readController(AFilename& filename)
       }  
 
       //a_Parse command and associate to relative path
-      AAutoPtr<AOSController> p(new AOSController(strPath, m_Services.useLog()));
+      AAutoPtr<AOSController> p(new AOSController(strPath, m_Services.useLog()), true);
       p->fromXml(*pElement);
       AASSERT(this, m_ControllerPtrs.end() == m_ControllerPtrs.find(strPath));
       m_ControllerPtrs[strPath] = p;

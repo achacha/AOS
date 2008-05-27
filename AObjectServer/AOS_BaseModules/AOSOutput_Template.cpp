@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_BaseModules.hpp"
 #include "AOSOutput_Template.hpp"
 
@@ -85,7 +90,7 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
     (*cit)->emitContent(str);
     filename.join(str, false);
 
-    AAutoPtr<ATemplate> pTemplate;
+    AAutoPtr<ATemplate> pTemplate(NULL, false);
     if (ACacheInterface::NOT_FOUND == m_Services.useCacheManager().getTemplate(context, filename, pTemplate))
     {
       //a_Not found add error and continue

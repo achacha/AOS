@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
@@ -158,7 +163,7 @@ void AOSContext::reset(AFile_Socket *pFile)
     
     if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
     {
-      m_EventVisitor.useName().assign(ASWNL("AOSContext::reset: Replacing file"), AEventVisitor::EL_DEBUG);
+      m_EventVisitor.startEvent(ASWNL("AOSContext::reset: Replacing file"), AEventVisitor::EL_DEBUG);
     }
 
     m_ConnectionFlags.clear();
@@ -184,7 +189,7 @@ void AOSContext::reset(AFile_Socket *pFile)
     rope.append(':');
     rope.append(AString::fromInt(mp_RequestFile->getSocketInfo().m_port));
     rope.append(']');
-    m_EventVisitor.useName().assign(rope, AEventVisitor::EL_DEBUG);
+    m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
   }
 }
 
@@ -995,7 +1000,7 @@ const AXmlElement& AOSContext::getModuleParams(const AString& moduleName) const
     ++cit;
   }
   
-  ARope rope("Module does not exist: ");
+  ARope rope("Module does not exist: ",23);
   rope.append(moduleName);
   ATHROW_EX(this, AException::DoesNotExist, rope);
 }
@@ -1015,7 +1020,7 @@ ATimer& AOSContext::useTimeoutTimer()
   return m_TimeoutTimer;
 }
 
-void AOSContext::writeResponseHeader()
+size_t AOSContext::writeResponseHeader()
 {
   AASSERT(this, mp_RequestFile);
 
@@ -1036,22 +1041,33 @@ void AOSContext::writeResponseHeader()
 
   str.clear();
   m_ResponseHeader.emit(str);
-  _write(str, str.getSize());
+  size_t written = _write(str, str.getSize());
 
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
 
-  m_EventVisitor.addEvent(str, AEventVisitor::EL_INFO);
+  if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+  {
+    m_EventVisitor.addEvent(str, AEventVisitor::EL_INFO);
+
+    AString str("Header bytes written: ",21);
+    str.append(AString::fromSize_t(written));
+
+    m_EventVisitor.startEvent(str, AEventVisitor::EL_INFO);
+  }
+  return written;
 }
 
 void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 {
   m_EventVisitor.startEvent(ASW("AOSContext: write output",24), AEventVisitor::EL_INFO);
   AASSERT(this, mp_RequestFile);
+  size_t headerWritten = 0, bodyWritten = 0;
   int gzipLevel = _calculateGZipLevel(m_OutputBuffer.getSize());
   if (gzipLevel > 0 && gzipLevel < 10 && !forceXmlDocument)
   {
     AASSERT_EX(this, m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT), ASWNL("Response header already written, incompatible with gzip output"));
-    m_EventVisitor.startEvent(ASW("Compressing",11), AEventVisitor::EL_INFO);
+    if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+      m_EventVisitor.startEvent(ASW("Compressing",11), AEventVisitor::EL_INFO);
 
     AString original(m_OutputBuffer);
     AString compressed(m_OutputBuffer.getSize()+16, 1024);
@@ -1064,24 +1080,28 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(compressed.getSize()));
 
     //a_The writing of the output
-    writeResponseHeader();
+    headerWritten = writeResponseHeader();
     m_EventVisitor.startEvent(ASW("AOSContext: Writing compressed",30));
     
     size_t originalSize = compressed.getSize();
-    size_t written = _write(compressed, compressed.getSize());
-    AASSERT(this, written == originalSize);
+    bodyWritten = _write(compressed, compressed.getSize());
+    AASSERT(this, bodyWritten == originalSize);
   }
   else
   {
     if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
       ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
 
-    //a_If output buffer is empty then emit output XML document into it
     //a_This allows override of XML emit by manually adding data to the output buffer in output generator
-    if (m_OutputBuffer.isEmpty() || forceXmlDocument)
+    if (forceXmlDocument)
     {
       m_OutputXmlDocument.useRoot().addElement(S_OUTPUT).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
       m_OutputBuffer.clear();
+    }
+    
+    //a_If output buffer is empty then emit output XML document into it
+    if (m_OutputBuffer.isEmpty())
+    {
       m_OutputXmlDocument.emit(m_OutputBuffer);
       m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
       m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
@@ -1091,13 +1111,27 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     if (m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT))
     {
       m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(m_OutputBuffer.getSize()));
-      writeResponseHeader();  //a_Sets flag that it was sent
+      headerWritten = writeResponseHeader();  //a_Sets flag that it was sent
     }
 
     m_EventVisitor.startEvent(ASW("AOSContext: Writing uncompressed",32));
     size_t originalSize = m_OutputBuffer.getSize();
-    size_t written = _write(m_OutputBuffer, m_OutputBuffer.getSize());
-    AASSERT(this, written == originalSize);
+    bodyWritten = _write(m_OutputBuffer, m_OutputBuffer.getSize());
+    AASSERT(this, bodyWritten == originalSize);
+  }
+
+  //a_Log info about bytes written
+  if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+  {
+    AString str("Total bytes written: ",21);
+    str.append(AString::fromSize_t(headerWritten+bodyWritten));
+    str.append('(');
+    str.append(AString::fromSize_t(headerWritten));
+    str.append('+');
+    str.append(AString::fromSize_t(bodyWritten));
+    str.append(')');
+
+    m_EventVisitor.startEvent(str, AEventVisitor::EL_INFO);
   }
 
   m_EventVisitor.endEvent();
@@ -1299,7 +1333,7 @@ bool AOSContext::processStaticPage()
   
   int dumpContextLevel = getDumpContextLevel();
 
-  ACache_FileSystem::HANDLE pFile;
+  ACache_FileSystem::HANDLE pFile(NULL, false);
   const ATime& ifModifiedSince = m_RequestHeader.getIfModifiedSince();
   ATime modified;
   switch (m_Services.useCacheManager().getStaticFile(*this, httpFilename, pFile, modified, ifModifiedSince))
@@ -1361,7 +1395,7 @@ bool AOSContext::processStaticPage()
         if (AConstant::npos == bytesWritten)
           m_EventVisitor.addEvent(ASW("AOSContext::processStaticPage: Failed to write",46));
         else
-          m_EventVisitor.addEvent(ARope("AOSContext::processStaticPage: Streamed bytes: ",16)+AString::fromSize_t(bytesWritten), AEventVisitor::EL_INFO);
+          m_EventVisitor.addEvent(ARope("AOSContext::processStaticPage: Streamed bytes: ",47)+AString::fromSize_t(bytesWritten), AEventVisitor::EL_INFO);
 
         if (bytesWritten != bytesToSend)
         {
@@ -1384,9 +1418,9 @@ bool AOSContext::processStaticPage()
         m_ResponseHeader.setLastModified(modified);
 
         //a_Buffer the file, Content-Length set in the write header
-        m_EventVisitor.startEvent(ARope("AOSContext::processStaticPage: Sending file: ",14)+httpFilename);
+        m_EventVisitor.startEvent(ARope("AOSContext::processStaticPage: Sending file: ",45)+httpFilename);
         pFile->emit(m_OutputBuffer);
-        m_EventVisitor.addEvent(ARope("AOSContext::processStaticPage: Output buffer bytes: ",21)+AString::fromSize_t(m_OutputBuffer.getSize()), AEventVisitor::EL_INFO);
+        m_EventVisitor.addEvent(ARope("AOSContext::processStaticPage: Output buffer bytes: ",52)+AString::fromSize_t(m_OutputBuffer.getSize()), AEventVisitor::EL_INFO);
       }
     }
     break;
@@ -1424,9 +1458,6 @@ bool AOSContext::processStaticPage()
 
 size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
 {
-  if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
-    m_EventVisitor.startEvent(ASW("AOSContext: write file",22), AEventVisitor::EL_INFO);
-  
   AASSERT(this, mp_RequestFile);
   size_t bytesToWrite = originalSize;
   size_t bytesWritten = 0;
@@ -1491,7 +1522,7 @@ size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
   AASSERT(this, bytesWritten == originalSize);
   if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
   {
-    AString str("AOSContext: writen bytes: ",26);
+    AString str("AOSContext::_write bytes: ",26);
     str.append(AString::fromSize_t(bytesWritten));
     m_EventVisitor.addEvent(str, AEventVisitor::EL_INFO);
   }

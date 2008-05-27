@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSInputProcessorInterface_HPP__
 #define INCLUDED__AOSInputProcessorInterface_HPP__
 

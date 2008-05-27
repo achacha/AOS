@@ -1,6 +1,10 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSContextQueueThreadPool.hpp"
-#include "ALock.hpp"
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
 

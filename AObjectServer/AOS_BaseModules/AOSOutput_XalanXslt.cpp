@@ -1,7 +1,11 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_BaseModules.hpp"
 #include "AOSOutput_XalanXslt.hpp"
 #include "ASystemException.hpp"
-#include "AObjectContainer.hpp"
 #include "AFile_Physical.hpp"
 #include "ATextGenerator.hpp"
 #include "AOSServices.hpp"

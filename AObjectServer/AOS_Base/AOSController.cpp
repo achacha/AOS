@@ -1,7 +1,10 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchAOS_Base.hpp"
 #include "AOSController.hpp"
-#include "AXmlDocument.hpp"
 #include "ALog.hpp"
 #include "AOSAdminRegistry.hpp"
 #include "AOSModules.hpp"

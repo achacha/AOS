@@ -1,4 +1,8 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "AOSWatchDogDaemon.hpp"
 #include "AFile_Socket.hpp"
 #include "AHTTPRequestHeader.hpp"

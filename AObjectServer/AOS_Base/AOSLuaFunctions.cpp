@@ -1,5 +1,9 @@
-#include "pchAOS_Base.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchAOS_Base.hpp"
 #include "apiALuaEmbed.hpp"
 
 extern "C"
