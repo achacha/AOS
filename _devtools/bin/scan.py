@@ -4,13 +4,20 @@
 #
 import os,sys;
 
-SCRIPT_DIR=os.path.dirname(sys.argv[0]);
-TARGET_PATH=SCRIPT_DIR;
+def showUsage():
+  print "Usage: "+os.path.basename(sys.argv[0])+" [options]";
+  print "\r\nOptions";
+  print "-p <path>      - base path to scan, if omitted current path is used";
+  print "-verbose       - verbose output";
+  print "-help";
+
+THIS_DIR=os.path.dirname(sys.argv[0]);
+TARGET_PATH=os.getcwd();
 TARGET_FILE="";
 verbose = 0;
 argc = 1;
 while (len(sys.argv) > argc):
-  if (sys.argv[argc] == "-v"):
+  if (sys.argv[argc] == "-verbose"):
     verbose = 1;
   elif (sys.argv[argc] == "-p"):
     TARGET_PATH = sys.argv[argc+1];
@@ -18,18 +25,14 @@ while (len(sys.argv) > argc):
   elif (sys.argv[argc] == "-f"):
     TARGET_FILE = sys.argv[argc+1];
     argc += 1;
-  elif (sys.argv[argc] == "help"):
-    print "Usage: "+os.path.basename(sys.argv[0])+" [options]";
-    print "\r\nOptions";
-    print "-p <path>      - base path to scan, if omitted current path is used";
-    print "-v             - verbose output";
+  elif (sys.argv[argc] == "-help"):
     showUsage();
     sys.exit(-1);
   
   argc += 1;
 
-SCAN_ASW_SCRIPT = os.path.join(SCRIPT_DIR, "scan_ASW.py");
-SCAN_INCLUDE_SCRIPT = os.path.join(SCRIPT_DIR, "scan_include.py");
+SCAN_ASW_SCRIPT = os.path.join(THIS_DIR, "scan_ASW.py");
+SCAN_INCLUDE_SCRIPT = os.path.join(THIS_DIR, "scan_include.py");
 
 if (verbose != 0):
   print "Verbose mode enabled";
@@ -80,7 +83,7 @@ if (TARGET_FILE != ""):
 else:
   getAllFilesInSubdirectory(TARGET_PATH, "cpp", targets);
 
-
+print "Processing "+len(targets)+" files.";
 for target in targets:
   if (verbose != 0):
     print "ASW processing: "+target;
