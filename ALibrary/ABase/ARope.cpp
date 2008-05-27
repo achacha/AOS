@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #include "ARope.hpp"
 #include "AFile.hpp"

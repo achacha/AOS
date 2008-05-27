@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef __ansiHELPERS_HPP__
 #define __ansiHELPERS_HPP__
 

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AUrl_HPP__
 #define INCLUDED__AUrl_HPP__
 

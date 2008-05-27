@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #include "AStringHashMap.hpp"
 #include "AString.hpp"

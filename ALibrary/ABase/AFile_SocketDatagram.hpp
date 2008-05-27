@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AFile_SocketDatagram_HPP__
 #define INCLUDED__AFile_SocketDatagram_HPP__
 

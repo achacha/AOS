@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ASocketException_HPP__
 #define INCLUDED__ASocketException_HPP__
 

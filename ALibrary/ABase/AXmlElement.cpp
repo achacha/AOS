@@ -1,6 +1,9 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
-
 #include "AXmlElement.hpp"
 #include "AString.hpp"
 #include "ARope.hpp"

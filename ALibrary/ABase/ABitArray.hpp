@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED_ABitArray_HPP_
 #define INCLUDED_ABitArray_HPP_
 

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__uTypes_HPP__
 #define INCLUDED__uTypes_HPP__
 

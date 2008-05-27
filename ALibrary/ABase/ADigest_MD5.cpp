@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #include "ADigest_MD5.hpp"
 #include "AException.hpp"

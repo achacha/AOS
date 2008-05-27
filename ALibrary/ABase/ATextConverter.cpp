@@ -1,6 +1,9 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
-
 #include "ATextConverter.hpp"
 #include "AException.hpp"
 #include <ctype.h>

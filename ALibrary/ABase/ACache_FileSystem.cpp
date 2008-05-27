@@ -1,4 +1,8 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #include "ACache_FileSystem.hpp"
 #include "ATime.hpp"

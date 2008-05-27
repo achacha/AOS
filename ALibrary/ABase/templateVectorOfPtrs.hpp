@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__templateVectorOfPtrs_HPP__
 #define INCLUDED__templateVectorOfPtrs_HPP__
 

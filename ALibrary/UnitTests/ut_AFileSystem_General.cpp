@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchUnitTests.hpp"
 #include "AFileSystem.hpp"
 #include "AFilename.hpp"

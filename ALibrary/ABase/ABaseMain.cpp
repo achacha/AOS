@@ -1,6 +1,8 @@
-// ABase.cpp : Defines the entry point for the DLL application.
-//
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #pragma hdrstop
 

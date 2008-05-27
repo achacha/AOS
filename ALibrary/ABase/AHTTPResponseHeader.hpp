@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AHTTPResponseHeader_HPP__
 #define INCLUDED__AHTTPResponseHeader_HPP__
 

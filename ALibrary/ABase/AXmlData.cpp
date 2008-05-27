@@ -1,6 +1,9 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
-
 #include "AXmlData.hpp"
 #include "ATextConverter.hpp"
 #include "AException.hpp"

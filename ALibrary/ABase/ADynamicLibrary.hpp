@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ADynamicLibrary_HPP__
 #define INCLUDED__ADynamicLibrary_HPP__
 

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AObjectContainer_HPP__
 #define INCLUDED__AObjectContainer_HPP__
 

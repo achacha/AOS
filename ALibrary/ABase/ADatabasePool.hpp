@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ADatabasePool_HPP__
 #define INCLUDED__ADatabasePool_HPP__
 

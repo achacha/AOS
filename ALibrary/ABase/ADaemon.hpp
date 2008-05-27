@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED_ADaemon_HPP__
 #define INCLUDED_ADaemon_HPP__
 

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef __AContentTypeInterface_HPP__
 #define __AContentTypeInterface_HPP__
 

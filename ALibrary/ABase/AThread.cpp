@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #include "AThread.hpp"
 #include "ASystemException.hpp"

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AFileRandomAccess_HPP_
 #define INCLUDED__AFileRandomAccess_HPP_
 

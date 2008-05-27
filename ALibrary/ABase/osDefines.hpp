@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__osDefines_HPP__
 #define INCLUDED__osDefines_HPP__
 

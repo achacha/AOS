@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AParsable_HPP_
 #define INCLUDED__AParsable_HPP_
 

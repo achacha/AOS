@@ -1,5 +1,9 @@
-#include "pchUnitTests.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchUnitTests.hpp"
 #include <ADigest_MD5.hpp>
 #include "AFile_AString.hpp"
 #include "AString.hpp"

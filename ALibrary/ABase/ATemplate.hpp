@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ATemplate_HPP__
 #define INCLUDED__ATemplate_HPP__
 

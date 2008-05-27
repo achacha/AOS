@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED_ARandomNumberGenerator_HPP_
 #define INCLUDED_ARandomNumberGenerator_HPP_
 

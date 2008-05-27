@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AJsonEmittable_HPP_
 #define INCLUDED__AJsonEmittable_HPP_
 

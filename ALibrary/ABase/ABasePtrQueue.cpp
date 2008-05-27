@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #include "ABasePtrQueue.hpp"
 #include "ASynchronization.hpp"

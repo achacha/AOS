@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ACookies_HPP__
 #define INCLUDED__ACookies_HPP__
 

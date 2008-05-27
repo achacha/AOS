@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #include "ATemplateNodeHandler_OBJECT.hpp"
 #include "ATemplate.hpp"

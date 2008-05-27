@@ -1,9 +1,9 @@
-//
-// ANamePointerPair
-//
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
-
 #include "ANamePointerPair.hpp"
 #include "AException.hpp"
 #include "AOutputBuffer.hpp"

@@ -21,6 +21,7 @@
  *                     - Added example for doing an exception-callstack-walking in main.cpp
  *                       (thanks to owillebo: http://www.codeproject.com/script/profile/whos_who.asp?id=536268)
  *
+ * Id: $Id$
  **********************************************************************/
 #include "pchABase.hpp"
 #include <tchar.h>

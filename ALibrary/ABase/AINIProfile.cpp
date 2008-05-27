@@ -1,7 +1,9 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
-#pragma hdrstop
-
 #include "templateAutoPtr.hpp"
 #include "AINIProfile.hpp"
 #include "AException.hpp"

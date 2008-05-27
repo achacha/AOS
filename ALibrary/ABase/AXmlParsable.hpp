@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AXmlParsable_HPP_
 #define INCLUDED__AXmlParsable_HPP_
 

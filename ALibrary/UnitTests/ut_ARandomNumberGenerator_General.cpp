@@ -1,5 +1,9 @@
-#include "pchUnitTests.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchUnitTests.hpp"
 #include <ARandomNumberGenerator.hpp>
 #include <math.h>
 

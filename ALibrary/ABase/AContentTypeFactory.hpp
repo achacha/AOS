@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AContentTypeFactory_HPP__
 #define INCLUDED__AContentTypeFactory_HPP__
 

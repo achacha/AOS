@@ -1,5 +1,8 @@
+/*
+Written by Alex Chachanashvili
 
-#pragma once
+Id: $Id$
+*/
 #include "apiABase.hpp"
 #include <AException.hpp>
 #include <AString.hpp>

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__apiABase_HPP__
 #define INCLUDED__apiABase_HPP__
 

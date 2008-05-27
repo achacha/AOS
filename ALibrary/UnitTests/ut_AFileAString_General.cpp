@@ -1,5 +1,9 @@
-#include "pchUnitTests.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchUnitTests.hpp"
 #include <AFile_AString.hpp>
 
 int ut_AFileAString_General()

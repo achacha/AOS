@@ -1,68 +1,73 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef __debugFileTracer_HPP__
 #define __debugFileTracer_HPP__
-//a_Say hello to my little friend!
 
 #include "apiABase.hpp"
 #include "ADebugDumpable.hpp"
 #include <fstream>
 #include <ctype.h>
 
-/////////////////////////////////////////////////////////////////////////////////
-//  Description
-//  ~~~~~~~~~~~
-//  Intended to be used to trace and debug code to file/debug but can be used under any
-//  environment if the filename is set correctly.
-//
-//  Add: 
-//
-//  Usage (include in your CPP files only)
-//  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//    #define ENABLE_AFILE_TRACER_DEBUG                      // This will enable it, comment it out to disable
-//    #define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
-//    #define AFILE_TRACER_FILENAME "/mypath/myfilename.ext" //OPTIONAL: Use anothe filename
-//    #include "debugFileTracer.hpp"
-//
-//    int MyClass::myMethod()
-//    {
-//      AFILE_TRACER_DEBUG_SCOPE("This is a method I am debugging", this);
-//
-//      <... do some things ...>
-//
-//      AFILE_TRACER_DEBUG_MESSAGE("This is just a message without ctor/dtor trace", NULL);
-//
-//      <... do some more things ...>
-//
-//      return;
-//    }
-//
-//    Output for this = 0x12345678
-//    ----------------------------
-//    +++ctor@0x12345678: This is a method I am debugging
-//    This is just a message without ctor/dtor trace
-//    ---dtor@0x12345678: This is a method I am debugging
-//
-//    Advanced users may also use: AFILE_TRACER_DEBUG_OBJECT( . . . )
-//      It creates a memory dump for the object pointer of given length
-//      in hex and ASCII (printable)
-//
-//******************************************************************************
+/*!
+  Description
+  ~~~~~~~~~~~
+  Intended to be used to trace and debug code to file/debug but can be used under any
+  environment if the filename is set correctly.
 
-//a_Defaults used for debugging
+  Add: 
+
+  Usage (include in your CPP files only)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    #define ENABLE_AFILE_TRACER_DEBUG                      // This will enable it, comment it out to disable
+    #define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
+    #define AFILE_TRACER_FILENAME "/mypath/myfilename.ext" //OPTIONAL: Use anothe filename
+    #include "debugFileTracer.hpp"
+
+    int MyClass::myMethod()
+    {
+      AFILE_TRACER_DEBUG_SCOPE("This is a method I am debugging", this);
+
+      <... do some things ...>
+
+      AFILE_TRACER_DEBUG_MESSAGE("This is just a message without ctor/dtor trace", NULL);
+
+      <... do some more things ...>
+
+      return;
+    }
+
+    Output for this = 0x12345678
+    ----------------------------
+    +++ctor@0x12345678: This is a method I am debugging
+    This is just a message without ctor/dtor trace
+    ---dtor@0x12345678: This is a method I am debugging
+
+    Advanced users may also use: AFILE_TRACER_DEBUG_OBJECT( . . . )
+      It creates a memory dump for the object pointer of given length
+      in hex and ASCII (printable)
+
+*/
+
 #if defined(__WINDOWS__)
 #  define DD_FILENAME "c:\\temp\\debugFileTracer.dump"
 #else
 #  define DD_FILENAME "/tmp/debugFileTracer.dump"
 #endif
 
-//_This is the user specified filename
+//!This is the user specified filename
 #ifndef AFILE_TRACER_FILENAME
 #  define AFILE_TRACER_FILENAME DD_FILENAME
 #endif
 
 #define DD_OPENFLAGS  std::ios::out|std::ios::app
 
-//a_Message Mode: 0 - Writes in ctor and dtor   1 - Writes only in ctor
-// If this class is being redefined, it was incorrectly included in a header file instead of cpp file
+/*!
+  Message Mode: 0 - Writes in ctor and dtor   1 - Writes only in ctor
+  If this class is being redefined, it was incorrectly included in a header file instead of cpp file
+*/
 class ElRocho
 {
   public:

@@ -1,5 +1,9 @@
-#include "pchUnitTests.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchUnitTests.hpp"
 #include <ATimer.hpp>
 
 #if defined(__WIN32__)

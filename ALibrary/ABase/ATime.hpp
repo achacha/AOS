@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ATime_HPP__
 #define INCLUDED__ATime_HPP__
 

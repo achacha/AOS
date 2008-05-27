@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ASync_CriticalSectionSpinLock_HPP__
 #define INCLUDED__ASync_CriticalSectionSpinLock_HPP__
 

@@ -1,6 +1,9 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchABase.hpp"
-
-
 #include "ATimer.hpp"
 #include "ATime.hpp"
 #include "AXmlElement.hpp"

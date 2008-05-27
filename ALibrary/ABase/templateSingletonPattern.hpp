@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__templateASingletonPattern_HPP__
 #define INCLUDED__templateASingletonPattern_HPP__
 

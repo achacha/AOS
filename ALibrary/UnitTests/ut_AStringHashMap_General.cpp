@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchUnitTests.hpp"
 #include "AStringHashMap.hpp"
 #include "ATextGenerator.hpp"

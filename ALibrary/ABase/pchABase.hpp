@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef __pchABase_HPP__
 #define __pchABase_HPP__
 

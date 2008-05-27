@@ -1,14 +1,13 @@
-//
-// ATime
-//
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
-
 #include "ATime.hpp"
 #include "AException.hpp"
 #include "templateAutoPtr.hpp"
 #include "AString.hpp"
-
 #include <limits.h>
 
 const ATime ATime::GENESIS(0);

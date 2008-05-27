@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ALog_AFile_HPP__
 #define INCLUDED__ALog_AFile_HPP__
 

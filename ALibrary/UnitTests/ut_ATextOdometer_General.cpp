@@ -1,5 +1,9 @@
-#include "pchUnitTests.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchUnitTests.hpp"
 #include <ATextOdometer.hpp>
 
 int ut_ATextOdometer_General()

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #include "AString.hpp"
 #include "ANumber.hpp"
@@ -5,7 +10,6 @@
 #include "AFile.hpp"
 #include "ARope.hpp"
 #include "AXmlElement.hpp"
-
 #include <ctype.h>
 
 void AString::debugDump(std::ostream& os, int indent) const

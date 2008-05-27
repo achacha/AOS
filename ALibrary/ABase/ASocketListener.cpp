@@ -1,5 +1,9 @@
-#include "pchABase.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchABase.hpp"
 #include "ASocketListener.hpp"
 #include "ASocketException.hpp"
 #include "ASocketLibrary.hpp"

@@ -1,5 +1,9 @@
-#include "pchABase.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchABase.hpp"
 #include "ASync_CriticalSectionSpinLock.hpp"
 #include "ASystemException.hpp"
 

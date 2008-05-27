@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchUnitTests.hpp"
 
 int ut_AString_Modify()

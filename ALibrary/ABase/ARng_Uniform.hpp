@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED_ARng_Uniform_HPP_
 #define INCLUDED_ARng_Uniform_HPP_
 

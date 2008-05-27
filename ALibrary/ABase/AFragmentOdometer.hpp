@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AFragmentOdometer_HPP__
 #define INCLUDED__AFragmentOdometer_HPP__
 

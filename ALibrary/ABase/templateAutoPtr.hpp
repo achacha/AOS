@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__templateAutoPtr_HPP__
 #define INCLUDED__templateAutoPtr_HPP__
 

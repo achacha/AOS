@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AFileSystem_HPP__
 #define INCLUDED__AFileSystem_HPP__
 

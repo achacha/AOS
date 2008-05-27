@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AXmlEmittable_HPP_
 #define INCLUDED__AXmlEmittable_HPP_
 

@@ -1,5 +1,9 @@
-#include "pchABase.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchABase.hpp"
 #include "AXmlDocument.hpp"
 #include "AFile.hpp"
 #include "AString.hpp"

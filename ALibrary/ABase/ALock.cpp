@@ -1,9 +1,9 @@
-//
-// ALock
-//
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
-
 #include "ALock.hpp"
 #include "ASynchronization.hpp"
 

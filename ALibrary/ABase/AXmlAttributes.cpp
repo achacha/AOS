@@ -1,5 +1,9 @@
-#include "pchABase.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchABase.hpp"
 #include "AXmlAttributes.hpp"
 #include "ANameValuePair.hpp"
 #include "AOutputBuffer.hpp"

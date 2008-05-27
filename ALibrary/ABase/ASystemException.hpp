@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ASystemException_HPP__
 #define INCLUDED__ASystemException_HPP__
 
@@ -7,9 +12,9 @@
 class ABASE_API ASystemException : public AException
 {
 public:
-	/**
-    * Default construction is of an unknown exception
-    */
+	/*!
+  Default construction is of an unknown exception
+  */
   ASystemException(
     const ADebugDumpable *const pObject = NULL,
     int iID = AException::Unknown, 
@@ -18,9 +23,9 @@ public:
     const AString& strExtra = AConstant::ASTRING_EMPTY
   );
 	
-	/**
-    * Construct exception with LastOSErrorAlreadyKnown already known from a call to GetLastError or similar
-    */
+	/*!
+  Construct exception with LastOSErrorAlreadyKnown already known from a call to GetLastError or similar
+  */
   ASystemException(
     u4 lastOSError, 
     const ADebugDumpable *const pObject = NULL,
@@ -29,14 +34,14 @@ public:
     const AString& strExtra = AConstant::ASTRING_EMPTY
   );
 
-  /**
-    * Copy ctor
-    */
+  /*!
+  Copy ctor
+  */
   ASystemException(const ASystemException& that);
 
-  /**
-    * Special case when we have the last system error and just need to set it when OSErrorToBeSet is used
-    */
+  /*!
+  Special case when we have the last system error and just need to set it when OSErrorToBeSet is used
+  */
   void setLastOSError(u4);
 
   /*!

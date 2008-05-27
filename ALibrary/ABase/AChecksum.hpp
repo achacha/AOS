@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AChecksum_HPP_
 #define INCLUDED__AChecksum_HPP_
 

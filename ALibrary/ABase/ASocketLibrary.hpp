@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ASocketLibrary_HPP__
 #define INCLUDED__ASocketLibrary_HPP__
 

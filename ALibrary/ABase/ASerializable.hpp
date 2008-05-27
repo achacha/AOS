@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef __ASerializable_HPP__
 #define __ASerializable_HPP__
 

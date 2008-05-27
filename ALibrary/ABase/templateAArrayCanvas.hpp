@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED_templateAArrayCanvas_HPP_
 #define INCLUDED_templateAArrayCanvas_HPP_
 

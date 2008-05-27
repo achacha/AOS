@@ -1,6 +1,9 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
-
 #include "AFile_Socket.hpp"
 #include "ASocketException.hpp"
 #include "ASocketLibrary.hpp"

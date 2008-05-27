@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ARandomAccessBuffer_HPP_
 #define INCLUDED__ARandomAccessBuffer_HPP_
 

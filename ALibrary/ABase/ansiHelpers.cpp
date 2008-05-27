@@ -1,10 +1,9 @@
-//
-// Extensions to ANSI C++
-//
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
-
-
 #include "ansiHelpers.hpp"
 
 #ifdef NEEDS_ANSI_HELPERS

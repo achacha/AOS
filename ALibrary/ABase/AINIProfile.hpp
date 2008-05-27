@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AINIProfile_HPP__
 #define INCLUDED__AINIProfile_HPP__
 

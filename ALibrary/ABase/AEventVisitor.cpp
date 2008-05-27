@@ -1,4 +1,8 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchABase.hpp"
 #include "AEventVisitor.hpp"
 #include "AXmlElement.hpp"

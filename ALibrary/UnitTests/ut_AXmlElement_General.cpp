@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchUnitTests.hpp"
 #include "AString.hpp"
 #include "AXmlElement.hpp"
