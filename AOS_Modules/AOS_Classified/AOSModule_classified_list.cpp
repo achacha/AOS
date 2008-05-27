@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Classified.hpp"
 #include "AOSModule_classified_list.hpp"
 #include "ADatabase.hpp"
@@ -6,7 +11,7 @@
 
 const AString& AOSModule_classified_list::getClass() const
 {
-  static const AString CLASS("classified_list");
+  static const AString CLASS("Classified.list");
   return CLASS;
 }
 

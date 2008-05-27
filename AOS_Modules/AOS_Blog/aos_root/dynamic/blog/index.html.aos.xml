@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <controller>
 	<input/>
-	<module class="BlogView"/>
+	<module class="Blog.view"/>
 	<output/>
 </controller>

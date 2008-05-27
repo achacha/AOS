@@ -2,7 +2,7 @@
 <controller>
 	<input/>
 	<module/>
-	<output class="GenerateImage">
+	<output class="Example.generateImage">
 		<canvas>
 			<x>200</x>
 			<y>100</y>

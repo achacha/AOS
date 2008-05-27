@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <controller ajax="1">
 	<input/>
-	<module class="classified_input">
+	<module class="Classified.input">
 		<state>0</state>
 		<display>Price (dynamic)</display>
 		<variable>price</variable>

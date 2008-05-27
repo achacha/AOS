@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <controller>
-  <module class="rss20_sample"/>
+  <module class="Example.rss20"/>
 </controller>

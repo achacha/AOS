@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_DadaData.hpp"
 #include "AOSModule_DadaDataTemplate.hpp"
 #include "ADadaDataHolder.hpp"
@@ -8,7 +13,7 @@
 
 const AString& AOSModule_DadaDataTemplate::getClass() const
 {
-  static const AString CLASS("DadaDataTemplate");
+  static const AString CLASS("Dada.template");
   return CLASS;
 }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <controller>
   <input/>
-  <module class="classified_list"/>
+  <module class="Classified.list"/>
   <output class="Xslt">
     <filename>classified/xsl/list.xsl</filename>
   </output>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?> 
 <controller name='Dada'>
 	<input/>
-	<module class='DadaDataTemplate'/>
+	<module class='Dada.template'/>
 	<output class='Xslt'>
 		<filename>dada/xsl/dada.xsl</filename>
 	</output>

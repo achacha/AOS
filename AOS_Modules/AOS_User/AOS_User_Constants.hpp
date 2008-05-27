@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOS_User_Constants_HPP__
 #define INCLUDED__AOS_User_Constants_HPP__
 

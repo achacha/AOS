@@ -1,9 +1,14 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Classified.hpp"
 #include "AOSModule_classified_input.hpp"
 
 const AString& AOSModule_classified_input::getClass() const
 {
-  static const AString CLASS("classified_input");
+  static const AString CLASS("Classified.input");
   return CLASS;
 }
 

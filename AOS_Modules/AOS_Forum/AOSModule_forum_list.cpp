@@ -1,9 +1,14 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Forum.hpp"
 #include "AOSModule_forum_list.hpp"
 
 const AString& AOSModule_forum_list::getClass() const
 {
-  static const AString CLASS("forum_list");
+  static const AString CLASS("Forum.list");
   return CLASS;
 }
 

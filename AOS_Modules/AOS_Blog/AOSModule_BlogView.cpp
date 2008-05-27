@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Blog.hpp"
 #include "AOSModule_BlogView.hpp"
 #include "AOSDatabaseConnectionPool.hpp"
@@ -5,7 +10,7 @@
 
 const AString& AOSModule_BlogView::getClass() const
 {
-  static const AString CLASS("BlogView");
+  static const AString CLASS("Blog.view");
   return CLASS;
 }
 

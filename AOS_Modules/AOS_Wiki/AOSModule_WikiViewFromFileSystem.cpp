@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Wiki.hpp"
 #include "AOSModule_WikiViewFromFileSystem.hpp"
 #include "AFilename.hpp"

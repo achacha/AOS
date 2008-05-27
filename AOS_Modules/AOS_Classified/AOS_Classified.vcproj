@@ -450,26 +450,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="aos_root"
-			>
-			<Filter
-				Name="data"
-				>
-			</Filter>
-			<Filter
-				Name="dynamic"
-				>
-			</Filter>
-			<Filter
-				Name="static"
-				>
-			</Filter>
-			<Filter
-				Name="conf"
-				>
-			</Filter>
-		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

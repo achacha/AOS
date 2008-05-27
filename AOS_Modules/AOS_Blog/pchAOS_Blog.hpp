@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__pchAOS_Blog_HPP__
 #define INCLUDED__pchAOS_Blog_HPP__
 

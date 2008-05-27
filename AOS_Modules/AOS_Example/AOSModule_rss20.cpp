@@ -1,9 +1,14 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Example.hpp"
 #include "AOSModule_rss20.hpp"
 
 const AString& AOSModule_rss20::getClass() const
 {
-  static const AString CLASS("rss20_sample");
+  static const AString CLASS("Example.rss20");
   return CLASS;
 }
 

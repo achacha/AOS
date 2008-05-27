@@ -1,10 +1,15 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Example.hpp"
 #include "AOSOutput_generate_image.hpp"
 #include "AGdCanvas.hpp"
 
 const AString& AOSOutput_generate_image::getClass() const
 {
-  static const AString CLASS("GenerateImage");
+  static const AString CLASS("Example.generateImage");
   return CLASS;
 }
 

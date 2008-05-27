@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_DadaData.hpp"
 #include "ADadaDataHolder.hpp"
 #include "AFile_Physical.hpp"

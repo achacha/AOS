@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <controller>
 	<input class="application/x-www-form-urlencoded"/>
-	<module class="classified_submit"/>
+	<module class="Classified.submit"/>
 	<output class="Xslt">
 		<filename>classified/xsl/submit.xsl</filename>
 	</output>

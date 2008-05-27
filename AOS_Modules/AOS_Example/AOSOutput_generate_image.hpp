@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOSOutput_generate_image_HPP__
 #define INCLUDED__AOSOutput_generate_image_HPP__
 

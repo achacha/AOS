@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__apiAOS_Test_HPP__ 
 #define INCLUDED__apiAOS_Test_HPP__
 

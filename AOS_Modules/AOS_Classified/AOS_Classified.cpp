@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Classified.hpp"
 #include "apiAOS_Classified.hpp"
 

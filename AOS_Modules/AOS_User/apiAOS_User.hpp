@@ -1,3 +1,13 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__apiAOS_User_HPP__ 
 #define INCLUDED__apiAOS_User_HPP__
 

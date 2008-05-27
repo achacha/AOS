@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ADadaDataHolder_HPP__
 #define INCLUDED__ADadaDataHolder_HPP__
 

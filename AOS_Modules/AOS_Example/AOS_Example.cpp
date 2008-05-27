@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAOS_Example.hpp"
 #include "apiAOS_Example.hpp"
 
