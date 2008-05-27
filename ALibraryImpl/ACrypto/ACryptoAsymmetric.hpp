@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__ACryptoAsymmetric_HPP__
 #define INCLUDED__ACryptoAsymmetric_HPP__
 

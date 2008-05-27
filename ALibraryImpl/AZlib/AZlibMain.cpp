@@ -1,5 +1,9 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAZlib.hpp"
-#pragma hdrstop
 
 BOOL APIENTRY DllMain( 
   HANDLE, 

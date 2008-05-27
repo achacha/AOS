@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAXsl.hpp"
 #include "AOutputBuffer_XalanOutputStream.hpp"
 #include "AException.hpp"

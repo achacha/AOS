@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchADatabase_MySQL.hpp"
 #include "AMySQLServer.hpp"
 #include "AResultSet.hpp"

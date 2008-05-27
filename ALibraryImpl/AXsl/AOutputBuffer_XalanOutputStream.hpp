@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AOutputBuffer_XalanOutputStream_HPP__
 #define INCLUDED__AOutputBuffer_XalanOutputStream_HPP__
 

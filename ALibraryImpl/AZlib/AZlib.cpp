@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAZlib.hpp"
 #include "AZlib.hpp"
 #include "AString.hpp"

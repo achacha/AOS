@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AMySQLServer_HPP__
 #define INCLUDED__AMySQLServer_HPP__
 

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__gdIOCtx_AOutputBuffer_HPP__
 #define INCLUDED__gdIOCtx_AOutputBuffer_HPP__
 

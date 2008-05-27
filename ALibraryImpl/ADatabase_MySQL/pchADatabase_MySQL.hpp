@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__pchADatabase_MySQL_HPP__
 #define INCLUDED__pchADatabase_MySQL_HPP__
 

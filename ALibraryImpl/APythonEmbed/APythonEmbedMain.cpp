@@ -1,4 +1,8 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchAPythonEmbed.hpp"
 
 BOOL APIENTRY DllMain( HANDLE hModule, 

@@ -3,25 +3,49 @@
 #include "ALuaTemplateContext.hpp"
 #include "ALuaEmbed.hpp"
 #include "AXmlDocument.hpp"
+#include "AFilename.hpp"
+#include "AFile_Physical.hpp"
+#include "ASocketLibrary_SSL.hpp"
 
-int main()
+ASocketLibrary_SSL g_SocketLibrarySSL;
+
+int main(int argc, char **argv)
 {
-  AString code(
-"result=web.HttpGet(\"http://192.168.0.128/iw-cc/command/iw.ui\");\
-print result;\
-");
+//  AString code0(
+//"result=web.HttpGet(\"http://localhost/ping\");\
+//print result;\
+//");
 
-  ABasePtrContainer objects;
-  AXmlDocument model("root");
-  
-  ALuaTemplateContext ctx(objects, model);
+  if (argc < 2)
+  {
+    std::cerr << argv[0] << " <lua script file>\r\n" << std::endl;
+    return -1;
+  }
 
+  AFilename f(ASWNL(argv[1]), false);
+  std::cout << "Loading: " << f << std::endl;
+
+  ABasePtrContainer *pobjects = new ABasePtrContainer();
   AString output;
-  ALuaEmbed lua;
-  
   try
   {
-    lua.execute(code, ctx, output);
+    AFile_Physical file(f);
+    file.open();
+
+    AXmlDocument model("root");
+    
+    ALuaTemplateContext ctx(*pobjects, model);
+
+    ALuaEmbed lua;
+  
+    std::cout << "Executing lua script... " << f << std::endl;
+    lua.execute(file, ctx, output);
+
+    std::cout << "\r\n------------------------------------ output -----------------------------------------" << std::endl;
+    std::cout << output << std::endl;
+    std::cout << "------------------------------------ output -----------------------------------------" << std::endl;
+
+    delete pobjects;
   }
   catch(AException& ex)
   {
@@ -31,10 +55,6 @@ print result;\
   {
     std::cout << "Unknown exception." << std::endl;
   }
-
-  std::cout << "\r\n------------------------------------ output -----------------------------------------" << std::endl;
-  std::cout << output << std::endl;
-  std::cout << "\r\n------------------------------------ output -----------------------------------------" << std::endl;
-
+  
   return 1;
 }

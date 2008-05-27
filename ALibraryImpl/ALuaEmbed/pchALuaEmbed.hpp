@@ -1,5 +1,8 @@
-#pragma once
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "apiALuaEmbed.hpp"
 
 #include "AString.hpp"

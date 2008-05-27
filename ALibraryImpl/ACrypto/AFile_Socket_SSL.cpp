@@ -1,6 +1,9 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchACrypto.hpp"
-
 #include "AFile_Socket_SSL.hpp"
 #include "ASocketException.hpp"
 #include "ASocketLibrary_SSL.hpp"

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAGdLib.hpp"
 #include "gdIOCtx_AOutputBuffer.hpp"
 #include "AException.hpp"

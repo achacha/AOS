@@ -1,4 +1,8 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchALuaEmbed.hpp"
 #include "ALuaTemplateContext.hpp"
 

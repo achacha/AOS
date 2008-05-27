@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAXsl.hpp"
 #include "AXsl.hpp"
 #include "AException.hpp"

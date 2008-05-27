@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__apiAXsl_HPP__
 #define INCLUDED__apiAXsl_HPP__
 

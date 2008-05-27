@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchALuaEmbed.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 #include "ALuaTemplateContext.hpp"

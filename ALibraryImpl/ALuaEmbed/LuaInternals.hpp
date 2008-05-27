@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef DEFINED__LUAINTERNALS_HPP__
 #define DEFINED__LUAINTERNALS_HPP__
 

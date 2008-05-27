@@ -1,5 +1,9 @@
-#include "pchACrypto.hpp"
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
+#include "pchACrypto.hpp"
 #include "ASocketListener_SSL.hpp"
 #include "ASocketException.hpp"
 #include "AFile_Socket.hpp"

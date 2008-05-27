@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AODBCServer_HPP__
 #define INCLUDED__AODBCServer_HPP__
 

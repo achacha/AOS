@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__AGdCanvas_HPP__
 #define INCLUDED__AGdCanvas_HPP__
 

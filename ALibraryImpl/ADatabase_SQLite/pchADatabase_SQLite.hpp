@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__pchADatabase_SQLite_HPP__
 #define INCLUDED__pchADatabase_SQLite_HPP__
 

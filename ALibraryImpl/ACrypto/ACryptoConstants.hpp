@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED_ACryptoConstants_HPP__
 #define INCLUDED_ACryptoConstants_HPP__
 

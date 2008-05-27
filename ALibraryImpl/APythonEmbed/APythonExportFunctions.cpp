@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAPythonEmbed.hpp"
 #include "APythonExportFunctions.hpp"
 #include "AObjectContainer.hpp"

@@ -1,6 +1,8 @@
-// APythonEmbed.cpp : Defines the entry point for the DLL application.
-//
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchAPythonEmbed.hpp"
 #include "APythonEmbed.hpp"
 #include "APythonExportFunctions.hpp"

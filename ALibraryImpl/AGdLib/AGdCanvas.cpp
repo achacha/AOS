@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #include "pchAGdLib.hpp"
 #include "AGdCanvas.hpp"
 #include "gdIOCtx_AFile.hpp"

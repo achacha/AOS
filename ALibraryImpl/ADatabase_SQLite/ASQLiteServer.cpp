@@ -1,4 +1,8 @@
+/*
+Written by Alex Chachanashvili
 
+Id: $Id$
+*/
 #include "pchADatabase_SQLite.hpp"
 #include "ASQLiteServer.hpp"
 #include "AResultSet.hpp"

@@ -1,3 +1,8 @@
+/*
+Written by Alex Chachanashvili
+
+Id: $Id$
+*/
 #ifndef INCLUDED__apiAZlib_HPP__
 #define INCLUDED__apiAZlib_HPP__
 
