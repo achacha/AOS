@@ -11,7 +11,6 @@ Id: $Id$
 #include "AOSContextQueueThreadPool.hpp"
 #include "ABasePtrQueue.hpp"
 
-class AOSRequest;
 class AOSContext;
 
 class AOS_BASE_API AOSContextQueueThreadPool_RoundRobinSwarm : public AOSContextQueueThreadPool

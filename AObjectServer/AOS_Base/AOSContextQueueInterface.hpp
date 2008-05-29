@@ -12,7 +12,6 @@ Id: $Id$
 
 class AOSServices;
 class AOSContext;
-class AOSContextQueueSet;
 
 class AOS_BASE_API AOSContextQueueInterface : public AOSAdminInterface
 {
