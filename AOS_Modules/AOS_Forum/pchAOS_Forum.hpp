@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__pchAOS_Forum_HPP__
 #define INCLUDED__pchAOS_Forum_HPP__

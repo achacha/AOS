@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Example.hpp"
 #include "AOSOutput_generate_image.hpp"

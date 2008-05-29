@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Forum.hpp"
 #include "AOSModule_forum_list.hpp"

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOS_User_Constants_HPP__
 #define INCLUDED__AOS_User_Constants_HPP__
@@ -14,13 +14,22 @@ Internal constants used by related modules in this library
 class AOS_USER_API AOS_User_Constants
 {
 public:
+  /*!
+  Session data parameters
+  */
+  static const AString SESSION_REDIRECTURL;
+  static const AString SESSION_LOGINFAILCOUNT;
+  static const AString SESSION_USER;
+
+  /*!
+  Query parameters
+  */
   static const AString USERNAME;
   static const AString PASSWORD;
-
-  static const AString SESSION_REDIRECTURL;
-  static const AString SESSION_ISLOGGEDIN;
-  static const AString SESSION_LOGINFAILCOUNT;
-
+  
+  /*!
+  Module parameters
+  */
   static const AString PARAM_REDIRECT_RETRYPAGE;
   static const AString PARAM_REDIRECT_LOGINPAGE;
   static const AString PARAM_REDIRECT_LOGINPAGE_RELATIVEATTR;

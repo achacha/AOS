@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSModule_DadaDataTemplate_HPP__
 #define INCLUDED__AOSModule_DadaDataTemplate_HPP__

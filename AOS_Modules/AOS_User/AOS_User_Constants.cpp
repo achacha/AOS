@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_User.hpp"
 #include "AOS_User_Constants.hpp"
@@ -9,8 +9,8 @@ Id: $Id$
 const AString AOS_User_Constants::USERNAME("un",2);
 const AString AOS_User_Constants::PASSWORD("pwd",3);
 
+const AString AOS_User_Constants::SESSION_USER("user",4);
 const AString AOS_User_Constants::SESSION_REDIRECTURL("user/ru",7);
-const AString AOS_User_Constants::SESSION_ISLOGGEDIN("user/isLoggedIn",15);
 const AString AOS_User_Constants::SESSION_LOGINFAILCOUNT("user/failCount",14);
 
 const AString AOS_User_Constants::PARAM_REDIRECT_RETRYPAGE("redirect/retry",14);

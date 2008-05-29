@@ -1,23 +1,23 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Wiki.hpp"
-#include "AOSModule_WikiController.hpp"
+#include "AOSModule_Wiki_Controller.hpp"
 
-const AString& AOSModule_WikiController::getClass() const
+const AString& AOSModule_Wiki_Controller::getClass() const
 {
   static const AString CLASS("Wiki.Controller");
   return CLASS;
 }
 
-AOSModule_WikiController::AOSModule_WikiController(AOSServices& services) :
+AOSModule_Wiki_Controller::AOSModule_Wiki_Controller(AOSServices& services) :
   AOSModuleInterface(services)
 {
 }
 
-AOSContext::ReturnCode AOSModule_WikiController::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_Wiki_Controller::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   const AXmlElement *pBasePath = moduleParams.findElement(ASW("base-path",9));
   if (!pBasePath)

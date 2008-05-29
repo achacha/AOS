@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_DadaData.hpp"
 #include "AOSModule_DadaDataTemplate.hpp"

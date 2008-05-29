@@ -1,20 +1,20 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
-#ifndef INCLUDED__AOSModule_WikiViewFromDatabase_HPP__
-#define INCLUDED__AOSModule_WikiViewFromDatabase_HPP__
+#ifndef INCLUDED__AOSModule_Wiki_ViewFromDatabase_HPP__
+#define INCLUDED__AOSModule_Wiki_ViewFromDatabase_HPP__
 
 #include "apiAOS_Wiki.hpp"
 
 /*!
 View Wiki data at wikipath parameter from database
 */
-class AOS_WIKI_API AOSModule_WikiViewFromDatabase : public AOSModuleInterface
+class AOS_WIKI_API AOSModule_Wiki_ViewFromDatabase : public AOSModuleInterface
 {
 public:
-  AOSModule_WikiViewFromDatabase(AOSServices&);
+  AOSModule_Wiki_ViewFromDatabase(AOSServices&);
   virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   
   /*!
@@ -23,4 +23,4 @@ public:
   virtual const AString& getClass() const;
 };
 
-#endif // INCLUDED__AOSModule_WikiViewFromDatabase_HPP__
+#endif // INCLUDED__AOSModule_Wiki_ViewFromDatabase_HPP__

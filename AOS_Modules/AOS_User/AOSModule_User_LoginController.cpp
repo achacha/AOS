@@ -1,34 +1,36 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_User.hpp"
-#include "AOSModule_LoginController.hpp"
+#include "AOSModule_User_LoginController.hpp"
+#include "AOSUser.hpp"
 
-const AString& AOSModule_LoginController::getClass() const
+const AString& AOSModule_User_LoginController::getClass() const
 {
   static const AString CLASS("User.LoginController");
   return CLASS;
 }
 
-AOSModule_LoginController::AOSModule_LoginController(AOSServices& services) :
+AOSModule_User_LoginController::AOSModule_User_LoginController(AOSServices& services) :
   AOSModuleInterface(services)
 {
 }
 
-AOSContext::ReturnCode AOSModule_LoginController::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_User_LoginController::execute(AOSContext& context, const AXmlElement& moduleParams)
 {  
-  //a_Save redirect URL based on reported values
-  AUrl url(context.useRequestUrl());
-  m_Services.useConfiguration().convertUrlToReportedServerAndPort(url);
-  context.useSessionData().useData()
-    .overwriteElement(AOS_User_Constants::SESSION_REDIRECTURL)
-      .addData(url, AXmlData::ENC_CDATADIRECT);
-
   //a_Check if user is logged in
-  if (!context.useSessionData().useData().exists(AOS_User_Constants::SESSION_ISLOGGEDIN))
+  AXmlElement *pUser = context.useSessionData().useData().findElement(AOS_User_Constants::SESSION_USER);
+  if (!pUser || !pUser->exists(AOSUser::IS_LOGGED_IN))
   {
+    //a_Save redirect URL based on reported values
+    AUrl url(context.useRequestUrl());
+    m_Services.useConfiguration().convertUrlToReportedServerAndPort(url);
+    context.useSessionData().useData()
+      .overwriteElement(AOS_User_Constants::SESSION_REDIRECTURL)
+        .setData(url, AXmlData::ENC_CDATADIRECT);
+
     AString str;
     if (moduleParams.emitString(AOS_User_Constants::PARAM_REDIRECT_LOGINPAGE, str))
     {

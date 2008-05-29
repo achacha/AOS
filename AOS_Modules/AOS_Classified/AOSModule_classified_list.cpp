@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Classified.hpp"
 #include "AOSModule_classified_list.hpp"

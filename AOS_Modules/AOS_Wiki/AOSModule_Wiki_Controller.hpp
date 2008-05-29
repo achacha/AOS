@@ -1,10 +1,10 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
-#ifndef INCLUDED__AOSModule_WikiController_HPP__
-#define INCLUDED__AOSModule_WikiController_HPP__
+#ifndef INCLUDED__AOSModule_Wiki_Controller_HPP__
+#define INCLUDED__AOSModule_Wiki_Controller_HPP__
 
 #include "apiAOS_Wiki.hpp"
 
@@ -13,10 +13,10 @@ Id: $Id$
   Remap it into: http://someserver.com/wiki/wiki.html?wikipath=topic/subtopic/item
 
 */
-class AOS_WIKI_API AOSModule_WikiController : public AOSModuleInterface
+class AOS_WIKI_API AOSModule_Wiki_Controller : public AOSModuleInterface
 {
 public:
-  AOSModule_WikiController(AOSServices&);
+  AOSModule_Wiki_Controller(AOSServices&);
   virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   
   /*!
@@ -25,4 +25,4 @@ public:
   virtual const AString& getClass() const;
 };
 
-#endif // INCLUDED__AOSModule_WikiController_HPP__
+#endif // INCLUDED__AOSModule_Wiki_Controller_HPP__

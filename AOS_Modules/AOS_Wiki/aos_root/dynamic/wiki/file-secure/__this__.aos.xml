@@ -1,11 +1,14 @@
 <config>
-	<module class="User.LoginController">
-		<redirect>
-			<login>/login</login>
-		</redirect>
-	</module>
-	<module class="Wiki.Controller">
-		<base-path desc="Base part of the request URL that signifies that it is from a wiki">/wiki/file-secure</base-path>
-		<wiki-controller desc="Command to call when a requested URL is part of the above path">/wiki/wiki-file-secure</wiki-controller>
-	</module>
+  <!-- If not logged in redirect to the login page, otherwise do nothing -->
+  <module class="User.LoginController">
+    <redirect>
+      <login>/login</login>
+    </redirect>
+  </module>
+  
+  <!-- Display the correct page based on request URL -->
+  <module class="Wiki.Controller">
+    <base-path desc="Base part of the request URL that signifies that it is from a wiki">/wiki/file-secure</base-path>
+    <wiki-controller desc="Command to call when a requested URL is part of the above path">/wiki/wiki-file-secure</wiki-controller>
+  </module>
 </config>

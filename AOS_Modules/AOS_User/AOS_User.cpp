@@ -1,13 +1,14 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_User.hpp"
 #include "apiAOS_User.hpp"
 
-#include "AOSModule_LoginController.hpp"
-#include "AOSModule_AuthenticateUser.hpp"
+#include "AOSModule_User_LoginController.hpp"
+#include "AOSModule_User_Authenticate.hpp"
+#include "AOSModule_User_Logout.hpp"
 
 BOOL APIENTRY DllMain(
   HANDLE hModule, 
@@ -36,8 +37,9 @@ extern "C" AOS_USER_API int aos_register(
   services.useLog().add(ASWNL("AOS_User: aos_register"), ALog::INFO);
 
   //Register modules
-  moduleExecutor.registerModule(new AOSModule_LoginController(services));
-  moduleExecutor.registerModule(new AOSModule_AuthenticateUser(services));
+  moduleExecutor.registerModule(new AOSModule_User_LoginController(services));
+  moduleExecutor.registerModule(new AOSModule_User_Authenticate(services));
+  moduleExecutor.registerModule(new AOSModule_User_Logout(services));
   
   return 0;
 }

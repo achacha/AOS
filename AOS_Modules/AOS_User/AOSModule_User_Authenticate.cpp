@@ -1,24 +1,26 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_User.hpp"
-#include "AOSModule_AuthenticateUser.hpp"
+#include "AOSModule_User_Authenticate.hpp"
+#include "AOSUser.hpp"
 
-const AString& AOSModule_AuthenticateUser::getClass() const
+const AString& AOSModule_User_Authenticate::getClass() const
 {
   static const AString CLASS("User.Authenticate");
   return CLASS;
 }
 
-AOSModule_AuthenticateUser::AOSModule_AuthenticateUser(AOSServices& services) :
+AOSModule_User_Authenticate::AOSModule_User_Authenticate(AOSServices& services) :
   AOSModuleInterface(services)
 {
 }
 
-AOSContext::ReturnCode AOSModule_AuthenticateUser::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_User_Authenticate::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
+  AString str;
   AString strSuccessPath;
   const AXmlElement *pSuccess = moduleParams.findElement(AOS_User_Constants::PARAM_REDIRECT_RETRYPAGE);
   if (!pSuccess)
@@ -28,14 +30,14 @@ AOSContext::ReturnCode AOSModule_AuthenticateUser::execute(AOSContext& context, 
   }
   else
   {
-    AString str;
+    str.clear();
     if (pSuccess->getAttributes().get(AOS_User_Constants::PARAM_REDIRECT_LOGINPAGE_RELATIVEATTR, str))
     {
       str.clear();
       pSuccess->emitContent(str);
       if (!context.useModel().emitContentFromPath(str, strSuccessPath))
       {
-        context.useEventVisitor().startEvent(ARope("AOSModule_AuthenticateUser: Missing model parameter for redirect: ")+str, AEventVisitor::EL_WARN);
+        context.useEventVisitor().startEvent(ARope("AOSModule_User_Authenticate: Missing model parameter for redirect: ")+str, AEventVisitor::EL_WARN);
       }
     }
     else
@@ -57,11 +59,20 @@ AOSContext::ReturnCode AOSModule_AuthenticateUser::execute(AOSContext& context, 
   //
   AString password;
   bool isValidUser = context.useRequestParameterPairs().get(AOS_User_Constants::PASSWORD, password);
-  isValidUser &= password.equals(ASWNL("60c6d277a8bd81de7fdde19201bf9c58a3df08f4"));
+  //isValidUser &= password.equals(ASWNL("60c6d277a8bd81de7fdde19201bf9c58a3df08f4"));
   if (isValidUser)
   {
+    //a_Remove fail count on success
     context.useSessionData().useData().remove(AOS_User_Constants::SESSION_LOGINFAILCOUNT);
-    context.useSessionData().useData().overwriteElement(AOS_User_Constants::SESSION_ISLOGGEDIN);
+
+    //a_Add username, id and isLoggedIn to the user element in the SESSION
+    AXmlElement *pUser = context.useSessionData().useData().findElement(AOS_User_Constants::SESSION_USER);
+    AASSERT(&context, pUser);
+    
+    str.clear();
+    context.useRequestParameterPairs().get(AOS_User_Constants::USERNAME, str);
+    pUser->overwriteElement(AOSUser::USERNAME).setData(str);
+    pUser->overwriteElement(AOSUser::IS_LOGGED_IN);
 
     context.setResponseRedirect(strSuccessPath);
     context.useSessionData().useData().remove(AOS_User_Constants::SESSION_REDIRECTURL);

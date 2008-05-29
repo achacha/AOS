@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><title>Login</title></head>
+<body bgcolor="#eeeeee">
+<p>
+Hello %[SESSION]{{{user/username}}}[SESSION]%!  You are logged in.<br/>
+<br/>
+<form id="login" method="get" action="/user/User_Logout">
+  <input type="hidden" name="un" value="%[SESSION]{{{user/username}}}[SESSION]%"/>
+  <input type="submit" name="logout" value="Logout"/>
+  <small><input type="checkbox" name="dumpContext" value="1"/><b>DEBUG</b>: add &amp;dumpContext=1</small><br/>
+</form>
+</body>
+</html>

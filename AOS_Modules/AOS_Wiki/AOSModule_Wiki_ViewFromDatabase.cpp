@@ -1,24 +1,24 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Wiki.hpp"
-#include "AOSModule_WikiViewFromDatabase.hpp"
+#include "AOSModule_Wiki_ViewFromDatabase.hpp"
 #include "AResultSet.hpp"
 
-const AString& AOSModule_WikiViewFromDatabase::getClass() const
+const AString& AOSModule_Wiki_ViewFromDatabase::getClass() const
 {
   static const AString CLASS("Wiki.ViewFromDatabase");
   return CLASS;
 }
 
-AOSModule_WikiViewFromDatabase::AOSModule_WikiViewFromDatabase(AOSServices& services) :
+AOSModule_Wiki_ViewFromDatabase::AOSModule_Wiki_ViewFromDatabase(AOSServices& services) :
   AOSModuleInterface(services)
 {
 }
 
-AOSContext::ReturnCode AOSModule_WikiViewFromDatabase::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_Wiki_ViewFromDatabase::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   AString strTable;
   if (!moduleParams.emitString(ASW("table",5), strTable))

@@ -1,12 +1,12 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__apiAOS_Forum_HPP__ 
 #define INCLUDED__apiAOS_Forum_HPP__

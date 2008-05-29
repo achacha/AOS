@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED_AOSModule_forum_list_HPP_
 #define INCLUDED_AOSModule_forum_list_HPP_

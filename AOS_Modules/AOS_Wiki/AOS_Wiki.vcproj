@@ -372,15 +372,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_WikiController.cpp"
+				RelativePath=".\AOSModule_Wiki_Controller.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_WikiViewFromDatabase.cpp"
+				RelativePath=".\AOSModule_Wiki_ViewFromDatabase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_WikiViewFromFileSystem.cpp"
+				RelativePath=".\AOSModule_Wiki_ViewFromFileSystem.cpp"
 				>
 			</File>
 			<File
@@ -430,15 +430,15 @@
 			UniqueIdentifier="{4FC737F1-C7A6-4376-A066-2A33D762A2FF}"
 			>
 			<File
-				RelativePath=".\AOSModule_WikiController.hpp"
+				RelativePath=".\AOSModule_Wiki_Controller.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_WikiViewFromDatabase.hpp"
+				RelativePath=".\AOSModule_Wiki_ViewFromDatabase.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_WikiViewFromFileSystem.hpp"
+				RelativePath=".\AOSModule_Wiki_ViewFromFileSystem.hpp"
 				>
 			</File>
 			<File

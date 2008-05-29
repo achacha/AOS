@@ -377,11 +377,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_AuthenticateUser.cpp"
+				RelativePath=".\AOSModule_User_Authenticate.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_LoginController.cpp"
+				RelativePath=".\AOSModule_User_LoginController.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSModule_User_Logout.cpp"
 				>
 			</File>
 			<File
@@ -435,11 +439,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_AuthenticateUser.hpp"
+				RelativePath=".\AOSModule_User_Authenticate.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_LoginController.hpp"
+				RelativePath=".\AOSModule_User_LoginController.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSModule_User_Logout.hpp"
 				>
 			</File>
 			<File

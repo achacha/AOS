@@ -1,27 +1,27 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Wiki.hpp"
-#include "AOSModule_WikiViewFromFileSystem.hpp"
+#include "AOSModule_Wiki_ViewFromFileSystem.hpp"
 #include "AFilename.hpp"
 #include "AFile_Physical.hpp"
 #include "AFileSystem.hpp"
 #include "ATextGenerator.hpp"
 
-const AString& AOSModule_WikiViewFromFileSystem::getClass() const
+const AString& AOSModule_Wiki_ViewFromFileSystem::getClass() const
 {
   static const AString CLASS("Wiki.ViewFromFileSystem");
   return CLASS;
 }
 
-AOSModule_WikiViewFromFileSystem::AOSModule_WikiViewFromFileSystem(AOSServices& services) :
+AOSModule_Wiki_ViewFromFileSystem::AOSModule_Wiki_ViewFromFileSystem(AOSServices& services) :
   AOSModuleInterface(services)
 {
 }
 
-AOSContext::ReturnCode AOSModule_WikiViewFromFileSystem::execute(AOSContext& context, const AXmlElement& moduleParams)
+AOSContext::ReturnCode AOSModule_Wiki_ViewFromFileSystem::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
   static const AString ELEMENT_SECURE_EDIT("wiki/SecureEdit",15);
   static const AString ELEMENT_DOES_NOT_EXIST("wiki/DoesNotExist",17);

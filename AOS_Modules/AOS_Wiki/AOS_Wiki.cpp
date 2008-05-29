@@ -1,14 +1,14 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Wiki.hpp"
 #include "apiAOS_Wiki.hpp"
 
-#include "AOSModule_WikiController.hpp"
-#include "AOSModule_WikiViewFromDatabase.hpp"
-#include "AOSModule_WikiViewFromFileSystem.hpp"
+#include "AOSModule_Wiki_Controller.hpp"
+#include "AOSModule_Wiki_ViewFromDatabase.hpp"
+#include "AOSModule_Wiki_ViewFromFileSystem.hpp"
 
 BOOL APIENTRY DllMain(
   HANDLE hModule, 
@@ -37,9 +37,9 @@ extern "C" AOS_WIKI_API int aos_register(
   services.useLog().add(ASWNL("AOS_Wiki: aos_register"), ALog::INFO);
 
   //Register modules
-  moduleExecutor.registerModule(new AOSModule_WikiController(services));
-  moduleExecutor.registerModule(new AOSModule_WikiViewFromDatabase(services));
-  moduleExecutor.registerModule(new AOSModule_WikiViewFromFileSystem(services));
+  moduleExecutor.registerModule(new AOSModule_Wiki_Controller(services));
+  moduleExecutor.registerModule(new AOSModule_Wiki_ViewFromDatabase(services));
+  moduleExecutor.registerModule(new AOSModule_Wiki_ViewFromFileSystem(services));
   
   return 0;
 }
