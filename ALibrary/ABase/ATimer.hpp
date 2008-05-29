@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef __ATimer_HPP__
 #define __ATimer_HPP__

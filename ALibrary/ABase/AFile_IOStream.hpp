@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AFileIOStream_HPP__
 #define INCLUDED__AFileIOStream_HPP__

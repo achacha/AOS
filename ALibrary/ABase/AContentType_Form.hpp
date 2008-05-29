@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AContentType_Form_HPP__
 #define INCLUDED__AContentType_Form_HPP__

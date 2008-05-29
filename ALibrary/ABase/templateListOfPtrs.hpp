@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef _templateListOfPtrs_HPP_
 #define _templateListOfPtrs_HPP_

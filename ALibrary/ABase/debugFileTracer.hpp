@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef __debugFileTracer_HPP__
 #define __debugFileTracer_HPP__

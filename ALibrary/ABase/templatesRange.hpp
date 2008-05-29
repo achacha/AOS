@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__templatesRange_HPP__
 #define INCLUDED__templatesRange_HPP__

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AStackWalker_HPP__
 #define INCLUDED__AStackWalker_HPP__

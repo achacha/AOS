@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef __templateAObject_HPP__
 #define __templateAObject_HPP__

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ABasePtrQueue_hpp__
 #define INCLUDED__ABasePtrQueue_hpp__

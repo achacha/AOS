@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchABase.hpp"
 #include "ANameValuePair.hpp"

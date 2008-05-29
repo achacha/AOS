@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AEmittable_HPP_
 #define INCLUDED__AEmittable_HPP_

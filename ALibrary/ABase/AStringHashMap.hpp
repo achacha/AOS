@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AStringHashMap_HPP__
 #define INCLUDED__AStringHashMap_HPP__

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ACookieJar_HPP__
 #define INCLUDED__ACookieJar_HPP__

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ASocketListener_HPP__
 #define INCLUDED__ASocketListener_HPP__

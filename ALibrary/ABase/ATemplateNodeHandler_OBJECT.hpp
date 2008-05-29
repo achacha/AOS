@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ATemplateNodeHandler_OBJECT_HPP__
 #define INCLUDED__ATemplateNodeHandler_OBJECT_HPP__

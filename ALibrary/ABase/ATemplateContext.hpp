@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ATemplateContext_HPP__
 #define INCLUDED__ATemplateContext_HPP__

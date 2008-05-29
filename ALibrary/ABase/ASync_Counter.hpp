@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED_ASync_Counter_HPP_
 #define INCLUDED_ASync_Counter_HPP_

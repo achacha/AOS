@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED_ADigest_MD5_HPP_
 #define INCLUDED_ADigest_MD5_HPP_

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED_ADigest_SHA1_HPP_
 #define INCLUDED_ADigest_SHA1_HPP_

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ASynchronization_HPP__
 #define INCLUDED__ASynchronization_HPP__

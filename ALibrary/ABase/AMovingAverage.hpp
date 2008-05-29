@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AMovingAverage_HPP__
 #define INCLUDED__AMovingAverage_HPP__

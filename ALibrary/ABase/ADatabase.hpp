@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ADatabase_HPP__
 #define INCLUDED__ADatabase_HPP__

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AXmlAtributes_HPP__
 #define INCLUDED__AXmlAtributes_HPP__

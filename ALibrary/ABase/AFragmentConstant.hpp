@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AFragmentConstant_HPP__
 #define INCLUDED__AFragmentConstant_HPP__

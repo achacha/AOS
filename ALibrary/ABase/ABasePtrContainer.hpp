@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ABasePtrHolder_HPP__
 #define INCLUDED__ABasePtrHolder_HPP__

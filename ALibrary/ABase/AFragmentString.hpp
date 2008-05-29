@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AFragmentString_HPP__
 #define INCLUDED__AFragmentString_HPP__

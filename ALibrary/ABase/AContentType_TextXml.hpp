@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AContentType_TextXml_HPP__
 #define INCLUDED__AContentType_TextXml_HPP__

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED_ARng_Marsaglia_HPP_
 #define INCLUDED_ARng_Marsaglia_HPP_

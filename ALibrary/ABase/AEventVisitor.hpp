@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AEventVisitor_HPP__
 #define INCLUDED__AEventVisitor_HPP__

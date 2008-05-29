@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchUnitTests.hpp"
 #include <ADigest_SHA1.hpp>

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AThreadPool_HPP__
 #define INCLUDED__AThreadPool_HPP__

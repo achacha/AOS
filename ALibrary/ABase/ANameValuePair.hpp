@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef __ANameValuePair_HPP__
 #define __ANameValuePair_HPP__
