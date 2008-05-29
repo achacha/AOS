@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: FileHandleImpl.hpp,v 1.1.1.1 2006/04/07 01:16:07 achacha Exp $
+ * $Id$
  */
 
 #ifndef FILEHANDLEIMPL_HPP

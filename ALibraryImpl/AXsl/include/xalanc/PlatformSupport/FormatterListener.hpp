@@ -17,7 +17,7 @@
 #define FORMATTERLISTENER_HEADER_GUARD_1357924680
 
 /**
- * $Id: FormatterListener.hpp,v 1.1 2006/04/07 01:23:55 achacha Exp $
+ * $Id$
  * 
  * $State: Exp $
  * 

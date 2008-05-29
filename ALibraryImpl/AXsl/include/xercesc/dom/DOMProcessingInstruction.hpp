@@ -19,7 +19,7 @@
  */
 
 /*
- * $Id: DOMProcessingInstruction.hpp,v 1.1.1.1 2006/04/07 01:15:37 achacha Exp $
+ * $Id$
  */
 
 #include <xercesc/util/XercesDefs.hpp>

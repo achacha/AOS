@@ -17,7 +17,7 @@
 #define XALAN_ELEMELEMENT_HEADER_GUARD 
 
 /**
- * $Id: ElemElement.hpp,v 1.1 2006/04/07 01:24:03 achacha Exp $
+ * $Id$
  * 
  * 
  * $State: Exp $

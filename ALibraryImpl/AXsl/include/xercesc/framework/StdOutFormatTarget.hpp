@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: StdOutFormatTarget.hpp,v 1.1.1.1 2006/04/07 01:15:40 achacha Exp $
+ * $Id$
  */
 
 #ifndef StdOutFormatTarget_HEADER_GUARD_

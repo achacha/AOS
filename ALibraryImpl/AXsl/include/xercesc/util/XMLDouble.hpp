@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: XMLDouble.hpp,v 1.1.1.1 2006/04/07 01:16:00 achacha Exp $
+ * $Id$
  */
 
 #ifndef XML_DOUBLE_HPP

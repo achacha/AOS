@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: AbstractDOMParser.hpp,v 1.1.1.1 2006/04/07 01:15:51 achacha Exp $
+ * $Id$
  *
  */
 #if !defined(ABSTRACTDOMPARSER_HPP)

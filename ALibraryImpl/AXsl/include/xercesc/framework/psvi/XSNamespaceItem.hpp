@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: XSNamespaceItem.hpp,v 1.1.1.1 2006/04/07 01:15:45 achacha Exp $
+ * $Id$
  */
 
 #if !defined(XSNAMESPACEITEM_HPP)

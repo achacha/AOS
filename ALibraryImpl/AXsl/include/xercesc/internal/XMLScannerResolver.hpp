@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: XMLScannerResolver.hpp,v 1.1.1.1 2006/04/07 01:15:49 achacha Exp $
+ * $Id$
  */
 
 #if !defined(XMLSCANNERRESOLVER_HPP)

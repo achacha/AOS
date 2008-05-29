@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: ValidationContext.hpp,v 1.1.1.1 2006/04/07 01:15:40 achacha Exp $
+ * $Id$
  */
 
 #if !defined(VALIDATION_CONTEXT_HPP)

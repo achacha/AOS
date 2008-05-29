@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: EntityResolver.hpp,v 1.1.1.1 2006/04/07 01:15:54 achacha Exp $
+ * $Id$
  */
 
 

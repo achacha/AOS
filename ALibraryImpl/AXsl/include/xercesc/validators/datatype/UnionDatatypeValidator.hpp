@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: UnionDatatypeValidator.hpp,v 1.1.1.1 2006/04/07 01:16:16 achacha Exp $
+ * $Id$
  */
 
 #if !defined(UNION_DATATYPEVALIDATOR_HPP)

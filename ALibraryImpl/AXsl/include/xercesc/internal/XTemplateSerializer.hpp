@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: XTemplateSerializer.hpp,v 1.1.1.1 2006/04/07 01:15:50 achacha Exp $
+ * $Id$
  */
 
 #if !defined(XTEMPLATE_SERIALIZER_HPP)

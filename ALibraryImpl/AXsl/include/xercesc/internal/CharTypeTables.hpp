@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: CharTypeTables.hpp,v 1.1.1.1 2006/04/07 01:15:46 achacha Exp $
+ * $Id$
  */
 
 #if !defined(CHARTYPETABLES_HPP)

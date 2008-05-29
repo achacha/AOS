@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: XercesDOMParser.hpp,v 1.1.1.1 2006/04/07 01:15:53 achacha Exp $
+ * $Id$
  *
  */
 

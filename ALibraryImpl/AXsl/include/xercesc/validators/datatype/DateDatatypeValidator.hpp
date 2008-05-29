@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: DateDatatypeValidator.hpp,v 1.1.1.1 2006/04/07 01:16:15 achacha Exp $
+ * $Id$
  */
 
 #if !defined(DATE_DATATYPE_VALIDATOR_HPP)

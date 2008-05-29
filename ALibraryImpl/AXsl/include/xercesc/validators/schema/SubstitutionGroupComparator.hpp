@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: SubstitutionGroupComparator.hpp,v 1.1.1.1 2006/04/07 01:16:20 achacha Exp $
+ * $Id$
  */
 
 #if !defined(SUBSTITUTIONGROUPCOMPARATOR_HPP)

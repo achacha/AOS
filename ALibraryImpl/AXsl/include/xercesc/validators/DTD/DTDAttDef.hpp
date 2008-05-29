@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: DTDAttDef.hpp,v 1.1.1.1 2006/04/07 01:16:17 achacha Exp $
+ * $Id$
  */
 
 #if !defined(DTDATTDEF_HPP)

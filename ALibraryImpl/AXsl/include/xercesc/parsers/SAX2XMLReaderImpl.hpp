@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: SAX2XMLReaderImpl.hpp,v 1.1.1.1 2006/04/07 01:15:52 achacha Exp $
+ * $Id$
  */
 
 #if !defined(SAX2XMLReaderImpl_HPP)

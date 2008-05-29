@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: XMLNetAccessor.hpp,v 1.1.1.1 2006/04/07 01:16:01 achacha Exp $
+ * $Id$
  */
 
 #if !defined(XMLNETACCESSOR_HPP)

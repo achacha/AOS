@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: SunCCDefs.hpp,v 1.1.1.1 2006/04/07 01:16:03 achacha Exp $
+ * $Id$
  */
 
 #if !defined(SUNCCDEFS_HPP)

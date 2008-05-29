@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: RefArrayOf.c,v 1.1.1.1 2006/04/07 01:15:57 achacha Exp $
+ * $Id$
  */
 
 

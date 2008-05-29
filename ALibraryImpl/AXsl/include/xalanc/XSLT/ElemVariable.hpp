@@ -17,7 +17,7 @@
 #define XALAN_ELEMVARIABLE_HEADER_GUARD 
 
 /**
- * $Id: ElemVariable.hpp,v 1.1 2006/04/07 01:24:04 achacha Exp $
+ * $Id$
  * 
  * $State: Exp $
  * 

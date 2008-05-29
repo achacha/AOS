@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * $Id: ProblemListener.hpp,v 1.1 2006/04/07 01:24:05 achacha Exp $
+ * $Id$
  */
 #if !defined(XALAN_PROBLEMLISTENER_HEADER_GUARD)
 #define XALAN_PROBLEMLISTENER_HEADER_GUARD

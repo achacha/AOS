@@ -17,7 +17,7 @@
 #define XALAN_COUNTERSTABLE_HEADER_GUARD_1357924680
 
 /**
- * $Id: CountersTable.hpp,v 1.1 2006/04/07 01:24:02 achacha Exp $
+ * $Id$
  * 
  * $State: Exp $
  * 

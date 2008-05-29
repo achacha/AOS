@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: Base64BinaryDatatypeValidator.hpp,v 1.1.1.1 2006/04/07 01:16:14 achacha Exp $
+ * $Id$
  */
 
 #if !defined(BASE64BINARY_DATATYPEVALIDATOR_HPP)

@@ -17,7 +17,7 @@
 #define XALAN_KEYTABLE_HEADER_GUARD 
 
 /**
- * $Id: KeyTable.hpp,v 1.1 2006/04/07 01:24:05 achacha Exp $
+ * $Id$
  * 
  * $State: Exp $
  * 

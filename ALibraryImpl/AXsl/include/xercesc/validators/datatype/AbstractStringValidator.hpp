@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: AbstractStringValidator.hpp,v 1.1.1.1 2006/04/07 01:16:14 achacha Exp $
+ * $Id$
  */
 
 #if !defined(ABSTRACT_STRING_VALIDATOR_HPP)

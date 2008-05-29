@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: XMLException.hpp,v 1.1.1.1 2006/04/07 01:16:00 achacha Exp $
+ * $Id$
  */
 
 #if !defined(EXCEPTION_HPP)

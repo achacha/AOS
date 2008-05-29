@@ -18,7 +18,7 @@
  */
 
 /*
- * $Id: DOMBuilder.hpp,v 1.1.1.1 2006/04/07 01:15:31 achacha Exp $
+ * $Id$
  *
  */
 

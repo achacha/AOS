@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: XPathException.hpp,v 1.1.1.1 2006/04/07 01:16:22 achacha Exp $
+ * $Id$
  */
 
 

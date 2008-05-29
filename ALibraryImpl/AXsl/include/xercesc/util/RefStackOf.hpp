@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: RefStackOf.hpp,v 1.1.1.1 2006/04/07 01:15:58 achacha Exp $
+ * $Id$
  */
 
 #if !defined(REFSTACKOF_HPP)

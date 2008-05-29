@@ -15,7 +15,7 @@
  */
 
 /*
- * $Id: XMLReaderFactory.hpp,v 1.1.1.1 2006/04/07 01:15:55 achacha Exp $
+ * $Id$
  */
 
 #ifndef XMLREADERFACTORY_HPP

@@ -17,7 +17,7 @@
 #define XALAN_AVTPART_HEADER_GUARD 
 
 /**
- * $Id: AVTPart.hpp,v 1.1 2006/04/07 01:24:02 achacha Exp $
+ * $Id$
  * 
  * $State: Exp $
  * 
