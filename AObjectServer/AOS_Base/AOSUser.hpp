@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSUser_HPP__
 #define INCLUDED__AOSUser_HPP__
@@ -19,6 +19,10 @@ This is a view into the model that contains the user xml data
 */
 class AOS_BASE_API AOSUser
 {
+public:
+  static const AString USERNAME;
+  static const AString IS_LOGGED_IN;
+
 public:
   AOSUser(AXmlElement&);
 

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Base.hpp"
 #include "AOSContextQueue_Executor.hpp"
@@ -80,10 +80,11 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           continue;
         }
 
-        //a_Add REQUEST header only if not in AJAX mode
+        //a_Add REQUEST header and SESSION if not in AJAX mode
         if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
         {
           pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(AOSContext::S_REQUEST));
+          pContext->useSessionData().emitXml(pContext->useModel().overwriteElement(AOSContext::S_SESSION));
         }
 
         //

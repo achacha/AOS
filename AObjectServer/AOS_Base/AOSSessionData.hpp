@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSSessionData_HPP__
 #define INCLUDED__AOSSessionData_HPP__

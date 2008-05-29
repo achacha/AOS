@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef __pchAOSBase_HPP__
 #define __pchAOSBase_HPP__

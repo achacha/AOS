@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef __preAObjectServer_HPP__
 #define __preAObjectServer_HPP__

@@ -1,10 +1,13 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Base.hpp"
 #include "AOSUser.hpp"
+
+const AString AOSUser::USERNAME("username");
+const AString AOSUser::IS_LOGGED_IN("isLoggedIn");
 
 void AOSUser::debugDump(std::ostream& os, int indent) const
 {

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_BaseModules.hpp"
 #include "AOSOutput_XalanXslt.hpp"

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_BaseModules.hpp"
 #include "AOSOutput_Template.hpp"
@@ -65,7 +65,8 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
         //a_Check condition, if not met continue with next template
         if (!context.useModel().exists(ifElement))
         {
-          context.useEventVisitor().startEvent(ARope("Skipping conditional template for ")+ifElement, AEventVisitor::EL_DEBUG);
+          if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+            context.useEventVisitor().startEvent(ARope("Skipping conditional template IF ")+ifElement, AEventVisitor::EL_DEBUG);
           continue;
         }
       }
@@ -78,7 +79,8 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
         //a_Check condition, if not met continue with next template
         if (context.useModel().exists(ifElement))
         {
-          context.useEventVisitor().startEvent(ARope("Skipping conditional template for ")+ifElement, AEventVisitor::EL_DEBUG);
+          if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+            context.useEventVisitor().startEvent(ARope("Skipping conditional template IFNOT ")+ifElement, AEventVisitor::EL_DEBUG);
           continue;
         }
       }
@@ -94,11 +96,14 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
     if (ACacheInterface::NOT_FOUND == m_Services.useCacheManager().getTemplate(context, filename, pTemplate))
     {
       //a_Not found add error and continue
-      context.useEventVisitor().startEvent(ARope(getClass())+ASWNL(": Unable to find a template file: ")+filename+ASWNL(", ignoring and continuing"), AEventVisitor::EL_WARN);
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_WARN))
+        context.useEventVisitor().startEvent(ARope(getClass())+ASWNL(": Unable to find a template file: ")+filename+ASWNL(", ignoring and continuing"), AEventVisitor::EL_WARN);
       continue;
     }
 
     //a_Process template
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+      context.useEventVisitor().startEvent(ARope("Processing template file: ")+filename, AEventVisitor::EL_DEBUG);
     AASSERT(this, pTemplate.isNotNull());
     pTemplate->process(context.useLuaTemplateContext(), context.useOutputBuffer());
     ++templatesDisplayed;

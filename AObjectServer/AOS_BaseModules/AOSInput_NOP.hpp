@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSInput_NOP_HPP__
 #define INCLUDED__AOSInput_NOP_HPP__

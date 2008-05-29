@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "AOSWatchDogDaemon.hpp"
 #include "AFile_Socket.hpp"

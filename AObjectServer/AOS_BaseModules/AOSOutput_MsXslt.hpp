@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSOutput_MsXslt_HPP__
 #define INCLUDED__AOSOutput_MsXslt_HPP__

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSModuleExecutor_HPP__
 #define INCLUDED__AOSModuleExecutor_HPP__

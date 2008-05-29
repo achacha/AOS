@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSCacheManager_HPP__
 #define INCLUDED__AOSCacheManager_HPP__

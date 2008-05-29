@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSModule_LuaScript_HPP__
 #define INCLUDED__AOSModule_LuaScript_HPP__

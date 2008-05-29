@@ -1,133 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- /config/server -->
 <server>
-	<log-level>3</log-level>
-	<debug>
-		<allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page">true</allow-dumpContext>
-		<allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command">true</allow-overrideOutput>
-	</debug>
-	<!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
-	<error-templates desc="HTTP status response templates, located relative to aos_data directory">
-		<default desc="Default template when a status code does not have an explicit template">http/default.template</default>
-		<HTTP-400>http/400.template</HTTP-400>
-		<HTTP-400>http/403.template</HTTP-400>
-		<HTTP-404>http/404.template</HTTP-404>
-		<HTTP-500>http/500.template</HTTP-500>
-	</error-templates>
-	<default-filename>index.html</default-filename>
-	<default-input-processor>application/x-www-form-urlencoded</default-input-processor>
-	<default-output-generator/>
-	<mime-types>mime_types.ini</mime-types>
-	<static-file-cache desc="Static item cache">
-		<enabled>false</enabled>
-		<max_items desc="Maximum number of items to store in the static cache">10240</max_items>
-		<max_filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max_filesize>
-		<cache_count desc="Number of caches to use (must be a prime number)">13</cache_count>
-	</static-file-cache>
-	<gzip-compression>
-	  <enabled>true</enabled>
-	  <default-level desc="GZip compression level 0-none, 1-min and 9-max">6</default-level>
-		<extensions desc="Extensions which should be compress">
-		  <ext>html</ext>
-		  <ext>htm</ext>
-		  <ext>xhtml</ext>
-		  <ext>xml</ext>
-		  <ext>txt</ext>
-		  <ext>js</ext>
-		  <ext>css</ext>
-		</extensions>
-		<minimum-threshold desc="Compress files larger than this, in bytes">4096</minimum-threshold>
-	</gzip-compression>
-	<session-manager>
-		<holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">7</holder-size>
-		<timeout desc="Number of milliseconds since session was last used and expires">600000</timeout>
-		<sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration">3000</sleep-cycle>
-		<database-persistence desc="Database persistence of session data">
-			<enabled>false</enabled>
-		</database-persistence>
-	</session-manager>
-	<template-cache desc="Template objects that are read from file and kept in a parsed state for execution">
-		<enabled>false</enabled>
-	</template-cache>
-	<load>
-		<module>AOS_BaseModules</module>
-		<module>AOS_DadaData</module>
-		<module>AOS_Test</module>
-		<module>AOS_Example</module>
-		<module>AOS_Forum</module>
-		<module>AOS_Blog</module>
-		<module>AOS_Wiki</module>
-		<module>AOS_Classified</module>
-		<module>AOS_User</module>
-	</load>
-	<http>
-	    <blocking desc="Use blocking or non-blocking socket IO">false</blocking>
-		<first-char-read-tries desc="Number of times to try and read the first character">15</first-char-read-tries>
-		<first-char-sleep-start desc="Initial sleep time trying to read first character">30</first-char-sleep-start>
-		<first-char-sleep-increment desc="Amount to increment the sleep time for each try">20</first-char-sleep-increment>
-		<wait-for-http-data-timeout desc="Milliseconds to wait for complete header after initial byte before giving up, in ms">10000</wait-for-http-data-timeout>
-		<http11-pipelining-enabled desc="Enabled pipelining if keep-alive is specified">true</http11-pipelining-enabled>
-		<unavailable-sleep-time desc="Milliseconds to sleep while trying to flush the output and the socket is unavailable (would block)">50</unavailable-sleep-time>
-		<unavailable-retries desc="Number of retries (sleeps) while waiting for an unavailable socket">100</unavailable-retries>
-	</http>
-	<context-queues>
-		<is-available>
-			<queues desc="Queues in the is-available queue manager, each queue has single select thread">2</queues>
-			<loop-delay desc="Milliseconds of sleep between bulk selects">10</loop-delay>
-			<empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</empty-queue-sleep-delay>
-			<no-data-timeout desc="Milliseconds before a socket is clsoed due to inactivity">180000</no-data-timeout>
-		</is-available>
-		<pre-executor>
-			<threads desc="Threads in the pre-executor queue manager">10</threads>
-			<queues desc="Queues in the pre-executor queue manager">3</queues>
-			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
-		</pre-executor>
-		<executor>
-			<threads desc="Threads in the executor queue manager">10</threads>
-			<queues desc="Queues in the executor queue manager">2</queues>
-			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
-		</executor>
-		<error-executor>
-			<threads desc="Threads in the executor queue manager">2</threads>
-			<queues desc="Queues in the executor queue manager">1</queues>
-			<sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">100</sleep-delay>
-		</error-executor>
-	</context-queues>
-	<listen>
-		<!-- Listener ports -->
-		<http>
-			<host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
-			<port>80</port>
-		</http>
-		<https>
-			<host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
-			<port>443</port>
-			<cert desc="Relative path from server base for the certificate file">aos_root/certs/aos_cert.pem</cert>
-			<pkey desc="Relative path from server base for the private key file">aos_root/certs/aos_pkey.pem</pkey>
-		</https>
-		<admin>
-			<host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
-			<port>12345</port>
-		</admin>
-	</listen>
-	<reported>
-		<!-- Reported overrides -->
-		<hostname desc="Hostname reported to clients"/>
-		<server desc="Server field in the response http header"/>
-		<http desc="Reported HTTP port, none means use 80"/>
-		<https desc="Reported HTTPS port, none means use 443"/>
-	</reported>
-	<context-manager>
-		<history-maxsize>100</history-maxsize>
-		<freestore-maxsize>50</freestore-maxsize>
-	</context-manager>
-	<admin>
-		<base-http-dir>admin/</base-http-dir>
-	</admin>
-	<database>
-		<!--url>mysql://aos:aos@equinox/aos/</url-->
-		<!--url>odbc://aos:aos@localhost/aos_global/</url-->
-		<url>sqlite:///./aos_root/AObjectServer.db</url>
-		<connections>4</connections>
-	</database>
+  <log-level>5</log-level>
+
+  <database>
+    <!--url>mysql://aos:aos@equinox/aos/</url-->
+    <!--url>odbc://aos:aos@localhost/aos_global/</url-->
+    <url>sqlite:///./aos_root/AObjectServer.db</url>
+    <connections>2</connections>
+  </database>
+
+  <template-cache desc="Template objects that are read from file and kept in a parsed state for execution">
+    <enabled>false</enabled>
+  </template-cache>
+
+  <static-file-cache desc="Static item cache">
+    <enabled>false</enabled>
+    <max_items desc="Maximum number of items to store in the static cache">10240</max_items>
+    <max_filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max_filesize>
+    <cache_count desc="Number of caches to use (must be a prime number)">13</cache_count>
+  </static-file-cache>
+
+  <listen>
+    <!-- Listener ports -->
+    <http>
+      <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+      <port>80</port>
+    </http>
+    <https>
+      <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+      <port>443</port>
+      <cert desc="Relative path from server base for the certificate file">aos_root/certs/aos_cert.pem</cert>
+      <pkey desc="Relative path from server base for the private key file">aos_root/certs/aos_pkey.pem</pkey>
+    </https>
+    <admin>
+      <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+      <port>12345</port>
+    </admin>
+  </listen>
+
+  <reported>
+    <!-- Reported overrides -->
+    <hostname desc="Hostname reported to clients"/>
+    <server desc="Server field in the response http header"/>
+    <http desc="Reported HTTP port, none means use 80"/>
+    <https desc="Reported HTTPS port, none means use 443"/>
+  </reported>
+
+  <gzip-compression>
+    <enabled>true</enabled>
+    <default-level desc="GZip compression level 0-none, 1-min and 9-max">6</default-level>
+    <extensions desc="Extensions which should be compress">
+      <ext>html</ext>
+      <ext>htm</ext>
+      <ext>xhtml</ext>
+      <ext>xml</ext>
+      <ext>txt</ext>
+      <ext>js</ext>
+      <ext>css</ext>
+    </extensions>
+    <minimum-threshold desc="Compress files larger than this, in bytes">4096</minimum-threshold>
+  </gzip-compression>
+
+  <context-manager>
+    <history-maxsize>100</history-maxsize>
+  </context-manager>
+
+  <debug>
+    <allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page">true</allow-dumpContext>
+    <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command">true</allow-overrideOutput>
+  </debug>
+
+  <!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
+  <error-templates desc="HTTP status response templates, located relative to aos_data directory">
+    <default desc="Default template when a status code does not have an explicit template">http/default.template</default>
+    <HTTP-400>http/400.template</HTTP-400>
+    <HTTP-400>http/403.template</HTTP-400>
+    <HTTP-404>http/404.template</HTTP-404>
+    <HTTP-500>http/500.template</HTTP-500>
+  </error-templates>
+  <default-filename>index.html</default-filename>
+  <default-input-processor>application/x-www-form-urlencoded</default-input-processor>
+  <default-output-generator/>
+  <mime-types>mime_types.ini</mime-types>
+  <session-manager>
+    <holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">7</holder-size>
+    <timeout desc="Number of milliseconds since session was last used and expires">600000</timeout>
+    <sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration">3000</sleep-cycle>
+    <database-persistence desc="Database persistence of session data">
+      <enabled>false</enabled>
+    </database-persistence>
+  </session-manager>
+  <load>
+    <module>AOS_BaseModules</module>
+    <module>AOS_DadaData</module>
+    <module>AOS_Test</module>
+    <module>AOS_Example</module>
+    <module>AOS_Forum</module>
+    <module>AOS_Blog</module>
+    <module>AOS_Wiki</module>
+    <module>AOS_Classified</module>
+    <module>AOS_User</module>
+  </load>
+  <http>
+    <blocking desc="Use blocking or non-blocking socket IO">false</blocking>
+    <first-char-read-tries desc="Number of times to try and read the first character">15</first-char-read-tries>
+    <first-char-sleep-start desc="Initial sleep time trying to read first character">30</first-char-sleep-start>
+    <first-char-sleep-increment desc="Amount to increment the sleep time for each try">20</first-char-sleep-increment>
+    <wait-for-http-data-timeout desc="Milliseconds to wait for complete header after initial byte before giving up, in ms">10000</wait-for-http-data-timeout>
+    <http11-pipelining-enabled desc="Enabled pipelining if keep-alive is specified">true</http11-pipelining-enabled>
+    <unavailable-sleep-time desc="Milliseconds to sleep while trying to flush the output and the socket is unavailable (would block)">50</unavailable-sleep-time>
+    <unavailable-retries desc="Number of retries (sleeps) while waiting for an unavailable socket">100</unavailable-retries>
+  </http>
+  <context-queues>
+    <is-available>
+      <queues desc="Queues in the is-available queue manager, each queue has single select thread">2</queues>
+      <loop-delay desc="Milliseconds of sleep between bulk selects">10</loop-delay>
+      <empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</empty-queue-sleep-delay>
+      <no-data-timeout desc="Milliseconds before a socket is clsoed due to inactivity">180000</no-data-timeout>
+    </is-available>
+    <pre-executor>
+      <threads desc="Threads in the pre-executor queue manager">10</threads>
+      <queues desc="Queues in the pre-executor queue manager">3</queues>
+      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
+    </pre-executor>
+    <executor>
+      <threads desc="Threads in the executor queue manager">10</threads>
+      <queues desc="Queues in the executor queue manager">2</queues>
+      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
+    </executor>
+    <error-executor>
+      <threads desc="Threads in the executor queue manager">2</threads>
+      <queues desc="Queues in the executor queue manager">1</queues>
+      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">100</sleep-delay>
+    </error-executor>
+  </context-queues>
+  <admin>
+    <base-http-dir>admin/</base-http-dir>
+  </admin>
 </server>

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Base.hpp"
 #include "AOSContextQueue_ErrorExecutor.hpp"

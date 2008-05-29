@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef __apiAOS_Base_HPP__
 #define __apiAOS_Base_HPP__

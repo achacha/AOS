@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSOutput_Redirect_HPP__
 #define INCLUDED__AOSOutput_Redirect_HPP__
@@ -14,13 +14,19 @@ Id: $Id$
 
   Redirect to relative or absolute URL
   <output>
-    <redirect-url>http://somwhere/path/file?query</redirect-url>
+    <url>http://somwhere/path/file?query</url>
     <secure>true</secure>
   </output>
 
   Redirect to a URL in the model
   <output>
-    <redirect-path>/root/redirectUrl</redirect-path>
+    <model-path>/root/redirectUrl</model-path>
+    <secure>false</secure>
+  </output>
+
+  Redirect to a URL in the session data
+  <output>
+    <session-path>/root/redirectUrl</session-path>
     <secure>false</secure>
   </output>
 */

@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ATemplateNodeHandler_SESSION_HPP__
 #define INCLUDED__ATemplateNodeHandler_SESSION_HPP__

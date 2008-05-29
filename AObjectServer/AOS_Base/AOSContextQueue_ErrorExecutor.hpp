@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSContextQueue_ErrorExecutor_HPP__
 #define INCLUDED__AOSContextQueue_ErrorExecutor_HPP__

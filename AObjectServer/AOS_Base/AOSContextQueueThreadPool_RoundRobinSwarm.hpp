@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOSContextQueueThreadPool_RoundRobinSwarm_HPP__
 #define INCLUDED__AOSContextQueueThreadPool_RoundRobinSwarm_HPP__

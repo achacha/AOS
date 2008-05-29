@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAOS_Base.hpp"
 #include "AOSContext.hpp"
@@ -1099,8 +1099,8 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
       m_OutputBuffer.clear();
     }
     
-    //a_If output buffer is empty then emit output XML document into it
-    if (m_OutputBuffer.isEmpty())
+    //a_If output buffer is empty then emit output XML document into it unless we are redirecting, then we don't
+    if (m_OutputBuffer.isEmpty() && m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_REDIRECTING))
     {
       m_OutputXmlDocument.emit(m_OutputBuffer);
       m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
