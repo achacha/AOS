@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__apiAPythonEmbed_HPP__
 #define INCLUDED__apiAPythonEmbed_HPP__

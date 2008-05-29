@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__apiALuaEmbed_HPP__
 #define INCLUDED__apiALuaEmbed_HPP__

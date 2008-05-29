@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ACryptoCertificate_HPP__
 #define INCLUDED__ACryptoCertificate_HPP__

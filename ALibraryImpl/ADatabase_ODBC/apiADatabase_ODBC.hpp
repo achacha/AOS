@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__apiADatabase_ODBC_HPP__
 #define INCLUDED__apiADatabase_ODBC_HPP__

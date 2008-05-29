@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__apiACrypto_HPP__
 #define INCLUDED__apiACrypto_HPP__

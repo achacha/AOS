@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchAXsl.hpp"
 #include "AOutputBuffer_XalanWriter.hpp"

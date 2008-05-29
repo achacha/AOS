@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AGdLib_HPP__
 #define INCLUDED__AGdLib_HPP__

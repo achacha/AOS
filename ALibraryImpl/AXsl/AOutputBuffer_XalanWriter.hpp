@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__AOutputBuffer_XalanWriter_HPP__
 #define INCLUDED__AOutputBuffer_XalanWriter_HPP__

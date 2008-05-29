@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED_ACryptoBuffer_HPP__
 #define INCLUDED_ACryptoBuffer_HPP__

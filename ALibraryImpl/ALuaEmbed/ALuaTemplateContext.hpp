@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #ifndef INCLUDED__ALuaTemplateContext_HPP__
 #define INCLUDED__ALuaTemplateContext_HPP__

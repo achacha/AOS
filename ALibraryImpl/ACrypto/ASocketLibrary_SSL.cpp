@@ -1,7 +1,7 @@
 /*
 Written by Alex Chachanashvili
 
-Id: $Id$
+$Id$
 */
 #include "pchACrypto.hpp"
 #include "ASocketLibrary_SSL.hpp"
