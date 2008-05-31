@@ -6,12 +6,6 @@ $Id$
 #ifndef INCLUDED__apiABase_HPP__
 #define INCLUDED__apiABase_HPP__
 
-//a_Include Visual Leak Detector in debug mode
-#if defined(_MSC_VER) && !defined(NDEBUG)
-#include "vld.h"
-#pragma message("Including Visual Leak Detector")
-#endif
-
 //a_OS Defines and compiler specifics
 #include "osDefines.hpp"
 
