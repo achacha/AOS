@@ -41,7 +41,7 @@ def makeSystemCall_remove(filename):
 
 def showUsage():
   print "Usage: "+sys.argv[0]+" [options]";
-  print "-p <target path>   - Will create 'ALibrary/include' directory and gather all pertinent headers";
+  print "-p <target path>   - Will create 'ALibrary/include64' directory and gather all pertinent headers";
   print "-clean             - Clean first";
   print "-v                 - Verbose mode";
 
@@ -74,7 +74,7 @@ if (TARGET_BASE_PATH == "/?" or TARGET_BASE_PATH == "?"):
   showUsage();
   sys.exit(0);
 
-TARGET_ALIBRARY_INCLUDE_PATH = os.path.join(TARGET_BASE_PATH, "include");
+TARGET_ALIBRARY_INCLUDE_PATH = os.path.join(TARGET_BASE_PATH, "include64a");
 
 # Target paths
 makeSystemCall_mkdir(TARGET_BASE_PATH);
@@ -95,7 +95,7 @@ else:
 # ADatabase_MySQL
 print "|----------HEADERS: ALibraryImpl/ADatabase_MySQL-----------|";
 syncPath(os.path.join(INPUT_BASE_PATH, "ALibraryImpl", "ADatabase_MySQL", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
-syncPath(os.path.join(INPUT_BASE_PATH, "ALibraryImpl", "ADatabase_MySQL", "include", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(INPUT_BASE_PATH, "ALibraryImpl", "ADatabase_MySQL", "include64a", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
 
 # ADatabase_SQLite
 print "|----------HEADERS: ALibraryImpl/ADatabase_SQLite----------|";

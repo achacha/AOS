@@ -212,6 +212,7 @@ bool ADebugDumpable::isPointerValid(void *p)
         return false;
       }
     }
+    break;
 
     default:
       ATHROW(NULL, AException::ProgrammingError);  //a_Neither 32 or 64 bit?

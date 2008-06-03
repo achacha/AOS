@@ -151,7 +151,7 @@ void ATextOdometer::__inc()
   AASSERT(this, pos);
 	pos--;
 
-  for (size_t i = pos; i != (u4)-1; --i)
+  for (size_t i = pos; i != (size_t)-1; --i)
   {
     //a_Find the location and increment
     s = mstr_Subset.find(mstr_Odometer.at(i));

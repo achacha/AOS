@@ -15,6 +15,7 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
 #if defined(_WIN64)
   //Win64 environment
   #define __WINDOWS__
+  #define WIN64
   #pragma message("ABase (64bit): Windows OS detected")
 
   //a_OS/C flags
@@ -38,6 +39,7 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
 #elif defined(_WIN32)
   //Win32 environment
   #define __WINDOWS__
+  #define WIN32
   #pragma message("ABase (32bit): Windows OS detected")
 
   //a_OS/C flags

@@ -29,10 +29,10 @@ void AString::debugDump(std::ostream& os, int indent) const
   if (m_Length)
   {
     if (ascii)
-      ADebugDumpable::indent(os, indent+1) << "mp_Buffer=" << mp_Buffer << std::endl;
+		ADebugDumpable::indent(os, indent+1) << "mp_Buffer=" << AString::fromPointer(mp_Buffer) << std::endl;
     else
     {
-      ADebugDumpable::indent(os, indent+1) << "mp_Buffer=" << std::hex << (void*)mp_Buffer << std::dec << " {" << std::endl;
+      ADebugDumpable::indent(os, indent+1) << "mp_Buffer=" << AString::fromPointer(mp_Buffer) << " {" << std::endl;
       ADebugDumpable::dumpMemory_HexAscii(os, mp_Buffer, m_Length, indent+2); 
       ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
     }

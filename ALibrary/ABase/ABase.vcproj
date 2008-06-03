@@ -150,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="_DEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN64"
+				PreprocessorDefinitions="_DEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN64;WIN32"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -346,7 +346,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN64"
+				PreprocessorDefinitions="WIN32;NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN64"
 				StringPooling="false"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
@@ -1380,10 +1380,6 @@
 			</File>
 			<File
 				RelativePath=".\uTypes.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\vld.h"
 				>
 			</File>
 		</Filter>
