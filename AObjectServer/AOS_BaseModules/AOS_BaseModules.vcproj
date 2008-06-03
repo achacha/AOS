@@ -301,7 +301,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../include64,../AOS_Base"
+				AdditionalIncludeDirectories="../../include64a,../AOS_Base"
 				PreprocessorDefinitions="WIN64;WIN32;NDEBUG;_WINDOWS;_USRDLL;AOS_BASEMODULES_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"

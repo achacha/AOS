@@ -290,7 +290,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../ALibrary/include"
+				AdditionalIncludeDirectories="../../include64a"
 				PreprocessorDefinitions="WIN64;WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
