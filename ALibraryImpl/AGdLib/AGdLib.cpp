@@ -7,4 +7,7 @@ $Id$
 #include "AGdLib.hpp"
 #include "AException.hpp"
 
-#pragma comment(lib, "bgd")
+#if defined(__WINDOWS__)
+#pragma comment(lib, "zlib1")
+#pragma comment(lib, "libjpeg")
+#endif

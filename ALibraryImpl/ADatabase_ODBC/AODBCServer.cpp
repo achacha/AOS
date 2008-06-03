@@ -325,7 +325,13 @@ size_t AODBCServer::_processQueryAllRows(SQLHSTMT hstmt, AResultSet& target, ASt
 {
   //a_Get row count
   size_t rowCount = 0;
-  SQLRETURN retcode = SQLRowCount(hstmt, (SQLINTEGER *)&rowCount);
+#ifdef __WINDOWS__
+  #ifdef WIN64
+    SQLRETURN retcode = SQLRowCount(hstmt, (SQLLEN *)&rowCount);
+  #else
+    SQLRETURN retcode = SQLRowCount(hstmt, (SQLINTEGER *)&rowCount);
+  #endif
+#endif
   if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
   {
     _processError(error, SQL_HANDLE_STMT, hstmt);
@@ -372,6 +378,17 @@ size_t AODBCServer::_processQueryAllRows(SQLHSTMT hstmt, AResultSet& target, ASt
     rowVector.reserve(colCount);
     for (col=0; col<colCount; ++col)
     {
+#ifdef __WINDOWS__
+  #ifdef WIN64
+      retcode = ::SQLGetData(
+        hstmt, 
+        col+1, 
+        SQL_C_CHAR, 
+        str.startUsingCharPtr(4096), 
+        4096, 
+        (SQLLEN *)&dataLenOrNull
+      );
+  #else
       retcode = ::SQLGetData(
         hstmt, 
         col+1, 
@@ -380,6 +397,8 @@ size_t AODBCServer::_processQueryAllRows(SQLHSTMT hstmt, AResultSet& target, ASt
         4096, 
         &dataLenOrNull
       );
+  #endif
+#endif
       if (SQL_NO_TOTAL == retcode || SQL_NULL_DATA == retcode)
         str.stopUsingCharPtr(0);
       else
@@ -431,6 +450,18 @@ SQLSMALLINT AODBCServer::getMetadata(SQLHSTMT hstmt, AODBCServer::METADATA& meta
   {
     metadata.push_back(ODBC_METADATA_FIELD());
     ODBC_METADATA_FIELD& field = metadata.back();
+#ifdef __WINDOWS__
+  #ifdef WIN64
+    retcode = ::SQLDescribeCol(
+      hstmt, 
+      col+1, 
+      (SQLCHAR *)field.colName.startUsingCharPtr(256), 255, &colActualSize,
+      &field.dataType,
+      (SQLULEN *)&field.colSize,
+      &field.decimalDigits,
+      &field.nullable
+    );
+  #else
     retcode = ::SQLDescribeCol(
       hstmt, 
       col+1, 
@@ -440,6 +471,8 @@ SQLSMALLINT AODBCServer::getMetadata(SQLHSTMT hstmt, AODBCServer::METADATA& meta
       &field.decimalDigits,
       &field.nullable
     );
+  #endif
+#endif
     if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO)
     {
       _processError(error, SQL_HANDLE_STMT, hstmt);

@@ -108,8 +108,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="../../_debug64a"
+			IntermediateDirectory="../../_debug64a/$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="2"
 			>
@@ -133,7 +133,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\ALibrary\ABase,.\lua-5.1.3\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ALuaEMBED_EXPORTS;LUA_BUILD_AS_DLL;LUA_LIB;"
+				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;ALuaEMBED_EXPORTS;LUA_BUILD_AS_DLL;LUA_LIB;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -279,8 +279,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="../../_release64a"
+			IntermediateDirectory="../../_release64a/$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="2"
 			>
@@ -303,7 +303,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\ALibrary\ABase,.\lua-5.1.3\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ALuaEMBED_EXPORTS;LUA_BUILD_AS_DLL;LUA_LIB;"
+				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS;_USRDLL;ALuaEMBED_EXPORTS;LUA_BUILD_AS_DLL;LUA_LIB;"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"

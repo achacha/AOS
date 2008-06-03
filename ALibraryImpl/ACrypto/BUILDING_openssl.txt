@@ -12,18 +12,17 @@ Pre-requisites: Microsoft Visual Studio (cmd prompt), perl
     CFLAG= add /GS
   
   b. nmake -f ms\ntdll.mak
-  c. Copy libeay32.*, ssleay32.*, and openssl.exe into release directory
-	d. nmake -f ms\ntdll.mak
+  c. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into release directory
 	
 5. DEBUG BUILD: 
   a. modify ms\ntdll.mak (debugging flags to match ALibrary)
     
-CFLAG= /Od /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /MDd /Zi /MDd /RTC1 /EHsc /Gm /Od /W3 /WX /GF /Gy /GS /nologo -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DAES_ASM -DBN_ASM -DOPENSSL_BN_ASM_PART_WORDS -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_USE_APPLINK -I. /Fdout32dll -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_SEED -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_TLSEXT -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE
+CFLAG= /Od /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /MDd /Zi /MDd /RTC1 /EHsc /Gm /Od /W3 /GF /Gy /GS /nologo -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DAES_ASM -DBN_ASM -DOPENSSL_BN_ASM_PART_WORDS -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_USE_APPLINK -I. /Fdout32dll -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_SEED -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_TLSEXT -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE
 
 LIB_CFLAG= /DLL -D_WINDLL /DEBUG
 
   b. nmake -f ms\ntdll.mak
-  c. Copy libeay32.*, ssleay32.*, and openssl.exe into debug directory
+  c. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into debug directory
 
 
 64-bit
@@ -37,18 +36,17 @@ Pre-requisites: Microsoft Visual Studio (cmd prompt), perl
 4. RELEASE BUILD:
   a. modify ms\ntdll.mak
     LIB_CFLAG= /DLL -D_WINDLL
-    CFLAG= add -DWIN64 /GS
+    CFLAG= add -DWIN64
+    Remove all reference to bufferoverflowu.lib
 	
   b. nmake -f ms\ntdll.mak
-  c. Copy libeay32.*, ssleay32.*, and openssl.exe into release directory
-	d. nmake -f ms\ntdll.mak
+  c. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into release directory
 
 5. DEBUG BUILD: 
   a. modify ms\ntdll.mak (debugging flags to match ALibrary)
-    
-CFLAG= /Od /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /MDd /Zi /MDd /RTC1 /EHsc /Gm /Od /W3 /WX /GF /Gy /GS /nologo -DWIN64 -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DAES_ASM -DBN_ASM -DOPENSSL_BN_ASM_PART_WORDS -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_USE_APPLINK -I. /Fdout32dll -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_SEED -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_TLSEXT -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE
-
-LIB_CFLAG= /DLL -D_WINDLL /DEBUG
+    CFLAG= /Od /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /MDd /Zi /MDd /RTC1 /EHsc /Gm /Od /W3 /GF /Gy /nologo -DWIN64 -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DAES_ASM -DBN_ASM -DOPENSSL_BN_ASM_PART_WORDS -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_USE_APPLINK -I. /Fdout32dll -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_SEED -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_TLSEXT -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE
+    LIB_CFLAG= /DLL -D_WINDLL /DEBUG
+    Remove all reference to bufferoverflowu.lib
 
   b. nmake -f ms\ntdll.mak
-  c. Copy libeay32.*, ssleay32.*, and openssl.exe into debug directory
+  c. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into debug directory

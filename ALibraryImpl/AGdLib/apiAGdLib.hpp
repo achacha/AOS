@@ -13,7 +13,6 @@ $Id$
 #    ifdef AGDLIB_EXPORTS
 #      pragma message("AGdLib: EXPORT")
 #      define AGDLIB_API __declspec(dllexport)
-#      pragma comment(lib, "bgd")
 #    else
 #      pragma message("AGdLib: IMPORT")
 #      define AGDLIB_API __declspec(dllimport)
@@ -25,10 +24,7 @@ $Id$
 #  endif
 #endif
 
-#pragma comment(lib, "bgd")
-
 #include "apiABase.hpp"
-//#include "config.h"
 #include "gd.h"
 
 #endif //INCLUDED__apiAGdLib_HPP__
