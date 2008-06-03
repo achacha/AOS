@@ -1,2 +1,0 @@
-Xalan-C 1.10.0
-Xerces-C 2.7.0
