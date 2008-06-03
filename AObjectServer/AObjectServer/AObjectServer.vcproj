@@ -109,8 +109,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="../../_debug64a"
+			IntermediateDirectory="../../_debug64a/$(ProjectName)"
 			ConfigurationType="1"
 			CharacterSet="2"
 			>
@@ -133,8 +133,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../ALibrary/include,../AOS_Base"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="../../include64,../AOS_Base"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;WIN64;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -283,8 +283,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="../../_release64a"
+			IntermediateDirectory="../../_release64a/$(ProjectName)"
 			ConfigurationType="1"
 			CharacterSet="2"
 			>
@@ -306,8 +306,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../ALibrary/include,../AOS_Base"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="../../include64,../AOS_Base"
+				PreprocessorDefinitions="WIN64;WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
