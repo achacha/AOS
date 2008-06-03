@@ -120,22 +120,23 @@ if (verbose == 1):
 
   
 # Base libraries
-print "|---------EXTERNAL: ABase-----------|";
+print "|---------EXTERNAL: Windows 64a-----|";
 if (clean == 1):
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "release64a", "*.*"), target_bin_path_RELEASE);
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "debug64a", "*.*"), target_bin_path_DEBUG);
+  syncPathWithDelete(os.path.join(THIS_PATH, "lib", "release64a", "*.*"), target_bin_path_RELEASE);
+  syncPathWithDelete(os.path.join(THIS_PATH, "lib", "debug64a", "*.*"), target_bin_path_DEBUG);
 else:
-  syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "release64a", "*.*"), target_bin_path_RELEASE);
-  syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "debug64a", "*.*"), target_bin_path_DEBUG);
+  syncPath(os.path.join(THIS_PATH, "lib", "release64a", "*.*"), target_bin_path_RELEASE);
+  syncPath(os.path.join(THIS_PATH, "lib", "debug64a", "*.*"), target_bin_path_DEBUG);
+
+#ABase libraries
+print "|---------EXTERNAL: ABase-----------|";
+syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "release64a", "*.*"), target_bin_path_RELEASE);
+syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "debug64a", "*.*"), target_bin_path_DEBUG);
 
 # ACrypto
 print "|---------EXTERNAL: ALibraryImpl/ACrypto-----------|";
-if (clean == 1):
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "release64a", "*.*"), target_bin_path_RELEASE);
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "debug64a", "*.*"), target_bin_path_DEBUG);
-else:
-  syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "release64a", "*.*"), target_bin_path_RELEASE);
-  syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "debug64a", "*.*"), target_bin_path_DEBUG);
+syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "release64a", "*.*"), target_bin_path_RELEASE);
+syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "debug64a", "*.*"), target_bin_path_DEBUG);
 
 # ADatabase_MySQL
 print "|---------EXTERNAL: ALibraryImpl/ADatabase_MySQL-----------|";
@@ -159,8 +160,8 @@ syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AXsl", "lib", "debug64a", "*.*
 
 # AXsl
 print "|---------EXTERNAL: ALibraryImpl/AGdLib--------------------|";
-syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "*.*"), target_bin_path_RELEASE);
-syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "*.*"), target_bin_path_DEBUG);
+syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "release64a", "*.*"), target_bin_path_RELEASE);
+syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "debug64a", "*.*"), target_bin_path_DEBUG);
 
 # Gather headers
 gatherHeaders();
@@ -220,7 +221,7 @@ if (os.path.join(target_bin_path_DEBUG, "foo") != os.path.join(DEBUG_INPUT_PATH,
   syncPath(os.path.join(RELEASE_INPUT_PATH, "AZlib.lib"), target_bin_path_RELEASE);
   
   #VC redistributable
-  syncPath(os.path.join(THIS_PATH, "..", "vc2008_redist", "vcredist_x86_vc2008.exe"), TARGET_PATH);
+  syncPath(os.path.join(THIS_PATH, "..", "vc2008_redist", "vcredist_64a_vc2008.exe"), TARGET_PATH);
 
 print "|-----------TOUCH MARKERS----------------------------------|";
 touch(os.path.join(target_bin_path_DEBUG, "___DEBUG_OUTPUT___"));

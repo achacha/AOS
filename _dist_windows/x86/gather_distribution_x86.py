@@ -120,22 +120,23 @@ if (verbose == 1):
 
   
 # Base libraries
-print "|---------EXTERNAL: ABase-----------|";
+print "|---------EXTERNAL: Windows x86-----|";
 if (clean == 1):
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "release", "*.*"), target_bin_path_RELEASE);
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "debug", "*.*"), target_bin_path_DEBUG);
+  syncPathWithDelete(os.path.join(THIS_PATH, "lib", "release", "*.*"), target_bin_path_RELEASE);
+  syncPathWithDelete(os.path.join(THIS_PATH, "lib", "debug", "*.*"), target_bin_path_DEBUG);
 else:
-  syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "release", "*.*"), target_bin_path_RELEASE);
-  syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "debug", "*.*"), target_bin_path_DEBUG);
+  syncPath(os.path.join(THIS_PATH, "lib", "release", "*.*"), target_bin_path_RELEASE);
+  syncPath(os.path.join(THIS_PATH, "lib", "debug", "*.*"), target_bin_path_DEBUG);
+
+#ABase libraries
+print "|---------EXTERNAL: ABase-----------|";
+syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "release", "*.*"), target_bin_path_RELEASE);
+syncPath(os.path.join(BASE_PATH, "ALibrary", "ABase", "lib", "debug", "*.*"), target_bin_path_DEBUG);
 
 # ACrypto
 print "|---------EXTERNAL: ALibraryImpl/ACrypto-----------|";
-if (clean == 1):
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "release", "*.*"), target_bin_path_RELEASE);
-  syncPathWithDelete(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "debug", "*.*"), target_bin_path_DEBUG);
-else:
-  syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "release", "*.*"), target_bin_path_RELEASE);
-  syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "debug", "*.*"), target_bin_path_DEBUG);
+syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "release", "*.*"), target_bin_path_RELEASE);
+syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ACrypto", "lib", "debug", "*.*"), target_bin_path_DEBUG);
 
 # ADatabase_MySQL
 print "|---------EXTERNAL: ALibraryImpl/ADatabase_MySQL-----------|";
@@ -159,8 +160,8 @@ syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AXsl", "lib", "debug", "*.*"),
 
 # AXsl
 print "|---------EXTERNAL: ALibraryImpl/AGdLib--------------------|";
-syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "*.*"), target_bin_path_RELEASE);
-syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "*.*"), target_bin_path_DEBUG);
+syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "release", "*.*"), target_bin_path_RELEASE);
+syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "debug", "*.*"), target_bin_path_DEBUG);
 
 # Gather headers
 gatherHeaders();
