@@ -77,7 +77,7 @@ AOSOutput_MsXslt::AOSOutput_MsXslt(AOSServices& services) :
 {
 	CoInitialize(NULL);
 
-  m_IsCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/base-modules/AOSOutput_MsXslt/cache",43), true);
+  m_IsCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/base-modules/AOSOutput_MsXslt/cache/enabled",51), true);
 }
 
 AOSOutput_MsXslt::~AOSOutput_MsXslt()

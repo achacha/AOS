@@ -2,6 +2,8 @@
 <!-- /config/base-modules -->
 <base-modules>
   <AOSOutput_MsXslt>
-    <cache desc="XSL stylesheet cache">false</cache>
+    <cache desc="XSL stylesheet cache">
+		  <enabled>true</enabled>
+		</cache>
   </AOSOutput_MsXslt>
 </base-modules>
