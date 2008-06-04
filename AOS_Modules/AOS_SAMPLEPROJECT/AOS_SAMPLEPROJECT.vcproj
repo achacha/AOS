@@ -2,9 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="AOS_User"
-	ProjectGUID="{8A0DC563-C163-465E-8BCF-29B557E66A80}"
-	RootNamespace="AOS_User"
+	Name="AOS_SAMPLEPROJECT"
+	ProjectGUID="{80F5B800-795C-440C-9C73-E5D4EBF25B00}"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -21,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../../_debug"
-			IntermediateDirectory="../../_debug/$(ProjectName)"
+			OutputDirectory="../../_debug64a"
+			IntermediateDirectory="../../_debug64a/$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="2"
 			>
@@ -44,8 +43,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../include,../../AObjectServer/AOS_Base"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;AOS_USER_EXPORTS"
+				AdditionalIncludeDirectories="../../include64,../../AObjectServer/AOS_Base"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;AOS_SAMPLEPROJECTUPPERCASE_EXPORTS;__DEBUG_DUMP__"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -54,12 +53,14 @@
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
+				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
 				BrowseInformation="1"
-				BrowseInformationFile="$(IntDir)\"
-				WarningLevel="4"
+				WarningLevel="3"
 				SuppressStartupBanner="false"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
+				EnablePREfast="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -77,10 +78,94 @@
 				SuppressStartupBanner="false"
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/AOS_User.lib"
+				ImportLibrary="$(OutDir)/AOS_SAMPLEPROJECT.lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="../../_release64a"
+			IntermediateDirectory="../../_release64a/$(ProjectName)"
+			ConfigurationType="2"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="../../include64a,../../AObjectServer/AOS_Base"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;AOS_SAMPLEPROJECTUPPERCASE_EXPORTS"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
+				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
+				BrowseInformationFile="$(IntDir)/"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="0"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="$(OutDir)/$(ProjectName).dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir)/"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(OutDir)/AOS_SAMPLEPROJECT.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -107,8 +192,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="../../_debug64a"
-			IntermediateDirectory="../../_debug64a/$(ProjectName)"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="2"
 			>
@@ -131,8 +216,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../include64a,../../AObjectServer/AOS_Base"
-				PreprocessorDefinitions="WIN64;WIN32;_DEBUG;_WINDOWS;_USRDLL;AOS_USER_EXPORTS"
+				AdditionalIncludeDirectories="../../include,../../AObjectServer/AOS_Base"
+				PreprocessorDefinitions="WIN64;WIN32;_DEBUG;_WINDOWS;_USRDLL;AOS_SAMPLEPROJECTUPPERCASE_EXPORTS;__DEBUG_DUMP__"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -141,12 +226,14 @@
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
+				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
 				BrowseInformation="1"
-				BrowseInformationFile="$(IntDir)\"
-				WarningLevel="4"
+				WarningLevel="3"
 				SuppressStartupBanner="false"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
+				EnablePREfast="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -164,10 +251,11 @@
 				SuppressStartupBanner="false"
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/AOS_User.lib"
+				ImportLibrary="$(OutDir)/AOS_SAMPLEPROJECT.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -193,93 +281,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="../../_release"
-			IntermediateDirectory="../../_release/$(ProjectName)"
-			ConfigurationType="2"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="../../include,../../AObjectServer/AOS_Base"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;AOS_USER_EXPORTS"
-				RuntimeLibrary="2"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
-				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				DebugInformationFormat="0"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/$(ProjectName).dll"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(OutDir)/"
-				GenerateDebugInformation="false"
-				GenerateMapFile="true"
-				MapFileName="$(OutDir)/$(ProjectName).map"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="0"
-				RandomizedBaseAddress="1"
-				ImportLibrary="$(OutDir)/AOS_User.lib"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
-			OutputDirectory="../../_release64a"
-			IntermediateDirectory="../../_release64a/$(ProjectName)"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="2"
 			>
@@ -301,8 +305,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../include64a,../../AObjectServer/AOS_Base"
-				PreprocessorDefinitions="WIN64;WIN32;NDEBUG;_WINDOWS;_USRDLL;AOS_USER_EXPORTS"
+				AdditionalIncludeDirectories="../../include,../../AObjectServer/AOS_Base"
+				PreprocessorDefinitions="WIN64;WIN32;NDEBUG;_WINDOWS;_USRDLL;AOS_SAMPLEPROJECTUPPERCASE_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
@@ -310,6 +314,7 @@
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				BrowseInformationFile="$(IntDir)/"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"
 				CompileAs="0"
 			/>
@@ -334,7 +339,7 @@
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/AOS_User.lib"
+				ImportLibrary="$(OutDir)/AOS_SAMPLEPROJECT.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -366,30 +371,17 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{F3ADA03F-1AA4-44C6-A6B8-94A7D14128A9}"
 			>
 			<File
-				RelativePath=".\AOS_User.cpp"
+				RelativePath=".\AOS_SAMPLEPROJECT.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOS_User_Constants.cpp"
+				RelativePath=".\AOSModule_SAMPLEMODULE.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_User_Authenticate.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AOSModule_User_LoginController.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AOSModule_User_Logout.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\pchAOS_User.cpp"
+				RelativePath=".\pchAOS_SAMPLEPROJECT.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -397,16 +389,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="pchAOS_User.hpp"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="pchAOS_User.hpp"
+						PrecompiledHeaderThrough="pchAOS_SAMPLEPROJECT.hpp"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -415,7 +398,16 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="pchAOS_User.hpp"
+						PrecompiledHeaderThrough="pchAOS_SAMPLEPROJECT.hpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="pchAOS_SAMPLEPROJECT.hpp"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -424,7 +416,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="pchAOS_User.hpp"
+						PrecompiledHeaderThrough="pchAOS_SAMPLEPROJECT.hpp"
 					/>
 				</FileConfiguration>
 			</File>
@@ -432,30 +424,17 @@
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{1D2A2424-5412-421D-98D9-ECA2C28E45C3}"
 			>
 			<File
-				RelativePath=".\AOS_User_Constants.hpp"
+				RelativePath=".\AOSModule_SAMPLEMODULE.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_User_Authenticate.hpp"
+				RelativePath=".\apiAOS_SAMPLEPROJECT.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_User_LoginController.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AOSModule_User_Logout.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\apiAOS_User.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\pchAOS_User.hpp"
+				RelativePath=".\pchAOS_SAMPLEPROJECT.hpp"
 				>
 			</File>
 		</Filter>
