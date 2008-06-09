@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- /config/AOS_Example-->
+<AOS_Example>
+	<freetype>
+		<fontpath>C:/WINDOWS/Fonts/TIMES.TTF</fontpath>
+	</freetype>
+</AOS_Example>
