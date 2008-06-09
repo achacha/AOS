@@ -132,4 +132,6 @@ syncPath(os.path.join(INPUT_BASE_PATH, "ALibraryImpl", "ACrypto", "openssl", "*.
 print "|----------HEADERS: ALibraryImpl/AGdLib--------------------|";
 syncPath(os.path.join(INPUT_BASE_PATH, "ALibraryImpl", "AGdLib", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
 syncPath(os.path.join(INPUT_BASE_PATH, "ALibraryImpl", "AGdLib", "libgd", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
-
+syncPath(os.path.join(INPUT_BASE_PATH, "ALibraryImpl", "AGdLib", "libpng", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(INPUT_BASE_PATH, "ALibraryImpl", "AGdLib", "libjpeg", "include", "*.h*"), TARGET_ALIBRARY_INCLUDE_PATH);
+syncPath(os.path.join(INPUT_BASE_PATH, "ALibraryImpl", "AGdLib", "freetype", "include", "freetype", "*.h*"), os.path.join(TARGET_ALIBRARY_INCLUDE_PATH, "freetype"));
