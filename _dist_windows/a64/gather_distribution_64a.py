@@ -51,7 +51,7 @@ def showUsage():
   print " -help              - this help";
 
 def gatherHeaders():
-  CMD = os.path.join(ALIBRARY_PATH, "gather_headers_only.py")+" -p " + TARGET_PATH;
+  CMD = os.path.join(ALIBRARY_PATH, "gather_headers_only_64a.py")+" -p " + TARGET_PATH;
   if (verbose == 1):
     CMD += " -v";
   if (clean == 1):
