@@ -461,6 +461,14 @@
 						CompileAs="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						GenerateXMLDocumentationFiles="false"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>
