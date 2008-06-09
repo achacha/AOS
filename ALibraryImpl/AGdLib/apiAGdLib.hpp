@@ -24,6 +24,12 @@ $Id$
 #  endif
 #endif
 
+#if defined(__WINDOWS__)
+#pragma comment(lib, "zlib1")
+#pragma comment(lib, "libjpeg")
+#pragma comment(lib, "freetype235")
+#endif
+
 #include "apiABase.hpp"
 #include "gd.h"
 
