@@ -10,6 +10,7 @@ $Id$
 #include "AOSServices.hpp"
 #include "ASocketLibrary_SSL.hpp"
 #include "ADynamicLibrary.hpp"
+#include "AGdLibrary.hpp"
 
 #include "AOSRequestListener.hpp"
 #include "AOSContextQueue_IsAvailable.hpp"
@@ -19,6 +20,7 @@ $Id$
 
 ADynamicLibrary dllModules;                  //a_Map of DLLs loaded
 ASocketLibrary_SSL g_SecureSocketLibrary;    //a_Global init for SSL and socket library
+AGdLibrary g_GdLibrary;                      //a_Global init for gd library
 
 static const AString _BUILD_INFO_(AString(AOS_SERVER_NAME)+"\tBUILD("+__TIME__+" "+__DATE__+")");
 

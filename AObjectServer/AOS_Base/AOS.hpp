@@ -10,6 +10,8 @@ $Id$
 #ifndef INCLUDED__AOS_HPP__
 #define INCLUDED__AOS_HPP__
 
+#include "apiABase.hpp"
+#include "apiALuaEmbed.hpp"
 #include "apiAOS_Base.hpp"
 
 #include "AString.hpp"
