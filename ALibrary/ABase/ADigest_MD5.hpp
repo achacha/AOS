@@ -31,9 +31,15 @@ public:
 
   /*!
   Get result AFTER finalize() was called
+  ASCII emit using ATextConverter::encodeHEX
   */
-  virtual const AString& getDigest() const;     //a_Binary form
-  virtual void emit(AOutputBuffer&) const;             //a_ASCII emit using ATextConverter::encodeHEX
+  virtual void emit(AOutputBuffer&) const;
+
+  /*!
+  Get result AFTER finalize() was called
+  Binary form
+  */
+  virtual const AString& getDigest() const;
 
 private:
   //RSA MD5 implementation
