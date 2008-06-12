@@ -149,7 +149,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="_DEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN64;WIN32"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
