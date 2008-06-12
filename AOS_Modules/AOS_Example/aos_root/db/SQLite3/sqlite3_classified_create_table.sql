@@ -1,1 +1,0 @@
-CREATE TABLE classified (user_id NUMERIC, contact TEXT, descript BLOB, id INTEGER PRIMARY KEY, price TEXT, title TEXT)

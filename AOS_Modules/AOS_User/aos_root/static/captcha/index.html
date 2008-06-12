@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Validate The Captcha</title>
+<script type="text/javascript" src="/js/sha1.js"></script>
+<script type="text/javascript"><!--
+function hashit(inputvalue, targetfield) {
+  targetfield.value = hex_sha1(inputvalue);
+  return 1;
+}
+function do_submit(aform) {
+  aform.x.value="";
+  aform.submit();
+}
+function do_reload(imageid) {
+  image = document.getElementById(imageid);
+  image.src="captcha.image?";
+}
+//--></script>
+</head>
+
+<body bgcolor="#eeeeee">
+<p>Enter the contents of the CAPTCHA below (case sensitive)</p>
+<form id="login" method="get" action="validate.html">
+<table>
+  <tr><td>
+    <img id="captchaimg" width="220" height="80" src="captcha.image">
+  </td>
+  <td>
+	<input type="hidden" name="captcha"/>
+	<img src="/images/reload.gif" onclick="javascript:do_reload('captchaimg'); return 0;"/><br/>
+	<br/>
+	<input type="text" name="x" value="" maxlength="16" onchange="javascript:hashit(this.value, forms['login'].captcha);"/>
+  </td>
+  </tr>
+  <tr><td colspan="2">
+  <input type="button" value="Validate" onclick="javascript:do_submit(forms['login']);"/>
+  <small><input type="checkbox" name="dumpContext" value="1"/><b>DEBUG</b>: add &amp;dumpContext=1</small>
+  </td></tr>
+</table>  
+</form>
+
+</body>
+</html>

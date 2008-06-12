@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+  <input class="application/x-www-form-urlencoded"/>
+  <module class="Captcha.validate"/>
+  
+  <!-- Results of the Captcha.validate -->
+  <output class="Template">
+    <filename if="/root/captcha/Valid">template/captcha/valid.html</filename>
+    <filename ifnot="/root/captcha/Valid">template/captcha/notvalid.html</filename>
+  </output>
+</controller>

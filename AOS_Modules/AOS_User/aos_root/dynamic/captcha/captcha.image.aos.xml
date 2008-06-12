@@ -2,11 +2,11 @@
 <controller>
 	<input/>
 	<module/>
-	<output class="Example.generateImage">
+	<output class="Captcha.generate">
 		<canvas>
 			<x>200</x>
-			<y>100</y>
-			<fontpath desc="Font relative to data directory">ttf/ARIAL.TTF</fontpath>
+			<y>80</y>
 		</canvas>
+		<fontpath desc="Font relative to data directory">ttf/cour.ttf</fontpath>
 	</output>
 </controller>

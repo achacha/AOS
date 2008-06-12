@@ -378,6 +378,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOS_Example_Constants.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSModule_rss20.cpp"
 				>
 			</File>
@@ -431,6 +435,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995381-89BD-4b04-88EB-625FBE53EBFB}"
 			>
+			<File
+				RelativePath=".\AOS_Example_Constants.hpp"
+				>
+			</File>
 			<File
 				RelativePath=".\AOSModule_rss20.hpp"
 				>

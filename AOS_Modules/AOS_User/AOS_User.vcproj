@@ -377,6 +377,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSModule_Captcha_validate.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSModule_User_Authenticate.cpp"
 				>
 			</File>
@@ -386,6 +390,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSModule_User_Logout.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSOutput_Captcha_generate.cpp"
 				>
 			</File>
 			<File
@@ -439,6 +447,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSModule_Captcha_validate.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSModule_User_Authenticate.hpp"
 				>
 			</File>
@@ -448,6 +460,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSModule_User_Logout.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSOutput_Captcha_generate.hpp"
 				>
 			</File>
 			<File

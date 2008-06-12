@@ -20,12 +20,14 @@ public:
   static const AString SESSION_REDIRECTURL;
   static const AString SESSION_LOGINFAILCOUNT;
   static const AString SESSION_USER;
+  static const AString SESSION_CAPTCHA;
 
   /*!
   Query parameters
   */
   static const AString USERNAME;
   static const AString PASSWORD;
+  static const AString CAPTCHA;
   
   /*!
   Module parameters
@@ -36,6 +38,12 @@ public:
   static const AString PARAM_REDIRECT_FAILURE;
   static const AString PARAM_ATTEMPTS;
   static const AString PARAM_SECURE;
+
+  /*!
+  Model path
+  */
+  static const AString MODEL_CAPTCHA_VALID;
+  static const AString MODEL_CAPTCHA_NOTVALID;
 };
 
 #endif
