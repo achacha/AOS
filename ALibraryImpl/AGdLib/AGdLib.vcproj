@@ -359,11 +359,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AGdLib.cpp"
+				RelativePath=".\AGdLibMain.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AGdLibMain.cpp"
+				RelativePath=".\AGdLibrary.cpp"
 				>
 			</File>
 			<File
@@ -421,7 +421,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AGdLib.hpp"
+				RelativePath=".\AGdLibrary.hpp"
 				>
 			</File>
 			<File
@@ -1457,10 +1457,6 @@
 				</FileConfiguration>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\ClassDiagram1.cd"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
