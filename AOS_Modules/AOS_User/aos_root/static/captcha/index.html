@@ -14,7 +14,7 @@ function do_submit(aform) {
 }
 function do_reload(imageid) {
   image = document.getElementById(imageid);
-  image.src="captcha.image?";
+  image.src="captcha.image?" + new Date().getTime();
 }
 //--></script>
 </head>
