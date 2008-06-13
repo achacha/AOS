@@ -115,7 +115,6 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
           {
             pContext->useResponseHeader().emitXml(pContext->useModel().overwriteElement(AOSContext::S_RESPONSE));
-            pContext->useSessionData().emitXml(pContext->useModel().overwriteElement(AOSContext::S_SESSION));
           }
 
           //

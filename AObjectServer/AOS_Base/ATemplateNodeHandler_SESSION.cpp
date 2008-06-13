@@ -63,10 +63,10 @@ ATemplateNodeHandler_SESSION::Node::~Node()
 {
 }
 
-void ATemplateNodeHandler_SESSION::Node::process(ABasePtrContainer& objects, AOutputBuffer& output)
+void ATemplateNodeHandler_SESSION::Node::process(ATemplateContext& ctx, AOutputBuffer& output)
 {
   //a_Context
-  AOSContext *pContext = objects.useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
+  AOSContext *pContext = ctx.useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   if (!pContext)
   {
     ARope rope("Must have AOSContext object named: ",35);

@@ -33,6 +33,7 @@ public:
   static const AString S_AJAX;
   static const AString S_ALIAS;
   static const AString S_GZIP;
+  static const AString S_CACHECONTROLNOCACHE;
 
 public:
   AOSController(const AString& name, ALog&);
@@ -61,6 +62,12 @@ public:
   */
   bool isForceAjax() const;
   
+  /*!
+  Checks if the dynamic command is forcing no cache
+  This can be turned on by a controller config and browser will cache
+  */
+  bool isCacheControlNoCache() const;
+
   /*!
   Command specified gzip of the output
   If something invalid or out of range is specified then 0 is assumed
@@ -148,9 +155,10 @@ private:
   AOSModules m_Modules;
   
   //a_Attributes
-  bool m_Enabled;            //a_Command state, if disabled, static XML will be attempted instead
-  bool m_ForceAjax;          //a_Ajax forces a lean XML document, false by default
-  int m_GZipLevel;           //a_Forced gzip compression level of the output
+  bool m_Enabled;              //a_Command state, if disabled, static XML will be attempted instead
+  bool m_ForceAjax;            //a_Ajax forces a lean XML document, false by default
+  bool m_CacheControlNoCache;  //a_If a command allows Cache-Control: no-cache (default is true)
+  int m_GZipLevel;             //a_Forced gzip compression level of the output
 
   //a_The log
   ALog& m_Log;

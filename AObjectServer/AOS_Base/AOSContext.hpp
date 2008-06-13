@@ -34,12 +34,22 @@ class AOSDirectoryConfig;
 class AOS_BASE_API AOSContext : public ADebugDumpable, public AXmlEmittable
 {
 public:
+  /*!
+  Name of the root element
+  */
+  static const AString XML_ROOT;
+
+  /*!
+  Constants used inside the context model or reference to it
+  */
   static const AString S_REQUEST;
   static const AString S_RESPONSE;
   static const AString S_SESSION;
   static const AString S_OUTPUT;
   static const AString S_ERROR;
   static const AString S_MESSAGE;
+  static const AString S_CONTEXT;
+  static const AString S_MODEL;
 
 public:
   /*!
@@ -425,6 +435,7 @@ public:
   {
     CTXFLAG_IS_AJAX = 0,              //a_Request is AJAX, use minimal XML
     CTXFLAG_IS_HTTPS,                 //a_Request from HTTPS socket listener
+    CTXFLAG_IS_CACHE_CONTROL_NO_CACHE,//a_Response will include no-cache for dynamic unless this is set
     CTXFLAG_IS_REDIRECTING,           //a_Context is in redirect mode
     CTXFLAG_IS_RESPONSE_HEADER_SENT,  //a_Response header already written
     CTXFLAG_IS_OUTPUT_SENT,           //a_Output as been written already (response header sent)
@@ -436,12 +447,6 @@ public:
   Access to context specific flags
   */
   ABitArray& useContextFlags();
-
-  /*!
-  Output constants
-  */
-  static const AString CONTEXT;
-  static const AString XML_ROOT;
 
   /*!
   Object name used when inserting into ABasePtrContainer in scripting

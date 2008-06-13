@@ -39,6 +39,7 @@ $Id$
 #include "AOSModuleInterface.hpp"
 #include "AOSOutputGeneratorInterface.hpp"
 #include "AOSContext.hpp"
+#include "AOSContextUtils.hpp"
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"
 #include "AOSCacheManager.hpp"

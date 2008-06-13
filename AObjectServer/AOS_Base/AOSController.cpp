@@ -19,14 +19,16 @@ const AString AOSController::S_ENABLED("enabled",7);
 const AString AOSController::S_AJAX("ajax",4);
 const AString AOSController::S_ALIAS("alias",5);
 const AString AOSController::S_GZIP("gzip",4);
+const AString AOSController::S_CACHECONTROLNOCACHE("nocache",7);
 
 void AOSController::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSController @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Path=" << m_Path << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_Enabled=" << (m_Enabled ? "true" : "false") << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_ForceAjax=" << (m_ForceAjax ? "true" : "false") << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Enabled=" << AString::fromBool(m_Enabled) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_ForceAjax=" << AString::fromBool(m_ForceAjax) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_CacheControlNoCache=" << AString::fromBool(m_CacheControlNoCache) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_GZipLevel=" << m_GZipLevel << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Alias=" << m_Alias << std::endl;
@@ -64,6 +66,7 @@ AOSController::AOSController(const AString& path, ALog& log) :
   m_OutputParams(S_OUTPUT),
   m_Enabled(true),
   m_ForceAjax(false),
+  m_CacheControlNoCache(true),
   m_GZipLevel(0),
   m_Log(log)
 {
@@ -140,6 +143,15 @@ void AOSController::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader
 
   adminAddPropertyWithAction(
     thisRoot, 
+    S_CACHECONTROLNOCACHE, 
+    AString::fromBool(m_CacheControlNoCache),
+    ASW("Update",6), 
+    ASWNL("'Cache-Control: no-cache'(1) or Allow caching by the browser(0)"),
+    ASW("Set",3)
+ );
+
+ adminAddPropertyWithAction(
+    thisRoot, 
     S_GZIP, 
     AString::fromInt(m_GZipLevel),
     ASW("Update",6), 
@@ -165,6 +177,10 @@ void AOSController::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHea
       {
         m_ForceAjax = value.toBool();
       }
+      else if (str.endsWith(S_CACHECONTROLNOCACHE))
+      {
+        m_CacheControlNoCache = value.toBool();
+      }
       else if (str.endsWith(S_GZIP))
       {
         int level = value.toInt();
@@ -179,21 +195,6 @@ void AOSController::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHea
   }
   else
     adminAddError(eBase, ARope("Property not found: ")+str);
-
-
-  if (request.getUrl().getParameterPairs().get(S_ENABLED, str))
-  {
-  }
-  else if (request.getUrl().getParameterPairs().get(S_AJAX, str))
-  {
-    m_ForceAjax = (str.at(0) == '0' ? false : true);
-  }
-  else if (request.getUrl().getParameterPairs().get(S_GZIP, str))
-  {
-    int level = str.toInt();
-    if (level >=0 && level <=9)
-      m_GZipLevel = level;
-  }
 }
 
 AXmlElement& AOSController::emitXml(AXmlElement& thisRoot) const
@@ -205,6 +206,7 @@ AXmlElement& AOSController::emitXml(AXmlElement& thisRoot) const
   
   thisRoot.addAttribute(S_ENABLED, m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   thisRoot.addAttribute(S_AJAX, m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
+  thisRoot.addAttribute(S_CACHECONTROLNOCACHE, m_CacheControlNoCache ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   thisRoot.addAttribute(S_GZIP, AString::fromInt(m_GZipLevel));
   
   //a_Input
@@ -241,28 +243,29 @@ void AOSController::fromXml(const AXmlElement& element)
   element.getAttributes().get(S_ALIAS, m_Alias);
 
   //a_Enabled?
-  element.getAttributes().get(S_ENABLED, str);
-  if (str.equals(AConstant::ASTRING_ZERO) || str.equals(AConstant::ASTRING_FALSE))
-    m_Enabled = false;
-  else
-    m_Enabled = true;
+  if (element.getAttributes().get(S_ENABLED, str))
+    m_Enabled = str.toBool();
 
   //a_Is Ajax call?
   str.clear();
-  element.getAttributes().get(S_AJAX, str);
-  if (str.equals(AConstant::ASTRING_ONE) || str.equals(AConstant::ASTRING_TRUE))
-    m_ForceAjax = true;
-  else
-    m_ForceAjax = false;
+  if (element.getAttributes().get(S_AJAX, str))
+    m_ForceAjax = str.toBool();
+
+  //a_Is caching command call?
+  str.clear();
+  if (element.getAttributes().get(S_CACHECONTROLNOCACHE, str))
+    m_CacheControlNoCache = str.toBool();
 
   //a_Is GZip compressed?
   str.clear();
-  element.getAttributes().get(S_GZIP, str);
-  int level = str.toInt();
-  if (level >= 0 && level <= 9)
-    m_GZipLevel = level;
-  else
-    m_GZipLevel = 0;
+  if (element.getAttributes().get(S_GZIP, str))
+  {
+    int level = str.toInt();
+    if (level >= 0 && level <= 9)
+      m_GZipLevel = level;
+    else
+      m_GZipLevel = 0;
+  }
 
   //a_Get input processor
   m_InputProcessor.clear();
@@ -270,8 +273,8 @@ void AOSController::fromXml(const AXmlElement& element)
   const AXmlElement *pNode = element.findElement(S_INPUT);
   if (pNode)
   {
-    pNode->getAttributes().get(S_CLASS, m_InputProcessor);
-    pNode->emitXmlContent(m_InputParams);
+    if (pNode->getAttributes().get(S_CLASS, m_InputProcessor))
+      pNode->emitXmlContent(m_InputParams);
   }
 
   //a_Get output generator
@@ -280,8 +283,8 @@ void AOSController::fromXml(const AXmlElement& element)
   pNode = element.findElement(S_OUTPUT);
   if (pNode)
   {
-    pNode->getAttributes().get(S_CLASS, m_OutputGenerator);
-    pNode->emitXmlContent(m_OutputParams);
+    if (pNode->getAttributes().get(S_CLASS, m_OutputGenerator))
+      pNode->emitXmlContent(m_OutputParams);
   }
 
   //a_Get module names
@@ -294,10 +297,8 @@ void AOSController::fromXml(const AXmlElement& element)
   {
     //a_Get module 'class', this is the registered MODULE_CLASS and get module params
     if ((*citModule)->getAttributes().get(S_CLASS, strClass) && !strClass.isEmpty())
-    {
-      //a_Add new module info object
       m_Modules.use().push_back(new AOSModuleInfo(strClass, *(*citModule)));
-    }
+    
     strClass.clear();
   }
 }
@@ -353,6 +354,11 @@ bool AOSController::isEnabled() const
 bool AOSController::isForceAjax() const
 {
   return m_ForceAjax;
+}
+
+bool AOSController::isCacheControlNoCache() const
+{
+  return m_CacheControlNoCache;
 }
 
 int AOSController::getGZipLevel() const

@@ -5,6 +5,7 @@ $Id$
 */
 #include "pchAOS_BaseModules.hpp"
 #include "AOSOutput_Redirect.hpp"
+#include "AOS_BaseModules_Constants.hpp"
 
 const AString& AOSOutput_Redirect::getClass() const
 {
@@ -19,52 +20,18 @@ AOSOutput_Redirect::AOSOutput_Redirect(AOSServices& services) :
 
 AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
 {
-  //a_NOTE: redirect URL can never come from the query string for security reasons
   //a_A command places the redirect into session or model or coded into the command itself
-  static const AString REDIRECT_URL("url",3);
-  static const AString REDIRECT_PATH("model-path",10);
-  static const AString SESSION_PATH("session-path",12);
-  static const AString SECURE("secure",6);
-  
+  //a_NOTE: redirect URL can never come from the query string for security reasons
   AString str(4096, 1024);
-  AString path(1024, 256);
-  if (context.getOutputParams().emitString(REDIRECT_URL, str))
+  const AXmlElement *pElement = context.getOutputParams().findElement(ASW("redirect",8));
+  if (!pElement)
   {
-    //a_Url in command   
-    context.useEventVisitor().startEvent(ARope("Redirect URL: ",14)+str);
-    context.setResponseRedirect(str);
+    context.addError(getClass(), ASWNL("Missing element redirect"), true);
+    return AOSContext::RETURN_ERROR;
   }
-  else if (context.getOutputParams().emitString(REDIRECT_PATH, path))
+  if (!AOSContextUtils::getContentWithReference(context, *pElement, str))
   {
-    //a_Model
-    if (context.useModel().emitString(path, str))
-    {
-      //a_Redirect to URL
-      context.useEventVisitor().startEvent(ARope("Model Redirect[",15)+path+ASW("]: ",3)+str);
-    }
-    else
-    {
-      context.addError(getClass(), ARope("Redirect missing url in the model: ")+path, true);
-      return AOSContext::RETURN_ERROR;
-    }
-  }
-  else if (context.getOutputParams().emitString(SESSION_PATH, path))
-  {
-    //a_Session
-    if (context.useSessionData().useData().emitString(path, str))
-    {
-      //a_Redirect to URL
-      context.useEventVisitor().startEvent(ARope("Session Redirect[",17)+path+ASW("]: ",3)+str);
-    }
-    else
-    {
-      context.addError(getClass(), ARope("Redirect missing url in the session: ")+path, true);
-      return AOSContext::RETURN_ERROR;
-    }
-  }
-  else
-  {
-    context.addError(getClass(), ASWNL("Redirect missing parameters"), true);
+    context.addError(getClass(), ARope("Unable to find redirect path: ")+*pElement, true);
     return AOSContext::RETURN_ERROR;
   }
 
@@ -73,9 +40,9 @@ AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
   {
     //a_Check is forcing secure/non-secure protocol
     AUrl url(str);
-    if (context.getOutputParams().exists(SECURE))
+    if (context.getOutputParams().exists(AOS_BaseModules_Constants::SECURE))
     {
-      if (context.getOutputParams().getBool(SECURE, false))
+      if (context.getOutputParams().getBool(AOS_BaseModules_Constants::SECURE, false))
       {
         //a_HTTPS
         url.setProtocol(AUrl::HTTPS);

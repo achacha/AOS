@@ -11,22 +11,23 @@ $Id$
 /*!
   Output redirected
   'secure' true or false will force https: and http: respectively
+  Not including secure will do nothing to the protocol
 
   Redirect to relative or absolute URL
   <output>
-    <url>http://somwhere/path/file?query</url>
+    <redirect>http://somwhere/path/file?query</redirect>
     <secure>true</secure>
   </output>
 
   Redirect to a URL in the model
   <output>
-    <model-path>/root/redirectUrl</model-path>
+    <redirect reference="MODEL">/root/redirectUrl</redirect>
     <secure>false</secure>
   </output>
 
   Redirect to a URL in the session data
   <output>
-    <session-path>/root/redirectUrl</session-path>
+    <redirect reference="SESSION">/root/redirectUrl</redirect>
     <secure>false</secure>
   </output>
 */

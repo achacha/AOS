@@ -14,7 +14,6 @@ $Id$
 
 extern "C" int luaopen_aos(lua_State *L);
 
-const AString AOSContext::CONTEXT("context");
 const AString AOSContext::XML_ROOT("root");
 const AString AOSContext::OBJECTNAME("__AOSContext__");
 
@@ -24,6 +23,8 @@ const AString AOSContext::S_SESSION("SESSION",7);
 const AString AOSContext::S_OUTPUT("OUTPUT",6);
 const AString AOSContext::S_ERROR("ERROR",5);
 const AString AOSContext::S_MESSAGE("MESSAGE",7);
+const AString AOSContext::S_CONTEXT("CONTEXT",7);
+const AString AOSContext::S_MODEL("MODEL",5);
 
 void AOSContext::debugDump(std::ostream& os, int indent) const
 {
@@ -252,6 +253,7 @@ AOSContext::Status AOSContext::init()
   m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
   m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
   m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_REDIRECTING);
+  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_CACHE_CONTROL_NO_CACHE);
 
   try
   {
@@ -380,10 +382,10 @@ AOSContext::Status AOSContext::_processHttpHeader()
       return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
 
     case 0:
-      //a_0 bytes read yet isAvailable flagged it as having data which implies closed socket
-      //a_Should not come here, isAvailable will handle closed sockets
       if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_ISAVAILABLE_PENDING))
       {
+        //a_0 bytes read yet isAvailable flagged it as having data which implies closed socket
+        //a_Should not come here, isAvailable will handle closed sockets
         //a_If select thinks there is data but we cannot read any then socket is dead
         m_EventVisitor.startEvent(ASWNL("AOSContext: Handling closed socket (should be in isAvailable)"));
         if (mp_RequestFile)
@@ -393,10 +395,9 @@ AOSContext::Status AOSContext::_processHttpHeader()
       else
       {
         //a_No data read wait and try to get more
-        
         if (!_waitForFirstChar())
         {
-          m_EventVisitor.startEvent(ASW("AOSContext: Zero data read looking for first char",49), AEventVisitor::EL_ERROR);
+          m_EventVisitor.startEvent(ASW("AOSContext: Zero data read looking for first char",49), AEventVisitor::EL_DEBUG);
           return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
         }
         else
@@ -1030,6 +1031,20 @@ size_t AOSContext::writeResponseHeader()
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_OUTPUT_SENT))
     ATHROW_EX(this, AException::ProgrammingError, ASWNL("Output has already been sent"));
 
+  //a_Turn off caching on dynamic pages
+  if ((mp_Controller && !mp_Controller->isCacheControlNoCache()) || m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_CACHE_CONTROL_NO_CACHE))
+  {
+    if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+      m_EventVisitor.startEvent(ASWNL("Cache-Control: no-cache set on response"), AEventVisitor::EL_DEBUG);
+
+    m_ResponseHeader.setPair(AHTTPResponseHeader::HT_GEN_Cache_Control, ASW("no-cache",8));
+  }
+  else
+  {
+    if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+      m_EventVisitor.startEvent(ASWNL("Response is cacheable"), AEventVisitor::EL_DEBUG);
+  }
+
   m_EventVisitor.startEvent(ASW("Sending HTTP response header",28));
 
   AString str(10240, 4096);
@@ -1184,6 +1199,9 @@ bool AOSContext::setControllerFromRequestUrl()
   mp_Controller = m_Services.useConfiguration().getController(m_RequestHeader.getUrl());
   if (!mp_Controller)
     return false;
+
+  //a_Controller based execution disables the browser cache unless something overrides it
+  m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_CACHE_CONTROL_NO_CACHE);
 
   //a_Check if this is an alias
   const AString& alias = mp_Controller->getAlias();
