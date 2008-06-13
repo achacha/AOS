@@ -6,6 +6,7 @@ $Id$
 #include "pchAOS_User.hpp"
 #include "AOSModule_User_Authenticate.hpp"
 #include "AOSUser.hpp"
+#include "AOSContextUtils.hpp"
 
 const AString& AOSModule_User_Authenticate::getClass() const
 {
@@ -20,38 +21,38 @@ AOSModule_User_Authenticate::AOSModule_User_Authenticate(AOSServices& services) 
 
 AOSContext::ReturnCode AOSModule_User_Authenticate::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
-  AString str;
-  AString strSuccessPath;
-  const AXmlElement *pSuccess = moduleParams.findElement(AOS_User_Constants::PARAM_REDIRECT_RETRYPAGE);
-  if (!pSuccess)
+  AString strRetryPath;
+  const AXmlElement *pRetryPage = moduleParams.findElement(AOS_User_Constants::PARAM_REDIRECT_RETRYPAGE);
+  if (!pRetryPage)
   {
-    context.addError(getClass(), ARope("Missing module parameter for redirect on retry: ")+AOS_User_Constants::PARAM_REDIRECT_FAILURE);
+    //a_No retry page
+    context.addError(getClass(), ARope("Missing module parameter for redirect on retry: ")+AOS_User_Constants::PARAM_REDIRECT_RETRYPAGE);
     return AOSContext::RETURN_ERROR;
   }
   else
   {
-    str.clear();
-    if (pSuccess->getAttributes().get(AOS_User_Constants::PARAM_REDIRECT_LOGINPAGE_RELATIVEATTR, str))
+    if (!AOSContextUtils::getContentWithReference(context, *pRetryPage, strRetryPath))
     {
-      str.clear();
-      pSuccess->emitContent(str);
-      if (!context.useModel().emitContentFromPath(str, strSuccessPath))
-      {
-        context.useEventVisitor().startEvent(ARope("AOSModule_User_Authenticate: Missing model parameter for redirect: ")+str, AEventVisitor::EL_WARN);
-      }
-    }
-    else
-    {
-      //a_Path in content
-      pSuccess->emitContent(strSuccessPath);
+      context.useEventVisitor().startEvent(ARope("AOSModule_User_Authenticate: Missing retry redirect: ")+*pRetryPage, AEventVisitor::EL_ERROR);
+      return AOSContext::RETURN_ERROR;
     }
   }
 
   AString strFailurePath;
-  if (!moduleParams.emitContentFromPath(AOS_User_Constants::PARAM_REDIRECT_FAILURE, strFailurePath))
+  const AXmlElement *pFailPage = moduleParams.findElement(AOS_User_Constants::PARAM_REDIRECT_FAILURE);
+  if (!pFailPage)
   {
-    context.addError(getClass(), ARope("Missing module parameter for redirect on login failure: ")+AOS_User_Constants::PARAM_REDIRECT_FAILURE);
+    //a_No retry page
+    context.addError(getClass(), ARope("Missing module parameter for redirect on fail: ")+AOS_User_Constants::PARAM_REDIRECT_FAILURE);
     return AOSContext::RETURN_ERROR;
+  }
+  else
+  {
+    if (!AOSContextUtils::getContentWithReference(context, *pFailPage, strFailurePath))
+    {
+      context.useEventVisitor().startEvent(ARope("AOSModule_User_Authenticate: Missing fail redirect: ")+*pFailPage, AEventVisitor::EL_ERROR);
+      return AOSContext::RETURN_ERROR;
+    }
   }
 
   //
@@ -66,25 +67,43 @@ AOSContext::ReturnCode AOSModule_User_Authenticate::execute(AOSContext& context,
     context.useSessionData().useData().remove(AOS_User_Constants::SESSION_LOGINFAILCOUNT);
 
     //a_Add username, id and isLoggedIn to the user element in the SESSION
-    AXmlElement *pUser = context.useSessionData().useData().findElement(AOS_User_Constants::SESSION_USER);
-    AASSERT(&context, pUser);
+    AXmlElement& user = context.useSessionData().useData().overwriteElement(AOS_User_Constants::SESSION_USER);
     
-    str.clear();
+    AString str;
     context.useRequestParameterPairs().get(AOS_User_Constants::USERNAME, str);
-    pUser->overwriteElement(AOSUser::USERNAME).setData(str);
-    pUser->overwriteElement(AOSUser::IS_LOGGED_IN);
+    user.overwriteElement(AOSUser::USERNAME).setData(str);
+    user.overwriteElement(AOSUser::IS_LOGGED_IN);
 
-    context.setResponseRedirect(strSuccessPath);
-    context.useSessionData().useData().remove(AOS_User_Constants::SESSION_REDIRECTURL);
-    return AOSContext::RETURN_REDIRECT;
+    str.clear();
+    if (context.useSessionData().useData().emitContentFromPath(AOS_User_Constants::SESSION_REDIRECTURL, str))
+    {
+      //a_Success redirect in session, if not there then just continue to execute
+      context.setResponseRedirect(str);
+      context.useSessionData().useData().remove(AOS_User_Constants::SESSION_REDIRECTURL);
+
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+        context.useEventVisitor().startEvent(AString(getClass())+": User authenticated, redirecting to: "+str, AEventVisitor::EL_DEBUG);
+
+      return AOSContext::RETURN_REDIRECT;
+    }
+    else
+    {
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+        context.useEventVisitor().startEvent(AString(getClass())+": User authenticated, no redirect found in session at: "+AOS_User_Constants::SESSION_REDIRECTURL, AEventVisitor::EL_DEBUG);
+
+      return AOSContext::RETURN_OK;
+    }
   }
   else
   {
     AString str;
+    AString attempts;
     if (context.useSessionData().useData().emitContentFromPath(AOS_User_Constants::SESSION_LOGINFAILCOUNT, str))
     {
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+        context.useEventVisitor().startEvent(AString(getClass())+": User authention failed, count: "+str, AEventVisitor::EL_DEBUG);
+
       //a_Increment failure
-      AString attempts;
       if (moduleParams.emitContentFromPath(AOS_User_Constants::PARAM_ATTEMPTS, attempts))
       {
         //a_Limit on attempts
@@ -108,7 +127,10 @@ AOSContext::ReturnCode AOSModule_User_Authenticate::execute(AOSContext& context,
     }
     else
     {
-      //a_First failure
+      //a_First failure, add count
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+        context.useEventVisitor().startEvent(AString(getClass())+": User authention failed, count: 0", AEventVisitor::EL_DEBUG);
+
       context.useSessionData().useData().setInt(AOS_User_Constants::SESSION_LOGINFAILCOUNT, 1);
       context.setResponseRedirect(strFailurePath);
       return AOSContext::RETURN_REDIRECT;

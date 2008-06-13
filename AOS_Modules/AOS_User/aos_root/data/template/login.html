@@ -25,7 +25,8 @@ The password is SHA-1 encoded on change.
 -->
 <p>
 Login form will query the password and use SHA-1 to encode it and submit.<br/>
-Redirect to SESSION variable /user/ru if succesful which would have been set by the controller that redirected you here</p>
+Redirect to SESSION variable /SESSION/user/ru = %[SESSION]{{{user/ru}}}[SESSION]%	
+ if succesful which would have been set by the controller that redirected you here</p>
 <br/>
 <form id="login" method="get" action="/user/User_Authenticate">
   <input type="hidden" name="un"/>

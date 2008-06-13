@@ -3,12 +3,11 @@
   <input class="application/x-www-form-urlencoded"/>
 	<module class="User.Authenticate">
 		<redirect>
-			<retry reference="context">SESSION/data/user/ru</retry>
+			<retry>/login</retry>
 			<failure>/login</failure>
 		</redirect>
 	</module>
 	<output class="Redirect">
-	  <session-path>user/ru</session-path>
-		<secure>true</secure>
+	  <redirect reference="SESSION">user/ru</redirect>
 	</output>
 </controller>

@@ -30,20 +30,23 @@ AOSContext::ReturnCode AOSModule_User_LoginController::execute(AOSContext& conte
     context.useSessionData().useData()
       .overwriteElement(AOS_User_Constants::SESSION_REDIRECTURL)
         .setData(url, AXmlData::ENC_CDATADIRECT);
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+      context.useEventVisitor().startEvent(AString(getClass())+": Pushing redirect URL: "+url, AEventVisitor::EL_DEBUG);
 
     AString str;
     if (moduleParams.emitString(AOS_User_Constants::PARAM_REDIRECT_LOGINPAGE, str))
     {
+      url.setPathAndFilename(str);
+      
       //a_Redirect to login page
       context.useEventVisitor().startEvent(ASW("User not logged in, redirecting",31));
       if (moduleParams.exists(AOS_User_Constants::PARAM_SECURE))
       {
-        AUrl url(str);
         url.setProtocol(AUrl::HTTPS);
         context.setResponseRedirect(url);
       }
       else
-        context.setResponseRedirect(str);
+        context.setResponseRedirect(url);
       
       return AOSContext::RETURN_REDIRECT;
     }
@@ -54,6 +57,9 @@ AOSContext::ReturnCode AOSModule_User_LoginController::execute(AOSContext& conte
       return AOSContext::RETURN_ERROR;
     }
   }
-  
+
+  //a_Force everything with this directory controller to not cache content
+  context.useContextFlags().setBit(AOSContext::CTXFLAG_IS_CACHE_CONTROL_NO_CACHE);
+
   return AOSContext::RETURN_OK;
 }

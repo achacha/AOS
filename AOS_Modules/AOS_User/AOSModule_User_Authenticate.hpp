@@ -10,6 +10,23 @@ $Id$
 
 /*!
 AuthenticateUser
+
+Reference to URL redirect:
+<module>
+  <redirect>
+    <retry reference="session|model">path to get the url</retry>
+    <failure/>
+  </redirect>
+</module>
+
+Imemdiate URL redirect:
+<module>
+  <redirect>
+    <retry>url</retry>
+    <failure/>
+  </redirect>
+</module>
+
 */
 class AOS_USER_API AOSModule_User_Authenticate : public AOSModuleInterface
 {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <controller>
   <input class="application/x-www-form-urlencoded"/>
-	<module class="User.Logout"/>
-	<output class="Redirect">
-	  <url>/</url>
-		<secure>false</secure>
-	</output>
+  <module class="User.Logout"/>
+  <output class="Redirect">
+    <redirect>/</redirect>
+    <secure>false</secure>
+  </output>
 </controller>
