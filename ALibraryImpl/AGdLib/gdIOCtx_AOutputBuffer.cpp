@@ -22,8 +22,6 @@ gdIOCtx_AOutputBuffer::gdIOCtx_AOutputBuffer(AOutputBuffer& buf) :
 
 int gdIOCtx_AOutputBuffer::getC(struct gdIOCtx *pThisBase)
 {
-  gdIOCtx_AOutputBuffer *pThis = (gdIOCtx_AOutputBuffer *)pThisBase;
-  
   ATHROW(NULL, AException::ProgrammingError);
 }
 

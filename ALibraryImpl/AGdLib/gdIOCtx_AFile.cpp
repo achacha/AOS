@@ -74,5 +74,4 @@ long gdIOCtx_AFile::tell(struct gdIOCtx *pThisBase)
 
 void gdIOCtx_AFile::gd_free(struct gdIOCtx *pThisBase)
 {
-  gdIOCtx_AFile *pThis = (gdIOCtx_AFile *)pThisBase;
 }

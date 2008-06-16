@@ -133,7 +133,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../ALibrary/ABase"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ADATABASE_ODBC_EXPORTS"
+				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;ADATABASE_ODBC_EXPORTS;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
