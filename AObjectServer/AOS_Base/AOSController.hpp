@@ -168,7 +168,7 @@ private:
 XML for each command (example below)
 
 <?xml version="1.0" encoding="UTF-8"?>
-<controller ajax='1' gzip='3' enabled='true'>
+<controller ajax='1' gzip='3' enabled='true' nocache='1'>
 	<input class='application/x-www-form-urlencoded'/>
   <module class='PublishInput'>
     <name>foo</name>
