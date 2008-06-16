@@ -6,6 +6,19 @@ $Id$
 #ifndef INCLUDED__osDefines_HPP__
 #define INCLUDED__osDefines_HPP__
 
+/*
+Visual C++ warning disable
+*/
+#if _MSC_VER > 1000
+  #pragma warning(disable:4706)  // assignment within conditional expression
+  #pragma warning(disable:4786)  // identifier was truncated to '255' characters in the debug information
+  #pragma warning(disable:4251)  // class 'xxx' needs to have dll-interface to be used by clients of class 'xxx'
+  #pragma warning(disable:6011)  // Dereferencing NULL pointer (STL deque warning)
+  #pragma warning(disable:4245)  // 'argument' : conversion from '' to 'size_t', signed/unsigned mismatch (due to use of enum in AConstant for npos/etc)
+  #pragma warning(disable:4512)  // assignment operator could not be generated (some classes have reference members to prevent copy)
+  #pragma warning(disable:4100)  // unreferenced formal parameter
+#endif
+
 /** What do the OS/Compiler defines mean
 NEEDS_ANSI_HELPERS - OS/C needs: strrev strnicmp xtoa itoa ltoa ultoa
 HAS_MUTABLE - OS/C has 'mutable' keyword
@@ -15,7 +28,6 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
 #if defined(_WIN64)
   //Win64 environment
   #define __WINDOWS__
-  #define WIN64
   #pragma message("ABase (64bit): Windows OS detected")
 
   //a_OS/C flags
@@ -73,18 +85,6 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
     #include <winsock2.h>
   #endif
   
-#if _MSC_VER > 1000
-  #pragma once
-#endif
-  
-  #pragma warning (disable:4706)  // assignment within conditional expression
-  #pragma warning (disable:4786)  // identifier was truncated to '255' characters in the debug information
-  #pragma warning (disable:4251)  // class 'xxx' needs to have dll-interface to be used by clients of class 'xxx'
-//  #pragma warning (disable:6011)  // Dereferencing NULL pointer (STL deque warning)
-  #pragma warning (disable:4245)  // 'argument' : conversion from '' to 'size_t', signed/unsigned mismatch (due to use of enum in AConstant for npos/etc)
-  #pragma warning(disable:4512)   // assignment operator could not be generated (some classes have reference members to prevent copy)
-  #pragma warning(disable:4100)   // unreferenced formal parameter
-
 #elif defined (__unix)
   //a_For all UNIX
   //a_Defines to be used inside the event log class (invisible to the user, since there is an enum to shield us)
