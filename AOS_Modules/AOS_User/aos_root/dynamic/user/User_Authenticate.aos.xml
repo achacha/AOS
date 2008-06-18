@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <controller>
-  <input class="application/x-www-form-urlencoded"/>
+	<input class="application/x-www-form-urlencoded"/>
+
 	<module class="User.Authenticate">
-		<redirect>
-			<retry>/login</retry>
-			<failure>/login</failure>
-		</redirect>
+	  <redirect>
+		<retry>/login</retry>
+		<failure>/login</failure>
+	  </redirect>
 	</module>
+	
 	<output class="Redirect">
 	  <redirect reference="SESSION">user/ru</redirect>
+	  <redirect reference="REFERER"/>
 	</output>
 </controller>

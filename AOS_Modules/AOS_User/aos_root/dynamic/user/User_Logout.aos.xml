@@ -3,7 +3,7 @@
   <input class="application/x-www-form-urlencoded"/>
   <module class="User.Logout"/>
   <output class="Redirect">
-    <redirect>/</redirect>
+    <redirect>/aos.html</redirect>
     <secure>false</secure>
   </output>
 </controller>
