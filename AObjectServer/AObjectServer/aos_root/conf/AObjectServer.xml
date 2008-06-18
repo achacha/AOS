@@ -41,8 +41,8 @@
 
   <reported>
     <!-- Reported overrides -->
-    <hostname desc="Hostname reported to clients"/>
-    <server desc="Server field in the response http header"/>
+    <hostname desc="Hostname reported to clients, this is used if request Host field is missing. If this is empty and Host is missing then local ip is used."/>
+    <server desc="Server field in the response http header, usually identifies server type and versiono"/>
     <http desc="Reported HTTP port, none means use 80"/>
     <https desc="Reported HTTPS port, none means use 443"/>
   </reported>

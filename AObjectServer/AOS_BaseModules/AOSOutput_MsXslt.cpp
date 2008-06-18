@@ -202,7 +202,9 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
     const _bstr_t bstrXml = str.c_str();
     if (! pXMLDoc->loadXML(bstrXml) )
     {
-      context.addError(getClass(), AString("Unable to parse XML:\n ")+str+"\n");
+      ARope rope("Unable to parse XML:\n");
+      ATextConverter::convertStringToHexDump(str, rope);
+      context.addError(getClass(), rope);
       return AOSContext::RETURN_ERROR;
     }
 

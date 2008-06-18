@@ -25,6 +25,7 @@ const AString AOSContext::S_ERROR("ERROR",5);
 const AString AOSContext::S_MESSAGE("MESSAGE",7);
 const AString AOSContext::S_CONTEXT("CONTEXT",7);
 const AString AOSContext::S_MODEL("MODEL",5);
+const AString AOSContext::S_REFERER("REFERER",7);
 
 void AOSContext::debugDump(std::ostream& os, int indent) const
 {
@@ -278,7 +279,14 @@ AOSContext::Status AOSContext::init()
   timeNow.emitRFCtime(str);
   m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Date, str);
 
-  m_RequestHeader.useUrl().setServer(m_Services.useConfiguration().getReportedHostname());
+  //a_Set the hostname from either Hostname: request header or use config if not found or HTTP/1.0
+  str.clear();
+  if (m_RequestHeader.getPairValue(AHTTPHeader::HT_REQ_Host, str))
+    m_RequestHeader.useUrl().setServer(str);
+  else
+    m_RequestHeader.useUrl().setServer(m_Services.useConfiguration().getReportedHostname());
+  
+  //a_HTTP/HTTPS
   if (m_ContextFlags.isSet(AOSContext::CTXFLAG_IS_HTTPS))
   {
     m_RequestHeader.useUrl().setProtocol(AUrl::HTTPS);
@@ -694,6 +702,11 @@ AOSContext::Status AOSContext::_processHttpHeader()
     m_EventVisitor.startEvent(ASW("AOSContext: Parsing HTTP header",31), AEventVisitor::EL_DEBUG, 5000.0);
   m_RequestHeader.parse(str);
 
+  return _postProcessHttpHeader();
+}
+
+AOSContext::Status AOSContext::_postProcessHttpHeader()
+{
   //a_Check if valid HTTP version
   if (!m_RequestHeader.isValidVersion())
     return AOSContext::STATUS_HTTP_VERSION_NOT_SUPPORTED;
@@ -760,7 +773,7 @@ AOSContext::Status AOSContext::_processHttpHeader()
     if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
       m_EventVisitor.startEvent(ASW("Connection: Close set on response header",40), AEventVisitor::EL_DEBUG);
   }
-  
+
   if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
   {
     ARope rope("AOSContext: HTTP request header\r\n",33);

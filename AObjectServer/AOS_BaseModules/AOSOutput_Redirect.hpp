@@ -25,9 +25,13 @@ $Id$
     <secure>false</secure>
   </output>
 
-  Redirect to a URL in the session data
+  Redirect to a URL in the session data 
+    or URL in the model if session data not found
+    or referer from HTTP request if model data not found
   <output>
     <redirect reference="SESSION">/root/redirectUrl</redirect>
+    <redirect reference="MODEL">/root/redirectUrl</redirect>
+    <redirect reference="REFERER"/>
     <secure>false</secure>
   </output>
 */

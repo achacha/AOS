@@ -23,15 +23,28 @@ AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
   //a_A command places the redirect into session or model or coded into the command itself
   //a_NOTE: redirect URL can never come from the query string for security reasons
   AString str(4096, 1024);
-  const AXmlElement *pElement = context.getOutputParams().findElement(ASW("redirect",8));
-  if (!pElement)
+  
+  AXmlElement::CONST_CONTAINER redirects;
+  if (0 == context.getOutputParams().find(ASW("redirect",8), redirects))
   {
     context.addError(getClass(), ASWNL("Missing element redirect"), true);
     return AOSContext::RETURN_ERROR;
   }
-  if (!AOSContextUtils::getContentWithReference(context, *pElement, str))
+  
+  bool redirectFound = false;
+  for (AXmlElement::CONST_CONTAINER::iterator it = redirects.begin(); it != redirects.end(); ++it)
   {
-    context.addError(getClass(), ARope("Unable to find redirect path: ")+*pElement, true);
+    const AXmlElement *pElement = (*it);
+    if (AOSContextUtils::getContentWithReference(context, *pElement, str))
+    {
+      redirectFound = true;
+      break;
+    }
+  }
+
+  if (!redirectFound)
+  {
+    context.addError(getClass(), ARope("Unable to find valid redirect: ")+context.getOutputParams(), true);
     return AOSContext::RETURN_ERROR;
   }
 
@@ -39,7 +52,8 @@ AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
   if (!str.isEmpty())
   {
     //a_Check is forcing secure/non-secure protocol
-    AUrl url(str);
+    AUrl url(context.useRequestUrl());
+    url &= AUrl(str);
     if (context.getOutputParams().exists(AOS_BaseModules_Constants::SECURE))
     {
       if (context.getOutputParams().getBool(AOS_BaseModules_Constants::SECURE, false))
@@ -54,6 +68,8 @@ AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
       }
     }
     
+    str.clear();
+    url.emit(str);
     context.setResponseRedirect(str);
     return AOSContext::RETURN_REDIRECT;
   }

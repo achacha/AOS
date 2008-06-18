@@ -50,6 +50,7 @@ public:
   static const AString S_MESSAGE;
   static const AString S_CONTEXT;
   static const AString S_MODEL;
+  static const AString S_REFERER;
 
 public:
   /*!
@@ -533,6 +534,9 @@ private:
 
   //a_Socket associated with context
   AFile_Socket *mp_RequestFile;
+
+  //a_Post process http request object after it is read and parsed
+  AOSContext::Status _postProcessHttpHeader();
 
   //a_Determines if the current output should be gzip'd, 0 if not to compress, else 1-9 compression level
   int _calculateGZipLevel(size_t documentSize);
