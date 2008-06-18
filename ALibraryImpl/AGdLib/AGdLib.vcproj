@@ -297,7 +297,6 @@
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="pchAGdLib.hpp"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
