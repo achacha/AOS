@@ -299,7 +299,11 @@ const AUrl &AUrl::operator &=(const AUrl &urlSource)
   if (!urlSource.m_strPassword.isEmpty()) 
     m_strPassword = urlSource.m_strPassword;
   if (!urlSource.m_strPath.isEmpty())
+  {
     m_strPath = urlSource.m_strPath;
+    m_strFilename.clear();
+    m_strFragment.clear();
+  }
   if (!urlSource.m_strFilename.isEmpty())
   { 
     m_strFilename = urlSource.m_strFilename;

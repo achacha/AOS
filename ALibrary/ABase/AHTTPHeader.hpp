@@ -155,11 +155,10 @@ public:
   bool equalsNoCase(AHTTPHeader::HEADER_TOKENS eToken, const AString&) const;
 
   /*!
-  Find a token and assigns to strDest and returns true,
-    else returns false without changing the strDest
+  Find a token and append the value to target
   */
-  bool getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AString& strDest) const;
-  bool getPairValue(const AString& strTokenName, AString& strDest) const;
+  bool getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AOutputBuffer& target) const;
+  bool getPairValue(const AString& strTokenName, AOutputBuffer& target) const;
 
   /*!
   Version of the header (supported by both response and request)

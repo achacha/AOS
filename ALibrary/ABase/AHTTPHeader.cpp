@@ -123,7 +123,7 @@ bool AHTTPHeader::equalsNoCase(AHTTPHeader::HEADER_TOKENS eToken, const AString&
   return false;
 }
 
-bool AHTTPHeader::getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AString& strDest) const
+bool AHTTPHeader::getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AOutputBuffer& target) const
 {
   AString strName = _mapTypeToString(eToken);
   if (strName.isEmpty())
@@ -132,27 +132,25 @@ bool AHTTPHeader::getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AString& strDe
   MAP_AString_NVPair::const_iterator cit = m_Pairs.find(strName);
   if (cit != m_Pairs.end())
   {
-    strDest.assign((*cit).second.getValue());
+    target.append((*cit).second.getValue());
     return true;
   }
   else
   {
-    strDest.clear();
     return false;
   }
 }
 
-bool AHTTPHeader::getPairValue(const AString& strTokenName, AString& strDest) const
+bool AHTTPHeader::getPairValue(const AString& strTokenName, AOutputBuffer& target) const
 {
   MAP_AString_NVPair::const_iterator cit = m_Pairs.find(strTokenName);
   if (cit != m_Pairs.end())
   {
-    strDest.assign((*cit).second.getValue());
+    target.append((*cit).second.getValue());
     return true;
   }
   else
   {
-    strDest.clear();
     return false;
   }
 }
