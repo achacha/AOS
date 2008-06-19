@@ -121,9 +121,30 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& fi
 	(*p)->async = VARIANT_FALSE;
   if (! (*p)->load((const _bstr_t)filename.c_str()) )
   {
+    BSTR bstr;
+    long n;
+    ARope rope("Unable to parse XSL: ");
+
+    (*p)->parseError->get_reason(&bstr);
+    rope.append((LPCSTR)_bstr_t(bstr, false));
+
+    (*p)->parseError->get_line(&n);
+    rope.append(" line=");
+    rope.append(AString::fromSize_t(n));
+    
+    (*p)->parseError->get_linepos(&n);
+    rope.append(" line.pos=");
+    rope.append(AString::fromSize_t(n));
+
+    (*p)->parseError->get_filepos(&n);
+    rope.append(" file.pos=");
+    rope.append(AString::fromSize_t(n));
+
+    rope.append(AConstant::ASTRING_EOL);
+
     ((MSXML2::IXMLDOMDocument2Ptr *)p)->Release();
     delete p;
-    ATHROW_EX(this, AException::OperationFailed, AString("Unable to parse XSL: ")+filename);
+    ATHROW_EX(this, AException::OperationFailed, rope);
   }
 
   XslDocHolder holder;
@@ -202,7 +223,27 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
     const _bstr_t bstrXml = str.c_str();
     if (! pXMLDoc->loadXML(bstrXml) )
     {
-      ARope rope("Unable to parse XML:\n");
+      BSTR bstr;
+      long n;
+      ARope rope("Unable to parse XML: ");
+
+      pXMLDoc->parseError->get_reason(&bstr);
+      rope.append((LPCSTR)_bstr_t(bstr, false));
+
+      pXMLDoc->parseError->get_line(&n);
+      rope.append(" line=");
+      rope.append(AString::fromSize_t(n));
+      
+      pXMLDoc->parseError->get_linepos(&n);
+      rope.append(" line.pos=");
+      rope.append(AString::fromSize_t(n));
+
+      pXMLDoc->parseError->get_filepos(&n);
+      rope.append(" file.pos=");
+      rope.append(AString::fromSize_t(n));
+
+      rope.append(AConstant::ASTRING_EOL);
+
       ATextConverter::convertStringToHexDump(str, rope);
       context.addError(getClass(), rope);
       return AOSContext::RETURN_ERROR;
