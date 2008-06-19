@@ -5,7 +5,7 @@
 	<module class="LuaScript">
 		<script>
 <![CDATA[model.addText("/root/to-be-saved", "This will be saved to a file");
-model.addText("/root/generic-message", "/root/to-be-saved written to tmp/SaveModelElementToFile.output.txt");]]>
+model.addText("/root/MESSAGE", "/root/to-be-saved written to tmp/SaveModelElementToFile.output.txt");]]>
 		</script>
 	</module>
 	
