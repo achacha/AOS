@@ -127,7 +127,7 @@ AXmlElement& AHTTPResponseHeader::emitXml(AXmlElement& thisRoot) const
   MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
   {
-    thisRoot.addElement((*cit).second.getName()).addData((*cit).second.getValue());
+    thisRoot.addElement((*cit).second.getName()).addData((*cit).second.getValue(), AXmlElement::ENC_CDATADIRECT);
     ++cit;
   }
 

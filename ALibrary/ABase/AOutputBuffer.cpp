@@ -9,25 +9,22 @@ $Id$
 
 size_t AOutputBuffer::append(const char *pcc)
 {
-  AASSERT(this, pcc);
+  if (!pcc) return 0;
+
   size_t len = strlen(pcc);
   return _append(pcc, len);
 }
 
 size_t AOutputBuffer::append(const char *pcc, size_t len)
 {
-  AASSERT(this, pcc);
-  if (!len)
-    return 0;
+  if (!pcc || !len) return 0;
 
   return _append(pcc, len);
 }
 
 size_t AOutputBuffer::append(const void *pcc, size_t len)
 {
-  AASSERT(this, pcc);
-  if (!len)
-    return 0;
+  if (!pcc || !len) return 0;
 
   return _append((const char *)pcc, len);
 }
