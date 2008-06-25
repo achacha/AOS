@@ -10,6 +10,7 @@ $Id$
 #include "ABase.hpp"
 #include "AThread.hpp"
 #include "ASync_Mutex.hpp"
+#include "AOSAdminCommandRegistry.hpp"
 
 class AFile_Socket;
 class AHTTPRequestHeader;
@@ -52,11 +53,17 @@ private:
   //a_Process a request
   void _processRequest(AFile_Socket&, AHTTPRequestHeader&);
   void _processAdmin(AFile_Socket&, AHTTPRequestHeader&);
+  
+  //! Process a dynamic command
   void _processAdminCommand(const AString&, AHTTPRequestHeader&, AHTTPResponseHeader&, AOutputBuffer&);
+  
+  //! Perform a shutdown
+  void _shutdown(AHTTPRequestHeader&, AHTTPResponseHeader&, AOutputBuffer&);
 
-  //a_Output helpers
-  void _prepareXmlDocument(const AString&, AHTTPRequestHeader&, AXmlDocument&);
+  //! Admin command registry
+  AOSAdminCommandRegistry m_AdminCommandRegistry;
 
+  //! AOS services
   AOSServices& m_Services;
 
   //a_Shutdown requested

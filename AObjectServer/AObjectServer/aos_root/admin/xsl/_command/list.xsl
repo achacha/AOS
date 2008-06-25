@@ -7,7 +7,13 @@
 				<title>ADMIN: Objects</title>
 			</head>
 			<body>
-			 	<table border="1" cellpadding="3" cellspacing="3">
+
+        <a href="/admin?command=list">Object list</a> |
+        <a href="/">Home</a><br/>
+        <hr/>
+        <br/>
+
+        <table border="1" cellpadding="3" cellspacing="3">
 					<tbody>
 						<tr>
 							<th>Object</th>

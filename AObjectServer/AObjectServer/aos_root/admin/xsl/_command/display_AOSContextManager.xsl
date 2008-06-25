@@ -147,7 +147,7 @@ function toggleDisplay(elementId)
 					    <pre><xsl:value-of select="value"/></pre>
 					</td>
 					<td bgcolor="#d0ffd0" align="left" valign="center">
-						<form action="/admin" method="get">
+						<form action="/admin" method="POST">
 						<input type="hidden" name="display_name" value="{$display_name}"/>
 						<xsl:apply-templates select="action">
 							<xsl:with-param name="obj_full_name" select="$obj_full_name"/>

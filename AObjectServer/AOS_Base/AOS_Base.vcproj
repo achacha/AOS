@@ -377,10 +377,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSAdmin.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AOSAdminInterface.cpp"
 				>
 			</File>
@@ -559,10 +555,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSAdmin.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AOSAdminInterface.hpp"
 				>
 			</File>
@@ -698,6 +690,84 @@
 				RelativePath=".\pchAOS_Base.hpp"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Admin"
+			>
+			<Filter
+				Name="Header Files"
+				Filter="h;hpp;"
+				>
+				<File
+					RelativePath=".\AOSAdmin.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommand_display.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommand_list.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommand_modify.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommand_version.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommandContext.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommandInterface.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommandRegistry.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Source Files"
+				Filter="c;cpp;"
+				>
+				<File
+					RelativePath=".\AOSAdmin.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommand_display.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommand_list.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommand_modify.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommand_version.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommandContext.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommandInterface.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommandRegistry.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

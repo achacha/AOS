@@ -68,7 +68,6 @@ void AOSRequestListener::startListening()
         AString str("Unable to bind to http port ");
         str.append(AString::fromInt(http_port));
         str.append(", already in use.");
-        m_Services.useConfiguration().emit(str);
         AOS_DEBUGTRACE(str.c_str(), NULL);
       }
       else

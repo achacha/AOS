@@ -10,15 +10,11 @@ $Id$
 
 void AOSAdminRegistry::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSAdminRegistry @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_AdminObjects={" << std::endl;
-  CONTAINER::const_iterator cit = m_AdminObjects.begin();
-  while(cit != m_AdminObjects.end())
-  {
+  for (CONTAINER::const_iterator cit = m_AdminObjects.begin(); cit != m_AdminObjects.end(); ++cit)
     ADebugDumpable::indent(os, indent+2) << (*cit).first << "=" << typeid(*(*cit).second).name() << std::endl;
-    ++cit;
-  }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
