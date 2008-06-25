@@ -46,7 +46,6 @@ static int web_HttpGet(lua_State *L)
 
   lua_pop(L,2);
 
-
   //a_Set up request header
   AHTTPRequestHeader request;
   request.parseUrl(url);
