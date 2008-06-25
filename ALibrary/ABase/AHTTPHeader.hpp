@@ -158,6 +158,10 @@ public:
   Find a token and append the value to target
   */
   bool getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AOutputBuffer& target) const;
+  
+  /*!
+  Find a token as a string and append to target
+  */
   bool getPairValue(const AString& strTokenName, AOutputBuffer& target) const;
 
   /*!

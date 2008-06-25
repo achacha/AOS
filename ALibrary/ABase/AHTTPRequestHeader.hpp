@@ -113,6 +113,16 @@ public:
   bool isValidHttp() const;
 
   /*!
+  Checks if the request is a FORM POST
+  */
+  bool isFormPost() const;
+
+  /*!
+  Checks if the request is a FORM multi-part POST
+  */
+  bool isFormMultiPartPost() const;
+
+  /*!
   If-Modified-Since converted to ATime
   */
   ATime getIfModifiedSince() const;

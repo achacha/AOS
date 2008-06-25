@@ -345,3 +345,13 @@ ATime AHTTPRequestHeader::getIfModifiedSince() const
   else
     return ATime::GENESIS;
 }
+
+bool AHTTPRequestHeader::isFormPost() const
+{
+  return (AHTTPRequestHeader::METHOD_ID_POST == m_MethodId && equals(AHTTPRequestHeader::HT_ENT_Content_Type, AHTTPRequestHeader::CONTENT_TYPE_HTML_FORM));
+}
+
+bool AHTTPRequestHeader::isFormMultiPartPost() const
+{
+  return (AHTTPRequestHeader::METHOD_ID_POST == m_MethodId && equals(AHTTPRequestHeader::HT_ENT_Content_Type, AHTTPRequestHeader::CONTENT_TYPE_HTML_FORM_MULTIPART));
+}
