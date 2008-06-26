@@ -6,7 +6,7 @@
 		<canvas>
 			<x>200</x>
 			<y>100</y>
-			<fontpath desc="Font relative to data directory">ttf/ARIAL.TTF</fontpath>
 		</canvas>
+		<fontpath desc="Font relative to data directory">ttf/ARIAL.TTF</fontpath>
 	</output>
 </controller>
