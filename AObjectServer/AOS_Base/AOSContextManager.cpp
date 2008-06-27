@@ -10,6 +10,7 @@ $Id$
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"
 #include "AOSContextQueueInterface.hpp"
+#include "AUrl.hpp"
 
 void AOSContextManager::debugDump(std::ostream& os, int indent) const
 {
@@ -65,60 +66,98 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
 {
   AOSAdminInterface::adminEmitXml(eBase, request);
 
-  for (size_t i=0; i < m_Queues.size(); ++i)
+  //a_Check if specific context is required
+  AString contextId;
+  if (request.getUrl().getParameterPairs().get(ASW("contextId",9), contextId))
   {
-    AOSContextQueueInterface *pQueue = m_Queues.at(i);
-    if (pQueue)
-      adminAddProperty(eBase, AString::fromSize_t(i), pQueue->getClass());
-    else
-      adminAddProperty(eBase, AString::fromSize_t(i), AConstant::ASTRING_NULL);
-  }
-
-  adminAddProperty(eBase, "history_max_size", AString::fromSize_t(m_HistoryMaxSize));
-
-  adminAddPropertyWithAction(
-    eBase,
-    ASW("log_level",9), 
-    AString::fromInt(m_DefaultEventLogLevel),
-    ASW("Update",6), 
-    ASWNL("Maximum event to log 1:Error, 2:Event, 3:Warning, 4:Info, 5:Debug"),
-    ASW("Set",3)
-  );
-
-  AXmlElement& eInUse = eBase.addElement("object");
-  eInUse.addAttribute("name", "InUse");
-  eInUse.addAttribute("size", AString::fromSize_t(m_InUse.size()));
-  CONTEXT_INUSE::const_iterator citU = m_InUse.begin();
-  if (citU != m_InUse.end())
-  {
-    ALock lock(m_InUseSync);
-    while(citU != m_InUse.end())
+    //a_Find the specific context
     {
-      AXmlElement& eProp = adminAddProperty(eInUse, ASW("context",7), (*citU).first->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
-      eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citU).first->useEventVisitor().getErrorCount()));
-      eProp.addElement(ASW("url",3)).addData((*citU).first->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
-      ++citU;
-    }
-  }
-
-  {
-    AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "History");
-    ALock lock(m_History.useSync());
-    for (ABase *p = m_History.useTail(); p; p = p->usePrev())
-    {
-      AOSContext *pContext = dynamic_cast<AOSContext *>(p);
-      if (pContext)
+      ALock lock(m_InUseSync);
+      for (CONTEXT_INUSE::const_iterator cit = m_InUse.begin(); cit != m_InUse.end(); ++cit)
       {
-        AXmlElement& eProp = adminAddProperty(eHistory, ASW("context",7), pContext->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
-        eProp.addAttribute(ASW("errors",6), AString::fromSize_t(pContext->useEventVisitor().getErrorCount()));
-        eProp.addElement(ASW("url",3), pContext->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
+        if (contextId == AString::fromPointer((*cit).first))
+        {
+          adminAddProperty(eBase, ASW("contextDetail",7), *((*cit).first), AXmlElement::ENC_CDATADIRECT);
+          return;
+        }
       }
+    }
+    
+    {
+      ALock lock(m_History.useSync());
+      for (ABase *p = m_History.useTail(); p; p = p->usePrev())
+      {
+        AOSContext *pContext = dynamic_cast<AOSContext *>(p);
+        if (contextId == AString::fromPointer(pContext))
+        {
+          AXmlElement& eProp = adminAddProperty(eBase, ASW("contextDetail",7), *pContext, AXmlElement::ENC_CDATADIRECT);
+          return;
+        }
+      }
+    }
+
+    //a_Context no longer available
+    adminAddError(eBase, ASWNL("AOSContext no longer available"));
+  }
+  else
+  {
+    //a_Display context summary
+    for (size_t i=0; i < m_Queues.size(); ++i)
+    {
+      AOSContextQueueInterface *pQueue = m_Queues.at(i);
+      if (pQueue)
+        adminAddProperty(eBase, AString::fromSize_t(i), pQueue->getClass());
       else
-        ATHROW(this, AException::InvalidObject);
+        adminAddProperty(eBase, AString::fromSize_t(i), AConstant::ASTRING_NULL);
+    }
+
+    adminAddProperty(eBase, "history_max_size", AString::fromSize_t(m_HistoryMaxSize));
+
+    adminAddPropertyWithAction(
+      eBase,
+      ASW("log_level",9), 
+      AString::fromInt(m_DefaultEventLogLevel),
+      ASW("Update",6), 
+      ASWNL("Maximum event to log 1:Error, 2:Event, 3:Warning, 4:Info, 5:Debug"),
+      ASW("Set",3)
+    );
+
+    AXmlElement& eInUse = eBase.addElement("object");
+    eInUse.addAttribute("name", "InUse");
+    eInUse.addAttribute("size", AString::fromSize_t(m_InUse.size()));
+    CONTEXT_INUSE::const_iterator citU = m_InUse.begin();
+    if (citU != m_InUse.end())
+    {
+      ALock lock(m_InUseSync);
+      while(citU != m_InUse.end())
+      {
+        AXmlElement& eProp = adminAddProperty(eInUse, ASW("context",7), (*citU).first->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
+        eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citU).first->useEventVisitor().getErrorCount()));
+        eProp.addElement(ASW("url",3)).addData((*citU).first->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
+        eProp.addElement(ASW("contextId",9)).addData(AString::fromPointer((*citU).first), AXmlElement::ENC_CDATADIRECT);
+        ++citU;
+      }
+    }
+
+    {
+      AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "History");
+      ALock lock(m_History.useSync());
+      for (ABase *p = m_History.useTail(); p; p = p->usePrev())
+      {
+        AOSContext *pContext = dynamic_cast<AOSContext *>(p);
+        if (pContext)
+        {
+          AXmlElement& eProp = adminAddProperty(eHistory, ASW("context",7), pContext->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
+          eProp.addAttribute(ASW("errors",6), AString::fromSize_t(pContext->useEventVisitor().getErrorCount()));
+          eProp.addElement(ASW("url",3), pContext->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
+          eProp.addElement(ASW("contextId",3)).addData(AString::fromPointer((*citU).first), AXmlElement::ENC_CDATADIRECT);
+        }
+        else
+          ATHROW(this, AException::InvalidObject);
+      }
     }
   }
 }
-
 void AOSContextManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   AString str;
