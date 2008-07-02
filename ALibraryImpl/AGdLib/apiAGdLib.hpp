@@ -32,4 +32,6 @@ $Id$
 #include "apiABase.hpp"
 #include "gd.h"
 
+#define GDLib_INFO "gdlib " ## GD_VERSION_STRING
+
 #endif //INCLUDED__apiAGdLib_HPP__

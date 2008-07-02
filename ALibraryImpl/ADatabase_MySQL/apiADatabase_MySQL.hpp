@@ -31,4 +31,6 @@ $Id$
 
 #include "mysql.h"
 
+#define ADatabase_MySQL_INFO "MySQL " ## MYSQL_SERVER_VERSION
+
 #endif //INCLUDED__apiADatabase_MySQL_HPP__

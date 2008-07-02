@@ -26,4 +26,6 @@ $Id$
 
 #include "apiABase.hpp"
 
+#define AZlib_INFO "zlib 1.2.3"
+
 #endif //INCLUDED__apiAZlib_HPP__

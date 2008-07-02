@@ -24,5 +24,8 @@ $Id$
 #endif
 
 #include "apiABase.hpp"
+#include "LuaInternals.hpp"
+
+#define ALuaEmbed_INFO LUA_RELEASE
 
 #endif //INCLUDED__apiALuaEmbed_HPP__

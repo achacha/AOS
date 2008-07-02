@@ -32,6 +32,9 @@ $Id$
 
 #ifdef __WINDOWS__
 #include <sqlext.h>
+#define ADatabase_ODBC_INFO "Microsoft ODBC " ## SQL_SPEC_STRING
+#else
+#define ADatabase_ODBC_INFO "ODBC not available"
 #endif
 
 #endif //INCLUDED__apiADatabase_ODBC_HPP__

@@ -27,5 +27,8 @@ $Id$
 #endif
 
 #include "apiABase.hpp"
+#include "openssl/opensslv.h"
+
+#define ACrypto_INFO OPENSSL_VERSION_TEXT
 
 #endif //INCLUDED__apiACrypto_HPP__

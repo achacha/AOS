@@ -12,7 +12,6 @@ $Id$
 
 class AOutputBuffer;
 class AEmittable;
-struct lua_State;
 
 /*!
 Lua interpreter
