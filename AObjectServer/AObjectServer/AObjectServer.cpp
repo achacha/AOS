@@ -22,8 +22,6 @@ ADynamicLibrary dllModules;                  //a_Map of DLLs loaded
 ASocketLibrary_SSL g_SecureSocketLibrary;    //a_Global init for SSL and socket library
 AGdLibrary g_GdLibrary;                      //a_Global init for gd library
 
-static const AString _BUILD_INFO_(AString(AOS_SERVER_NAME)+"\tBUILD("+__TIME__+" "+__DATE__+")");
-
 void traceMultiline(const AString& str, void *ptr)
 {
   AString strLine;
@@ -42,7 +40,7 @@ int main(int argc, char **argv)
 {
   AFILE_TRACER_DEBUG_SCOPE((AString("AObjectServer::main:",20)+ASWNL(argv[0])).c_str(), NULL);
 
-  std::cout << _BUILD_INFO_ << std::endl;
+  std::cout << AOS_Base_INFO << std::endl;
   try
   {
     //a_Check if INI filename was provided
@@ -69,7 +67,7 @@ int main(int argc, char **argv)
       {
         AString str;
         ATime().emitRFCtime(str);
-        services.useLog().add(ASWNL("=+=+=+= AOS Server starting at ")+str, AString(_BUILD_INFO_));
+        services.useLog().add(ASWNL("=+=+=+= AOS Server starting at ")+str, AString(AOS_Base_INFO));
       }
 
       AOSAdmin admin(services);

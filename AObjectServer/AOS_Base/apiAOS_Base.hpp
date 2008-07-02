@@ -40,10 +40,18 @@ AOS_BASE_API extern ASync_CriticalSection g_DebugTraceSync;
 
 typedef int (PROC_AOS_Register)(AOSInputExecutor&, AOSModuleExecutor&, AOSOutputExecutor&, AOSServices&);
 
-#ifdef WIN32
-#define AOS_SERVER_NAME "Rhino/1.5.0.0"
-#define AOS_ADMIN_SERVER_NAME "Rhino Admin Server/1.3.0.0"
-
+#ifdef WIN64
+#  define AOS_SERVER_NAME "Rhino/1.5.0.1 (64-bit)"
+#  define AOS_ADMIN_SERVER_NAME "Rhino Admin Server/1.3.0.2"
+#  define AOS_Base_INFO AOS_SERVER_NAME ## "\tBUILD(" ## __TIME__ ## " " ## __DATE__ ## ")"
+#elif WIN32
+#  define AOS_SERVER_NAME "Rhino/1.5.0.1 (32-bit)"
+#  define AOS_ADMIN_SERVER_NAME "Rhino Admin Server/1.3.0.2"
+#  define AOS_Base_INFO AOS_SERVER_NAME ## "\tBUILD(" ## __TIME__ ## " " ## __DATE__ ## ")"
+#else
+#  define AOS_SERVER_NAME "Rhino/1.5.0.1"
+#  define AOS_ADMIN_SERVER_NAME "Rhino Admin Server/1.3.0.2"
+#  define AOS_Base_INFO AOS_SERVER_NAME ## "\tBUILD(" ## __TIME__ ## " " ## __DATE__ ## ")"
 #endif
 
 #endif //__apiAOS_Base_HPP__

@@ -7,10 +7,18 @@
 				<title>ADMIN: Version</title>
 			</head>
 			<body>
-        <h3>
-          <xsl:value-of select="/admin/version"/>
-        </h3>
+				<h3>Version information</h3>
+				<table border="1">
+					<xsl:apply-templates select="/admin/version"/>
+				</table>
 			</body>
 		</html>
+	</xsl:template>
+	<xsl:template match="version">
+		<tr>
+			<td>
+				<xsl:value-of select="text()"/>
+			</td>
+		</tr>
 	</xsl:template>
 </xsl:stylesheet>
