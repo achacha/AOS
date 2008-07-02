@@ -54,6 +54,9 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
     //#pragma message("ASystem (64bit): Including winsock2.h")
     //#include <winsock2.h>
   #endif
+
+  #define ABASE_OS_INFO "Microsoft Windows (64-bit) " ## __TIMESTAMP__ ## ")"
+
 #elif defined(_WIN32)
   //Win32 environment
   #pragma message("ABase (32bit): Windows OS detected")
@@ -93,6 +96,8 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
     #include <winsock2.h>
   #endif
   
+#define ABASE_OS_INFO "Microsoft Windows (32-bit)  BUILD(" ## __TIMESTAMP__ ## ")"
+
 #elif defined (__unix)
   //a_For all UNIX
   //a_Defines to be used inside the event log class (invisible to the user, since there is an enum to shield us)
@@ -132,6 +137,8 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
 		#define mutable
 		#endif
 
+  #define ABASE_OS_INFO "Unix Generic"
+
 #elif defined(__linux)
   
     //a_Linux
@@ -143,10 +150,12 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
 
     #define __CDECL
 
+    #define ABASE_OS_INFO "Linux"
+
   #elif defined (__CYGWIN32__)
   #else
     #error OS configuration not supported
-
+    #define ABASE_OS_INFO "Cygwin"
   #endif
 #else
   #error No such OS configuration

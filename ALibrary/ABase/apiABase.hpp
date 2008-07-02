@@ -84,4 +84,7 @@ $Id$
 
 //#define ENABLE_EXCEPTION_STACKWALK 1
 
+//a_Version
+#define ABase_INFO "ABase 1.2.4 " ## ABASE_OS_INFO
+
 #endif //INCLUDED__apiABase_HPP__
