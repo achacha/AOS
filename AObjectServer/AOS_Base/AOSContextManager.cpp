@@ -247,7 +247,6 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
 
 void AOSContextManager::deallocate(AOSContext *p)
 {
-
   if (p)
   {
     p->finalize();
