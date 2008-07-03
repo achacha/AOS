@@ -79,7 +79,7 @@ private:
   QUEUES m_Queues;
   
   //! Contexts currently in use
-  typedef std::map<AOSContext *, int> CONTEXT_INUSE;
+  typedef std::set<AOSContext *> CONTEXT_INUSE;
   CONTEXT_INUSE m_InUse;
   ASync_CriticalSection m_InUseSync;
   

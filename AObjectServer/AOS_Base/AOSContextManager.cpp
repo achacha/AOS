@@ -37,7 +37,7 @@ void AOSContextManager::debugDump(std::ostream& os, int indent) const
     ALock lock(const_cast<ASync_CriticalSection *>(&m_InUseSync));
     for (CONTEXT_INUSE::const_iterator citU = m_InUse.begin(); citU != m_InUse.end(); ++citU)
     {
-      (*citU).first->debugDump(os, indent+2);
+      (*citU)->debugDump(os, indent+2);
     }
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
@@ -75,9 +75,9 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       ALock lock(m_InUseSync);
       for (CONTEXT_INUSE::const_iterator cit = m_InUse.begin(); cit != m_InUse.end(); ++cit)
       {
-        if (contextId == AString::fromPointer((*cit).first))
+        if (contextId == AString::fromPointer(*cit))
         {
-          adminAddProperty(eBase, ASW("contextDetail",7), *((*cit).first), AXmlElement::ENC_CDATADIRECT);
+          adminAddProperty(eBase, ASW("contextDetail",7), *(*cit), AXmlElement::ENC_CDATADIRECT);
           return;
         }
       }
@@ -90,7 +90,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
         AOSContext *pContext = dynamic_cast<AOSContext *>(p);
         if (contextId == AString::fromPointer(pContext))
         {
-          AXmlElement& eProp = adminAddProperty(eBase, ASW("contextDetail",7), *pContext, AXmlElement::ENC_CDATADIRECT);
+          adminAddProperty(eBase, ASW("contextDetail",7), *pContext, AXmlElement::ENC_CDATADIRECT);
           return;
         }
       }
@@ -131,10 +131,10 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       ALock lock(m_InUseSync);
       while(citU != m_InUse.end())
       {
-        AXmlElement& eProp = adminAddProperty(eInUse, ASW("context",7), (*citU).first->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
-        eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citU).first->useEventVisitor().getErrorCount()));
-        eProp.addElement(ASW("url",3)).addData((*citU).first->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
-        eProp.addElement(ASW("contextId",9)).addData(AString::fromPointer((*citU).first), AXmlElement::ENC_CDATADIRECT);
+        AXmlElement& eProp = adminAddProperty(eInUse, ASW("context",7), (*citU)->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
+        eProp.addAttribute(ASW("errors",6), AString::fromSize_t((*citU)->useEventVisitor().getErrorCount()));
+        eProp.addElement(ASW("url",3)).addData((*citU)->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
+        eProp.addElement(ASW("contextId",9)).addData(AString::fromPointer(*citU), AXmlElement::ENC_CDATADIRECT);
         ++citU;
       }
     }
@@ -150,7 +150,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
           AXmlElement& eProp = adminAddProperty(eHistory, ASW("context",7), pContext->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
           eProp.addAttribute(ASW("errors",6), AString::fromSize_t(pContext->useEventVisitor().getErrorCount()));
           eProp.addElement(ASW("url",3), pContext->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
-          eProp.addElement(ASW("contextId",3)).addData(AString::fromPointer((*citU).first), AXmlElement::ENC_CDATADIRECT);
+          eProp.addElement(ASW("contextId",3)).addData(AString::fromPointer(*citU), AXmlElement::ENC_CDATADIRECT);
         }
         else
           ATHROW(this, AException::InvalidObject);
@@ -200,7 +200,7 @@ AOSContextManager::~AOSContextManager()
   {
     for (CONTEXT_INUSE::iterator itU = m_InUse.begin(); itU != m_InUse.end(); ++itU)
     {
-      delete (*itU).first;
+      delete *itU;
     }
 
     for (QUEUES::iterator itQ = m_Queues.begin(); itQ != m_Queues.end(); ++itQ)
@@ -238,7 +238,7 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
   {
     ALock lock(m_InUseSync);
     AASSERT(this, p && m_InUse.end() == m_InUse.find(p));
-    m_InUse[p] = 1;
+    m_InUse.insert(p);
   }
 
   AASSERT(this, &p->useSocket());
