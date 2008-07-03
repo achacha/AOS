@@ -27,6 +27,11 @@ $Id$
 #endif
 
 #include "apiABase.hpp"
+
+#ifdef WIN32
+//a_Include openssl and define open ssl dir to be current dir else it will be a unix path
+#define OPENSSLDIR "."
+#endif
 #include "openssl/opensslv.h"
 
 #define ACrypto_INFO OPENSSL_VERSION_TEXT

@@ -1,1 +1,0 @@
-Win32 OpenSSL v0.9.8e

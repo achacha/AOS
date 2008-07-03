@@ -111,7 +111,7 @@ void ACryptoInterface::_init()
 int ACryptoInterface::_hex_to_uchar(const char *str, int x)
 {
   int i, z;
-  unsigned char c, *buf;
+  unsigned char c, *buf = 0;
 
   if(!str || !*str || (x < 1))
     return(-1);

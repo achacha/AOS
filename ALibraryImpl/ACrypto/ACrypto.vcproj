@@ -770,6 +770,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\BUILDING_openssl.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
