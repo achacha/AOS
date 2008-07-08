@@ -88,24 +88,24 @@ ACookieJar::Node *ACookieJar::_getNode(const AString& domain, const AString& pat
   return pCurrentNode;
 }
 
-const ACookieJar::Node *ACookieJar::_getNodeOrExistingParent(const AString& domain, const AString& path) const
+ACookieJar::Node *ACookieJar::_getNodeOrExistingParent(const AString& domain, const AString& path)
 {
-  DOMAINS::const_iterator citDomain = m_Domains.find(domain);
-  if (citDomain == m_Domains.end())
+  DOMAINS::iterator itDomain = m_Domains.find(domain);
+  if (itDomain == m_Domains.end())
     return NULL;  // Domain does not exist
 
-  const Node *pCurrentNode = citDomain->second;
+  Node *pCurrentNode = itDomain->second;
 
   LIST_AString dirs;
   path.split(dirs, '/');
   while (dirs.size() > 0)
   {
     AString& dir = dirs.front();
-    ACookieJar::Node::NODES::const_iterator cit = pCurrentNode->m_Nodes.find(dir);
-    if (cit == pCurrentNode->m_Nodes.end())
+    ACookieJar::Node::NODES::iterator it = pCurrentNode->m_Nodes.find(dir);
+    if (it == pCurrentNode->m_Nodes.end())
       break;  //a_Return current node, sub node not found
     else
-      pCurrentNode = cit->second;
+      pCurrentNode = it->second;
 
     dirs.pop_front();
   }
@@ -121,32 +121,40 @@ void ACookieJar::emit(AOutputBuffer& target) const
   }
 }
 
-void ACookieJar::emit(
+void ACookieJar::emitCookies(
   AOutputBuffer& target, 
   const AString& domain, 
   const AString& path, 
   bool secureOnly         // = false
-) const
+)
 {
-  const Node *p = _getNodeOrExistingParent(domain, path);
+  Node *p = _getNodeOrExistingParent(domain, path);
   if(p)
-  {
-    if (secureOnly)
-      p->emitSecureOnly(target);
-    else
-      p->emit(target);
-  }
+    p->emitCookies(target, secureOnly);
 }
 
-void ACookieJar::parse(const AHTTPResponseHeader& header)
+void ACookieJar::parse(const AHTTPRequestHeader& request, const AHTTPResponseHeader& response)
 {
-  const ACookies& cookies = header.getCookies();
+  const ACookies& cookies = response.getCookies();
   for (ACookies::CONTAINER::const_iterator cit = cookies.getContainer().begin(); cit != cookies.getContainer().end(); ++cit)
   {
+    AString domain((*cit)->getDomain());
+    if (domain.isEmpty())
+      domain.assign(request.getUrl().getServer());
+    
+    AString path((*cit)->getPath());
+    if (path.isEmpty())
+      path.assign(request.getUrl().getPath());
+
     if ((*cit)->isExpired())
-      remove((*cit)->getDomain(), (*cit)->getPath(), (*cit)->getName());
+      remove(domain, path, (*cit)->getName());
     else
-      add(new ACookie(*(*cit)));
+    {
+      ACookie *pcookie = new ACookie(*(*cit));
+      pcookie->setDomain(domain);
+      pcookie->setPath(path);
+      add(pcookie);
+    }
   }
 }
 
@@ -169,10 +177,10 @@ bool ACookieJar::remove(const AString& domain, const AString& path, const AStrin
     return false; //a_DNE
 }
 
-void ACookieJar::emit(AHTTPRequestHeader& header)
+void ACookieJar::emitCookies(AHTTPRequestHeader& header)
 {
   AString str;
-  emit(str, header.getUrl().getServer(), header.getUrl().getPath(), header.getUrl().isProtocol(AUrl::HTTPS));
+  emitCookies(str, header.getUrl().getServer(), header.getUrl().getPath(), header.getUrl().isProtocol(AUrl::HTTPS));
   if (!str.isEmpty())
     header.setPair(AHTTPRequestHeader::HT_REQ_Cookie, str);
 }

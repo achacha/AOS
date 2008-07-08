@@ -27,24 +27,26 @@ Object example: %[OBJECT]{{{ object_name }}}%[OBJECT]%
 
 
 Usage:
+  // For logging events
+  AEventVisitor visitor;
+
   // Create a template and add handlers
   ATemplate t;
   t.addHandler(new ATemplateNodeHandler_SomeCustomOne(t));
 
   // Setup an objects holder to be used by the template
   ABasePtrContainer objects;
-  AXmlDocument doc("root");
+  AXmlDocument model("root");
   
-  // This is a well known object and will be used to expand template parts in ATemplateNodeHandler_Code and others
-  // Handlers can make changes to this since it is just a reference
-  objects.insert(ATemplate::OBJECTNAME_MODEL, &doc);
+  // Create a context
+  ATemplateContext ctx(objects, model, visitor);
   
   // Something else that may be used in template expansion and discarded when ATemplate is out of scope
   objects.insertWithOwnership("someobject", new AString("foo"));
   
   //process template nodes using the model
   AString output;
-  t.process(objects, output);
+  t.process(ctx, output);
 
   //Display results
   std::cout << output << std::endl;

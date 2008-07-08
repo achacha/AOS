@@ -52,18 +52,22 @@ public:
 
   /*!
   Extract cookies in the response header via Set-Cookie: token
-  
-  @param header HTTP response
+  Request is used to extract domain/path if not set by cookie
+
+  @param request HTTP header
+  @param response HTTP header
   */
-  void parse(const AHTTPResponseHeader& header);
+  void parse(const AHTTPRequestHeader&, const AHTTPResponseHeader&);
 
   /*!
   Emit the appropriate cookies into a given request header that were added via the parse method
   Adds cookie pairs as Cookie: HTTP parameter that match the domain and path
 
+  NOTE: Expired cookies will be deleted during this call so synchronize as needed
+
   @param header HTTP request
   */
-  void emit(AHTTPRequestHeader& header);
+  void emitCookies(AHTTPRequestHeader& header);
 
   /*!
   Emit cookies for a given path
@@ -71,14 +75,18 @@ public:
 
   Format is for an HTTP request header (e.g. foo=1; bar=2; ...)
 
+  NOTE: Expired cookies will be deleted during this call so synchronize as needed
+
   @param path of the current request
   @param secureOnly if set only cookies flagged as secure will be emitted (for HTTPS usually)
   */
-  void emit(AOutputBuffer&, const AString& domain, const AString& path, bool secureOnly = false) const;
+  void emitCookies(AOutputBuffer&, const AString& domain, const AString& path, bool secureOnly = false);
 
   /*!
   AEmittable
   Outputs domains contained only
+
+  NOTE: Expired cookies will be deleted during this call so synchronize as needed
   */
   virtual void emit(AOutputBuffer&) const;
   
@@ -98,14 +106,20 @@ private:
     Node(Node *parent = NULL);
 
     /*!
-    Emit secure only cookie
-    Will walk up the parents until root and emit all secure along the way
+    AEmittable
+    Will walk up the parents until root and emit all along the way
+
+    NOTE: Expired cookies will be deleted during this call so synchronize as needed
+    
+    @param target value of the Cookie: line (this is only the right hand side)
+    @param if true only cookies marked SECURE will be emitted
     */
-    void emitSecureOnly(AOutputBuffer&) const;
+    void emitCookies(AOutputBuffer& target, bool secureOnly = false);
 
     /*!
     AEmittable
     Will walk up the parents until root and emit all along the way
+    Will not expire any cookies
     */
     virtual void emit(AOutputBuffer&) const;
 
@@ -114,7 +128,7 @@ private:
     */
     virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
   
-    //! Collection of cookies at this node, name to ACookie*
+    //! Collection of cookies at this node, name to ACookie *
     typedef AMapOfPtrs<AString, ACookie> COOKIES;
     COOKIES m_Cookies;
 
@@ -136,7 +150,7 @@ private:
   If node not found, the highest existing node for a domain will be returned (root node at lowest if domain exists)
   Will return NULL if domain not found
   */
-  const ACookieJar::Node *_getNodeOrExistingParent(const AString& domain, const AString& path) const;
+  ACookieJar::Node *_getNodeOrExistingParent(const AString& domain, const AString& path);
 };
 
 #endif

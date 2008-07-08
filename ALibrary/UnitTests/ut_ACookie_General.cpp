@@ -18,23 +18,23 @@ void testCookieJar(int& iRet)
   cookieJar.add(new ACookie("dir2", "val", DOMAIN, "/dir/folder/"));
 
   AString str;
-  cookieJar.emit(str, DOMAIN, "/dir");
+  cookieJar.emitCookies(str, DOMAIN, "/dir");
   ASSERT_UNIT_TEST(str.equals("dir1=val; root0=val; "), "ACookieJar::emit", "0", iRet);
 
   str.clear();
-  cookieJar.emit(str, DOMAIN, "/dir/folder");
+  cookieJar.emitCookies(str, DOMAIN, "/dir/folder");
   ASSERT_UNIT_TEST(str.equals("dir2=val; dir1=val; root0=val; "), "ACookieJar::emit", "1", iRet);
 
   str.clear();
-  cookieJar.emit(str, DOMAIN, "/dir/folder2");
+  cookieJar.emitCookies(str, DOMAIN, "/dir/folder2");
   ASSERT_UNIT_TEST(str.equals("dir1=val; root0=val; "), "ACookieJar::emit", "2", iRet);
 
   str.clear();
-  cookieJar.emit(str, DOMAIN, "/dir/folder2", true);
+  cookieJar.emitCookies(str, DOMAIN, "/dir/folder2", true);
   ASSERT_UNIT_TEST(str.equals("root0=val; "), "ACookieJar::emit", "3", iRet);
 
   str.clear();
-  cookieJar.emit(str, DOMAIN, "/");
+  cookieJar.emitCookies(str, DOMAIN, "/");
   ASSERT_UNIT_TEST(str.equals("root0=val; "), "ACookieJar::emit", "4", iRet);
 }
 

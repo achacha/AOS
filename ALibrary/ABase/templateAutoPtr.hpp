@@ -74,6 +74,11 @@ class AAutoPtr : public ADebugDumpable
 {
 public:
   /*!
+  Default ctor points to NULL and owns nothing
+  */
+  AAutoPtr() : m_Pointer(NULL), m_Ownership(false) {}
+
+  /*!
   Pointer to an object (NOT to be used with arrays, see below templates)
   */
 	explicit AAutoPtr(T* pointer, bool ownership) : m_Pointer(pointer), m_Ownership(ownership)
@@ -205,7 +210,12 @@ template <class T>
 class AAutoArrayPtr : public ADebugDumpable
 {
 public:
-	/*!
+  /*!
+  Default ctor points to NULL and owns nothing
+  */
+  AAutoArrayPtr() : m_Pointer(NULL), m_Ownership(false) {}
+
+  /*!
   ctor
   */
   explicit AAutoArrayPtr(T* pointer, bool ownership) : m_Pointer(pointer), m_Ownership(ownership) {}
@@ -325,6 +335,11 @@ template <class T>
 class AAutoBasicArrayPtr : public ADebugDumpable
 {
 public:
+  /*!
+  Default ctor points to NULL and owns nothing
+  */
+  AAutoBasicArrayPtr() : m_Pointer(NULL), m_Ownership(false) {}
+
   /*!
   ctor
   */

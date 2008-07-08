@@ -63,6 +63,12 @@ ATemplateNodeHandler_OBJECT::Node::~Node()
 
 void ATemplateNodeHandler_OBJECT::Node::process(ATemplateContext& context, AOutputBuffer& output)
 {
+  AAutoPtr<AEventVisitor::ScopedEvent> scoped;
+  if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+  {
+    scoped.reset(new AEventVisitor::ScopedEvent(context.useEventVisitor(), ASW("ATemplateNodeHandler_OBJECT",27), m_BlockData, AEventVisitor::EL_DEBUG));
+  }
+
   const AEmittable *pObject = context.useObjects().getAsPtr<const AEmittable>(m_BlockData);
   if (pObject)
   {

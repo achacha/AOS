@@ -68,7 +68,8 @@ void AHTTPResponseHeader::clear()
   AHTTPHeader::clear();
 }
 
-ACookies& AHTTPResponseHeader::useCookies() { 
+ACookies& AHTTPResponseHeader::useCookies()
+{ 
   return mcookies_Response;
 }
 

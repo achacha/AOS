@@ -176,6 +176,11 @@ void ATemplate::process(
   bool hibernateHandlersWhenDone  // = false
 )
 {
+  if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+  {
+    context.useEventVisitor().startEvent(ASW("ATemplate::process",18), AEventVisitor::EL_INFO);
+  }
+  
   if (!m_Initialized)
   {
     //a_Initialize handlers
@@ -183,6 +188,11 @@ void ATemplate::process(
       (*it).second->init();
 
     m_Initialized = true;
+  }
+
+  if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+  {
+    context.useEventVisitor().startEvent(ASW("ATemplate::process:loop",23), AEventVisitor::EL_DEBUG);
   }
 
   NODES::const_iterator cit = m_Nodes.begin();
@@ -193,7 +203,18 @@ void ATemplate::process(
   }
 
   if (hibernateHandlersWhenDone)
+  {
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+    {
+      context.useEventVisitor().startEvent(ASW("ATemplate::process:hibernate",28), AEventVisitor::EL_DEBUG);
+    }
     hibernate();
+  }
+
+  if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+  {
+    context.useEventVisitor().endEvent();
+  }
 }
 
 void ATemplate::hibernate()

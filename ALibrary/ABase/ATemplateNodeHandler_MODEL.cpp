@@ -65,6 +65,12 @@ ATemplateNodeHandler_MODEL::Node::~Node()
 
 void ATemplateNodeHandler_MODEL::Node::process(ATemplateContext& context, AOutputBuffer& output)
 {
+  AAutoPtr<AEventVisitor::ScopedEvent> scoped;
+  if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+  {
+    scoped.reset(new AEventVisitor::ScopedEvent(context.useEventVisitor(), ASW("ATemplateNodeHandler_MODEL",26), m_BlockData, AEventVisitor::EL_DEBUG));
+  }
+
   AXmlElement *pElement = context.useModel().useRoot().findElement(m_BlockData);
   if (pElement)
   {

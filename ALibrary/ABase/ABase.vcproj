@@ -889,7 +889,6 @@
 						Optimization="2"
 						AdditionalIncludeDirectories=""
 						UsePrecompiledHeader="1"
-						BrowseInformation="1"
 					/>
 				</FileConfiguration>
 			</File>

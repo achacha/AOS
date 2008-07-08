@@ -43,17 +43,35 @@ void ACookieJar::Node::emit(AOutputBuffer& target) const
   }
 }
 
-void ACookieJar::Node::emitSecureOnly(AOutputBuffer& target) const 
+void ACookieJar::Node::emitCookies(AOutputBuffer& target, bool secureOnly)
 {
-  const Node *p = this;
-  while (p)
+  Node *pNode = this;
+  while (pNode)
   {
-    for (ACookieJar::Node::COOKIES::const_iterator cit = p->m_Cookies.begin(); cit != p->m_Cookies.end(); ++cit)
+    ACookieJar::Node::COOKIES::iterator it = pNode->m_Cookies.begin();
+    while(it != pNode->m_Cookies.end())
     {
-      if (cit->second->isSecure())
-        cit->second->emitRequestHeaderString(target);
-    }
+      if (it->second->isExpired())
+      {
+        ACookieJar::Node::COOKIES::iterator itKill = it;
+        ++it;
 
-    p = p->mp_Parent;
+        ACookie *p = itKill->second;
+        pNode->m_Cookies.erase(itKill);
+        delete p;
+
+        continue;
+      }
+      else
+      {
+        if ((!secureOnly) || (secureOnly && it->second->isSecure()))
+          it->second->emitRequestHeaderString(target);
+
+        ++it;
+      }
+    }
+  
+    pNode = pNode->mp_Parent;
   }
 }
+

@@ -259,7 +259,20 @@ void ACookie::setExpired(bool boolFlag)
 
 bool ACookie::isExpired()
 { 
-  return m_boolExpired; 
+  if (m_boolExpirationSet)
+  {
+    // Check if cookie already expired since exipration was set
+    if (!m_boolExpired)
+    {
+      ATime now;
+      if (now >= m_timeExpires)
+        m_boolExpired = true;
+    }
+
+    return m_boolExpired;
+  }
+  else
+    return false;  // No expiration set
 }
 
 void ACookie::setNoExpire()

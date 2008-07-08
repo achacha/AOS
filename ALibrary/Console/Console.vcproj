@@ -403,7 +403,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tVectorPerf.cpp"
+			RelativePath=".\tCookieJar.cpp"
 			>
 		</File>
 	</Files>

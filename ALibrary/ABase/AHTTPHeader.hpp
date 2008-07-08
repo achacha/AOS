@@ -89,6 +89,9 @@ public:
   //! HTML multi-part POST form: multipart/form-data
   static const AString CONTENT_TYPE_HTML_FORM_MULTIPART;
 
+  //! String that denotes default HTTP version supported "HTTP/1.1"
+  static const AString DEFAULT_HTTP_VERSION;
+
 public:
   virtual ~AHTTPHeader();
 
@@ -192,38 +195,37 @@ public:
   */
   size_t getContentLength() const;
 
-  //! String that denotes default HTTP version supported "HTTP/1.1"
-  static const AString DEFAULT_HTTP_VERSION;
-
   /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
-  //a_This object does not exist by itself, but it's childer will exist on their own
+  //! default ctor without any cookie processing
   AHTTPHeader();
+  
+  //! copy
   AHTTPHeader(const AHTTPHeader&);
   AHTTPHeader& operator=(const AHTTPHeader&);
 
-  //a_Storage of name value pairs
+  //! Storage of name value pairs
   MAP_AString_NVPair m_Pairs;
   
-  //a_Managed by the request and response derived classes
+  //! Managed by the request and response derived classes
   AString mstr_LineZero;
   AString mstr_HTTPVersion;
 
-  //a_First line is always a special case parsed by a child
+  //! First line is always a special case parsed by a child
   virtual bool _parseLineZero() = 0;  
   
-  //a_if this pair is handled by child it will return 1, else 0 means no and added to this object
+  //! If this pair is handled by child it will return 1, else 0 means no and added to this object
   virtual bool _handledByChild(const ANameValuePair& nvPair) = 0;  
 
-  //a_Mapping from types to strings
+  // Mapping from types to strings
   const AString              _mapTypeToString(AHTTPHeader::HEADER_TOKENS eToken) const;
   AHTTPHeader::HEADER_TOKENS _mapStringToType(const AString& strToken) const;
 
-  //a_Status code description
+  // Status code description
   AString _getStatusCodeDescription(int iStatusCode);
 
   void _copy(const AHTTPHeader&);
