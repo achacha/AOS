@@ -9,6 +9,7 @@ $Id$
 #include "AXmlElement.hpp"
 #include "ATemplate.hpp"
 #include "AOSContext.hpp"
+#include "AEventVisitor.hpp"
 
 const AString ATemplateNodeHandler_SESSION::TAGNAME("SESSION",7);
 
@@ -65,6 +66,12 @@ ATemplateNodeHandler_SESSION::Node::~Node()
 
 void ATemplateNodeHandler_SESSION::Node::process(ATemplateContext& ctx, AOutputBuffer& output)
 {
+  AAutoPtr<AEventVisitor::ScopedEvent> scoped;
+  if (ctx.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+  {
+    scoped.reset(new AEventVisitor::ScopedEvent(ctx.useEventVisitor(), ASW("ATemplateNodeHandler_SESSION",28), m_BlockData, AEventVisitor::EL_DEBUG));
+  }
+
   //a_Context
   AOSContext *pContext = ctx.useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);
   if (!pContext)

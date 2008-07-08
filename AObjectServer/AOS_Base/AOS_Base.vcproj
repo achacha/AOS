@@ -312,7 +312,6 @@
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"
 				CompileAs="0"
 			/>

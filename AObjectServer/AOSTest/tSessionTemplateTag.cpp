@@ -15,7 +15,8 @@ int main()
   
   AXmlDocument model("root");
   ABasePtrContainer objects;
-  ATemplateContext ctx(objects, model);
+  AEventVisitor visitor;
+  ATemplateContext ctx(objects, model, visitor);
 
   pTemplate->debugDump();
   

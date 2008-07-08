@@ -1572,7 +1572,7 @@ ALuaTemplateContext& AOSContext::useLuaTemplateContext()
 {
   if (!mp_LuaTemplateContext)
   {
-    mp_LuaTemplateContext = new ALuaTemplateContext(m_ContextObjects, m_OutputXmlDocument, m_DefaultLuaLibraries);
+    mp_LuaTemplateContext = new ALuaTemplateContext(m_ContextObjects, m_OutputXmlDocument, m_EventVisitor, m_DefaultLuaLibraries);
     mp_LuaTemplateContext->addUserDefinedLibrary(luaopen_aos);  //a_Add AOS function library loader
 
     //a_Reference self from inside the objects
