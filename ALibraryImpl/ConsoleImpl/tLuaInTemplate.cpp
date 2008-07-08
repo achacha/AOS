@@ -12,7 +12,7 @@ ASocketLibrary_SSL g_SocketLibrarySSL;
 int main(int argc, char **argv)
 {
 //  AString code0(
-//"result=web.HttpGet(\"http://localhost/ping\");\
+//"result=web.HttpGet(\"test\", \"http://localhost/ping\");\
 //print result;\
 //");
 
@@ -33,8 +33,9 @@ int main(int argc, char **argv)
     file.open();
 
     AXmlDocument model("root");
-    
-    ALuaTemplateContext ctx(*pobjects, model);
+    AEventVisitor visitor;
+
+    ALuaTemplateContext ctx(*pobjects, model, visitor);
 
     ALuaEmbed lua;
   

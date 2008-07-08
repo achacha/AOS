@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib;../ALuaEmbed"
+				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib;../ALuaEmbed;../ALuaEmbed/lua-5.1.3/src"
 				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -290,7 +290,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib;../ALuaEmbed"
+				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib;../ALuaEmbed;../ALuaEmbed/lua-5.1.3/src"
 				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"

@@ -10,20 +10,25 @@ $Id$
 #include "AFile_Socket.hpp"
 #include "ARope.hpp"
 #include "ATextConverter.hpp"
+#include "ACookieJar.hpp"
 
 /*!
 Request from web via HTTP GET
 
 web.HttpGet(objectname, URL);
 
-Creates in objects:
-  objectname.response
-  objectname.body
+Input OBJECTS:
+  OPTIONAL: cookiejar        - ACookieJar object to use with AHTTPRequestHeader and AHTTPResponseHeader
+
+Output OBJECTS created:
+  OWNED: objectname.response - AHTTPResponseHeader object
+  OWNED: objectname.body     - ARope object with response body
+
 
 LUA e.g.:
-status = web.HttpGet("ping", "http://localhost/ping");
-response = objects.emit("ping.response");
-body = objects.emit("ping.body");
+  status = web.HttpGet("ping", "http://localhost/ping");
+  response = objects.emit("ping.response");
+  body = objects.emit("ping.body");
 
 @namespace web
 @return (int) Status code
@@ -46,10 +51,18 @@ static int web_HttpGet(lua_State *L)
 
   lua_pop(L,2);
 
+  //a_Get the cookiejar if any
+  ACookieJar *pCookieJar = pLuaContext->useObjects().useAsPtr<ACookieJar>("cookiejar");
+
   //a_Set up request header
   AHTTPRequestHeader request;
   request.parseUrl(url);
   request.setPair(AHTTPHeader::HT_GEN_Connection, "close");
+  if (pCookieJar)
+    pCookieJar->emitCookies(request);
+
+  //a_Log it
+  pLuaContext->useEventVisitor().startEvent(request, AEventVisitor::EL_INFO);
 
   //a_REQUEST
   AFile_Socket httpSocket(request, true);
@@ -59,6 +72,13 @@ static int web_HttpGet(lua_State *L)
   //a_RESPONSE and add it to objects
   AHTTPResponseHeader *presponse = new AHTTPResponseHeader();
   presponse->fromAFile(httpSocket);
+  if (pCookieJar)
+    pCookieJar->parse(request, *presponse);
+
+  //a_Log it
+  pLuaContext->useEventVisitor().startEvent(*presponse, AEventVisitor::EL_INFO);
+
+  //a_Add response header to the objects
   pLuaContext->useObjects().insert(objectname+".response", presponse, true);
 
   //a_Return status code
@@ -77,6 +97,9 @@ static int web_HttpGet(lua_State *L)
   }
   pLuaContext->useObjects().insert(objectname+".body", pbody, true);
   
+  //a_Log it
+  pLuaContext->useEventVisitor().startEvent(*pbody, AEventVisitor::EL_DEBUG);
+
   return 1;
 }
 
@@ -85,9 +108,13 @@ Request from web via HTTP POST
 
 web.HttpPost(objectname, URL, POSTdata);
 
-Creates in objects:
-  objectname.response
-  objectname.body
+Input OBJECTS:
+  OPTIONAL: cookiejar        - ACookieJar object to use with AHTTPRequestHeader and AHTTPResponseHeader
+
+Output OBJECTS created:
+  OWNED: objectname.response - AHTTPResponseHeader object
+  OWNED: objectname.body     - ARope object with response body
+
 
 LUA e.g.:
 status = web.HttpPost("ping", "http://localhost/ping", "form=data&etc=");
@@ -119,6 +146,8 @@ static int web_HttpPost(lua_State *L)
 
   lua_pop(L,3);
 
+  //a_Get the cookiejar if any
+  ACookieJar *pCookieJar = pLuaContext->useObjects().useAsPtr<ACookieJar>("cookiejar");
 
   //a_Set up request header
   AHTTPRequestHeader request;
@@ -127,6 +156,11 @@ static int web_HttpPost(lua_State *L)
   request.setPair(AHTTPHeader::HT_GEN_Connection, "close");
   request.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(data.getSize()));
   request.setPair(AHTTPHeader::HT_ENT_Content_Type, AHTTPHeader::CONTENT_TYPE_HTML_FORM);
+  if (pCookieJar)
+    pCookieJar->emitCookies(request);
+
+  //a_Log it
+  pLuaContext->useEventVisitor().startEvent(request, AEventVisitor::EL_INFO);
 
   //a_REQUEST
   AFile_Socket httpSocket(request, true);
@@ -137,6 +171,13 @@ static int web_HttpPost(lua_State *L)
   //a_RESPONSE and add it to objects
   AHTTPResponseHeader *presponse = new AHTTPResponseHeader();
   presponse->fromAFile(httpSocket);
+  if (pCookieJar)
+    pCookieJar->parse(request, *presponse);
+
+  //a_Log it
+  pLuaContext->useEventVisitor().startEvent(*presponse, AEventVisitor::EL_INFO);
+
+  //a_Add response header to the objects
   pLuaContext->useObjects().insert(objectname+".response", presponse, true);
 
   //a_Return status code
@@ -154,6 +195,9 @@ static int web_HttpPost(lua_State *L)
     pbody->append("ERROR: Content-Length not provided in response header.");
   }
   pLuaContext->useObjects().insert(objectname+".body", pbody, true);
+
+  //a_Log it
+  pLuaContext->useEventVisitor().startEvent(*pbody, AEventVisitor::EL_DEBUG);
   
   return 1;
 }

@@ -24,10 +24,11 @@ void ALuaTemplateContext::debugDump(std::ostream& os, int indent) const
 
 ALuaTemplateContext::ALuaTemplateContext(
   ABasePtrContainer& objects, 
-  AXmlDocument& model, 
+  AXmlDocument& model,
+  AEventVisitor& visitor,
   u4 maskLibrariesToLoad
 ) :
-  ATemplateContext(objects, model),
+  ATemplateContext(objects, model, visitor),
   mp_Lua(NULL),
   m_LibrariesToLoad(maskLibrariesToLoad)
 {

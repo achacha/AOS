@@ -79,11 +79,22 @@ void ASocketListener_SSL::_initSSL()
     strError.append(" (possibly ASocketLibrary_SSL global object missing)");
     ATHROW_EX(this, AException::APIFailure, strError);
   }
+
+  //a_Allow partial SSL Writes
+  SSL_CTX_set_mode(pServerData->ctx, SSL_MODE_ENABLE_PARTIAL_WRITE);
   
   int retCode;
   if (!AFileSystem::exists(AFilename(m_certFilename, false)))
     ATHROW_EX(this, AException::DoesNotExist, m_certFilename);
   
+  if ((retCode = SSL_CTX_use_certificate_chain_file(pServerData->ctx, m_certFilename.c_str())) <= 0)
+  {
+    AString strError(1024, 256);
+    ERR_error_string(retCode, strError.startUsingCharPtr());
+    strError.stopUsingCharPtr();
+    ATHROW_EX(this, AException::APIFailure, strError);
+  }
+
   if ((retCode = SSL_CTX_use_certificate_file(pServerData->ctx, m_certFilename.c_str(), SSL_FILETYPE_PEM)) <= 0)
   {
     AString strError(1024, 256);
@@ -111,6 +122,8 @@ void ASocketListener_SSL::_initSSL()
     ATHROW_EX(this, AException::APIFailure, strError);
   }
 
+  
+
   pServerData->ssl = SSL_new(pServerData->ctx);
   AASSERT(this, pServerData->ssl);
 }
@@ -129,7 +142,7 @@ ASocketLibrary::SocketInfo ASocketListener_SSL::accept(void *pSSLData)
   SSL_set_bio(pClientData->ssl,sbio,sbio);
 
   int retCode;
-  if ((retCode = SSL_accept(pClientData->ssl)) <=0)
+  if ((retCode = SSL_accept(pClientData->ssl)) <= 0)
   {
     int errorCode = SSL_get_error(pClientData->ssl, retCode);
     throwSSLError(errorCode);
@@ -145,36 +158,28 @@ void ASocketListener_SSL::_initClientSSL(void *pSSLData)
   AASSERT(this, pSSLData);
   SSLData *pData = (SSLData *)pSSLData;
   
-  /* Get client's certificate (note: beware of dynamic allocation) - opt */
+  // Get client's certificate (note: beware of dynamic allocation) - opt
   pData->client_cert = SSL_get_peer_certificate(pData->ssl);
-  if (pData->client_cert != NULL) {
-    std::cout << "Client certificate:\r\n";
-    
+  if (pData->client_cert != NULL)
+  {
     char *str = X509_NAME_oneline(X509_get_subject_name(pData->client_cert), 0, 0);
     CHK_NULL(str);
-    std::cout << "\t subject: \r\n" << str;
     OPENSSL_free(str);
     
     str = X509_NAME_oneline(X509_get_issuer_name(pData->client_cert), 0, 0);
     CHK_NULL(str);
-    std::cout << "\t issuer: \r\n" << str << std::endl;
     OPENSSL_free(str);
     
-    /* We could do all sorts of certificate verification stuff here before deallocating the certificate. */
+    // We could do all sorts of certificate verification stuff here before deallocating the certificate
     X509_free(pData->client_cert);
     pData->client_cert = NULL;
   }
-//  else
-//    printf ("Client does not have certificate.\n");
 }
 
 void ASocketListener_SSL::close()
 {
   assert(mp_SSLData);
   SSLData *pData = (SSLData *)mp_SSLData;
-
-//  if (pData->bio)
- //   BIO_free(pData->bio);
 
   SSL_free(pData->ssl);
   SSL_CTX_free(pData->ctx);

@@ -67,6 +67,12 @@ ATemplateNodeHandler_LUA::Node::~Node()
 
 void ATemplateNodeHandler_LUA::Node::process(ATemplateContext& context, AOutputBuffer& output)
 {
+  AAutoPtr<AEventVisitor::ScopedEvent> scoped;
+  if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG)) 
+  {
+    scoped.reset(new AEventVisitor::ScopedEvent(context.useEventVisitor(), ASW("ATemplateNodeHandler_LUA",24), m_BlockData, AEventVisitor::EL_DEBUG));
+  }
+
   ALuaTemplateContext *pLuaTemplateContext = dynamic_cast<ALuaTemplateContext *>(&context);
   if (pLuaTemplateContext)
   {
@@ -76,6 +82,7 @@ void ATemplateNodeHandler_LUA::Node::process(ATemplateContext& context, AOutputB
       output.append(" block(context)={{{\r\n",21);
       output.append(m_BlockData);
       output.append("}}}\r\n",5);
+      context.useEventVisitor().addEvent(output, AEventVisitor::EL_ERROR);
     }
   }
   else
@@ -87,6 +94,7 @@ void ATemplateNodeHandler_LUA::Node::process(ATemplateContext& context, AOutputB
       output.append(" block(local)={{{\r\n",19);
       output.append(m_BlockData);
       output.append("}}}\r\n",5);
+      context.useEventVisitor().addEvent(output, AEventVisitor::EL_ERROR);
     }
   }
 }

@@ -26,7 +26,8 @@ public:
   */
   ALuaTemplateContext(
     ABasePtrContainer& objects, 
-    AXmlDocument& model, 
+    AXmlDocument& model,
+    AEventVisitor& visitor,
     u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_ALL_SAFE
   );
   
