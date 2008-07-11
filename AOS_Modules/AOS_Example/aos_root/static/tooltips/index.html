@@ -2,8 +2,24 @@
 
 <head>
 	<title>Top 5 most dangerous creatures</title>
-	<script type="text/javascript" src="../overlib421/overlib.js"></script>
-	<script type="text/javascript" src="tooltips.js"></script>
+	<script type="text/javascript" src="/js/jquery/jquery-1.2.6.js"></script>
+	<style type="text/css">
+
+.ajaxtooltip{
+position: absolute; /*leave this alone*/
+display: none; /*leave this alone*/
+width: 300px;
+left: 0; /*leave this alone*/
+top: 0; /*leave this alone*/
+background: lightyellow;
+border: 2px solid gray;
+border-width: 1px 2px 2px 1px;
+padding: 5px;
+}
+
+</style>
+
+	<script type="text/javascript" src="/js/jquery/ajaxtooltip.js"></script>
 	<link rel="stylesheet" href="tooltips.css" type="text/css"/>
 </head>
 
@@ -18,30 +34,30 @@
 <tr><td>
 1. There are many dangerous creature in the wild kingdom, but very few match up to tenacity, veracity and overall propensity to terror as the wild marmoset.
 Three of the most dangerous ones are 
-<span id="Marmoset" class="tooltipable" onmouseover="return getHttpXml(this.id);" onmouseout="return nd();">Regular "Leaded" Marmoset</span>
+<span class="tooltipable" title="ajax:tooltip_Marmoset.xml">Regular "Leaded" Marmoset</span>
 , 
-<span id="PygmyMarmoset" class="tooltipable" onmouseover="return getHttpXml(this.id);" onmouseout="return nd();">Pygmy "Unleaded" Marmoset</span>
+<span class="tooltipable" title="ajax:tooltip_PygmyMarmoset.xml">Pygmy "Unleaded" Marmoset</span>
 , and
-<span id="WhiteHeadedMarmoset" class="tooltipable" onmouseover="return getHttpXml(this.id);" onmouseout="return nd();">White Headed "Diesel" Marmoset</span>
+<span class="tooltipable" title="ajax:tooltip_WhiteHeadedMarmoset.xml">White Headed "Diesel" Marmoset</span>
 .
 </td></tr>
 <tr><td></td></tr>
 <tr><td>
 2. Another highly dangerous and destructive force commonly found decimating the wildlife around Mexico,
 the ferocious beast called a 
-<span id="Chihuahua" class="tooltipable" onmouseover="return getHttpXml(this.id);" onmouseout="return nd();">Ferocious Desert Chihuahua</span>
+<span class="tooltipable" title="ajax:tooltip_Chihuahua.xml">Ferocious Desert Chihuahua</span>
 .  Vicious looking indeed, few have lived to tell their tale of encounter with this monstrosity.
 </td></tr>
 <tr><td></td></tr>
 <tr><td>
 3. One cannot easily describe the sheer destructive prowess of the infamous
-<span id="TwoToedSloth" class="tooltipable" onmouseover="return getHttpXml(this.id);" onmouseout="return nd();">Two Toed Death Sloth</span>
+<span class="tooltipable" title="ajax:tooltip_TwoToedSloth.xml">Two Toed Death Sloth</span>
 .  A globally feared predator, easily annihilating prey, swooping down from above and just as quickly retracting to prepare for the next attack.
 </td></tr>
 <tr><td></td></tr>
 <tr><td>
 4. The 
-<span id="Koala" class="tooltipable" onmouseover="return getHttpXml(this.id);" onmouseout="return nd();">Koala</span>
+<span class="tooltipable" title="ajax:tooltip_Koala.xml">Koala</span>
 is a notoriously known as "The Plunder From Downunder".  Vicious, remorseless and overall unpleasant.  Many stories were told of the
 sheer devastation caused by one relatively hungry koala that decided that savaging one Eucalyptus tree was not enough.  Generations still
 feel the effects of that incident.
@@ -49,7 +65,7 @@ feel the effects of that incident.
 <tr><td></td></tr>
 <tr><td>                                                                   
 5. No wild waters are safe when inhabited by the fecund beast known as a 
-<span id="Guppy" class="tooltipable" onmouseover="return getHttpXml(this.id);" onmouseout="return nd();">Guppy</span>
+<span class="tooltipable" title="ajax:tooltip_Guppy.xml">Guppy</span>
 .  Wily and devious, the pretend to be harmless until prey comes near, then their voracity easily surpasses the simple piranha.
 It is advised to stay out of any still or moving waters as the bodily harm that can be caused by these monsters is devastating.
 </td></tr>
