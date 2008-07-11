@@ -127,7 +127,7 @@ public:
   Gets the path type mask of PathType flags
   Useful in checking existance and types in one call
   To check if directory use (AFileSystem::Directory & AFileSystem::getType(...)), etc
-  DoesNotExist is always 0
+  Can return AFileSystem::DoesNotExist
   */
   static u4 getType(const AFilename&);
   
