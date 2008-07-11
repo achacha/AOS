@@ -70,7 +70,7 @@ AOSContext::ReturnCode AOSModule_Wiki_ViewFromFileSystem::execute(AOSContext& co
     
     //a_New data submitted
     u4 type = AFileSystem::getType(wikifile);
-    if (type)
+    if (AFileSystem::DoesNotExist != type)
     {
       //a_New data submitted, old file exists
       AFilename newwikifile(wikifile);
@@ -115,7 +115,7 @@ AOSContext::ReturnCode AOSModule_Wiki_ViewFromFileSystem::execute(AOSContext& co
   else
   {
     u4 type = AFileSystem::getType(wikifile);
-    if (type)
+    if (AFileSystem::DoesNotExist != type)
     {
       AFile_Physical file(wikifile);
       file.open();
