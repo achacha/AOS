@@ -33,7 +33,6 @@ def syncModule(module_source_path):
 		print EXEC_RSYNC;
 	os.system(EXEC_RSYNC);
 
-
 def showUsage():
 	print "AOS configuration and content synchronization script.";
 	print sys.argv[0]+" <-verbose|-dryrun|-clean> <-p BASEPATH>";
@@ -116,3 +115,7 @@ if (os.path.exists(modules_path)):
 			module_source_path = os.path.join(module_path, "aos_root");
 			if (os.path.exists(module_source_path)):
 				syncModule(module_source_path);
+
+# Copy extra needed stuff
+syncModule("openssl_create_selfsigned_certificate.py");
+syncModule("openssl.cnf");

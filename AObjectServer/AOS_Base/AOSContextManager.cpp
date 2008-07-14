@@ -274,12 +274,16 @@ void AOSContextManager::deallocate(AOSContext *p)
     m_Services.useLog().add(p->useEventVisitor(), ALog::CRITICAL_ERROR);
   }
 
-  //a_Add to history
-  if (m_History.size() >= m_HistoryMaxSize)
   {
-    //a_Remove last
-    delete m_History.pop();
+    ALock lock(m_History.useSync());
+    while (m_History.size() >= m_HistoryMaxSize)
+    {
+      //a_Remove last
+      delete m_History.pop();
+    }
   }
+
+  //a_Add to history
   m_History.push(p);
 }
 
