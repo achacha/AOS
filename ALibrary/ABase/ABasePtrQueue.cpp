@@ -39,7 +39,9 @@ ABase *ABasePtrQueue::pop()
     ret = mp_Head;
     if (!(mp_Head = mp_Head->pNext))
       mp_Tail = NULL;    //a_Queue was emptied
-  
+    else
+      mp_Head->pPrev = NULL;
+
     AASSERT(this, m_Size>0);
     --m_Size;
   }
@@ -55,6 +57,7 @@ void ABasePtrQueue::push(ABase *p)
   {
     //a_Queue not empty, append item
     mp_Tail->pNext = p;
+    p->pPrev = mp_Tail;
     mp_Tail = p;
     mp_Tail->pNext = NULL;
 
@@ -64,6 +67,7 @@ void ABasePtrQueue::push(ABase *p)
   else
   {
     p->pNext = NULL;
+    p->pPrev = NULL;
     mp_Tail = p;
     mp_Head = p;
 
