@@ -3,13 +3,13 @@
 <style>
 .generic-message { 
 	background: #B0FF90;
-	font: 14 Arial, Helvetica, sans-serif;
+	font: 18 Arial, Helvetica, sans-serif;
   color: #000000;
 }
 .error-message { 
 	background: #600000;
-	font: 18 Arial, Helvetica, sans-serif;
-  color: #FFFFFF;
+	font: 20 Arial, Helvetica, sans-serif;
+  color: #FFEEEE;
 }
 </style>
 </head>
@@ -31,7 +31,7 @@ end
 </div>
 <br/>
 <br/>
-<small><font color="blue">Request time: %[LUA]{{{ print(model.getText("/root/request_time")); }}}[LUA]% milliseconds</font></small><br/>
-<small><font color="blue">Context time: %[LUA]{{{ print(model.getText("/root/context_time")); }}}[LUA]% milliseconds</font></small><br/>
+<small><font color="blue">Request time: %[MODEL]{{{/root/request_time}}}[MODEL]% milliseconds</font></small><br/>
+<small><font color="blue">Context time: %[MODEL]{{{/root/context_time}}}[MODEL]% milliseconds</font></small><br/>
 </body>
 </html>

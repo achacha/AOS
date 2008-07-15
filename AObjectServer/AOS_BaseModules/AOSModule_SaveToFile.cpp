@@ -78,7 +78,7 @@ AOSContext::ReturnCode AOSModule_SaveToFile::execute(AOSContext& context, const 
     return AOSContext::RETURN_OK;
   }
 
-  AFile_Physical outfile(f, "w");
+  AFile_Physical outfile(f, "wb");
   try
   {
     outfile.open();

@@ -8,7 +8,7 @@
 	</module>
   <module class="LuaScript" if="/root/REQUEST/url/query-string/file1">
     <script><![CDATA[
-model.addText("/root/generic-message", "/root/REQUEST/url/query-string/file1 written to file.");
+model.addText("/root/MESSAGE", "/root/REQUEST/url/query-string/file1 written to file.");
 ]]></script>
   </module>
 
