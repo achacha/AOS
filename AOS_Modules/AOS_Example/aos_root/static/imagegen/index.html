@@ -1,0 +1,25 @@
+<html>
+<head>
+<title></title>
+<script type="text/javascript" src="/js/jquery/jquery-1.2.6.js"></script>
+<script type="text/javascript" src="/js/jquery/jquery.imagecube.js"></script>
+<style type="text/css">
+#myCube img { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<b>Generated image cube</b><br/>
+<br/>
+<div id="myCube" style="width: 300px; height: 250px;" imagecube="0"> 
+  <img src="/imagegen/generated_X.png?text=Slide%201" title="1"/> 
+  <img src="/imagegen/generated_X.png?text=Slide%202" title="2"/> 
+  <img src="/imagegen/generated_X.png?text=Slide%203" title="3"/> 
+  <img src="/imagegen/generated_X.png?text=Slide%204" title="4"/> 
+  <img src="/imagegen/generated_X.png?text=Slide%205" title="5"/> 
+</div>
+<script type="text/javascript">
+$('#myCube').imagecube({speed:2000, pause:10}); 
+ </script>
+
+</body>
+</html>
