@@ -15,7 +15,7 @@ class AXmlElement;
 class AFile;
 
 /*!
-Handles tag: CODE
+Handles tag: MODEL
 */
 class ABASE_API ATemplateNodeHandler_MODEL : public ATemplateNodeHandler
 {
