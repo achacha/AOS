@@ -61,6 +61,9 @@ void ALuaEmbed::_init(u4 maskLibrariesToLoad)
 //  if (LUALIB_OS & maskLibrariesToLoad)      luaopen_os(mp_LuaState);               // opens the OS lib
 //  if (LUALIB_PACKAGE & maskLibrariesToLoad) luaopen_package(mp_LuaState);          // opens the package lib
 //  if (LUALIB_IO & maskLibrariesToLoad)      luaopen_io(mp_LuaState);               // opens the I/O library
+
+  lua_gc(mp_LuaState, LUA_GCSETPAUSE, 120);
+  lua_gc(mp_LuaState, LUA_GCSETSTEPMUL, 400); 
 }
 
 void ALuaEmbed::loadUserLibrary(LUA_OPENLIBRARY_FPTR fptr)
@@ -77,6 +80,7 @@ int ALuaEmbed::callbackPanic(lua_State *L)
 bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context, AOutputBuffer& output)
 {
   AASSERT(NULL, mp_LuaState);
+  bool result = true;
   try
   {
     //a_Assign current context to lua state
@@ -92,49 +96,43 @@ bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context, AOutp
       AString strError(lua_tostring(mp_LuaState, -1));
       lua_pop(mp_LuaState, 1);  // pop error message from the stack
       output.append(strError);
-      mp_LuaState->acontext = NULL;
-      mp_LuaState->aoutputbuffer = NULL;
-      return false;
+      result = false;
     }
-
-    //a_Execute LUA code
-    switch(lua_pcall(mp_LuaState, 0, LUA_MULTRET, 0))
+    else
     {
-      case LUA_ERRRUN:
+      //a_Execute LUA code
+      switch(lua_pcall(mp_LuaState, 0, LUA_MULTRET, 0))
       {
-        AString strError("Runtime Error: ");
-        strError.append(lua_tostring(mp_LuaState, -1));
-        lua_pop(mp_LuaState, 1);  // pop error message from the stack
-        output.append(strError);
-        mp_LuaState->acontext = NULL;
-        mp_LuaState->aoutputbuffer = NULL;
-        return false;
-      } 
-      break;
-      
-      case LUA_ERRMEM:
-      {
-        AString strError("Memory Allocation Error: ");
-        strError.append(lua_tostring(mp_LuaState, -1));
-        lua_pop(mp_LuaState, 1);  // pop error message from the stack
-        output.append(strError);
-        mp_LuaState->acontext = NULL;
-        mp_LuaState->aoutputbuffer = NULL;
-        return false;
-      } 
-      break;
+        case LUA_ERRRUN:
+        {
+          AString strError("Runtime Error: ");
+          strError.append(lua_tostring(mp_LuaState, -1));
+          lua_pop(mp_LuaState, 1);  // pop error message from the stack
+          output.append(strError);
+          result = false;
+        } 
+        break;
+        
+        case LUA_ERRMEM:
+        {
+          AString strError("Memory Allocation Error: ");
+          strError.append(lua_tostring(mp_LuaState, -1));
+          lua_pop(mp_LuaState, 1);  // pop error message from the stack
+          output.append(strError);
+          result = false;
+        } 
+        break;
 
-      case LUA_ERRERR:
-      {
-        AString strError("Error in error handler: ");
-        strError.append(lua_tostring(mp_LuaState, -1));
-        lua_pop(mp_LuaState, 1);  // pop error message from the stack
-        output.append(strError);
-        mp_LuaState->acontext = NULL;
-        mp_LuaState->aoutputbuffer = NULL;
-        return false;
+        case LUA_ERRERR:
+        {
+          AString strError("Error in error handler: ");
+          strError.append(lua_tostring(mp_LuaState, -1));
+          lua_pop(mp_LuaState, 1);  // pop error message from the stack
+          output.append(strError);
+          result = false;
+        }
+        break;
       }
-      break;
     }
     mp_LuaState->acontext = NULL;
     mp_LuaState->aoutputbuffer = NULL;
@@ -144,7 +142,7 @@ bool ALuaEmbed::execute(const AEmittable& code, ATemplateContext& context, AOutp
     ex.emit(output);
     mp_LuaState->acontext = NULL;
     mp_LuaState->aoutputbuffer = NULL;
-    return false;
+    result = false;
   }
-  return true;
+  return result;
 }
