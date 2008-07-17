@@ -284,7 +284,7 @@ void ANameValuePair::setType(NameValueType eType)
     case ANameValuePair::XML    :
     case ANameValuePair::HTML :
       //a_<TYPE NAME=VALUE NAME2='VALUE2' NAME3="some'value">
-      setDelimeters("=", ">/"); //_ \r\n\t          
+      setDelimeters("=", ">/");
       setWhiteSpace(" \r\n\t");
       m_valueWrap = '\"';
     break;
@@ -863,8 +863,8 @@ void ANameValuePair::_parseHtmlValue(const AString &strInput, size_t& pos, AStri
     if (!m_valueWrap)
       m_valueWrap = '\"';  //a_HTML/XML require " wrapped values (or ' if " is part of value)
   
-    //a_If the stack is empty and we are at " or >, then we are done parsing
-    if ((stackD.empty()) && (cX == '>' || cX == '\"'))
+    //a_If the stack is empty and we are at one of "'>, then we are done parsing
+    if ((stackD.empty()) && (cX == '>' || cX == '\"' || cX == '\''))
     {
       if (cX == '>')
         --pos;      //a_Back up to '>' or '/' so that the parent may exit

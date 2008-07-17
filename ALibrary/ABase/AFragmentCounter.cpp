@@ -15,7 +15,7 @@ void AFragmentCounter::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_StartValue=" << m_StartValue << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Value=" << m_Value << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_StopValue=" << m_StopValue << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_Step=" << m_Step << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_Step=" << (int)m_Step << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 

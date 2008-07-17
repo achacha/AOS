@@ -403,7 +403,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tCookieJar.cpp"
+			RelativePath=".\tXMLElement.cpp"
 			>
 		</File>
 	</Files>

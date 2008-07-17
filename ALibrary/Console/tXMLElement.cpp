@@ -117,6 +117,27 @@ const char xml_data_big[] ="\
 	</XML>\
 	";
 
+const char xml_small_single_quote[] ="<?xml version=\"1.0\" encoding=\"utf-8\" ?><module class='Test' name='start'/>";
+
+const char xml_single_quote[] ="\
+<?xml version=\"1.0\" encoding=\"utf-8\" ?>\
+<controller name='TestFail'>\
+	<input/>\
+	<module class='Test' name='start'>\
+		<name>foo</name>\
+		<value>bar</value>\
+	</module>\
+	<module class='TestFail' name='work'>\
+		<name>red</name>\
+		<value>pink</value>\
+	</module>\
+	<module class='Test' name='end'>\
+		<name>blue</name>\
+		<value>teal</value>\
+	</module>\
+</controller>\
+";
+
 void testParse()
 {
   AFile_AString strfile;
@@ -127,14 +148,14 @@ void testParse()
   //std::cout << exml << "\r\n" << std::endl;
 
 	AXmlDocument xdoc("root");
-  strfile.useAString().assign(xml_data_big);
+//  strfile.useAString().assign(xml_data_big);
+  strfile.useAString().assign(xml_small_single_quote);
   strfile.reset();
   xdoc.fromAFile(strfile);
+
+  xdoc.debugDump();
+
   std::cout << xdoc << std::endl;
-  
-  ARope rope;
-  xdoc.emit(rope, 0);
-  std::cout << rope << std::endl;
 }
 
 void testPathAdd()
@@ -357,9 +378,9 @@ void testFind2()
     while (cit != nodes.end())
     {
       AString str("port=");
-      (*cit)->emitFromPath("port", str);
+      (*cit)->emitContentFromPath("port", str);
       str.append("  host=");
-      (*cit)->emitFromPath("host", str);
+      (*cit)->emitContentFromPath("host", str);
       std::cout << str << std::endl;
       ++cit;
     }
@@ -442,7 +463,7 @@ void testFilenameEmit()
 
 int main()
 {
-//  testParse();
+  testParse();
 //  testPathAdd();
 //  testOutput();
 //  testRandomXml();
@@ -455,7 +476,7 @@ int main()
 //  testFind2();
 //  testFind3();
 //  testInsertWithPath();
-  testFilenameEmit();
+//  testFilenameEmit();
 
 	return 0;
 }
