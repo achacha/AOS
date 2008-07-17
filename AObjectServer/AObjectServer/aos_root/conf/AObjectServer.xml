@@ -64,6 +64,7 @@
 
   <context-manager>
     <history-maxsize>100</history-maxsize>
+    <history-maxsize>100</history-maxsize>
   </context-manager>
 
   <debug>

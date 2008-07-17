@@ -83,9 +83,13 @@ private:
   CONTEXT_INUSE m_InUse;
   ASync_CriticalSection m_InUseSync;
   
-  //! Context history, after they scroll off here they go into the freestore
+  //! Context history, after they scroll off here they are deleted
   ABasePtrQueue m_History;
   size_t m_HistoryMaxSize;
+
+  //! Error context history, after they scroll off here they are deleted
+  ABasePtrQueue m_ErrorHistory;
+  size_t m_ErrorHistoryMaxSize;
 
   //! Logging level for all event visitors in the context
   int m_DefaultEventLogLevel;

@@ -53,6 +53,17 @@ void AOSContextManager::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
+  ADebugDumpable::indent(os, indent+1) << "m_ErrorHistory.size()=" << m_History.size() << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_ErrorHistory={" << std::endl;
+  {
+    ALock lock(const_cast<ABasePtrQueue *>(&m_ErrorHistory)->useSync());
+    for (const ABase *p = m_ErrorHistory.getHead(); p; p = p->getNext())
+    {
+      dynamic_cast<const ADebugDumpable *>(p)->debugDump(os, indent+2);
+    }
+  }
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
@@ -84,6 +95,19 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     }
     
     {
+      ALock lock(m_ErrorHistory.useSync());
+      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->usePrev())
+      {
+        AOSContext *pContext = dynamic_cast<AOSContext *>(p);
+        if (contextId == AString::fromPointer(pContext))
+        {
+          adminAddProperty(eBase, ASW("contextDetail",7), *pContext, AXmlElement::ENC_CDATADIRECT);
+          return;
+        }
+      }
+    }
+
+    {
       ALock lock(m_History.useSync());
       for (ABase *p = m_History.useTail(); p; p = p->usePrev())
       {
@@ -96,7 +120,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       }
     }
 
-    //a_Context no longer available
+	//a_Context no longer available
     adminAddError(eBase, ASWNL("AOSContext no longer available"));
   }
   else
@@ -120,6 +144,15 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       ASW("Update",6), 
       ASWNL("Maximum event to log 1:Error, 2:Event, 3:Warning, 4:Info, 5:Debug"),
       ASW("Set",3)
+    );
+
+    adminAddPropertyWithAction(
+      eBase,
+      ASW("clear_history",13), 
+      AConstant::ASTRING_EMPTY,
+      ASW("Clear",5), 
+      ASWNL("Clear context history: 0:all  1:history  2:error history"),
+      ASW("Clear",5)
     );
 
     AXmlElement& eInUse = eBase.addElement("object");
@@ -156,6 +189,24 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
           ATHROW(this, AException::InvalidObject);
       }
     }
+
+    {
+      AXmlElement& eErrorHistory = eBase.addElement("object").addAttribute("name", "ErrorHistory");
+      ALock lock(m_ErrorHistory.useSync());
+      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->usePrev())
+      {
+        AOSContext *pContext = dynamic_cast<AOSContext *>(p);
+        if (pContext)
+        {
+          AXmlElement& eProp = adminAddProperty(eErrorHistory, ASW("context",7), pContext->useEventVisitor(), AXmlElement::ENC_CDATADIRECT);
+          eProp.addAttribute(ASW("errors",6), AString::fromSize_t(pContext->useEventVisitor().getErrorCount()));
+          eProp.addElement(ASW("url",3), pContext->useEventVisitor().useName(), AXmlElement::ENC_CDATADIRECT);
+          eProp.addElement(ASW("contextId",3)).addData(AString::fromPointer(pContext), AXmlElement::ENC_CDATADIRECT);
+        }
+        else
+          ATHROW(this, AException::InvalidObject);
+      }
+    }
   }
 }
 void AOSContextManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
@@ -179,14 +230,42 @@ void AOSContextManager::adminProcessAction(AXmlElement& eBase, const AHTTPReques
         }
       }
     }
+    else if (str.equals(ASW("AOSContextManager.clear_history",31)))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("Clear",5), str))
+      {
+        int level = str.toInt();
+        switch(level)
+        {
+          case 0:
+            m_History.clear();
+            m_ErrorHistory.clear();
+          break;
+
+          case 1:
+            m_History.clear();
+          break;
+
+          case 2:
+            m_ErrorHistory.clear();
+          break;
+
+          default:
+            adminAddError(eBase, ASWNL("Invalid level for history clearing, must be (0,1,2)"));
+        }
+      }
+    }
   }
 }
 
 AOSContextManager::AOSContextManager(AOSServices& services) :
   m_Services(services),
-  m_History(new ASync_CriticalSection())
+  m_History(new ASync_CriticalSection()),
+  m_ErrorHistory(new ASync_CriticalSection())
 {
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
+  m_ErrorHistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/error-history-maxsize", 100);
   m_DefaultEventLogLevel = services.useConfiguration().useConfigRoot().getInt("/config/server/log-level", 2);
 
   m_Queues.resize(AOSContextManager::STATE_LAST, NULL);
@@ -274,6 +353,19 @@ void AOSContextManager::deallocate(AOSContext *p)
     m_Services.useLog().add(p->useEventVisitor(), ALog::CRITICAL_ERROR);
   }
 
+  if (p->useEventVisitor().getErrorCount() > 0)
+  {
+    ALock lock(m_ErrorHistory.useSync());
+    while (m_ErrorHistory.size() >= m_ErrorHistoryMaxSize)
+    {
+      //a_Remove last
+      delete m_ErrorHistory.pop();
+    }
+
+    //a_Add to history
+    m_ErrorHistory.push(p);
+  }
+  else
   {
     ALock lock(m_History.useSync());
     while (m_History.size() >= m_HistoryMaxSize)
@@ -281,10 +373,10 @@ void AOSContextManager::deallocate(AOSContext *p)
       //a_Remove last
       delete m_History.pop();
     }
-  }
 
-  //a_Add to history
-  m_History.push(p);
+    //a_Add to history
+    m_History.push(p);
+  }
 }
 
 void AOSContextManager::setQueueForState(AOSContextManager::ContextQueueState state, AOSContextQueueInterface *pQueue)
