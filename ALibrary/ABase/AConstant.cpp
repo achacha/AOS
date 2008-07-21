@@ -18,6 +18,7 @@ const size_t AConstant::MAX_SIZE_T(_UI32_MAX);  // 0xffffffffui32
 
 const AString AConstant::ASTRING_EMPTY;
 const AString AConstant::ASTRING_ZERO("0",1);
+const AString AConstant::ASTRING_DOUBLEZERO("00",2);
 const AString AConstant::ASTRING_ONE("1",1);
 const AString AConstant::ASTRING_TWO("2",1);
 const AString AConstant::ASTRING_SINGLEQUOTE("'",1);

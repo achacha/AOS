@@ -94,6 +94,8 @@ protected:
   virtual bool _isNotEof();
 
 private:
+  static const int DEFAULT_MAXDATAGRAMSIZE;
+
   void _makeHandle();
 
   ASocketLibrary::SocketInfo m_SocketInfo;    //a_Contains socket information

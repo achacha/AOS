@@ -28,6 +28,7 @@ public:
   //! Constants
   static const AString ASTRING_EMPTY;         //a_""  empty string
   static const AString ASTRING_ZERO;          //a_"0" zero
+  static const AString ASTRING_DOUBLEZERO;    //a_"00" double zero
   static const AString ASTRING_ONE;           //a_"1" one
   static const AString ASTRING_TWO;           //a_"2" two
   static const AString ASTRING_TAB;           //a_"\t" one tab

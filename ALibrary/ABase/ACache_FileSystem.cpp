@@ -127,14 +127,7 @@ void ACache_FileSystem::manage()
 
 AXmlElement& ACache_FileSystem::emitXml(AXmlElement& thisRoot) const
 {
-  static const AString KEY("key", 3);
-  static const AString HITS("hits", 4);
-  static const AString LAST("last_used", 9);
-  static const AString FOUND("found", 5);
-  static const AString COUNT("count", 5);
-  static const AString BYTES("bytes", 5);
-
-  thisRoot.addAttribute(HITS, AString::fromSize_t(m_Hit));
+  thisRoot.addAttribute(ASW("hits",4), AString::fromSize_t(m_Hit));
   thisRoot.addAttribute(ASW("miss",4), AString::fromSize_t(m_Miss));
   thisRoot.addAttribute(ASW("max-items",9), AString::fromSize_t(m_MaxItems));
   thisRoot.addAttribute(ASW("max-filesize",12), AString::fromSize_t(m_MaxFileSize));
@@ -146,16 +139,16 @@ AXmlElement& ACache_FileSystem::emitXml(AXmlElement& thisRoot) const
     const CONTAINER_ITEM *pCache = m_CacheArray.at(i);
     eCache.addAttribute(ASW("id",2), AString::fromSize_t(i));
 
-    eCache.addAttribute(COUNT, AString::fromSize_t(pCache->m_Cache.size()));
-    eCache.addAttribute(BYTES, AString::fromSize_t(pCache->m_ByteSize));
+    eCache.addAttribute(ASW("count",5), AString::fromSize_t(pCache->m_Cache.size()));
+    eCache.addAttribute(ASW("bytes",5), AString::fromSize_t(pCache->m_ByteSize));
 
     const CONTAINER& container = pCache->m_Cache;
     for(CONTAINER::const_iterator cit = container.begin(); cit != container.end(); ++cit)
     {
-      AXmlElement& file = thisRoot.addElement(KEY, (*cit).first, AXmlElement::ENC_NONE, false);  //a_Create new key instead of reusing
-      file.addAttribute(HITS, AString::fromInt((*cit).second->hits));
-      file.addAttribute(LAST, AString::fromS8((*cit).second->lastUsed));
-      file.addAttribute(FOUND, (NULL == (*cit).second->pData ? AConstant::ASTRING_FALSE : AConstant::ASTRING_TRUE));
+      AXmlElement& file = thisRoot.addElement(ASW("key",3), (*cit).first, AXmlElement::ENC_NONE, false);  //a_Create new key instead of reusing
+      file.addAttribute(ASW("hits",4), AString::fromInt((*cit).second->hits));
+      file.addAttribute(ASW("last_used",9), AString::fromS8((*cit).second->lastUsed));
+      file.addAttribute(ASW("found",5), (NULL == (*cit).second->pData ? AConstant::ASTRING_FALSE : AConstant::ASTRING_TRUE));
     }
   }
   

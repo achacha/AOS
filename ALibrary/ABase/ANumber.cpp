@@ -845,8 +845,6 @@ ANumber& ANumber::sqrt()
   if (isZero() || !_strCompare(mstr__Number, AConstant::ASTRING_ONE))
     return *this;        //a_Square root of zero and one is zero and one
 
-  static const AString sstrDoubleZero("00");
-
   AString strSource(mstr__Number);
   AString strWork(m__Precision * 2 + 8, 128);
   AString strResult(m__Precision * 2 + 8, 128);
@@ -981,13 +979,13 @@ ANumber& ANumber::sqrt()
         if (!boolAddZeroToResult)
         {
           //a_Bring down 00
-          strWork.append(sstrDoubleZero, 2);
+          strWork.append(AConstant::ASTRING_DOUBLEZERO, 2);
           boolAddZeroToResult = true;
         }
         else
         {
           //a_Additional 00 will add 0 to the result
-          strWork.append(sstrDoubleZero, 2);
+          strWork.append(AConstant::ASTRING_DOUBLEZERO, 2);
           strResult.append('0');
           strResultNoDot.append('0');
           strAcc.append('0');

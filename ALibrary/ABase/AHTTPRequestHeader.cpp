@@ -244,8 +244,7 @@ bool AHTTPRequestHeader::_parseLineZero()
 
 bool AHTTPRequestHeader::_handledByChild(const ANameValuePair &nvHTTPPair)
 {
-  static const AString STR_COOKIE("Cookie", 6);
-  if (!nvHTTPPair.getName().compareNoCase(STR_COOKIE))
+  if (!nvHTTPPair.getName().compareNoCase(ASW("Cookie",6)))
   {
     ANameValuePair nvPair(ANameValuePair::COOKIE);
 

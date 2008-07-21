@@ -86,6 +86,11 @@ public:
   static void convertStringToHexDump(const AString& source, AOutputBuffer&, bool boolIncludeNonAscii = false);    
 
 private:
+  static const AString CDATA_UNSAFE;
+  static const AString CDATA_SAFE;
+  static const AString HTML_UNSAFE;
+  static const AString HEXDUMP_PAD;
+
   //a_Decode64 helper
   static int _decodeBase64Character(int iCharacter);
 };

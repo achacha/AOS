@@ -334,16 +334,16 @@ void AWordUtility::getPhoneticForm(const AString& source, AString& result)
   //a_These replacements take precedence
   int i;
   const int iiPreCount = 1;
-  static const AString preBefore[iiPreCount] = { "ght" };
-  static const AString preAfter[iiPreCount]  = { "t__" };
+  const AString preBefore[iiPreCount] = { "ght" };
+  const AString preAfter[iiPreCount]  = { "t__" };
   for (i=0; i<iiPreCount; ++i)
     work.replace(preBefore[i], preAfter[i]);
 
   //a_STEP 2
   //a_Ending (data in reverse) (before and after data must be same size)
   const int iiEndingCount = 6;
-  static const AString endBefore[iiEndingCount] = {  "e", "yc", "gn", "uae", "y", "eu" };
-  static const AString endAfter[iiEndingCount]  = {  "_", "is", "_n", "__o", "i", "_i" };
+  const AString endBefore[iiEndingCount] = {  "e", "yc", "gn", "uae", "y", "eu" };
+  const AString endAfter[iiEndingCount]  = {  "_", "is", "_n", "__o", "i", "_i" };
   work.reverse();
   for (i=0; i<iiEndingCount; ++i)
   {

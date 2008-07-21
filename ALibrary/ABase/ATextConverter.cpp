@@ -8,6 +8,11 @@ $Id$
 #include "AException.hpp"
 #include <ctype.h>
 
+const AString ATextConverter::CDATA_UNSAFE("]]>");          //a_Cannot have this equence in CDATA
+const AString ATextConverter::CDATA_SAFE("%5d%5d%3e");      //a_Replacement
+const AString ATextConverter::HTML_UNSAFE("<>&");           //a_Unsafe inside HTML tags/data
+const AString ATextConverter::HEXDUMP_PAD("00000000");      //a_Maximum of 8 zeros used in padding
+
 void ATextConverter::encodeBase64(const AString& strSource, AOutputBuffer& target)
 {
   int iOctet, iTemp = 0, iBits = 0;
@@ -340,10 +345,8 @@ void ATextConverter::decodeURL(
 
 void ATextConverter::makeHtmlSafe(const AString& strSource, AOutputBuffer& target)
 {
-  static const AString unsafeHtml("<>&");
-
   size_t lastPos = 0, newPos = 0;
-  if ( AConstant::npos == (newPos = strSource.findOneOf(unsafeHtml, lastPos)) )
+  if (AConstant::npos == (newPos = strSource.findOneOf(HTML_UNSAFE, lastPos)))
   {
     //a_Nothing to do
     strSource.emit(target);
@@ -371,7 +374,7 @@ void ATextConverter::makeHtmlSafe(const AString& strSource, AOutputBuffer& targe
 
     lastPos = newPos + 1;
   }
-  while (AConstant::npos != (newPos = strSource.findOneOf(unsafeHtml, lastPos)));
+  while (AConstant::npos != (newPos = strSource.findOneOf(HTML_UNSAFE, lastPos)));
 
   //a_Leftovers
   strPeek.clear();
@@ -381,11 +384,8 @@ void ATextConverter::makeHtmlSafe(const AString& strSource, AOutputBuffer& targe
 
 void ATextConverter::makeCDataSafe(const AString& strSource, AOutputBuffer& target)
 {
-  static const AString unsafeCData("]]>");          //a_Cannot have this equence in CDATA
-  static const AString safeCData("%5d%5d%3e");      //a_Replacement
-  
   size_t lastPos = 0, newPos = 0;
-  if (AConstant::npos == (newPos = strSource.find(unsafeCData, lastPos)))
+  if (AConstant::npos == (newPos = strSource.find(CDATA_UNSAFE, lastPos)))
   {
     strSource.emit(target);  //a_Nothing to do
     return;
@@ -402,11 +402,11 @@ void ATextConverter::makeCDataSafe(const AString& strSource, AOutputBuffer& targ
       target.append(strPeek);
     }
     
-    target.append(safeCData);
+    target.append(CDATA_SAFE);
 
     lastPos = newPos + 0x3;
   }
-  while (AConstant::npos != (newPos = strSource.find(unsafeCData, lastPos)));
+  while (AConstant::npos != (newPos = strSource.find(CDATA_UNSAFE, lastPos)));
 
   //a_Leftovers
   strPeek.clear();
@@ -418,7 +418,6 @@ void ATextConverter::makeCDataSafe(const AString& strSource, AOutputBuffer& targ
 void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer& target, bool boolIncludeNonAscii)
 {
   AString strTemp;
-  static const AString strZeros("00000000");    //a_Maximum of 8 used in padding
   size_t size = source.getSize();
   size_t rows = size >> 0x4;           //a_16 items per row
   char cX;
@@ -442,7 +441,7 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
 
     //a_Get the offset
     strTemp = AString::fromSize_t(y * 0x10, 0x10);
-    strTemp.insert(0, strZeros, 0, 8 - strTemp.getSize());
+    strTemp.insert(0, HEXDUMP_PAD, 0, 8 - strTemp.getSize());
     target.append(strTemp);
     
     //a_Now the ASCII
@@ -477,7 +476,7 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
   {
     //a_Get the offset
     strTemp = AString::fromS4((s4)(y * 0x10), 0x10);
-    strTemp.insert(0, strZeros, 0, 8 - strTemp.getSize());
+    strTemp.insert(0, HEXDUMP_PAD, 0, 8 - strTemp.getSize());
     target.append(strTemp);
 
     //a_Now the ASCII

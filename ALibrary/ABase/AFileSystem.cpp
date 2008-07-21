@@ -374,8 +374,7 @@ void AFileSystem::expand(const AFilename& relative, AFilename& absolute)
 
 void AFileSystem::touch(const AFilename& source)
 {
-  static const AString OPENFLAGS("w",1);
-  AFile_Physical f(source.toAString(), OPENFLAGS);
+  AFile_Physical f(source.toAString(), ASW("w",1));
   f.open();
   f.close();
 }

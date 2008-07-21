@@ -204,8 +204,7 @@ bool AHTTPResponseHeader::_parseLineZero()
 
 bool AHTTPResponseHeader::_handledByChild(const ANameValuePair &nvPair)
 {
-  static const AString strSetCookie("Set-Cookie");
-  if (!nvPair.getName().compareNoCase(strSetCookie))
+  if (!nvPair.getName().compareNoCase(ASW("Set-Cookie",10)))
   {
     //a_Special method for this special case
     mcookies_Response.parseSetCookieLine(nvPair.getValue());

@@ -164,15 +164,24 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
+  // FORMAT: Wdy, DD Mon YYYY HH:MM:SS UT+-TIMEZONE
+  static const AString S_RFC1036;
+  
+  // Loggable formats
+  static const AString LOGGABLE_YYYYMMDDHHMMSS;
+  static const AString LOGGABLE_YYYY_MM_DD_HHMMSS;
+  static const AString LOGGABLE_YYYYMMDD;
+
+  // Get TM from time_t (internal)
   tm* _getTM() const;
   
-  //a_This is the internal storage of time
+  // This is the internal storage of time
   time_t mt_Time;
 
-  //a_This is the type
+  // This is the type
   eType me_Type;
 
-  //a_Time zone modifier, usually does not change (unless the computer is always moving?!)
+  // Time zone modifier, usually does not change (unless the computer is always moving?!)
   static int smi_TimeZone;
 };
 

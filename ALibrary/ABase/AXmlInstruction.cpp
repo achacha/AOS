@@ -7,6 +7,10 @@ $Id$
 #include "AXmlInstruction.hpp"
 #include "AException.hpp"
 
+const AString AXmlInstruction::S_DEFAULT(">", 1);
+const AString AXmlInstruction::S_XML("?>", 2);
+const AString AXmlInstruction::S_COMMENT("-->", 3);
+
 void AXmlInstruction::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AXmlInstruction @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -95,9 +99,6 @@ void AXmlInstruction::setType(AXmlInstruction::TYPE type)
 
 const AString& AXmlInstruction::getTypeTerminator()
 {
-  static const AString S_DEFAULT(">", 1);
-  static const AString S_XML("?>", 2);
-  static const AString S_COMMENT("-->", 3);
   switch(m_Type)
   {
     case XML_HEADER:

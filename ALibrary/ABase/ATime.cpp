@@ -10,10 +10,15 @@ $Id$
 #include "AString.hpp"
 #include <limits.h>
 
+//FORMAT: Wdy, DD Mon YYYY HH:MM:SS UT+-TIMEZONE
+const AString ATime::S_RFC1036("%a, %d-%b-%Y %H:%M:%S UT");
+  
 const ATime ATime::GENESIS(0);
 
-//a_Date produced when time_t is zero
-#define STR_INVALID_TIME "Wed Dec 31 19:00:00 1969"
+// Loggable formats
+const AString ATime::LOGGABLE_YYYYMMDDHHMMSS("%Y%m%d%H%M%S");
+const AString ATime::LOGGABLE_YYYY_MM_DD_HHMMSS("%Y_%m_%d_%H%M%S");
+const AString ATime::LOGGABLE_YYYYMMDD("%Y%m%d%");
 
 int ATime::smi_TimeZone(666);       //a_Some unexpected timezone :)
 
@@ -222,17 +227,14 @@ void ATime::strftime(const AString& strTemplate, AOutputBuffer& target) const
 
 void ATime::emitRFCtime(AOutputBuffer& target) const
 {
-  //a_FORMAT: Wdy, DD Mon YYYY HH:MM:SS UT+-TIMEZONE
-  static const AString strRFC1036("%a, %d-%b-%Y %H:%M:%S UT");
-  
   if (me_Type == ATime::LOCAL)
   {
     ATime t(*this);
     t.mt_Time += getEffectiveTimeZone() * 3600;
-    t.strftime(strRFC1036, target);
+    t.strftime(S_RFC1036, target);
   }
   else
-    strftime(strRFC1036, target);
+    strftime(S_RFC1036, target);
 
   int iTZ = 0x0;
   switch(me_Type)
@@ -626,44 +628,38 @@ void ATime::emit(AOutputBuffer& target) const
 
 void ATime::emitYYYYMMDDHHMMSS(AOutputBuffer& target) const
 {
-  static const AString LOGGABLE("%Y%m%d%H%M%S");
-  
   if (me_Type == ATime::LOCAL)
   {
     ATime t(*this);
     t.mt_Time += getEffectiveTimeZone() * 3600;
-    t.strftime(LOGGABLE, target);
+    t.strftime(LOGGABLE_YYYYMMDDHHMMSS, target);
   }
   else
-    strftime(LOGGABLE, target);
+    strftime(LOGGABLE_YYYYMMDDHHMMSS, target);
 }
 
 void ATime::emitYYYY_MM_DD_HHMMSS(AOutputBuffer& target) const
 {
-  static const AString LOGGABLE("%Y_%m_%d_%H%M%S");
-  
   if (me_Type == ATime::LOCAL)
   {
     ATime t(*this);
     t.mt_Time += getEffectiveTimeZone() * 3600;
-    t.strftime(LOGGABLE, target);
+    t.strftime(LOGGABLE_YYYY_MM_DD_HHMMSS, target);
   }
   else
-    strftime(LOGGABLE, target);
+    strftime(LOGGABLE_YYYY_MM_DD_HHMMSS, target);
 }
 
 void ATime::emitYYYYMMDD(AOutputBuffer& target) const
 {
-  static const AString LOGGABLE("%Y%m%d%");
-  
   if (me_Type == ATime::LOCAL)
   {
     ATime t(*this);
     t.mt_Time += getEffectiveTimeZone() * 3600;
-    t.strftime(LOGGABLE, target);
+    t.strftime(LOGGABLE_YYYYMMDD, target);
   }
   else
-    strftime(LOGGABLE, target);
+    strftime(LOGGABLE_YYYYMMDD, target);
 }
 
 void ATime::setType(eType e)

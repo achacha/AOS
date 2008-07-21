@@ -8,7 +8,7 @@ $Id$
 #include "ASocketLibrary.hpp"
 #include "ASocketException.hpp"
 
-static const int DEFAULT_MAXDATAGRAMSIZE = 0x200;
+const int AFile_SocketDatagram::DEFAULT_MAXDATAGRAMSIZE = 0x200;
 
 AFile_SocketDatagram::AFile_SocketDatagram() :
   m_MaximumDatagramSize(DEFAULT_MAXDATAGRAMSIZE)
