@@ -27,6 +27,8 @@ const AString AOSContext::S_CONTEXT("CONTEXT",7);
 const AString AOSContext::S_MODEL("MODEL",5);
 const AString AOSContext::S_REFERER("REFERER",7);
 
+const AString AOSContext::S_GZIP("gzip",4);
+
 void AOSContext::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSContext @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -928,13 +930,23 @@ void AOSContext::setSessionObject(AOSSessionData *pObj)
   if (!pObj)
     ATHROW(this, AException::InvalidParameter);
   else
+  {
     mp_SessionObject = pObj;
+    m_ContextFlags.setBit(CTXFLAG_IS_USING_SESSION_DATA);
+  }
 }
 
 AOSSessionData& AOSContext::useSessionData()
 {
+  if (!mp_SessionObject)
+  {
+    //a_Lazy create
+    m_Services.useSessionManager().initSession(this);
+  }
+  
   if (mp_SessionObject)
   {
+    AASSERT(this, m_ContextFlags.isSet(CTXFLAG_IS_USING_SESSION_DATA));
     return *mp_SessionObject;
   }
   else
@@ -1295,13 +1307,11 @@ void AOSContext::setResponseRedirect(const AString& url)
 
 int AOSContext::_calculateGZipLevel(size_t documentSize)
 {
-  static const AString GZIP("gzip",4);
-
   if (AOSConfiguration::GZIP_IS_ENABLED)
   {
     //a_User override
     AString strDeflateLevel;
-    if (m_RequestHeader.useUrl().useParameterPairs().get(GZIP, strDeflateLevel))
+    if (m_RequestHeader.useUrl().useParameterPairs().get(S_GZIP, strDeflateLevel))
       return strDeflateLevel.toInt();
     
     //a_Controller definition
@@ -1319,7 +1329,7 @@ int AOSContext::_calculateGZipLevel(size_t documentSize)
       AString strAcceptEncoding;
       if (
            m_RequestHeader.getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, strAcceptEncoding)
-        && AConstant::npos != strAcceptEncoding.findNoCase(GZIP)
+        && AConstant::npos != strAcceptEncoding.findNoCase(S_GZIP)
       )
       return AOSConfiguration::GZIP_DEFAULT_LEVEL;
     }
@@ -1350,10 +1360,9 @@ bool AOSContext::processStaticPage()
   
   AFilename httpFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
 
-  static const AString ROOT_PATH("/", 1);
   AString filepart(m_RequestHeader.useUrl().getPathAndFilename());
   if (filepart.isEmpty() 
-      || filepart.equals(ROOT_PATH)
+      || filepart.equals(AConstant::ASTRING_SLASH)
       || m_RequestHeader.useUrl().getFilename().isEmpty()
   )
   {

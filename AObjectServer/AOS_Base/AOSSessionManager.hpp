@@ -13,6 +13,7 @@ $Id$
 #include "AThread.hpp"
 
 class AOSServices;
+class AOSContext;
 
 class AOS_BASE_API AOSSessionManager : public AOSAdminInterface
 {
@@ -23,6 +24,15 @@ public:
   //! dtor
   virtual ~AOSSessionManager();
   
+  /*!
+  Initalize session
+  If session id in request cookie, fetch session and associate it with context
+  If invalid session id or not there , create session, add response cookie and associate it with the corrent context
+
+  @param pContext current context
+  */
+  void initSession(AOSContext *pContext);
+
   /*!
   Check existance of session data
   If session has already expired it will be removed from database and reported as non-existing
@@ -95,6 +105,7 @@ private:
   //! Session timeout
   //! Time in milliseconds to coincide with Timer.getInterval()
   double m_TimeoutInterval;
+  long m_TimeoutIntervalInSeconds;
 
   //! Sleep cycle time in milliseconds
   u4 m_SessionMonitorSleep;

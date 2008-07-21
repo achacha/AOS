@@ -10,6 +10,8 @@ $Id$
 #include "AOSServices.hpp"
 #include "AOSConfiguration.hpp"
 
+const AString AOSInputExecutor::OVERRIDE_INPUT;
+
 void AOSInputExecutor::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSInputExecutor @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -100,8 +102,6 @@ void AOSInputExecutor::registerInputProcessor(AOSInputProcessorInterface *pProce
 
 void AOSInputExecutor::execute(AOSContext& context)
 {
-  static const AString OVERRIDE_INPUT("overrideInput",13);
-  
   AString command;
   if (!context.useRequestHeader().useUrl().useParameterPairs().get(OVERRIDE_INPUT, command))
   {

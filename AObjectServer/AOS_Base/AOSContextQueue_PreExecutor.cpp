@@ -228,47 +228,6 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         //a_After state change must continue to get the next context
         AASSERT(this, pContext);
 
-        //a_Create/Use session cookie/data
-        AString strSessionId;
-        pContext->useRequestCookies().getValue(ASW("AOSSession", 10), strSessionId);
-        if (!strSessionId.isEmpty() && m_Services.useSessionManager().exists(strSessionId))
-        {
-          //a_Fetch session
-          if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
-            pContext->useEventVisitor().startEvent(AString("Using existing session ",23)+strSessionId, AEventVisitor::EL_INFO);
-          AOSSessionData *pSessionData = m_Services.useSessionManager().getSessionData(strSessionId);
-          pContext->setSessionObject(pSessionData);
-        }
-        else
-        {
-          //a_Create session
-          if (!strSessionId.isEmpty())
-          {
-            if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
-            {
-              ARope rope("Creating new session, existing session not found: ",50);
-              rope.append(strSessionId);
-              pContext->useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
-            }
-            strSessionId.clear();
-          }
-          
-          //a_Fetch session (creating a new one)
-          //a_This call will populate steSessionId and return the new session data object
-          pContext->setSessionObject(m_Services.useSessionManager().createNewSessionData(strSessionId));
-
-          //a_Add cookie for this session
-          ACookie& cookie = pContext->useResponseCookies().addCookie(ASW("AOSSession", 10), strSessionId);
-          cookie.setMaxAge(3600);
-          cookie.setPath(ASW("/",1));
-          if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
-          {
-            AString str("Created new session ",20);
-            str.append(strSessionId);
-            pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
-          }
-        }
-
         //
         //a_Process directory config
         //

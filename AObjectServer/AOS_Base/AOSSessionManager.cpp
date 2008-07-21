@@ -8,6 +8,7 @@ $Id$
 #include "ASync_CriticalSection.hpp"
 #include "ALock.hpp"
 #include "AOSServices.hpp"
+#include "AOSContext.hpp"
 #include "AThread.hpp"
 #include "AResultSet.hpp"
 #include "AFile_AString.hpp"
@@ -79,6 +80,7 @@ AOSSessionManager::AOSSessionManager(AOSServices& services) :
 
   //a_Read config
   m_TimeoutInterval = (double)m_Services.useConfiguration().useConfigRoot().getU4("/config/server/session-manager/timeout", 360000);
+  m_TimeoutIntervalInSeconds = m_TimeoutInterval / 1000;
   AASSERT(this, m_TimeoutInterval > 0.0);
   m_SessionMonitorSleep = m_Services.useConfiguration().useConfigRoot().getU4("/config/server/session-manager/sleep-cycle", DEFAULT_SLEEP_DURATION);
   AASSERT(this, m_SessionMonitorSleep > 0);
@@ -374,4 +376,48 @@ AOSSessionData *AOSSessionManager::_restoreSession(const AString& sessionId)
   }
 
   return pData;
+}
+
+void AOSSessionManager::initSession(AOSContext *pContext)
+{
+  //a_Create/Use session cookie/data
+  AString strSessionId;
+  pContext->useRequestCookies().getValue(ASW("AOSSession", 10), strSessionId);
+  if (!strSessionId.isEmpty() && m_Services.useSessionManager().exists(strSessionId))
+  {
+    //a_Fetch session
+    if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+      pContext->useEventVisitor().startEvent(AString("Using existing session ",23)+strSessionId, AEventVisitor::EL_INFO);
+    AOSSessionData *pSessionData = m_Services.useSessionManager().getSessionData(strSessionId);
+    pContext->setSessionObject(pSessionData);
+  }
+  else
+  {
+    //a_Create session
+    if (!strSessionId.isEmpty())
+    {
+      if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+      {
+        ARope rope("Creating new session, existing session not found: ",50);
+        rope.append(strSessionId);
+        pContext->useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
+      }
+      strSessionId.clear();
+    }
+    
+    //a_Fetch session (creating a new one)
+    //a_This call will populate strSessionId and return the new session data object
+    pContext->setSessionObject(m_Services.useSessionManager().createNewSessionData(strSessionId));
+
+    //a_Add cookie for this session
+    ACookie& cookie = pContext->useResponseCookies().addCookie(ASW("AOSSession", 10), strSessionId);
+    cookie.setMaxAge(m_TimeoutIntervalInSeconds);
+    cookie.setPath(ASW("/",1));
+    if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+    {
+      AString str("Created new session ",20);
+      str.append(strSessionId);
+      pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
+    }
+  }
 }

@@ -51,6 +51,7 @@ public:
   static const AString S_CONTEXT;
   static const AString S_MODEL;
   static const AString S_REFERER;
+  static const AString S_GZIP;
 
 public:
   /*!
@@ -437,6 +438,7 @@ public:
     CTXFLAG_IS_AJAX = 0,              //a_Request is AJAX, use minimal XML
     CTXFLAG_IS_HTTPS,                 //a_Request from HTTPS socket listener
     CTXFLAG_IS_CACHE_CONTROL_NO_CACHE,//a_Response will include no-cache for dynamic unless this is set
+    CTXFLAG_IS_USING_SESSION_DATA,    //a_Set when session initialized the data on the context
     CTXFLAG_IS_REDIRECTING,           //a_Context is in redirect mode
     CTXFLAG_IS_RESPONSE_HEADER_SENT,  //a_Response header already written
     CTXFLAG_IS_OUTPUT_SENT,           //a_Output as been written already (response header sent)

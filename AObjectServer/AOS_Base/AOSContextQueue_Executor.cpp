@@ -69,7 +69,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         }
 #endif
         //
-        //a_Process input
+        // Process input
         //
         pThis->m_Services.useInputExecutor().execute(*pContext);
 
@@ -78,13 +78,6 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         {
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
           continue;
-        }
-
-        //a_Add REQUEST header and SESSION if not in AJAX mode
-        if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
-        {
-          pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(AOSContext::S_REQUEST));
-          pContext->useSessionData().emitXml(pContext->useModel().overwriteElement(AOSContext::S_SESSION));
         }
 
         //
@@ -96,7 +89,20 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         else
           pContext->useEventVisitor().startEvent(ASW("Command not found, skipping module execution.",45), AEventVisitor::EL_ERROR);
 
-        //a_If error is logged stop and go to error handler
+        //
+        // Add REQUEST header and SESSION if not in AJAX mode
+        //
+        if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
+        {
+          pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(AOSContext::S_REQUEST));
+          
+          if (pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_USING_SESSION_DATA))
+            pContext->useSessionData().emitXml(pContext->useModel().overwriteElement(AOSContext::S_SESSION));
+        }
+
+        //
+        // If error is logged stop and go to error handler
+        //
         if (pContext->useEventVisitor().getErrorCount() > 0)
         {
           m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);

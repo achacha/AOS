@@ -41,6 +41,8 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
+  static const AString OVERRIDE_INPUT;
+  
   AOSServices& m_Services;
 
   typedef std::map<AString, AOSInputProcessorInterface *> InputProcessorContainer;

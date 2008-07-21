@@ -10,6 +10,8 @@ $Id$
 #include "AOSModules.hpp"
 
 const AString AOSController::S_CONTROLLER("controller",10);
+const AString AOSController::S_CONTROLLER_ROOT("/controller",11);
+  
 const AString AOSController::S_INPUT("input",5);
 const AString AOSController::S_MODULE("module",6);
 const AString AOSController::S_OUTPUT("output",6);

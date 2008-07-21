@@ -24,6 +24,7 @@ public:
   Constant strings
   */
   static const AString S_CONTROLLER;
+  static const AString S_CONTROLLER_ROOT;
   static const AString S_INPUT;
   static const AString S_MODULE;
   static const AString S_OUTPUT;

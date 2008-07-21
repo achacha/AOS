@@ -450,8 +450,6 @@ void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
 
 void AOSConfiguration::_readController(AFilename& filename)
 {
-  static const AString CONTROLLER_ROOT(AString("/",1)+AOSController::S_CONTROLLER);
-  
   //a_Load from all XML command files
   AFile_Physical commandFile(filename);
   commandFile.open();
@@ -459,7 +457,7 @@ void AOSConfiguration::_readController(AFilename& filename)
   commandFile.close();
 
   AXmlElement::CONST_CONTAINER nodes;
-  doc.useRoot().find(CONTROLLER_ROOT, nodes);
+  doc.useRoot().find(AOSController::S_CONTROLLER_ROOT, nodes);
   
   //a_Parse each /command/command type
   AString strPath(1536, 512);

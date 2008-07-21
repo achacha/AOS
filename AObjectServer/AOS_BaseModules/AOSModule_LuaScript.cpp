@@ -21,8 +21,6 @@ AOSModule_LuaScript::AOSModule_LuaScript(AOSServices& services) :
 
 AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const AXmlElement& params)
 {
-  static const AString OUTPUT("output",6);
-
   const AXmlElement *pNode = params.findElement(ASW("script",6));
   AString strSource;
   AAutoPtr<AFile> pFile(NULL, false);
@@ -78,7 +76,7 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
     if (!xmlpath.isEmpty())
     {
       //a_Add output as CDATA
-      AXmlElement& eOutput = context.useModel().overwriteElement(xmlpath).addElement(OUTPUT);
+      AXmlElement& eOutput = context.useModel().overwriteElement(xmlpath).addElement(ASW("output",6));
       eOutput.addData(ropeOutput, AXmlElement::ENC_CDATADIRECT);
       eOutput.addAttribute(ASW("source",6), strSource);
     }

@@ -43,11 +43,6 @@ aos.getRequestHeader("_URL")     --> /mypath/myprog?a=2
 */
 static int aos_getRequestHeader(lua_State *L)
 {
-  static AString METHOD("_METHOD");
-  static AString URL("_URL");
-  static AString VERSION("_VERSION");
-  static AString ALL("_ALL");
-  
   //a_Get reference to ALuaEmbed object
   ATemplateContext *pLuaContext = static_cast<ATemplateContext *>(L->acontext); 
   AASSERT(NULL, pLuaContext);
@@ -63,26 +58,26 @@ static int aos_getRequestHeader(lua_State *L)
   const char *s = luaL_checklstring(L, 1, &len);
   const AString& name = AString::wrap(s, len);
 
-  if (name.equals(METHOD))
+  if (name.equals(ASW("_METHOD",7)))
   {
     const AString& str = pContext->useRequestHeader().getMethod();
     lua_pushlstring(L, str.c_str(), str.getSize());
     return 1;
   }
-  else if (name.equals(URL))
+  else if (name.equals(ASW("_URL",4)))
   {
     AString str;
     pContext->useRequestUrl().emit(str);
     lua_pushlstring(L, str.c_str(), str.getSize());
     return 1;
   }
-  else if (name.equals(VERSION))
+  else if (name.equals(ASW("_VERSION",8)))
   {
     const AString& str = pContext->useRequestHeader().getVersion();
     lua_pushlstring(L, str.c_str(), str.getSize());
     return 1;
   }
-  else if (name.equals(ALL))
+  else if (name.equals(ASW("_ALL",4)))
   {
     AString str(2048, 2048);
     pContext->useRequestHeader().emit(str);
