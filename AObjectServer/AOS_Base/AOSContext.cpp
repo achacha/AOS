@@ -197,6 +197,8 @@ void AOSContext::reset(AFile_Socket *pFile)
 
 void AOSContext::finalize()
 {
+  m_EventVisitor.startEvent(ASW("Finalizing the context",22), AEventVisitor::EL_EVENT);
+
   //a_Close it if still open
   if (mp_RequestFile)
   {
@@ -209,13 +211,21 @@ void AOSContext::finalize()
     pDelete(mp_RequestFile);
   }
 
+  //a_Release lua context (not going to be rendering any more templates
+  if (mp_LuaTemplateContext)
+  {
+    pDelete(mp_LuaTemplateContext);
+  }
+
   //a_Clear ouput model and buffer and stop event timer
   m_EventVisitor.startEvent(ASW("Finalizing context",18));
 
+  //a_Clear objects, buffers and model
   m_OutputBuffer.clear();
   m_OutputXmlDocument.clear();
   m_ContextObjects.clear();
 
+  //a_Stop the event
   m_EventVisitor.endEvent();
   m_EventVisitor.useLifespanTimer().stop();
 }

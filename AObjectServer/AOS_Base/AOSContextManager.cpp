@@ -135,8 +135,6 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
         adminAddProperty(eBase, AString::fromSize_t(i), AConstant::ASTRING_NULL);
     }
 
-    adminAddProperty(eBase, "history_max_size", AString::fromSize_t(m_HistoryMaxSize));
-
     adminAddPropertyWithAction(
       eBase,
       ASW("log_level",9), 
@@ -146,6 +144,26 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       ASW("Set",3)
     );
 
+    {
+      AString str;
+      str.assign('[');
+      str.append(AString::fromSize_t(m_History.size()));
+      str.append('/');
+      str.append(AString::fromSize_t(m_HistoryMaxSize));
+      str.append(']');
+      adminAddProperty(eBase, "history_max_size", str);
+    }
+
+    {
+      AString str;
+      str.assign('[');
+      str.append(AString::fromSize_t(m_ErrorHistory.size()));
+      str.append('/');
+      str.append(AString::fromSize_t(m_ErrorHistoryMaxSize));
+      str.append(']');
+      adminAddProperty(eBase, "error_history_max_size", str);
+    }
+    
     adminAddPropertyWithAction(
       eBase,
       ASW("clear_history",13), 
@@ -154,7 +172,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       ASWNL("Clear context history: 0:all  1:history  2:error history"),
       ASW("Clear",5)
     );
-
+      
     AXmlElement& eInUse = eBase.addElement("object");
     eInUse.addAttribute("name", "InUse");
     eInUse.addAttribute("size", AString::fromSize_t(m_InUse.size()));
@@ -328,8 +346,6 @@ void AOSContextManager::deallocate(AOSContext *p)
 {
   if (p)
   {
-    p->finalize();
-    
     {
       ALock lock(m_InUseSync);
       CONTEXT_INUSE::iterator it = m_InUse.find(p);
@@ -355,27 +371,37 @@ void AOSContextManager::deallocate(AOSContext *p)
 
   if (p->useEventVisitor().getErrorCount() > 0)
   {
-    ALock lock(m_ErrorHistory.useSync());
-    while (m_ErrorHistory.size() >= m_ErrorHistoryMaxSize)
+    while (m_ErrorHistory.size() > m_ErrorHistoryMaxSize)
     {
       //a_Remove last
       delete m_ErrorHistory.pop();
     }
 
     //a_Add to history
-    m_ErrorHistory.push(p);
+    if (m_ErrorHistoryMaxSize > 0)
+    {
+      p->finalize();
+      m_ErrorHistory.push(p);
+    }
+    else
+      delete p;
   }
   else
   {
-    ALock lock(m_History.useSync());
-    while (m_History.size() >= m_HistoryMaxSize)
+    while (m_History.size() > m_HistoryMaxSize)
     {
       //a_Remove last
       delete m_History.pop();
     }
 
     //a_Add to history
-    m_History.push(p);
+    if (m_HistoryMaxSize > 0)
+    {
+      p->finalize();
+      m_History.push(p);
+    }
+    else
+      delete p;
   }
 }
 
