@@ -372,6 +372,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOS_Wiki_Constants.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSModule_Wiki_Controller.cpp"
 				>
 			</File>
@@ -429,6 +433,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{4FC737F1-C7A6-4376-A066-2A33D762A2FF}"
 			>
+			<File
+				RelativePath=".\AOS_Wiki_Constants.hpp"
+				>
+			</File>
 			<File
 				RelativePath=".\AOSModule_Wiki_Controller.hpp"
 				>

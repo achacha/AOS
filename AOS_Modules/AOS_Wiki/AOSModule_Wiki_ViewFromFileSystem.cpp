@@ -5,6 +5,7 @@ $Id$
 */
 #include "pchAOS_Wiki.hpp"
 #include "AOSModule_Wiki_ViewFromFileSystem.hpp"
+#include "AOS_Wiki_Constants.hpp"
 #include "AFilename.hpp"
 #include "AFile_Physical.hpp"
 #include "AFileSystem.hpp"
@@ -23,16 +24,9 @@ AOSModule_Wiki_ViewFromFileSystem::AOSModule_Wiki_ViewFromFileSystem(AOSServices
 
 AOSContext::ReturnCode AOSModule_Wiki_ViewFromFileSystem::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
-  static const AString ELEMENT_SECURE_EDIT("wiki/SecureEdit",15);
-  static const AString ELEMENT_DOES_NOT_EXIST("wiki/DoesNotExist",17);
-  static const AString ELEMENT_DATA("wiki/row/data",13);
-  
-  static const AString PARAM_SECURE("secure",6);
-  static const AString PARAM_BASE_PATH("base-path",9);
-
   //a_Get base path
   AString basePath;
-  if (!moduleParams.emitString(PARAM_BASE_PATH, basePath))
+  if (!moduleParams.emitString(AOS_Wiki_Constants::PARAM_BASE_PATH, basePath))
   {
     context.addError(getClass(), ASWNL("Unable to find module/base-path parameter"));
     return AOSContext::RETURN_ERROR;
@@ -60,7 +54,7 @@ AOSContext::ReturnCode AOSModule_Wiki_ViewFromFileSystem::execute(AOSContext& co
   {
     //a_Check if authentication passed
     if (
-      moduleParams.exists(PARAM_SECURE)
+      moduleParams.exists(AOS_Wiki_Constants::PARAM_SECURE)
       && !context.useModel().exists(ASW("wiki/Authenticated",18))
     )
     {
@@ -89,7 +83,7 @@ AOSContext::ReturnCode AOSModule_Wiki_ViewFromFileSystem::execute(AOSContext& co
       file.close();
 
       //a_Add to context so it can ve viewed after save
-      context.useModel().overwriteElement(ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
+      context.useModel().overwriteElement(AOS_Wiki_Constants::ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
 
       //a_Rename temp to current
       AFileSystem::rename(wikifile, tempwikifile);
@@ -109,7 +103,7 @@ AOSContext::ReturnCode AOSModule_Wiki_ViewFromFileSystem::execute(AOSContext& co
       file.close();
 
       //a_Add to context so it can ve viewed after save
-      context.useModel().overwriteElement(ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
+      context.useModel().overwriteElement(AOS_Wiki_Constants::ELEMENT_DATA).addData(strData, AXmlElement::ENC_CDATADIRECT);
     }
   }
   else
@@ -119,17 +113,17 @@ AOSContext::ReturnCode AOSModule_Wiki_ViewFromFileSystem::execute(AOSContext& co
     {
       AFile_Physical file(wikifile);
       file.open();
-      context.useModel().overwriteElement(ELEMENT_DATA).addData(file, AXmlElement::ENC_CDATADIRECT);
+      context.useModel().overwriteElement(AOS_Wiki_Constants::ELEMENT_DATA).addData(file, AXmlElement::ENC_CDATADIRECT);
     }
     else
     {
       //a_Signal that the wiki file does not exist
-      context.useModel().overwriteElement(ELEMENT_DOES_NOT_EXIST);
+      context.useModel().overwriteElement(AOS_Wiki_Constants::ELEMENT_DOES_NOT_EXIST);
     }
 
-    if (moduleParams.exists(PARAM_SECURE))
+    if (moduleParams.exists(AOS_Wiki_Constants::PARAM_SECURE))
     {
-      context.useModel().overwriteElement(ELEMENT_SECURE_EDIT);
+      context.useModel().overwriteElement(AOS_Wiki_Constants::ELEMENT_SECURE_EDIT);
     }
 
   }

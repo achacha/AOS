@@ -19,6 +19,11 @@ public:
   AOSAdminInterface
   */
   virtual const AString& getClass() const;
+
+private:
+  static const AString S_COUNT;
+  static const AString S_OUTPATH;
+
 };
 
 #endif //INCLUDED__AOSModule_SessionTest_HPP__

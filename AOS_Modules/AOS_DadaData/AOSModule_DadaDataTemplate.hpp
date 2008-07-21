@@ -34,6 +34,11 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
+  static const AString S_DELIM_START;
+  static const AString S_DELIM_END;
+  static const AString S_DADA;
+  static const AString S_LINE;
+ 
   typedef std::map<AString, VECTOR_AString> TEMPLATES;
   TEMPLATES m_Templates;
 

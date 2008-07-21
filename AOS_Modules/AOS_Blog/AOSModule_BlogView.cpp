@@ -24,8 +24,7 @@ AOSContext::ReturnCode AOSModule_BlogView::execute(AOSContext& context, const AX
   AXmlElement& xmlBlog = context.useModel().addElement("blog");
   
   AString userId("1");
-  static const AString queryBase("select title, data, created from blog where user_id=");
-  AString query(queryBase);
+  AString query("select title, data, created from blog where user_id=");
   query.append(userId);
 
   AString error;
