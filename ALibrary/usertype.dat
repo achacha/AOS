@@ -221,6 +221,7 @@ flush
 hex
 dec
 map
+set
 list
 deque
 multimap
