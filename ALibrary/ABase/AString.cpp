@@ -1557,7 +1557,7 @@ void AString::fromAFile(AFile& aFile)
   //a_Read string data if length >0
   if (length > 0x0)
   {  
-    AAutoBasicArrayPtr<char> pBuffer(new char[length + 1]);
+    AAutoBasicArrayPtr<char> pBuffer(new char[length + 1], true);
     aFile.read(pBuffer.use(), length);
     *(pBuffer.use() + length) = '\x0';
     assign(pBuffer.get(), length);
@@ -1585,7 +1585,7 @@ void AString::peekFromFile(AFile& aFile)
   //a_Read string data if length >0
   if (length > 0)
   {  
-    AAutoBasicArrayPtr<char> pBuffer(new char[length + 1]);
+    AAutoBasicArrayPtr<char> pBuffer(new char[length + 1], true);
     aFile.peek(pBuffer.use(), length);
     *(pBuffer.use() + length) = '\x0';
     assign(pBuffer.get(), length);

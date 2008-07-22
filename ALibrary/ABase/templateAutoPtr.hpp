@@ -343,7 +343,7 @@ public:
   /*!
   ctor
   */
-  explicit AAutoBasicArrayPtr(T* pointer = NULL, bool ownership = true) : m_Pointer(pointer), m_Ownership(ownership) {}
+  explicit AAutoBasicArrayPtr(T* pointer, bool ownership) : m_Pointer(pointer), m_Ownership(ownership) {}
   
   /*!
   dtor

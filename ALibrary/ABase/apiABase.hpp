@@ -6,6 +6,8 @@ $Id$
 #ifndef INCLUDED__apiABase_HPP__
 #define INCLUDED__apiABase_HPP__
 
+#include "debugGlobalMemoryMacros.hpp"
+
 //a_OS Defines and compiler specifics
 #include "osDefines.hpp"
 
