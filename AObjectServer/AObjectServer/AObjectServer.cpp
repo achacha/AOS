@@ -18,6 +18,13 @@ $Id$
 #include "AOSContextQueue_Executor.hpp"
 #include "AOSContextQueue_ErrorExecutor.hpp"
 
+#ifdef __WINDOWS__
+#include "dbghelp.h"
+#include "dbgeng.h"
+#pragma comment(lib, "dbghelp")
+#pragma comment(lib, "dbgeng")
+#endif
+
 ADynamicLibrary dllModules;                  //a_Map of DLLs loaded
 ASocketLibrary_SSL g_SecureSocketLibrary;    //a_Global init for SSL and socket library
 AGdLibrary g_GdLibrary;                      //a_Global init for gd library
@@ -40,6 +47,18 @@ int main(int argc, char **argv)
 {
   AFILE_TRACER_DEBUG_SCOPE((AString("AObjectServer::main:",20)+ASWNL(argv[0])).c_str(), NULL);
 
+  //a_AString available for errors so that allocation is not done during exception (in case we ran out of memory, etc)
+  AString str(2048, 512);
+
+#ifdef __WINDOWS__
+  LPAPI_VERSION lpVersion = ::ImagehlpApiVersion();
+  if (lpVersion->MajorVersion < 4)
+  {
+    AOS_DEBUGTRACE("dgbhelp.dll major version < 4 (check your path to make sure the latest dbghelp.dll is picked up if removed from current directory)", NULL);
+    return -1;
+  }
+#endif
+
   std::cout << AOS_Base_INFO << std::endl;
   try
   {
@@ -53,7 +72,7 @@ int main(int argc, char **argv)
 
     if (!AFileSystem::exists(basePath))
     {
-      AString str("main: Base path does not exist: ");
+      str.assign("main: Base path does not exist: ");
       basePath.emit(str);
       AOS_DEBUGTRACE(str.c_str(), NULL);
       return -1;
@@ -65,7 +84,7 @@ int main(int argc, char **argv)
     {
       //a_Ready to start
       {
-        AString str;
+        str.clear();
         ATime().emitRFCtime(str);
         services.useLog().add(ASWNL("=+=+=+= AOS Server starting at ")+str, AString(AOS_Base_INFO));
       }
@@ -76,7 +95,6 @@ int main(int argc, char **argv)
       //
       //a_Initialize the global objects
       //
-      AString str;
       AString strError;
       if (services.initDatabasePool())
       {
@@ -258,38 +276,52 @@ int main(int argc, char **argv)
     }
     catch(AException& ex)
     {
-      AString str("main: ");
+      str.assign("main: ");
       str.append(ex);
       traceMultiline(str, NULL);
       services.useLog().addException(ex);
     }
     catch(std::exception& ex)
     {
-      AString str("main: ");
+      str.assign("main: ");
       str.append(ASWNL(ex.what()));
       traceMultiline(str, NULL);
       services.useLog().addException(ex);
     }
     catch(...)
     {
+#ifdef __WINDOWS__
+    str.assign(argv[0]);
+    str.append(".minidump");
+    OFSTRUCT ofile;
+    HFILE hFile = ::OpenFile(str.c_str(), &ofile, OF_CREATE|OF_WRITE|OF_SHARE_DENY_WRITE);
+    ::MiniDumpWriteDump(::GetCurrentProcess(), ::GetCurrentProcessId(), (HANDLE)hFile, MiniDumpNormal, NULL, NULL, NULL);
+#endif
       AOS_DEBUGTRACE("main: Unknown exception caught", NULL);
       services.useLog().add(ASWNL("main: Unknown exception caught"), ALog::EXCEPTION);
     }
   }
   catch(AException& ex)
   {
-    AString str("main: ");
+    str.assign("main: ");
     str.append(ex);
     traceMultiline(str, NULL);
   }
   catch(std::exception& ex)
   {
-    AString str("main: ");
+    str.assign("main: ");
     str.append(ASWNL(ex.what()));
     traceMultiline(str, NULL);
   }
   catch(...)
   {
+#ifdef __WINDOWS__
+    str.assign(argv[0]);
+    str.append(".minidump");
+    OFSTRUCT ofile;
+    HFILE hFile = ::OpenFile(str.c_str(), &ofile, OF_CREATE|OF_WRITE|OF_SHARE_DENY_WRITE);
+    ::MiniDumpWriteDump(::GetCurrentProcess(), ::GetCurrentProcessId(), (HANDLE)hFile, MiniDumpNormal, NULL, NULL, NULL);
+#endif
     AOS_DEBUGTRACE("main: Unknown exception caught", NULL);
   }
 
