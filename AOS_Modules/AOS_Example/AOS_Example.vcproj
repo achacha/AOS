@@ -146,6 +146,7 @@
 				BrowseInformationFile="$(IntDir)\"
 				WarningLevel="4"
 				SuppressStartupBanner="false"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>

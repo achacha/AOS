@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="AOS_SAMPLEPROJECT"
 	ProjectGUID="{80F5B800-795C-440C-9C73-E5D4EBF25B00}"
+	RootNamespace="AOS_SAMPLEPROJECT"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -55,11 +56,10 @@
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
 				BrowseInformation="1"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="false"
 				DebugInformationFormat="4"
 				CompileAs="0"
-				EnablePREfast="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -144,12 +144,11 @@
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
 				BrowseInformation="1"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="false"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				CompileAs="0"
-				EnablePREfast="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
