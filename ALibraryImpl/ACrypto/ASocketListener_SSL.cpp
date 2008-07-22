@@ -137,7 +137,7 @@ ASocketLibrary::SocketInfo ASocketListener_SSL::accept(void *pSSLData)
 
   ASocketLibrary::SocketInfo info = ASocketListener::accept();
   
-  BIO *sbio=BIO_new_socket(info.m_handle, BIO_NOCLOSE);
+  BIO *sbio=BIO_new_socket((int)info.m_handle, BIO_NOCLOSE);
   pClientData->ssl = SSL_new(pServerData->ctx);
   SSL_set_bio(pClientData->ssl,sbio,sbio);
 
