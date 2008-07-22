@@ -8,6 +8,7 @@ $Id$
 
 #include "apiABase.hpp"
 
+class ASynchronization;
 class ABasePtrQueue;
 
 /*!
@@ -55,6 +56,16 @@ public:
   @return NULL if none
   */
   const ABase *getPrev() const;
+
+/*!
+If DEBUG_TRACK_ABASE_MEMORY is defined all allocation/deallocation via new/new[]/delete/delete[] of ABase objects is traced to std::cout
+*/
+#ifdef DEBUG_TRACK_ABASE_MEMORY
+  void *operator new(size_t size);
+  void operator delete(void *p);
+  void *operator new[](size_t size);
+  void operator delete[](void *p);
+#endif
 
 protected:
   /*!
