@@ -14,7 +14,7 @@ const AString& AOSAdminCommand_modify::getName() const
 }
 
 AOSAdminCommand_modify::AOSAdminCommand_modify(AOSServices& services) :
-  AOSAdminCommandInterface(services)
+  AOSAdminCommand_display(services)
 {
 }
 
@@ -44,9 +44,9 @@ void AOSAdminCommand_modify::_process(AOSAdminCommandContext& context)
   }
 }
 
-void AOSAdminCommand_modify::_insertStylesheet(AOSAdminCommandContext& context)
-{
-  context.useModel().addInstruction(AXmlInstruction::XML_STYLESHEET)
-    .addAttribute(ASW("type",4), ASW("text/xsl",8))
-    .addAttribute(ASW("href",4), ASW("/xsl/_command/modify.xsl",24));
-}
+//void AOSAdminCommand_modify::_insertStylesheet(AOSAdminCommandContext& context)
+//{
+//  context.useModel().addInstruction(AXmlInstruction::XML_STYLESHEET)
+//    .addAttribute(ASW("type",4), ASW("text/xsl",8))
+//    .addAttribute(ASW("href",4), ASW("/xsl/_command/modify.xsl",24));
+//}

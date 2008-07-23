@@ -72,6 +72,40 @@ void AOSServices::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& req
     str.justifyRight(8, '0');
     adminAddProperty(eBase, ASW("log.eventmask",13), str);
   }
+
+#ifdef DEBUG_TRACK_ABASE_MEMORY
+  adminAddPropertyWithAction(
+    eBase,
+    ASWNL("view_allocations"), 
+    AConstant::ASTRING_EMPTY,
+    ASW("View",4), 
+    ASWNL("View level: 1:memory and size  2:include hexdump"),
+    ASW("level",5)
+  );
+
+  AString str;
+  if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
+  {
+    if (str.equals(ASWNL("AOSServices.view_allocations")))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("level",5), str))
+      {
+        int level = str.toInt();
+        if (level > 0)
+        {
+          ARope target(8192);
+          traceAllocations(target, level > 1);
+          adminAddProperty(eBase, ASW("allocations",11), target, AXmlElement::ENC_CDATADIRECT);
+        }
+      }
+    }
+  }
+#endif
+}
+
+void AOSServices::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
+{
 }
 
 AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
