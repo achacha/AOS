@@ -101,11 +101,6 @@ public:
   size_t getTotalBytesAvailableForRead() const;
 
   /*!
-  Lookahead buffer used by read/write/peek overridden due to blocking socket read mode
-  */
-//  virtual size_t readBlockIntoLookahead();
-
-  /*!
   Socket info
   */
   const ASocketLibrary::SocketInfo& getSocketInfo() const;

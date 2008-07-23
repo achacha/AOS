@@ -10,6 +10,7 @@ $Id$
 
 class ASynchronization;
 class ABasePtrQueue;
+class AOutputBuffer;
 
 /*!
 Simple common base class
@@ -65,6 +66,7 @@ If DEBUG_TRACK_ABASE_MEMORY is defined all allocation/deallocation via new/new[]
   void operator delete(void *p);
   void *operator new[](size_t size);
   void operator delete[](void *p);
+  void traceAllocations(AOutputBuffer&, bool includeHexDump);
 #endif
 
 protected:

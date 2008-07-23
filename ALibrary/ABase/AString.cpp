@@ -599,10 +599,13 @@ size_t AString::_find(char cSource, size_t startIndex) const
   if (startIndex > m_Length)
     ATHROW(this, AException::IndexOutOfBounds);
 
-  const char* pccFound = strchr((mp_Buffer + startIndex), cSource);
+  const char* pccFound = static_cast<const char *>(::memchr((const void *)(mp_Buffer + startIndex), cSource, m_Length-startIndex));
 
   if (pccFound)
-    return pccFound - mp_Buffer;
+  {
+    size_t pos = pccFound - mp_Buffer;
+    return pos;
+  }
 
   return AConstant::npos;
 }
@@ -1335,7 +1338,7 @@ void AString::makeLower()
     AASSERT(this, mp_Buffer);
     for (size_t x = 0; x < m_Length; ++x)
     {
-      mp_Buffer[x] = tolower(mp_Buffer[x]);
+      mp_Buffer[x] = (char)tolower(mp_Buffer[x]);
     }
   }
 }
@@ -1347,7 +1350,7 @@ void AString::makeUpper()
     AASSERT(this, mp_Buffer);
     for (u4 x = 0; x < m_Length; ++x)
     {
-      mp_Buffer[x] = toupper(mp_Buffer[x]);
+      mp_Buffer[x] = (char)toupper(mp_Buffer[x]);
     }
   }
 }
@@ -2166,7 +2169,7 @@ void AString::truncateAt(
   if (startIndex > m_Length)
     ATHROW(this, AException::IndexOutOfBounds);
 
-  char* pccFound = strchr((mp_Buffer + startIndex), delimiter);
+  char* pccFound = static_cast<char *>(::memchr((void *)(mp_Buffer + startIndex), delimiter, m_Length - startIndex));
   if (pccFound)
     setSize(pccFound - mp_Buffer);
 }

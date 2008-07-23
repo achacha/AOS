@@ -65,9 +65,22 @@ public:
   void emit(AOutputBuffer&) const;
   
   /*!
-  Indents
+  Indents AOutputBuffer
+  */
+  static AOutputBuffer& indent(AOutputBuffer&, size_t indent);
+
+  /*!
+  Indents ostream
   */
   static std::ostream& indent(std::ostream&, size_t indent);
+
+  /*!
+  Dumps memory of given length to AOutputBuffer
+  Shows both hex bytes and ASCII
+  This function is only for debugging purposes
+  indent is # of indent blocks to offset
+  */
+  static void dumpMemory_HexAscii(AOutputBuffer&, const void *pvObject, size_t objectSize, size_t indent = 0, size_t bytesPerRow = 16);
 
   /*!
   Dumps memory of given length to an ostream
@@ -78,12 +91,28 @@ public:
   static void dumpMemory_HexAscii(std::ostream&, const void *pvObject, size_t objectSize, size_t indent = 0, size_t bytesPerRow = 16);
 
   /*!
+  Dumps memory of given length to AOutputBuffer
+  Shows both hex bytes and ASCII
+  This function is only for debugging purposes
+  indent is # of indent blocks to offset
+  */
+  static void dumpMemory_Ascii(AOutputBuffer&, const void *pvObject, size_t objectSize, size_t indent = 0, size_t bytesPerRow = 32);
+
+  /*!
   Dumps memory of given length to an ostream
   Shows both hex bytes and ASCII
   This function is only for debugging purposes
   indent is # of indent blocks to offset
   */
   static void dumpMemory_Ascii(std::ostream&, const void *pvObject, size_t objectSize, size_t indent = 0, size_t bytesPerRow = 32);
+
+  /*!
+  Dumps memory of given length to AOutputBuffer
+  Shows hex bytes
+  This function is only for debugging purposes
+  indent is # of indent blocks to offset
+  */
+  static void dumpMemory_Hex(AOutputBuffer&, const void *pvObject, size_t objectSize, size_t indent = 0, size_t bytesPerRow = 16);
 
   /*!
   Dumps memory of given length to an ostream

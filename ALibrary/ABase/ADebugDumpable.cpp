@@ -38,6 +38,40 @@ void ADebugDumpable::trace(const char *pcc)
 }
 
 void ADebugDumpable::dumpMemory_Ascii(
+  AOutputBuffer& target, 
+  const void *pvObject, 
+  size_t objectSize, 
+  size_t indent,      // = 0
+  size_t bytesPerRow  // = 32
+)
+{
+  char cX;
+  size_t x;
+  size_t base = 0;
+
+  for(;;base++)
+  {
+    //a_ASCII
+    ADebugDumpable::indent(target, indent);
+    for (x = 0; x < bytesPerRow; x++)
+    {
+      if (base * bytesPerRow + x >= objectSize)
+        break;
+
+      cX = *((char *)pvObject + base * bytesPerRow + x);
+      if (AConstant::npos == AConstant::CHARSET_ALPHANUM64.find(cX))
+        target.append('.');
+      else
+        target.append(cX);
+    }
+    target.append(AConstant::ASTRING_EOL);
+
+    if (base * bytesPerRow + x >= objectSize)
+      break;
+  }
+}
+
+void ADebugDumpable::dumpMemory_Ascii(
   std::ostream& os, 
   const void *pvObject, 
   size_t objectSize, 
@@ -65,6 +99,64 @@ void ADebugDumpable::dumpMemory_Ascii(
         os << cX;
     }
     os << std::endl;
+
+    if (base * bytesPerRow + x >= objectSize)
+      break;
+  }
+}
+
+void ADebugDumpable::dumpMemory_HexAscii(
+  AOutputBuffer& target, 
+  const void *pvObject, 
+  size_t objectSize, 
+  size_t indent,       // = 0
+  size_t bytesPerRow   // = 16
+)
+{ 
+  u1 u1X;
+  char cX;
+  size_t x;
+  size_t base = 0;
+
+  for(;;base++)
+  {
+    ADebugDumpable::indent(target, indent);
+
+    //a_ASCII
+    for (x = 0; x < bytesPerRow; ++x)
+    {
+      if (base * bytesPerRow + x >= objectSize)
+        break;
+
+      cX = *((char *)pvObject + base * bytesPerRow + x);
+      if (AConstant::npos == AConstant::CHARSET_ALPHANUM64.find(cX))
+        target.append('.');
+      else
+        target.append(cX);
+    }
+    for (;x < bytesPerRow;++x)   //a_Pad space after : to align hex
+      target.append(' ');
+
+    target.append(": ",2);
+    
+    //a_Hex
+    for (x = 0; x < bytesPerRow; ++x)
+    {
+      if (base * bytesPerRow + x >= objectSize)
+      {
+        for (;x < bytesPerRow; ++x)
+          target.append("   ",3);
+        
+        break;
+      }
+
+      u1X = *((unsigned char *)pvObject + base * bytesPerRow + x);
+      target.append(u1X < 16 ? AConstant::ASTRING_ZERO : AConstant::ASTRING_EMPTY);
+      target.append(AString::fromU1(u1X));
+      target.append(' ');
+    }
+
+    target.append(AConstant::ASTRING_EOL);
 
     if (base * bytesPerRow + x >= objectSize)
       break;
@@ -128,6 +220,44 @@ void ADebugDumpable::dumpMemory_HexAscii(
 }
 
 void ADebugDumpable::dumpMemory_Hex(
+  AOutputBuffer& target, 
+  const void *pvObject, 
+  size_t objectSize, 
+  size_t indent,      // = 0 
+  size_t bytesPerRow  // = 16
+)
+{
+  u1 u1X;
+  size_t x;
+  size_t base = 0;
+
+  for(;;base++)
+  {
+    //a_Hex
+    ADebugDumpable::indent(target, indent);
+    for (x = 0; x < bytesPerRow; ++x)
+    {
+      if (base * bytesPerRow + x >= objectSize)
+      {
+        for (;x < bytesPerRow; ++x)
+          target.append("   ",3);
+        
+        break;
+      }
+
+      u1X = *((unsigned char *)pvObject + base * bytesPerRow + x);
+      target.append(u1X < 16 ? AConstant::ASTRING_ZERO : AConstant::ASTRING_EMPTY);
+      target.append(AString::fromU1(u1X));
+      target.append(' ');
+    }
+    target.append(AConstant::ASTRING_EOL);
+
+    if (base * bytesPerRow + x >= objectSize)
+      break;
+  }
+}
+
+void ADebugDumpable::dumpMemory_Hex(
   std::ostream& os, 
   const void *pvObject, 
   size_t objectSize, 
@@ -161,6 +291,17 @@ void ADebugDumpable::dumpMemory_Hex(
     if (base * bytesPerRow + x >= objectSize)
       break;
   }
+}
+
+AOutputBuffer& ADebugDumpable::indent(AOutputBuffer& target, size_t indent)
+{	
+  while (indent > 0)
+  {
+    target.append(AConstant::ASTRING_TWOSPACES);
+    --indent;
+  }
+
+  return target;
 }
 
 std::ostream& ADebugDumpable::indent(std::ostream& os, size_t indent)
