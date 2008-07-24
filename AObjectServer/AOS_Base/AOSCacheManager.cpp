@@ -15,7 +15,7 @@ $Id$
 
 void AOSCacheManager::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSCacheManager @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_StaticFileCache={" << std::endl;
   mp_StaticFileCache->debugDump(os, indent+2);

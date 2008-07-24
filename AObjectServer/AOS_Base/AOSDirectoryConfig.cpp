@@ -14,7 +14,7 @@ const AString AOSDirectoryConfig::CLASS("AOSDirectoryConfig");
 
 void AOSDirectoryConfig::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSDirectoryConfig @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   AOSAdminInterface::debugDump(os, indent+1);
 
   m_Modules.debugDump(os, indent+1);

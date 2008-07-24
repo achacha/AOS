@@ -13,7 +13,7 @@ $Id$
 
 void AOSOutputExecutor::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSOutputExecutor @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   OutputGeneratorContainer::const_iterator cit = m_OutputGenerators.begin();
   ADebugDumpable::indent(os, indent+1) << "m_OutputGenerators={" << std::endl;

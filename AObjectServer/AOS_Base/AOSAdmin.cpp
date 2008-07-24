@@ -184,6 +184,10 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
     {
       pThis->m_Services.useLog().addException(ex);
     }
+    catch(std::exception& ex)
+    {
+      pThis->m_Services.useLog().addException(ex);
+    }
     catch(...)
     {
       pThis->m_Services.useLog().add(ASWNL("AOSAdmin::threadprocAdminListener: Unknown exception caught."), ALog::EXCEPTION);

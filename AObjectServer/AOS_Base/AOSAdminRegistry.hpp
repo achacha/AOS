@@ -8,7 +8,7 @@
 class ALog;
 class AOSAdminInterface;
 
-class AOS_BASE_API AOSAdminRegistry : virtual public ADebugDumpable
+class AOS_BASE_API AOSAdminRegistry : public ADebugDumpable
 {
 public:
   AOSAdminRegistry(ALog&);

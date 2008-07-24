@@ -14,7 +14,7 @@ $Id$
 
 void AOSContextManager::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSContextManager @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Queues={" << std::endl;
   for (size_t i=0; i < m_Queues.size(); ++i)
@@ -402,7 +402,9 @@ void AOSContextManager::deallocate(AOSContext *p)
       m_History.push(p);
     }
     else
-      delete p;
+    {
+      pDelete(p);
+    }
   }
 }
 

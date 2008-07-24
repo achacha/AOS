@@ -18,7 +18,7 @@ $Id$
 
 void AOSSessionManager::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSSessionManager @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_TimeoutInterval=" << m_TimeoutInterval << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_SessionMonitorSleep=" << m_SessionMonitorSleep << std::endl;

@@ -25,7 +25,7 @@ const AString AOSController::S_CACHECONTROLNOCACHE("nocache",7);
 
 void AOSController::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSController @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Path=" << m_Path << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Enabled=" << AString::fromBool(m_Enabled) << std::endl;

@@ -217,7 +217,8 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
         }
         catch(...)
         {
-          pThis->m_Services.useContextManager().deallocate(pContext);
+          if (pContext)
+            pThis->m_Services.useContextManager().deallocate(pContext);
 
           pContext = NULL;
           pSocket.reset();

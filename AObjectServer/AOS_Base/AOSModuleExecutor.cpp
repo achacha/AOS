@@ -8,7 +8,7 @@
 
 void AOSModuleExecutor::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSModuleExecutor @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ModuleContainer::const_iterator cit = m_Modules.begin();
   ADebugDumpable::indent(os, indent+1) << "m_Modules={" << std::endl;

@@ -10,7 +10,7 @@ const AString AOSSessionData::SESSIONID("id",2);
 
 void AOSSessionData::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSSessionData @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Data=" << std::endl;
   m_Data.debugDump(os, indent+2);

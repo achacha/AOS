@@ -12,7 +12,7 @@ AString AOSModuleInfo::COND_IF_NOT("if-not",6);
 
 void AOSModuleInfo::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AOSModules @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Class=" << m_Class << std::endl;
   
