@@ -14,7 +14,7 @@ $Id$
 
 void AXmlElement::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AXmlElement @ " << std::hex << this << std::dec << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_Parent=" << std::hex << mp_Parent << std::dec << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Name=" << m_Name << std::endl;
 

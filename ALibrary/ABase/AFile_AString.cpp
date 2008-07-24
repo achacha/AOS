@@ -8,7 +8,7 @@ $Id$
 
 void AFile_AString::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AFile_AString @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ReadPos=" << m_ReadPos << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_WritePos=" << m_WritePos << std::endl;
   m_Data.debugDump(os, indent+1);

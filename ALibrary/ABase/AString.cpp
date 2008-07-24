@@ -14,7 +14,7 @@ $Id$
 
 void AString::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AString @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Length=" << m_Length << ":" << m_InternalBufferSize << ":" << m_BufferIncrement << "  getHash()=" << getHash() << std::endl;
   bool ascii = true;
   for(size_t i=0; i<m_Length; ++i)

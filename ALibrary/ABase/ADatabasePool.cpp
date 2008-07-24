@@ -10,7 +10,7 @@ $Id$
 
 void ADatabasePool::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ADatabasePool @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_FreeDatabases.size()=" << m_FreeDatabases.size() << std::endl;
   DATABASES::const_iterator cit = m_FreeDatabases.begin();
   while (cit != m_FreeDatabases.end())

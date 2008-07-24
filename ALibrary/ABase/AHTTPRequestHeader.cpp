@@ -19,7 +19,7 @@ const AString AHTTPRequestHeader::METHOD_TRACE("TRACE",5);
 
 void AHTTPRequestHeader::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AHTTPRequestHeader @ " << std::hex << this << std::dec << ") { " << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") { " << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mstr_Method=" << mstr_Method << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_MethodId=" << m_MethodId << std::endl;
   ADebugDumpable::indent(os, indent+1) << "murl_Request=" << std::endl;

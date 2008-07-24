@@ -9,7 +9,7 @@ $Id$
 
 void AThread::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AThread @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp__ThreadProc=" << AString::fromPointer(mp__ThreadProc) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mpv__This=" << AString::fromPointer(mpv__This) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mpv__Parameter=" << AString::fromPointer(mpv__Parameter) << std::endl;

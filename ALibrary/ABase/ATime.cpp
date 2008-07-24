@@ -24,7 +24,7 @@ int ATime::smi_TimeZone(666);       //a_Some unexpected timezone :)
 
 void ATime::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ATime @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mt_Time=" << mt_Time << std::endl;
   ADebugDumpable::indent(os, indent+1) << "me_Type=" << me_Type << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;

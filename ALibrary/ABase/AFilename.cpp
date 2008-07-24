@@ -11,7 +11,7 @@ const AString AFilename::RESERVED = "|\\?*<\":>/";
 
 void AFilename::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AFilename @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Type=" << m_Type;
   ADebugDumpable::indent(os, indent+1) << "  m_RelativePath=" << m_RelativePath << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Drive=" << m_Drive << std::endl;

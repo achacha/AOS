@@ -16,7 +16,7 @@ $Id$
 void ANameValuePair::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
-  ADebugDumpable::indent(os, indent) << "(ANameValuePair @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   
   //a_Members
   ADebugDumpable::indent(os, indent+1) << "m_name='" << m_name << "'";

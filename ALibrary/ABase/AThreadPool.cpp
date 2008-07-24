@@ -13,7 +13,7 @@ $Id$
 
 void AThreadPool::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AThreadPool @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_monitorCycleSleep=" << m_monitorCycleSleep << std::endl;
   
   ADebugDumpable::indent(os, indent+1) << "mp_threadproc=" << AString::fromPointer(mp_threadproc) << std::endl;

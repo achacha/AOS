@@ -13,7 +13,7 @@ $Id$
 
 void ACache_FileSystem::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ACache_FileSystem @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Hit=" << m_Hit << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Miss=" << m_Miss << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_MaxFileSize=" << m_MaxFileSize << std::endl;

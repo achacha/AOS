@@ -18,7 +18,7 @@ $Id$
 
 void ALog_AFile::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ALog_AFile @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ALog::debugDump(os, indent+1);
 
   ADebugDumpable::indent(os, indent+1) << "m_enableLogFileRotate=" << (m_enableLogFileRotate ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;

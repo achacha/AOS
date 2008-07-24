@@ -11,7 +11,7 @@ $Id$
 void ANamePointerPair::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
-  ADebugDumpable::indent(os, indent) << "(ANamePointerPair @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   
   //a_Members
   ADebugDumpable::indent(os, indent+1) << "mstr__Name='" << mstr__Name.c_str() << "'";

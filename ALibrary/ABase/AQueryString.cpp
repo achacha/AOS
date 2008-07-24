@@ -12,7 +12,7 @@ $Id$
 #ifdef __DEBUG_DUMP__
 void AQueryString::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AQueryString @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   MMAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())

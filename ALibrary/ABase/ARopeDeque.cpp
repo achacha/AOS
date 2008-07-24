@@ -10,7 +10,7 @@ $Id$
 
 void ARopeDeque::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ARopeDeque @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "getSize()=" << getSize()
     << "  m_BlockSize=" << m_BlockSize
     << "  m_FreeStore.size()=" << m_FreeStore.size()

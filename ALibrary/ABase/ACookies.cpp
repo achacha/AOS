@@ -11,7 +11,7 @@ $Id$
 
 void ACookies::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ACookies @ " << std::hex << this << std::dec << ") { " << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") { " << std::endl;
   for (size_t u=0; u<m_Cookies.size(); ++u)
   {
     m_Cookies[u]->debugDump(os, indent+1);

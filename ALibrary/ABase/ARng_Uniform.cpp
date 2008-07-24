@@ -10,7 +10,7 @@ $Id$
 void ARng_Uniform::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
-  ADebugDumpable::indent(os, indent) << "(ARng_Uniform @ " << std::hex << this << std::dec << ");" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ");" << std::endl;
 }
 
 ARng_Uniform::ARng_Uniform()

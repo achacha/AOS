@@ -64,8 +64,6 @@ If DEBUG_TRACK_ABASE_MEMORY is defined all allocation/deallocation via new/new[]
 #ifdef DEBUG_TRACK_ABASE_MEMORY
   void *operator new(size_t size);
   void operator delete(void *p);
-  void *operator new[](size_t size);
-  void operator delete[](void *p);
   void traceAllocations(AOutputBuffer&, bool includeHexDump);
 #endif
 

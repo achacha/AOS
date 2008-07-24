@@ -17,7 +17,7 @@ const AString AUrl::sstr__PathParent("/../");
 
 void AUrl::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AUrl @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   //a_URL components
   ADebugDumpable::indent(os, indent+1) << "m_strProtocol=" << m_strProtocol

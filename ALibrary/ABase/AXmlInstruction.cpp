@@ -13,7 +13,7 @@ const AString AXmlInstruction::S_COMMENT("-->", 3);
 
 void AXmlInstruction::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AXmlInstruction @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   AXmlElement::debugDump(os, indent+1);
 
   ADebugDumpable::indent(os, indent) << "  m_Data=" << m_Data << std::endl;

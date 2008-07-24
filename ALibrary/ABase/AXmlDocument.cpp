@@ -23,7 +23,7 @@ const AString AXmlElement::sstr_EndInstructionOrWhitespace("?> \t\n\r");
 
 void AXmlDocument::debugDump(std::ostream& os /* = std::cerr */, int indent /* = 0x0 */) const
 {
-  ADebugDumpable::indent(os, indent) << "(AXmlDocument @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Instructions={" << std::endl;
   LIST_NODEPTR::const_iterator cit = m_Instructions.begin();

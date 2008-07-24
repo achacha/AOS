@@ -8,7 +8,7 @@ $Id$
 
 void AFragmentSet::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AFragmentSet @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Set=" << m_Set << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Offset=" << m_Offset << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;

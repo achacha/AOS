@@ -12,7 +12,7 @@ $Id$
 
 void AFragmentString::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AFragmentString @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Finished=" << m_Finished << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_Container={" << m_Finished << std::endl;

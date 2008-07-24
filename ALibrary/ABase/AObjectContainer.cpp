@@ -11,7 +11,7 @@ const AString AObjectContainer::ID("id");
 
 void AObjectContainer::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AObjectContainer[\"" << m_Name << "\"] @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "[\"" << m_Name << "\"] @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   MAP_STRING_OBJECTBASE::const_iterator cit = m_Objects.begin();
   while (cit != m_Objects.end())

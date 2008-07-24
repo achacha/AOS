@@ -13,7 +13,7 @@ $Id$
 
 void AFile_Socket::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AFile_Socket @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   AFile::debugDump(os,indent+1);
   ADebugDumpable::indent(os, indent+1) << "m_SocketInfo=" << std::endl;
   m_SocketInfo.debugDump(os,indent+2);

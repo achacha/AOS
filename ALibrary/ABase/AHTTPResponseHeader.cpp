@@ -9,7 +9,7 @@ $Id$
 
 void AHTTPResponseHeader::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AHTTPResponseHeader @ " << std::hex << this << std::dec << ") { " << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") { " << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "mi_StatusCode=" << mi_StatusCode << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mstr_ReasonPhrase=" << mstr_ReasonPhrase << std::endl;

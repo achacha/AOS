@@ -89,7 +89,7 @@ struct _ININode
 void AINIProfile::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
-  ADebugDumpable::indent(os, indent) << "(AINIProfile @ " << std::hex << this << std::dec << ")" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ")" << std::endl;
   
   ADebugDumpable::indent(os, indent+1) << "mstr_Filename=" << mstr_Filename << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_Root=" << std::hex << (void *)mp_Root << std::dec << " { " << std::endl;

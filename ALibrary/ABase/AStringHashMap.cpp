@@ -15,7 +15,7 @@ $Id$
 
 void AStringHashMap::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AStringHashMap @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_SynchObject=" << AString::fromPointer(mp_SynchObject) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Container={" << std::endl;
   for (size_t i=0; i<m_Container.size(); ++i)

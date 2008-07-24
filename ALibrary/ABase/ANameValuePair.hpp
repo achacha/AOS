@@ -23,7 +23,7 @@ typedef std::map<const AString, ANameValuePair>      MAP_AString_NVPairPtr;
 typedef std::multimap<const AString, ANameValuePair> MMAP_AString_NVPair;
 typedef std::multimap<const AString, ANameValuePair> MMAP_AString_NVPairPtr;
 
-class ABASE_API ANameValuePair : virtual public ASerializable, virtual public ADebugDumpable
+class ABASE_API ANameValuePair : public ADebugDumpable, public ASerializable
 {
 public:
   //a_ "=" and " " or "/>"  or ">" for HTML/XML attributes (special case)

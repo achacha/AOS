@@ -8,7 +8,7 @@ $Id$
 
 void AFragmentOdometer::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AFragmentOdometer @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Odometer={" << std::endl;
   m_Odometer.debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;

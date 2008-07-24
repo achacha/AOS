@@ -17,7 +17,7 @@ AMapOfPtrs<int, ARandomNumberGenerator> ARandomNumberGenerator::sm_rngMap;
 void ARandomNumberGenerator::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
-  ADebugDumpable::indent(os, indent) << "(ARandomNumberGenerator @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "sm_rngMap.size=" << (u4)sm_rngMap.size() << std::endl;
   AMapOfPtrs<int, ARandomNumberGenerator>::const_iterator cit = sm_rngMap.begin();
   while (sm_rngMap.end() != cit)

@@ -17,7 +17,7 @@ const AString AHTTPHeader::CONTENT_TYPE_HTML_FORM_MULTIPART("multipart/form-data
 
 void AHTTPHeader::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AHTTPHeader @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
   {

@@ -10,7 +10,7 @@ $Id$
 
 void ASocketListener::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ASocketListener @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_AllowReuse=" << (m_AllowReuse ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE) << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }

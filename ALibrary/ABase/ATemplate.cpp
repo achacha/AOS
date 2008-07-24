@@ -18,7 +18,7 @@ const AString ATemplate::TAG_END("]%",2);
 
 void ATemplate::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ATemplate @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Initialized=" << AString::fromBool(m_Initialized) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Nodes={  ";
   ADebugDumpable::indent(os, indent+2) << "size=" << m_Nodes.size() << std::endl;

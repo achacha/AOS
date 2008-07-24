@@ -9,7 +9,7 @@ $Id$
 
 void AFragmentCounter::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AFragmentCounter @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_strOdometer=" << m_strOdometer << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Digits=" << (int)m_Digits << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_StartValue=" << m_StartValue << std::endl;

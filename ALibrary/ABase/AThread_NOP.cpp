@@ -9,7 +9,7 @@ $Id$
 
 void AThread_NOP::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AThread_NOP @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Ret=" << m_Ret << std::endl;
 
   AThread::debugDump(os, indent);

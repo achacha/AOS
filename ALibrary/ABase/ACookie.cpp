@@ -13,7 +13,7 @@ $Id$
 
 void ACookie::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ACookie @ " << std::hex << this << std::dec << ") { " << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") { " << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_strName=" << m_strName   
                                        << "  m_strValue=" << m_strValue << std::endl;  
   ADebugDumpable::indent(os, indent+1) << "m_strDomain=" << m_strDomain 

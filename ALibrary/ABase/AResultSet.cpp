@@ -11,7 +11,7 @@ const AString AResultSet::ROW("row");
 
 void AResultSet::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AResultSet @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_SQL=" << m_SQL << std::endl;
 
   //a_Results

@@ -18,7 +18,7 @@ const AString ALog::LOG_SUFFIX("}}}\r\n");
 
 void ALog::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ALog @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_SynchObject=" << std::hex << (void *)mp_SynchObject << std::dec << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_EventMask=" << m_EventMask << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
