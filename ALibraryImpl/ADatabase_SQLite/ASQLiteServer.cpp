@@ -11,7 +11,7 @@ $Id$
 
 void ASQLiteServer::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ASQLiteServer @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADatabase::debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent+1) << "mp_db=0x" << std::hex << (void *)mp_db << std::dec << std::endl;
   AString strPath;
@@ -20,7 +20,9 @@ void ASQLiteServer::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-ASQLiteServer::ASQLiteServer()
+ASQLiteServer::ASQLiteServer() :
+  ADatabase(),
+  mp_db(NULL)
 {
 }
 

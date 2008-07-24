@@ -10,7 +10,7 @@ $Id$
 
 void AGdCanvas::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AGdCanvas @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_GdImagePtr=" << (void *)m_GdImagePtr << std::endl;      //TODO:
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }

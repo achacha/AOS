@@ -28,7 +28,7 @@ struct SSLData
 
 void ASocketListener_SSL::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(ASocketListener_SSL @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ASocketListener::debugDump(os,indent+1);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }

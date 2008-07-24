@@ -22,7 +22,7 @@ struct SSLData
 
 void AFile_Socket_SSL::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AFile_Socket @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   AFile_Socket::debugDump(os,indent+1);
   ADebugDumpable::indent(os, indent+1) << "mp_SSLData->ctx=0x" << std::hex << (void *)((SSLData *)mp_SSLData)->ctx << std::dec << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_SSLData->ssl=0x" << std::hex << (void *)((SSLData *)mp_SSLData)->ssl << std::dec << std::endl;

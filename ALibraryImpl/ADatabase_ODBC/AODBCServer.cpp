@@ -11,7 +11,7 @@ $Id$
 
 void AODBCServer::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AODBCServer @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADatabase::debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent+1) << "m_henv=" << m_henv << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_hdbc=" << m_hdbc << std::endl;

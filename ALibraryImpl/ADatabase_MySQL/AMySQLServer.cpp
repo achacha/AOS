@@ -10,7 +10,7 @@ $Id$
 
 void AMySQLServer::debugDump(std::ostream& os, int indent) const
 {
-  ADebugDumpable::indent(os, indent) << "(AMySQLServer @ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_urlConnection=" << std::endl;
   m_urlConnection.debugDump(os,indent+2);
   
