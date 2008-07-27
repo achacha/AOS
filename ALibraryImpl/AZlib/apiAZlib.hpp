@@ -13,6 +13,11 @@ $Id$
 #    ifdef AZLIB_EXPORTS
 #      pragma message("AZlib: EXPORT")
 #      define AZLIB_API __declspec(dllexport)
+#      ifndef NDEBUG
+#        pragma comment(lib, "zlib1d")
+#      else
+#        pragma comment(lib, "zlib1")
+#      endif
 #    else
 #      pragma message("AZlib: IMPORT")
 #      define AZLIB_API __declspec(dllimport)

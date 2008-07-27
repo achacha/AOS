@@ -1,0 +1,13 @@
+compling zlib
+had to download masm from microsoft to compile zlib. It turns out that zlib assembly has 4 compile errors that have to be fixed by hand:
+
+inffas32.asm(647) : error A2070: invalid instruction operands
+inffas32.asm(649) : error A2070: invalid instruction operands
+inffas32.asm(663) : error A2070: invalid instruction operands
+inffas32.asm(720) : error A2070: invalid instruction operands
+
+All these are due to the same problem. Found the following fix online:
+
+- movd mm7,[esi]
++ movd mm7,dword ptr[esi] 
+---

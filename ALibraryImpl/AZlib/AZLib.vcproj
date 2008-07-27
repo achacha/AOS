@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../ALibrary/ABase,./include"
+				AdditionalIncludeDirectories="../../ALibrary/ABase;./zlib-1.2.3"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;AZLIB_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -81,8 +81,6 @@
 				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/$(TargetName).lib"
 				TargetMachine="1"
 			/>
@@ -226,7 +224,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="../../ALibrary/ABase,./include"
+				AdditionalIncludeDirectories="../../ALibrary/ABase,./zlib-1.2.3"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;AZLIB_EXPORTS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -447,47 +445,47 @@
 			Name="External Header Files"
 			>
 			<File
-				RelativePath=".\include\crc32.h"
+				RelativePath=".\crc32.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\deflate.h"
+				RelativePath=".\deflate.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\inffast.h"
+				RelativePath=".\inffast.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\inffixed.h"
+				RelativePath=".\inffixed.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\inflate.h"
+				RelativePath=".\inflate.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\inftrees.h"
+				RelativePath=".\inftrees.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\trees.h"
+				RelativePath=".\trees.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\zconf.h"
+				RelativePath=".\zconf.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\zconf.in.h"
+				RelativePath=".\zconf.in.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\zlib.h"
+				RelativePath=".\zlib.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\zutil.h"
+				RelativePath=".\zutil.h"
 				>
 			</File>
 		</Filter>

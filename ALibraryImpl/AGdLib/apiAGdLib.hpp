@@ -24,13 +24,18 @@ $Id$
 #  endif
 #endif
 
-#if defined(__WINDOWS__)
-#pragma comment(lib, "zlib1")
-#pragma comment(lib, "libjpeg")
-#endif
-
 #include "apiABase.hpp"
+#include "apiAZlib.hpp"
 #include "gd.h"
+
+#if defined(__WINDOWS__)
+#pragma comment(lib, "libjpeg")
+#ifndef NDEBUG
+#  pragma comment(lib, "zlib1d")
+#else
+#  pragma comment(lib, "zlib1")
+#endif
+#endif
 
 #define GDLib_INFO "gdlib " ## GD_VERSION_STRING
 

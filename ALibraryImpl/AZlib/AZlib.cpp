@@ -8,10 +8,6 @@ $Id$
 #include "AString.hpp"
 #include "AException.hpp"
 
-#if defined(__WINDOWS__)
-#pragma comment(lib, "zlib1")
-#endif
-
 #if MAX_MEM_LEVEL >= 8
 #  define DEF_MEM_LEVEL 8
 #else
