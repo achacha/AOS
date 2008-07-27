@@ -85,8 +85,6 @@
 				GenerateMapFile="true"
 				MapFileName="$(OutDir)/$(TargetName).map"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
