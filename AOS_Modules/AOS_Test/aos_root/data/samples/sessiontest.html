@@ -1,0 +1,17 @@
+<html>
+<head><title>Session test</title></head>
+<body>
+%[LUA]{{{
+if (model.existElement("test/sessionCreated")) then
+  print("Created new session, counter set to 0<br/>");
+else
+  print("Session exists, incrementing count.");
+  print("Model reports  : "	.. model.emitContentFromPath("test/count") .. "<br/>");
+end
+}}}[LUA]%
+<br/>
+<b>Template value in model under <i>test/count</i> = </b>%[MODEL]{{{test/count}}}[MODEL]% <small> uses % [MODEL]{{{test/count}}}[MODEL]%</small><br/>
+<b>Template value in session under <i>count</i> = </b>%[SESSION]{{{count}}}[SESSION]% <small> uses % [SESSION]{{{count}}}[SESSION]%</small><br/>
+
+</body>
+</html>

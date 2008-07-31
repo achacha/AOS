@@ -23,7 +23,7 @@ public:
 private:
   static const AString S_COUNT;
   static const AString S_OUTPATH;
-
+  static const AString S_SESSIONCREATED;
 };
 
 #endif //INCLUDED__AOSModule_SessionTest_HPP__

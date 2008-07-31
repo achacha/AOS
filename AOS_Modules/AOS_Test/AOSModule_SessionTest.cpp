@@ -7,6 +7,7 @@ $Id$
 #include "AOSModule_SessionTest.hpp"
 
 const AString AOSModule_SessionTest::S_COUNT("count");
+const AString AOSModule_SessionTest::S_SESSIONCREATED("test/sessionCreated");
 const AString AOSModule_SessionTest::S_OUTPATH("test/count");
 
 const AString& AOSModule_SessionTest::getClass() const
@@ -24,20 +25,29 @@ AOSContext::ReturnCode AOSModule_SessionTest::execute(AOSContext& context, const
 {
   AString str(128, 256);
 
-  //a_Session counter
-  AXmlElement& sessionData = context.useSessionData().useData();
-  if (sessionData.emitString(S_COUNT, str))
+  if (context.existsSessionData())
   {
-    ANumber n(str);
-    ++n;
-    str.clear();
-    n.emit(str);
-    sessionData.setString(S_COUNT, str);
-    context.useModel().setString(S_OUTPATH, str);
+    if (context.getSessionDataContent(S_COUNT, str))
+    {
+      ANumber n(str);
+      ++n;
+      str.clear();
+      n.emit(str);
+      context.useSessionData().useData().setString(S_COUNT, str);
+      context.useModel().setString(S_OUTPATH, str);
+    }
+    else
+    {
+      //a_Session exists add counter
+      context.useSessionData().useData().setString(S_COUNT, AConstant::ASTRING_ZERO);
+      context.useModel().setString(S_OUTPATH, AConstant::ASTRING_ZERO);
+    }
   }
   else
   {
-    sessionData.setString(S_COUNT, AConstant::ASTRING_ZERO);
+    //a_Add new sesson and counter
+    context.useSessionData().useData().setString(S_COUNT, AConstant::ASTRING_ZERO);
+    context.useModel().addElement(S_SESSIONCREATED);
     context.useModel().setString(S_OUTPATH, AConstant::ASTRING_ZERO);
   }
 
