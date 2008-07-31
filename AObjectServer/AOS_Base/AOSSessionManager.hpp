@@ -18,6 +18,10 @@ class AOSContext;
 class AOS_BASE_API AOSSessionManager : public AOSAdminInterface
 {
 public:
+  //! Name of the cookie that stores session id
+  static const AString SESSIONID;
+
+public:
   //! ctor
   AOSSessionManager(AOSServices&);
   
@@ -38,6 +42,7 @@ public:
   If session has already expired it will be removed from database and reported as non-existing
 
   @param sessionId checks if session exists
+  @return true if session exists
   */
   bool exists(const AString& sessionId);
 
@@ -47,7 +52,7 @@ public:
   @param sessionId string to receive new session id, will be cleared first
   @return new session data object
   */
-  AOSSessionData *AOSSessionManager::createNewSessionData(AString& sessionId);
+  AOSSessionData *createNewSessionData(AString& sessionId);
 
   /*!
   Get session data

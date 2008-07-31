@@ -10,6 +10,18 @@ $Id$
 
 class ATemplate;
 
+/*!
+Example:
+
+...
+<module class="Template">
+  <filename if="...">script/something.html</filename>
+  <filename ifnot="...">script/something_not.html</filename>
+  <filename if="...">script/something_more.html</filename>
+</module>
+...
+
+*/
 class AOS_BASEMODULES_API AOSOutput_Template : public AOSOutputGeneratorInterface
 {
 public:

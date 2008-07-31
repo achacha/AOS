@@ -936,6 +936,37 @@ void AOSContext::setSessionObject(AOSSessionData *pObj)
   }
 }
 
+bool AOSContext::existsSessionData() const
+{
+  if (!mp_SessionObject)
+  {
+    //a_See if session id exists
+    AString sessionId;
+    if (m_RequestHeader.getCookies().getValue(AOSSessionManager::SESSIONID, sessionId))
+    {
+      return m_Services.useSessionManager().exists(sessionId);
+    }
+  }
+  return false;
+}
+
+bool AOSContext::getSessionDataContent(const AString& path, AString& value)
+{
+  if (!mp_SessionObject)
+  {
+    //a_See if session id exists
+    AString sessionId;
+    if (m_RequestHeader.getCookies().getValue(AOSSessionManager::SESSIONID, sessionId))
+    {
+      if (m_Services.useSessionManager().exists(sessionId))
+      {
+        return useSessionData().useData().emitContentFromPath(path, value);
+      }
+    }
+  }
+  return false;
+}
+
 AOSSessionData& AOSContext::useSessionData()
 {
   if (!mp_SessionObject)

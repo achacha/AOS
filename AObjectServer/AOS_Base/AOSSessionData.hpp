@@ -36,7 +36,7 @@ public:
   @param target appends session id if found
   @return true if found
   */
-  bool AOSSessionData::getSessionId(AOutputBuffer& target) const;
+  bool getSessionId(AOutputBuffer& target) const;
 
   /*!
   AXmlEmittable

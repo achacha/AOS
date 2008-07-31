@@ -156,7 +156,31 @@ public:
   AXmlDocument& useModelXmlDocument();
 
   /*!
-  Get session data
+  Checks if the session data exists for this context
+  Sessions are lazy-create, so unless you get the session object it is not created
+
+  @return true if it already exists
+  */
+  bool existsSessionData() const;
+  
+  /*!
+  Gets a value associate with a name in session data
+  If session does not exist false will be returned and new session data will NOT be created
+
+  @param path of the content to get
+  @param value to emit content into
+  @return true if session exists and name/value pair exists 
+  */
+  bool getSessionDataContent(const AString& path, AString& value);
+
+  /*!
+  If exists: looks uup the reference from the Cookie in th request
+  If does not exist: new one will be created and added to session store and cookie will be associated with response
+
+  NOTE: If you are looking to get a value from session variable or check for existance without forcing a create
+        use getSessionDataValue or existsSessionData
+
+  @return Reference to the session data object
   */
   AOSSessionData& useSessionData();
 

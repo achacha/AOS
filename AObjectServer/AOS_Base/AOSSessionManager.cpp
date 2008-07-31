@@ -16,6 +16,8 @@ $Id$
 #define DEFAULT_HOLDER_SIZE 13
 #define DEFAULT_SLEEP_DURATION 3000
 
+const AString AOSSessionManager::SESSIONID("AOSSession", 10);
+
 void AOSSessionManager::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -223,13 +225,7 @@ AOSSessionData *AOSSessionManager::getSessionData(const AString& sessionId)
   else
   {
     //a_Not found, try DB or create new one
-    AOSSessionData *pData = NULL;
-//    if (m_DatabasePersistence)
-//    {
-      //a_Try database
-//      pData = _restoreSession(sessionId);
-//    }
-    
+    AOSSessionData *pData = NULL;    
     ALock lock(pSessionMapHolder->mp_SynchObject);
     
     //a_Create a new session
@@ -382,7 +378,7 @@ void AOSSessionManager::initSession(AOSContext *pContext)
 {
   //a_Create/Use session cookie/data
   AString strSessionId;
-  pContext->useRequestCookies().getValue(ASW("AOSSession", 10), strSessionId);
+  pContext->useRequestCookies().getValue(AOSSessionManager::SESSIONID, strSessionId);
   if (!strSessionId.isEmpty() && m_Services.useSessionManager().exists(strSessionId))
   {
     //a_Fetch session
@@ -410,7 +406,7 @@ void AOSSessionManager::initSession(AOSContext *pContext)
     pContext->setSessionObject(m_Services.useSessionManager().createNewSessionData(strSessionId));
 
     //a_Add cookie for this session
-    ACookie& cookie = pContext->useResponseCookies().addCookie(ASW("AOSSession", 10), strSessionId);
+    ACookie& cookie = pContext->useResponseCookies().addCookie(AOSSessionManager::SESSIONID, strSessionId);
     cookie.setMaxAge(m_TimeoutIntervalInSeconds);
     cookie.setPath(ASW("/",1));
     if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
