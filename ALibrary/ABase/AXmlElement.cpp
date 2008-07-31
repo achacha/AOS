@@ -1138,7 +1138,7 @@ void AXmlElement::toAFile(AFile& file) const
 
 void AXmlElement::setString(const AString& path, const AString& value, AXmlElement::Encoding encoding)
 {
-  addElement(path, value, encoding, true);
+  _addElement(path, true)->setData(value, encoding);
 }
 
 void AXmlElement::setInt(const AString& path, int value)

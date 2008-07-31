@@ -77,7 +77,7 @@ public:
   Get value of the cookie
 
   @param name of the cookie
-  @paran value will be appended if found
+  @param value will be appended if found
   @return true if found
   */
   bool getValue(const AString& name, AString& value) const;
