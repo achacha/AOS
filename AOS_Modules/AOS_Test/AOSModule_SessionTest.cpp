@@ -33,20 +33,30 @@ AOSContext::ReturnCode AOSModule_SessionTest::execute(AOSContext& context, const
       ++n;
       str.clear();
       n.emit(str);
-      context.useSessionData().useData().setString(S_COUNT, str);
+
+      {
+        ALock lock(context.useSessionData().useSyncObject());
+        context.useSessionData().useData().setString(S_COUNT, str);
+      }
       context.useModel().setString(S_OUTPATH, str);
     }
     else
     {
       //a_Session exists add counter
-      context.useSessionData().useData().setString(S_COUNT, AConstant::ASTRING_ZERO);
+      {
+        ALock lock(context.useSessionData().useSyncObject());
+        context.useSessionData().useData().setString(S_COUNT, AConstant::ASTRING_ZERO);
+      }
       context.useModel().setString(S_OUTPATH, AConstant::ASTRING_ZERO);
     }
   }
   else
   {
     //a_Add new sesson and counter
-    context.useSessionData().useData().setString(S_COUNT, AConstant::ASTRING_ZERO);
+    {
+      ALock lock(context.useSessionData().useSyncObject());
+      context.useSessionData().useData().setString(S_COUNT, AConstant::ASTRING_ZERO);
+    }
     context.useModel().addElement(S_SESSIONCREATED);
     context.useModel().setString(S_OUTPATH, AConstant::ASTRING_ZERO);
   }
