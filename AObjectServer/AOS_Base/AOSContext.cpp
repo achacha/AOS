@@ -175,13 +175,14 @@ void AOSContext::reset(AFile_Socket *pFile)
 
   pDelete(mp_LuaTemplateContext);
 
+  setSessionObject(NULL);
+
   m_RequestHeader.clear();
   m_ResponseHeader.clear();
   m_OutputBuffer.clear();
   m_OutputXmlDocument.clear();
   m_OutputXmlDocument.useRoot().useName().assign(XML_ROOT);
   mp_Controller = NULL;
-  mp_SessionObject = NULL;
   mp_DirConfig = NULL;
 
   m_ContextFlags.clear();
@@ -219,8 +220,8 @@ void AOSContext::finalize()
     pDelete(mp_LuaTemplateContext);
   }
 
-  //a_Clear ouput model and buffer and stop event timer
-  m_EventVisitor.startEvent(ASW("Finalizing context",18));
+  //a_Finalize the session data
+  setSessionObject(NULL);
 
   //a_Clear objects, buffers and model
   m_OutputBuffer.clear();
@@ -925,15 +926,23 @@ AEventVisitor& AOSContext::useEventVisitor()
   return m_EventVisitor;
 }
 
-void AOSContext::setSessionObject(AOSSessionData *pObj)
+AOSSessionData *AOSContext::setSessionObject(AOSSessionData *pObj)
 {
-  if (!pObj)
-    ATHROW(this, AException::InvalidParameter);
+  AOSSessionData *pRet = mp_SessionObject;
+  mp_SessionObject = pObj;
+  if (mp_SessionObject)
+  {
+    m_ContextFlags.setBit(CTXFLAG_IS_USING_SESSION_DATA);
+    mp_SessionObject->init(*this);
+  }
   else
   {
-    mp_SessionObject = pObj;
-    m_ContextFlags.setBit(CTXFLAG_IS_USING_SESSION_DATA);
+    m_ContextFlags.clearBit(CTXFLAG_IS_USING_SESSION_DATA);
+    if (pRet)
+      pRet->finalize(*this);
   }
+
+  return pRet;
 }
 
 bool AOSContext::existsSessionData() const
@@ -972,7 +981,7 @@ AOSSessionData& AOSContext::useSessionData()
   if (!mp_SessionObject)
   {
     //a_Lazy create
-    m_Services.useSessionManager().initSession(this);
+    m_Services.useSessionManager().initSession(*this);
   }
   
   if (mp_SessionObject)

@@ -26,6 +26,7 @@ $(document).ready(function(){
   <span class="folder">Rhino Server</span>
   <li>
     <li><a target="_target" href="/ping">ping</a></li>
+		<li><a target="_target" href="/iframes.html">IFRAME madness!</a></li>
     <ul>
   	  <li>
   	    <span class="folder">Classified</span>
@@ -61,28 +62,28 @@ $(document).ready(function(){
       <li>
   	    <span class="folder">Output variations</span>
   	    <ul>
-          <li><a target="_target" href="/samples/InsertIntoModel.xml">as XML</a>, 
-          <li><a target="_target" href="/samples/InsertIntoModel.json">as JSON</a>,
-          <li><a target="_target" href="/samples/InsertIntoModel.template">as HTML template</a>,
-          <li><a target="_target" href="/samples/InsertIntoModel.xslt">as HTML via XSLT</a><br/>
+          <li><a target="_target" href="/samples/InsertIntoModel.xml">as XML</a></li>
+          <li><a target="_target" href="/samples/InsertIntoModel.json">as JSON</a></li>
+          <li><a target="_target" href="/samples/InsertIntoModel.template">as HTML template</a></li>
+          <li><a target="_target" href="/samples/InsertIntoModel.xslt">as HTML via XSLT</a></li>
   	    </ul>
   	  </li>
       <li>
   	    <span class="folder">Lua scripting and templating</span>
   	    <ul>
-          <li><a target="_target" href="/samples/ExecuteLuaScriptFile">Lua script in data/lua/TestLuaScript.lua (output XML)</a><br/>
-          <li><a target="_target" href="/samples/ExecuteLuaScriptInline">Lua script inlined inside the command xml (output XML)</a><br/>
-          <li><a target="_target" href="/samples/ExecuteTemplateFile">Lua script in data/template/TestLuaScript.template (output XML)</a><br/>
-          <li><a target="_target" href="/samples/ExecuteTemplateInline">Lua script inlined inside command xml (output XML)</a><br/>
-          <li><a target="_target" href="/samples/LotsOfLuaScripts.html">Lots of Lua script blocks inside a single template</a><br/>
+          <li><a target="_target" href="/samples/ExecuteLuaScriptFile">Lua script in data/lua/TestLuaScript.lua (output XML)</a></li>
+          <li><a target="_target" href="/samples/ExecuteLuaScriptInline">Lua script inlined inside the command xml (output XML)</a></li>
+          <li><a target="_target" href="/samples/ExecuteTemplateFile">Lua script in data/template/TestLuaScript.template (output XML)</a></li>
+          <li><a target="_target" href="/samples/ExecuteTemplateInline">Lua script inlined inside command xml (output XML)</a></li>
+          <li><a target="_target" href="/samples/LotsOfLuaScripts.html">Lots of Lua script blocks inside a single template</a></li>
   	    </ul>
   	  </li>
       <li>
         <span class="folder">Context and Form handling</span>
   	    <ul>
-          <li><a target="_target" href="/samples/SaveModelElementToFile.html">Save element to file</a><br/>
-          <li><a target="_target" href="/samples/SaveUploadToFile.html">Save multi-part upload to file</a><br/>
-          <li><a target="_target" href="/samples/MultiPartFormWithFile.html">Multi-part FORM submit with file upload</a><br/>
+          <li><a target="_target" href="/samples/SaveModelElementToFile.html">Save element to file</a></li>
+          <li><a target="_target" href="/samples/SaveUploadToFile.html">Save multi-part upload to file</a></li>
+          <li><a target="_target" href="/samples/MultiPartFormWithFile.html">Multi-part FORM submit with file upload</a></li>
   	    </ul>
   	  </li>
       <li>
@@ -101,17 +102,17 @@ $(document).ready(function(){
       <li>
   	    <span class="folder">Login and CAPTCHA</span>
   	    <ul>
-          <li><a target="_target" href="/captcha/">Validate CAPTCHA</a><br/>
-          <li><a target="_target" href="/login">Login page</a><br/>
-          <li><a target="_target" href="/secure/SecuredPage.html">Access a secured-by-login page</a><br/>
+          <li><a target="_target" href="/captcha/">Validate CAPTCHA</a></li>
+          <li><a target="_target" href="/login">Login page</a></li>
+          <li><a target="_target" href="/secure/SecuredPage.html">Access a secured-by-login page</a></li>
   	    </ul>
   	  </li>
       <li>
   	    <span class="folder">Wiki</span>
   	    <ul>
-          <li><a target="_target" href="/wiki/db/">Database driven wiki</a><br/>
-          <li><a target="_target" href="/wiki/file/">File-system driven wiki</a><br/>
-          <li><a target="_target" href="/wiki/file-secure/">Secure file-system driven wiki</a><br/>
+          <li><a target="_target" href="/wiki/db/">Database driven wiki</a></li>
+          <li><a target="_target" href="/wiki/file/">File-system driven wiki</a></li>
+          <li><a target="_target" href="/wiki/file-secure/">Secure file-system driven wiki</a></li>
   	    </ul>
   	  </li>
   	  <li>
@@ -133,19 +134,16 @@ $(document).ready(function(){
   <li>
     <span class="folder">Area 51: Samples</span>
     <ul>
-      <li><a target="_target" href="/iframes.html">IFRAME madness!</a><br/>
-      <li><a target="_target" href="/samples/Test.xml">Simple test of dynamically generated XML</a><br/>
-      <li><a target="_target" href="/samples/Test.xml?ajax=1">Simple test (ajax=1)</a><br/>
-      <li><a target="_target" href="/samples/Test.xml?dumpContext=1">Simple test (dumpContext=1) - context converted to XML</a><br/>
-      <li><a target="_target" href="/samples/Test.xml?dumpContext=2">Simple test (dumpContext=2) - Debug build only, adds debugDump for context</a><br/>
-      <li><a target="_target" href="/samples/Test_AlterRequestContext.xml">Alter context kitchen sink (output XML, sets 10 second response cookie)</a><br/>
-      <li><a target="_target" href="/samples/Test_SetTemporaryCookie.xml">Set 10 second cookie called 'vanishing' (output XML)</a><br/>
-      <li><a target="_target" href="/samples/Test_Session.html">Test session (adds counter to session and increments)</a><br/>
-      <li><a target="_target" href="/samples/Test_Fail.xml">Generate an error</a><br/>
+      <li><a target="_target" href="/samples/Test.xml">Simple test of dynamically generated XML</a></li>
+      <li><a target="_target" href="/samples/Test.xml?ajax=1">Simple test (ajax=1)</a></li>
+      <li><a target="_target" href="/samples/Test.xml?dumpContext=1">Simple test (dumpContext=1) - context converted to XML</a></li>
+      <li><a target="_target" href="/samples/Test.xml?dumpContext=2">Simple test (dumpContext=2) - Debug build only, adds debugDump for context</a></li>
+      <li><a target="_target" href="/samples/Test_AlterRequestContext.xml">Alter context kitchen sink (output XML, sets 10 second response cookie)</a></li>
+      <li><a target="_target" href="/samples/Test_SetTemporaryCookie.xml">Set 10 second cookie called 'vanishing' (output XML)</a></li>
+      <li><a target="_target" href="/samples/Test_Session.html">Test session (adds counter to session and increments)</a></li>
+      <li><a target="_target" href="/samples/Test_Fail.xml">Generate an error</a></li>
     </ul>
   </li>
-  
-
 </ul>
 
 </body>

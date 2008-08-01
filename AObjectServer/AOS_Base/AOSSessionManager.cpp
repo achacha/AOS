@@ -219,12 +219,13 @@ AOSSessionData *AOSSessionManager::getSessionData(const AString& sessionId)
   SESSION_MAP::iterator it = pSessionMapHolder->m_SessionMap.find(sessionId);
   if (it != pSessionMapHolder->m_SessionMap.end())
   {
+    ALock lock(pSessionMapHolder->mp_SynchObject);
     (*it).second->restartLastUsedTimer();        //a_Restart session timer
     return ((*it).second);
   }
   else
   {
-    //a_Not found, try DB or create new one
+    //a_Not found, create new one
     AOSSessionData *pData = NULL;    
     ALock lock(pSessionMapHolder->mp_SynchObject);
     
@@ -374,46 +375,64 @@ AOSSessionData *AOSSessionManager::_restoreSession(const AString& sessionId)
   return pData;
 }
 
-void AOSSessionManager::initSession(AOSContext *pContext)
+void AOSSessionManager::initSession(AOSContext& context)
 {
   //a_Create/Use session cookie/data
-  AString strSessionId;
-  pContext->useRequestCookies().getValue(AOSSessionManager::SESSIONID, strSessionId);
-  if (!strSessionId.isEmpty() && m_Services.useSessionManager().exists(strSessionId))
+  AString sessionId;
+  context.useRequestCookies().getValue(AOSSessionManager::SESSIONID, sessionId);
+  if (!sessionId.isEmpty() && m_Services.useSessionManager().exists(sessionId))
   {
     //a_Fetch session
-    if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
-      pContext->useEventVisitor().startEvent(AString("Using existing session ",23)+strSessionId, AEventVisitor::EL_INFO);
-    AOSSessionData *pSessionData = m_Services.useSessionManager().getSessionData(strSessionId);
-    pContext->setSessionObject(pSessionData);
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+      context.useEventVisitor().startEvent(AString("Using existing session ",23)+sessionId, AEventVisitor::EL_INFO);
+    
+    AOSSessionData *pSessionData = getSessionData(sessionId);
+    context.setSessionObject(pSessionData);
   }
   else
   {
     //a_Create session
-    if (!strSessionId.isEmpty())
+    if (!sessionId.isEmpty())
     {
-      if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+      if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
       {
         ARope rope("Creating new session, existing session not found: ",50);
-        rope.append(strSessionId);
-        pContext->useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
+        rope.append(sessionId);
+        context.useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
       }
-      strSessionId.clear();
+      sessionId.clear();
     }
     
-    //a_Fetch session (creating a new one)
-    //a_This call will populate strSessionId and return the new session data object
-    pContext->setSessionObject(m_Services.useSessionManager().createNewSessionData(strSessionId));
+    //a_Craete a new session
+    AOSSessionData *pSessionData = createNewSessionData(sessionId);
+
+    //a_This call will populate sessionId and return the new session data object
+    context.setSessionObject(pSessionData);
 
     //a_Add cookie for this session
-    ACookie& cookie = pContext->useResponseCookies().addCookie(AOSSessionManager::SESSIONID, strSessionId);
+    ACookie& cookie = context.useResponseCookies().addCookie(AOSSessionManager::SESSIONID, sessionId);
     cookie.setMaxAge(m_TimeoutIntervalInSeconds);
     cookie.setPath(ASW("/",1));
-    if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
     {
       AString str("Created new session ",20);
-      str.append(strSessionId);
-      pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
+      str.append(sessionId);
+      context.useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
     }
+  }
+}
+
+void AOSSessionManager::finalizeSession(AOSContext& context)
+{
+  AString sessionId;
+  AVERIFY(&context, context.useRequestCookies().getValue(AOSSessionManager::SESSIONID, sessionId));
+  SessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
+  AASSERT(this, pSessionMapHolder);
+
+  {
+    ALock lock(pSessionMapHolder->mp_SynchObject);
+    AOSSessionData *pSessionData = context.setSessionObject(NULL);
+    AASSERT(this, pSessionData);
+    pSessionData->finalize(context);
   }
 }

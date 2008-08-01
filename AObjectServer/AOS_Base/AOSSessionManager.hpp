@@ -33,9 +33,16 @@ public:
   If session id in request cookie, fetch session and associate it with context
   If invalid session id or not there , create session, add response cookie and associate it with the corrent context
 
-  @param pContext current context
+  @param context current
   */
-  void initSession(AOSContext *pContext);
+  void initSession(AOSContext& context);
+
+  /*!
+  Finalize the session with respect to the context
+
+  @param context current
+  */
+  void finalizeSession(AOSContext& context);
 
   /*!
   Check existance of session data

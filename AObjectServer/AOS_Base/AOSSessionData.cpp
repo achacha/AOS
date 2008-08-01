@@ -5,6 +5,8 @@ $Id$
 */
 #include "pchAOS_Base.hpp"
 #include "AOSSessionData.hpp"
+#include "ASync_CriticalSection.hpp"
+#include "AOSContext.hpp"
 
 const AString AOSSessionData::SESSIONID("id",2);
 
@@ -15,8 +17,13 @@ void AOSSessionData::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_Data=" << std::endl;
   m_Data.debugDump(os, indent+2);
 
-  ADebugDumpable::indent(os, indent+1) << "m_AgeTimer=" << m_AgeTimer.getInterval() << " ms" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_LastUsedTimer=" << m_AgeTimer.getInterval() << " ms" << std::endl;
+  ADebugDumpable::indent(os, indent+1) 
+    << "m_AgeTimer=" << m_AgeTimer.getInterval() << " ms"
+    << "  m_LastUsedTimer=" << m_AgeTimer.getInterval() << " ms" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) 
+    << "m_InUseCount=" << m_InUseCount
+    << "  mp_SyncObject=" << AString::fromPointer(mp_SyncObject) << std::endl;
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
@@ -24,7 +31,9 @@ void AOSSessionData::debugDump(std::ostream& os, int indent) const
 AOSSessionData::AOSSessionData(const AString& sessionId) :
   m_AgeTimer(true),
   m_LastUsedTimer(true),
-  m_Data(ASW("data",4))
+  m_Data(ASW("data",4)),
+  m_InUseCount(0),
+  mp_SyncObject(NULL)
 {
   m_Data.useRoot().setString(SESSIONID, sessionId);
 }
@@ -32,10 +41,18 @@ AOSSessionData::AOSSessionData(const AString& sessionId) :
 AOSSessionData::AOSSessionData(AFile& aFile) :
   m_AgeTimer(true),
   m_LastUsedTimer(true),
-  m_Data(ASW("data",4))
+  m_Data(ASW("data",4)),
+  m_InUseCount(0),
+  mp_SyncObject(NULL)
 {
   fromAFile(aFile);
   AASSERT_EX(this, m_Data.useRoot().exists(SESSIONID), ASWNL("Session ID was not found after session was restored"));
+}
+
+AOSSessionData::~AOSSessionData()
+{
+  AASSERT(this, 0 == m_InUseCount);  //a_Uneven number of calls to init/finalize
+  AASSERT(this, !mp_SyncObject);     //a_Uneven number of calls to init/finalize
 }
 
 bool AOSSessionData::getSessionId(AOutputBuffer& target) const
@@ -86,6 +103,11 @@ const AXmlElement& AOSSessionData::getData() const
   return m_Data.getRoot();
 }
 
+ASynchronization *AOSSessionData::useSyncObject()
+{
+  return mp_SyncObject;
+}
+
 void AOSSessionData::toAFile(AFile& aFile) const
 {
   m_Data.toAFile(aFile);
@@ -101,4 +123,29 @@ void AOSSessionData::clear()
   m_AgeTimer.clear();
   m_LastUsedTimer.clear();
   m_Data.clear();
+}
+
+void AOSSessionData::init(AOSContext& context)
+{
+  if (!m_InUseCount)
+  {
+    mp_SyncObject = new ASync_CriticalSection();
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+    {
+      context.useEventVisitor().startEvent(ASW("AOSSessionData::init: Allocated session data sync object",56), AEventVisitor::EL_DEBUG);
+    }
+  }
+  ++m_InUseCount;
+  AASSERT(this, mp_SyncObject);  //If we are here and it asserts the calling code is not synchronizing correctly
+}
+
+void AOSSessionData::finalize(AOSContext& context)
+{
+  m_InUseCount = 0;
+  pDelete(mp_SyncObject);
+  
+  if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+  {
+    context.useEventVisitor().startEvent(ASW("AOSSessionData::finalize: Deallocated session data sync object",62), AEventVisitor::EL_DEBUG);
+  }
 }

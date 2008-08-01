@@ -13,6 +13,8 @@ $Id$
 #include "AXmlEmittable.hpp"
 #include "ASerializable.hpp"
 
+class AOSContext;
+
 class AOS_BASE_API AOSSessionData : public ADebugDumpable, public AXmlEmittable, ASerializable
 {
 public:
@@ -29,6 +31,11 @@ public:
   ctor calls fromAFile
   */
   AOSSessionData(AFile&);
+
+  /*!
+  dtor
+  */
+  virtual ~AOSSessionData();
 
   /*!
   Gets the session ID stored in data
@@ -52,6 +59,23 @@ public:
   AXmlElement& useData();
   const AXmlElement& getData() const;
   
+  /*!
+  Get a synchronization object associated with this data
+  */
+  ASynchronization *useSyncObject();
+
+  /*!
+  Initialize the data for each request
+  Calling code responsible for syncronizing this call
+  */
+  void init(AOSContext& context);
+  
+  /*!
+  Finalize the usage for the given request
+  Calling code responsible for syncronizing this call
+  */
+  void finalize(AOSContext& context);
+
   /*!
   Overall age timer of the session
   */
@@ -89,6 +113,8 @@ private:
   AXmlDocument m_Data;
   ATimer m_AgeTimer;
   ATimer m_LastUsedTimer;
+  volatile long m_InUseCount;
+  ASynchronization *mp_SyncObject;
 };
 
 #endif //INCLUDED__AOSSessionData_HPP__

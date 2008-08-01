@@ -338,9 +338,12 @@ public:
   ABasePtrContainer& useContextObjects();
 
   /*!
-  Gets the session object
+  Gets the session object, returns current
+
+  @param pSessionData new session object
+  @return old session object
   */
-  void setSessionObject(AOSSessionData *);
+  AOSSessionData *setSessionObject(AOSSessionData *pSessionData);
     
   /*!
   Access the event visitor
