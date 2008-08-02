@@ -35,7 +35,7 @@ public:
 
   @param context current
   */
-  void initSession(AOSContext& context);
+  void initOrCreateSession(AOSContext& context);
 
   /*!
   Finalize the session with respect to the context
@@ -53,6 +53,18 @@ public:
   */
   bool exists(const AString& sessionId);
 
+  /*!
+  Generates (and appends) a session id string (somewhat unique)
+  
+  @param sessionId appended to output buffer
+  */
+  void generateSessionId(AOutputBuffer& sessionId) const;
+
+  /*!
+  Adds session id to the response for lazy create of data later
+  */
+  void addSessionId(AOSContext& context);
+  
   /*!
   Create a new session data and populate new session id
   
@@ -130,6 +142,9 @@ private:
   //! Manager thread
   AThread m_Thread;
 
+  //! Add response cookie for session id
+  void _addSessionIdCookie(AOSContext& context, const AString& sessionId);
+  
   //! Database restore
   //! returns NULL if not found or expired
   AOSSessionData *_restoreSession(const AString& sessionId);

@@ -292,6 +292,9 @@ AOSContext::Status AOSContext::init()
   timeNow.emitRFCtime(str);
   m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Date, str);
 
+  //a_Set session id on response if not part of request
+  m_Services.useSessionManager().addSessionId(*this);
+  
   //a_Set the hostname from either Hostname: request header or use config if not found or HTTP/1.0
   str.clear();
   if (m_RequestHeader.getPairValue(AHTTPHeader::HT_REQ_Host, str))
@@ -981,7 +984,7 @@ AOSSessionData& AOSContext::useSessionData()
   if (!mp_SessionObject)
   {
     //a_Lazy create
-    m_Services.useSessionManager().initSession(*this);
+    m_Services.useSessionManager().initOrCreateSession(*this);
   }
   
   if (mp_SessionObject)

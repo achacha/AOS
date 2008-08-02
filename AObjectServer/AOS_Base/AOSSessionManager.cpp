@@ -82,7 +82,7 @@ AOSSessionManager::AOSSessionManager(AOSServices& services) :
 
   //a_Read config
   m_TimeoutInterval = (double)m_Services.useConfiguration().useConfigRoot().getU4("/config/server/session-manager/timeout", 360000);
-  m_TimeoutIntervalInSeconds = m_TimeoutInterval / 1000;
+  m_TimeoutIntervalInSeconds = (long)(m_TimeoutInterval / 1000);
   AASSERT(this, m_TimeoutInterval > 0.0);
   m_SessionMonitorSleep = m_Services.useConfiguration().useConfigRoot().getU4("/config/server/session-manager/sleep-cycle", DEFAULT_SLEEP_DURATION);
   AASSERT(this, m_SessionMonitorSleep > 0);
@@ -236,13 +236,22 @@ AOSSessionData *AOSSessionManager::getSessionData(const AString& sessionId)
   }
 }
 
-AOSSessionData *AOSSessionManager::createNewSessionData(AString& sessionId)
+void AOSSessionManager::generateSessionId(AOutputBuffer& sessionId) const
 {
-  sessionId.clear();
   AString localHostHash(AString::fromSize_t(ASocketLibrary::getLocalHostName().getHash()));
-  ATextGenerator::generateRandomAlphanum(sessionId, 13);
+  ATextGenerator::generateRandomAlphanum(sessionId, 17);
   sessionId.append(AString::fromSize_t(ATime::getTickCount()));
   sessionId.append(localHostHash);
+}
+
+AOSSessionData *AOSSessionManager::createNewSessionData(AString& sessionId)
+{
+  //a_If empty id or for some reason session exists but create new was requested
+  if (sessionId.isEmpty() || _getSessionHolder(sessionId))
+  {
+    sessionId.clear();
+    generateSessionId(sessionId);
+  }
 
   SessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
   AASSERT(this, pSessionMapHolder);
@@ -375,7 +384,7 @@ AOSSessionData *AOSSessionManager::_restoreSession(const AString& sessionId)
   return pData;
 }
 
-void AOSSessionManager::initSession(AOSContext& context)
+void AOSSessionManager::initOrCreateSession(AOSContext& context)
 {
   //a_Create/Use session cookie/data
   AString sessionId;
@@ -400,7 +409,6 @@ void AOSSessionManager::initSession(AOSContext& context)
         rope.append(sessionId);
         context.useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
       }
-      sessionId.clear();
     }
     
     //a_Craete a new session
@@ -410,15 +418,20 @@ void AOSSessionManager::initSession(AOSContext& context)
     context.setSessionObject(pSessionData);
 
     //a_Add cookie for this session
-    ACookie& cookie = context.useResponseCookies().addCookie(AOSSessionManager::SESSIONID, sessionId);
-    cookie.setMaxAge(m_TimeoutIntervalInSeconds);
-    cookie.setPath(ASW("/",1));
-    if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
-    {
-      AString str("Created new session ",20);
-      str.append(sessionId);
-      context.useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
-    }
+    _addSessionIdCookie(context, sessionId);
+  }
+}
+
+void AOSSessionManager::_addSessionIdCookie(AOSContext& context, const AString& sessionId)
+{
+  ACookie& cookie = context.useResponseCookies().addCookie(AOSSessionManager::SESSIONID, sessionId);
+  cookie.setMaxAge(m_TimeoutIntervalInSeconds);
+  cookie.setPath(ASW("/",1));
+  if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+  {
+    AString str("Created new session id ",23);
+    str.append(sessionId);
+    context.useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
   }
 }
 
@@ -434,5 +447,16 @@ void AOSSessionManager::finalizeSession(AOSContext& context)
     AOSSessionData *pSessionData = context.setSessionObject(NULL);
     AASSERT(this, pSessionData);
     pSessionData->finalize(context);
+  }
+}
+
+void AOSSessionManager::addSessionId(AOSContext& context)
+{
+  if (!context.useRequestCookies().exists(AOSSessionManager::SESSIONID))
+  {
+    //a_No id on request, add one to response
+    AString sessionId;
+    generateSessionId(sessionId);
+    _addSessionIdCookie(context, sessionId);
   }
 }
