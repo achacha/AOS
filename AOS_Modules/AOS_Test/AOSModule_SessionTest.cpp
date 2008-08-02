@@ -29,15 +29,12 @@ AOSContext::ReturnCode AOSModule_SessionTest::execute(AOSContext& context, const
   {
     if (context.getSessionDataContent(S_COUNT, str))
     {
+      ALock lock(context.useSessionData().useSyncObject());
       ANumber n(str);
       ++n;
       str.clear();
       n.emit(str);
-
-      {
-        ALock lock(context.useSessionData().useSyncObject());
-        context.useSessionData().useData().setString(S_COUNT, str);
-      }
+      context.useSessionData().useData().setString(S_COUNT, str);
       context.useModel().setString(S_OUTPATH, str);
     }
     else
