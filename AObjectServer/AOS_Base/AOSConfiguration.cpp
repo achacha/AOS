@@ -5,7 +5,6 @@ $Id$
 */
 #include "pchAOS_Base.hpp"
 #include "AOSConfiguration.hpp"
-#include "AOSAdmin.hpp"
 #include "AOSController.hpp"
 #include "AFile_Physical.hpp"
 #include "AXmlDocument.hpp"

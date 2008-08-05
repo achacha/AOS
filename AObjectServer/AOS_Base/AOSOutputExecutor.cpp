@@ -8,8 +8,6 @@ $Id$
 #include "AOSContext.hpp"
 #include "AOSOutputGeneratorInterface.hpp"
 #include "AOSServices.hpp"
-#include "AFile_Physical.hpp"
-#include "AOSConfiguration.hpp"
 
 void AOSOutputExecutor::debugDump(std::ostream& os, int indent) const
 {

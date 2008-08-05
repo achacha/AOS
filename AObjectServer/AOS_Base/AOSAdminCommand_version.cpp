@@ -5,7 +5,6 @@ $Id: AOSAdmin.cpp 218 2008-05-29 23:23:59Z achacha $
 */
 #include "pchAOS_Base.hpp"
 #include "AOSAdminCommand_version.hpp"
-#include "AXmlElement.hpp"
 #include "apiAGdLib.hpp"
 #include "apiALuaEmbed.hpp"
 #include "apiAZlib.hpp"

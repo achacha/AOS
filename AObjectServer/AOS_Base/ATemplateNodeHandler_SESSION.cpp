@@ -5,7 +5,6 @@ $Id$
 */
 #include "pchAOS_Base.hpp"
 #include "ATemplateNodeHandler_SESSION.hpp"
-#include "AXmlDocument.hpp"
 #include "AXmlElement.hpp"
 #include "ATemplate.hpp"
 #include "AOSContext.hpp"

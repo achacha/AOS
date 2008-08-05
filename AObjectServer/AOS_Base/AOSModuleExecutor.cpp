@@ -4,7 +4,6 @@
 #include "ATimer.hpp"
 #include "AOSModuleInterface.hpp"
 #include "AOSServices.hpp"
-#include "AOSController.hpp"
 
 void AOSModuleExecutor::debugDump(std::ostream& os, int indent) const
 {

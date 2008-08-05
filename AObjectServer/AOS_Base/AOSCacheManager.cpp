@@ -7,7 +7,6 @@ $Id$
 #include "AOSCacheManager.hpp"
 #include "ALock.hpp"
 #include "AOSServices.hpp"
-#include "AOSConfiguration.hpp"
 #include "AOSContext.hpp"
 #include "AFile_Physical.hpp"
 #include "AFileSystem.hpp"

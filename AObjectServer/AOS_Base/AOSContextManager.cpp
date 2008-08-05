@@ -8,9 +8,7 @@ $Id$
 #include "ASync_CriticalSection.hpp"
 #include "ALock.hpp"
 #include "AOSServices.hpp"
-#include "AOSConfiguration.hpp"
 #include "AOSContextQueueInterface.hpp"
-#include "AUrl.hpp"
 
 void AOSContextManager::debugDump(std::ostream& os, int indent) const
 {

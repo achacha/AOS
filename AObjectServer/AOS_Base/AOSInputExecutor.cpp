@@ -8,7 +8,6 @@ $Id$
 #include "AOSContext.hpp"
 #include "AOSInputProcessorInterface.hpp"
 #include "AOSServices.hpp"
-#include "AOSConfiguration.hpp"
 
 const AString AOSInputExecutor::OVERRIDE_INPUT;
 
