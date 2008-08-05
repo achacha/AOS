@@ -6,7 +6,7 @@ $Id$
 #include "pchAOS_Example.hpp"
 #include "apiAOS_Example.hpp"
 
-#include "AOSModule_RSS20.hpp"
+#include "AOSModule_rss20.hpp"
 #include "AOSOutput_generate_image.hpp"
 
 BOOL APIENTRY DllMain(
