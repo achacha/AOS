@@ -83,7 +83,7 @@ if (TARGET_FILE != ""):
 else:
   getAllFilesInSubdirectory(TARGET_PATH, "cpp", targets);
 
-print "Processing "+len(targets)+" files.";
+print "Processing "+str(len(targets))+" files.";
 for target in targets:
   if (verbose != 0):
     print "ASW processing: "+target;
