@@ -941,7 +941,7 @@ void AXmlElement::emitJson(
   target.append(m_Name);
   if (m_Content.size() + m_Attributes.size() == 0)
   {
-    target.append(":''",4);
+    target.append(":''",3);
     if (indent >=0) target.append(AConstant::ASTRING_CRLF);
     return;
   }
