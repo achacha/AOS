@@ -184,9 +184,21 @@ void AOSOutputExecutor::execute(AOSContext& context)
       }
 
       //a_Generate output
-      if (AOSContext::RETURN_OK != (*it).second->execute(context))
+      AOSContext::ReturnCode ret = (*it).second->execute(context);
+      switch (ret)
       {
-        context.addError((*it).second->getClass(), ASWNL("Output generator failed"));
+        case AOSContext::RETURN_OK:
+        break;
+
+        case AOSContext::RETURN_REDIRECT:
+          if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+          {
+            context.useEventVisitor().startEvent(ASWNL("Output generator has done a redirect"), AEventVisitor::EL_DEBUG);
+          }
+        break;
+      
+        default:
+          context.addError((*it).second->getClass(), ASWNL("Output generator returned neither OK nor REDIRECT"));
         return;
       }
 
