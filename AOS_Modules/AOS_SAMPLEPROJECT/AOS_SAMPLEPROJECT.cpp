@@ -29,8 +29,15 @@ extern "C" AOS_SAMPLEPROJECTUPPERCASE_API int aos_register(
 {
   services.useLog().add(ASWNL("AOS_SAMPLEPROJECT: aos_register"), ALog::INFO);
 
+  //Register input processors
+  //inputExecutor.registerInputProcessor(...);
+
   //Register modules
+  //moduleExecutor.registerModule(...);
   moduleExecutor.registerModule(new AOSModule_SAMPLEMODULE(services));
   
+  //Register output generators
+  //outputExecutor.registerOutputGenerator(...);
+
   return 0;
 }
