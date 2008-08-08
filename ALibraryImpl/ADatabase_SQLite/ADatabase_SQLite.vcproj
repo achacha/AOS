@@ -301,6 +301,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../../ALibrary/ABase,./sqlite-3_5_1"
 				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS;_USRDLL;ADATABASE_SQLITE_EXPORTS"
 				RuntimeLibrary="2"

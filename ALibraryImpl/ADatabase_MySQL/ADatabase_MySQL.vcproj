@@ -301,6 +301,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../../ALibrary/ABase;./include64a"
 				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS;_USRDLL;ADATABASE_MYSQL_EXPORTS"
 				RuntimeLibrary="2"

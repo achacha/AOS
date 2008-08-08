@@ -290,6 +290,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../../ALibrary/ABase;./libpng;./libgd;../AZlib;./libjpeg/include64a;./freetype/include;"
 				PreprocessorDefinitions="WIN32;WIN64;NDEBUG;_WINDOWS;_USRDLL;AGDLIB_EXPORTS;BGDWIN32;HAVE_LIBPNG;HAVE_LIBJPEG;FT2_BUILD_LIBRARY;HAVE_LIBFREETYPE;HAVE_FT2BUILD_H;"
 				RuntimeLibrary="2"
