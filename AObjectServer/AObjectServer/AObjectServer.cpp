@@ -45,6 +45,7 @@ void traceMultiline(const AString& str, void *ptr)
 /////////////////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
+  DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(false);
   AFILE_TRACER_DEBUG_SCOPE((AString("AObjectServer::main:",20)+ASWNL(argv[0])).c_str(), NULL);
 
   //a_AString available for errors so that allocation is not done during exception (in case we ran out of memory, etc)
@@ -257,6 +258,12 @@ int main(int argc, char **argv)
       pQueueExecutor->start();
       pQueueError->start();
 
+#ifdef __WINDOWS__
+      //a_Take a memory snapshop before starting listener
+      _CrtMemState _memstate_start;
+      _CrtMemCheckpoint(&_memstate_start);
+#endif
+
       //
       //a_Start listener
       //
@@ -325,5 +332,7 @@ int main(int argc, char **argv)
     AOS_DEBUGTRACE("main: Unknown exception caught", NULL);
   }
 
+  DEBUG_MEMORY_LEAK_ANALYSIS_END();
+  
   return 0;
 }

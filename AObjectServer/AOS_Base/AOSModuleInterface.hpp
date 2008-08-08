@@ -17,7 +17,7 @@ class AOS_BASE_API AOSModuleInterface : public AOSAdminInterface
 {
 public:
   AOSModuleInterface(AOSServices&);
-  virtual ~AOSModuleInterface() {}
+  virtual ~AOSModuleInterface();
 
   /*!
   Initialization routine for the module

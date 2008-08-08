@@ -25,6 +25,10 @@ AOSModuleInterface::AOSModuleInterface(AOSServices& services) :
 {
 }
 
+AOSModuleInterface::~AOSModuleInterface()
+{
+}
+
 void AOSModuleInterface::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
   AOSAdminInterface::adminEmitXml(eBase, request);

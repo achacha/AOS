@@ -317,6 +317,8 @@ void AOSAdmin::_shutdown(
   AXmlDocument xmlDoc(ASW("admin",5));
   response.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml",8));
 
+  AXmlElement& elem = xmlDoc.useRoot().addElement(ASW("shutdown",8));
+
   //a_Shutdown
   //a_Flag admin listener to stop
   mthread_AdminListener.setRun(false);
@@ -330,34 +332,37 @@ void AOSAdmin::_shutdown(
   AASSERT(NULL, pListener);
   pListener->stopListening();
   AOS_DEBUGTRACE("AOSRequestListener stopped.", NULL);
+  elem.addElement(ASWNL("AOSRequestListener"));
 
   AOS_DEBUGTRACE("Trying to stop AOSRequestQueue_IsAvailable...", NULL);
   AOSContextQueue_IsAvailable *pcqIsAvailable = dynamic_cast<AOSContextQueue_IsAvailable *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_IsAvailable")));;
   AASSERT(NULL, pcqIsAvailable);
   pcqIsAvailable->stop();
   AOS_DEBUGTRACE("AOSRequestQueue_IsAvailable stopped.", NULL);
+  elem.addElement(ASWNL("AOSContextQueue_IsAvailable"));
 
   AOS_DEBUGTRACE("Trying to stop AOSContextQueue_PreExecutor...", NULL);
   AOSContextQueue_PreExecutor *pcqPreExecutor = dynamic_cast<AOSContextQueue_PreExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_PreExecutor")));;
   AASSERT(NULL, pcqPreExecutor);
   pcqPreExecutor->stop();
   AOS_DEBUGTRACE("AOSContextQueue_PreExecutor stopped.", NULL);
+  elem.addElement(ASWNL("AOSContextQueue_PreExecutor"));
 
   AOS_DEBUGTRACE("Trying to stop AOSContextQueue_Executor...", NULL);
   AOSContextQueue_Executor *pcqExecutor = dynamic_cast<AOSContextQueue_Executor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_Executor")));;
   AASSERT(NULL, pcqExecutor);
   pcqExecutor->stop();
   AOS_DEBUGTRACE("AOSContextQueue_Executor stopped.", NULL);
+  elem.addElement(ASWNL("AOSContextQueue_Executor"));
 
   AOS_DEBUGTRACE("Trying to stop AOSContextQueue_ErrorExecutor...", NULL);
   AOSContextQueue_ErrorExecutor *pcqErrorExecutor = dynamic_cast<AOSContextQueue_ErrorExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_ErrorExecutor")));;
   AASSERT(NULL, pcqErrorExecutor);
   pcqErrorExecutor->stop();
   AOS_DEBUGTRACE("AOSContextQueue_ErrorExecutor stopped.", NULL);
+  elem.addElement(ASWNL("AOSContextQueue_ErrorExecutor"));
 
   //a_Emit result
-  xmlDoc.useRoot().addElement(ASW("shutdown",8));
-
   xmlDoc.emit(outputBuffer);
 }
 

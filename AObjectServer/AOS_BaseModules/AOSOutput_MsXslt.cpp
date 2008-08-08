@@ -30,7 +30,7 @@ void AOSOutput_MsXslt::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader
       ASW("enabled",7), 
       AString::fromBool(m_IsCacheEnabled),
       ASW("Update",6), 
-      ASWNL("1:Enable template caching, 0:Disable and clear, -1:Clear only"),
+      ASWNL("1:Enable template caching, 0:Clear only, -1:Disable and clear"),
       ASW("Set",3)
     );
 
@@ -49,7 +49,7 @@ void AOSOutput_MsXslt::adminProcessAction(AXmlElement& eBase, const AHTTPRequest
       str.clear();
       if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
       {
-        if (str.equals("0"))
+        if (str.equals("-1",2))
         {
           //a_Clear and disable
           m_IsCacheEnabled = false;
@@ -57,7 +57,7 @@ void AOSOutput_MsXslt::adminProcessAction(AXmlElement& eBase, const AHTTPRequest
           ALock lock(m_CacheSync);
           m_Dox.clear();
         }
-        else if (str.equals("-1"))
+        else if (str.equals("0",1))
         {
           ALock lock(m_CacheSync);
           m_Dox.clear();
