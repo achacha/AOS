@@ -300,6 +300,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../../include64a,../../AObjectServer/AOS_Base"
 				PreprocessorDefinitions="WIN64;WIN32;NDEBUG;_WINDOWS;_USRDLL;AOS_DADADATA_EXPORTS"
 				RuntimeLibrary="2"

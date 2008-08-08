@@ -217,6 +217,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../../include,../../AObjectServer/AOS_Base"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;AOS_SAMPLEPROJECTUPPERCASE_EXPORTS"
 				RuntimeLibrary="2"
@@ -402,7 +404,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"
-						PrecompiledHeaderThrough="pchAOS_SAMPLEPROJECT.hpp"
+						PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 					/>
 				</FileConfiguration>
 				<FileConfiguration

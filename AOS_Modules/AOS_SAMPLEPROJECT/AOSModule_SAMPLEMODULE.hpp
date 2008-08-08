@@ -9,11 +9,26 @@ SAMPLEMODULE
 class AOS_SAMPLEPROJECTUPPERCASE_API AOSModule_SAMPLEMODULE : public AOSModuleInterface
 {
 public:
-  AOSModule_SAMPLEMODULE(AOSServices&);
-  virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
+  /*!
+  ctor
+  
+  @param services AOSServices object stored as reference by base class
+  */
+  AOSModule_SAMPLEMODULE(AOSServices& services);
+  
+  /*!
+  Execute
+  
+  @param context AOSContext for the request
+  @param moduleParams Parameters for the module as defined in the controller XML
+  @return Result of the execution
+  */
+  virtual AOSContext::ReturnCode execute(AOSContext& context, const AXmlElement& moduleParams);
   
   /*!
   AOSAdminInterface
+
+  @return Name of this module
   */
   virtual const AString& getClass() const;
 };
