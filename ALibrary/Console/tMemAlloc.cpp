@@ -38,20 +38,8 @@ void testAString()
 void testATextGenerator()
 {
   AString str;
-  //{
-  //  u4 sizeNeeded = 25;
-  //  std::cerr << "ATextGenerator::generateUniqueId size: " << sizeNeeded << std::endl;
-  //  ATextGenerator::generateUniqueId(str, sizeNeeded);
-  //  if (str.getSize() != sizeNeeded)
-  //  {
-  //    std::cerr << "ATextGenerator::generateUniqueId failed for size: " << sizeNeeded << std::endl;
-  //    return;
-  //  }
-  //  str.clear();
-  //}
-
   {
-    u4 sizeNeeded = 128;
+    u4 sizeNeeded = 666;
     std::cerr << "ATextGenerator::generateUniqueId size: " << sizeNeeded << std::endl;
     ATextGenerator::generateUniqueId(str, sizeNeeded);
     if (str.getSize() != sizeNeeded)
@@ -62,18 +50,6 @@ void testATextGenerator()
     str.clear();
   }
 }
-
-//void __cdecl Dumper(void *ptr, void *)
-//{
-//  int block = _CrtReportBlockType(ptr);
-//  _RPT3(_CRT_WARN, "Dumper found block at %p: type %d, subtype %d\n", ptr, _BLOCK_TYPE(block), _BLOCK_SUBTYPE(block));
-//}
-//
-//void __cdecl LeakDumper(void *ptr, size_t sz)
-//{
-//  int block = _CrtReportBlockType(ptr);
-//  _RPT4(_CRT_WARN, "LeakDumper found block at %p: type %d, subtype %d, size %d\n", ptr, _BLOCK_TYPE(block), _BLOCK_SUBTYPE(block), sz);
-//}
 
 int main()
 {
