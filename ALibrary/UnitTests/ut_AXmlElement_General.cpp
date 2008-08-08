@@ -29,11 +29,11 @@ void testGetSet(int& iRet)
 void testAddAndSerialize(int& iRet)
 {
   AXmlElement elem("root");
-  AXmlElement& path1 = elem.addElement("path0").addElement("path1");
-  AXmlElement& path2 = elem.findElement("path0")->addElement("path2");
-  path1.addElement("obj0").addData("value0");
-  path2.addElement("obj1").addData("value1");
-  path1.addElement("obj2").addData("value2");
+  AXmlElement& path1 = elem.addElement(ASWNL("path0")).addElement(ASWNL("path1"));
+  AXmlElement& path2 = elem.findElement(ASWNL("path0"))->addElement(ASWNL("path2"));
+  path1.addElement(ASWNL("obj0")).addData(ASWNL("value0"));
+  path2.addElement(ASWNL("obj1")).addData(ASWNL("value1"));
+  path1.addElement(ASWNL("obj2")).addData(ASWNL("value2"));
   elem.addElement(ASWNL("path0/path1/obj3"), ASWNL("value3"), AXmlElement::ENC_NONE, true);  //insert
 
   AString str0(8188, 1024), str1(8188, 1024);

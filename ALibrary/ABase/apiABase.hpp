@@ -6,8 +6,6 @@ $Id$
 #ifndef INCLUDED__apiABase_HPP__
 #define INCLUDED__apiABase_HPP__
 
-#include "debugGlobalMemoryMacros.hpp"
-
 //a_OS Defines and compiler specifics
 #include "osDefines.hpp"
 
@@ -50,9 +48,6 @@ $Id$
 //a_Macros
 #include "macroDelete.hpp"
 
-//a_Constants
-#include "AConstant.hpp"
-
 //a_Used for debugging, this is the maximum sizes used
 //a_Only used when __DEBUG_DUMP__ is set
 #ifdef __DEBUG_DUMP__
@@ -85,6 +80,9 @@ $Id$
 #endif
 
 //#define ENABLE_EXCEPTION_STACKWALK 1
+
+//a_Basic ABase classes
+#include "AConstant.hpp"
 
 //a_Version
 #define ABase_INFO "ABase 1.2.4 " ## ABASE_OS_INFO

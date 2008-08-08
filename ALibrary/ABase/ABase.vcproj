@@ -342,8 +342,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="3"
 				InlineFunctionExpansion="0"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN64"
 				StringPooling="false"
@@ -1326,10 +1327,6 @@
 			</File>
 			<File
 				RelativePath=".\debugFileTracer.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\debugGlobalMemoryMacros.hpp"
 				>
 			</File>
 			<File

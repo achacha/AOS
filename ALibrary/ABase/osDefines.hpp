@@ -180,4 +180,62 @@ NDEBUG - non-debug (release) mode
   #error Must define _DEBUG or NDEBUG to define debug or release mode
 #endif
 
+//a_Microsoft CRT debugging
+//
+// Generates memory leak report
+// DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(false) - creates memory snapshot at startup and output is to debug Output windows
+// DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(true)  - creates memory snapshot at startup and output is to STDOUT
+// DEBUG_MEMORY_LEAK_ANALYSIS_END()   - creates memory diff and reports leaks
+//
+//Usage:
+//
+// int main()
+// {
+//   DEBUG_BEGIN();
+//   ...do stuff here...
+//   DEBUG_END();
+//   return 0;
+// }
+#ifdef _DEBUG
+
+#ifdef __WINDOWS__
+#define WINDOWS_CRTDBG_ENABLED 1
+#  define _CRTDBG_MAP_ALLOC 1
+#  include "crtdbg.h"
+#  pragma message("Enabling Microsoft CRT debugging and memory tracking")
+
+#define DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(output2stdout) \
+  _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);\
+  _CrtSetDbgFlag(_CRTDBG_CHECK_CRT_DF);\
+  _CrtMemState _memstate_start;\
+  _CrtMemState _memstate_end;\
+  _CrtMemState _memstate_diff;\
+  _CrtMemCheckpoint(&_memstate_start);\
+  if (output2stdout) {\
+    _CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );\
+    _CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDOUT );\
+  }
+
+#define DEBUG_MEMORY_LEAK_ANALYSIS_END() \
+  _CrtCheckMemory();\
+  _CrtMemCheckpoint(&_memstate_end);\
+  if (_CrtMemDifference(&_memstate_diff, &_memstate_start, &_memstate_end))\
+  {\
+    _CrtMemDumpStatistics(&_memstate_diff);\
+    _CrtMemDumpAllObjectsSince(&_memstate_start);\
+  }
+
+#else
+#define DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN (void *)0
+#define DEBUG_MEMORY_LEAK_ANALYSIS_END   (void *)0
+#endif
+
+//EXPERIMENTAL: Enbale trace of allocations of ABase* objects (doesn't always work)
+//#  define DEBUG_TRACK_ABASE_MEMORY
+//#  ifdef DEBUG_TRACK_ABASE_MEMORY 
+//#  pragma message("Tracing dynamic allocations of ABase* to std::cout")
+//#  endif
+
+#endif
+
 #endif  //a_ INCLUDED__osDefines_HPP__

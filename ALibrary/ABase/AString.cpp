@@ -12,6 +12,9 @@ $Id$
 #include "AXmlElement.hpp"
 #include <ctype.h>
 
+//a_Default allocation buffer size
+const u2 AString::smi_DefaultBufferIncrement = 128;
+
 void AString::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -40,9 +43,6 @@ void AString::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os,indent+1) << "mbool_Wrapped=" << (mbool_Wrapped ? "true" : "false") << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
-
-//a_The one and only NULL pos static!
-const u2 AString::smi_DefaultBufferIncrement = 256;
 
 AString::AString
 (
@@ -111,7 +111,6 @@ AString::AString
 
   //a_Adjust the size
   _resize(length);   //a_Allocate space
-  m_Length = 0;      //a_No content
 }
 
 AString::AString
@@ -190,6 +189,7 @@ void AString::_deallocate(char **ppcBuffer)
   //a_Release non-NULL 
   AASSERT(this, !mbool_Wrapped);
   delete[](*ppcBuffer);
+  *ppcBuffer = NULL;
 }
 
 char AString::mc_Null = '\x0';
@@ -349,7 +349,7 @@ AString AString::fromSize_t(size_t value, int iBase)
   switch(sizeof(value))
   {
     case 8: return fromU8(value, iBase);
-    case 4: return fromU4(value, iBase);
+    case 4: return fromU4((u4)value, iBase);
     default: ATHROW(NULL, AException::ProgrammingError);
   }
 }
@@ -848,18 +848,24 @@ void AString::_resize(size_t newBufferSize)
   //a_Check is need to grow
   if (newBufferSize >= m_InternalBufferSize)
   {
-    size_t allocationBuffer = m_InternalBufferSize;
-    while (allocationBuffer <= newBufferSize)
-      allocationBuffer += m_BufferIncrement;
+    size_t allocationBuffer = m_BufferIncrement;
     
+    //a_If the new buffer is bigger than allocation unit, get the next multiple
+    if (newBufferSize >= allocationBuffer)
+    {  
+      int blocks = (newBufferSize + 1) / m_BufferIncrement;
+      allocationBuffer = (blocks + 1) * m_BufferIncrement;
+    }
+
     //a_Copy old content (if it exists)
-    if (m_Length)
+    if (mp_Buffer)
     {
       //a_Create new buffer
       char *pcBuffer = _allocate(allocationBuffer);
 
-      //a_Copy old content
-      memcpy(pcBuffer, mp_Buffer, m_Length + 1);
+      //a_Copy old content if there is anything worth copying
+      if (m_Length > 0)
+        memcpy(pcBuffer, mp_Buffer, m_Length + 1);
 
       //a_Swap
       char *pcTemp = mp_Buffer;
@@ -871,20 +877,27 @@ void AString::_resize(size_t newBufferSize)
     else
     {
       mp_Buffer = _allocate(allocationBuffer);
-      mp_Buffer[0x0] = '\x0';
-
       m_Length = 0;
     }
 
     //a_New length
     m_InternalBufferSize = allocationBuffer;
+
+    //a_Just reduce content
+    AASSERT(this, m_Length < allocationBuffer);
+    mp_Buffer[m_Length] = '\x0';
   }
   else
+  {
+    //a_Reduce size if resize is requesting less than m_Length
     if (m_Length > newBufferSize)
+    {
       m_Length = newBufferSize;
 
-  //a_Just reduce content
-  mp_Buffer[newBufferSize] = '\x0';
+      //a_Just reduce content
+      mp_Buffer[m_Length] = '\x0';
+    }
+  }
 }
 
 u1 AString::peek(size_t index) const

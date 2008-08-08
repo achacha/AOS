@@ -17,6 +17,7 @@ int ut_ATextGenerator_General()
   for (int iX=0; iX < 666; ++iX)
   {
     u4 sizeNeeded = ARandomNumberGenerator::get().nextRange(300, 16);
+    std::cerr << "ATextGenerator::generateUniqueId size: " << sizeNeeded << std::endl;
     ATextGenerator::generateUniqueId(str, sizeNeeded);
     if (str.getSize() != sizeNeeded)
     {

@@ -89,7 +89,7 @@ void ATextGenerator::generateFromTemplate(AOutputBuffer& target, const AString &
         break;
 
         case 'r' :
-          cEscape = ARandomNumberGenerator::get().nextRange(255) + 0x1;
+          cEscape = (char)(ARandomNumberGenerator::get().nextRange(255) + 0x1);
         break;
 
         case 'R' :
@@ -99,7 +99,7 @@ void ATextGenerator::generateFromTemplate(AOutputBuffer& target, const AString &
         case 's' :
           cEscape = generateRandomUppercaseLetter();
           if (ARandomNumberGenerator::get().nextRange(100) >= 50)
-            cEscape = tolower(cEscape);
+            cEscape = (char)tolower(cEscape);
         break;
       
         case 't' :
@@ -156,7 +156,14 @@ void ATextGenerator::generateUniqueId(AOutputBuffer& target, size_t size /* = 32
     rope.append((const char *)&x, 4);
     bytesToAdd -= 4;
   }
+  while(bytesToAdd > 0)
+  {
+    x = ARandomNumberGenerator::get(ARandomNumberGenerator::Lecuyer).nextU1();
+    rope.append((const char *)&x, 1);
+    --bytesToAdd;
+  }
 
+  AASSERT(NULL, !bytesToAdd);
   AString str(rope.getSize() * 2, 256);
   ATextConverter::encode64(rope, str);
   AASSERT(&str, str.getSize() >= size);

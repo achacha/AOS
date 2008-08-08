@@ -140,11 +140,11 @@ public:
   Modifying operators
   */
   AString& operator=  (const AString& strSource);
+  AString& operator= (const char * pccSource);
+  AString& operator= (const char cSource);
   AString& operator+= (const AString& strSource);
   AString& operator+= (const char * pccSource);
   AString& operator+= (const char cSource);
-  AString& operator= (const char * pccSource);
-  AString& operator= (const char cSource);
 
   /*!
   Testing operators

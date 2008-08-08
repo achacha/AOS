@@ -331,8 +331,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="3"
 				InlineFunctionExpansion="0"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../ABase"
 				PreprocessorDefinitions="NDEBUG;_CONSOLE;WIN64;WIN32;"
 				StringPooling="false"

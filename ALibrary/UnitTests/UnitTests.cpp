@@ -157,6 +157,8 @@ int executeTest(int iTestNumber)
 
 int main(int iArgCount, char **ppcArgValue)
 {
+DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(true);
+
   ATimer timer;
   if (iArgCount < 2)
   {
@@ -197,5 +199,7 @@ int main(int iArgCount, char **ppcArgValue)
   timer.stop();
   std::cerr << "\n\nDuration of the entire test: " << std::dec << timer.getInterval() << "ms" << std::endl;
   std::cerr << "Total errors detected: " << iErrorTotal << std::endl;
+
+DEBUG_MEMORY_LEAK_ANALYSIS_END();
   return 0x1;
 }

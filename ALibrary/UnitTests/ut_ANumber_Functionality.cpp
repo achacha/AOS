@@ -107,13 +107,13 @@ void _testTrig(int& iRet)
 {
   std::cerr << std::endl;
 
-  if ( ANumber::sin(ANumber("1"), 13).toAString().compare("0.8414709848079") )
+  if ( ANumber::sin(ANumber("1"), 13).toAString().compare(ASWNL("0.8414709848079")) )
   {
     iRet++;
     std::cerr << "sin(1)" << std::endl;
   } else std::cerr << "." << std::flush;
 
-  if ( ANumber::cos(ANumber("1"), 13).toAString().compare("0.5403023058681") )
+  if ( ANumber::cos(ANumber("1"), 13).toAString().compare(ASWNL("0.5403023058681")) )
   {
     iRet++;
     std::cerr << "cos(1) failed" << std::endl;
