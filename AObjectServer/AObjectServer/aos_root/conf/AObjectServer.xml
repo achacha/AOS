@@ -14,7 +14,7 @@
     <enabled>false</enabled>
   </template-cache>
 
-  <static-file-cache desc="Static item cache">
+  <static-file-cache desc="Static item cache, maximum memory size is (max_items * max_filesize)">
     <enabled>false</enabled>
     <max_items desc="Maximum number of items to store in the static cache">10240</max_items>
     <max_filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max_filesize>
@@ -42,7 +42,7 @@
   <reported>
     <!-- Reported overrides -->
     <hostname desc="Hostname reported to clients, this is used if request Host field is missing. If this is empty and Host is missing then local ip is used."/>
-    <server desc="Server field in the response http header, usually identifies server type and versiono"/>
+    <server desc="Server field in the response http header, usually identifies server type and version"/>
     <http desc="Reported HTTP port, none means use 80"/>
     <https desc="Reported HTTPS port, none means use 443"/>
   </reported>
