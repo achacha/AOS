@@ -334,6 +334,10 @@ AOSContext::Status AOSContext::init()
   //a_Initialize response header
   m_ResponseHeader.setPair(AHTTPHeader::HT_RES_Server, m_Services.useConfiguration().getReportedServer());
 			
+  //a_Create session data since it is required
+  if (mp_Controller && mp_Controller->isSessionRequired())
+    m_Services.useSessionManager().initOrCreateSession(*this);
+
   return AOSContext::STATUS_OK;
 }
 

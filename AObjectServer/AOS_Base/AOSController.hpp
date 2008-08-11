@@ -34,6 +34,7 @@ public:
   static const AString S_AJAX;
   static const AString S_ALIAS;
   static const AString S_GZIP;
+  static const AString S_SESSION;
   static const AString S_CACHECONTROLNOCACHE;
 
 public:
@@ -68,6 +69,12 @@ public:
   This can be turned on by a controller config and browser will cache
   */
   bool isCacheControlNoCache() const;
+
+  /*!
+  Checks if the session has to be created for this controller (default is a lazy create on use)
+  This can be turned on by a controller config and session data will be created immediately instead of lazy
+  */
+  bool isSessionRequired() const;
 
   /*!
   Command specified gzip of the output
@@ -158,6 +165,7 @@ private:
   //a_Attributes
   bool m_Enabled;              //a_Command state, if disabled, static XML will be attempted instead
   bool m_ForceAjax;            //a_Ajax forces a lean XML document, false by default
+  bool m_SessionRequired;      //a_Session data is created immediately and not lazy when set, false by default
   bool m_CacheControlNoCache;  //a_If a command allows Cache-Control: no-cache (default is true)
   int m_GZipLevel;             //a_Forced gzip compression level of the output
 
@@ -169,7 +177,7 @@ private:
 XML for each command (example below)
 
 <?xml version="1.0" encoding="UTF-8"?>
-<controller ajax='1' gzip='3' enabled='true' nocache='1'>
+<controller ajax='1' gzip='3' enabled='true' nocache='1' session='1'>
 	<input class='application/x-www-form-urlencoded'/>
   <module class='PublishInput'>
     <name>foo</name>

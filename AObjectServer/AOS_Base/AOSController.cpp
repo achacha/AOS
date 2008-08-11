@@ -21,6 +21,7 @@ const AString AOSController::S_ENABLED("enabled",7);
 const AString AOSController::S_AJAX("ajax",4);
 const AString AOSController::S_ALIAS("alias",5);
 const AString AOSController::S_GZIP("gzip",4);
+const AString AOSController::S_SESSION("session",7);
 const AString AOSController::S_CACHECONTROLNOCACHE("nocache",7);
 
 void AOSController::debugDump(std::ostream& os, int indent) const
@@ -30,6 +31,7 @@ void AOSController::debugDump(std::ostream& os, int indent) const
 
   ADebugDumpable::indent(os, indent+1) << "m_Enabled=" << AString::fromBool(m_Enabled) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_ForceAjax=" << AString::fromBool(m_ForceAjax) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_SessionRequired=" << AString::fromBool(m_SessionRequired) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_CacheControlNoCache=" << AString::fromBool(m_CacheControlNoCache) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_GZipLevel=" << m_GZipLevel << std::endl;
 
@@ -68,6 +70,7 @@ AOSController::AOSController(const AString& path, ALog& log) :
   m_OutputParams(S_OUTPUT),
   m_Enabled(true),
   m_ForceAjax(false),
+  m_SessionRequired(false),
   m_CacheControlNoCache(true),
   m_GZipLevel(0),
   m_Log(log)
@@ -145,6 +148,15 @@ void AOSController::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader
 
   adminAddPropertyWithAction(
     thisRoot, 
+    S_SESSION, 
+    AString::fromBool(m_SessionRequired),
+    ASW("Update",6), 
+    ASWNL("Force Session creation(1) or Default lazy create on use(0)"),
+    ASW("Set",3)
+  );
+
+  adminAddPropertyWithAction(
+    thisRoot, 
     S_CACHECONTROLNOCACHE, 
     AString::fromBool(m_CacheControlNoCache),
     ASW("Update",6), 
@@ -179,6 +191,10 @@ void AOSController::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHea
       {
         m_ForceAjax = value.toBool();
       }
+      else if (str.endsWith(S_SESSION))
+      {
+        m_SessionRequired = value.toBool();
+      }
       else if (str.endsWith(S_CACHECONTROLNOCACHE))
       {
         m_CacheControlNoCache = value.toBool();
@@ -208,6 +224,7 @@ AXmlElement& AOSController::emitXml(AXmlElement& thisRoot) const
   
   thisRoot.addAttribute(S_ENABLED, m_Enabled ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   thisRoot.addAttribute(S_AJAX, m_ForceAjax ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
+  thisRoot.addAttribute(S_SESSION, m_SessionRequired ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   thisRoot.addAttribute(S_CACHECONTROLNOCACHE, m_CacheControlNoCache ? AConstant::ASTRING_ONE : AConstant::ASTRING_ZERO);
   thisRoot.addAttribute(S_GZIP, AString::fromInt(m_GZipLevel));
   
@@ -252,6 +269,11 @@ void AOSController::fromXml(const AXmlElement& element)
   str.clear();
   if (element.getAttributes().get(S_AJAX, str))
     m_ForceAjax = str.toBool();
+
+  //a_Is Session required?
+  str.clear();
+  if (element.getAttributes().get(S_SESSION, str))
+    m_SessionRequired = str.toBool();
 
   //a_Is caching command call?
   str.clear();
@@ -356,6 +378,11 @@ bool AOSController::isEnabled() const
 bool AOSController::isForceAjax() const
 {
   return m_ForceAjax;
+}
+
+bool AOSController::isSessionRequired() const
+{
+  return m_SessionRequired;
 }
 
 bool AOSController::isCacheControlNoCache() const
