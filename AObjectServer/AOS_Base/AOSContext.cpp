@@ -336,7 +336,9 @@ AOSContext::Status AOSContext::init()
 			
   //a_Create session data since it is required
   if (mp_Controller && mp_Controller->isSessionRequired())
+  {
     m_Services.useSessionManager().initOrCreateSession(*this);
+  }
 
   return AOSContext::STATUS_OK;
 }

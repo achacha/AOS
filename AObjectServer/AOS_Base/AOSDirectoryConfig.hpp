@@ -41,7 +41,7 @@ public:
   Access to the path
   */
   const AString& getPath() const;
-  
+
   /*!
   AOSAdminInterface
   */
