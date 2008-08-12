@@ -138,4 +138,4 @@ if (os.path.exists(modules_path)):
 # Copy extra needed stuff
 syncModule2("docs","aos_root/static/");
 syncModule("openssl_create_selfsigned_certificate.py");
-syncModule("openssl.cnf");
+syncModule("openssl.config");
