@@ -1,0 +1,192 @@
+<html>
+<head>
+  <title>Sample controller</title>
+  <script language="javascript" type="text/javascript" src="js/jquery-1.2.6.js"></script>
+  <script language="javascript" type="text/javascript" src="docs.js"></script>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body>
+
+<h1>Sample controllers</h1>
+
+<div class="code_heading">
+Empty controller that does nothing, query string processing is default for all requests and XML is default output.<br />
+<br />
+<div class="code_text">
+INPUT: Do nothing (only handle the default query string)<br />
+MODULE: Do nothing<br />
+OUTPUT: Default XML model, HTTP request/response/session are added to the model by default<br />
+</div>
+<br />
+<xmp class="code_xml"><?xml version="1.0" encoding="utf-8"?> 
+<controller/></xmp>
+<br />
+
+Result of http://localhost/nop <small>(see $AOS_HOME/dynamic/ping.aos.xml)</small><br />
+<xmp class="code_xml_output"><?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <REQUEST>
+    <method>GET</method>
+    <version>HTTP/1.1</version>
+    <Accept><![CDATA[text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8]]></Accept>
+    <Accept-Charset><![CDATA[ISO-8859-1,utf-8;q=0.7,*;q=0.7]]></Accept-Charset>
+    <Accept-Encoding><![CDATA[gzip,deflate]]></Accept-Encoding>
+    <Accept-Language><![CDATA[en-us,en;q=0.5]]></Accept-Language>
+    <Connection><![CDATA[keep-alive]]></Connection>
+    <Host><![CDATA[192.168.1.100]]></Host>
+    <Keep-Alive><![CDATA[300]]></Keep-Alive>
+    <User-Agent><![CDATA[Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1]]></User-Agent>
+    <url>
+      <protocol>http:</protocol>
+      <username></username>
+      <password></password>
+      <server>192.168.1.100</server>
+      <port>0</port>
+      <path>/</path>
+      <filename>nop</filename>
+      <url><![CDATA[http://localhost/nop]]></url>
+      <query-string size="0"/>
+    </url>
+    <cookies>
+      <cookie>
+        <name>AOSSession</name>
+        <value>UBonvtmkEV83Jkpal12026843756382685236</value>
+        <domain></domain>
+        <path></path>
+        <version>0</version>
+        <comment></comment>
+        <maxage>-1</maxage>
+        <expires>Tue, 12-Aug-2008 18:33:04 UT</expires>
+      </cookie>
+    </cookies>
+  </REQUEST>
+  <RESPONSE>
+    <version>HTTP/1.1</version>
+    <status code="200">OK</status>
+    <Connection><![CDATA[keep-alive]]></Connection>
+    <Date><![CDATA[Tue, 12-Aug-2008 18:33:04 UT]]></Date>
+    <Server><![CDATA[Rhino/1.5.0.1 (64-bit)]]></Server>
+    <cookies/>
+  </RESPONSE>
+  <total_time>23.027ms</total_time>
+</root>
+</xmp>
+<br />
+</div>
+
+<br />
+<hr />
+<br />
+
+<div class="code_heading">
+Empty controller that does nothing, query string processing is default for all requests and XML is default output.<br />
+<br />
+<div class="code_text">
+INPUT: Do nothing (only handle the default query string)<br />
+MODULE: Do nothing<br />
+OUTPUT: Default XML model, AJAX mode is enabled so nothing gets added to the model by default (must be done explicitly)<br />
+</div>
+<br />
+<xmp class="code_xml"><?xml version="1.0" encoding="utf-8"?> 
+<controller ajax="1"/></xmp>
+<br />
+
+Result http://localhost/ping  <small>(see $AOS_HOME/dynamic/ping.aos.xml)</small><br />
+<xmp class="code_xml_output"><?xml version="1.0" encoding="UTF-8"?>
+<root/>
+</xmp>
+<br />
+
+</div>
+
+<br />
+<hr />
+<br />
+
+<div class="code_heading">
+Alias to another controller.<br />
+<br />
+<div class="code_text">
+Alias the controller to an existing ./dynamic/MyOtherController.xml.aos.xml<br />
+</div>
+<br />
+<xmp class="code_xml"><?xml version="1.0" encoding="utf-8"?> 
+<controller alias="/MyOtherController.xml"/></xmp>
+<br />
+</div>
+
+<br />
+<hr />
+<br />
+
+<div class="code_heading">
+Processed HTML form parameters and adds them to any query string parameters.<br />
+The request header contains the input parameters and is published to /root/REQUEST<br />
+<br />
+<div class="code_text">
+INPUT: Process HTML form<br />
+MODULE: Do nothing<br />
+OUTPUT: Default XML model<br />
+</div>
+<br />
+<xmp class="code_xml"><?xml version="1.0" encoding="utf-8"?> 
+<controller>
+	<input class="application/x-www-form-urlencoded"/>
+	<module/>
+	<output/>
+</controller></xmp>
+<br />
+</div>
+
+<br />
+<hr />
+<br />
+
+<div class="code_heading">
+Execute lua script defined inside the controller in AJAX mode.<br />
+<div class="code_text">
+INPUT: Do nothing<br />
+MODULE: Execute inline lua script<br />
+OUTPUT: Default XML model<br />
+</div>
+<br />
+<xmp class="code_xml"><?xml version="1.0" encoding="utf-8"?> 
+<controller ajax="1">
+  <module class="LuaScript">
+    <script><![CDATA[
+model.addText("/root/inline-script-added", "Inserted ");
+model.addText("/root/inline-script-added", "directly ");
+model.addText("/root/inline-script-added", "by ");
+model.addText("/root/inline-script-added", "ExecuteLuaScriptInline ");
+model.addText("/root/inline-script-added", "command.");
+print(model.getText("/root/inline-script-added"));	
+]]></script>
+    <outpath>output/script</outpath>
+  </module>
+</controller></xmp>
+<br />
+
+Result http://localhost/ping  <small>(see $AOS_HOME/dynamic/ping.aos.xml)</small><br />
+<xmp class="code_xml_output"><?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <execute>
+    <module seq="0">LuaScript</module>
+  </execute>
+  <inline-script-added>Inserted directly by ExecuteLuaScriptInline command.</inline-script-added>
+  <output>
+    <script>
+      <output source="inline">
+        <![CDATA[Inserted directly by ExecuteLuaScriptInline command.]]>
+      </output>
+    </script>
+  </output>
+</root></xmp>
+<br />
+</div>
+
+<br />
+<hr />
+<br />
+
+</body>
+</html>

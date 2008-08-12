@@ -1,0 +1,34 @@
+<html>
+<head><link rel="stylesheet" href="docs.css" type="text/css"/></head>
+<body>
+<pre class="code">
+#ifndef INCLUDED__MyOutputGenerator_HPP__
+#define INCLUDED__MyOutputGenerator_HPP__
+
+#include "apiMyProject.hpp"
+
+class MYPROJECT_API MyOutputGenerator : public AOSOutputGeneratorInterface
+{
+public:
+  MyInputProcessor(AOSServices&);
+  
+  /*!
+  Execute output generator
+  
+  @param context AOSContext of the request
+  @return AOSContext::ReturnCode
+  */
+  virtual AOSContext::ReturnCode execute(AOSContext& context);
+
+  /*!
+  AOSAdminInterface
+
+  @return Name of this output generator, must be unique among output generators
+  */
+  virtual const AString& getClass() const;
+};
+
+#endif //INCLUDED__MyOutputGenerator_HPP__
+</pre>
+</body>
+</html>

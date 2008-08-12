@@ -1,0 +1,45 @@
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body>
+
+<h2 class="heading">&lt;controller&gt; attributes</h2>
+<b>enabled={"0","1"}</b><br />
+"1" - enabled (DEFAULT)<br />
+"0" - disabled, try to find an equivalent named static file or send 404<br />
+<br />
+<b>ajax={"0","1"}</b><br />
+"1" - enabled, do not add anything to the root model<br />
+"0" - disabled, add REQUEST, RESPONSE and SESSOION elements to the root model (DEFAULT)<br />
+<br />
+<b>alias="controller"</b><br />
+controller - valid path to another controller (based on $AOS_ROOT/dynamic/ directory)<br />
+<div class="comment">If alias is present, all other attributes and sub-elements are ignored and target controller is used instead<br />
+DEFAULT is nothing</div><br />
+<br />
+<b>gzip={"0","1","2","3","4","5","6","7","8","9"}</b><br />
+"1".."9" - force gzip level to use on the output<br />
+"0" - do not gzip the output<br />
+DEFAULT is to use the gzip level configured in the AObjectServer.xml file based on size of the output<br />
+<br />
+<b>session={"0","1"}</b><br />
+"1" - Create session id and data, used when more than one request may require session data on subsequent requests<br />
+"0" - Create session id but create actual session data object when it is accessed (lazy create) (DEFAULT)<br />
+<div class="comment">This should be set to true for cases such as a page that contains several dynamic requests all of which may need session data.</div><br />
+<br />
+<b>nocache={"0","1"}</b><br />
+"1" - Notify the browser that this controller's page is not to be cached (DEFAULT)<br />
+"0" - Let the browser decide how to cache this result (for extensions such as .html/.js/.css/.xml/etc the browser may cache dynamic content since it may think it is static based on extension)<br />
+<br />
+<h2 class="heading">&lt;controller&gt; sub-elements</h2>
+<b>&lt;input&gt;</b><br />
+<div class="comment">0 or 1 input processor is executed (since there is only 1 input MIME type associated with an HTTP request)</div><br />
+<b>&lt;module&gt;</b><br />
+<div class="comment">0 or more modules are executed</div><br />
+<b>&lt;output&gt;</b><br />
+<div class="comment">0 or 1 output generator is executed.  If 0 then XML is the default.</div><br />
+
+</body>
+</html>

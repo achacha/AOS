@@ -1,0 +1,25 @@
+<html>
+<head><link rel="stylesheet" href="docs.css" type="text/css"/></head>
+<body>
+<pre class="code">
+#include "pchMyProject.hpp"
+#include "MyInputProcessor.hpp"
+
+const AString& MyInputProcessor::getClass() const
+{
+  static const AString CLASS("MyInputProcessor");
+  return CLASS;
+}
+
+MyInputProcessor::MyInputProcessor(AOSServices& services) :
+  AOSInputProcessorInterface(services)
+{
+}
+
+AOSContext::ReturnCode MyInputProcessor::execute(AOSContext& context)
+{
+  return AOSContext::RETURN_OK;
+}
+</pre>
+</body>
+</html>

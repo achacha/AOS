@@ -1,0 +1,25 @@
+<html>
+<head><link rel="stylesheet" href="docs.css" type="text/css"/></head>
+<body>
+<pre class="code">
+#include "pchMyProject.hpp"
+#include "MyModule.hpp"
+
+const AString& MyModule::getClass() const
+{
+  static const AString CLASS("MyModule");  // Unique module name used in controller definition
+  return CLASS;
+}
+
+MyModule::MyModule(AOSServices& services) :
+  AOSModuleInterface(services)
+{
+}
+
+AOSContext::ReturnCode MyModule::execute(AOSContext& context, const AXmlElement& moduleParams)
+{
+  return AOSContext::RETURN_OK;
+}
+</pre>
+</body>
+</html>

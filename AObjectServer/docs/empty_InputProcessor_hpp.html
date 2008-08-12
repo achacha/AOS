@@ -1,0 +1,34 @@
+<html>
+<head><link rel="stylesheet" href="docs.css" type="text/css"/></head>
+<body>
+<pre class="code">
+#ifndef INCLUDED__MyInputProcessor_HPP__
+#define INCLUDED__MyInputProcessor_HPP__
+
+#include "apiMyProject.hpp"
+
+class MYPROJECT_API MyInputProcessor : public AOSInputProcessorInterface
+{
+public:
+  MyInputProcessor(AOSServices&);
+  
+  /*!
+  Execute input processor
+  
+  @param context AOSContext of the request
+  @return AOSContext::ReturnCode
+  */
+  virtual AOSContext::ReturnCode execute(AOSContext& context);
+
+  /*!
+  AOSAdminInterface
+
+  @return Name of this input processor, must be unique, should be the MIME type of the expected input
+  */
+  virtual const AString& getClass() const;
+};
+
+#endif //INCLUDED__MyInputProcessor_HPP__
+</pre>
+</body>
+</html>

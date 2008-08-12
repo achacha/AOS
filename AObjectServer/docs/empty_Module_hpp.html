@@ -1,0 +1,43 @@
+<html>
+<head><link rel="stylesheet" href="docs.css" type="text/css"/></head>
+<body>
+<pre class="code">
+#ifndef INCLUDED__MyModule_HPP__
+#define INCLUDED__MyModule_HPP__
+
+#include "apiMyProject.hpp"
+
+/*!
+My module
+*/
+class MYPROJECT_API MyModule : public AOSModuleInterface
+{
+public:
+  /*!
+  ctor
+  
+  @param services AOSServices object stored as reference by base class
+  */
+  MyModule(AOSServices& services);
+  
+  /*!
+  Execute
+  
+  @param context AOSContext for the request
+  @param moduleParams Parameters for the module as defined in the controller XML
+  @return Result of the execution
+  */
+  virtual AOSContext::ReturnCode execute(AOSContext& context, const AXmlElement& moduleParams);
+  
+  /*!
+  AOSAdminInterface
+
+  @return Name of this module used in controller definitions, must be unique among modules
+  */
+  virtual const AString& getClass() const;
+};
+
+#endif // INCLUDED__MyModule_HPP__
+</pre>
+</body>
+</html>

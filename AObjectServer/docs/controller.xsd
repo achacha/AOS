@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="controller">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="input" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="class" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="module" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="class" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="output" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="class" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="enabled" type="xs:string" use="optional" default="1"/>
+      <xs:attribute name="ajax" type="xs:string" use="optional" default="0"/>
+      <xs:attribute name="alias" type="xs:string" use="optional" default=""/>
+      <xs:attribute name="gzip" type="xs:string" use="optional" default="0"/>
+      <xs:attribute name="session" type="xs:string" use="optional" default="0"/>
+      <xs:attribute name="nocache" type="xs:string" use="optional" default="1"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

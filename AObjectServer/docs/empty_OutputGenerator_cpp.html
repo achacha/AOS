@@ -1,0 +1,25 @@
+<html>
+<head><link rel="stylesheet" href="docs.css" type="text/css"/></head>
+<body>
+<pre class="code">
+#include "pchMyProject.hpp"
+#include "MyOutputGenerator.hpp"
+
+const AString& MyOutputGenerator::getClass() const
+{
+  static const AString CLASS("MyOutputGenerator");
+  return CLASS;
+}
+
+MyOutputGenerator::MyOutputGenerator(AOSServices& services) :
+  AOSInputProcessorInterface(services)
+{
+}
+
+AOSContext::ReturnCode MyOutputGenerator::execute(AOSContext& context)
+{
+  return AOSContext::RETURN_OK;
+}
+</pre>
+</body>
+</html>
