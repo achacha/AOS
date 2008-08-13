@@ -1,0 +1,39 @@
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body>
+<h1 class="heading">ASW and ASWNL macros</h1>
+<div class="comment">The purpose of these 2 macros is to wrap <i>const char *</i> as a <i>const AString</i> object.
+It allows you to reuse the memory without allocation and coopying a string.<br />
+<br />
+
+This will create an AString object and allocate memory block:<br />
+&nbsp;&nbsp;AString str("test string");<br />
+<br />
+<br />
+This will call AString::wrap() and create a reference to a <i>const AString</i> object:<br />
+&nbsp;&nbsp;const AString& str = ASW("test string")<br />
+
+</div>
+
+<h3 class="heading"><b>AS</b>tring<b>W</b>rapper</h3>
+ASW(s,n)<br />
+s - const char * string<br />
+n - length of the string to use (doesn't have to be the entire string, can be partial but not greater than actual length of the memory block)<br />
+<br />
+e.g.:<br />
+&nbsp;&nbsp;ASW("foo", 3);  // equivalent to const AString("foo") without memory allocation<br />
+&nbsp;&nbsp;ASW("my long string", 2);  // results in equivalent: const AString("my") without memory allocation<br />
+<br />
+<h3 class="heading"><b>AS</b>tring<b>W</b>rapper<b>N</b>o<b>L</b>ength</h3>
+ASWNL(s)<br />
+s - const char * string<br />
+Works just like ASWNL except the length is calculated using strlen(s)<br />
+<br />
+e.g.:<br />
+&nbsp;&nbsp;ASWNL("foo");  // equivalent to const AString("foo") without memory allocation<br />
+<br />
+</body>
+</html>

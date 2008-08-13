@@ -396,7 +396,7 @@
 				Name="code"
 				>
 				<File
-					RelativePath=".\empty_CreateNewProject.html"
+					RelativePath=".\code_CreateNewProject.html"
 					>
 				</File>
 				<File
@@ -433,6 +433,18 @@
 				</File>
 				<File
 					RelativePath=".\empty_OutputGenerator_hpp.html"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="debug"
+				>
+				<File
+					RelativePath=".\debug_basics.html"
+					>
+				</File>
+				<File
+					RelativePath=".\debug_dumpContext.html"
 					>
 				</File>
 			</Filter>

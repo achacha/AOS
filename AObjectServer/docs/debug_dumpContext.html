@@ -1,0 +1,766 @@
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body>
+<h1 class="heading">Debugging with dumpContext query string parameter</h1>
+<div class="comment">Lets assume that you are trying to get the response to http://localhost/ping?dumpContext=1 (or 2) </div>
+<br />
+<br />
+Assuming your AObjectServer.xml has <b>/server/debug/allow-dumpContext</b> set to <i>true</i> (this should be false in production), you can add this as a parameter to any URL.<br />
+<br />
+<b>dumpContext=1</b> adds AOSContext object as XML to the model as <i>/root/dumpContext</i> and switches the output generation to XML.<br />
+<textarea class="code_xml" cols="180" rows="40"><xmp><?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <dumpContext>
+    <context this="0x351e120" request_timer="20.730" context_timer="21.751">
+      <EventVisitor errors="0" threshold="5" display="5" enabled="true">
+        <name>
+          <![CDATA[AOSContext:0x351e120  
+http://localhost/ping?dumpcontext=1]]>
+        </name>
+        <timer>22.059ms</timer>
+        <events>
+          <event interval="0.046" level="5"><![CDATA[AOSContext::reset: Replacing file]]></event>
+          <event interval="0.024" level="5"><![CDATA[AOSContext::reset[127.0.0.1:32206]]]></event>
+          <event interval="0.042" level="2"><![CDATA[AOSContextManager::allocate[0x351e120, pFile=0x342ca90] new create]]></event>
+          <event interval="0.620" level="4"><![CDATA[AOSContextQueue_PreExecutor::add[0]=0x351e120]]></event>
+          <event interval="0.010" level="4"><![CDATA[AOSContextQueue_PreExecutor::_nextContext[0]=0x351e120]]></event>
+          <event interval="3.792" level="4"><![CDATA[AOSContext::INIT: Processing HTTP header]]></event>
+          <event interval="0.096" level="4"><![CDATA[AOSContext: Reading HTTP method]]></event>
+          <event interval="0.024" level="5"><![CDATA[AOSContext: Reading HTTP line zero]]></event>
+          <event interval="0.033" level="4"><![CDATA[AOSContext: Reading HTTP header]]></event>
+          <event interval="0.597" level="5"><![CDATA[AOSContext: Parsing HTTP header]]></event>
+          <event interval="0.076" level="5"><![CDATA[Connection: keep-alive set on response header]]></event>
+          <event interval="0.367" level="4">
+            <![CDATA[AOSContext: HTTP request header
+GET /ping?dumpcontext=1 HTTP/1.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Accept-Encoding: gzip,deflate
+Accept-Language: en-us,en;q=0.5
+Connection: keep-alive
+Host: localhost
+Keep-Alive: 300
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1
+
+]]>
+          </event>
+          <event interval="0.145" level="4"><![CDATA[Created new session id aEhENkbHdJaBVxK5O12920950936382685236]]></event>
+          <event interval="0.054" level="2"><![CDATA[RequestURL[http://localhost/ping?dumpcontext=1]]]></event>
+          <event interval="2.334" level="4"><![CDATA[No directory config for this path, skipping.]]></event>
+          <event interval="18.963" level="4"><![CDATA[AOSContextQueue_Executor::add[0]=0x351e120]]></event>
+          <event interval="0.076" level="4"><![CDATA[AOSContextQueue_Executor::_nextContext[0]=0x351e120]]></event>
+          <event interval="0.007" level="4"><![CDATA[Input processor: ]]></event>
+          <event interval="0.105" level="5"><![CDATA[No input processor]]></event>
+          <event interval="0.020" level="4"><![CDATA[Executing output generator]]></event>
+          <event interval="4.472" level="5"><![CDATA[Default output generator overridden to: ]]></event>
+          <event interval="1.263" level="5"><![CDATA[No output generator, defaulting to XML]]></event>
+        </events>
+        <current-state-timer>0ms</current-state-timer>
+      </EventVisitor>
+      <GlobalObjects>
+        <locale><![CDATA[us-en]]></locale>
+        <server_name><![CDATA[Rhino]]></server_name>
+        <version><![CDATA[1.5.0.0]]></version>
+      </GlobalObjects>
+      <ContextObjects/>
+      <REQUEST>
+        <method>GET</method>
+        <version>HTTP/1.1</version>
+        <Accept><![CDATA[text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8]]></Accept>
+        <Accept-Charset><![CDATA[ISO-8859-1,utf-8;q=0.7,*;q=0.7]]></Accept-Charset>
+        <Accept-Encoding><![CDATA[gzip,deflate]]></Accept-Encoding>
+        <Accept-Language><![CDATA[en-us,en;q=0.5]]></Accept-Language>
+        <Connection><![CDATA[keep-alive]]></Connection>
+        <Host><![CDATA[localhost]]></Host>
+        <Keep-Alive><![CDATA[300]]></Keep-Alive>
+        <User-Agent><![CDATA[Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1]]></User-Agent>
+        <url>
+          <protocol>http:</protocol>
+          <username></username>
+          <password></password>
+          <server>localhost</server>
+          <port>0</port>
+          <path>/</path>
+          <filename>ping</filename>
+          <url><![CDATA[http://localhost/ping?dumpcontext=1]]></url>
+          <query-string size="1">
+            <dumpcontext><![CDATA[1]]></dumpcontext>
+          </query-string>
+        </url>
+        <cookies/>
+      </REQUEST>
+      <RESPONSE>
+        <version>HTTP/1.1</version>
+        <status code="200">OK</status>
+        <Connection><![CDATA[keep-alive]]></Connection>
+        <Date><![CDATA[Wed, 13-Aug-2008 19:21:03 UT]]></Date>
+        <Server><![CDATA[Rhino/1.5.0.1 (64-bit)]]></Server>
+        <cookies>
+          <cookie>
+            <name>AOSSession</name>
+            <value>aEhENkbHdJaBVxK5O12920950936382685236</value>
+            <domain></domain>
+            <path>/</path>
+            <version>0</version>
+            <comment></comment>
+            <maxage>600</maxage>
+            <expires>Wed, 13-Aug-2008 19:31:03 UT</expires>
+          </cookie>
+        </cookies>
+      </RESPONSE>
+      <ConnectionFlags>
+        <data><![CDATA[04]]></data>
+      </ConnectionFlags>
+      <ContextFlags>
+        <data><![CDATA[05]]></data>
+      </ContextFlags>
+      <controller enabled="1" ajax="1" session="0" nocache="1" gzip="0">
+        <input class=""/>
+        <output class=""/>
+      </controller>
+    </context>
+  </dumpContext>
+  <OUTPUT>
+    <![CDATA[Length=0x0 (0)
+]]>
+  </OUTPUT>
+</root></xmp></textarea><br />
+<br />
+<br />
+<b>dumpContext=2</b> more extensive dump that converts buffers to ascii-hex display for more fine-grained analysis, the output tends to be quite large as a result.<br />
+<textarea cols="180" rows="40" class="code_xml"><xmp><?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <dumpContext>
+    <context this="0x34d0fd0" request_timer="12.535" context_timer="18.352">
+      <buffer>
+        <![CDATA[Length=0x0 (0)
+]]>
+      </buffer>
+      <debugDump>
+        <![CDATA[(class AOSContext @ 00000000034D0FD0) {
+  m_EventVisitor=
+    (class AEventVisitor @ 00000000034D0FF0) {
+      m_Name=AOSContext:0x34d0fd0  
+http://localhost/ping?dumpcontext=2  m_LevelThreshold=5  m_isEnabled=true  m_ErrorCount=0  m_stateTimeLimit=-1
+      m_LifespanTimer=        (class ATimer @ 00000000034D10A0) {    getInterval()=9.20054  mbool_Running=1  m_startCount=3437454639985856  m_stopCount=0  sm_frequency=2.66e+006  }
+      mp_CurrentEvent=NULL
+      m_stateTimer=NULL
+      m_Events={
+        (AEventVisitor::Event @ 000000000353E7E0) {  m_state=AOSContext::reset: Replacing file  m_interval=0.0447759  m_level=5  }
+        (AEventVisitor::Event @ 000000000353EAB0) {  m_state=AOSContext::reset[127.0.0.1:32285]  m_interval=0.0220992  m_level=5  }
+        (AEventVisitor::Event @ 000000000353EC90) {  m_state=AOSContextManager::allocate[0x34d0fd0, pFile=0x342ca90] new create  m_interval=0.0418707  m_level=2  }
+        (AEventVisitor::Event @ 000000000353EF60) {  m_state=AOSContextQueue_PreExecutor::add[0]=0x34d0fd0  m_interval=5.45691  m_level=4  }
+        (AEventVisitor::Event @ 000000000353EE70) {  m_state=AOSContextQueue_PreExecutor::_nextContext[0]=0x34d0fd0  m_interval=0.00550677  m_level=4  }
+        (AEventVisitor::Event @ 000000000353F140) {  m_state=AOSContext::INIT: Processing HTTP header  m_interval=0.00393083  m_level=4  }
+        (AEventVisitor::Event @ 0000000003424220) {  m_state=AOSContext: Reading HTTP method  m_interval=0.0759368  m_level=4  }
+        (AEventVisitor::Event @ 0000000003424C70) {  m_state=AOSContext: Reading HTTP line zero  m_interval=0.025212  m_level=5  }
+        (AEventVisitor::Event @ 0000000003424E50) {  m_state=AOSContext: Reading HTTP header  m_interval=0.0383158  m_level=4  }
+        (AEventVisitor::Event @ 000000000353C9F0) {  m_state=AOSContext: Parsing HTTP header  m_interval=0.814905  m_level=5  }
+        (AEventVisitor::Event @ 000000000353CF30) {  m_state=Connection: keep-alive set on response header  m_interval=0.0749684  m_level=5  }
+        (AEventVisitor::Event @ 0000000005A88E90) {  m_state=AOSContext: HTTP request header
+GET /ping?dumpcontext=2 HTTP/1.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Accept-Encoding: gzip,deflate
+Accept-Language: en-us,en;q=0.5
+Connection: keep-alive
+Host: localhost
+Keep-Alive: 300
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1
+Cookie: AOSSession=aEhENkbHdJaBVxK5O12920950936382685236; 
+
+  m_interval=0.241278  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A89520) {  m_state=RequestURL[http://localhost/ping?dumpcontext=2]  m_interval=0.0569985  m_level=2  }
+        (AEventVisitor::Event @ 0000000005A8B2E0) {  m_state=No directory config for this path, skipping.  m_interval=0.0230707  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A8A890) {  m_state=AOSContextQueue_Executor::add[1]=0x34d0fd0  m_interval=1.49521  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A8AA70) {  m_state=AOSContextQueue_Executor::_nextContext[1]=0x34d0fd0  m_interval=0.0678797  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A8A7A0) {  m_state=Input processor:   m_interval=0.00601504  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A99C70) {  m_state=No input processor  m_interval=0.163811  m_level=5  }
+        (AEventVisitor::Event @ 0000000005A99E50) {  m_state=Executing output generator  m_interval=0.0387218  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A9A030) {  m_state=Default output generator overridden to:   m_interval=0.00481504  m_level=5  }
+        (AEventVisitor::Event @ 0000000005A9A210) {  m_state=No output generator, defaulting to XML  m_interval=0.00131429  m_level=5  }
+      }
+    }
+  *mp_RequestFile={
+    (class AFile_Socket @ 000000000342CA90) {
+      (class AFile_Socket @ 000000000342CA90) {
+        m_ReadBlock=32767
+        (class ARopeDeque @ 000000000342CAA8) {
+          getSize()=0  m_BlockSize=2048  m_FreeStore.size()=0  m_FrontBlockFree=0  m_BackBlockFree=2048
+          mp_BackBlock=NULL
+          m_Blocks={
+          }
+          mp_BackBlock=0000000003424400 {
+          }
+        }
+      }
+      m_SocketInfo=
+        (class ASocketLibrary::SocketInfo @ 000000000342CB70) {    m_address=127.0.0.1  m_port=32285  m_handle=0x484  }
+    }
+  }
+  mp_DirConfig=NULL
+  m_Controller=
+    (class AOSController @ 0000000002952920) {
+      m_Path=/ping
+      m_Enabled=true
+      m_ForceAjax=true
+      m_SessionRequired=false
+      m_CacheControlNoCache=true
+      m_GZipLevel=0
+      m_Alias=
+      m_InputProcessor=
+      m_InputParams={}
+      m_OutputGenerator=
+      m_OutputParams={}
+      (AOSModules @ 0000000002952D08) {
+        m_Modules={
+        }
+      }
+      (class AOSController @ 0000000002952930) {
+        typeid(*this).raw_name()=.?AVAOSController@@
+      }
+    }
+  m_RequestHeader=
+    (class AHTTPRequestHeader @ 00000000034D1130) { 
+      mstr_Method=GET
+      m_MethodId=1
+      murl_Request=
+        (class AUrl @ 00000000034D12A8) {
+          m_strProtocol=http:  m_strUsername=  m_strPassword=  m_strServer=localhost  m_iPort=0
+          m_strPath=/  m_strFilename=ping  m_strFragment=
+          m_QueryString=
+            (class AQueryString @ 00000000034D1548) {
+              first=dumpcontext  second='dumpcontext=2'
+            }
+        }
+        mcookies_Request=
+        (class ACookies @ 00000000034D15F8) { 
+          (class ACookie @ 0000000005A89700) { 
+            m_strName=AOSSession  m_strValue=aEhENkbHdJaBVxK5O12920950936382685236
+            m_strDomain=m_strPath=
+            m_iVersion=0m_strComment=
+            m_lMaxAge=-1
+            m_timeExpires={              (class ATime @ 0000000005A89880) {
+                mt_Time=1218655397
+                me_Type=1
+              }
+            }
+            m_boolSecure=0  m_boolExpired=0  m_boolExpirationSet=0
+          }
+        }
+      (class AHTTPRequestHeader @ 00000000034D1130) {
+        first=Accept  second=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+        first=Accept-Charset  second=Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+        first=Accept-Encoding  second=Accept-Encoding: gzip,deflate
+        first=Accept-Language  second=Accept-Language: en-us,en;q=0.5
+        first=Connection  second=Connection: keep-alive
+        first=Host  second=Host: localhost
+        first=Keep-Alive  second=Keep-Alive: 300
+        first=User-Agent  second=User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1
+      }
+    }
+  m_ResponseHeader=
+    (class AHTTPResponseHeader @ 00000000034D1640) { 
+      mi_StatusCode=200
+      mstr_ReasonPhrase=
+      mcookies_Response=
+        (class ACookies @ 00000000034D17B8) { 
+        }
+      (class AHTTPResponseHeader @ 00000000034D1640) {
+        first=Connection  second=Connection: keep-alive
+        first=Date  second=Date: Wed, 13-Aug-2008 19:23:17 UT
+        first=Server  second=Server: Rhino/1.5.0.1 (64-bit)
+      }
+    }
+  mp_SessionObject=NULL
+  m_EventVisitor={
+    (class AEventVisitor @ 00000000034D0FF0) {
+      m_Name=AOSContext:0x34d0fd0  
+http://localhost/ping?dumpcontext=2  m_LevelThreshold=5  m_isEnabled=true  m_ErrorCount=0  m_stateTimeLimit=-1
+      m_LifespanTimer=        (class ATimer @ 00000000034D10A0) {    getInterval()=10.5009  mbool_Running=1  m_startCount=3437454639985856  m_stopCount=0  sm_frequency=2.66e+006  }
+      mp_CurrentEvent=NULL
+      m_stateTimer=NULL
+      m_Events={
+        (AEventVisitor::Event @ 000000000353E7E0) {  m_state=AOSContext::reset: Replacing file  m_interval=0.0447759  m_level=5  }
+        (AEventVisitor::Event @ 000000000353EAB0) {  m_state=AOSContext::reset[127.0.0.1:32285]  m_interval=0.0220992  m_level=5  }
+        (AEventVisitor::Event @ 000000000353EC90) {  m_state=AOSContextManager::allocate[0x34d0fd0, pFile=0x342ca90] new create  m_interval=0.0418707  m_level=2  }
+        (AEventVisitor::Event @ 000000000353EF60) {  m_state=AOSContextQueue_PreExecutor::add[0]=0x34d0fd0  m_interval=5.45691  m_level=4  }
+        (AEventVisitor::Event @ 000000000353EE70) {  m_state=AOSContextQueue_PreExecutor::_nextContext[0]=0x34d0fd0  m_interval=0.00550677  m_level=4  }
+        (AEventVisitor::Event @ 000000000353F140) {  m_state=AOSContext::INIT: Processing HTTP header  m_interval=0.00393083  m_level=4  }
+        (AEventVisitor::Event @ 0000000003424220) {  m_state=AOSContext: Reading HTTP method  m_interval=0.0759368  m_level=4  }
+        (AEventVisitor::Event @ 0000000003424C70) {  m_state=AOSContext: Reading HTTP line zero  m_interval=0.025212  m_level=5  }
+        (AEventVisitor::Event @ 0000000003424E50) {  m_state=AOSContext: Reading HTTP header  m_interval=0.0383158  m_level=4  }
+        (AEventVisitor::Event @ 000000000353C9F0) {  m_state=AOSContext: Parsing HTTP header  m_interval=0.814905  m_level=5  }
+        (AEventVisitor::Event @ 000000000353CF30) {  m_state=Connection: keep-alive set on response header  m_interval=0.0749684  m_level=5  }
+        (AEventVisitor::Event @ 0000000005A88E90) {  m_state=AOSContext: HTTP request header
+GET /ping?dumpcontext=2 HTTP/1.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Accept-Encoding: gzip,deflate
+Accept-Language: en-us,en;q=0.5
+Connection: keep-alive
+Host: localhost
+Keep-Alive: 300
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1
+Cookie: AOSSession=aEhENkbHdJaBVxK5O12920950936382685236; 
+
+  m_interval=0.241278  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A89520) {  m_state=RequestURL[http://localhost/ping?dumpcontext=2]  m_interval=0.0569985  m_level=2  }
+        (AEventVisitor::Event @ 0000000005A8B2E0) {  m_state=No directory config for this path, skipping.  m_interval=0.0230707  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A8A890) {  m_state=AOSContextQueue_Executor::add[1]=0x34d0fd0  m_interval=1.49521  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A8AA70) {  m_state=AOSContextQueue_Executor::_nextContext[1]=0x34d0fd0  m_interval=0.0678797  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A8A7A0) {  m_state=Input processor:   m_interval=0.00601504  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A99C70) {  m_state=No input processor  m_interval=0.163811  m_level=5  }
+        (AEventVisitor::Event @ 0000000005A99E50) {  m_state=Executing output generator  m_interval=0.0387218  m_level=4  }
+        (AEventVisitor::Event @ 0000000005A9A030) {  m_state=Default output generator overridden to:   m_interval=0.00481504  m_level=5  }
+        (AEventVisitor::Event @ 0000000005A9A210) {  m_state=No output generator, defaulting to XML  m_interval=0.00131429  m_level=5  }
+      }
+    }
+  }
+  m_OutputBuffer={
+    (class ARope @ 00000000034D1800)
+      getSize()=0  m_BlockSize=10240  m_LastBlockFree=0
+      m_Blocks={
+      }
+      mp_LastBlock=NULL
+    }
+  }
+  m_ContextObjects={
+    (class ABasePtrContainer @ 00000000034D1868) {
+      m_BasePtrs={
+      }
+    }
+  }
+  m_OutputXmlDocument={
+    (class AXmlDocument @ 00000000034D18C0) {
+      m_Instructions={
+      (class AXmlInstruction @ 0000000003517D10) {
+        (class AXmlInstruction @ 0000000003517D10
+          mp_Parent=0000000000000000
+          m_Name=?xml
+          m_Attributes={
+            (class AXmlAttributes @ 0000000003517DC0) {
+              m_Pairs={
+                version="1.0"
+                encoding="UTF-8"
+              }
+            }
+          }
+          m_Content={
+          }
+        }
+        m_Data=
+        m_Attributes=version="1.0" encoding="UTF-8"
+      }
+      }
+      m_Root={
+        (class AXmlElement @ 00000000034D1900
+          mp_Parent=0000000000000000
+          m_Name=root
+          m_Attributes={
+            (class AXmlAttributes @ 00000000034D19B0) {
+              m_Pairs={
+              }
+            }
+          }
+          m_Content={
+            (class AXmlElement @ 0000000005A9A5D0
+              mp_Parent=00000000034D1900
+              m_Name=dumpContext
+              m_Attributes={
+                (class AXmlAttributes @ 0000000005A9A680) {
+                  m_Pairs={
+                  }
+                }
+              }
+              m_Content={
+                (class AXmlElement @ 0000000005A9A830
+                  mp_Parent=0000000005A9A5D0
+                  m_Name=context
+                  m_Attributes={
+                    (class AXmlAttributes @ 0000000005A9A8E0) {
+                      m_Pairs={
+                      }
+                    }
+                  }
+                  m_Content={
+                    (class AXmlElement @ 0000000005A9AA90
+                      mp_Parent=0000000005A9A830
+                      m_Name=buffer
+                      m_Attributes={
+                        (class AXmlAttributes @ 0000000005A9AB40) {
+                          m_Pairs={
+                          }
+                        }
+                      }
+                      m_Content={
+                        (class AXmlData @ 0000000005A9AC00) {
+                          (class AXmlData @ 0000000005A9AC00
+                            mp_Parent=0000000005A9AA90
+                            m_Name=
+                            m_Attributes={
+                              (class AXmlAttributes @ 0000000005A9ACB0) {
+                                m_Pairs={
+                                }
+                              }
+                            }
+                            m_Content={
+                            }
+                          }
+                          m_Encoding=6  m_Data={}
+                        }
+                      }
+                    }
+                    (class AXmlElement @ 0000000005A9AEC0
+                      mp_Parent=0000000005A9A830
+                      m_Name=debugDump
+                      m_Attributes={
+                        (class AXmlAttributes @ 0000000005A9AF70) {
+                          m_Pairs={
+                          }
+                        }
+                      }
+                      m_Content={
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  m_ConnectionFlags={
+    (class ABitArray @ 00000000034D1B10) {
+          m_OutputMode=0
+    }
+  }
+  m_ContextFlags={
+    (class ABitArray @ 00000000034D1B50) {
+          m_OutputMode=0
+    }
+  }
+  m_ContextTimer={
+    (class ATimer @ 00000000034D1B90) {    getInterval()=11.6791  mbool_Running=1  m_startCount=3437454639966592  m_stopCount=0  sm_frequency=2.66e+006  }
+  }
+  m_RequestTimer={
+    (class ATimer @ 00000000034D1BC8) {    getInterval()=6.01069  mbool_Running=1  m_startCount=3437454655138176  m_stopCount=0  sm_frequency=2.66e+006  }
+  }
+  m_TimeoutTimer={
+    (class ATimer @ 00000000034D1C00) {    getInterval()=0  mbool_Running=0  m_startCount=0  m_stopCount=0  sm_frequency=2.66e+006  }
+  }
+}
+]]>
+      </debugDump>
+      <EventVisitor errors="0" threshold="5" display="5" enabled="true">
+        <name>
+          <![CDATA[AOSContext:0x34d0fd0  
+http://localhost/ping?dumpcontext=2]]>
+        </name>
+        <timer>18.677ms</timer>
+        <events>
+          <event interval="0.045" level="5"><![CDATA[AOSContext::reset: Replacing file]]></event>
+          <event interval="0.022" level="5"><![CDATA[AOSContext::reset[127.0.0.1:32285]]]></event>
+          <event interval="0.042" level="2"><![CDATA[AOSContextManager::allocate[0x34d0fd0, pFile=0x342ca90] new create]]></event>
+          <event interval="5.457" level="4"><![CDATA[AOSContextQueue_PreExecutor::add[0]=0x34d0fd0]]></event>
+          <event interval="0.006" level="4"><![CDATA[AOSContextQueue_PreExecutor::_nextContext[0]=0x34d0fd0]]></event>
+          <event interval="0.004" level="4"><![CDATA[AOSContext::INIT: Processing HTTP header]]></event>
+          <event interval="0.076" level="4"><![CDATA[AOSContext: Reading HTTP method]]></event>
+          <event interval="0.025" level="5"><![CDATA[AOSContext: Reading HTTP line zero]]></event>
+          <event interval="0.038" level="4"><![CDATA[AOSContext: Reading HTTP header]]></event>
+          <event interval="0.815" level="5"><![CDATA[AOSContext: Parsing HTTP header]]></event>
+          <event interval="0.075" level="5"><![CDATA[Connection: keep-alive set on response header]]></event>
+          <event interval="0.241" level="4">
+            <![CDATA[AOSContext: HTTP request header
+GET /ping?dumpcontext=2 HTTP/1.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Accept-Encoding: gzip,deflate
+Accept-Language: en-us,en;q=0.5
+Connection: keep-alive
+Host: localhost
+Keep-Alive: 300
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1
+Cookie: AOSSession=aEhENkbHdJaBVxK5O12920950936382685236; 
+
+]]>
+          </event>
+          <event interval="0.057" level="2"><![CDATA[RequestURL[http://localhost/ping?dumpcontext=2]]]></event>
+          <event interval="0.023" level="4"><![CDATA[No directory config for this path, skipping.]]></event>
+          <event interval="1.495" level="4"><![CDATA[AOSContextQueue_Executor::add[1]=0x34d0fd0]]></event>
+          <event interval="0.068" level="4"><![CDATA[AOSContextQueue_Executor::_nextContext[1]=0x34d0fd0]]></event>
+          <event interval="0.006" level="4"><![CDATA[Input processor: ]]></event>
+          <event interval="0.164" level="5"><![CDATA[No input processor]]></event>
+          <event interval="0.039" level="4"><![CDATA[Executing output generator]]></event>
+          <event interval="0.005" level="5"><![CDATA[Default output generator overridden to: ]]></event>
+          <event interval="0.001" level="5"><![CDATA[No output generator, defaulting to XML]]></event>
+        </events>
+        <current-state-timer>0ms</current-state-timer>
+      </EventVisitor>
+      <GlobalObjects>
+        <locale><![CDATA[us-en]]></locale>
+        <server_name><![CDATA[Rhino]]></server_name>
+        <version><![CDATA[1.5.0.0]]></version>
+      </GlobalObjects>
+      <ContextObjects/>
+      <REQUEST>
+        <method>GET</method>
+        <version>HTTP/1.1</version>
+        <Accept><![CDATA[text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8]]></Accept>
+        <Accept-Charset><![CDATA[ISO-8859-1,utf-8;q=0.7,*;q=0.7]]></Accept-Charset>
+        <Accept-Encoding><![CDATA[gzip,deflate]]></Accept-Encoding>
+        <Accept-Language><![CDATA[en-us,en;q=0.5]]></Accept-Language>
+        <Connection><![CDATA[keep-alive]]></Connection>
+        <Host><![CDATA[localhost]]></Host>
+        <Keep-Alive><![CDATA[300]]></Keep-Alive>
+        <User-Agent><![CDATA[Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1]]></User-Agent>
+        <url>
+          <protocol>http:</protocol>
+          <username></username>
+          <password></password>
+          <server>localhost</server>
+          <port>0</port>
+          <path>/</path>
+          <filename>ping</filename>
+          <url><![CDATA[http://localhost/ping?dumpcontext=2]]></url>
+          <query-string size="1">
+            <dumpcontext><![CDATA[2]]></dumpcontext>
+          </query-string>
+        </url>
+        <cookies>
+          <cookie>
+            <name>AOSSession</name>
+            <value>aEhENkbHdJaBVxK5O12920950936382685236</value>
+            <domain></domain>
+            <path></path>
+            <version>0</version>
+            <comment></comment>
+            <maxage>-1</maxage>
+            <expires>Wed, 13-Aug-2008 19:23:17 UT</expires>
+          </cookie>
+        </cookies>
+      </REQUEST>
+      <RESPONSE>
+        <version>HTTP/1.1</version>
+        <status code="200">OK</status>
+        <Connection><![CDATA[keep-alive]]></Connection>
+        <Date><![CDATA[Wed, 13-Aug-2008 19:23:17 UT]]></Date>
+        <Server><![CDATA[Rhino/1.5.0.1 (64-bit)]]></Server>
+        <cookies/>
+      </RESPONSE>
+      <ConnectionFlags>
+        <data><![CDATA[04]]></data>
+      </ConnectionFlags>
+      <ContextFlags>
+        <data><![CDATA[05]]></data>
+      </ContextFlags>
+      <controller enabled="1" ajax="1" session="0" nocache="1" gzip="0">
+        <input class=""/>
+        <output class=""/>
+      </controller>
+    </context>
+    <configuration>
+      <config>
+        <server>
+          <log-level>5</log-level>
+          <database>
+            <!--url>mysql://aos:aos@equinox/aos/</url-->
+            <!--url>odbc://aos:aos@localhost/aos_global/</url-->
+            <url>sqlite:///./aos_root/AObjectServer.db</url>
+            <connections>2</connections>
+          </database>
+          <template-cache desc="Template objects that are read from file and kept in a parsed state for execution">
+            <enabled>false</enabled>
+          </template-cache>
+          <static-file-cache desc="Static item cache, maximum memory size is (max_items * max_filesize)">
+            <enabled>false</enabled>
+            <max_items desc="Maximum number of items to store in the static cache">10240</max_items>
+            <max_filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max_filesize>
+            <cache_count desc="Number of caches to use (must be a prime number)">13</cache_count>
+          </static-file-cache>
+          <listen>
+            <!-- Listener ports -->
+            <http>
+              <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+              <port>80</port>
+            </http>
+            <https>
+              <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+              <port>443</port>
+              <cert desc="Relative path from server base for the certificate file">aos_root/certs/aos_cert.pem</cert>
+              <pkey desc="Relative path from server base for the private key file">aos_root/certs/aos_pkey.pem</pkey>
+            </https>
+            <admin>
+              <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+              <port>12345</port>
+            </admin>
+          </listen>
+          <reported>
+            <!-- Reported overrides -->
+            <hostname desc="Hostname reported to clients, this is used if request Host field is missing. If this is empty and Host is missing then local ip is used."/>
+            <server desc="Server field in the response http header, usually identifies server type and version"/>
+            <http desc="Reported HTTP port, none means use 80"/>
+            <https desc="Reported HTTPS port, none means use 443"/>
+          </reported>
+          <gzip-compression>
+            <enabled>true</enabled>
+            <default-level desc="GZip compression level 0-none, 1-min and 9-max">6</default-level>
+            <extensions desc="Extensions which should be compress">
+              <ext>html</ext>
+              <ext>htm</ext>
+              <ext>xhtml</ext>
+              <ext>xml</ext>
+              <ext>txt</ext>
+              <ext>js</ext>
+              <ext>css</ext>
+            </extensions>
+            <minimum-threshold desc="Compress files larger than this, in bytes">4096</minimum-threshold>
+          </gzip-compression>
+          <context-manager>
+            <history-maxsize>100</history-maxsize>
+            <error-history-maxsize>100</error-history-maxsize>
+          </context-manager>
+          <debug>
+            <allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page">true</allow-dumpContext>
+            <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command">true</allow-overrideOutput>
+          </debug>
+          <!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
+          <error-templates desc="HTTP status response templates, located relative to aos_data directory">
+            <default desc="Default template when a status code does not have an explicit template">http/default.template</default>
+            <HTTP-400>http/400.template</HTTP-400>
+            <HTTP-400>http/403.template</HTTP-400>
+            <HTTP-404>http/404.template</HTTP-404>
+            <HTTP-500>http/500.template</HTTP-500>
+          </error-templates>
+          <default-filename>index.html</default-filename>
+          <default-input-processor>application/x-www-form-urlencoded</default-input-processor>
+          <default-output-generator/>
+          <mime-types>mime_types.ini</mime-types>
+          <session-manager>
+            <holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">7</holder-size>
+            <timeout desc="Number of milliseconds since session was last used and expires">600000</timeout>
+            <sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration">3000</sleep-cycle>
+            <database-persistence desc="Database persistence of session data">
+              <enabled>false</enabled>
+            </database-persistence>
+          </session-manager>
+          <load>
+            <module>AOS_BaseModules</module>
+            <module>AOS_DadaData</module>
+            <module>AOS_Test</module>
+            <module>AOS_Example</module>
+            <module>AOS_Forum</module>
+            <module>AOS_Blog</module>
+            <module>AOS_Wiki</module>
+            <module>AOS_Classified</module>
+            <module>AOS_User</module>
+          </load>
+          <http>
+            <blocking desc="Use blocking or non-blocking socket IO">false</blocking>
+            <first-char-read-tries desc="Number of times to try and read the first character">15</first-char-read-tries>
+            <first-char-sleep-start desc="Initial sleep time trying to read first character">30</first-char-sleep-start>
+            <first-char-sleep-increment desc="Amount to increment the sleep time for each try">20</first-char-sleep-increment>
+            <wait-for-http-data-timeout desc="Milliseconds to wait for complete header after initial byte before giving up, in ms">10000</wait-for-http-data-timeout>
+            <http11-pipelining-enabled desc="Enabled pipelining if keep-alive is specified">true</http11-pipelining-enabled>
+            <unavailable-sleep-time desc="Milliseconds to sleep while trying to flush the output and the socket is unavailable (would block)">50</unavailable-sleep-time>
+            <unavailable-retries desc="Number of retries (sleeps) while waiting for an unavailable socket">100</unavailable-retries>
+          </http>
+          <context-queues>
+            <is-available>
+              <queues desc="Queues in the is-available queue manager, each queue has single select thread">2</queues>
+              <loop-delay desc="Milliseconds of sleep between bulk selects">10</loop-delay>
+              <empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</empty-queue-sleep-delay>
+              <no-data-timeout desc="Milliseconds before a socket is clsoed due to inactivity">180000</no-data-timeout>
+            </is-available>
+            <pre-executor>
+              <threads desc="Threads in the pre-executor queue manager">10</threads>
+              <queues desc="Queues in the pre-executor queue manager">3</queues>
+              <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
+            </pre-executor>
+            <executor>
+              <threads desc="Threads in the executor queue manager">10</threads>
+              <queues desc="Queues in the executor queue manager">2</queues>
+              <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
+            </executor>
+            <error-executor>
+              <threads desc="Threads in the executor queue manager">2</threads>
+              <queues desc="Queues in the executor queue manager">1</queues>
+              <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">100</sleep-delay>
+            </error-executor>
+          </context-queues>
+          <admin>
+            <base-http-dir>admin/</base-http-dir>
+          </admin>
+        </server>
+        <base-modules>
+          <AOSOutput_MsXslt>
+            <cache desc="XSL stylesheet cache">
+              <enabled>true</enabled>
+            </cache>
+          </AOSOutput_MsXslt>
+        </base-modules>
+        <AOS_DadaData>
+          <dataset name="dada">
+            <!-- Set specific data -->
+            <data type="noun">dada/dataset_dada/noun.dat</data>
+            <data type="noun_proper">dada/dataset_dada/noun_proper.dat</data>
+            <data type="verb">dada/dataset_dada/verb.dat</data>
+            <data type="adjective">dada/dataset_dada/adjective.dat</data>
+            <data type="adverb">dada/dataset_dada/adverb.dat</data>
+            <data type="location">dada/dataset_dada/location.dat</data>
+            <!-- Inherit from common base data -->
+            <data type="html">dada/base/html.dat</data>
+            <data type="connect">dada/base/connect.dat</data>
+            <data type="preposition">dada/base/preposition.dat</data>
+            <data type="pronoun_s">dada/base/pronoun_singular.dat</data>
+            <data type="pronoun_p">dada/base/pronoun_plural.dat</data>
+            <data type="pronoun_s_pos">dada/base/pronoun_singular_possesive.dat</data>
+            <data type="pronoun_p_pos">dada/base/pronoun_plural_possesive.dat</data>
+            <data type="pronoun_s_pos_pers">dada/base/pronoun_singular_possesive_personal.dat</data>
+            <data type="pronoun_p_pos_pers">dada/base/pronoun_plural_possesive_personal.dat</data>
+          </dataset>
+          <dataset name="lyrics">
+            <!-- Set specific data -->
+            <data type="noun">dada/dataset_lyrics/noun.dat</data>
+            <data type="noun_proper">dada/dataset_lyrics/noun_proper.dat</data>
+            <data type="verb">dada/dataset_lyrics/verb.dat</data>
+            <data type="adjective">dada/dataset_lyrics/adjective.dat</data>
+            <data type="adverb">dada/dataset_lyrics/adverb.dat</data>
+            <data type="location">dada/dataset_lyrics/location.dat</data>
+            <!-- Inherit from common base data -->
+            <data type="html">dada/base/html.dat</data>
+            <data type="connect">dada/base/connect.dat</data>
+            <data type="preposition">dada/base/preposition.dat</data>
+            <data type="pronoun_s">dada/base/pronoun_singular.dat</data>
+            <data type="pronoun_p">dada/base/pronoun_plural.dat</data>
+            <data type="pronoun_s_pos">dada/base/pronoun_singular_possesive.dat</data>
+            <data type="pronoun_p_pos">dada/base/pronoun_plural_possesive.dat</data>
+            <data type="pronoun_s_pos_pers">dada/base/pronoun_singular_possesive_personal.dat</data>
+            <data type="pronoun_p_pos_pers">dada/base/pronoun_plural_possesive_personal.dat</data>
+          </dataset>
+          <!-- templates that get used with set data -->
+          <template name="test">dada/template_debug/test.ddt</template>
+          <template name="FreeFlow">dada/template_ddt/FreeFlow.ddt</template>
+          <template name="TheRaven">dada/template_ddt/TheRaven.ddt</template>
+          <template name="BeforeTheDawn">dada/template_lyrics/BeforeTheDawn.ddt</template>
+          <template name="AtWarWithSatan">dada/template_lyrics/AtWarWithSatan.ddt</template>
+          <template name="PianoMan">dada/template_lyrics/PianoMan.ddt</template>
+          <template name="SabbathBloodySabbath">dada/template_lyrics/SabbathBloodySabbath.ddt</template>
+        </AOS_DadaData>
+        <AOS_Example/>
+      </config>
+    </configuration>
+  </dumpContext>
+  <OUTPUT>
+    <![CDATA[Length=0x0 (0)
+]]>
+  </OUTPUT>
+</root></xmp></textarea>
+
+</body>
+</html>
