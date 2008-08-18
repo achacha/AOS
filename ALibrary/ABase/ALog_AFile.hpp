@@ -24,6 +24,9 @@ class ASync_Mutex;
 class ABASE_API ALog_AFile : public ALog
 {
 public:
+  static const u4 DEFAULT_MAX_FILE_SIZE;
+
+public:
   /*!
   Filename specific to this log and used as a base name in log rotation (BASENAME.EXT -> BASENAME.YYYYMMDD.NNNNNN.EXT)
   The date on the log file will be that of the time the log object was created (not the date of the actual event, that info is inside the log)
@@ -77,7 +80,7 @@ public:
   /*!
   Maximum file size per log file
   */
-  void setLoggerMaxFileSize(u4 bytes = AConstant::npos);
+  void setLoggerMaxFileSize(u4 bytes = ALog_AFile::DEFAULT_MAX_FILE_SIZE);
 
   /*!
   AEmittable

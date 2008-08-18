@@ -14,7 +14,8 @@ $Id$
 #include "ATextGenerator.hpp"
 
 #define DEFAULT_CYCLE_SLEEP 10000
-#define DEFAULT_MAX_FILE_SIZE 1024 * 1024
+
+const u4 ALog_AFile::DEFAULT_MAX_FILE_SIZE = 1024 * 1024;
 
 void ALog_AFile::debugDump(std::ostream& os, int indent) const
 {
@@ -304,9 +305,7 @@ u4 ALog_AFile::getLoggerCycleSleep() const
   return m_CycleSleep;
 }
 
-void ALog_AFile::setLoggerMaxFileSize(
-  u4 bytes // = AConstant::npos
-)
+void ALog_AFile::setLoggerMaxFileSize(u4 bytes)
 {
   m_logMaxFileSize = bytes;
 }
