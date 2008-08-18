@@ -23,7 +23,7 @@ $Id$
 class AOS_BASE_API AOSServices : public AOSAdminInterface
 {
 public:
-  AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask = ALog::DEFAULT);
+  AOSServices(const AFilename& basePath);
   virtual ~AOSServices();
   
   /*!

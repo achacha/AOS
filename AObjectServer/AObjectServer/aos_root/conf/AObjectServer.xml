@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- /config/server -->
 <server>
-  <log-level>5</log-level>
+  <debug>
+    <allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page (should be false in production)">true</allow-dumpContext>
+    <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command (should be false in production)">true</allow-overrideOutput>
+  </debug>
 
-  <database>
-    <!--url>mysql://aos:aos@equinox/aos/</url-->
-    <!--url>odbc://aos:aos@localhost/aos_global/</url-->
-    <url>sqlite:///./aos_root/AObjectServer.db</url>
-    <connections>2</connections>
-  </database>
+  <context-manager>
+    <log-level desc="Default logging level for the context (5=debug 4=info 3=warning 2=event 1=error)">5</log-level>
+    <history-maxsize desc="Number of contexts to save in history (non-error containing)">50</history-maxsize>
+    <error-history-maxsize desc="Number of error containing contexts to save in history">100</error-history-maxsize>
+  </context-manager>
+  
+  <log>
+    <mask desc="Mask to use for writing logged events (see documentation, default is errors only)"/>
+    <max-file-size desc="Maximum size per log file before creating a new log file and incrementing filename (in bytes, default 1MB)">1048576</max-file-size>
+  </log>
 
   <template-cache desc="Template objects that are read from file and kept in a parsed state for execution">
     <enabled>false</enabled>
@@ -39,6 +46,13 @@
     </admin>
   </listen>
 
+  <database>
+    <!--url>mysql://aos:aos@equinox/aos/</url-->
+    <!--url>odbc://aos:aos@localhost/aos_global/</url-->
+    <url>sqlite:///./aos_root/AObjectServer.db</url>
+    <connections>2</connections>
+  </database>
+
   <reported>
     <!-- Reported overrides -->
     <hostname desc="Hostname reported to clients, this is used if request Host field is missing. If this is empty and Host is missing then local ip is used."/>
@@ -50,7 +64,7 @@
   <gzip-compression>
     <enabled>true</enabled>
     <default-level desc="GZip compression level 0-none, 1-min and 9-max">6</default-level>
-    <extensions desc="Extensions which should be compress">
+    <extensions desc="Extensions which should be compressed">
       <ext>html</ext>
       <ext>htm</ext>
       <ext>xhtml</ext>
@@ -62,16 +76,6 @@
     <minimum-threshold desc="Compress files larger than this, in bytes">4096</minimum-threshold>
   </gzip-compression>
 
-  <context-manager>
-    <history-maxsize>100</history-maxsize>
-    <error-history-maxsize>100</error-history-maxsize>
-  </context-manager>
-
-  <debug>
-    <allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page">true</allow-dumpContext>
-    <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command">true</allow-overrideOutput>
-  </debug>
-
   <!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
   <error-templates desc="HTTP status response templates, located relative to aos_data directory">
     <default desc="Default template when a status code does not have an explicit template">http/default.template</default>
@@ -80,11 +84,13 @@
     <HTTP-404>http/404.template</HTTP-404>
     <HTTP-500>http/500.template</HTTP-500>
   </error-templates>
+  
   <default-filename>index.html</default-filename>
   <default-input-processor>application/x-www-form-urlencoded</default-input-processor>
   <default-output-generator/>
   <default-mime-type desc="MIME type to use when it cannot be mapped from the mime-types file and extension of the controller"><![CDATA[text/xml; charset=utf-8]]></default-mime-type>
   <mime-types desc="Filename that contains MIME mappings based on controller's extension">mime_types.ini</mime-types>
+  
   <session-manager>
     <holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">7</holder-size>
     <timeout desc="Number of milliseconds since session was last used and expires">600000</timeout>
@@ -93,7 +99,8 @@
       <enabled>false</enabled>
     </database-persistence>
   </session-manager>
-  <load>
+  
+  <load desc="Dynamic libraries to load, registers input processors, modules and output generators">
     <module>AOS_BaseModules</module>
     <module>AOS_DadaData</module>
     <module>AOS_Test</module>
@@ -104,6 +111,7 @@
     <module>AOS_Classified</module>
     <module>AOS_User</module>
   </load>
+  
   <http>
     <blocking desc="Use blocking or non-blocking socket IO">false</blocking>
     <first-char-read-tries desc="Number of times to try and read the first character">15</first-char-read-tries>
@@ -114,6 +122,7 @@
     <unavailable-sleep-time desc="Milliseconds to sleep while trying to flush the output and the socket is unavailable (would block)">50</unavailable-sleep-time>
     <unavailable-retries desc="Number of retries (sleeps) while waiting for an unavailable socket">100</unavailable-retries>
   </http>
+  
   <context-queues>
     <is-available>
       <queues desc="Queues in the is-available queue manager, each queue has single select thread">2</queues>
@@ -137,7 +146,8 @@
       <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">100</sleep-delay>
     </error-executor>
   </context-queues>
+  
   <admin>
-    <base-http-dir>admin/</base-http-dir>
+    <base-http-dir desc="Location of admin site relative to the root directory">admin/</base-http-dir>
   </admin>
 </server>

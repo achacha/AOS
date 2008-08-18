@@ -283,7 +283,7 @@ AOSContextManager::AOSContextManager(AOSServices& services) :
 {
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
   m_ErrorHistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/error-history-maxsize", 100);
-  m_DefaultEventLogLevel = services.useConfiguration().useConfigRoot().getInt("/config/server/log-level", 2);
+  m_DefaultEventLogLevel = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/log-level", 2);
 
   m_Queues.resize(AOSContextManager::STATE_LAST, NULL);
 

@@ -108,7 +108,7 @@ void AOSServices::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeade
 {
 }
 
-AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
+AOSServices::AOSServices(const AFilename& basePath) :
   m_GlobalObjects(ASW("global",6)),
   mp_InputExecutor(NULL),
   mp_ModuleExecutor(NULL),
@@ -120,16 +120,27 @@ AOSServices::AOSServices(const AFilename& basePath, ALog::EVENT_MASK mask) :
   mp_CacheManager(NULL),
   mp_Log(NULL)
 {
-  //a_Create log
+  //a_Create log (must be done first as other objects rely on it)
   AFilename logfile(basePath);
   logfile.usePathNames().push_back(ASW("logs",4));
   logfile.useFilename().assign(ASW("aos.log",7));
   AFilename mutexfile(logfile);
   mutexfile.useFilename().assign(ASW("aos.mutex",9));
-  mp_Log = new ALog_AFile(new ASync_Mutex(mutexfile.toAString()), logfile, mask);
+  mp_Log = new ALog_AFile(new ASync_Mutex(mutexfile.toAString()), logfile, ALog::ALL_ERRORS);
 
+  //a_Must have admin registry before configuration
   mp_AdminRegistry = new AOSAdminRegistry(*mp_Log);
+
+  //a_Read in the config file
   mp_Configuration = new AOSConfiguration(basePath, *this);
+
+  //a_Now adjust log settings based on config
+  AString str = mp_Configuration->useConfigRoot().getString("server/log/mask", AConstant::ASTRING_EMPTY);
+  if (!str.isEmpty())
+    mp_Log->setEventMask(str.toU4(16));
+  u4 maxFileSize = mp_Configuration->useConfigRoot().getU4("server/log/max-file-size", ALog_AFile::DEFAULT_MAX_FILE_SIZE);
+  mp_Log->setLoggerMaxFileSize(maxFileSize);
+
   mp_ContextManager = new AOSContextManager(*this);
   mp_CacheManager = new AOSCacheManager(*this);
   mp_InputExecutor = new AOSInputExecutor(*this);
