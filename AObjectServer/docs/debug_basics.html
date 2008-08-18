@@ -7,6 +7,18 @@
 <h1 class="heading">Debugging a request</h1>
 <div class="comment">Lets assume that you are trying to get the response to http://localhost/mypage.xml and it is returning error 500 or not returning what you expected.</div>
 
+<h3 class="heading">Some steps you can take to locate the problem</h3>
+<ol>
+  <li>View the XML using <a href="debug_dumpContext.html">dumpContext</a> parameter</li>
+  <li>Connect to the admin console and check <div class="classname">AOSContextManager</div> (may need to set debug level to 5 and retry the request with debug level logging, errors are logged as level 1, so look for 1: in the event log)</li>
+  <li>Add a breakpoint in your module and make sure the code works as expected</li>
+</ol>
+<br />
+<br />
+<h3 class="heading">Common gotchas</h3>
+<ul>
+  <li>Forgetting trailing / at the end of a directory name, since you can have both http://localhost/foo and http://localhost/foo/ the server does not automatically assume that a name is really a directory.  In the case of trailing / then default filename is automatically appended otherwise it is literal in path translation.</li>
+</ul>
 
 </body>
 </html>

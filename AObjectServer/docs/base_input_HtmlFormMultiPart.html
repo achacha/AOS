@@ -4,6 +4,16 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body>
-TODO
+<h1 class="heading">multipart/form-data</h1>
+<div class="comment">This is the MIME for a <i>multi-part</i> POST type HTML submit, all the name/value pairs are parsed from the POST and added to the HTTP request and any uploaded files are added as a reference id fir the request context object.</div>
+<br />
+<h5 class="heading">INPUT</h5>
+HTML multi-part POST name/value pairs<br />
+<br />
+<h5 class="heading">MODEL</h5>
+/root/REQUEST/url/query-string/<br />
+  Adds form data to the request and accessed via <b>context.useRequestParameterPairs()</b> shortcut or directly <b>context.useRequestHeader().useUrl().useParameterPairs()</b> both return reference to the same <div class="classname">AQueryString</div> object<br />
+  Uploaded data will instead contain the id of the object which can be retrieved using <b>context.useContextObjects()</b><br />
+<br />
 </body>
 </html>

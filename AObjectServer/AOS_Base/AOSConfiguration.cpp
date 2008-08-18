@@ -232,6 +232,9 @@ AOSConfiguration::AOSConfiguration(
   setReportedHttpPort("/config/server/reported/http");
   setReportedHttpsPort("/config/server/reported/https");
 
+  //a_Read string data
+  m_DefaultMimeType = m_Config.useRoot().getString("/config/server/default-mime-type", ASW("text/xml; charset=utf-8",23));
+
   //a_Statics
   _initStatics();
 
@@ -344,12 +347,13 @@ const AFilename& AOSConfiguration::getBaseDir() const
   return m_BaseDir;
 }
 
-bool AOSConfiguration::getMimeTypeFromExt(AString strExt, AString& target) const
+bool AOSConfiguration::getMimeTypeFromExt(const AString& ext, AString& target) const
 {
   //a_No extension, no mapping
-  if (strExt.isEmpty())
+  if (ext.isEmpty())
     return false;
 
+  AString strExt(ext);
   strExt.makeLower();
   MAP_AString_AString::const_iterator cit = m_ExtToMimeType.find(strExt);
   if (cit != m_ExtToMimeType.end())
@@ -359,6 +363,29 @@ bool AOSConfiguration::getMimeTypeFromExt(AString strExt, AString& target) const
   }
   else
     return false;
+}
+
+const AString& AOSConfiguration::getDefaultMimeType() const
+{
+  return m_DefaultMimeType;
+}
+
+void AOSConfiguration::setMimeTypeFromExt(const AString& ext, AOSContext& context)
+{
+  AString mimetype;
+  if (getMimeTypeFromExt(ext, mimetype))
+  {
+    context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, mimetype);
+  }
+  else
+  {
+    context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, m_DefaultMimeType);
+  }
+}
+
+void AOSConfiguration::setMimeTypeFromRequestExt(AOSContext& context)
+{
+  setMimeTypeFromExt(context.useRequestUrl().getExtension(), context);
 }
 
 void AOSConfiguration::loadConfig(const AString& name)

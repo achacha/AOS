@@ -52,6 +52,11 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
     return AOSContext::RETURN_ERROR;
   }
 
+  //a_See if extension for mime type set for the template(s)
+  AString ext;
+  if (context.getOutputParams().emitContentFromPath(ASW("mime-extension",14), ext))
+    m_Services.useConfiguration().setMimeTypeFromExt(ext, context);
+
   //a_Iterate filename types and execute/output templates
   bool templatesDisplayed = 0;
   for (AXmlElement::CONST_CONTAINER::const_iterator cit = templateNames.begin(); cit != templateNames.end(); ++cit)

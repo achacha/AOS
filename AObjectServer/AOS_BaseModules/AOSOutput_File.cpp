@@ -65,7 +65,7 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
     //a_Set content type based on file extension
     AString ext;
     pFilename->emitExtension(ext);
-    context.setResponseMimeTypeFromExtension(ext);
+    m_Services.useConfiguration().setMimeTypeFromExt(ext, context);
   }
 
   context.clearOutputBuffer();

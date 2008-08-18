@@ -20,6 +20,7 @@ class AOSController;
 class ASynchronization;
 class ALog;
 class AOSServices;
+class AOSContext;
 
 /*!
 Global configuration
@@ -145,9 +146,36 @@ public:
   void setAosDefaultOutputGenerator(const AString&);
 
   /*!
-  Map mimetype from extension
+  Get the default mime type when it cannot be matched with extension
+
+  @return configured default MIME type
   */
-  bool getMimeTypeFromExt(AString ext, AString& mimeType) const;  //a_true if ext to MIME type mapping exists
+  const AString& getDefaultMimeType() const;
+  
+  /*!
+  Map mime type from extension
+  
+  @param ext Extension to try and map
+  @target appended with extension if found
+  @return true if extension is mapped and value was found, false if extension is not mapped
+  */
+  bool getMimeTypeFromExt(const AString& ext, AString& target) const;
+  
+  /*!
+  Set the mime type based on extension or use configured default if extension is not found
+  
+  @param ext Extension to try and map, if not found will use default
+  @context AOSContext contains the HTTP response header that will get set
+  */
+  void setMimeTypeFromExt(const AString& ext, AOSContext& context);
+
+  /*!
+  Set the MIME type in response header based on the extension found in the request header's URL
+  NOTE: If extension mapping not found then default is set
+
+  @param context AOSContext contains both request and response header
+  */
+  void setMimeTypeFromRequestExt(AOSContext& context);
   
   /*!
   Paths
@@ -245,6 +273,9 @@ private:
   //a_MIME type lookup
   MAP_AString_AString m_ExtToMimeType;
   void _readMIMETypes();
+
+  //a_Default MIME type
+  AString m_DefaultMimeType;
 
   //a_AOS directories from base
   AFilename m_AosBaseConfigDir;

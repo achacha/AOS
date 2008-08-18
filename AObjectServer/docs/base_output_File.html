@@ -4,6 +4,35 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body>
-TODO
-</body>
-</html>
+<h1 class="heading">Output from a given static file</h1>
+<div class="comment">Given a relative file path and a base directory it will read the file and write it to the output. 
+Content type default is based on the extension of the controller's extension 
+(e.g. http://localhost/foo.png will be image/png while http:/localhost/foo will use default)
+Extension map is in mime_types.ini and default is found in AObjectServer.xml
+</div>
+<br />
+<h5 class="heading">PARAMETERS</h5>
+<xmp class="code_xml"><output type="File">
+  <content-type desc="Optional MIME content type for the file, default is picked based on extension or default as a fallback"/>
+  <path desc="Relative file path from base directory"/>
+  <base desc="Base directory">{ data | dynamic | absolute | static }</base>
+</output></xmp>
+<pre>
+base:
+  static   - aos_static (default)
+  data     - aos_data
+  dynamic  - aos_dynamic
+  absolute - the path is the fully qualified path to the file (a bit dangerous)
+</pre>
+<br />
+<h5 class="heading">OUTPUT</h5>
+Contents of the file specified<br />
+<br />
+<h5 class="heading">EXAMPLES</h5>
+<xmp class="code_xml"><output type="File">
+  <path>mydir/myfile.txt</path>
+  <base>data</base>
+</output></xmp>
+<div class="comment">Reads $AOS_DATA/mydir/myfile.txt and writes it as output.</div>
+<br />
+</body></html>

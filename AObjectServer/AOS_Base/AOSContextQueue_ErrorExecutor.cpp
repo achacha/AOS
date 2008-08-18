@@ -114,7 +114,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           if (dumpContextLevel > 0)
           {
             //a_Write contents of the output XML instead of output buffer
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, "text/xml");
+            m_Services.useConfiguration().setMimeTypeFromExt(ASW("xml",3), *pContext);
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_200_Ok);
             pContext->writeOutputBuffer(true);
           }

@@ -300,7 +300,7 @@ void AOSAdmin::_processAdmin(AFile_Socket& client, AHTTPRequestHeader& request)
   //a_Generate response header and emit
   response.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(outputBuffer.getSize()));
   response.setPair(AHTTPHeader::HT_GEN_Cache_Control, ASW("no-cache",8));
-  response.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml",8));
+  response.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
   response.emit(client);
   
   //a_Emit response
@@ -315,7 +315,7 @@ void AOSAdmin::_shutdown(
 {
   AString str(2048, 1024);
   AXmlDocument xmlDoc(ASW("admin",5));
-  response.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml",8));
+  response.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
 
   AXmlElement& elem = xmlDoc.useRoot().addElement(ASW("shutdown",8));
 

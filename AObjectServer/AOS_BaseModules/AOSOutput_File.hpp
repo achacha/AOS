@@ -12,7 +12,7 @@ $Id$
   Output contents of a file
 
   <output type="File">
-    <content-type desc="Optional MIME content type for the file"/>
+    <content-type desc="Optional MIME content type for the file, default is picked based on extension or text/html as a fallback"/>
     <path desc="Relative file path from base directory"/>
     <base desc="Base directory">{ data | dynamic | absolute | static }</base>
       static   - aos_static (default)

@@ -292,18 +292,6 @@ public:
   ACookies& useResponseCookies();
   
   /*!
-  Uses request header to determine which MIME type the response header will use
-  */
-  void setResponseMimeTypeFromRequestExtension();
-
-  /*!
-  Uses provided extension to determine which MIME type the response header will use
-
-  @param Extension to use (no leading . needed)  e.g. "html" -> "text/html"
-  */
-  void setResponseMimeTypeFromExtension(const AString& ext);
-
-  /*!
   Dumps self into output model depending on level
   
   @return

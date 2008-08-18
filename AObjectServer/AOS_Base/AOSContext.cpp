@@ -315,7 +315,7 @@ AOSContext::Status AOSContext::init()
   }
 
   //a_Map response MIME type based on request extension
-  setResponseMimeTypeFromRequestExtension();
+  m_Services.useConfiguration().setMimeTypeFromRequestExt(*this);
 
   //a_Get associated directory config
   mp_DirConfig = m_Services.useConfiguration().getDirectoryConfig(m_RequestHeader.getUrl());
@@ -916,20 +916,6 @@ void AOSContext::addError(
   m_OutputXmlDocument.useRoot().addElement(S_ERROR).addData(what);
 }
 
-void AOSContext::setResponseMimeTypeFromRequestExtension()
-{
-  AString str(64,16);
-  if (m_Services.useConfiguration().getMimeTypeFromExt(m_RequestHeader.useUrl().getExtension(), str))
-    m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Type, str);
-}
-
-void AOSContext::setResponseMimeTypeFromExtension(const AString& ext)
-{
-  AString str(64,16);
-  if (m_Services.useConfiguration().getMimeTypeFromExt(ext, str))
-    m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Type, str);
-}
-
 AEventVisitor& AOSContext::useEventVisitor()
 {
   return m_EventVisitor;
@@ -1202,7 +1188,7 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     if (m_OutputBuffer.isEmpty() && m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_REDIRECTING))
     {
       m_OutputXmlDocument.emit(m_OutputBuffer);
-      m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
+      m_Services.useConfiguration().setMimeTypeFromExt(ASW("xml",3), *this);
       m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
     }
 
@@ -1435,7 +1421,8 @@ bool AOSContext::processStaticPage()
   ACache_FileSystem::HANDLE pFile(NULL, false);
   const ATime& ifModifiedSince = m_RequestHeader.getIfModifiedSince();
   ATime modified;
-  switch (m_Services.useCacheManager().getStaticFile(*this, httpFilename, pFile, modified, ifModifiedSince))
+  ACacheInterface::STATUS fileStatus = m_Services.useCacheManager().getStaticFile(*this, httpFilename, pFile, modified, ifModifiedSince);
+  switch (fileStatus)
   {
     case ACache_FileSystem::NOT_FOUND:
     {
@@ -1477,7 +1464,7 @@ bool AOSContext::processStaticPage()
         
         AString ext;
         httpFilename.emitExtension(ext);
-        setResponseMimeTypeFromExtension(ext);
+        m_Services.useConfiguration().setMimeTypeFromExt(ext, *this);
         writeResponseHeader();
 
         //a_Stream content

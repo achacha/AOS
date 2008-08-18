@@ -15,11 +15,14 @@ Example:
 
 ...
 <module class="Template">
+  <mime-extension>html</mime-extension>
   <filename if="...">script/something.html</filename>
   <filename ifnot="...">script/something_not.html</filename>
   <filename if="...">script/something_more.html</filename>
 </module>
 ...
+
+mime-extension - uses the extension to lookup MIME type to use for output (mime_types.ini), if not specified default is used (configured in AObjectServer.xml)
 
 */
 class AOS_BASEMODULES_API AOSOutput_Template : public AOSOutputGeneratorInterface

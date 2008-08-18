@@ -24,104 +24,101 @@ $(document).ready(function(){
 
 <ul id="aossamples" class="filetree">
   <span class="folder">Rhino Server</span>
+  <li><a target="_target" href="/ping">ping</a></li>
+  <li><a target="_target" href="/iframes.html">IFRAME madness!</a></li>
   <li>
-    <li><a target="_target" href="/ping">ping</a></li>
-		<li><a target="_target" href="/iframes.html">IFRAME madness!</a></li>
+    <span class="folder">Classified</span>
     <ul>
-  	  <li>
-  	    <span class="folder">Classified</span>
-  	    <ul>
-            <li><a target="_target" href="/classified/">Ad Entry Form</a></li>
-            <li><a target="_target" href="/classified/classified_list">Ad List</a></li>
-  	    </ul>
-  	  </li>
-      <li>
-  	    <span class="folder">AJAX</span>
-  	    <ul>
-          <li><a target="_target" href="/tooltips/">Tooltips</a></li>
-          <li><a target="_target" href="/samples/rss20.xml">RSS 2.0 sample</a></li>
-  	    </ul>
-  	  </li>
-      <li>
-  	    <span class="folder">Database</span>
-  	    <ul>
-          <li><a target="_target" href="/samples/sql.xml">Simple SQL query</a></li>
-  	    </ul>
-  	  </li>
-  	  <li>
-  	    <span class="folder">Input processing</span>
-  	    <ul>
-          <li><a target="_target" href="/samples/DisplayInput.xml">Display Input: XML</a></li>
-          <li><a target="_target" href="/samples/DisplayInputWithXslt.html">Display Input: XSLT generated</a></li>
-          <li><a target="_target" href="/samples/DisplayInputWithTemplate.html">Display Input: Template</a> Single HTML template</li>
-          <li><a target="_target" href="/samples/AliasedToDisplayInputWithTemplate.html">Aliased absolute path to Display Input: Template</a>(above link) Aliased (abosulte path) as single HTML template</li>
-          <li><a target="_target" href="/samples/AliasedRelativeToDisplayInputWithTemplate.html">Aliased realtive path to Display Input: Template</a>(above link) Aliased (relative path) as single HTML template</li>
-          <li><a target="_target" href="/samples/DisplayInputWithTemplateParts.html">Display Input: 4 Template parts</a> Output made up of 4 separate template parts</li>
-  	    </ul>
-  	  </li>
-      <li>
-  	    <span class="folder">Output variations</span>
-  	    <ul>
-          <li><a target="_target" href="/samples/InsertIntoModel.xml">as XML</a></li>
-          <li><a target="_target" href="/samples/InsertIntoModel.json">as JSON</a></li>
-          <li><a target="_target" href="/samples/InsertIntoModel.template">as HTML template</a></li>
-          <li><a target="_target" href="/samples/InsertIntoModel.xslt">as HTML via XSLT</a></li>
-  	    </ul>
-  	  </li>
-      <li>
-  	    <span class="folder">Lua scripting and templating</span>
-  	    <ul>
-          <li><a target="_target" href="/samples/ExecuteLuaScriptFile">Lua script in data/lua/TestLuaScript.lua (output XML)</a></li>
-          <li><a target="_target" href="/samples/ExecuteLuaScriptInline">Lua script inlined inside the command xml (output XML)</a></li>
-          <li><a target="_target" href="/samples/ExecuteTemplateFile">Lua script in data/template/TestLuaScript.template (output XML)</a></li>
-          <li><a target="_target" href="/samples/ExecuteTemplateInline">Lua script inlined inside command xml (output XML)</a></li>
-          <li><a target="_target" href="/samples/LotsOfLuaScripts.html">Lots of Lua script blocks inside a single template</a></li>
-  	    </ul>
-  	  </li>
-      <li>
-        <span class="folder">Context and Form handling</span>
-  	    <ul>
-          <li><a target="_target" href="/samples/SaveModelElementToFile.html">Save element to file</a></li>
-          <li><a target="_target" href="/samples/SaveUploadToFile.html">Save multi-part upload to file</a></li>
-          <li><a target="_target" href="/samples/MultiPartFormWithFile.html">Multi-part FORM submit with file upload</a></li>
-  	    </ul>
-  	  </li>
-      <li>
-  	    <span class="folder">SQL</span>
-  	    <ul>
-          <li><a target="_target" href="/samples/sql.xml">Simple SQL query</a></li>
-  	    </ul>
-  	  </li>
-      <li>
-  	    <span class="folder">Redirection</span>
-  	    <ul>
-          <li><a target="_target" href="/samples/RedirectToDisplayInput.html">Redirect to HTTP version of Display Input</a></li>
-          <li><a target="_target" href="/samples/RedirectSecureToDisplayInput.html">Redirect to HTTPS version of Display Input</a></li>
-  	    </ul>
-  	  </li>
-      <li>
-  	    <span class="folder">Login and CAPTCHA</span>
-  	    <ul>
-          <li><a target="_target" href="/captcha/">Validate CAPTCHA</a></li>
-          <li><a target="_target" href="/login">Login page</a></li>
-          <li><a target="_target" href="/secure/SecuredPage.html">Access a secured-by-login page</a></li>
-  	    </ul>
-  	  </li>
-      <li>
-  	    <span class="folder">Wiki</span>
-  	    <ul>
-          <li><a target="_target" href="/wiki/db/">Database driven wiki</a></li>
-          <li><a target="_target" href="/wiki/file/">File-system driven wiki</a></li>
-          <li><a target="_target" href="/wiki/file-secure/">Secure file-system driven wiki (localhost may not be the bound IP)</a></li>
-  	    </ul>
-  	  </li>
-  	  <li>
-  	    <span class="folder">Image generation</span>
-  	    <ul>
-          <li><a target="_target" href="/imagegen/">Generated image cube</a></li>
-          <li><a target="_target" href="/imagegen/generated_X.png">Single generated PNG image</a></li>
-  	    </ul>
-  	  </li>
+        <li><a target="_target" href="/classified/">Ad Entry Form</a></li>
+        <li><a target="_target" href="/classified/classified_list">Ad List</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">AJAX</span>
+    <ul>
+      <li><a target="_target" href="/tooltips/">Tooltips</a></li>
+      <li><a target="_target" href="/samples/rss20.xml">RSS 2.0 sample</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">Database</span>
+    <ul>
+      <li><a target="_target" href="/samples/sql.xml">Simple SQL query</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">Input processing</span>
+    <ul>
+      <li><a target="_target" href="/samples/DisplayInput.xml">Display Input: XML</a></li>
+      <li><a target="_target" href="/samples/DisplayInputWithXslt.html">Display Input: XSLT generated</a></li>
+      <li><a target="_target" href="/samples/DisplayInputWithTemplate.html">Display Input: Template</a> Single HTML template</li>
+      <li><a target="_target" href="/samples/AliasedToDisplayInputWithTemplate.html">Aliased absolute path to Display Input: Template</a>(above link) Aliased (abosulte path) as single HTML template</li>
+      <li><a target="_target" href="/samples/AliasedRelativeToDisplayInputWithTemplate.html">Aliased realtive path to Display Input: Template</a>(above link) Aliased (relative path) as single HTML template</li>
+      <li><a target="_target" href="/samples/DisplayInputWithTemplateParts.html">Display Input: 4 Template parts</a> Output made up of 4 separate template parts</li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">Output variations</span>
+    <ul>
+      <li><a target="_target" href="/samples/InsertIntoModel.xml">as XML</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel.json">as JSON</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel.template">as HTML template</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel.xslt">as HTML via XSLT</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">Lua scripting and templating</span>
+    <ul>
+      <li><a target="_target" href="/samples/ExecuteLuaScriptFile">Lua script in data/lua/TestLuaScript.lua (output XML)</a></li>
+      <li><a target="_target" href="/samples/ExecuteLuaScriptInline">Lua script inlined inside the command xml (output XML)</a></li>
+      <li><a target="_target" href="/samples/ExecuteTemplateFile">Lua script in data/template/TestLuaScript.template (output XML)</a></li>
+      <li><a target="_target" href="/samples/ExecuteTemplateInline">Lua script inlined inside command xml (output XML)</a></li>
+      <li><a target="_target" href="/samples/LotsOfLuaScripts.html">Lots of Lua script blocks inside a single template</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">Form handling</span>
+    <ul>
+      <li><a target="_target" href="/samples/SimpleForm.html">Simple FORM data parsed into XML model</a></li>
+      <li><a target="_target" href="/samples/SaveModelElementToFile.html">Save element to file</a></li>
+      <li><a target="_target" href="/samples/SaveUploadToFile.html">Save multi-part upload to file</a></li>
+      <li><a target="_target" href="/samples/MultiPartFormWithFile.html">Multi-part FORM submit with file upload</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">SQL</span>
+    <ul>
+      <li><a target="_target" href="/samples/sql.xml">Simple SQL query</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">Redirection</span>
+    <ul>
+      <li><a target="_target" href="/samples/RedirectToDisplayInput.html">Redirect to HTTP version of Display Input</a></li>
+      <li><a target="_target" href="/samples/RedirectSecureToDisplayInput.html">Redirect to HTTPS version of Display Input</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">Login and CAPTCHA</span>
+    <ul>
+      <li><a target="_target" href="/captcha/">Validate CAPTCHA</a></li>
+      <li><a target="_target" href="/login">Login page</a></li>
+      <li><a target="_target" href="/secure/SecuredPage.html">Access a secured-by-login page</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">Wiki</span>
+    <ul>
+      <li><a target="_target" href="/wiki/db/">Database driven wiki</a></li>
+      <li><a target="_target" href="/wiki/file/">File-system driven wiki</a></li>
+      <li><a target="_target" href="/wiki/file-secure/">Secure file-system driven wiki (localhost may not be the bound IP)</a></li>
+    </ul>
+  </li>
+  <li>
+    <span class="folder">Image generation</span>
+    <ul>
+      <li><a target="_target" href="/imagegen/">Generated image cube</a></li>
+      <li><a target="_target" href="/imagegen/generated_X.png">Single generated PNG image</a></li>
     </ul>
   </li>
   <li>

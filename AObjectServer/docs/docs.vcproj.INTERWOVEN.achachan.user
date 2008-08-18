@@ -34,10 +34,10 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Debug|x64"
 			>
 			<DebugSettings
-				Command="$(TargetPath)"
+				Command=""
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -62,10 +62,10 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
+			Name="Release|Win32"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"

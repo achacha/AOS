@@ -83,7 +83,8 @@
   <default-filename>index.html</default-filename>
   <default-input-processor>application/x-www-form-urlencoded</default-input-processor>
   <default-output-generator/>
-  <mime-types>mime_types.ini</mime-types>
+  <default-mime-type desc="MIME type to use when it cannot be mapped from the mime-types file and extension of the controller"><![CDATA[text/xml; charset=utf-8]]></default-mime-type>
+  <mime-types desc="Filename that contains MIME mappings based on controller's extension">mime_types.ini</mime-types>
   <session-manager>
     <holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">7</holder-size>
     <timeout desc="Number of milliseconds since session was last used and expires">600000</timeout>

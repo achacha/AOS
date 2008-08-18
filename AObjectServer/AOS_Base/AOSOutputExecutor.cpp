@@ -124,7 +124,7 @@ void AOSOutputExecutor::execute(AOSContext& context)
   if (command.equals("NOP"))
   {
     //a_If NOP was used force XML
-    context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml", 8));
+    m_Services.useConfiguration().setMimeTypeFromExt(ASW("xml",3), context);
     if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
       context.useEventVisitor().startEvent(ASWNL("NOP detected, defaulting to XML output"), AEventVisitor::EL_DEBUG);
   }
