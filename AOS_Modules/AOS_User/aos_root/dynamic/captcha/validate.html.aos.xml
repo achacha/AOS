@@ -5,6 +5,7 @@
   
   <!-- Results of the Captcha.validate -->
   <output class="Template">
+    <mime-extension desc="Lookup MIME type for this extension">html</mime-extension>
     <filename if="/root/captcha/Valid">template/captcha/valid.html</filename>
     <filename ifnot="/root/captcha/Valid">template/captcha/notvalid.html</filename>
   </output>

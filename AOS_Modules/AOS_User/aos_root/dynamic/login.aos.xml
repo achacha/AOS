@@ -4,6 +4,7 @@
   
   <!-- Depending on logged in state show either the login or logout page -->
   <output class="Template">
+    <mime-extension desc="Lookup MIME type for this extension">html</mime-extension>
     <filename if="SESSION/data/user/isLoggedIn">template/logout.html</filename>
     <filename ifnot="SESSION/data/user/isLoggedIn">template/login.html</filename>
   </output>
