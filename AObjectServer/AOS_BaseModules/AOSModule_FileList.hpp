@@ -16,7 +16,7 @@ Blocks relative path that goes below base
 Uses module/path@base for all path values (does not allow query string to change base)
 
 <module class="FileList">
-  <path base="static|data|dynamic">
+  <path base="static|data|dynamic|absolute">
 </module>
 
 Default base is static.
