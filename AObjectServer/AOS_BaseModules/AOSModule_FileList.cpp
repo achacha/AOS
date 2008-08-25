@@ -48,7 +48,7 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
       pFilename = new AFilename(m_Services.useConfiguration().getAosBaseDataDirectory());
       pFilename->join(str, false);
     }
-    else if (strBase.equals(ASW("absolute",4)))
+    else if (strBase.equals(ASW("absolute",8)))
     {
       pFilename = new AFilename(str, false);
     }

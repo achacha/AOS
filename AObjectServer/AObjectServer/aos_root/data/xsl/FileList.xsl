@@ -33,30 +33,33 @@
     </html>
   </xsl:template>
   <xsl:template match="file">
-    <xsl:variable name="relative-url">
-      <xsl:value-of select="/root/REQUEST/url/path"/>
-      <xsl:value-of select="/root/REQUEST/url/filename"/>
-    </xsl:variable>
-    <xsl:variable name="offset">
-      <xsl:value-of select="/root/file-list/offset"/>
-      <xsl:value-of select="filename/name"/>
-    </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="@dir = '1'">
-        <xsl:text> </xsl:text>
-        <a href="{$relative-url}?offset={$offset}">
-          <img alt="+" src="/images/folder_shut.gif"/>
-          <xsl:text> </xsl:text>
-          <b><xsl:value-of select="filename/name"/></b>
-        </a>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>  </xsl:text>
-        <img alt="." src="/images/file.gif"/>
-        <xsl:text> </xsl:text>
-        <xsl:value-of select="filename/name"/>
-      </xsl:otherwise>
-    </xsl:choose>
-    <br/>
+	<xsl:if test="not(@hidden = 'true')">
+		<xsl:variable name="relative-url">
+		  <xsl:value-of select="/root/REQUEST/url/path"/>
+		  <xsl:value-of select="/root/REQUEST/url/filename"/>
+		</xsl:variable>
+		<xsl:variable name="offset">
+		  <xsl:value-of select="/root/file-list/offset"/>
+		  <xsl:value-of select="filename/name"/>
+		</xsl:variable>
+		<xsl:choose>
+		  <xsl:when test="@dir = '1'">
+			<xsl:text> </xsl:text>
+			<a href="{$relative-url}?offset={$offset}">
+			  <img alt="+" src="/images/folder_shut.gif"/>
+			  <xsl:text> </xsl:text>
+			  <b><xsl:value-of select="filename/name"/></b>
+			</a>
+			<br/>
+		  </xsl:when>
+		  <xsl:otherwise>
+			<xsl:text>  </xsl:text>
+			<img alt="." src="/images/file.gif"/>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="filename/name"/>
+			<br/>
+		  </xsl:otherwise>
+		</xsl:choose>
+	</xsl:if>
   </xsl:template>
 </xsl:stylesheet>
