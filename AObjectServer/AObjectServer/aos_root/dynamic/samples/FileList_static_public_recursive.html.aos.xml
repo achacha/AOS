@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+	<input/>
+	<module class="FileList">
+	  <path>public/*.*</path>
+    <recursive>true</recursive>
+	</module>
+	<output class="Xslt">
+		<filename>xsl/FileList.xsl</filename>
+	</output>
+</controller>
+	

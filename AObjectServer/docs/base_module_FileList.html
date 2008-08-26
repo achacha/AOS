@@ -8,25 +8,36 @@
 <div class="comment">Use another directory as a base</div>
 <br />
 <h5 class="heading">USAGE</h5>
-<xmp>
-<module class="FileList">
-  <path base="static|data|dynamic|absolute">
-  <recursive>true|false</recursive>
-</module>
-</xmp>
+<pre class="code_xml">
+&lt;module class="FileList"&gt;
+  &lt;path base="<span class="parameters">static</span> | <span class="parameters">data</span> | <span class="parameters">dynamic</span> | <span class="parameters">absolute</span>"&gt;
+  &lt;recursive&gt;<span class="parameters">true</span> | <span class="parameters">false</span>&lt;/recursive&gt;
+  &lt;linked&gt;<span class="parameters">true</span> | <span class="parameters">false</span>&lt;/linked&gt;
+&lt;/module&gt;
+</pre>
 <br />
 <div class="description">
 static - use the static directory <b>(default)</b><br />
 data - use the data directory<br />
 dynamic - use the dynamic directory<br />
 absolute - use absolute base path<br />
-</div>
+</div><br />
 <div class="description">
 recursive false - only display files in the specified directory <b>(default)</b><br />
 recursive true - display sub-directories and allow navigation inside<br />
-</div>
+</div><br />
+<div class="description">
+linked false - display files as plain text<b>(default)</b><br />
+linked true - display files as links<br />
+</div><br />
 <br />
 <h5 class="heading">MODEL</h5>
+Builds elements for each file and folder.
+<br />
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/FileList_static_public.html.aos.xml
+dynamic/samples/FileList_static_public_recursive.html.aos.xml
+dynamic/samples/FileList_static_public_linked.html.aos.xml
 <br />
 </body>
 </html>

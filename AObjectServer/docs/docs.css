@@ -58,9 +58,17 @@ body.docs
   font-size:medium;
 }
 
+.parameters
+{
+  background-color:#eeeeee;
+  color:#1010ff;
+  font-family:Courier New;
+  font-size:medium;
+}
+
 .description
 {
-  color:#f0f0f0;
+  color:#101010;
   font-family:Courier New;
   font-size:medium;
 }
