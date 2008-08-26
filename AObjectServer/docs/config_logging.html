@@ -1,0 +1,56 @@
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body class="docs">
+<h1 class="heading">Configuring logging</h1>
+
+<h3 class="heading">Mask for /config/server/log/mask to control file based logging</h3>
+<br />
+<pre class="code">
+    EXCEPTION      = 0x00000001,         //Exception
+    CRITICAL_ERROR = 0x00000002,         //Critical error
+    FAILURE        = 0x00000004,         //Functional failure
+    ALL_ERRORS     = 0x000000ff,         //All errors
+    
+    WARNING        = 0x00000100,         //Warning
+    ALL_WARNINGS   = 0x00000f00,         //All warnings
+    
+    MESSAGE        = 0x00001000,         //Log message
+    STATISTIC      = 0x00002000,         //Statistics of some sort
+    TIMING         = 0x00004000,         //Timing data
+    ALL_MESSAGES   = 0x000ff000,         //All messages
+
+    INFO           = 0x00100000,         //Semi-important information
+    COMMENT        = 0x00200000,         //Not so important comment
+    DEBUG          = 0x00400000,         //Debug only, lots of log spam
+    ALL_INFO       = 0x00f00000,         //All informational
+
+    // 0x0f00000 range of 4 bits currently free
+
+    SCOPE_START    = 0x10000000,         //Scope start
+    SCOPE          = 0x20000000,         //Scope during
+    SCOPE_END      = 0x40000000,         //Scope end
+    ALL_SCOPE      = 0xf0000000,         //All scope messages
+
+    SILENT         = 0x00000000,         //No messages
+    DEFAULT        = 0xff0fffff,         //All except INFO logged, INFO must be explicitly turned on
+    ALL            = 0xffffffff          //Everything
+</pre>
+<br />
+<br />
+<h3 class="heading">Context event visitor logging levels for /config/server/context-manager/log-level</h3>
+<div class="comment">Can change this while running using admin site object AOSContextManager</div>
+<br />
+<pre class="code">
+  0  -  Supress logging
+  1  -  Log only errors
+  2  -  Log errors and evernts only
+  3  -  Log errors, events and warnings
+  4  -  Log errors, events, warning and info
+  5  -  Log errors, events, warning, info and debug (everything)
+</pre>
+<br />
+</body>
+</html>

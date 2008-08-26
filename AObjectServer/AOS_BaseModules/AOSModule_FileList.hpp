@@ -10,16 +10,6 @@ $Id$
 
 /*!
 Get a list of files at a given path
-
-Uses module/path + 'offset' from query string as base directory
-Blocks relative path that goes below base
-Uses module/path@base for all path values (does not allow query string to change base)
-
-<module class="FileList">
-  <path base="static|data|dynamic|absolute">
-</module>
-
-Default base is static.
 */
 class AOS_BASEMODULES_API AOSModule_FileList : public AOSModuleInterface
 {

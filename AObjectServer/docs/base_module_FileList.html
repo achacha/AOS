@@ -3,7 +3,7 @@
   <title>MODULE: FileList</title>
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
-<body>
+<body class="docs">
 <h1 class="heading">MODULE: FileList</h1>
 <div class="comment">Use another directory as a base</div>
 <br />
@@ -11,14 +11,19 @@
 <xmp>
 <module class="FileList">
   <path base="static|data|dynamic|absolute">
+  <recursive>true|false</recursive>
 </module>
 </xmp>
 <br />
 <div class="description">
-static - use the static directory<br />
+static - use the static directory <b>(default)</b><br />
 data - use the data directory<br />
 dynamic - use the dynamic directory<br />
 absolute - use absolute base path<br />
+</div>
+<div class="description">
+recursive false - only display files in the specified directory <b>(default)</b><br />
+recursive true - display sub-directories and allow navigation inside<br />
 </div>
 <br />
 <h5 class="heading">MODEL</h5>

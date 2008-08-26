@@ -66,6 +66,8 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
     pFilename->join(str, false);
   }
 
+  bool recursive = moduleParams.getBool(ASW("recursive",9), false);
+
   //a_File list base element
   AXmlElement& fileList = context.useModel().addElement(ASW("file-list",9));
 
@@ -96,7 +98,7 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
   
   //a_Build the file info
   AFileSystem::LIST_FileInfo files;
-  if (AFileSystem::dir(*pFilename, files, false, false) > 0)
+  if (AFileSystem::dir(*pFilename, files, recursive, !recursive) > 0)
   {
     fileList.useAttributes().insert(ASW("count",5), AString::fromSize_t(files.size()));
     for(AFileSystem::LIST_FileInfo::iterator it = files.begin(); it != files.end(); ++it)
