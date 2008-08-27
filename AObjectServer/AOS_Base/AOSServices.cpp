@@ -173,17 +173,17 @@ bool AOSServices::initDatabasePool()
 
   int iMaxConnections = mp_Configuration->useConfigRoot().getInt(AOSConfiguration::DATABASE_CONNECTIONS, 2);
   AString strUrl = mp_Configuration->useConfigRoot().getString(AOSConfiguration::DATABASE_URL, AConstant::ASTRING_EMPTY);
-  if (iMaxConnections > 0 && !strUrl.isEmpty())
-  {
-    AUrl urlServer(strUrl);
-    mp_DatabaseConnPool->init(urlServer, iMaxConnections);
-    return true;
-  }
-  else
-  {
-    mp_Log->add(ARope("AOSServices::_initDatabasePool: Unable to init DB pool url='")+strUrl+ASWNL("' connections=")+AString::fromInt(iMaxConnections) , ALog::FAILURE);
-    return false;
-  }
+  
+  bool ret = true;
+  
+  //a_No URL, create a NOP server and skip global init
+  if (strUrl.isEmpty())
+    ret = false;
+
+  AUrl urlServer(strUrl);
+  mp_DatabaseConnPool->init(urlServer, iMaxConnections);
+  
+  return ret;
 }
 
 ALog& AOSServices::useLog()

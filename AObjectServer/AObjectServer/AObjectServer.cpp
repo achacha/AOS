@@ -63,11 +63,11 @@ int main(int argc, char **argv)
   std::cout << AOS_Base_INFO << std::endl;
   try
   {
-    //a_Check if INI filename was provided
+    //a_Check if config base path was provided
     AFilename basePath(ASW("./aos_root/",11), false);
     if (argc > 1)
     {
-      //a_Check existance of INI file
+      //a_Check existance of config base path
       basePath.set(AString(argv[1]), true);
     }
 
@@ -78,6 +78,15 @@ int main(int argc, char **argv)
       AOS_DEBUGTRACE(str.c_str(), NULL);
       return -1;
     }
+    else
+    {
+      AFilename absPath;
+      AFileSystem::expand(basePath, absPath);
+      AString str("Base aos_root directory: ");
+      absPath.emit(str);
+      AOS_DEBUGTRACE(str.c_str(), NULL);
+    }
+
 
     //a_Initialize services
     AOSServices services(basePath);

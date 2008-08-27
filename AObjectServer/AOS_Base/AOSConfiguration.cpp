@@ -409,12 +409,12 @@ void AOSConfiguration::loadConfig(const AString& name)
 
 void AOSConfiguration::_loadControllers()
 {
-  AFileSystem::LIST_FileInfo fileList, directoryConfigs;
+  AFileSystem::FileInfos fileList, directoryConfigs;
   const AString& EXT1 = ASW("aos",3);
   const AString& EXT2 = ASW("xml",3);
   if (AFileSystem::dir(m_AosBaseDynamicDir, fileList, true, true) > 0)
   {
-    for(AFileSystem::LIST_FileInfo::iterator it = fileList.begin(); it != fileList.end(); ++it)
+    for(AFileSystem::FileInfos::iterator it = fileList.begin(); it != fileList.end(); ++it)
     {
       if (!it->filename.equalsExtension(EXT1, EXT2))
       {
@@ -523,10 +523,10 @@ void AOSConfiguration::_readController(AFilename& filename)
   }
 }
 
-void AOSConfiguration::_postProcessControllerAndConfig(AFileSystem::LIST_FileInfo& directoryConfigs)
+void AOSConfiguration::_postProcessControllerAndConfig(AFileSystem::FileInfos& directoryConfigs)
 {
   AString strPath(1536, 512);
-  for (AFileSystem::LIST_FileInfo::iterator it = directoryConfigs.begin(); it != directoryConfigs.end(); ++it)
+  for (AFileSystem::FileInfos::iterator it = directoryConfigs.begin(); it != directoryConfigs.end(); ++it)
   {
     std::cout << "-=-=-=-=-=-=:directory config: " << it->filename << std::endl;
   }

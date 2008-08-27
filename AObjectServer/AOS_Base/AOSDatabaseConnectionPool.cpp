@@ -5,6 +5,7 @@ $Id$
 */
 #include "pchAOS_Base.hpp"
 #include "AOSDatabaseConnectionPool.hpp"
+#include "ADatabase_NOP.hpp"
 #include "AMySQLServer.hpp"
 #include "AODBCServer.hpp"
 #include "ASQLiteServer.hpp"
@@ -63,7 +64,7 @@ void AOSDatabaseConnectionPool::init(const AUrl& url, int count)
     break;
 
     default:
-      ATHROW(this, AException::InvalidProtocol);
+      pServer = new ADatabase_NOP(url);
   }  
 
   mp_DatabasePool = new ADatabasePool(pServer, count);

@@ -68,12 +68,9 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
 
   //a_Properties
   bool recursive = moduleParams.getBool(ASW("recursive",9), false);
-  bool linked = moduleParams.getBool(ASW("linked",6), false);
 
   //a_File list base element
   AXmlElement& fileList = context.useModel().addElement(ASW("file-list",9));
-  if (linked)
-    fileList.addAttribute(ASW("linked",6), AConstant::ASTRING_TRUE);
 
   //a_Offset to the current base
   AString strOffset;
@@ -101,11 +98,12 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
   }
   
   //a_Build the file info
-  AFileSystem::LIST_FileInfo files;
+  AFileSystem::FileInfos files;
   if (AFileSystem::dir(*pFilename, files, false, !recursive) > 0)
   {
+    files.sort();
     fileList.useAttributes().insert(ASW("count",5), AString::fromSize_t(files.size()));
-    for(AFileSystem::LIST_FileInfo::iterator it = files.begin(); it != files.end(); ++it)
+    for(AFileSystem::FileInfos::iterator it = files.begin(); it != files.end(); ++it)
     {
       it->emitXml(fileList.addElement(FILE));
     }

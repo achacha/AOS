@@ -57,7 +57,7 @@
             <img alt="+" src="/images/folder_shut.gif"/>
             <xsl:text> </xsl:text>
             <b>
-              <xsl:value-of select="filename/name"/>
+              <xsl:value-of select="filename/path/dir[last()]"/>
             </b>
           </a>
           <br/>
@@ -66,19 +66,7 @@
           <xsl:text>  </xsl:text>
           <img alt="." src="/images/file.gif"/>
           <xsl:text> </xsl:text>
-          <xsl:choose>
-            <xsl:when test="$linked = 'true'">
-              <xsl:element name="a">
-                <xsl:attribute name="href">
-                  <xsl:value-of select="$offset"/>
-                </xsl:attribute>
-                <xsl:value-of select="filename/name"/>
-              </xsl:element>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="filename/name"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:value-of select="filename/name"/>
           <br/>
         </xsl:otherwise>
       </xsl:choose>
