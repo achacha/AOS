@@ -61,8 +61,8 @@ AOSContext::ReturnCode AOSOutput_Captcha_generate::execute(AOSContext& context)
   //a_Some position and size randomness
   int fontsize=ARandomNumberGenerator::get().nextRange(36, 12);
   int px=ARandomNumberGenerator::get().nextRange(40, 5);
-  int py=ARandomNumberGenerator::get().nextRange(y-3-fontsize, fontsize+3);
-  double angle=double(ARandomNumberGenerator::get().nextRange(30, -30))/100;
+  int py=ARandomNumberGenerator::get().nextRange(y-1-fontsize, fontsize+1);
+  double angle=double(ARandomNumberGenerator::get().nextRange(20, -20))/100;
 
   int rcolor = ARandomNumberGenerator::get().nextRange(255, 160);
   int gcolor = ARandomNumberGenerator::get().nextRange(255, 160);
