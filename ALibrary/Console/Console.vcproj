@@ -403,7 +403,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tMemAlloc.cpp"
+			RelativePath=".\tFilename.cpp"
 			>
 		</File>
 	</Files>

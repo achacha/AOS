@@ -218,7 +218,7 @@ ACache_FileSystem::STATUS ACache_FileSystem::get(
     ALock lock(containerItem.m_Sync);
     if (AFileSystem::isA(key, AFileSystem::File))
     {
-      if (AFileSystem::length(key) > m_MaxFileSize)
+      if (AFileSystem::length(key) > (s8)m_MaxFileSize)
       {
         //a_File too big to cache, create a physical object and return it with auto delete on
         pFile.reset(new AFile_Physical(key, "rb"));

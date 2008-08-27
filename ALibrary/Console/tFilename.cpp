@@ -4,14 +4,14 @@
 
 void testParse()
 {
-  AFilename fn("c:\\path0\\path1//filename.extension");
+  AFilename fn(ASWNL("c:\\path0\\path1//filename.extension"), false);
   AString strOut(1024, 256);
 
   fn.emit(strOut);
   std::cout << strOut << std::endl;
 
   AXmlElement root("root");
-  fn.emit(root);
+  fn.emitXml(root);
   strOut.clear();
   root.emit(strOut);
   std::cout << strOut << std::endl;
@@ -20,7 +20,7 @@ void testParse()
 void testFormatting()
 {
   AString strOut(1024, 256);
-  AFilename fn("c:\\path0\\path1//filename.extension");
+  AFilename fn(ASWNL("c:\\path0\\path1//filename.extension"), false);
 
   fn.setType(AFilename::FTYPE_MSDOS);
   fn.emit(strOut);
@@ -40,7 +40,7 @@ void testFormatting()
 void testCopy()
 {
   AString strOut(1024, 256);
-  AFilename fn0("c:/some/path/here/file.ext");
+  AFilename fn0(ASWNL("c:/some/path/here/file.ext"), false);
   AFilename fn1(fn0);
 
   fn0.emit(strOut);
@@ -54,8 +54,8 @@ void testCopy()
 void testJoin()
 {
   AString strOut(1024, 256);
-  AFilename fn0("c:/some/path/here/file.ext");
-  AFilename fn1("d:my/path/new.new");
+  AFilename fn0(ASWNL("c:/some/path/here/file.ext"), false);
+  AFilename fn1(ASWNL("d:my/path/new.new"), false);
 
   fn0.join(fn1);
 
@@ -89,7 +89,7 @@ void testExt()
   //}
 
 
-  AFilename fn("/path2/path1/foo.");
+  AFilename fn(ASWNL("/path2/path1/foo."), false);
   str.clear();
   if (fn.hasExtension())
   {
@@ -104,7 +104,7 @@ void testExt()
 
 void testRelativePath()
 {
-  AFilename fn("/absolute/path", true);
+  AFilename fn(ASWNL("/absolute/path"), true);
   if (fn.isRelativePath())
   {
     std::cout << "Relative" << std::endl;
@@ -122,7 +122,7 @@ void testRelativePath()
     std::cout << "Not Dir" << std::endl;
   }
 
-  fn.set("relative/file.txt");
+  fn.set(ASWNL("relative/file.txt"), false);
   if (fn.isRelativePath())
   {
     std::cout << "Relative" << std::endl;
@@ -143,7 +143,7 @@ void testRelativePath()
 
 void testNoExt()
 {
-  AFilename f("c:/somedir/foo.txt");
+  AFilename f(ASWNL("c:/somedir/foo.txt"), false);
   AString noext;
   f.emitFilenameNoExt(noext);
   std::cout << noext << std::endl;
@@ -151,8 +151,8 @@ void testNoExt()
 
 void testCompare()
 {
-  AFilename left ("./aos_root/static/classified/index.html");
-  AFilename right("./aos_root/static/rte/html2xhtml.js");
+  AFilename left (ASWNL("./aos_root/static/classified/"), true);
+  AFilename right(ASWNL("./aos_root/static/html2xhtml.js"), false);
 
   //AString left ("index.html");
   //AString right("html2xhtml.js");

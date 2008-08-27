@@ -21,7 +21,7 @@ public:
   enum PathType {
     Exists       = 0x0001,
     Directory    = 0x0002,
-    File         = 0x0004,
+    File         = 0x0004,    // NOTE: A Directory is also a File
     ReadOnly     = 0x0008,
     Compressed   = 0x0010,
     Encrypted    = 0x0020,
@@ -31,7 +31,7 @@ public:
     DoesNotExist = 0xFFFF
   };
 
-  class FileInfo : public AXmlEmittable, public ADebugDumpable
+  class ABASE_API FileInfo : public AXmlEmittable, public ADebugDumpable
   {
   public:
     FileInfo();
@@ -48,9 +48,15 @@ public:
     
     //! ADebugDumpable
     virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
+    //! Compare operator
+    bool operator <(const FileInfo&) const;
+
+    //! Equality operator
+    bool operator ==(const FileInfo&) const;
   };
 
-  typedef std::list<FileInfo> LIST_FileInfo;
+  typedef std::list<FileInfo> FileInfos;
 
 public:
   /*!
@@ -65,7 +71,7 @@ public:
   */
   static u4 dir(
     const AFilename& basepath,           
-    AFileSystem::LIST_FileInfo& target,  
+    AFileSystem::FileInfos& target,  
     bool recurse = false,                
     bool filesOnly = true               
   );
@@ -167,7 +173,7 @@ public:
   static void generateTemporaryFilename(AFilename& path);
 
 private:
-  static u4 _getFilesFromPath(const AFilename&, AFilename&, AFileSystem::LIST_FileInfo&, bool, bool);   //a_Recursive internal call
+  static u4 _getFilesFromPath(const AFilename&, AFilename&, AFileSystem::FileInfos&, bool, bool);   //a_Recursive internal call
 
 #ifdef __WINDOWS__
   static u4 _winAttrToMask(u4 attr);

@@ -498,6 +498,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ADatabase_NOP.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ADatabasePool.cpp"
 				>
 			</File>
@@ -967,6 +971,10 @@
 			</File>
 			<File
 				RelativePath=".\ADatabase.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ADatabase_NOP.hpp"
 				>
 			</File>
 			<File

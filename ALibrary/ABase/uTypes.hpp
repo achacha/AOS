@@ -7,7 +7,7 @@ $Id$
 #define INCLUDED__uTypes_HPP__
 
 #include "osDefines.hpp"
-#include <vector>
+#include "extABase.hpp"
 
 /*!
   Defines to be used throughout to guarantee byte width

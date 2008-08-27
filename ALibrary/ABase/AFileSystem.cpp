@@ -26,6 +26,16 @@ AFileSystem::FileInfo::FileInfo(const FileInfo& that) :
 {
 }
 
+bool AFileSystem::FileInfo::operator <(const FileInfo& that) const
+{
+  return filename < that.filename;
+}
+
+bool AFileSystem::FileInfo::operator ==(const FileInfo& that) const
+{
+  return filename == that.filename;
+}
+
 void AFileSystem::FileInfo::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -76,7 +86,7 @@ AXmlElement& AFileSystem::FileInfo::emitXml(AXmlElement& thisRoot) const
 
 u4 AFileSystem::dir(
   const AFilename& path,
-  AFileSystem::LIST_FileInfo& target,
+  AFileSystem::FileInfos& target,
   bool recurse,   // = false
   bool filesOnly  // = false
 )
@@ -88,7 +98,7 @@ u4 AFileSystem::dir(
 u4 AFileSystem::_getFilesFromPath(
   const AFilename& path,
   AFilename& offsetpath,
-  AFileSystem::LIST_FileInfo& target,
+  AFileSystem::FileInfos& target,
   bool recurse,   // = false
   bool filesOnly  // = false
 )
@@ -155,11 +165,20 @@ u4 AFileSystem::_getFilesFromPath(
       if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && filesOnly)
         continue;
 
-      //a_Add file
-      newpath.join(ASWNL(findData.cFileName), false);
-
       FileInfo info;
-      info.filename.set(newpath, false);
+      info.filename.set(newpath);
+      if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+      { 
+        //a_Directory
+        info.filename.usePathNames().push_back(ASWNL(findData.cFileName));
+        info.filename.useFilename().clear();
+      }
+      else
+      {
+        //a_File
+        info.filename.join(ASWNL(findData.cFileName), false);
+      }
+
       info.length = findData.nFileSizeHigh;
       info.length <<= 32;
       info.length |= findData.nFileSizeLow;

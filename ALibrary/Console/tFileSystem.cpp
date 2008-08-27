@@ -9,12 +9,12 @@
 
 void testWildcard()
 {
-  AFileSystem::LIST_FileInfo files;
+  AFileSystem::FileInfos files;
   u4 count = AFileSystem::dir(AFilename(ASWNL("q:/ASystem/*.sbr"), false), files);
   if (count > 0)
   {
     AString str(1024, 256);
-    AFileSystem::LIST_FileInfo::const_iterator cit = files.begin();
+    AFileSystem::FileInfos::const_iterator cit = files.begin();
     while (cit != files.end())
     {
       cit->filename.emit(str);
@@ -27,12 +27,12 @@ void testWildcard()
 
 void testFilesFromPath()
 {
-  AFileSystem::LIST_FileInfo files;
+  AFileSystem::FileInfos files;
   u4 count = AFileSystem::dir(AFilename(ASWNL("d:/pmdwork/"), true), files, true, true);
   if (count > 0)
   {
     AString str(1024, 256);
-    AFileSystem::LIST_FileInfo::const_iterator cit = files.begin();
+    AFileSystem::FileInfos::const_iterator cit = files.begin();
     while (cit != files.end())
     {
       cit->filename.emit(str);
@@ -188,9 +188,9 @@ void testCompactPath()
 void testDir()
 {
   AXmlElement element("root");
-  AFileSystem::LIST_FileInfo filelist;
+  AFileSystem::FileInfos filelist;
   AFileSystem::dir(AFilename(ASWNL("c:\*.*"), false), filelist, false, true);
-  for(AFileSystem::LIST_FileInfo::iterator it = filelist.begin(); it != filelist.end(); ++it)
+  for(AFileSystem::FileInfos::iterator it = filelist.begin(); it != filelist.end(); ++it)
   {
     it->emitXml(element.addElement("file"));
     std::cout << it->filename.getFilename() << ":" << it->length << ":" << it->typemask << std::endl;

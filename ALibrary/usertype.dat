@@ -18,6 +18,7 @@ ACookieJar
 ACookies
 ADaemon
 ADatabase
+ADatabase_NOP
 ADatabasePool
 ADebugDumpable
 ADigestInterface
