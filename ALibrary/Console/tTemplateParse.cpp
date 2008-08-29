@@ -10,7 +10,7 @@
 void testSimpleParse()
 {
   AFile_AString strfile(
-"Hello %[CODE]{{{\r\n print(/root/user/name); \r\n print(/root/user/loc); \r\n}}}[CODE]%!\
+"Hello %[MODEL]{{{user/name}}}[MODEL]%!\
 ");
 
   ABasePtrContainer objects;
