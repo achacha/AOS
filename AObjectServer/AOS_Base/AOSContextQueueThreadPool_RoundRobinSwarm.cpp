@@ -65,7 +65,7 @@ AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinS
   m_queueCount(queueCount),
   AOSContextQueueThreadPool(services, threadCount),
   m_currentWriteQueue(0),
-  m_currentReadQueue(queueCount-1)
+  m_currentReadQueue(((long)queueCount)-1)
 {
   AASSERT(this, queueCount > 0);
   m_Queues.resize(m_queueCount);

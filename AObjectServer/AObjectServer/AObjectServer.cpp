@@ -45,11 +45,9 @@ void traceMultiline(const AString& str, void *ptr)
 /////////////////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-  DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(false);
-  AFILE_TRACER_DEBUG_SCOPE((AString("AObjectServer::main:",20)+ASWNL(argv[0])).c_str(), NULL);
-
   //a_AString available for errors so that allocation is not done during exception (in case we ran out of memory, etc)
   AString str(2048, 512);
+  DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(false);
 
 #ifdef __WINDOWS__
   LPAPI_VERSION lpVersion = ::ImagehlpApiVersion();
@@ -267,11 +265,6 @@ int main(int argc, char **argv)
       pQueueExecutor->start();
       pQueueError->start();
 
-#ifdef __WINDOWS__
-      //a_Take a memory snapshop before starting listener
-      _CrtMemState _memstate_start;
-      _CrtMemCheckpoint(&_memstate_start);
-#endif
 
       //
       //a_Start listener
@@ -283,6 +276,10 @@ int main(int argc, char **argv)
       //
       admin.startAdminListener();
 
+      //
+      //a_Server is running, wait for exit request
+      //
+      DEBUG_MEMORY_SET_START_CHECKPOINT();
       do
       {
         //a_This is the watcher for the main loop, when admin is not running the server has stopped

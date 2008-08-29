@@ -15,21 +15,35 @@ public:
   virtual ~AOSAdminRegistry();
 
   /*!
-  Insert/remove an object reference by name
+  Insert an object reference by name
+  The objects refered to are NOT OWNED and will NOT be deleted
+
+  @param name of the object
+  @param object reference to register
   **/
   void insert(const AString& name, AOSAdminInterface& object);
+  
+  /*!
+  Remove reference to an object
+  
+  @param name of the object
+  */
   void remove(const AString& name);
   
   /*!
   Get registered admin object ptr
-  Returns NULL if not found
+  
+  @return NULL if not found, object pointer which should not be deleted
   */
   AOSAdminInterface *getAdminObject(const AString& name) const;
 
   /*!
   listAdminObjects appends to the existing list, returns items appended
+  
+  @param target for the list of admin object names (will append to the existing list)
+  @retrurn number of names added to target
   **/
-  u4 listAdminObjects(LIST_AString&) const;
+  u4 listAdminObjects(LIST_AString& target) const;
 
   /*!
   ADebugDumpable
