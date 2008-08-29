@@ -172,7 +172,7 @@ private:
   static const AString LOGGABLE_YYYY_MM_DD_HHMMSS;
   static const AString LOGGABLE_YYYYMMDD;
 
-  // Get TM from time_t (internal)
+  // Get TM from time_t (internal), returns an object OWNED by caller of the method and my be deleted when done
   tm* _getTM() const;
   
   // This is the internal storage of time

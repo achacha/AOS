@@ -403,7 +403,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tFilename.cpp"
+			RelativePath=".\tTemplateParse.cpp"
 			>
 		</File>
 	</Files>

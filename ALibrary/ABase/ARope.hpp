@@ -77,7 +77,7 @@ public:
   size_t write(AFile&) const;               
 
   enum {
-    DEFAULT_BLOCK_SIZE=4096
+    DEFAULT_BLOCK_SIZE=2048
   };
 
   /*!

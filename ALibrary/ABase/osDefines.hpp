@@ -204,8 +204,7 @@ NDEBUG - non-debug (release) mode
 #  pragma message("Enabling Microsoft CRT debugging and memory tracking")
 
 #  define DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(output2stdout) \
-  _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);\
-  _CrtSetDbgFlag(_CRTDBG_CHECK_CRT_DF);\
+  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_CHECK_ALWAYS_DF);\
   _CrtMemState _memstate_start;\
   _CrtMemState _memstate_end;\
   _CrtMemState _memstate_diff;\
@@ -215,13 +214,19 @@ NDEBUG - non-debug (release) mode
     _CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDOUT );\
   }
 
+// Can be used to set a different start point after above macro is used
+#define DEBUG_MEMORY_SET_START_CHECKPOINT() \
+  _CrtMemCheckpoint(&_memstate_start);
+
+
 #  define DEBUG_MEMORY_LEAK_ANALYSIS_END() \
   _CrtCheckMemory();\
   _CrtMemCheckpoint(&_memstate_end);\
   if (_CrtMemDifference(&_memstate_diff, &_memstate_start, &_memstate_end))\
   {\
     _CrtMemDumpStatistics(&_memstate_diff);\
-    _CrtMemDumpAllObjectsSince(&_memstate_start);\
+    /*_CrtMemDumpAllObjectsSince(&_memstate_start);*/\
+    _CrtDumpMemoryLeaks();\
   }
 
 //EXPERIMENTAL: Enbale trace of allocations of ABase* objects (doesn't always work)
@@ -232,6 +237,7 @@ NDEBUG - non-debug (release) mode
 
 #  else
 #  define DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(a) (void *)0
+#  define DEBUG_MEMORY_SET_START_CHECKPOINT() (void *)0
 #  define DEBUG_MEMORY_LEAK_ANALYSIS_END()    (void *)0
 #  endif // _DEBUG
 #endif // __WINDOWS___

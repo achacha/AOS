@@ -13,7 +13,7 @@ $Id$
 #include <ctype.h>
 
 //a_Default allocation buffer size
-const u2 AString::smi_DefaultBufferIncrement = 128;
+const u2 AString::smi_DefaultBufferIncrement = 256;
 
 void AString::debugDump(std::ostream& os, int indent) const
 {
