@@ -6,6 +6,7 @@
 #include "AXmlDocument.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 #include "AFile_AString.hpp"
+#include "AThread.hpp"
 
 void doLuaTemplate()
 {
@@ -26,6 +27,7 @@ void doLuaTemplate()
 
   AString output;
   t.process(ctx, output);
+  std::cout << output << std::endl;
 }
 
 int main(int argc, char **argv)
@@ -35,7 +37,12 @@ int main(int argc, char **argv)
   try
   {
     DEBUG_MEMORY_SET_START_CHECKPOINT();
-    doLuaTemplate();
+    for (int t=0; t<10000; ++t)
+    {
+      doLuaTemplate();
+      AThread::sleep(100);
+      std::cout << "." << std::flush;
+    }
     DEBUG_MEMORY_LEAK_ANALYSIS_END();
   }
   catch(AException& ex)
