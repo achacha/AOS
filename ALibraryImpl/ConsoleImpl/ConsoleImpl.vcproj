@@ -352,7 +352,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tLuaInTemplate.cpp"
+			RelativePath=".\tLuaPerformance.cpp"
 			>
 		</File>
 	</Files>
