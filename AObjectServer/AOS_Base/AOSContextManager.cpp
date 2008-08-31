@@ -370,7 +370,7 @@ void AOSContextManager::deallocate(AOSContext *p)
 
   if (p->useEventVisitor().getErrorCount() > 0)
   {
-    while (m_ErrorHistory.size() > m_ErrorHistoryMaxSize)
+    while (m_ErrorHistory.size() >= m_ErrorHistoryMaxSize)
     {
       //a_Remove last
       delete m_ErrorHistory.pop();
