@@ -191,14 +191,13 @@ NDEBUG - non-debug (release) mode
 //
 // int main()
 // {
-//   DEBUG_BEGIN();
+//   DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(false);
 //   ...do stuff here...
-//   DEBUG_END();
+//   DEBUG_MEMORY_LEAK_ANALYSIS_END();
 //   return 0;
 // }
 #ifdef __WINDOWS__
-#  ifdef _DEBUG
-#  define WINDOWS_CRTDBG_ENABLED 1
+#  if defined(_DEBUG) && defined(WINDOWS_CRTDBG_ENABLED)
 #  define _CRTDBG_MAP_ALLOC 1
 #  include "crtdbg.h"
 #  pragma message("Enabling Microsoft CRT debugging and memory tracking")
@@ -230,6 +229,7 @@ NDEBUG - non-debug (release) mode
   }
 
 //EXPERIMENTAL: Enbale trace of allocations of ABase* objects (doesn't always work)
+// Takes a very long time too, so best keep this commented out unless really needed for debugging
 //#  define DEBUG_TRACK_ABASE_MEMORY
 //#  ifdef DEBUG_TRACK_ABASE_MEMORY 
 //#  pragma message("Tracing dynamic allocations of ABase* to std::cout")

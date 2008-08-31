@@ -6,6 +6,10 @@ $Id$
 #ifndef INCLUDED__apiABase_HPP__
 #define INCLUDED__apiABase_HPP__
 
+//a_Enable to allow windows memory tracking
+//#define WINDOWS_CRTDBG_ENABLED 1
+
+
 //a_OS Defines and compiler specifics
 #include "osDefines.hpp"
 

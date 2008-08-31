@@ -207,7 +207,9 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
 
       if (thread.isRun())
       {
-        AThread::sleep(pThis->getLoggerCycleSleep());
+        while (0 == pThis->m_BuffersToWrite.size())
+          AThread::sleep(pThis->getLoggerCycleSleep());
+        
         if (pThis->m_enableLogFileRotate && pThis->mp_File)
         {
           //a_Rotate log if size exceeds maximum

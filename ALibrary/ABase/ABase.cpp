@@ -108,6 +108,7 @@ void ABase::traceAllocations(AOutputBuffer& target, bool includeHexDump)
 {
   ALock lock(GLOBAL_mp_ConsoleSync);
 
+  size_t totalBytes = 0;
   target.append("count=",6);
   target.append(AString::fromSize_t(GLOBAL_m_Allocations.size()));
   target.append(AConstant::ASTRING_EOL);
@@ -115,11 +116,10 @@ void ABase::traceAllocations(AOutputBuffer& target, bool includeHexDump)
   {
     it->second.emit(target, includeHexDump);
     target.append(AConstant::ASTRING_EOL);
-    //if (includeHexDump)
-    //{
-    //  ADebugDumpable::dumpMemory_HexAscii(target, it->second.ptr, it->second.size, 2, 128);
-    //  target.append(AConstant::ASTRING_EOL);
-    //}
+    totalBytes += it->second.size;
   }
+  target.append("total_bytes=",12);
+  target.append(AString::fromU8(totalBytes));
+  target.append(AConstant::ASTRING_EOL);
 }
 #endif
