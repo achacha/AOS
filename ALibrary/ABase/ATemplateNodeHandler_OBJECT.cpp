@@ -77,7 +77,9 @@ void ATemplateNodeHandler_OBJECT::Node::process(ATemplateContext& context, AOutp
   }
   else
   {
-    output.append(ARope("Unable to find object or not AEmittable type: '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
+    ARope rope("Unable to find element for '");
+    rope.append(m_BlockData);
+    rope.append('\'');
   }
 }
 

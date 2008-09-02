@@ -236,7 +236,11 @@ void AFileSystem::rename(const AFilename& from, const AFilename& to)
       return;
 
     case EACCES:
-      ATHROW_EX(&from, AException::APIFailure, ARope("File or directory specified by newname already exists or could not be created (invalid path, access violation); or oldname is a directory and newname specifies a different path: ")+to);
+    {
+      ARope rope("File or directory specified by newname already exists or could not be created (invalid path, access violation); or oldname is a directory and newname specifies a different path: ");
+      rope.append(to);
+      ATHROW_EX(&from, AException::APIFailure, rope);
+    }
 
     case ENOENT:
       ATHROW_EX(&from, AException::APIFailure, ASWNL("File not found"));

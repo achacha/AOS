@@ -333,7 +333,11 @@ size_t AXmlElement::find(const AString& path, AXmlElement::CONST_CONTAINER& resu
     else if (0 != listPath.front().compare(m_Name))
     {
       //a_First token MUST be the name of this element if / leads
-      ATHROW_EX(this, AException::ProgrammingError, ARope("Absolute path must start with the name of the current root element: root=/")+m_Name+" while path="+path);
+      AString str("Absolute path must start with the name of the current root element: root=/");
+      str.append(m_Name);
+      str.append(" while path=");
+      str.append(path);
+      ATHROW_EX(this, AException::ProgrammingError, str);
     }
   }
   else if (0 == listPath.size())
@@ -384,7 +388,11 @@ size_t AXmlElement::_find(const AString& path, AXmlElement::CONTAINER& result)
     else if (0 != listPath.front().compare(m_Name))
     {
       //a_First token MUST be the name of this element if / leads
-      ATHROW_EX(this, AException::ProgrammingError, ARope("Absolute path must start with the name of the current root element: root=/")+m_Name+" while path="+path);
+      AString str("Absolute path must start with the name of the current root element: root=/");
+      str.append(m_Name);
+      str.append(" while path=");
+      str.append(path);
+      ATHROW_EX(this, AException::ProgrammingError, str);
     }
   }
   else if (0 == listPath.size())
@@ -612,7 +620,7 @@ AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParen
             return p->_getOrCreate(xparts, this);
         }
         else
-          ATHROW_EX(this, AException::DataConflict, AString("Not AXmlElement type at: ")+strName);
+          ATHROW_EX(this, AException::DataConflict, strName);  //a_ Not AXmlElement type
       }
     }
     ++it;
@@ -688,7 +696,13 @@ AXmlElement *AXmlElement::_addElement(const AString& path, bool overwrite)
     if (xparts.front().equals(m_Name))
       xparts.pop_front();
     else
-      ATHROW_EX(this, AException::InvalidPath, ARope("Path specified (")+path+ASWNL(") is absolute and does not match this element's name: ")+m_Name);
+    {
+      AString str("Path specified (");
+      str.append(path);
+      str.append(") is absolute and does not match this element's name: ");
+      str.append(m_Name);
+      ATHROW_EX(this, AException::InvalidPath, str);
+    }
   }
 
   //a_Skipped over root or relative path specified

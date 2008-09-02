@@ -211,7 +211,7 @@ u1 ATextConverter::convertHEXtoBYTE(char cHi, char cLo)
     return cHi * '\x10' + cLo; 
   }
 
-  ATHROW_EX(NULL, AException::InvalidParameter, ARope("cHi=")+AString::fromInt(cHi)+" cLo="+AString::fromInt(cLo));
+  ATHROW_EX(NULL, AException::InvalidParameter, AString("cHi=")+AString::fromInt(cHi)+" cLo="+AString::fromInt(cLo));
 }
 
 //a_Converts a value 0-0xFF to a 2 digit hex AString

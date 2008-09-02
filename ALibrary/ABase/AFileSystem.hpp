@@ -56,7 +56,7 @@ public:
     bool operator ==(const FileInfo&) const;
   };
 
-  typedef std::list<FileInfo> FileInfos;
+  typedef std::list<AFileSystem::FileInfo> FileInfos;
 
 public:
   /*!

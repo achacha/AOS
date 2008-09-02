@@ -93,7 +93,7 @@ void ATemplate::_loadDefaultHandlers(ATemplate::HandlerMask mask)
 
 void ATemplate::addNode(const AString& tagname, AFile& source)
 {
-  AASSERT_EX(this, m_Handlers.end() != m_Handlers.find(tagname), ARope("Tag handler not found: ")+tagname);
+  AASSERT_EX(this, m_Handlers.end() != m_Handlers.find(tagname), tagname);  //a_Tag handler not found
   ATemplateNodeHandler *pHandler = m_Handlers[tagname];
   AAutoPtr<ATemplateNode> pNode(pHandler->create(source), true);
   m_Nodes.push_back(pNode);
@@ -102,7 +102,7 @@ void ATemplate::addNode(const AString& tagname, AFile& source)
 
 void ATemplate::addHandler(ATemplateNodeHandler *pHandler)
 {
-  AASSERT_EX(this, m_Handlers.end() == m_Handlers.find(pHandler->getTagName()), ARope("Duplicate tag handler detected: ")+pHandler->getTagName());
+  AASSERT_EX(this, m_Handlers.end() == m_Handlers.find(pHandler->getTagName()), pHandler->getTagName());  //a_Duplicate tag handler detected
   m_Handlers[pHandler->getTagName()] = pHandler;
 }
 

@@ -6,6 +6,7 @@ $Id$
 #ifndef INCLUDED_ADaemon_HPP__
 #define INCLUDED_ADaemon_HPP__
 
+#include "apiABase.hpp"
 #include "AString.hpp"
 #include "AThread.hpp"
 #include "ASynchronization.hpp"

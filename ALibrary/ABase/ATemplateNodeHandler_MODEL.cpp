@@ -79,7 +79,9 @@ void ATemplateNodeHandler_MODEL::Node::process(ATemplateContext& context, AOutpu
   }
   else
   {
-    output.append(ARope("Unable to find element for '")+m_BlockData+AConstant::ASTRING_SINGLEQUOTE);
+    ARope rope("Unable to find element for '");
+    rope.append(m_BlockData);
+    rope.append('\'');
   }
 }
 
