@@ -71,7 +71,7 @@ AOSContext::ReturnCode AOSInput_HtmlForm::execute(AOSContext& context)
   }
   else
   {
-    if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG)
+    if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
     {
       context.useEventVisitor().startEvent(ARope("Non-POST request, skipping ",27)+getClass(), AEventVisitor::EL_DEBUG);
     }

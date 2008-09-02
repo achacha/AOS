@@ -55,9 +55,9 @@ const AString& AOSServices::getClass() const
   return CLASS;
 }
 
-void AOSServices::adminRegisterObject(AOSAdminRegistry& registry)
+void AOSServices::adminRegisterObject(AOSAdminRegistry& adminRegistry)
 {
-  registry.insert(getClass(), *this);
+  adminRegistry.insert(getClass(), *this);
 }
 
 void AOSServices::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)

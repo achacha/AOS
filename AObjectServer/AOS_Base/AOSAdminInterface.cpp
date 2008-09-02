@@ -133,14 +133,14 @@ void AOSAdminInterface::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
   }
 }
 
-void AOSAdminInterface::adminRegisterObject(AOSAdminRegistry& registry)
+void AOSAdminInterface::adminRegisterObject(AOSAdminRegistry& adminRegistry)
 {
-  registry.insert(getClass(), *this);
+  adminRegistry.insert(getClass(), *this);
 }
 
-void AOSAdminInterface::adminRegisterObject(AOSAdminRegistry& registry, const AString& parentClassName)
+void AOSAdminInterface::adminRegisterObject(AOSAdminRegistry& adminRegistry, const AString& parentClassName)
 {
-  registry.insert(parentClassName+ASW(".",1)+getClass(), *this);
+  adminRegistry.insert(parentClassName+ASW(".",1)+getClass(), *this);
 }
 
 void AOSAdminInterface::adminProcessAction(AXmlElement&, const AHTTPRequestHeader&)

@@ -94,7 +94,7 @@ public:
   /*!
   Admin xml
   */
-  virtual void adminRegisterObject(AOSAdminRegistry& registry);
+  virtual void adminRegisterObject(AOSAdminRegistry& adminRegistry);
   virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;

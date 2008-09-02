@@ -268,7 +268,7 @@ private:
   void _loadControllers();
   void _readController(AFilename&);               //a_May alter the passed filename
   void _readDirectoryConfig(AFilename&);          //a_May alter the passed filename
-  void _postProcessControllerAndConfig(AFileSystem::FileInfos&);
+  void _postProcessControllerAndConfig(AFileSystem::FileInfos &);
 
   //a_MIME type lookup
   MAP_AString_AString m_ExtToMimeType;

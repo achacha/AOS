@@ -409,7 +409,8 @@ void AOSConfiguration::loadConfig(const AString& name)
 
 void AOSConfiguration::_loadControllers()
 {
-  AFileSystem::FileInfos fileList, directoryConfigs;
+  AFileSystem::FileInfos fileList;
+  AFileSystem::FileInfos directoryConfigs;
   const AString& EXT1 = ASW("aos",3);
   const AString& EXT2 = ASW("xml",3);
   if (AFileSystem::dir(m_AosBaseDynamicDir, fileList, true, true) > 0)

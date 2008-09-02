@@ -67,12 +67,12 @@ void AOSDirectoryConfig::adminProcessAction(AXmlElement& eBase, const AHTTPReque
 {
 }
 
-void AOSDirectoryConfig::adminRegisterObject(AOSAdminRegistry& registry)
+void AOSDirectoryConfig::adminRegisterObject(AOSAdminRegistry& adminRegistry)
 {
   AString str(getClass());
   str.append(':');
   str.append(m_Path);
-  registry.insert(str, *this);
+  adminRegistry.insert(str, *this);
 }
 
 AXmlElement& AOSDirectoryConfig::emitXml(AXmlElement& thisRoot) const

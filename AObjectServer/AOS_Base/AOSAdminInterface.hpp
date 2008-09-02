@@ -82,8 +82,8 @@ public:
     // process 'request' and apply any requested changes
   }
   */
-  virtual void adminRegisterObject(AOSAdminRegistry& registry);
-  virtual void adminRegisterObject(AOSAdminRegistry& registry, const AString& parentClassName);
+  virtual void adminRegisterObject(AOSAdminRegistry& adminRegistry);
+  virtual void adminRegisterObject(AOSAdminRegistry& adminRegistry, const AString& parentClassName);
   virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual void adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request);
 
