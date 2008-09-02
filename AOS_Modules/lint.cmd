@@ -1,0 +1,10 @@
+..\_devtools\lint\lint.py AOS_Blog -clean
+..\_devtools\lint\lint.py AOS_Classified -clean
+..\_devtools\lint\lint.py AOS_DadaData -clean
+..\_devtools\lint\lint.py AOS_Example -clean
+..\_devtools\lint\lint.py AOS_Forum -clean
+..\_devtools\lint\lint.py AOS_SAMPLEPROJECT -clean
+..\_devtools\lint\lint.py AOS_Secutrity -clean
+..\_devtools\lint\lint.py AOS_Test -clean
+..\_devtools\lint\lint.py AOS_User -clean
+..\_devtools\lint\lint.py AOS_Wiki -clean
