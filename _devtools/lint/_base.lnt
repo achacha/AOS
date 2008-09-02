@@ -9,7 +9,7 @@
 +e3??
 
 // Processing Options
--passes(1, -save, -restore -e? -e?? -e1?? -e1??? -e11?? +e429 -vm) // perform n passes supressing some errors on passes n > 1 
+-passes(3, -save, -restore -e? -e?? -e1?? -e1??? -e11?? +e429 -vm) // perform n passes supressing some errors on passes n > 1 
 +fce			// Continue on fatal error when possible
 
 +linebuf		// handle longer lines x2
@@ -35,6 +35,15 @@
 +e1 +e2 +e3 +e4 +e5 +e6	+e7 +e8 +e9
 +e1? +e2? +e3? +e4? +e5? +e6? +e7? +e8? +e9?
 
+//
+// Microsoft
+//
+co-msc80.lnt
+env-vc8.lnt
+lib-w32.lnt
+lib-nstd.lnt
+lib-stl.lnt
+
 // Generates huge amount of crap
 -e14
 -e18 
@@ -43,6 +52,7 @@
 -e114
 
 // These are syntax errors which I really think we can always ignore and which generate a lot of crap
+-e38
 -e46
 
 
@@ -58,7 +68,6 @@
 +e11??			// Turn on all C++ syntax msgs up to 1199
 -e1075
 
-// Errors we report to our customers
 // Uninitialized variables
 +e530
 +e603
@@ -131,15 +140,6 @@
 //-e915         // Generates lots of crap
 
 //
-// Microsoft
-//
-co-msc80.lnt
-env-vc8.lnt
-lib-w32.lnt
-lib-nstd.lnt
-lib-stl.lnt
-
-//
 //ALibrary/etc
 //
 -DWIN32
@@ -149,10 +149,8 @@ lib-stl.lnt
 
 //  Formatting Options
 -haFr1
--width(4096,2)
-//-"format=@@%(\t%f, %l, %c,%) %n\n@@@\t%i\n@@@@\t%m\n~~~\n"
-//-"format_specific=%{$$\t%f, %l\t$$$\t%i\n%}"
--format=!!!%t!!!\t%f:%l:%c:%i:%m\n
--format_specific=%f:%l:%c:%i:%m\n
+-width(10240,0)
+-format=!!!%t[%n],%f,%l,%c,%i,%m
+-format_specific=!!!%t[%n],%f,%l,%c,%i,%m
 
 +ffn              // Use full filenames
