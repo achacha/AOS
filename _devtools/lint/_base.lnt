@@ -2,12 +2,6 @@
 // Base configuration for executing lint
 //
 
-//  Formatting Options
--hFr2
-//-width(0,0)
--"format=@@%(\t%f, %l, %c,%) %n\n@@@\t%i\n@@@@\t%m\n~~~\n"
--"format_specific=%{$$\t%f, %l\n$$$\t%i\n%}"
-
 // Start with nothing, add what we want
 -e*
 +e900   
@@ -15,20 +9,20 @@
 +e3??
 
 // Processing Options
--passes(3, -save, -restore -e? -e?? -e1?? -e1??? -e11?? +e429 -vm) // perform n passes supressing some errors on passes n > 1 
+-passes(1, -save, -restore -e? -e?? -e1?? -e1??? -e11?? +e429 -vm) // perform n passes supressing some errors on passes n > 1 
 +fce			// Continue on fatal error when possible
 
 +linebuf		// handle longer lines x2
 +linebuf		// handle longer lines x2
 +macros			// handle longer macros x2
-+macros	        // handle longer macros x2
-+macros         // handle longer macros x2
++macros	    // handle longer macros x2
++macros     // handle longer macros x2
 
 -incvar()		        // Ignore the include environment variable
 -specific_climit(202)   // Limit recursive function calls
 
 -voi        // remove verbose on other and indirect files
-+vm			// list module names so we know what we processed
++vm			    // list module names so we know what we processed
 //+vf         //Enable include file trace
 
 //  Error Supression Options
@@ -152,5 +146,13 @@ lib-stl.lnt
 -D_DEBUG
 -D_WINDOWS
 -D_USRDLL
+
+//  Formatting Options
+-haFr1
+-width(4096,2)
+//-"format=@@%(\t%f, %l, %c,%) %n\n@@@\t%i\n@@@@\t%m\n~~~\n"
+//-"format_specific=%{$$\t%f, %l\t$$$\t%i\n%}"
+-format=!!!%t!!!\t%f:%l:%c:%i:%m\n
+-format_specific=%f:%l:%c:%i:%m\n
 
 +ffn              // Use full filenames

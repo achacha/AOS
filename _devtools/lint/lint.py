@@ -27,6 +27,14 @@ def getCppFiles(files, basepath):
         files.append(os.path.join(basepath,f));
         if (verbose == 1):
           print "  +"+f;
+      elif (f[-4:] == ".cxx"):
+        files.append(os.path.join(basepath,f));
+        if (verbose == 1):
+          print "  +"+f;
+      if (f[-2:] == ".c"):
+        files.append(os.path.join(basepath,f));
+        if (verbose == 1):
+          print "  +"+f;
       else:
         if (verbose == 1):
           print "  -"+f;
@@ -53,7 +61,7 @@ def removeFile(filename):
     print "  Not removing, file does not exist: "+filename;
     
 def showUsage():
-  print "Usage: "+os.path.split(sys.argv[0])[1]+" <project base directory, all .cpp files in all directories will be analyzed> [-clean | -verbose | -nolint]";
+  print "Usage: "+os.path.split(sys.argv[0])[1]+" <project base directory, all .c/cxx/.cpp files in all directories will be analyzed> [-clean | -verbose | -nolint]";
   
 
 #================================================================================
