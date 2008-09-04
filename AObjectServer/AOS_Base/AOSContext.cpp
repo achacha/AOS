@@ -138,7 +138,9 @@ AOSContext::AOSContext(AFile_Socket *pFile, AOSServices& services) :
   m_DefaultLuaLibraries(ALuaEmbed::LUALIB_ALL_SAFE)
 {
   m_EventVisitor.useName().append(AString::fromPointer(this));
-  reset(pFile);
+  
+  if (pFile)
+    reset(pFile);
 }
 
 AOSContext::~AOSContext()
@@ -187,7 +189,7 @@ void AOSContext::reset(AFile_Socket *pFile)
 
   m_ContextFlags.clear();
 
-  if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+  if (mp_RequestFile && m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
   {
     ARope rope("AOSContext::reset[",18);
     rope.append(mp_RequestFile->getSocketInfo().m_address);

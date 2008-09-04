@@ -10,6 +10,10 @@
     <log-level desc="Default logging level for the context (5=debug 4=info 3=warning 2=event 1=error)">5</log-level>
     <history-maxsize desc="Number of contexts to save in history (non-error containing)">50</history-maxsize>
     <error-history-maxsize desc="Number of error containing contexts to save in history">100</error-history-maxsize>
+    <freestore>
+      <initial-size desc="Number of context objects to pre-allocate, must be less than or equal to the max-size">100</initial-size>
+      <max-size desc="Maximum context objects to keep allocated">500</max-size>
+    </freestore>
   </context-manager>
   
   <log>

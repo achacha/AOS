@@ -6,6 +6,7 @@ $Id$
 #include "pchAOS_Base.hpp"
 #include "AOSContextManager.hpp"
 #include "ASync_CriticalSection.hpp"
+#include "ASync_CriticalSectionSpinLock.hpp"
 #include "ALock.hpp"
 #include "AOSServices.hpp"
 #include "AOSContextQueueInterface.hpp"
@@ -62,6 +63,9 @@ void AOSContextManager::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
+  ADebugDumpable::indent(os, indent+1) << "m_FreeStoreMaxSize=" << m_FreeStoreMaxSize << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_FreeStore.size=" << m_FreeStore.size() << std::endl;
+  
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
@@ -118,7 +122,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       }
     }
 
-	//a_Context no longer available
+	  //a_Context no longer available
     adminAddError(eBase, ASWNL("AOSContext no longer available"));
   }
   else
@@ -149,17 +153,9 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       str.append('/');
       str.append(AString::fromSize_t(m_HistoryMaxSize));
       str.append(']');
-      adminAddProperty(eBase, "history_max_size", str);
-    }
 
-    {
-      AString str;
-      str.assign('[');
-      str.append(AString::fromSize_t(m_ErrorHistory.size()));
-      str.append('/');
-      str.append(AString::fromSize_t(m_ErrorHistoryMaxSize));
-      str.append(']');
-      adminAddProperty(eBase, "error_history_max_size", str);
+      AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "history");
+      adminAddPropertyWithAction(eHistory, ASWNL("max_size"), str, ASW("Set",3), ASWNL("Set maximum AOSContext history size (objects not immediately deleted)"), ASW("Set",3));
     }
     
     adminAddPropertyWithAction(
@@ -168,9 +164,33 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       AConstant::ASTRING_EMPTY,
       ASW("Clear",5), 
       ASWNL("Clear context history: 0:all  1:history  2:error history"),
-      ASW("Clear",5)
+      ASW("Clear",5) 
     );
       
+    {
+      AString str;
+      str.assign('[');
+      str.append(AString::fromSize_t(m_ErrorHistory.size()));
+      str.append('/');
+      str.append(AString::fromSize_t(m_ErrorHistoryMaxSize));
+      str.append(']');
+
+      AXmlElement& eErrorHistory = eBase.addElement("object").addAttribute("name", "error_history");
+      adminAddPropertyWithAction(eErrorHistory, ASWNL("max_size"), str, ASW("Set",3), ASWNL("Set maximum AOSContext error history size (objects not immediately deleted)"), ASW("Set",3));
+    }
+
+    {
+      AString str;
+      str.assign('[');
+      str.append(AString::fromSize_t(m_FreeStore.size()));
+      str.append('/');
+      str.append(AString::fromSize_t(m_FreeStoreMaxSize));
+      str.append(']');
+
+      AXmlElement& eFreestore = eBase.addElement("object").addAttribute("name", "freestore");
+      adminAddPropertyWithAction(eFreestore, ASWNL("max_size"), str, ASW("Set",3), ASWNL("Set maximum AOSContext freestore size (objects not immediately deleted)"), ASW("Set",3));
+    }
+
     AXmlElement& eInUse = eBase.addElement("object");
     eInUse.addAttribute("name", "InUse");
     eInUse.addAttribute("size", AString::fromSize_t(m_InUse.size()));
@@ -231,7 +251,7 @@ void AOSContextManager::adminProcessAction(AXmlElement& eBase, const AHTTPReques
   AString str;
   if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
   {
-    if (str.equals(ASW("AOSContextManager.log_level",27)))
+    if (str.equals(ASWNL("AOSContextManager.log_level")))
     {
       str.clear();
       if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
@@ -247,7 +267,7 @@ void AOSContextManager::adminProcessAction(AXmlElement& eBase, const AHTTPReques
         }
       }
     }
-    else if (str.equals(ASW("AOSContextManager.clear_history",31)))
+    else if (str.equals(ASWNL("AOSContextManager.clear_history")))
     {
       str.clear();
       if (request.getUrl().getParameterPairs().get(ASW("Clear",5), str))
@@ -273,21 +293,78 @@ void AOSContextManager::adminProcessAction(AXmlElement& eBase, const AHTTPReques
         }
       }
     }
+    else if (str.equals(ASWNL("AOSContextManager.history.max_size")))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
+      {
+        int i = str.toInt();
+        if (i >= 0)
+        {
+          m_HistoryMaxSize = i;
+        }
+        else
+        {
+          adminAddError(eBase, ASWNL("Invalid maximum size, must be >=0"));
+        }
+      }
+    }
+    else if (str.equals(ASWNL("AOSContextManager.error_history.max_size")))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
+      {
+        int i = str.toInt();
+        if (i >= 0)
+        {
+          m_ErrorHistoryMaxSize = i;
+        }
+        else
+        {
+          adminAddError(eBase, ASWNL("Invalid maximum size, must be >=0"));
+        }
+      }
+    }
+    else if (str.equals(ASWNL("AOSContextManager.freestore.max_size")))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
+      {
+        int i = str.toInt();
+        if (i >= 0)
+        {
+          m_FreeStoreMaxSize = i;
+        }
+        else
+        {
+          adminAddError(eBase, ASWNL("Invalid maximum size, must be >=0"));
+        }
+      }
+    }
   }
 }
 
 AOSContextManager::AOSContextManager(AOSServices& services) :
   m_Services(services),
   m_History(new ASync_CriticalSection()),
-  m_ErrorHistory(new ASync_CriticalSection())
+  m_ErrorHistory(new ASync_CriticalSection()),
+  m_FreeStore(new ASync_CriticalSectionSpinLock())
 {
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
   m_ErrorHistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/error-history-maxsize", 100);
   m_DefaultEventLogLevel = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/log-level", 2);
+  m_FreeStoreMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/freestore/max-size", 500);
+  size_t freeStoreInitialSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/freestore/initial-size", 100);
+  AASSERT(this, freeStoreInitialSize <= m_FreeStoreMaxSize && freeStoreInitialSize >= 0);
 
   m_Queues.resize(AOSContextManager::STATE_LAST, NULL);
 
   adminRegisterObject(m_Services.useAdminRegistry());
+
+  for (int i=0; i<freeStoreInitialSize; ++i)
+  {
+    m_FreeStore.push(new AOSContext(NULL, m_Services));
+  }
 }
 
 AOSContextManager::~AOSContextManager()
@@ -303,6 +380,8 @@ AOSContextManager::~AOSContextManager()
     {
       delete (*itQ);
     }
+    
+    m_FreeStore.clear(true);
   }
   catch(...) {}
 }
@@ -310,7 +389,7 @@ AOSContextManager::~AOSContextManager()
 AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
 {
   AASSERT(this, pSocket);
-  AOSContext *p = new AOSContext(pSocket, m_Services);
+  AOSContext *p = _newContext(pSocket);
   
   //a_Set logging level
   switch(m_DefaultEventLogLevel)
@@ -370,29 +449,24 @@ void AOSContextManager::deallocate(AOSContext *p)
 
   if (p->useEventVisitor().getErrorCount() > 0)
   {
-    while (m_ErrorHistory.size() >= m_ErrorHistoryMaxSize)
-    {
-      //a_Remove last
-      delete m_ErrorHistory.pop();
-    }
-
-    //a_Add to history
+    //a_Add to error history
     if (m_ErrorHistoryMaxSize > 0)
     {
       p->finalize();
       m_ErrorHistory.push(p);
     }
     else
-      delete p;
+      _deleteContext(&p);
+
+    while (m_ErrorHistory.size() > m_ErrorHistoryMaxSize)
+    {
+      //a_Remove last
+      AOSContext *pC = (AOSContext *)m_ErrorHistory.pop();
+      _deleteContext(&pC);
+    }
   }
   else
   {
-    while (m_History.size() > m_HistoryMaxSize)
-    {
-      //a_Remove last
-      delete m_History.pop();
-    }
-
     //a_Add to history
     if (m_HistoryMaxSize > 0)
     {
@@ -401,9 +475,39 @@ void AOSContextManager::deallocate(AOSContext *p)
     }
     else
     {
-      pDelete(p);
+      _deleteContext(&p);
+    }
+
+    while (m_History.size() > m_HistoryMaxSize)
+    {
+      //a_Remove last
+      AOSContext *pC = (AOSContext *)m_History.pop();
+      _deleteContext(&pC);
     }
   }
+}
+
+AOSContext *AOSContextManager::_newContext(AFile_Socket *pSocket)
+{
+  AOSContext *pContext = (AOSContext *)m_FreeStore.pop();
+  
+  if (!pContext)
+    return new AOSContext(pSocket, m_Services);
+  else
+  {
+    pContext->reset(pSocket);
+    return pContext;
+  }
+}
+
+void AOSContextManager::_deleteContext(AOSContext **p)
+{
+  if (m_FreeStore.size() >= m_FreeStoreMaxSize)
+    delete(*p);
+  else
+    m_FreeStore.push(*p);
+
+  p = NULL;
 }
 
 void AOSContextManager::setQueueForState(AOSContextManager::ContextQueueState state, AOSContextQueueInterface *pQueue)

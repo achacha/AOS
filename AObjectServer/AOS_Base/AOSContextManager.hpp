@@ -96,6 +96,18 @@ private:
 
   //! Reference to the services
   AOSServices& m_Services;
+
+  //! Internal allocate
+  AOSContext *_newContext(AFile_Socket *pSocket);
+
+  //! Internal deallocate
+  void _deleteContext(AOSContext **);
+
+  //! Maximum size of the freestore of AOSContext*s
+  size_t m_FreeStoreMaxSize;
+
+  //! Store allocated and unused AOSContext objects
+  ABasePtrQueue m_FreeStore;
 };
 
 #endif //INCLUDED__AOSContextManager_HPP__

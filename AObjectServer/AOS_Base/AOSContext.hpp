@@ -56,8 +56,11 @@ public:
 public:
   /*!
   ctor
+
+  @param pSocket pointer to the incomming socket connection, OWNED and DELETED
+  @param services reference
   */
-  AOSContext(AFile_Socket *, AOSServices&);
+  AOSContext(AFile_Socket *pSocket, AOSServices& services);
 
   /*!
   dtor
