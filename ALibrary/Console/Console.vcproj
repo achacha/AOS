@@ -403,7 +403,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tTemplateParse.cpp"
+			RelativePath=".\tMemAlloc.cpp"
 			>
 		</File>
 	</Files>

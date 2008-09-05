@@ -57,8 +57,8 @@ $Id$
 #ifdef __DEBUG_DUMP__
 // Max size
 #define DEBUG_MAXSIZE_AString 5000000
-#define DEBUG_MAXSIZE_ARope 10000000
-#define DEBUG_MAXSIZE_ARopeDeque 10000000
+#define DEBUG_MAXSIZE_ARope 30000000
+#define DEBUG_MAXSIZE_ARopeDeque 30000000
 
 // Max items
 #define DEBUG_MAXSIZE_ABasePtrQueue 100000

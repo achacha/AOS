@@ -5,6 +5,10 @@
 #include "templateAutoPtr.hpp"
 #include "AException.hpp"
 #include "ATextGenerator.hpp"
+#include "ARope.hpp"
+#include "ARopeDeque.hpp"
+#include "AThread.hpp"
+#include "AFile_IOStream.hpp"
 
 void testNew()
 {
@@ -51,6 +55,31 @@ void testATextGenerator()
   }
 }
 
+void testARope()
+{
+  ARopeDeque rope(AConstant::ASTRING_EMPTY, 1536);
+  AString input;
+  AFile_IOStream iof;
+
+  iof.append("Start [Press Enter]?");
+  iof.readLine(input);
+  for (int i = 0; i < 1000; ++i)
+  {
+    iof.append("Allocating...");
+    for (int j = 0; j < 5000; ++j)
+    {
+      ATextGenerator::generateRandomAlphanum(rope, 2048);
+    }
+    iof.append("allocated [Press Enter]?");
+    iof.readLine(input);
+    rope.clear(false);
+    iof.append("Cleared [Press Enter]?");
+    rope.clear(true);
+    iof.append("Fully cleared [Press Enter]?");
+    iof.readLine(input);
+  }
+}
+
 int main()
 {
 DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(true);
@@ -60,7 +89,8 @@ DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(true);
     //testNew();
     //testEventVisitor();
     //testAString();
-    testATextGenerator();
+    //testATextGenerator();
+    testARope();
   }
   catch(AException& e)
   {
