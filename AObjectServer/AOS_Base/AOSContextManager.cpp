@@ -482,7 +482,8 @@ void AOSContextManager::deallocate(AOSContext *p)
     {
       //a_Remove last
       AOSContext *pC = (AOSContext *)m_History.pop();
-      _deleteContext(&pC);
+      if (pC)
+        _deleteContext(&pC);
     }
   }
 }
@@ -502,6 +503,7 @@ AOSContext *AOSContextManager::_newContext(AFile_Socket *pSocket)
 
 void AOSContextManager::_deleteContext(AOSContext **p)
 {
+  AASSERT(this, NULL != *p);
   if (m_FreeStore.size() >= m_FreeStoreMaxSize)
     delete(*p);
   else
