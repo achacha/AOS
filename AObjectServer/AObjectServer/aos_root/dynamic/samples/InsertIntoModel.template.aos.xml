@@ -30,6 +30,7 @@
 		</data>
 	</module>
 	<output class="Template">
-		<filename>template/InsertIntoModel.html</filename>
+    <mime-extension>html</mime-extension>
+    <filename>template/InsertIntoModel.html</filename>
 	</output>
 </controller>

@@ -22,16 +22,20 @@ AOSOutput_File::AOSOutput_File(AOSServices& services) :
 AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
 {
  
-  AString str(1536, 1024);
-  if (!context.getOutputParams().emitString(ASW("path", 4), str))
+  const AXmlElement *peFilename = context.getOutputParams().findElement(AOS_BaseModules_Constants::FILENAME);
+  if (!peFilename)
   {
     context.useEventVisitor().addEvent(ASWNL("AOSOutput_File: Unable to find 'path' parameter"), AEventVisitor::EL_ERROR);
     return AOSContext::RETURN_ERROR;
   }
-  
+
+  //a_Get filename requested
+  AString str(1536, 1024);
+  peFilename->emitContent(str);
+
   AFilename *pFilename = NULL;
   AString strBase;
-  if (context.getOutputParams().emitString(ASW("base", 4), strBase))
+  if (peFilename->getAttributes().get(AOS_BaseModules_Constants::BASE, strBase))
   {
     if (strBase.equals(ASW("data",4)))
       pFilename = new AFilename(m_Services.useConfiguration().getAosBaseDataDirectory(), str, false);
@@ -51,14 +55,11 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
     return AOSContext::RETURN_ERROR;
   }
 
-  //a_Optional content type, if none, use text/html
-  const AXmlElement *pType = context.getOutputParams().findElement(ASW("content-type", 12));
-  if (pType)
+  //a_See if extension for mime type set
+  AString ext;
+  if (context.getOutputParams().emitContentFromPath(AOS_BaseModules_Constants::MIME_EXTENSION, ext))
   {
-    //a_Content-Type override in command
-    AString contentType;
-    pType->emitContent(contentType);
-    context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, contentType);
+    m_Services.useConfiguration().setMimeTypeFromExt(ext, context);
   }
   else
   {

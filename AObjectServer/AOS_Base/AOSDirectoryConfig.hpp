@@ -19,6 +19,10 @@ class ALog;
 class AOS_BASE_API AOSDirectoryConfig : public AXmlEmittable, public AOSAdminInterface, public AXmlParsable
 {
 public:
+  static const AString FILENAME;
+  static const AString ELEMENT;
+
+public:
   AOSDirectoryConfig(const AString path, const AXmlElement& base, ALog& alog);
   virtual ~AOSDirectoryConfig();
 

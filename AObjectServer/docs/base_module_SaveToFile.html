@@ -4,6 +4,56 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body class="docs">
-TODO
+<h1 class="heading">MODULE: SaveToFile</h1>
+<div class="comment">
+Saves element content to file or context object referenced by element text.<br />
+If given a path it will look up the element in the model and save the content to a file.<br />
+If reference="context-object" is specified, then the content is actually a name of the object in context objects store that is to be saved.<br />
+</div>
+<br />
+<h5 class="heading">USAGE</h5>
+<pre class="code_xml">
+&lt;module&gt;
+  &lt;model-path reference=&quot;model | context-object&quot;&gt;/root/something&lt;/model-path&gt;
+  &lt;output-filename&gt;path/somefile.txt&lt;/output-filename&gt;
+&lt;/module&gt;
+
+model-path = where to get the data to save
+  @reference:
+   model = use literal path to extract XML data to save
+   context-object = given a path, look it up in the model and then use than name to lookup data in the context objects (used in saving multi-part data submitted via form or for non-ascii data)
+   
+output-filename = name of the file to save realive to <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/
+</pre>
+<br />
+
+<h5 class="heading">EXAMPLES</h5>
+<pre class="code_xml">
+&lt;module&gt;
+  &lt;model-path&gt;/root/something&lt;/model-path&gt;
+  &lt;output-filename&gt;path/somefile.txt&lt;/output-filename&gt;
+&lt;/module&gt;
+</pre>
+<div class="comment">
+Contents of the element at /root/something/ saved to file called <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/path/somefile.txt
+</div>
+
+<pre class="code_xml">
+&lt;module&gt;
+  &lt;model-path reference=&quot;context-object&quot;&gt;/root/REQUEST/url/query-string/file&lt;/model-path&gt;
+  &lt;output-filename&gt;path/somefile.txt&lt;/output-filename&gt;
+&lt;/module&gt;
+</pre>
+<div class="comment">
+Contexts of the elements are used to lookup an object in ContextObjects then cast to AEmittable and output written to file called <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/path/somefile.txt
+This is a way to get data parsed by multi-part-form, since the name of the
+object is stored in the query string and data in put into the <span class="code">context.useContextObjects()</span>
+</div>
+<br />
+
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/SaveUploadToFile.html.aos.xml<br />
+dynamic/samples/SaveModelElementToFile.aos.xml<br />
+<br />
 </body>
 </html>

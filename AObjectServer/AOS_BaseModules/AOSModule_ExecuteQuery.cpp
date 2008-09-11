@@ -19,10 +19,9 @@ AOSModule_ExecuteQuery::AOSModule_ExecuteQuery(AOSServices& services) :
 
 AOSContext::ReturnCode AOSModule_ExecuteQuery::execute(AOSContext& context, const AXmlElement& params)
 {
-#pragma message("AOSModule_ExecuteQuery::execute: needs work")
   AString sql, path;
-  params.emitString(ASW("sql", 3), sql);
-  params.emitString(ASW("path", 4), path);
+  params.emitString(AOS_BaseModules_Constants::SQL, sql);
+  params.emitString(AOS_BaseModules_Constants::PATH, path);
   
   if (path.isEmpty())
     path.assign(ASW("ExecuteQuery/query", 18));

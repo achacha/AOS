@@ -21,29 +21,40 @@ AOSModule_Template::AOSModule_Template(AOSServices& services) :
 AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AXmlElement& params)
 {
   const AXmlElement *pNode = params.findElement(ASW("template",8));
+  AAutoPtr<ATemplate> pTemplate(NULL, false);
   AAutoPtr<AFile> pFile(NULL, false);
   if (pNode)
   {
     //a_Element contains script
-    pFile.reset(new AFile_AString());
+    pTemplate.reset(m_Services.createTemplate(), true);
     
-    //a_Use content as a file
-    pNode->emitContent(*pFile);
+    //a_Parse template
+    AFile_AString strfile;
+    pNode->emitContent(strfile);
+    pTemplate->fromAFile(strfile);
   }
   else
   {
-    pNode = params.findElement(ASW("filename",8));
+    //a_Filename provided, use the cache
+    pNode = params.findElement(AOS_BaseModules_Constants::FILENAME);
     if (pNode)
     {
       AString relativePath;
       pNode->emitContent(relativePath);
 
       //a_File to be used (may need caching for it, but for now keep it dynamic)
-      AFilename f(m_Services.useConfiguration().getAosBaseDataDirectory(), true);
-      f.join(relativePath, false);
-      
-      pFile.reset(new AFile_Physical(f));
-      pFile->open();
+      AFilename filename(m_Services.useConfiguration().getAosBaseDataDirectory(), true);
+      filename.join(relativePath, false);
+      if (ACacheInterface::NOT_FOUND == m_Services.useCacheManager().getTemplate(context, filename, pTemplate))
+      {
+        //a_Not found, return error
+        ARope rope;
+        rope.append(getClass());
+        rope.append(": Unable to find a template file: ",34);
+        rope.append(filename);
+        context.useEventVisitor().startEvent(rope, AEventVisitor::EL_ERROR);
+        return AOSContext::RETURN_ERROR;
+      }
     }
     else
     {
@@ -51,10 +62,6 @@ AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AX
       return AOSContext::RETURN_ERROR;  //a_Did not find either module/template or module/filename
     }
   }  
-
-  //a_Template
-  AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate(), true);
-  pTemplate->fromAFile(*pFile);
 
   //a_Process and save output
   ARope ropeOutput;
@@ -71,7 +78,7 @@ AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AX
   }
 
   //a_Insert output into outpath (if any)
-  pNode = params.findElement(ASW("outpath",7));
+  pNode = params.findElement(AOS_BaseModules_Constants::PATH);
   if (pNode)
   {
     AString xmlpath;
@@ -82,7 +89,10 @@ AOSContext::ReturnCode AOSModule_Template::execute(AOSContext& context, const AX
       context.useModel().addElement(xmlpath).addData(ropeOutput, AXmlElement::ENC_CDATADIRECT);
     }
   }
-
+  else
+  {
+    context.useEventVisitor().addEvent(ASWNL("Unable to find module/path, output from template discarded"), AEventVisitor::EL_WARN);
+  }
   return AOSContext::RETURN_OK;
 }
 

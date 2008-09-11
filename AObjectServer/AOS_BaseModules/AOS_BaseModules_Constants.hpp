@@ -15,6 +15,22 @@ class AOS_BASEMODULES_API AOS_BaseModules_Constants
 {
 public:
   static const AString SECURE;
+
+  //! Element that refers to a file and file base directory
+  static const AString FILENAME;
+  static const AString BASE;
+  
+  //! Usually path into the model
+  static const AString PATH;
+
+  //! SQL
+  static const AString SQL;
+
+  //! Extension to simulate when setting content-type (looks up content-type mapping for a given extension)
+  static const AString MIME_EXTENSION;
+
+  //! String for file
+  static const AString S_FILE;
 };
 
 #endif

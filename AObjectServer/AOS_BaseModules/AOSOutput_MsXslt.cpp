@@ -187,7 +187,7 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
 
   AFilename xsltFile(m_Services.useConfiguration().getAosBaseDataDirectory());
   AString xsltName;
-  if (!context.getOutputParams().emitString(ASW("filename", 8), xsltName))
+  if (!context.getOutputParams().emitString(AOS_BaseModules_Constants::FILENAME, xsltName))
   {
     m_Services.useLog().append("AOSOutput_MsXslt: Unable to find '/output/filename' parameter");
     return AOSContext::RETURN_ERROR;

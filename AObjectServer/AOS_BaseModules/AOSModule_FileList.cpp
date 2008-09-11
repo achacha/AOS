@@ -21,10 +21,8 @@ AOSModule_FileList::AOSModule_FileList(AOSServices& services) :
 
 AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AXmlElement& moduleParams)
 {
-  static const AString FILE("file",4);
-
   AString str(1536, 1024);
-  const AXmlElement *pePath = moduleParams.findElement(ASW("path", 4));
+  const AXmlElement *pePath = moduleParams.findElement(AOS_BaseModules_Constants::FILENAME);
   if (!pePath)
   {
     context.useEventVisitor().addEvent(ASWNL("AOSModule_FileList: Unable to find 'path' parameter"), AEventVisitor::EL_ERROR);
@@ -36,7 +34,7 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
 
   AFilename *pFilename = NULL;
   AString strBase;
-  if (pePath->getAttributes().get(ASW("base", 4), strBase))
+  if (pePath->getAttributes().get(AOS_BaseModules_Constants::BASE, strBase))
   {
     if (strBase.equals(ASW("dynamic",7)))
     {
@@ -105,7 +103,8 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
     fileList.useAttributes().insert(ASW("count",5), AString::fromSize_t(files.size()));
     for(AFileSystem::FileInfos::iterator it = files.begin(); it != files.end(); ++it)
     {
-      it->emitXml(fileList.addElement(FILE));
+      if (it->filename.compactPath())
+        it->emitXml(fileList.addElement(AOS_BaseModules_Constants::S_FILE));
     }
   }
   else

@@ -4,6 +4,59 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body class="docs">
-TODO
+<h1 class="heading">MODULE: PublishInput</h1>
+<div class="comment">
+Publishes all input name/value pairs to <br />
+</div>
+<br />
+<h5 class="heading">USAGE</h5>
+<pre class="code_xml">
+&lt;module class=&quot;LuaScript&quot;&gt;
+  &lt;filename&gt;lua/myscript.lua&lt;/filename&gt;
+  &lt;path&gt;script&lt;/path&gt;
+&lt;/module&gt;
+
+Executes <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/lua/myscript.lua and results in:
+&lt;root&gt;
+  &lt;script&gt;
+    &lt;output source=&quot;lua/myscript.lua&quot;&gt;&lt;![CDATA[something here output from the script file]]&gt;&lt;/output&gt;
+  &lt;/script&gt;
+  ...
+&lt;/root&gt;
+
+&lt;module class=&quot;LuaScript&quot;&gt;
+  &lt;script&gt;&lt;![CDADA[ print(&quot;Hello World!&quot;); ]]&gt;&lt;/script&gt;
+  &lt;path&gt;script&lt;/path&gt;
+&lt;/module&gt;
+
+Results in:
+&lt;root&gt;
+  &lt;script&gt;
+    &lt;output source=&quot;Inline&quot;&gt;&lt;![CDATA[Hello World!]]&gt;&lt;/output&gt;
+  &lt;/script&gt;
+  ...
+&lt;/root&gt;
+</pre>
+<br />
+
+<div class="description">
+filename = Filename of the lua script to use relative to the <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data directory<br />
+script = inline script to process<br />
+path = path where to insert the data (default empty string maps into /root), will create an element called <i>output</i> for each execution<br />
+</div><br />
+<br />
+
+<h5 class="heading">SAMPLES</h5>
+dynamic\samples\ExecuteLuaScriptFile.aos.xml<br />
+dynamic\samples\ExecuteLuaScriptInline.aos.xml<br />
+dynamic\samples\InlineLuaScriptTest.aos.xml<br />
+dynamic\samples\SaveModelElementToFile.html.aos.xml<br />
+dynamic\samples\SaveUploadToFile.html.aos.xml<br />
+<br />
+<div class="comment">
+Each of these controllers will insert data into the model but output it in different form, essentially the InsertIntoModel module deifintion is identical in all 4 and only output module is varied to demonstrate that business logic
+can easily be separated from the view generation portion<br />
+</div>
+<br />
 </body>
 </html>

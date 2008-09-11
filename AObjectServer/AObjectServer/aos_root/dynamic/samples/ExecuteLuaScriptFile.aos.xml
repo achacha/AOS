@@ -3,7 +3,7 @@
   <input/>
   <module class="LuaScript">
     <filename>lua/TestLuaScript.lua</filename>
-    <outpath>output/script</outpath>
+    <path>output/script</path>
   </module>
   <output/>
 </controller>

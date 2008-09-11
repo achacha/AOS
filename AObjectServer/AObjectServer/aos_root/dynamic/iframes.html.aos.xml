@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?> 
 <controller session="1">
   <output class="File">
-    <path>iframes.html</path>
+    <filename>iframes.html</filename>
     <base>static</base>
   </output>
 </controller>

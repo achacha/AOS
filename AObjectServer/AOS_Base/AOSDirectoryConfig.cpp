@@ -11,6 +11,8 @@ $Id$
 #include "ALog.hpp"
 
 const AString AOSDirectoryConfig::CLASS("AOSDirectoryConfig");
+const AString AOSDirectoryConfig::FILENAME("__this__.aos.xml");
+const AString AOSDirectoryConfig::ELEMENT("controller");
 
 void AOSDirectoryConfig::debugDump(std::ostream& os, int indent) const
 {

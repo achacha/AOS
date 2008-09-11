@@ -37,7 +37,7 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
   }
   else
   {
-    pNode = params.findElement(ASW("filename",8));
+    pNode = params.findElement(AOS_BaseModules_Constants::FILENAME);
     if (pNode)
     {
       pNode->emitContent(strSource);
@@ -68,7 +68,7 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
   pTemplate->process(context.useLuaTemplateContext(), ropeOutput);
   
   //a_Insert output into outpath (if any)
-  pNode = params.findElement(ASW("outpath",7));
+  pNode = params.findElement(AOS_BaseModules_Constants::PATH);
   if (pNode)
   {
     AString xmlpath;

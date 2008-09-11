@@ -45,7 +45,7 @@ AOSOutput_Template::~AOSOutput_Template()
 AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
 {
   AXmlElement::CONST_CONTAINER templateNames;
-  context.getOutputParams().find(ASW("filename", 8), templateNames);
+  context.getOutputParams().find(AOS_BaseModules_Constants::FILENAME, templateNames);
   if(templateNames.size() == 0)
   {
     context.addError(getClass(), ASWNL("AOSOutput_Template: Unable to find 'output/filename' parameter"));
@@ -54,8 +54,13 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
 
   //a_See if extension for mime type set for the template(s)
   AString ext;
-  if (context.getOutputParams().emitContentFromPath(ASW("mime-extension",14), ext))
+  if (context.getOutputParams().emitContentFromPath(AOS_BaseModules_Constants::MIME_EXTENSION, ext))
     m_Services.useConfiguration().setMimeTypeFromExt(ext, context);
+  else
+  {
+    //a_Set content type based on request URL extension
+    m_Services.useConfiguration().setMimeTypeFromExt(context.useRequestUrl().getExtension(), context);
+  }
 
   //a_Iterate filename types and execute/output templates
   bool templatesDisplayed = 0;
@@ -76,6 +81,7 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
         }
       }
     }
+    //a_Check "ifnot" condition
     ifElement.clear();
     if ((*cit)->getAttributes().get(ASW("ifnot",5), ifElement))
     {

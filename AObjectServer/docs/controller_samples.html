@@ -22,7 +22,7 @@ OUTPUT: Default XML model, HTTP request/response/session are added to the model 
 <controller/></xmp>
 <br />
 
-Result of http://localhost/nop <small>(see $AOS_HOME/dynamic/ping.aos.xml)</small><br />
+Result of http://localhost/nop <small>(see <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/dynamic/ping.aos.xml)</small><br />
 <xmp class="code_xml_output"><?xml version="1.0" encoding="UTF-8"?>
 <root>
   <REQUEST>
@@ -91,7 +91,7 @@ OUTPUT: Default XML model, AJAX mode is enabled so nothing gets added to the mod
 <controller ajax="1"/></xmp>
 <br />
 
-Result http://localhost/ping  <small>(see $AOS_HOME/dynamic/ping.aos.xml)</small><br />
+Result http://localhost/ping  <small>(see <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/dynamic/ping.aos.xml)</small><br />
 <xmp class="code_xml_output"><?xml version="1.0" encoding="UTF-8"?>
 <root/>
 </xmp>
@@ -166,7 +166,7 @@ print(model.getText("/root/inline-script-added"));
 </controller></xmp>
 <br />
 
-Result http://localhost/ping  <small>(see $AOS_HOME/dynamic/ping.aos.xml)</small><br />
+Result http://localhost/ping  <small>(see <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/dynamic/ping.aos.xml)</small><br />
 <xmp class="code_xml_output"><?xml version="1.0" encoding="UTF-8"?>
 <root>
   <execute>

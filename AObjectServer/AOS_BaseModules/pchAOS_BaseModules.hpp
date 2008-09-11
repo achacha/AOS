@@ -8,6 +8,7 @@ $Id$
 
 #define AOS__USE_MSXML6__
 #include "AOS.hpp"
+#include "AOS_BaseModules_Constants.hpp"
 
 #include <templateAutoPtr.hpp>
 #include <ATextConverter.hpp>

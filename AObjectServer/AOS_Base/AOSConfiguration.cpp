@@ -422,7 +422,7 @@ void AOSConfiguration::_loadControllers()
         continue;
       }
       
-      if (it->filename.useFilename().equals(ASW("__this__.aos.xml",16)))
+      if (it->filename.useFilename().equals(AOSDirectoryConfig::FILENAME))
       {
         _readDirectoryConfig(it->filename);
       }
@@ -465,7 +465,7 @@ void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
   configFile.open();
   AAutoPtr<AXmlDocument> pDoc(new AXmlDocument(configFile), true);
   configFile.close();
-  AASSERT_EX(pDoc, pDoc->useRoot().getName().equals(ASW("config",6)), ARope("Expected <config> as a root element: ")+filename);
+  AASSERT_EX(pDoc, pDoc->useRoot().getName().equals(AOSDirectoryConfig::ELEMENT), filename);
   
   //a_Add directory config
   AOSDirectoryConfig *p =  new AOSDirectoryConfig(strPath, pDoc->useRoot(), m_Services.useLog());

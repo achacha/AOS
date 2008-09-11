@@ -1184,6 +1184,10 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     {
       m_OutputXmlDocument.useRoot().addElement(S_OUTPUT).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
       m_OutputBuffer.clear();
+      if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+      {
+        m_EventVisitor.startEvent(ASW("AOSContext: XML document forced, clearing current output and emitting model",75), AEventVisitor::EL_DEBUG);
+      }
     }
     
     //a_If output buffer is empty then emit output XML document into it unless we are redirecting, then we don't
@@ -1192,6 +1196,10 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
       m_OutputXmlDocument.emit(m_OutputBuffer);
       m_Services.useConfiguration().setMimeTypeFromExt(ASW("xml",3), *this);
       m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
+      if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+      {
+        m_EventVisitor.startEvent(ASW("AOSContext: Empty output and no redirect, using model XML as document and setting response to 200",97), AEventVisitor::EL_DEBUG);
+      }
     }
 
     //a_Write header if not already written, if it was already written, we assume it is correct
@@ -1339,6 +1347,7 @@ void AOSContext::setResponseRedirect(const AString& url)
   m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_302_Moved_Temporarily);
   m_ResponseHeader.setPair(AHTTPResponseHeader::HT_RES_Location, url);
   m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AConstant::ASTRING_ZERO);
+  m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
   m_OutputBuffer.clear();
 }
 

@@ -4,6 +4,43 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body class="docs">
-TODO
+<h1 class="heading">OUTPUT: From template file(s)</h1>
+<div class="comment">Use a template file or a set of template files to render output.<br />
+<i>if</i> and <i>ifnot</i> attributes allow inclusion of templates based on presence/absence of elements as tests.  The templates are all streamed out to output in the order they are listed.<br />
+You can have both if and ifnot on a template<br />
+</div>
+<br />
+<h5 class="heading">USAGE</h5>
+<xmp class="code_xml"><module class="Template">
+  <mime-extension>html</mime-extension>
+  <filename if="/root/somepath/exists">script/something.html</filename>
+  <filename ifnot="/root/somepath/doesnotexist">script/something_not.html</filename>
+  <filename if="/root/somepath/alsoexists">script/something_more.html</filename>
+</module></xmp>
+<pre>
+filename: template filename
+  if: checks for existence of model element
+  ifnot: check for absence of model element
+
+mime-extension: (optional) sets the MIME content type, if not present, the extension of the request URL is used (and if there is non, XML is the default)
+</pre>
+<br />
+<h5 class="heading">OUTPUT</h5>
+Sequence of templates concatinated together and if they meet conditions (if specified)<br />
+<br />
+<h5 class="heading">EXAMPLES</h5>
+<xmp class="code_xml"><output class="Template">
+    <mime-extension>html</mime-extension>
+    <filename if="SESSION/data/user/isLoggedIn">template/logout.html</filename>
+    <filename ifnot="SESSION/data/user/isLoggedIn">template/login.html</filename>
+  </output>
+</xmp>
+<div class="comment">Display correct template depending on element presence</div>
+<br />
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/DisplayInputWithTemplate.html.aos.xml<br />
+dynamic/samples/DisplayInputWithTemplateParts.html.aos.xml<br />
+dynamic/samples/InsertIntoModel.template.aos.xml<br />
+<br />
 </body>
 </html>

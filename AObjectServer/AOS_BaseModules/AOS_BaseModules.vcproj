@@ -567,10 +567,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\AOSModule_PublishInput.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\AOSModule_SaveToFile.hpp"
 					>
 				</File>
@@ -606,10 +602,6 @@
 				</File>
 				<File
 					RelativePath=".\AOSModule_NOP.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\AOSModule_PublishInput.cpp"
 					>
 				</File>
 				<File

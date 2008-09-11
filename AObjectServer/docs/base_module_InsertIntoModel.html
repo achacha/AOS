@@ -4,6 +4,38 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body class="docs">
-TODO
+<h1 class="heading">MODULE: InsertIntoModel</h1>
+<div class="comment">
+Insert XML data into the context model<br />
+</div>
+<br />
+<h5 class="heading">USAGE</h5>
+<pre class="code_xml">
+&lt;module class=&quot;InsertIntoModel&quot;&gt;
+  &lt;data&gt;
+    &lt;foo&gt;Some data&lt;/foo&gt;
+  &lt;/data&gt;
+  &lt;path&gt;/import-node&lt;/path&gt;
+&lt;/module&gt;
+</pre>
+<br />
+
+<div class="description">
+data = XML data to parse and insert into the model<br />
+path = path where to insert the data (default empty string maps into /root)<br />
+</div><br />
+<br />
+
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/InsertIntoModel.json.aos.xml<br />
+dynamic/samples/InsertIntoModel.xml.aos.xml<br />
+dynamic/samples/InsertIntoModel.template.aos.xml<br />
+dynamic/samples/InsertIntoModel.xslt.aos.xml<br />
+<br />
+<div class="comment">
+Each of these controllers will insert data into the model but output it in different form, essentially the InsertIntoModel module deifintion is identical in all 4 and only output module is varied to demonstrate that business logic
+can easily be separated from the view generation portion<br />
+</div>
+<br />
 </body>
 </html>

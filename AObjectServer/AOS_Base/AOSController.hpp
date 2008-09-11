@@ -173,32 +173,4 @@ private:
   ALog& m_Log;
 };
 
-/*
-XML for each command (example below)
-
-<?xml version="1.0" encoding="UTF-8"?>
-<controller ajax='1' gzip='3' enabled='true' nocache='1' session='1'>
-	<input class='application/x-www-form-urlencoded'/>
-  <module class='PublishInput'>
-    <name>foo</name>
-    <param>0</param>
-  </module>
-  <module class='somemodule' if='/root/context/model/path/found'>
-    <name>bar</name>
-    <state>2</state>
-  </module>
-  <module class='somemodule' ifnot='/root/context/model/path/missing'>
-    <name>baz</name>
-    <state>3</state>
-  </module>
-	<output class='xslt'>
-    <filename>aos.xsl</filename>
-  </output>
-</controller>
-
-<?xml version="1.0" encoding="UTF-8"?>
-<controller alias='/somepath/anothercontroller'/>
-
-*/
-
 #endif // INCLUDED__AOSController_HPP__

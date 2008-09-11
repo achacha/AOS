@@ -1,0 +1,40 @@
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body class="docs">
+
+<h2 class="heading">&lt;controller&gt; basics</h2>
+
+<h5 class="heading">controller naming</h5>
+Controllers are XML files that are located in the <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/dynamic/ directory. All controllers end in <b>.aos.xml</b>.<br />
+<br />
+When calling a controller through a URL you can use:<br />
+<pre class="code">http://localhost/somepath/mycontroller.txt</pre>
+
+When processing this URL the controller called <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/dynamic/somepath/mycontroller.txt.aos.xml will be used 
+(all controllers are pre-loaded and parsed on startup and only ones that end in .aos.xml are considered controllers in the dynamic directory, other files are ignored).  The controllers can be at any directory level and that path is
+preserved during lookup.
+The controller's XML file will specify which input processor, module(s) and output generator to use to produce output for the fiven URL.  The reason for <b>.aos.xml</b> extension is to allow quick identification of controllers when viewing the file system and
+most inportant to preserve XML editor association for external editors (which sometimes formal content based on extension) you may use during development.<br />
+<br />
+The extension is only used in loading and when a command is looked up the .aos.xml is removed internally, so it's only an extension used on the file system.<br />
+<br />
+
+<h5 class="heading">controller fall-thru</h5>
+When looking for a specific path, the <i>dynamic</i> directory is the first place searched, if not found <i>static</i> directory is then checked and if not found there HTTP error 404 is returned.<br />
+<br />
+This is very useful.  You can start by having a static prototype, lets call it:<br />
+<pre class="code">http://www.myserver.foo/business/plan/profit.html</pre>
+and add a simple static file <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/static/business/plan/profit.html.<br />
+In this simple scenario you have a static file served just like an HTTP server would.<br />
+<br />
+Let's say you want to incorporate real-time data into this file that reads data from a database or some external source.  You create a new controller file <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/dynamic/business/plan/profit.html.aos.xml and
+add some business logic to it (currently you have to restart the server to load new controllers).  Now when that URL is requested the dynamic version is used, while static is just there.  If for some reason you no longer want dynamic data, you log into the
+admin console and disable the controller which will then skip the controller and use the static version.  This is useful for disabling controllers in case of emergency without resulting in a 404 or can allow you to fall back to static mode if you plan of
+using the URL in a press-release and your server may not be able to handle the volume of dynmaic requests (static ones especially if cached are much cheaper).<br />
+<br />
+
+</body>
+</html>

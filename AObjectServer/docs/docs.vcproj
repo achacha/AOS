@@ -336,10 +336,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\base_module_PublishInput.html"
-					>
-				</File>
-				<File
 					RelativePath=".\base_module_SaveToFile.html"
 					>
 				</File>
@@ -375,6 +371,10 @@
 			<Filter
 				Name="controller"
 				>
+				<File
+					RelativePath=".\controller_basics.html"
+					>
+				</File>
 				<File
 					RelativePath=".\controller_definition.html"
 					>

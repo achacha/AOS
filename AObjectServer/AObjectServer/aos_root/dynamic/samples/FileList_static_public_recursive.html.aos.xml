@@ -2,7 +2,7 @@
 <controller>
 	<input/>
 	<module class="FileList">
-	  <path>public/*.*</path>
+	  <filename>public/*.*</filename>
     <recursive>true</recursive>
 	</module>
 	<output class="Xslt">

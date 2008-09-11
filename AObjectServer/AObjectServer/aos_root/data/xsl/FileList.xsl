@@ -5,6 +5,8 @@
     <xsl:apply-templates select="file-list"/>
   </xsl:template>
   <xsl:template match="file-list">
+    <div style="background-color:#eeffee; font-family:Arial; font-size:large;"><xsl:value-of select="offset"/></div>
+    <hr/>
     <xsl:variable name="relative-url">
       <xsl:value-of select="/root/REQUEST/url/path"/>
       <xsl:value-of select="/root/REQUEST/url/filename"/>
@@ -29,7 +31,8 @@
           </a>
           <br/>
         </xsl:if>
-        <xsl:apply-templates select="file"/>
+        <xsl:apply-templates select="file[@dir='1']"/>
+        <xsl:apply-templates select="file[@file='1']"/>
         <br/>
         <i>
           <small>
@@ -53,13 +56,18 @@
       <xsl:choose>
         <xsl:when test="@dir = '1'">
           <xsl:text> </xsl:text>
-          <a href="{$relative-url}?offset={$offset}">
+          <xsl:element name="a">
+            <xsl:attribute name="href">
+              <xsl:value-of select="$relative-url"/>
+              <xsl:text>?offset=</xsl:text>
+              <xsl:value-of select="/root/file-list/offset"/>
+              <xsl:value-of select="filename/path/dir[last()]"/></xsl:attribute>
             <img alt="+" src="/images/folder_shut.gif"/>
             <xsl:text> </xsl:text>
             <b>
               <xsl:value-of select="filename/path/dir[last()]"/>
             </b>
-          </a>
+          </xsl:element>
           <br/>
         </xsl:when>
         <xsl:otherwise>

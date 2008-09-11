@@ -4,6 +4,97 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body class="docs">
-TODO
+<h1 class="heading">MODULE: AlterContext</h1>
+<div class="comment">
+Allows controller to alter the request parameters to simulate an action from the browser.  
+Request changes are mostly used during debugging by emulating certain conditions such as presence of FORM data, HTTP header or cookie value.<br />
+Response changes can set HTTP response header value or response cookie name/value pairs.<br />
+Will process 0 or more instances of the <i>add-*</i> elements in the module definition<br />
+</div>
+<br />
+<h5 class="heading">USAGE</h5>
+<pre class="code_xml">
+&lt;module class=&quot;AlterContext&quot;&gt;
+  &lt;add-parameter&gt;
+    <b>&lt;name&gt;param-to-add&lt;/name&gt;
+    &lt;value&gt;value-to-add&lt;/value&gt;</b>
+  &lt;/add-parameter&gt;
+
+  &lt;add-request-header&gt;
+    <b>&lt;name&gt;http-header-name&lt;/name&gt;
+    &lt;value&gt;value-to-add&lt;/value&gt;</b>
+  &lt;/add-request-header&gt;
+
+  &lt;add-response-header&gt;
+    <b>&lt;name&gt;http-header-name&lt;/name&gt;
+    &lt;value&gt;value-to-add&lt;/value&gt;</b>
+  &lt;/add-response-header&gt;
+
+  &lt;add-request-cookie&gt;
+    <b>&lt;name&gt;cookie-name&lt;/name&gt;
+    &lt;value&gt;cookie-value&lt;/value&gt;</b>
+    <i>&lt;max-age&gt;100&lt;/max-age&gt;
+    &lt;domain&gt;foo.com&lt;/domain&gt;
+    &lt;path&gt;/&lt;/path&gt;
+    &lt;version&gt;1&lt;/version&gt;
+    &lt;expired/&gt;
+    &lt;no-expire/&gt;
+    &lt;secure/&gt;</i>
+  &lt;/add-request-cookie&gt;
+
+  &lt;add-response-cookie&gt;
+    <b>&lt;name&gt;cookie-name&lt;/name&gt;
+    &lt;value&gt;cookie-value&lt;/value&gt;</b>
+    <i>&lt;max-age&gt;100&lt;/max-age&gt;
+    &lt;domain&gt;foo.com&lt;/domain&gt;
+    &lt;path&gt;/&lt;/path&gt;
+    &lt;version&gt;1&lt;/version&gt;
+    &lt;expired/&gt;
+    &lt;no-expire/&gt;
+    &lt;secure/&gt;</i>
+  &lt;/add-response-cookie&gt;
+&lt;/module&gt;
+</pre>
+<br />
+
+<h5 class="heading">add-parameter</h5>
+<div class="description">
+Inserts a FORM/qurystring parameter into the AQueryString object of the context (name and value elements required)<br />
+Equivalent to browser sending in form: ...&amp;<span class="code_text">param-to-add=value-to-add</span>&amp;...<br />
+Accessable in code as <span class="code">context.useRequestParameterPairs()</span> or <span class="code">context.useRequestHeader().useUrl().useParameterPairs()</span><br />
+</div><br />
+
+<h5 class="heading">add-request-header</h5>
+<div class="description">
+Inserts HTTP name value pair into the AHTTPRequestHeader object of the context (name and value elements required)<br />
+Equivalent to browser sending in header: <span class="code_text">http-header-name: value-to-add</span><br />
+Accessable in code as <span class="code">context.useRequestHeader()</span><br />
+</div><br />
+
+<h5 class="heading">add-response-header</h5>
+<div class="description">
+Inserts HTTP name value pair into the AHTTPResponseHeader object of the context (name and value elements required)<br />
+Server sends in HTTP header: <span class="code_text">http-header-name: value-to-add</span><br />
+Accessable in code as <span class="code">context.useResponseHeader()</span><br />
+</div><br />
+
+<h5 class="heading">add-request-cookie</h5>
+<div class="description">
+Inserts cookie object into AHTTPRequestHeader object of the context (name and value elements required), since this is a request cookie (coming from the browser) only name/value really have any meaning but entire ACookie object is configurable nonetheless<br />
+Equivalent to browser sending in HTTP request header: <span class="code_text">Cookie: cookie-name=cookie-value;</span><br />
+Accessable in code as <span class="code">context.useRequestCookies()</span> or <span class="code">context.useRequestHeader().useCookies()</span><br />
+</div><br />
+
+<h5 class="heading">add-response-cookie</h5>
+<div class="description">
+Inserts cookie object into the AHTTPResponseHeader object of the context (name and value elements required)<br />
+Server sends in HTTP header: <span class="code_text">Set-Cookie: cookie-name=cookie-value; <i>...other optional paramaters...</i></span><br />
+Accessable in code as <span class="code">context.useResponseCookies()</span> or <span class="code">context.useResponseHeader().useCookies()</span><br />
+</div><br />
+<br />
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/AlterContext.xml.aos.xml<br />
+<br />
+
 </body>
 </html>

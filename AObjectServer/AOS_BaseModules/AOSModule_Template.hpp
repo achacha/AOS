@@ -11,30 +11,6 @@ $Id$
 /*!
 Template module
 Loads and evaluates a template and optionally writes output to an element
-
-Sample usage:
-
-// Execute inline script
-...
-<module class="Template">
-  <template><![CDADA[
-...
-  ]]></template>
-  <outpath>template/output</outpath>
-</module>
-...
-
-// Use a script file from data directory
-...
-<module class="Template">
-  <filename>script/something.html</filename>
-  <outpath>template/output</outpath>
-</module>
-...
-
-filename is relative to the data folder
-outpath is relative to the root element output document or absolute starting with /root/
-
 */
 class AOS_BASEMODULES_API AOSModule_Template : public AOSModuleInterface
 {
@@ -42,19 +18,7 @@ public:
   AOSModule_Template(AOSServices&);
 
   /*!
-  Execute a Lua script
-
-  INPUT:
-  /module/script  -script inside the command file
-  
-  or 
-
-  /module/filename  -load the script file relative to the data directory path base
-  
-  OUTPUT:
-  /module/outpath  -path of where the result of the script execution is placed in the output xml document
-                    If not found, output from the script is discarded
-
+  Execute a template
   */
   virtual AOSContext::ReturnCode execute(AOSContext& context, const AXmlElement& moduleParams);
   

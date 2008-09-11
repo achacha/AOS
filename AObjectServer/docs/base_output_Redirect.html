@@ -4,6 +4,55 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body class="docs">
-TODO
-</body>
+<h1 class="heading">OUTPUT: Redirect using HTTP status 302</h1>
+<div class="comment">Redirects to a new location using 302 redirect.<br />
+</div>
+<br />
+<h5 class="heading">USAGE</h5>
+<xmp class="code_xml">  <output>
+    <redirect reference="MODEL | SESSION | REFERED">http://somwhere/path/file?query</redirect>
+    <secure>true</secure>
+  </output></xmp>
+<pre>
+redirect = URL to redirect to (can be relative), can have more than 1, first existing reference is used
+  reference = (optional) can check model or session or redirect back to referer (sic)
+secure = (optional) if true then https will be forced, if false http will be forced, if not present uses whatever chanel it was already on
+</pre>
+<br />
+<h5 class="heading">OUTPUT</h5>
+Redirects using HTTP status 302<br />
+
+<h5 class="heading">EXAMPLES</h5>
+<pre class="code">
+  Redirect to absolute URL and force https
+  <output>
+    <redirect>http://somwhere/path/file?query</redirect>
+    <secure>true</secure>
+  </output>
+
+  Redirect to relative URL and force http (using reported server/port)
+  <output>
+    <redirect>/somepath/file?query</redirect>
+    <secure>false</secure>
+  </output>
+
+  Redirect to a URL in the model and force http
+  <output>
+    <redirect reference="MODEL">/root/redirectUrl</redirect>
+    <secure>false</secure>
+  </output>
+
+  Redirect to a URL in the session data (if element exists)
+    or URL in the model if session data (if element exists)
+    or referer from HTTP request
+  <output>
+    <redirect reference="SESSION">/root/redirectUrl</redirect>
+    <redirect reference="MODEL">/root/redirectUrl</redirect>
+    <redirect reference="REFERER"/>
+  </output>
+</pre>
+<br />
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/RedirectToDisplayInput.html.aos.xml<br /></body>
+dynamic/samples/RedirectSecureToDisplayInput.html.aos.xml<br /></body>
 </html>

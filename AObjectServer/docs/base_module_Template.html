@@ -4,6 +4,61 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body class="docs">
-TODO
+<h1 class="heading">MODULE: Template</h1>
+<div class="comment">
+Processes a template and inserts output into the model.<br />
+LuaScript step only processes a Lua script while a template may contains Lua, plain text and other template tokens.<br />
+</div>
+<br />
+<h5 class="heading">USAGE</h5>
+<pre class="code_xml">
+&lt;module class=&quot;Template&quot;&gt;
+  &lt;template&gt;&lt;![CDADA[
+... template goes here ...
+  ]]&gt;&lt;/template&gt;
+  &lt;path&gt;template/output&lt;/path&gt;
+&lt;/module&gt;
+<div class="comment">Execute inline script</div>
+
+&lt;module class=&quot;Template&quot;&gt;
+  &lt;filename&gt;script/something.html&lt;/filename&gt;
+  &lt;path&gt;template/output&lt;/path&gt;
+&lt;/module&gt;
+<div class="comment">Use a script file</div>
+
+template = actual template
+filename = file containing a template to execute located relative to <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data directory
+path = destination of the output and is relative to the model root or absolute starting with /root/
+</pre>
+<br />
+
+<h5 class="heading">EXAMPLES</h5>
+<pre class="code_xml">
+&lt;module class=&quot;Template&quot;&gt;
+  &lt;template&gt;
+&lt;![CDADA[
+<div class="code">Plain text,
+%[LUA]{{{
+print "Lua script";
+model.addText("/root/justinserted","model text");
+}}}[LUA]%, %[MODEL]{{{/root/justinserted}}}[MODEL]%!
+</div>]]&gt;&lt;/template&gt;
+  &lt;path&gt;/root/myoutput&lt;/path&gt;
+&lt;/module&gt;
+</pre>
+<div class="comment">
+Results in /root/myoutput element to contain text: 
+<pre class="code_xml_output">
+Plain text, Lua script, model text!
+</pre><br />
+This simple template inlines Some text, Lua script which also inserts into the model and model lookup.<br />
+</div>
+
+<br />
+
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/ExecuteTemplateInline.aos.xml<br />
+dynamic/samples/ExecuteTemplateFile.aos.xml<br />
+<br />
 </body>
 </html>

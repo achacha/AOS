@@ -11,7 +11,6 @@
 
 //a_Modules
 #include "AOSModule_NOP.hpp"
-#include "AOSModule_PublishInput.hpp"
 #include "AOSModule_ExecuteQuery.hpp"
 #include "AOSModule_AlterContext.hpp"
 #include "AOSModule_InsertIntoModel.hpp"
@@ -62,7 +61,6 @@ extern "C" AOS_BASEMODULES_API int aos_register(
 
   //Register modules
   moduleExecutor.registerModule(new AOSModule_NOP(services));
-  moduleExecutor.registerModule(new AOSModule_PublishInput(services));
   moduleExecutor.registerModule(new AOSModule_ExecuteQuery(services));
   moduleExecutor.registerModule(new AOSModule_AlterContext(services));
   moduleExecutor.registerModule(new AOSModule_InsertIntoModel(services));

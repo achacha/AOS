@@ -4,6 +4,28 @@
   <link rel="stylesheet" href="docs.css" type="text/css"/>
 </head>
 <body class="docs">
-TODO
+<h1 class="heading">MODULE: ExecuteQuery</h1>
+<div class="comment">
+Execute simple SQL query against a configured database pool<br />
+This module does not handle database specific issues and if more that a simple query is needed then database specific module should be written to handle such queries, possibly using stored procedures<br />
+</div>
+<br />
+<h5 class="heading">USAGE</h5>
+<pre class="code_xml">
+&lt;module class=&quot;ExecuteQuery&quot;&gt;
+  &lt;sql&gt;&lt;![CDATA[select * from aos.global]]&gt;&lt;/sql&gt;
+  &lt;path&gt;data/global&lt;/path&gt;
+&lt;/module&gt;
+</pre>
+<br />
+
+<div class="description">
+sql = SQL string to execute<br />
+path = path where the result set object will be added in the model (default is /root/ExecuteQuery/query)<br />
+</div><br />
+<br />
+
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/sql.xml.aos.xml<br />
 </body>
 </html>

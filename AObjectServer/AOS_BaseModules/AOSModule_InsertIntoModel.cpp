@@ -23,7 +23,7 @@ AOSContext::ReturnCode AOSModule_InsertIntoModel::execute(AOSContext& context, c
   if (pDataNode)
   {
     AString strPath;
-    params.emitString(ASW("path",4), strPath);
+    params.emitString(AOS_BaseModules_Constants::PATH, strPath);
     context.useModel().addContent(pDataNode->clone(), strPath);
   }
   else

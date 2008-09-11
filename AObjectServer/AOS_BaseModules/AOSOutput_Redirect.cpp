@@ -53,6 +53,7 @@ AOSContext::ReturnCode AOSOutput_Redirect::execute(AOSContext& context)
   {
     //a_Check is forcing secure/non-secure protocol
     AUrl url(context.useRequestUrl());
+    url.useParameterPairs().clear();        //a_Query string is not promoted in redirect
     url &= AUrl(str);
     if (context.getOutputParams().exists(AOS_BaseModules_Constants::SECURE))
     {

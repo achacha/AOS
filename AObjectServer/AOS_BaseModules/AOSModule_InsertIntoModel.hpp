@@ -10,23 +10,6 @@ $Id$
 
 /*!
 Insert XML directly into the model
-
-<module class="InsertIntoModel">
-  <data>
-    <foo>Some data</foo>
-  </data>
-  <path>/import-node</path>
-</module>
-
-Result in model will be:
-
-<root>
-  <import-node>
-    <foo>Some data</foo>
-  </import-node>
-  ...
-</root>
-
 */
 class AOS_BASEMODULES_API AOSModule_InsertIntoModel : public AOSModuleInterface
 {
