@@ -22,7 +22,7 @@
 			</table>
 			<br/>
 			<br/>
-			<div align="center"><small>Request execution time: <xsl:value-of select="/root/request_time"/></small></div>
+			<div align="center"><small>Request execution time: <xsl:value-of select="/root/request_time"/> ms</small></div>
 			</body>
 		</html>
 	</xsl:template>

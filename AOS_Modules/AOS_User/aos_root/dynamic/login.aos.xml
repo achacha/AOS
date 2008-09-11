@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<controller>
+<controller session="1">
   <input class="application/x-www-form-urlencoded"/>
   
   <!-- Depending on logged in state show either the login or logout page -->

@@ -2,7 +2,7 @@
 <controller>
 	<input class="application/x-www-form-urlencoded"/>
 	<module class="Classified.submit"/>
-	<output class="Xslt">
-		<filename>classified/xsl/submit.xsl</filename>
+	<output class="Redirect">
+		<redirect>classified_list</redirect>
 	</output>
 </controller>
