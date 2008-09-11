@@ -25,7 +25,7 @@ public:
   virtual ~ARandomAccessBuffer();
 
   /*!
-  Peek the contents of the file without changing read position
+  Peek the contents of the buffer without changing read position
 
   @param target of the peek
   @param index start position of the read
