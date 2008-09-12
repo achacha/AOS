@@ -650,10 +650,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AObjectContainer.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AOutputBuffer.cpp"
 				>
 			</File>
@@ -1127,10 +1123,6 @@
 			</File>
 			<File
 				RelativePath=".\AObjectBase.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AObjectContainer.hpp"
 				>
 			</File>
 			<File

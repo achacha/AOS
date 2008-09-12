@@ -4,11 +4,12 @@ Written by Alex Chachanashvili
 $Id$
 */
 #include "pchUnitTests.hpp"
-#include "AObjectContainer.hpp"
 #include "AXmlElement.hpp"
 #include "ANumber.hpp"
 #include "AUrl.hpp"
 #include "ARope.hpp"
+#include "templateAObject.hpp"
+#include "ABasePtrContainer.hpp"
 
 int utAObjectUrl()
 {
@@ -16,7 +17,7 @@ int utAObjectUrl()
   
   ARope rope;
   AObject<AString> objStr("Somename", "myname");
-  AObjectContainer ns("root");
+  ABasePtrContainer ns;
   ns.insert("/path0/object0", new AObject<AString>("value0"));
   ns.insert("/path1/object0", new AObject<ANumber>(ANumber("3.14")));
   ns.insert("/path0/object1", new AObject<AUrl>(AUrl("http://www.achacha.org/")));
