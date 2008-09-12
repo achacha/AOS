@@ -1,0 +1,70 @@
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body class="docs">
+<h1 class="heading">Context's XML Model</h1>
+<div class="description>
+The XML model found in AOSContext class is used in generating the output.  Initially the model only contains essentials:<br />
+  /root/REQUEST - HTTP request<br />
+  /root/RESPONSE - HTTP response<br />
+  /root/GLOBAL - Global objects<br />
+  /root/SESSION - Session objects (if session was created, it is only created when there is a need for it or if forced to be created)<br />
+  <br />
+The input processors handle the HTTP input, modules modify the model and output generator uses the model to create output suitable to the client.<br />
+</div>
+
+<h3 class="heading">Initial XML</h3>
+<xmp class="code_xml"><root>
+  <REQUEST>
+    <method>GET</method>
+    <version>HTTP/1.1</version>
+    <Accept><![CDATA[text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8]]></Accept>
+    <Accept-Charset><![CDATA[ISO-8859-1,utf-8;q=0.7,*;q=0.7]]></Accept-Charset>
+    <Accept-Encoding><![CDATA[gzip,deflate]]></Accept-Encoding>
+    <Accept-Language><![CDATA[en-us,en;q=0.5]]></Accept-Language>
+    <Connection><![CDATA[keep-alive]]></Connection>
+    <Host><![CDATA[localhost]]></Host>
+    <Keep-Alive><![CDATA[300]]></Keep-Alive>
+    <Referer><![CDATA[http://localhost/list.html]]></Referer>
+    <User-Agent><![CDATA[Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.0.1) Gecko/2008070208 Firefox/3.0.1]]></User-Agent>
+    <url>
+      <protocol>http:</protocol>
+      <username></username>
+      <password></password>
+      <server>localhost</server>
+      <port>0</port>
+      <path>/samples/</path>
+      <filename>Test.xml</filename>
+      <url><![CDATA[http://localhost/samples/Test.xml]]></url>
+      <query-string size="0"/>
+    </url>
+    <cookies/>
+  </REQUEST>
+  <RESPONSE>
+    <version>HTTP/1.1</version>
+    <status code="200">OK</status>
+    <Connection><![CDATA[keep-alive]]></Connection>
+    <Content-Type><![CDATA[text/xml; charset=utf-8]]></Content-Type>
+    <Date><![CDATA[Fri, 12-Sep-2008 15:06:06 UT]]></Date>
+    <Server><![CDATA[Rhino/1.5.0.1 (64-bit)]]></Server>
+    <cookies>
+      <cookie>
+        <name>AOSSession</name>
+        <value>TF8xLA1sz45HdfpHO1569128596382685236</value>
+        <domain></domain>
+        <path>/</path>
+        <version>0</version>
+        <comment></comment>
+        <maxage>600</maxage>
+        <expires>Fri, 12-Sep-2008 15:16:06 UT</expires>
+      </cookie>
+    </cookies>
+  </RESPONSE>
+  <total_time>5.015ms</total_time>
+</root></xmp>
+<br />
+
+</body>
+</html>

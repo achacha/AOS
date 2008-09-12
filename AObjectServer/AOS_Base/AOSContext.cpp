@@ -21,6 +21,7 @@ const AString AOSContext::S_REQUEST("REQUEST",7);
 const AString AOSContext::S_RESPONSE("RESPONSE",8);
 const AString AOSContext::S_SESSION("SESSION",7);
 const AString AOSContext::S_OUTPUT("OUTPUT",6);
+const AString AOSContext::S_GLOBAL("GLOBAL",6);
 const AString AOSContext::S_ERROR("ERROR",5);
 const AString AOSContext::S_MESSAGE("MESSAGE",7);
 const AString AOSContext::S_CONTEXT("CONTEXT",7);
@@ -832,6 +833,9 @@ AXmlElement& AOSContext::emitXml(AXmlElement& thisRoot) const
     mp_Controller->emitXml(thisRoot.addElement(AOSController::S_CONTROLLER));
   else
     thisRoot.addElement(AOSController::S_CONTROLLER, AConstant::ASTRING_NULL);
+
+  //a_Add globals
+  m_Services.useGlobalObjects().emitXml(thisRoot.addElement(S_GLOBAL));
 
   return thisRoot;
 }

@@ -109,7 +109,6 @@ void AOSServices::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeade
 }
 
 AOSServices::AOSServices(const AFilename& basePath) :
-  m_GlobalObjects(ASW("global",6)),
   mp_InputExecutor(NULL),
   mp_ModuleExecutor(NULL),
   mp_OutputExecutor(NULL),
@@ -220,7 +219,7 @@ size_t AOSServices::loadGlobalObjects(AString& strError)
       size_t nValue = resultSet.getFieldIndex(ASW("value", 5));
       for (size_t u=0; u<resultSet.getRowCount(); ++u)
       {
-        m_GlobalObjects.insert(resultSet.getData(u, nName), resultSet.getData(u, nValue), AXmlElement::ENC_CDATASAFE);
+        m_GlobalObjects.insert(resultSet.getData(u, nName), new AString(resultSet.getData(u, nValue)), true);
       }
     }
   }
@@ -230,7 +229,7 @@ size_t AOSServices::loadGlobalObjects(AString& strError)
   return resultSet.getRowCount();
 }
 
-AObjectContainer& AOSServices::useGlobalObjects()
+ABasePtrContainer& AOSServices::useGlobalObjects()
 { 
   return m_GlobalObjects;
 }

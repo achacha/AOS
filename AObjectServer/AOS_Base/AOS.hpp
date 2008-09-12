@@ -21,7 +21,6 @@ $Id$
 #include "ANumber.hpp"
 #include "AException.hpp"
 #include "ALog.hpp"
-#include "AObjectContainer.hpp"
 #include "AHTTPRequestHeader.hpp"
 #include "AHTTPResponseHeader.hpp"
 #include "AFileSystem.hpp"

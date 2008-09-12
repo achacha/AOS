@@ -391,10 +391,18 @@
 					RelativePath=".\controller_Schema.html"
 					>
 				</File>
+				<File
+					RelativePath=".\directory_controller_basics.html"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="code"
 				>
+				<File
+					RelativePath=".\code_ASW.html"
+					>
+				</File>
 				<File
 					RelativePath=".\code_CreateNewProject.html"
 					>
@@ -453,6 +461,14 @@
 				>
 				<File
 					RelativePath=".\config_logging.html"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="model"
+				>
+				<File
+					RelativePath=".\model_basics.html"
 					>
 				</File>
 			</Filter>

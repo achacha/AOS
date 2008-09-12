@@ -46,6 +46,7 @@ public:
   static const AString S_RESPONSE;
   static const AString S_SESSION;
   static const AString S_OUTPUT;
+  static const AString S_GLOBAL;
   static const AString S_ERROR;
   static const AString S_MESSAGE;
   static const AString S_CONTEXT;

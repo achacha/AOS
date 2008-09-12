@@ -78,8 +78,10 @@ public:
 
   /*!
   Global objects
+
+  @return conatiners of global objects
   */
-  AObjectContainer& useGlobalObjects();
+  ABasePtrContainer& useGlobalObjects();
 
   /*!
   Create an instance of ATemplate with CODE and LUA processor with AOS specific LUA library loaded 
@@ -121,7 +123,7 @@ private:
   ALog_AFile *mp_Log;
   
   //a_Global objects for all requests
-  AObjectContainer m_GlobalObjects;
+  ABasePtrContainer m_GlobalObjects;
 
   //a_Configuration
   AOSConfiguration *mp_Configuration;

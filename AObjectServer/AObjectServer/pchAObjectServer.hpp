@@ -13,7 +13,6 @@ $Id$
 #include <AException.hpp>
 #include <templateAutoPtr.hpp>
 #include <AXmlAttributes.hpp>
-#include <AObjectContainer.hpp>
 #include <ALog.hpp>
 #include <ATextConverter.hpp>
 #include <templateSingletonPattern.hpp>

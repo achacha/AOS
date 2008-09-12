@@ -19,7 +19,6 @@ $Id$
 class AOSInputExecutor;
 class AOSModuleExecutor;
 class AOSOutputExecutor;
-class AObjectContainer;
 class AOSServices;
 class ALog;
 

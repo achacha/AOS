@@ -12,7 +12,6 @@ $Id$
 #include <ANumber.hpp>
 #include <AException.hpp>
 #include <templateAutoPtr.hpp>
-#include <AObjectContainer.hpp>
 #include <ALog.hpp>
 #include <ATextConverter.hpp>
 #include <AXmlAttributes.hpp>
