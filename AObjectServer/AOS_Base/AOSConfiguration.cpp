@@ -810,19 +810,6 @@ void AOSConfiguration::convertUrlToReportedServerAndPort(AUrl& url) const
   }
 }
 
-void AOSConfiguration::setConfigBits(
-  ConfigBit bit, 
-  bool state         // = true
-) 
-{ 
-  m_ConfigBits.setBit(bit, state);
-}
-
-const ABitArray& AOSConfiguration::getConfigBits() const 
-{ 
-  return m_ConfigBits; 
-}
-
 const SET_AString& AOSConfiguration::getCompressedExtensions() const
 {
   return m_CompressedExtensions;

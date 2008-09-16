@@ -23,6 +23,7 @@ public:
 
 public:
   /*!
+  \verbatim
   Checks element for reference="" attribute
   If SESSION will extract content at path from session data
   If MODEL will extract content at path from the model
@@ -36,6 +37,7 @@ public:
 
   If we have <foo>some/path/here</foo>
   Then we copy some/path/here to result without lookup
+  \endverbatim
 
   @param context AOSContext
   @param element which contains the reference/path

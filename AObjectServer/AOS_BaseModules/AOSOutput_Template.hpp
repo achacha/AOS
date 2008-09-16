@@ -13,6 +13,7 @@ class ATemplate;
 /*!
 Example:
 
+\xmlonly
 ...
 <module class="Template">
   <mime-extension>html</mime-extension>
@@ -21,6 +22,7 @@ Example:
   <filename if="...">script/something_more.html</filename>
 </module>
 ...
+\endxmlonly
 
 mime-extension - uses the extension to lookup MIME type to use for output (mime_types.ini), if not specified default is used (configured in AObjectServer.xml)
 

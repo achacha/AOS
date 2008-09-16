@@ -37,9 +37,9 @@ aos.getRequestHeader("DNE");     -->  nil
 aos.getRequestHeader("_METHOD")  --> GET
 aos.getRequestHeader("_URL")     --> /mypath/myprog?a=2
 
-@namespace aos
-@param HTTP request header name
-@return HTTP request header value or nil if name does not exist
+lua namespace: aos
+lua param: HTTP request header name
+lua return: HTTP request header value or nil if name does not exist
 */
 static int aos_getRequestHeader(lua_State *L)
 {
@@ -104,9 +104,9 @@ aos.getRequestCookie("username");
 Returns:
 foo  (if request header had parameter:  Cookie: username=foo)
 
-@namespace aos
-@param Request cookie name
-@return Cookie value or nil if name does not exist
+lua namespace: aos
+lua param: Request cookie name
+lua return: Cookie value or nil if name does not exist
 */
 static int aos_getRequestCookie(lua_State *L)
 {
@@ -148,9 +148,9 @@ aos.getRequestParameter("foo");  -->  "1", "2", "3"
 aos.getRequestParameter("bar");  -->  "1"
 aos.getRequestParameter("baz");  -->  nil
 
-@namespace aos
-@param Request parameter name
-@return Parameter values (1 or more) or nil if name does not exist
+lua namespace: aos
+lua param: Request parameter name
+lua return: Parameter values (1 or more) or nil if name does not exist
 */
 static int aos_getRequestParameter(lua_State *L)
 {
@@ -193,9 +193,9 @@ GET /someurl?foo=1&foo=2&foo=3&bar=1 HTTP/1.0
 Example:
 aos.getRequestParameterNames();  -->  "foo", "bar"
 
-@namespace aos
-@param name of the parameter
-@return HTTP request header value or nil if name does not exist
+lua namespace: aos
+lua param: name of the parameter
+lua return: HTTP request header value or nil if name does not exist
 */
 static int aos_getRequestParameterNames(lua_State *L)
 {
@@ -223,10 +223,10 @@ Does not guarantee that is may not be overwritten by the server
 Example:
 aos.setResponseHeader("Set-Cookie", "name=foo; max-ago=1000;");
 
-@namespace aos
-@param name of the response header to set
-@param value of respponse header to set
-@return nil
+lua namespace: aos
+lua param: name of the response header to set
+lua param: value of respponse header to set
+lua return: nil
 */
 static int aos_setResponseHeader(lua_State *L)
 {
@@ -262,10 +262,10 @@ Example:
 aos.addEvent("Hello from Lua!");      --> Sets current event
 aos.addEvent("Error from Lua!", 1);   --> Will cause error 500
 
-@namespace aos
-@param event data to set as current in event visitor
-@param nil or zero if a message, non-zero if an error
-@return nil
+lua namespace: aos
+lua param: event data to set as current in event visitor
+lua param: nil or zero if a message, non-zero if an error
+lua return: nil
 */
 static int aos_setEvent(lua_State *L)
 {
@@ -309,8 +309,8 @@ aos.setEvent("Starting something");
 
 aos.resetEvent();      --> Sets current event to nothing, moves current into old event queue and stops current event timer
 
-@namespace aos
-@return nil
+lua namespace: aos
+lua return: nil
 */
 static int aos_resetEvent(lua_State *L)
 {

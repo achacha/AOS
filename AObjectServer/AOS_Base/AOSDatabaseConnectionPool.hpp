@@ -18,26 +18,40 @@ class AOS_BASE_API AOSDatabaseConnectionPool : public AOSAdminInterface
 public:
   /*!
   Create connection pool with 'count' connections
+  
+  \verbatim
   URL: mysql://<username>:<password>@[hostname]:<port>/[database]/   (MUST have trailing /)
   URL: odbc://<username>:<password>@[hostname]/[data source]/        (MUST have trailing /)
   URL: sqlite://driveletter:/path/databasefile
+  \endverbatim
+  
+  @param services reference
   */
-  AOSDatabaseConnectionPool(AOSServices&);
+  AOSDatabaseConnectionPool(AOSServices& services);
+  
+  //! dtor
   virtual ~AOSDatabaseConnectionPool();
   
   /*!
   Initialize
-  Will throw exception if an error occurs
+
+  @param url to the database
+  @param connections to open
+  @throw AException if error occurs
   */
-  void init(const AUrl& url, int count);
+  void init(const AUrl& url, int connections);
 
   /*!
   Use the pool
+
+  @return reference to the pool
   */
   ADatabasePool& useDatabasePool();
 
   /*!
   Checks if the pool was initialized
+
+  @return true if initialized
   */
   bool isInitialized() const;
 

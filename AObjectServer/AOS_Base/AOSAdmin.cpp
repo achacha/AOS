@@ -31,7 +31,8 @@ AOSAdmin::AOSAdmin(
   m_ClientSynch("AdminClient"),
   m_Services(services),
   m_AdminCommandRegistry(services),
-  m_IsShutdownRequested(false)
+  m_IsShutdownRequested(false),
+  mthread_AdminListener(AOSAdmin::threadprocAdminListener, false)
 {
 }
 
@@ -56,7 +57,6 @@ void AOSAdmin::startAdminListener()
   //a_Get port and start listener thread
   if (m_Services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/listen/admin/port"), -1) > 0)
   {
-    mthread_AdminListener.setProc(AOSAdmin::threadprocAdminListener);
     mthread_AdminListener.setThis(this);
     mthread_AdminListener.start();
   }

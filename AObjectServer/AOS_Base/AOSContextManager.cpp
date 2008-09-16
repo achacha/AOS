@@ -142,7 +142,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
       ASW("log_level",9), 
       AString::fromInt(m_DefaultEventLogLevel),
       ASW("Update",6), 
-      ASWNL("Maximum event to log 1:Error, 2:Event, 3:Warning, 4:Info, 5:Debug"),
+      ASWNL("Maximum event to log 0:Disabled 1:Error, 2:Event, 3:Warning, 4:Info, 5:Debug"),
       ASW("Set",3)
     );
 
@@ -257,13 +257,13 @@ void AOSContextManager::adminProcessAction(AXmlElement& eBase, const AHTTPReques
       if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
       {
         int level = str.toInt();
-        if (level > 0 && level < 6)
+        if (level >= AEventVisitor::EL_NONE && level <= AEventVisitor::EL_DEBUG)
         {
           m_DefaultEventLogLevel = level;
         }
         else
         {
-          adminAddError(eBase, ASWNL("Invalid log level, must be (1-5)"));
+          adminAddError(eBase, ASWNL("Invalid log level, must be (0-5)"));
         }
       }
     }
@@ -353,6 +353,7 @@ AOSContextManager::AOSContextManager(AOSServices& services) :
   m_HistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/history-maxsize", 100);
   m_ErrorHistoryMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/error-history-maxsize", 100);
   m_DefaultEventLogLevel = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/log-level", 2);
+  AASSERT(this, m_DefaultEventLogLevel >= AEventVisitor::EL_NONE && m_DefaultEventLogLevel <= AEventVisitor::EL_DEBUG);
   m_FreeStoreMaxSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/freestore/max-size", 500);
   size_t freeStoreInitialSize = services.useConfiguration().useConfigRoot().getInt("/config/server/context-manager/freestore/initial-size", 100);
   AASSERT(this, freeStoreInitialSize <= m_FreeStoreMaxSize && freeStoreInitialSize >= 0);
@@ -398,6 +399,7 @@ AOSContext *AOSContextManager::allocate(AFile_Socket *pSocket)
     case AEventVisitor::EL_INFO: p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_INFO); break;
     case AEventVisitor::EL_WARN: p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_WARN); break;
     case AEventVisitor::EL_ERROR: p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_ERROR); break;
+    case AEventVisitor::EL_NONE: p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_NONE); break;
     default: 
       p->useEventVisitor().setEventThresholdLevel(AEventVisitor::EL_EVENT);
 

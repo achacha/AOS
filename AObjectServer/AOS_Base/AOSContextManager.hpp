@@ -18,48 +18,57 @@ class AOSContextQueueInterface;
 class AOS_BASE_API AOSContextManager : public AOSAdminInterface
 {
 public:
+  //! Queue stages
   enum ContextQueueState
   {
-    STATE_TERMINATE = 0,
-    STATE_PRE_EXECUTE = 1,
-    STATE_EXECUTE = 2,
-    STATE_IS_AVAILABLE = 3,
-    STATE_ERROR = 4,
-    STATE_LAST = 5   // This MUST be the last state
+    STATE_TERMINATE = 0,     //!< Terminate request
+    STATE_PRE_EXECUTE = 1,   //!< Pre-execute stage
+    STATE_EXECUTE = 2,       //!< Execute stage
+    STATE_IS_AVAILABLE = 3,  //!< Is-Available stage (waiting for more data)
+    STATE_ERROR = 4,         //!< Error stage
+    STATE_LAST = 5           //!< This MUST be the last state
   };
 
 public:
   /*!
   ctor
-  */
-  AOSContextManager(AOSServices&);
   
-  /*!
-  dtor
+  @param services reference
   */
+  AOSContextManager(AOSServices& services);
+  
+  //! dtor
   virtual ~AOSContextManager();
   
   /*!
   Advance context to next queue state
 
-  @param state
-  @param context pointer will be changed to NULL if state is advanced
+  @param state to change into
+  @param ppContext context pointer will be changed to NULL if state is advanced
   */
   void changeQueueState(AOSContextManager::ContextQueueState state, AOSContext **ppContext);
 
   /*!
   Set context queue for the given state
 
-  @param state
-  @param pointer to queue, owned and deleted by this class
+  @param state to set
+  @param pQueue pointer to queue, owned and deleted by this class
   */
   void setQueueForState(AOSContextManager::ContextQueueState state, AOSContextQueueInterface *pQueue);
 
   /*!
-  Allocate and deallocate AOSContext
+  Allocate new AOSContext with a file socket
+  
+  @param pSocket to wrap with new AOSContext
   */
-  AOSContext *allocate(AFile_Socket *);
-  void deallocate(AOSContext *);
+  AOSContext *allocate(AFile_Socket *pSocket);
+  
+  /*!
+  Deallocate AOSContext object
+
+  @param pContext pointer to AOSContext to deallocate
+  */
+  void deallocate(AOSContext *pContext);
 
   /*!
   AOSAdminInterface

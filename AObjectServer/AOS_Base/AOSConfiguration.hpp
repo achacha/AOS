@@ -48,102 +48,182 @@ public:
   static int UNAVAILABLE_RETRIES;
 
 public:
-  AOSConfiguration(const AFilename& baseDir, AOSServices&);
+  /*!
+  ctor
+
+  @param baseDir where aos_root directory is to be found
+  @param services reference to AOSServices object
+  */
+  AOSConfiguration(const AFilename& baseDir, AOSServices& services);
+  
+  //! virtual dtor
   virtual ~AOSConfiguration();
 
   /*!
   Initialize static structures of this class (used in reporting actual hostname and port)
   App server may be behind a load balancer or web server and may need to report something else
   This is not required and localhost, 80, 443 is assumed by default
-  server is the HTTP header server identifier
+
+  @param hostname to attach to
+  @param http_port port for http listener
+  @param https_port port for secure http listener
+  @param serverId Name of the server that is used in HTTP response header in Server: tag
   */
   static void initializeStaticHostInfo(const AString& hostname, int http_port, int https_port, const AString& serverId);
 
-  /*!
-  Database
-  */
+  //! Path to the database URL
   static const AString DATABASE_URL;
+
+  //! Path to the database connection to create per URL
   static const AString DATABASE_CONNECTIONS;
 
   /*!
   Configuration XML document's root element
   Read only
+
+  @return constant reference to AXmlElement that is the configuration root
   */
   const AXmlElement& getConfigRoot() const;
   
   /*!
   Configuration XML document's root element
   Modifiable
+
+  @return reference to AXmlElement that is the configuration root
   */
   AXmlElement& useConfigRoot();
 
   /*!
   Base directory
+
+  @return reference to AFilename
   */
   const AFilename& getBaseDir() const;
 
   /*!
-  Load configuration for a given module
-  */
-  void loadConfig(const AString&);
+  Load configuration for a given module in config directory
 
-  //a_Control flags
-  enum ConfigBit
-  {
-    DisableXslCache = 0   //!<  Disable for XSL cache, when off XSL files are read from disk every time
-  };
+  Given "MyModule" loads ./aos_root/config/MyModule.xml
 
-  /*!
-  Setting of configuration bits
+  @param name of the module config to load
   */
-  void setConfigBits(ConfigBit bit, bool state = true);
-
-  /*!
-  Access to configuration bitmap
-  */
-  const ABitArray& getConfigBits() const;
+  void loadConfig(const AString& name);
 
   /*!
   Convert a given URl to the reported values
   server and port are used as per configuration
+
+  @param url to convert
   */
   void convertUrlToReportedServerAndPort(AUrl& url) const;
 
   /*!
-  Reported hostname and ports
+  Reported hostname
   Used when load balanced and a common DNS entry is desired
+  
+  @return constant reference to reported hostname
   */
   const AString& getReportedHostname() const;
+  
+  /*!
+  Reported HTTP port
+  Used when load balanced and a common DNS entry is desired
+  
+  @return reported HTTP port
+  */
   int getReportedHttpPort() const;
+
+  /*!
+  Reported HTTPS port
+  Used when load balanced and a common DNS entry is desired
+  
+  @return reported HTTPS port
+  */
   int getReportedHttpsPort() const;
+
+  /*!
+  Set reported hostname
+
+  @param configPath path in the config file to use content as hostname
+  */
   void setReportedHostname(const AString& configPath);
+
+  /*!
+  Set reported port
+
+  @param configPath path in the config file to use content as port
+  */
   void setReportedHttpPort(const AString& configPath);
+
+  /*!
+  Set reported secure port
+
+  @param configPath path in the config file to use content as port
+  */
   void setReportedHttpsPort(const AString& configPath);
 
   /*!
-  Reported Server: value in the HTTP response header
+  Reported 'Server:' value in the HTTP response header
+  
+  @return constant reference to the server name
   */
   const AString& getReportedServer() const;
+
+  /*!
+  Set server name
+
+  @param configPath path in the config file to use content as server name
+  */
   void setReportedServer(const AString& configPath);
 
   /*!
   Admin base directory
+
+  @return constant reference to the AFilename
   */
   const AFilename& getAdminBaseHttpDir() const;
 
   /*!
-  Default filename
+  Set default filename
+
+  @param filename to use as default (index.html is default)
   */
-  void setAosDefaultFilename(const AString&);
+  void setAosDefaultFilename(const AString& filename);
+
+  /*!
+  Get default filename
+
+  @return constant reference to the AFilename
+  */
   const AString& getAosDefaultFilename() const;
 
   /*!
-  Input/Output defaults
+  Get default input processor registered class name
+
+  @return constant reference to the AFilename
   */
   const AString& getAosDefaultInputProcessor() const;
-  void setAosDefaultInputProcessor(const AString&);
+  
+  /*!
+  Set default input processor
+
+  @param name of the registered input processor (no default)
+  */
+  void setAosDefaultInputProcessor(const AString& name);
+
+  /*!
+  Get default ouput generator registered class name
+
+  @return constant reference to the AFilename
+  */
   const AString& getAosDefaultOutputGenerator() const;
-  void setAosDefaultOutputGenerator(const AString&);
+  
+  /*!
+  Set default output generator
+
+  @param name of the registered output generator (xml is default)
+  */
+  void setAosDefaultOutputGenerator(const AString& name);
 
   /*!
   Get the default mime type when it cannot be matched with extension
@@ -156,7 +236,7 @@ public:
   Map mime type from extension
   
   @param ext Extension to try and map
-  @target appended with extension if found
+  @param target appended with extension if found
   @return true if extension is mapped and value was found, false if extension is not mapped
   */
   bool getMimeTypeFromExt(const AString& ext, AString& target) const;
@@ -165,7 +245,7 @@ public:
   Set the mime type based on extension or use configured default if extension is not found
   
   @param ext Extension to try and map, if not found will use default
-  @context AOSContext contains the HTTP response header that will get set
+  @param context AOSContext contains the HTTP response header that will get set
   */
   void setMimeTypeFromExt(const AString& ext, AOSContext& context);
 
@@ -178,49 +258,80 @@ public:
   void setMimeTypeFromRequestExt(AOSContext& context);
   
   /*!
-  Paths
+  Location of the config directory
+
+  @return constant reference to AFilename object
   */
-  const AFilename& getAosBaseConfigDirectory() const;    // Location of the config files
-  const AFilename& getAosBaseDynamicDirectory() const;   // Controllers
-  const AFilename& getAosBaseDataDirectory() const;      // Data dir that is base for all command filename parameters
-  const AFilename& getAosBaseStaticDirectory() const;    // Filesystem (fallback if command not found)
+  const AFilename& getAosBaseConfigDirectory() const;
 
   /*!
-  Check is dumpContext is allowed
+  Location of the dynamic directory (controllers)
+
+  @return constant reference to AFilename object
+  */
+  const AFilename& getAosBaseDynamicDirectory() const;
+
+  /*!
+  Location of the data directory
+  Data dir that is base for all command filename parameters
+
+  @return constant reference to AFilename object
+  */
+  const AFilename& getAosBaseDataDirectory() const;
+
+  /*!
+  Location of the static directory
+  Static filesystem (fallback if controller not found)
+
+  @return constant reference to AFilename object
+  */
+  const AFilename& getAosBaseStaticDirectory() const;
+
+  /*!
+  Check is dumpContext is allowed in the configuration file
+
+  @return true if allowed
   */
   bool isDumpContextAllowed() const;
   
   /*!
-  Check if outputOverride is allowed
+  Check if outputOverride is allowed in the configuration file
+
+  @return true if allowed
   */
   bool isOutputOverrideAllowed() const;
 
   /*!
-  Dynamic module libraries
+  Dynamic module libraries to load as per configuration file
+
+  @param libs list to append to
   */
-  u4 getDynamicModuleLibraries(LIST_AString&) const;
+  u4 getDynamicModuleLibraries(LIST_AString& libs) const;
   
   /*!
-  Controllers
+  Controller for a given URL
+
+  Returned pointer should never be deleted by the caller
+
+  @return constant pointer AOSController for a given URL
   */
   const AOSController* const getController(const AUrl&) const;
 
   /*!
-  Directory config
+  Directory config for a given URL
+
+  Returned pointer should never be deleted by the caller
+
+  @return constant pointer AOSDirectoryConfig for a given URL
   */
   const AOSDirectoryConfig* const getDirectoryConfig(const AUrl&) const;
 
   /*!
   Get a set of extensions that are to be compressed based on config
+  
+  @return constant reference to a set of extension that should be compressed
   */
   const SET_AString& getCompressedExtensions() const;
-
-  /*!
-  Context manager parameters
-  @deprecated
-  */
-  size_t getAOSContextManagerHistoryMaxSize() const;
-  size_t getAOSContextManagerFreestoreMaxSize() const;
 
   /*!
   Admin interface

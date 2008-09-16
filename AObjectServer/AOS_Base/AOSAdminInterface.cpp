@@ -17,6 +17,14 @@ const AString AOSAdminInterface::PARAM("param",5);
 const AString AOSAdminInterface::ADMIN_ERROR("error",5);
 const AString AOSAdminInterface::ADMIN_MESSAGE("message",7);
 
+AOSAdminInterface::AOSAdminInterface()
+{
+}
+
+AOSAdminInterface::~AOSAdminInterface()
+{
+}
+
 AXmlElement& AOSAdminInterface::adminAddProperty(
   AXmlElement& eBase,
   const AString& propertyName,

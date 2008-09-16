@@ -6,7 +6,11 @@ $Id$
 #ifndef INCLUDED__preBaseModules_HPP__
 #define INCLUDED__preBaseModules_HPP__
 
-#define AOS__USE_MSXML6__
+#ifdef __WINDOWS__
+//! Defined to use Microsoft DOM version 6
+#define AOS__USE_MSXML6__ 1
+#endif
+
 #include "AOS.hpp"
 #include "AOS_BaseModules_Constants.hpp"
 

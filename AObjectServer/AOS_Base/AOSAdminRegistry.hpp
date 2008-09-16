@@ -41,7 +41,7 @@ public:
   listAdminObjects appends to the existing list, returns items appended
   
   @param target for the list of admin object names (will append to the existing list)
-  @retrurn number of names added to target
+  @return number of names added to target
   **/
   u4 listAdminObjects(LIST_AString& target) const;
 
