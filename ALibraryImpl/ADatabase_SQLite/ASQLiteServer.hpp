@@ -19,7 +19,11 @@ NOTE: Design of the class is for multithreaded access
       This is why the string error gets passes to every call,
         check return if false, error has the error message
 
-sqlite://[database file path]   (e.g. sqlite://c:/tmp/mydatabase.db )
+\verbatim
+sqlite://[database file path]   
+
+  e.g. sqlite://c:/tmp/mydatabase.db
+\endverbatim
 */
 class ADATABASE_SQLITE_API ASQLiteServer : public ADatabase
 {

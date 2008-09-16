@@ -30,8 +30,8 @@ LUA e.g.:
   response = objects.emit("ping.response");
   body = objects.emit("ping.body");
 
-@namespace web
-@return (int) Status code
+lua namespace: web
+lua return: (int) Status code
 */
 static int web_HttpGet(lua_State *L)
 {
@@ -121,8 +121,8 @@ status = web.HttpPost("ping", "http://localhost/ping", "form=data&etc=");
 response = objects.emit("ping.response");
 body = objects.emit("ping.body");
 
-@namespace web
-@return (int) Status code
+lua namespace: web
+lua return: (int) Status code
 */
 static int web_HttpPost(lua_State *L)
 {

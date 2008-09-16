@@ -15,7 +15,9 @@ NOTE: Design of the class is for multithreaded access
       This is why the string error gets passes to every call,
         check return if false, error has the error message
 
+\verbatim
 odbc://<username>:<password>@[server]/[data source name]/
+\endverbatim
 */
 class ADATABASE_ODBC_API AODBCServer : public ADatabase
 {

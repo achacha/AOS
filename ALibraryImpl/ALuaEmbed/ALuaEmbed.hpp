@@ -21,6 +21,7 @@ NOTE: objects provided MUST include the AXmlDocument model at ATemplate::OBJECTN
 
 Usage example
 -------------
+\code
 int somefunction()
 {
   // model with just <root>HelloWorld</root>
@@ -48,6 +49,7 @@ int somefunction()
   // Display results
   std::cout << output << std::endl;
 }
+\endcode
 
 When this function goes out of scope objects destructor will delete pOutput but not the model.
 

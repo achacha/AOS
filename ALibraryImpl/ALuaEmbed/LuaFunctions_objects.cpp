@@ -12,9 +12,9 @@ Looks up an object as AEmittable and emits it
 
 thisfunction("<object name of AEmittable type>")
 
-@namespace objects
-@param Object name
-@return Emitted object output
+lua namespace: objects
+lua param: Object name
+lua return: Emitted object output
 */
 static int alibrary_Objects_emit(lua_State *L)
 {

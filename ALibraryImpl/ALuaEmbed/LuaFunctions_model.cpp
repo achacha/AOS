@@ -13,10 +13,10 @@ Uses the model to emit content for a path
 
 thisfunction("<path to the AXmlElement to emit>", separate)
 
-@namespace model
-@param Path to emit
-@param if non-nil then each element found will be returned by itself
-@return Content at the given path or nil if element does not exist
+lua namespace: model
+lua param: Path to emit
+lua param: if non-nil then each element found will be returned by itself
+lua return: Content at the given path or nil if element does not exist
 */
 static int alibrary_Objects_Model_emitContentFromPath(lua_State *L)
 {
@@ -70,9 +70,9 @@ Uses the model to determine if element exists
 
 thisfunction("<path to the AXmlElement>")
 
-@namespace model
-@param Path to element
-@return true if exists, false otherwise
+lua namespace: model
+lua param: Path to element
+lua return: true if exists, false otherwise
 */
 static int alibrary_Objects_Model_existElement(lua_State *L)
 {
@@ -96,9 +96,9 @@ Emits the entire model as XML
 
 thisfunction([indent = -1])
 
-@namespace model
-@param (Optional) if 0 or greater, will indent the output.  Default -1 will inline it.
-@return XML string of default AXmlDocument model
+lua namespace: model
+lua param: (Optional) if 0 or greater, will indent the output.  Default -1 will inline it.
+lua return: XML string of default AXmlDocument model
 */
 static int alibrary_Objects_Model_emitXml(lua_State *L)
 {
@@ -123,9 +123,9 @@ Emits the entire model as JSON
 
 thisfunction([indent = -1])
 
-@namespace model
-@param (Optional) if 0 or greater, will indent the output.  Default -1 will inline it.
-@return JSON string of default AXmlDocument model
+lua namespace: model
+lua param: (Optional) if 0 or greater, will indent the output.  Default -1 will inline it.
+lua return: JSON string of default AXmlDocument model
 */
 static int alibrary_Objects_Model_emitJson(lua_State *L)
 {
@@ -150,9 +150,9 @@ Adds a new element and optionally a text value to it
 
 thisfunction("element path", "value")
 
-@param Element path
-@param Value to set (optional)
-@return nil
+lua param: Element path
+lua param: (Optional) Value to set
+lua return: nil
 */
 static int alibrary_Objects_Model_addElement(lua_State *L)
 {
@@ -178,9 +178,9 @@ Adds a text value to an existing element at the given path or will create elemen
 
 thisfunction("element path", "value")
 
-@param Element path
-@param Value to set
-@return nil
+lua param: Element path
+lua param: Value to set
+lua return: nil
 */
 static int alibrary_Objects_Model_addText(lua_State *L)
 {
@@ -206,9 +206,9 @@ Sets a value for an element at the given path, if exists it will replace otherwi
 
 thisfunction("element path", "value")
 
-@param Element path
-@param Value to set, if not specified only element is created
-@return nil
+lua param: Element path
+lua param: Value to set, if not specified only element is created
+lua return: nil
 */
 static int alibrary_Objects_Model_setText(lua_State *L)
 {
@@ -236,8 +236,8 @@ Gets text value for a given path
 
 thisfunction("element path")
 
-@param Element path
-@return Text content for a given element or nil if it doesn't exist
+lua param: Element path
+lua return: Text content for a given element or nil if it doesn't exist
 */
 static int alibrary_Objects_Model_getText(lua_State *L)
 {

@@ -21,7 +21,7 @@ public:
 
   @param objects available to the node handlers
   @param model XML data
-
+  @param visitor to log to
   @param maskLibrariesToLoad which Lua libraries to load (See ALuaEmbed.hpp)
   */
   ALuaTemplateContext(
@@ -31,8 +31,7 @@ public:
     u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_ALL_SAFE
   );
   
-  /*!
-  */
+  //! dtor
   virtual ~ALuaTemplateContext();
 
   /*!
@@ -42,11 +41,15 @@ public:
 
   NOTE: Make sure all config of user defined libraries is done before calling this for the first time
   NOTE: Each instance of ALuaEmbed contains state which should not be shared by threads
+
+  @return reference to ALuaEmbed object
   */
   ALuaEmbed& useLua();
   
   /*!
   Add external (user-defined) library to load when Lua is initialized
+  
+  @param fptr pointer to function that registers additional functions
   */
   void addUserDefinedLibrary(ALuaEmbed::LUA_OPENLIBRARY_FPTR fptr);
 
@@ -67,7 +70,6 @@ protected:
   */
   typedef std::list<ALuaEmbed::LUA_OPENLIBRARY_FPTR> USER_DEFINED_FPTRS;
   USER_DEFINED_FPTRS m_UserDefinedLibFunctions;
-
 };
 
 #endif //INCLUDED__ALuaTemplateContext_HPP__

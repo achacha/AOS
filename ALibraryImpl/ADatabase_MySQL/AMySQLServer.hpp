@@ -19,7 +19,9 @@ NOTE: Design of the class is for multithreaded access
       This is why the string strError gets passes to every call,
         check return if false, strError has the error message
 
-mysql://<username>:<password>@[hostname]:<port>/[database]/        
+\verbatim
+mysql://<username>:<password>@[hostname]:<port>/[database]/
+\endverbatim
 */
 class ADATABASE_MYSQL_API AMySQLServer : public ADatabase
 {

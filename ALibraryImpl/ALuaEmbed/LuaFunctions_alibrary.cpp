@@ -23,9 +23,9 @@ extern "C" void luaL_stringappender(lua_State *L, const char *s)
 /*!
 Sleeps for N milliseconds
 
-@namespace alibrary
-@param (integer) Milliseconds
-@return nil
+lua namespace: alibrary
+lua param: (integer) Milliseconds
+lua return: nil
 */
 static int alibrary_Sleep(lua_State *L)
 {
