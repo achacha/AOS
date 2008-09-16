@@ -108,7 +108,10 @@ public:
   Wrap const char* with a const AString, buffer will NOT be released when dtor is called
   This will allow the read-only utility of this class without extra allocation
 
-  See #define ASW(s,l) above for more information
+  Macros ASW and ASWNL are used to wrap a call to this (until C++x0 is implemented)
+
+  @see ASW
+  @see ASWNL
   */
   static const AString wrap(const char *pccSource, size_t length = AConstant::npos);
 
@@ -173,15 +176,15 @@ public:
   */
   static AString fromInt(int value);                           //os integer      
   static AString fromBool(bool value);                         //true/false value
-  static AString fromS1(s1 value, int iBase = 0xA);            //1 byte signed   
-  static AString fromU1(u1 value, int iBase = 0xA);            //1 byte unsigned 
-  static AString fromS2(s2 value, int iBase = 0xA);            //2 byte signed   
-  static AString fromU2(u2 value, int iBase = 0xA);            //2 byte unsigned 
-  static AString fromS4(s4 value, int iBase = 0xA);            //4 byte signed   
-  static AString fromU4(u4 value, int iBase = 0xA);            //4 byte unsigned 
-  static AString fromS8(s8 value, int iBase = 0xA);            //8 byte signed 
-  static AString fromU8(u8 value, int iBase = 0xA);            //8 byte unsigned 
-  static AString fromSize_t(size_t value, int iBase = 0xA);    //STL site_t
+  static AString fromS1(s1 value, int base = 0xA);            //1 byte signed   
+  static AString fromU1(u1 value, int base = 0xA);            //1 byte unsigned 
+  static AString fromS2(s2 value, int base = 0xA);            //2 byte signed   
+  static AString fromU2(u2 value, int base = 0xA);            //2 byte unsigned 
+  static AString fromS4(s4 value, int base = 0xA);            //4 byte signed   
+  static AString fromU4(u4 value, int base = 0xA);            //4 byte unsigned 
+  static AString fromS8(s8 value, int base = 0xA);            //8 byte signed 
+  static AString fromU8(u8 value, int base = 0xA);            //8 byte unsigned 
+  static AString fromSize_t(size_t value, int base = 0xA);    //STL site_t
   static AString fromPointer(const void *value);               //Return 0xXXXXXXXX string from address
   
   /*!
@@ -195,8 +198,8 @@ public:
   Parses value and assigns to string
   */
   void parseInt(int value);                      //os integer
-  void parseS4(s4 value, int iBase = 0xA);       //4 byte signed
-  void parseU4(u4 value, int iBase = 0xA);       //4 byte unsigned
+  void parseS4(s4 value, int base = 0xA);       //4 byte signed
+  void parseU4(u4 value, int base = 0xA);       //4 byte unsigned
   void parsePointer(const void *value);          //a_0xXXXXXXXX string from address
 
   /*!
@@ -214,59 +217,85 @@ public:
 
   /*!
   Convert to int
+  
+  @return int of the string
   */
   int toInt() const;
 
   /*!
   Convert to bool
-  "1" OR no case of "true" OR no case of "yes" = true, all else is false
+  TRUE: "1" OR no case of "true" OR no case of "yes"
+  FALSE: all else
+
+  @return bool of the string
   */
   bool toBool() const;
 
   /*!
   Convert to signed 4 byte
   Follows strtol format if base is other than 10, signed 4 byte
+
+  @param base of the number
+  @return s4 of the string
   */
-  s4 toS4(int iBase = 0xA) const;
+  s4 toS4(int base = 0xA) const;
   
   /*!
   Convert to unsigned 4 byte
   Follows strtoul format if base is other than 10, unsigned 4 byte
+
+  @param base of the number
+  @return u4 of the string
   */
-  u4 toU4(int iBase = 0xA) const;
+  u4 toU4(int base = 0xA) const;
   
   /*!
   Convert to signed 8 byte
   Follows strtol format if base is other than 10, signed 4 byte
+
+  @param base of the number
+  @return s8 of the string
   */
-  s8 toS8(int iBase = 0xA) const;
+  s8 toS8(int base = 0xA) const;
 
   /*!
   Convert to unsigned 8 byte
   Follows strtoul format if base is other than 10, unsigned 4 byte
+
+  @param base of the number
+  @return u8 of the string
   */
-  u8 toU8(int iBase = 0xA) const;
+  u8 toU8(int base = 0xA) const;
 
   /*!
   Convert to unsigned size_t type
   Follows strtoul format if base is other than 10, unsigned 4 byte
+
+  @param base of the number
+  @return size_t of the string
   */
-  size_t toSize_t(int iBase = 0xA) const;
+  size_t toSize_t(int base = 0xA) const;
 
   /*!
   Convert to double type  
+
+  @return double of the string
   */
   double toDouble() const;
 
   /*
   Convert to pointer
   Assumes 0xXXXXXXXX and returns pointer to it
+
+  @return pointer of the string
   */
   void *toPointer() const;
 
   /*!
   Conversion from UTF-8 to Unicode
   Will get the first UTF-8 sequence and convert to Unicode wide-char
+
+  @return wchat_t of the string (treats the data as if it was 2-byte unicode)
   */
   wchar_t toUnicode() const;
 
@@ -276,8 +305,11 @@ public:
   NOTE: When uStartPos is passed in, the return is the new position
         If the uStartPos == AConstant::npos, it is the end of the sequence (also denoted by a 0x0 return)
         Return of 0x0 and uStartPos != AConstant::npos signifies conversion is invalid (ie. invalid character at that pos, et al)
+
+  @param start position of the 2-byte unicode
+  @return wchat_t of the string (treats the data as if it was 2-byte unicode)
   */
-  wchar_t toUnicode(size_t& startPos) const;
+  wchar_t toUnicode(size_t& start) const;
 
   /*!
   Comparisson: right >0 or <0 left, equal if zero
@@ -390,24 +422,33 @@ public:
 
   /*!
   Reverse finding an offset to the first element in a given set
+  
+  @param charset to use for finding one of
+  @return last position of one of the characters in charset or AConstant::npos if not
   */
-  size_t rfindOneOf(const AString& strSet) const;
+  size_t rfindOneOf(const AString& charset) const;
 
   /*!
   Reverse finding an offset to the first element not in a given set
+
+  @param charset to use for finding one NOT of
+  @return last position of one of the characters NOT in charset or AConstant::npos if not
   */
-  size_t rfindNotOneOf(const AString& strSet) const;
+  size_t rfindNotOneOf(const AString& charset) const;
 
   /*!
   Find a pattern inside a string
 
+  \verbatim
   ? = any 1 character
   * = any set of characters
   \? = ? character
   \* = * character
   \\ = \ character
+  \endverbatim
 
-  @param startIndex - start position to start searching for a pattern
+  @param strPattern pattern to match
+  @param startIndex start position to start searching for a pattern
   @return true if the pattern matches at position startIndex
   */
   bool matchPattern(const AString& strPattern, size_t startIndex = 0) const;
@@ -415,7 +456,8 @@ public:
   /*!
   Find first occurance of a pattern match (@see matchPattern)
 
-  @param startIndex - start position to start searching for a pattern
+  @param strPattern pattern to match
+  @param startIndex start position to start searching for a pattern
   @return AConstant::npos if not found or absolute index into the string >=startIndex
   */
   size_t findPattern(const AString& strPattern, size_t startIndex = 0) const;

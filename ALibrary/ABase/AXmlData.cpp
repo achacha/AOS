@@ -141,3 +141,13 @@ bool AXmlData::isInstruction() const
 {
   return false;
 }
+
+bool AXmlData::isEmpty() const
+{ 
+  return m_Data.isEmpty();
+}
+
+AXmlElement* AXmlData::clone() const
+{ 
+  return new AXmlData(*this);
+}

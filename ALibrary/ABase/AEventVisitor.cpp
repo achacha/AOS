@@ -14,7 +14,6 @@ void AEventVisitor::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) 
     << "m_Name=" << m_Name
     << "  m_LevelThreshold=" << m_LevelThreshold
-    << "  m_isEnabled=" << AString::fromBool(m_isEnabled)
     << "  m_ErrorCount=" << m_ErrorCount
     << "  m_stateTimeLimit=" << m_stateTimeLimit << std::endl;
 
@@ -94,7 +93,6 @@ AEventVisitor::AEventVisitor
   m_stateTimer(true),
   m_LifespanTimer(true),
   m_ErrorCount(0),
-  m_isEnabled(true),
   mp_CurrentEvent(NULL),
   m_stateTimeLimit(INVALID_TIME_INTERVAL),
   m_Name(name),
@@ -125,7 +123,37 @@ AEventVisitor::~AEventVisitor()
 
 bool AEventVisitor::isLogging(EventLevel level) const
 {
-  return (level <= m_LevelThreshold && m_isEnabled);
+  return (level <= m_LevelThreshold);
+}
+
+bool AEventVisitor::isEnabled() const
+{
+  return (AEventVisitor::EL_NONE != m_LevelThreshold);
+}
+
+bool AEventVisitor::isLoggingDebug() const
+{
+  return (AEventVisitor::EL_DEBUG <= m_LevelThreshold);
+}
+
+bool AEventVisitor::isLoggingInfo() const
+{
+  return (AEventVisitor::EL_INFO <= m_LevelThreshold);
+}
+
+bool AEventVisitor::isLoggingWarn() const
+{
+  return (AEventVisitor::EL_WARN <= m_LevelThreshold);
+}
+
+bool AEventVisitor::isLoggingEvent() const
+{
+  return (AEventVisitor::EL_EVENT <= m_LevelThreshold);
+}
+
+bool AEventVisitor::isLoggingError() const
+{
+  return (AEventVisitor::EL_ERROR <= m_LevelThreshold);
 }
 
 void AEventVisitor::startEvent(
@@ -135,7 +163,7 @@ void AEventVisitor::startEvent(
 )
 {
   //a_If logging is disabled or below threshold, do nothing
-  if (level > m_LevelThreshold || !m_isEnabled)
+  if (level > m_LevelThreshold)
     return;
 
   if (mp_CurrentEvent)
@@ -168,19 +196,12 @@ void AEventVisitor::startEvent(
 
 void AEventVisitor::endEvent()
 {
-  //a_If logging is disabled, do nothing
-  if (!m_isEnabled)
-    return;
-  else
-  {
-    //a_Mark current event timer interval
-    if (mp_CurrentEvent)
-      mp_CurrentEvent->m_interval = m_stateTimer.getInterval();
-  }
-
-  //a_Push current event into event list
+  //a_Mark current event timer interval and push current event into event list
   if (mp_CurrentEvent)
+  {
+    mp_CurrentEvent->m_interval = m_stateTimer.getInterval();
     m_Events.push(mp_CurrentEvent);
+  }
 
   //a_New event
   mp_CurrentEvent = NULL;
@@ -209,11 +230,7 @@ void AEventVisitor::emit(AOutputBuffer& target, AEventVisitor::EventLevel thresh
   if (!m_Name.isEmpty())
     target.append(m_Name);
   
-  if (m_isEnabled)
-    target.append(" - Enabled (",12);
-  else
-    target.append(" - Disabled (",13);
-
+  target.append("(",1);
   m_LifespanTimer.emit(target);
   target.append(") - threshold=",14);
   target.append(AString::fromInt(m_LevelThreshold));
@@ -268,7 +285,6 @@ AXmlElement& AEventVisitor::emitXml(AXmlElement& thisRoot, AEventVisitor::EventL
   thisRoot.addAttribute(ASW("errors",6), AString::fromSize_t(m_ErrorCount));
   thisRoot.addAttribute(ASW("threshold",9), AString::fromSize_t(m_LevelThreshold));
   thisRoot.addAttribute(ASW("display",7), AString::fromSize_t(threshold));
-  thisRoot.addAttribute(ASW("enabled",7), AString::fromBool(m_isEnabled));
   thisRoot.addElement(ASW("name",4)).addData(m_Name, AXmlElement::ENC_CDATADIRECT);
   thisRoot.addElement(ASW("timer",5)).addData(m_LifespanTimer);
 
@@ -341,11 +357,6 @@ size_t AEventVisitor::size() const
   return m_Events.size() + (mp_CurrentEvent ? 1 : 0);
 }
 
-void AEventVisitor::enable(bool b)
-{
-  m_isEnabled = b;
-}
-
 AString& AEventVisitor::useName()
 {
   return m_Name;
@@ -360,6 +371,12 @@ void AEventVisitor::getCurrentEventMessage(AOutputBuffer& target) const
 void AEventVisitor::setEventThresholdLevel(AEventVisitor::EventLevel newLevelThreshold)
 {
   m_LevelThreshold = newLevelThreshold;
+
+  if (AEventVisitor::EL_NONE == m_LevelThreshold && mp_CurrentEvent)
+  {
+    //a_Disabled, clear last event
+    endEvent();
+  }
 }
 
 AEventVisitor::EventLevel AEventVisitor::getEventThresholdLevel() const

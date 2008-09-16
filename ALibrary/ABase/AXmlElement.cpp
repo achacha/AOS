@@ -128,7 +128,6 @@ bool AXmlElement::emitContentFromPath(
 
 AXmlElement& AXmlElement::emitXml(AXmlElement& thisRoot) const
 {
-  //TODO: This has to attach itself to thisRoot and setName instead?
   AXmlElement& base = thisRoot.addElement(m_Name);
   CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
@@ -576,7 +575,7 @@ bool AXmlElement::getBool(const AString& path, bool boolDefault) const
   AString str;
   if (emitContentFromPath(path, str))
   {
-    return str.equalsNoCase(AConstant::ASTRING_TRUE) || str.equals("1",1);
+    return str.toBool();
   }
   else
     return boolDefault;
@@ -1217,4 +1216,11 @@ void AXmlElement::_removeChildElement(AXmlElement *pElement)
       return;
     }
   }
+}
+
+AXmlElement *AXmlElement::setParent(AXmlElement *pParent)
+{ 
+  AXmlElement *pCurrent = mp_Parent;
+  mp_Parent = pParent;
+  return pCurrent;
 }

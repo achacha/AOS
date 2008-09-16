@@ -58,13 +58,13 @@ ACookie::ACookie(
 {
 }
 
-void ACookie::setNameValue(const AString &strName, const AString &strValue)
+void ACookie::setNameValue(const AString &name, const AString &value)
 {
-  if (strName.isEmpty())
+  if (name.isEmpty())
     ATHROW(this, AException::InvalidParameter);
 
-  m_strName = strName;
-  m_strValue = strValue;
+  m_strName = name;
+  m_strValue = value;
 }
 
 ACookie::ACookie(const ACookie& cookieSource)
@@ -247,9 +247,9 @@ void ACookie::setMaxAge(long lMaxAge)
   m_timeExpires += tAddOn;
 }
 
-void ACookie::setValue(const AString &strValue)
+void ACookie::setValue(const AString &value)
 {
-  m_strValue = strValue;
+  m_strValue = value;
 }
 
 void ACookie::setExpired(bool boolFlag)
@@ -281,19 +281,19 @@ void ACookie::setNoExpire()
   m_boolExpirationSet = false;
 }
 
-void ACookie::setDomain(const AString &strDomain)
+void ACookie::setDomain(const AString &domain)
 { 
-  m_strDomain = strDomain;
+  m_strDomain = domain;
 }
 
-void ACookie::setPath(const AString &strPath)
+void ACookie::setPath(const AString &path)
 { 
-  m_strPath = strPath;
+  m_strPath = path;
 }
 
-void ACookie::setSecure(bool boolSecure)
+void ACookie::setSecure(bool secure)
 { 
-  m_boolSecure  = boolSecure;
+  m_boolSecure  = secure;
 }
 
 void ACookie::setComment(const AString &strComment)
@@ -347,7 +347,7 @@ const AString& ACookie::getComment() const
   return m_strComment;
 }
 
-void ACookie::setVersion(int iVersion)
+void ACookie::setVersion(int version)
 {
-  m_iVersion = iVersion;   
+  m_iVersion = version;   
 }

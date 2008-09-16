@@ -13,12 +13,12 @@ const AString ATextConverter::CDATA_SAFE("%5d%5d%3e");      //a_Replacement
 const AString ATextConverter::HTML_UNSAFE("<>&");           //a_Unsafe inside HTML tags/data
 const AString ATextConverter::HEXDUMP_PAD("00000000");      //a_Maximum of 8 zeros used in padding
 
-void ATextConverter::encodeBase64(const AString& strSource, AOutputBuffer& target)
+void ATextConverter::encodeBase64(const AString& source, AOutputBuffer& target)
 {
   int iOctet, iTemp = 0, iBits = 0;
-  for (size_t i=0; i<strSource.getSize(); ++i)
+  for (size_t i=0; i<source.getSize(); ++i)
   {
-    iOctet = strSource[i];
+    iOctet = source[i];
     iTemp <<= 8;
     iTemp |= 0xff & iOctet;
     iBits += 8;
@@ -40,18 +40,18 @@ void ATextConverter::encodeBase64(const AString& strSource, AOutputBuffer& targe
   }
 }
 
-void ATextConverter::decodeBase64(const AString& strSource, AOutputBuffer& target)
+void ATextConverter::decodeBase64(const AString& source, AOutputBuffer& target)
 {
-  decodeBase64(strSource, 0, target);
+  decodeBase64(source, 0, target);
 }
 
-void ATextConverter::decodeBase64(const AString& strSource, size_t startPos, AOutputBuffer& target)
+void ATextConverter::decodeBase64(const AString& source, size_t startPos, AOutputBuffer& target)
 {
   bool boolFlushing = false;
   int iTemp = 0, iBits = 0, iCharacter;
-  for (size_t i=startPos; i<strSource.getSize(); ++i)
+  for (size_t i=startPos; i<source.getSize(); ++i)
   {
-    iCharacter = strSource[i];
+    iCharacter = source[i];
     if (!isspace(iCharacter))
     {
       if (boolFlushing)
@@ -97,31 +97,31 @@ int ATextConverter::_decodeBase64Character(int iCharacter)
 }
 
 void ATextConverter::encode64(
-  const AString& strSource, 
+  const AString& source, 
   AOutputBuffer& target, 
-  const AString& strCharSet // = sm__strAlphaNumCharacterSet
+  const AString& charset // = sm__strAlphaNumCharacterSet
 )
 {
-  AASSERT(NULL, strCharSet.getSize() == 64);  //a_Must always be 64 characters
+  AASSERT(NULL, charset.getSize() == 64);  //a_Must always be 64 characters
 
   int iOctet, iTemp = 0, iBits = 0;
-  for (u4 i=0; i<strSource.getSize(); ++i)
+  for (u4 i=0; i<source.getSize(); ++i)
   {
-    iOctet = strSource[i];
+    iOctet = source[i];
     iTemp <<= 8;
     iTemp |= 0xff & iOctet;
     iBits += 8;
     while( iBits >= 6 )
     {
       iBits -= 6;
-			target.append(strCharSet[ 0x3f & (iTemp >> iBits) ]);
+			target.append(charset[ 0x3f & (iTemp >> iBits) ]);
     }
   }
 	
 	if( iBits > 0 )
   {
     iTemp <<= 6 - iBits;
-    target.append(strCharSet[ 0x3f & iTemp ]);
+    target.append(charset[ 0x3f & iTemp ]);
     if ( iBits == 4 )
       target.append('.');
     else if ( iBits == 2 )
@@ -132,18 +132,18 @@ void ATextConverter::encode64(
 }
 
 void ATextConverter::decode64(
-  const AString& strSource, 
+  const AString& source, 
   AOutputBuffer& target,
-  const AString& strCharSet // = sm__strAlphaNumCharacterSet
+  const AString& charset // = sm__strAlphaNumCharacterSet
 )
 {
-  AASSERT(NULL, strCharSet.getSize() == 64);  //a_Must always be 64 characters
+  AASSERT(NULL, charset.getSize() == 64);  //a_Must always be 64 characters
 
   bool boolFlushing = false;
   int iTemp = 0, iBits = 0, iCharacter;
-  for (u4 i=0; i<strSource.getSize(); ++i)
+  for (u4 i=0; i<source.getSize(); ++i)
   {
-    iCharacter = strSource[i];
+    iCharacter = source[i];
     if (!isspace(iCharacter))
     {
       if (boolFlushing)
@@ -161,7 +161,7 @@ void ATextConverter::decode64(
           boolFlushing = true;
         else
         {
-          size_t x = strCharSet.find(iCharacter);
+          size_t x = charset.find((char)iCharacter);
           if (x == AConstant::npos)
             ATHROW(NULL, AException::InvalidEncoding);
           
@@ -179,22 +179,22 @@ void ATextConverter::decode64(
   }
 }
 
-void ATextConverter::encodeHEX(const AString& strSource, AOutputBuffer& target)
+void ATextConverter::encodeHEX(const AString& source, AOutputBuffer& target)
 {
-  for (u4 i = 0; i<strSource.getSize(); ++i)
-    convertBYTEtoHEX(strSource[i], target);
+  for (u4 i = 0; i<source.getSize(); ++i)
+    convertBYTEtoHEX(source[i], target);
 }
 
-void ATextConverter::decodeHEX(const AString& strSource, AOutputBuffer& target)
+void ATextConverter::decodeHEX(const AString& source, AOutputBuffer& target)
 {
-  size_t len = strSource.getSize();
+  size_t len = source.getSize();
   
   //a_MUST be even (ignore last char if not even)
   if (len != ((len >> 0x1) << 0x1))
     len -= len-1;
   
   for (size_t i=0; i<len; i+=2)
-    target.append(convertHEXtoBYTE(strSource[i], strSource[i+1]));
+    target.append(convertHEXtoBYTE(source[i], source[i+1]));
 }
 
 //a_Converts 2 digit hex to a value 0-0xFF
@@ -203,10 +203,10 @@ u1 ATextConverter::convertHEXtoBYTE(char cHi, char cLo)
   if (isxdigit((u1)cHi) && isxdigit((u1)cLo))
   {
     if (isdigit((u1)cHi)) cHi -= '0';
-    else cHi = tolower(cHi) - 'a' + '\xA';
+    else cHi = (char)tolower(cHi) - 'a' + '\xA';
 
     if (isdigit((u1)cLo)) cLo -= '0';
-    else cLo = tolower(cLo) - 'a' + '\xA';
+    else cLo = (char)tolower(cLo) - 'a' + '\xA';
 
     return cHi * '\x10' + cLo; 
   }
@@ -217,7 +217,7 @@ u1 ATextConverter::convertHEXtoBYTE(char cHi, char cLo)
 //a_Converts a value 0-0xFF to a 2 digit hex AString
 AString ATextConverter::convertBYTEtoHEX(u1 byteV)
 {
-  AString strResult;
+  AString strResult(2, 16);
 
   //a_Do the convert, base 16 a BYTE will always be 2 characters wide...
   char cT = char(byteV / 0x10),
@@ -248,15 +248,15 @@ void ATextConverter::convertBYTEtoHEX(u1 byteV, AOutputBuffer& target)
 }
 
 void ATextConverter::encodeURL(
-  const AString& strSource, 
+  const AString& source, 
   AOutputBuffer& target,
   bool isUrlPerRFC2396 // = false
 )
 {
   unsigned char cX;
-  for (u4 i = 0x0; i <strSource.getSize(); ++i)
+  for (u4 i = 0x0; i <source.getSize(); ++i)
   {
-    cX = strSource[i];
+    cX = source[i];
     
     if (isUrlPerRFC2396)
     {
@@ -298,16 +298,16 @@ void ATextConverter::encodeURL(
 }
 
 void ATextConverter::decodeURL(
-  const AString& strSource, 
+  const AString& source, 
   AOutputBuffer& target,
   bool boolIgnoreNulls,   // = true
   bool boolForceUppercase // = false
 )
 {
   char cX;
-  for (u4 i = 0x0; i <strSource.getSize(); ++i)
+  for (u4 i = 0x0; i <source.getSize(); ++i)
   {
-    cX = strSource[i];
+    cX = source[i];
     switch (cX)
     {
       case '+' : //a_Replace with space
@@ -317,9 +317,9 @@ void ATextConverter::decodeURL(
       case '%' : //a_URL escape code
         //a_Convert if we have space, hate to get an access exception
         //a_ If this is invalid, ignore the %
-        if ((i + 2) < strSource.getSize())
+        if ((i + 2) < source.getSize())
         {
-          cX = convertHEXtoBYTE(strSource[i + 0x1], strSource[i + 0x2]);
+          cX = convertHEXtoBYTE(source[i + 0x1], source[i + 0x2]);
           i += 2;
 
           if (cX == '\x0' && boolIgnoreNulls == true)
@@ -327,7 +327,7 @@ void ATextConverter::decodeURL(
 
           //a_See if we need to force uppercase
           if (boolForceUppercase)
-            target.append(toupper(cX));
+            target.append((char)toupper(cX));
           else
             target.append(cX);
         }
@@ -336,20 +336,20 @@ void ATextConverter::decodeURL(
       default :
         //a_See if we need to force uppercase
         if (boolForceUppercase)
-          target.append(toupper(cX));
+          target.append((char)toupper(cX));
         else
           target.append(cX);
     }
   }
 }
 
-void ATextConverter::makeHtmlSafe(const AString& strSource, AOutputBuffer& target)
+void ATextConverter::makeHtmlSafe(const AString& source, AOutputBuffer& target)
 {
   size_t lastPos = 0, newPos = 0;
-  if (AConstant::npos == (newPos = strSource.findOneOf(HTML_UNSAFE, lastPos)))
+  if (AConstant::npos == (newPos = source.findOneOf(HTML_UNSAFE, lastPos)))
   {
     //a_Nothing to do
-    strSource.emit(target);
+    source.emit(target);
     return;
   }
   
@@ -360,11 +360,11 @@ void ATextConverter::makeHtmlSafe(const AString& strSource, AOutputBuffer& targe
     {
       //a_Something to copy, when == then special chars next to each other
       strPeek.clear();
-      strSource.peek(strPeek, lastPos, newPos - lastPos);
+      source.peek(strPeek, lastPos, newPos - lastPos);
       target.append(strPeek);
     }
     
-    switch(strSource.at(newPos))
+    switch(source.at(newPos))
     {
       case '<' : target.append("&lt;"); break;
       case '>' : target.append("&gt;"); break;
@@ -374,20 +374,20 @@ void ATextConverter::makeHtmlSafe(const AString& strSource, AOutputBuffer& targe
 
     lastPos = newPos + 1;
   }
-  while (AConstant::npos != (newPos = strSource.findOneOf(HTML_UNSAFE, lastPos)));
+  while (AConstant::npos != (newPos = source.findOneOf(HTML_UNSAFE, lastPos)));
 
   //a_Leftovers
   strPeek.clear();
-  strSource.peek(strPeek, lastPos);
+  source.peek(strPeek, lastPos);
   target.append(strPeek);
 }
 
-void ATextConverter::makeCDataSafe(const AString& strSource, AOutputBuffer& target)
+void ATextConverter::makeCDataSafe(const AString& source, AOutputBuffer& target)
 {
   size_t lastPos = 0, newPos = 0;
-  if (AConstant::npos == (newPos = strSource.find(CDATA_UNSAFE, lastPos)))
+  if (AConstant::npos == (newPos = source.find(CDATA_UNSAFE, lastPos)))
   {
-    strSource.emit(target);  //a_Nothing to do
+    source.emit(target);  //a_Nothing to do
     return;
   }
 
@@ -398,7 +398,7 @@ void ATextConverter::makeCDataSafe(const AString& strSource, AOutputBuffer& targ
     {
       //a_Something to copy, when == then special chars next to each other
       strPeek.clear();
-      strSource.peek(strPeek, lastPos, newPos - lastPos);
+      source.peek(strPeek, lastPos, newPos - lastPos);
       target.append(strPeek);
     }
     
@@ -406,16 +406,16 @@ void ATextConverter::makeCDataSafe(const AString& strSource, AOutputBuffer& targ
 
     lastPos = newPos + 0x3;
   }
-  while (AConstant::npos != (newPos = strSource.find(CDATA_UNSAFE, lastPos)));
+  while (AConstant::npos != (newPos = source.find(CDATA_UNSAFE, lastPos)));
 
   //a_Leftovers
   strPeek.clear();
-  strSource.peek(strPeek, lastPos);
+  source.peek(strPeek, lastPos);
   target.append(strPeek);
 }
 
 
-void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer& target, bool boolIncludeNonAscii)
+void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer& target, bool includeNonAscii)
 {
   AString strTemp;
   size_t size = source.getSize();
@@ -451,7 +451,7 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
     for (i = 0; i < 0x10; ++i)
     {  
       cX = strTemp.at(i);
-      if (!boolIncludeNonAscii && !isalnum((u1)cX))
+      if (!includeNonAscii && !isalnum((u1)cX))
         target.append('.');
       else
         target.append(cX);
@@ -509,13 +509,13 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
   }
 }
 
-void ATextConverter::makeAsciiPrintable(const AString& strSource, AOutputBuffer& target)
+void ATextConverter::makeAsciiPrintable(const AString& source, AOutputBuffer& target)
 {
   AString strPeek;
   char c = 0;
-  for(size_t i=0; i<strSource.getSize(); ++i)
+  for(size_t i=0; i<source.getSize(); ++i)
   {
-    c = strSource.at(i);
+    c = source.at(i);
     if (isalnum((u1)c))
     {
       target.append(c);
@@ -528,12 +528,12 @@ void ATextConverter::makeAsciiPrintable(const AString& strSource, AOutputBuffer&
   }
 }
 
-void ATextConverter::makeSQLSafe(const AString& strSource, AOutputBuffer& target)
+void ATextConverter::makeSQLSafe(const AString& source, AOutputBuffer& target)
 {
   char c = 0;
-  for(size_t i=0; i<strSource.getSize(); ++i)
+  for(size_t i=0; i<source.getSize(); ++i)
   {
-    c = strSource.at(i);
+    c = source.at(i);
     switch(c)
     {
       case '\'':

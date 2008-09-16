@@ -46,6 +46,8 @@ public:
 
   /*!
   AException
+
+  @param target appended the description
   */
   virtual void getDescription(AOutputBuffer& target) const throw();
 

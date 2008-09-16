@@ -22,12 +22,15 @@ public:
 class ABASE_API AEmittable : public ABase
 {
 public:
+  //! virtual dtor
   virtual ~AEmittable();
 
   /*!
   Ability to emit self, always appends to the AOutputBuffer object
+
+  @param target to append to
   */
-  virtual void emit(AOutputBuffer&) const = 0;
+  virtual void emit(AOutputBuffer& target) const = 0;
 };
 
 #endif //INCLUDED__AEmittable_HPP_

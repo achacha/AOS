@@ -19,11 +19,11 @@ Macro for logging events based on level
 #define INVALID_TIME_INTERVAL -1.0
 
 /*!
-Event visitor acts as a mini in-memory m_stateTimer
+Event visitor acts as a mini in-memory timer
 Every time a state is changed, the old state is pushed into an event list
-Main purpose is to keep track of all the state changes
+Main purpose is to keep track of all the state changes and how long each state takes
 
-Unsynchronized by default
+Unsynchronized by design, use sync blocks as needed
 */
 class ABASE_API AEventVisitor : public ADebugDumpable, public AXmlEmittable
 {
@@ -33,11 +33,12 @@ public:
   */
   enum EventLevel
   {
-    EL_ERROR  = 1,   // Error (this increments the error counter)
-    EL_EVENT  = 2,   // Event (DEFAULT) - Event message
-    EL_WARN   = 3,   // Warning - Warning, non-critical error
-    EL_INFO   = 4,   // Informational message
-    EL_DEBUG  = 5    // Debug trace
+    EL_NONE     = 0,   //!< Event visitor is disable or ignore event
+    EL_ERROR    = 1,   //!< Error (this increments the error counter)
+    EL_EVENT    = 2,   //!< Event (DEFAULT) - Event message
+    EL_WARN     = 3,   //!< Warning - Warning, non-critical error
+    EL_INFO     = 4,   //!< Informational message
+    EL_DEBUG    = 5    //!< Debug trace
   };
   
   class ABASE_API ScopedEvent
@@ -47,13 +48,14 @@ public:
     Create an event during construction of this object and one during destruction
 
     @param visitor to use for event logging
-    @param where the event is occuring
+    @param whereAt the event is occuring
     @param message optional message
+    @param level of the event
     */
     ScopedEvent(
       AEventVisitor& visitor, 
-      const AString& strWhere, 
-      const AString& strMessage = AConstant::ASTRING_EMPTY, 
+      const AString& whereAt, 
+      const AString& message = AConstant::ASTRING_EMPTY, 
       const AEventVisitor::EventLevel level = AEventVisitor::EL_DEBUG);
     
     /*!
@@ -72,8 +74,8 @@ public:
   /*! 
   ctor
   
-  @param name  - User defined name for this visitor that appears in the emit calls
-  @param level - Minimum level of the messages to log, default is events and errors
+  @param name User defined name for this visitor that appears in the emit calls
+  @param threshold Minimum level of the messages to log, default is events and errors
   */
   AEventVisitor(const AString& name = AConstant::ASTRING_EMPTY, AEventVisitor::EventLevel threshold = AEventVisitor::EL_EVENT);
   
@@ -82,27 +84,57 @@ public:
 
   /*!
   AEmittable
-  AXmlEmittable
+
+  @param target to append to
   */
   virtual void emit(AOutputBuffer& target) const;
+
+  /*!
+  AXmlEmittable
+
+  @param thisRoot to append XML elements to
+  @return thisRoot for convenience
+  */
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
   Emit based on threshold
+
+  @param target to append to
+  @param threshold to use
   */
   void emit(AOutputBuffer& target, AEventVisitor::EventLevel threshold) const;
+  
+  /*!
+  Emit XML based on threshold
+
+  @param thisRoot to append XML elements to
+  @param threshold to use
+  @return thisRoot for convenience
+  */
   AXmlElement& emitXml(AXmlElement& thisRoot, AEventVisitor::EventLevel threshold) const;
 
   /*!
   The name of this event visitor
   Appears in the emit only and is user defined (if not then AEventVisitor is used as name
+
+  @return reference to the AString object
   */
   AString& useName();
 
   /*!
   Lifespan timer of this object
+
+  @return reference to the ATimer object
   */
   ATimer& useLifespanTimer();
+
+  /*!
+  Check if enabled
+
+  @return if threashold is != EL_NONE
+  */
+  bool isEnabled() const;
 
   /*!
   Check if the level specified will be logged by the visitor and it is also enabled
@@ -112,6 +144,41 @@ public:
   */
   bool isLogging(EventLevel level) const;
   
+  /*!
+  Check if logging level
+
+  @return true if logging level is EL_DEBUG or lower AND enabled
+  */
+  inline bool isLoggingDebug() const;
+
+  /*!
+  Check if logging level
+
+  @return true if logging level is EL_INFO or lower AND enabled
+  */
+  inline bool isLoggingInfo() const;
+
+  /*!
+  Check if logging level
+
+  @return true if logging level is EL_WARN or lower AND enabled
+  */
+  inline bool isLoggingWarn() const;
+
+  /*!
+  Check if logging level
+
+  @return true if logging level is EL_EVENT or lower AND enabled
+  */
+  inline bool isLoggingEvent() const;
+
+  /*!
+  Check if logging level
+
+  @return true if logging level is EL_ERROR or lower AND enabled
+  */
+  inline bool isLoggingError() const;
+
   /*!
   Sets the new state, stopping and saving current one
   State time limit is used as a test mark when calling isStateOverTimeLimit() and is user controlled
@@ -159,44 +226,51 @@ public:
 
   /*!
   Sets new logging level threshold (does not retroactively remove old events below the current threshold)
+
+  @param newLevelThreshold of EventLevel type
   */
   void setEventThresholdLevel(AEventVisitor::EventLevel newLevelThreshold);
   
   /*!
   Get current logging level threshold
+
+  @return EventLevel
   */
   AEventVisitor::EventLevel getEventThresholdLevel() const;
 
   /*!
   Number of events
+
+  @return count
   */
   size_t size() const;
 
   /*!
   Get count for # of errors added
+
+  @return error count
   */
   size_t getErrorCount() const;
-
-  /*!
-  Turn event visitor on/off
-  */
-  void enable(bool);
 
   /*!
   Access to the current 
   State is completely user defined and gives a way to change states and maintain time in state
   
-  @param Target of the message
+  @param target to append to
   */
   void getCurrentEventMessage(AOutputBuffer& target) const;
   
   /*!
   Milliseconds spent in the current event state
+  
+  @return interval of the current event
   */
   double getCurrentEventTimeInterval() const;
 
   /*!
   Is the current state over max time for the event
+
+  @return true if over limit that user specified
   */
   bool isCurrentEventOverTimeLimit() const;
 
@@ -210,17 +284,28 @@ private:
   class Event : public ADebugDumpable, public AXmlEmittable
   {
   public:
+    /*!
+    Event object ctor
+    
+    @param state message
+    @param level of the event
+    @param interval of the event
+    */
     Event(const AEmittable& state, AEventVisitor::EventLevel level, double interval);
 
-    /*!
-    AEmittable
-    AXmlEmittable
-    */
+    //! AEmittable
     virtual void emit(AOutputBuffer& target) const;
+    
+    //! AXmlEmittable
     virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
+    //! Interval
     double m_interval;
+    
+    //! State message
     AString m_state;
+    
+    //! Event level
     AEventVisitor::EventLevel m_level;
 
     /*!
@@ -229,26 +314,26 @@ private:
     virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
   };
 
+  //! Event queue
   ABasePtrQueue m_Events;
 
-  //a_Event visitor's name and overall lifespan timer
+  //! Event visitor's name
   AString m_Name;
+  
+  //! Event visitor's overall lifespan timer
   ATimer m_LifespanTimer;
 
-  //a_Current event
+  //! Current event
   Event *mp_CurrentEvent;
 
-  //a_Time spent in state and max time for the state
+  //! Time spent in state and max time for the state
   ATimer m_stateTimer;
   double m_stateTimeLimit;
-
-  //a_Allows all event logging to be disabled
-  bool m_isEnabled;
   
-  //a_Event logging threshold
+  //! Event logging threshold
   AEventVisitor::EventLevel m_LevelThreshold;
 
-  //a_Set if at least one error occured
+  //! Set if at least one error occured
   size_t m_ErrorCount;
 };
 

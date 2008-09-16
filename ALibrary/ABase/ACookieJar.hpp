@@ -57,7 +57,7 @@ public:
   @param request HTTP header
   @param response HTTP header
   */
-  void parse(const AHTTPRequestHeader&, const AHTTPResponseHeader&);
+  void parse(const AHTTPRequestHeader& request, const AHTTPResponseHeader& response);
 
   /*!
   Emit the appropriate cookies into a given request header that were added via the parse method
@@ -77,18 +77,22 @@ public:
 
   NOTE: Expired cookies will be deleted during this call so synchronize as needed
 
+  @param target to append to
+  @param domain for the cookie
   @param path of the current request
   @param secureOnly if set only cookies flagged as secure will be emitted (for HTTPS usually)
   */
-  void emitCookies(AOutputBuffer&, const AString& domain, const AString& path, bool secureOnly = false);
+  void emitCookies(AOutputBuffer& target, const AString& domain, const AString& path, bool secureOnly = false);
 
   /*!
   AEmittable
   Outputs domains contained only
 
   NOTE: Expired cookies will be deleted during this call so synchronize as needed
+
+  @param target to append to
   */
-  virtual void emit(AOutputBuffer&) const;
+  virtual void emit(AOutputBuffer& target) const;
   
   /*!
   ADebugDumpable
@@ -99,7 +103,7 @@ private:
   //! No copy ctor or assign operator
   ACookieJar& operator=(const ACookieJar&) { return *this; }
   
-  //! Path node that contains cookies and sub-path nodes (aka directory node)
+  // Path node that contains cookies and sub-path nodes (aka directory node)
   class Node : public ADebugDumpable
   {
   public:
@@ -112,7 +116,7 @@ private:
     NOTE: Expired cookies will be deleted during this call so synchronize as needed
     
     @param target value of the Cookie: line (this is only the right hand side)
-    @param if true only cookies marked SECURE will be emitted
+    @param secureOnly if true only cookies marked SECURE will be emitted
     */
     void emitCookies(AOutputBuffer& target, bool secureOnly = false);
 
@@ -120,8 +124,10 @@ private:
     AEmittable
     Will walk up the parents until root and emit all along the way
     Will not expire any cookies
+
+    @param target to append to
     */
-    virtual void emit(AOutputBuffer&) const;
+    virtual void emit(AOutputBuffer& target) const;
 
     /*!
     ADebugDumpable

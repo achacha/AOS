@@ -92,7 +92,7 @@ ANameValuePair *AXmlAttributes::_findPair(const AString& name)
   return NULL;
 }
 
-void AXmlAttributes::remove(const AString& name)
+bool AXmlAttributes::remove(const AString& name)
 {
   for (AXmlAttributes::CONTAINER::iterator it = m_Pairs.begin(); it != m_Pairs.end(); ++it)
   {
@@ -100,9 +100,10 @@ void AXmlAttributes::remove(const AString& name)
     {
       delete *it;
       m_Pairs.erase(it);
-      return;
+      return true;
     }
   }
+  return false;
 }
 
 const ANameValuePair *AXmlAttributes::_findPair(const AString& name) const

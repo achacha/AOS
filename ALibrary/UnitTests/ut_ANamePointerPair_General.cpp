@@ -21,13 +21,13 @@ int ut_ANamePointerPair_General()
     std::cerr << "ANamePointerPair::emit to AString failed" << std::endl;
   } else std::cerr << "." << std::flush;
 
-  if (nvPair.isName("Name"))
+  if (nvPair.getName().equals(ASW("Name",4)))
   {
     iRet++;
     std::cerr << "isName failed: " << nvPair.getName().c_str() << "==Name" << std::endl;
   } else std::cerr << "." << std::flush;
   
-  if (!nvPair.isNameNoCase("Name"))
+  if (!nvPair.getName().equalsNoCase(ASW("Name",4)))
   {
     iRet++;
     std::cerr << "isNameNoCase failed: " << nvPair.getName().c_str() << "!=Name" << std::endl;

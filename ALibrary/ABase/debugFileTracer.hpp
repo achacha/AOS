@@ -21,6 +21,7 @@ $Id$
 
   Usage (include in your CPP files only)
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\code
     #define ENABLE_AFILE_TRACER_DEBUG                      // This will enable it, comment it out to disable
     #define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
     #define AFILE_TRACER_FILENAME "/mypath/myfilename.ext" //OPTIONAL: Use anothe filename
@@ -38,12 +39,15 @@ $Id$
 
       return;
     }
+\endcode
 
+\verbatim
     Output for this = 0x12345678
     ----------------------------
     +++ctor@0x12345678: This is a method I am debugging
     This is just a message without ctor/dtor trace
     ---dtor@0x12345678: This is a method I am debugging
+\endverbatim
 
     Advanced users may also use: AFILE_TRACER_DEBUG_OBJECT( . . . )
       It creates a memory dump for the object pointer of given length

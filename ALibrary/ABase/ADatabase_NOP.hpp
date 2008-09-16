@@ -18,34 +18,37 @@ class ABASE_API ADatabase_NOP : public ADatabase
 {
 public:
   ADatabase_NOP();
-  ADatabase_NOP(const AUrl& urlConnection);
+  ADatabase_NOP(const AUrl&);
   virtual ~ADatabase_NOP();
 
   /*!
   Init
+  
   @return true
   */
-  virtual bool init(AString& error) ;
+  virtual bool init(AString&);
   
   //! Deinit, does nothing
   virtual void deinit();
   
   /*!
   Reconnects, but really does nothing
+  
   @return true
   */
-  virtual bool reconnect(AString& error);
+  virtual bool reconnect(AString&);
   
   /*!
   Execute a query, but really do nothing
+  
   @return 0
   */
-  virtual size_t executeSQL(const AString& query, AResultSet&, AString& error);
-  
+  virtual size_t executeSQL(const AString&, AResultSet&, AString&);
+
   /*!
   @return new instance of this class
   */
-  virtual ADatabase_NOP *clone(AString& error) const;
+  virtual ADatabase_NOP *clone(AString&) const;
 };
 
 #endif //INCLUDED__ADatabase_NOP_HPP__

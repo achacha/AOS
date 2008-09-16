@@ -27,169 +27,508 @@ class ABASE_API AUrl : public AXmlEmittable, public ADebugDumpable, public ASeri
 {
 public:
 
-  //a_Default port #s from RFC-1738 (and more)
+  /*!
+  Default port numbers from RFC-1738 (and more)
+  */
   enum eProtocol
   {
-    FTP_DATA = 20,   //a_Data port for FTP is 20
-    FTP      = 21,   //a_FTP protocol port
-    TELNET   = 23,   //a_Telnet port
-    SMTP     = 25,   //a_Mailto: may need to go here if so implemented
-    GOPHER   = 70,   //a_Gopher, yet another forgotten rodent
-    HTTP     = 80,   //a_This is the biscuit of this chicken stand
-    NNTP     = 119,  //a_Newsgroup protocol (Usenet, etc)
-    WAIS     = 210,  //a_WAIS proxy
-    HTTPS    = 443,  //a_This is the secret reclusive friend of the biscuit
-    PROSPERO = 1525, //a_Prospero directory service
-    MYSQL    = 3306, //a_MySQL
-    FILE     = -1,   //a_Flag that can denote that local file access is needed
-    INVALID  = -2,   //a_Unintialized
-    NONE     = -3,   //a_No port associated with this URL
-    ODBC     = -4,   //a_None
-    SQLITE   = -5,   //a_None
-    DATA     = -6
+    FTP_DATA = 20,   //!< Data port for FTP is 20
+    FTP      = 21,   //!< FTP protocol port
+    TELNET   = 23,   //!< Telnet port
+    SMTP     = 25,   //!< Mailto: may need to go here if so implemented
+    GOPHER   = 70,   //!< Gopher, yet another forgotten rodent
+    HTTP     = 80,   //!< This is the biscuit of this chicken stand
+    NNTP     = 119,  //!< Newsgroup protocol (Usenet, etc)
+    WAIS     = 210,  //!< WAIS proxy
+    HTTPS    = 443,  //!< This is the secret reclusive friend of the biscuit
+    PROSPERO = 1525, //!< Prospero directory service
+    MYSQL    = 3306, //!< MySQL
+    FILE     = -1,   //!< Flag that can denote that local file access is needed
+    INVALID  = -2,   //!< Unintialized
+    NONE     = -3,   //!< No port associated with this URL
+    ODBC     = -4,   //!< Custom ODBC
+    SQLITE   = -5,   //!< Custom SQLite
+    DATA     = -6    //!< Data URL as defined by RFC-2397
   };
 
-  //a_Separators
-  static const AString sstr__PathSeparator;      //a_ "/"
-  static const AString sstr__PathSelf;           //a_ "/./"
-  static const AString sstr__PathParent;         //a_ "/../"
+  //! Path separator
+  static const AString sstr__PathSeparator;      //!< "/"
+  //! Path to self separator
+  static const AString sstr__PathSelf;           //!< "/./"
+  //! Path to parent separator
+  static const AString sstr__PathParent;         //!< "/../"
   
 public:
-  /*!
-  ctor/dtor
-  */
+  //! ctor
   AUrl();
-  AUrl(const AString &strInput);
-  AUrl(const AUrl &urlSource) { operator =(urlSource); }
+  
+  /*!
+  Create new URL object
+  
+  @param url string to parse
+  */
+  AUrl(const AString& url);
+  
+  /*!
+  Copy ctor
+
+  @param that other object
+  */
+  AUrl(const AUrl& that);
+
+  //! dtor
   virtual ~AUrl();
 
   /*!
   Copy operator
+
+  @param that other object
+  @return *this
   */
-  const AUrl &operator =(const AUrl &);
+  const AUrl &operator =(const AUrl& that);
   
   /*!
   Will merge URLs, leaving this data alone if not empty
+
+  @param that other object
+  @return *this
   */
-  const AUrl &operator |=(const AUrl &);
-  AUrl operator |(const AUrl &) const;
+  const AUrl &operator |=(const AUrl& that);
+
+  /*!
+  Will merge URLs, leaving this data alone if not empty
+
+  @param that other object
+  @return *this
+  */
+  AUrl operator |(const AUrl& that) const;
 
   /*!
   Will merge URLs, will overlay this data with source if source is not empty
+
+  @param that other object
+  @return *this
   */
-  const AUrl &operator &=(const AUrl &);
-  AUrl operator &(const AUrl &) const;
+  const AUrl &operator &=(const AUrl& that);
 
   /*!
-  Parsing/resetting method
+  Will merge URLs, will overlay this data with source if source is not empty
+
+  @param that other object
+  @return *this
   */
-  void parse(const AString &);
+  AUrl operator &(const AUrl& that) const;
+
+  /*!
+  Parse the url string
+
+  @param url string to parse
+  */
+  void parse(const AString& url);
+  
+  /*!
+  Clear
+  */
   void clear();
 
   /*!
-  Access methods
+  Get password
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return 'password'
+  \endverbatim
+
+  @return constant reference to protocol
   */
   const AString& getProtocol() const;
+
+  /*!
+  Get protocol
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return enum for 'protocol:'
+  \endverbatim
+
+  @return protocol enumeration
+  */
   eProtocol getProtocolEnum() const;
+
+  /*!
+  Get username
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return 'username'
+  \endverbatim
+
+  @return constant reference to username
+  */
   const AString& getUsername() const;
+  
+  /*!
+  Get password
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return 'password'
+  \endverbatim
+
+  @return constant reference to password
+  */
   const AString& getPassword() const;
+
+  /*!
+  Get server
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return 'server'
+  \endverbatim
+
+  @return constant reference to server
+  */
   const AString& getServer() const;
+
+  /*!
+  Get port
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return port number
+  \endverbatim
+  
+  @return port int
+  */
   int getPort() const;
+  
+  /*!
+  Get reference to path
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return '/basedir/somedir/otherdir/'
+  \endverbatim
+
+  @return constant reference to the path
+  */
   const AString& getPath() const;
-  AString getBaseDirName() const;  // protocol://server/basedir/somedir/otherdir/filename.ext will return 'basedir'
+  
+  /*!
+  Get base directory
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return 'basedir'
+  \endverbatim
+  
+  @return string copy of the base directory
+  */
+  AString getBaseDirName() const;
+
+  /*!
+  Get filename
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return 'filename.ext'
+  \endverbatim
+  
+  @return constant reference to filename
+  */
   const AString& getFilename() const;
+
+  /*!
+  Get fragment
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext#fragment will return 'fragment'
+  \endverbatim
+  
+  @return constant reference to the fragment
+  */
   const AString& getFragment() const;
+
+  /*!
+  Get filename without extension
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return 'filename'
+  \endverbatim
+  
+  @return copy of filename without extension
+  */
   AString getFilenameNoExt()const;
+
+  /*!
+  Get extension
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return 'ext'
+  \endverbatim
+  
+  @return copy of extension
+  */
   AString getExtension() const;
-  AString getParameters() const;
+
+  /*!
+  Get query string
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return 'query'
+  \endverbatim
+  
+  @return copy of query string
+  */
+  AString getQueryString() const;
+
+  /*!
+  Get path and filename
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return '/basedir/somedir/otherdir/filename.ext'
+  \endverbatim
+  
+  @return copy path and filename
+  */
   AString getPathAndFilename() const; 
+
+  /*!
+  Get path and filename without extension
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return '/basedir/somedir/otherdir/filename'
+  \endverbatim
+  
+  @return copy path and filename without extension
+  */
   AString getPathAndFilenameNoExt() const; 
+
+  /*!
+  Get path, filename and query string
+
+  \verbatim
+  protocol://username:password@server:port/basedir/somedir/otherdir/filename.ext?query will return '/basedir/somedir/otherdir/filename.ext?query'
+  \endverbatim
+  
+  @return copy path, filename and query string
+  */
   AString getPathFileAndQueryString() const;
 
   /*!
-  Tests
+  Test if protocol matches
+  
+  @param e enumerated protocol to test
+  @return true if protocol matched
   */
   bool isProtocol(AUrl::eProtocol e) const;
-  bool isExtension(const AString&) const;
+
+  /*!
+  Test if extension matched
+
+  @param ext extension to check without '.'
+  @return true if extensions match
+  */
+  bool isExtension(const AString& ext) const;
  
   /*!
   Check basic validity
+
+  @return true if the URL seems to be valid
   */
   bool isValid() const;
 
   /*!
-  Modification methods
+  Set new protocol
+
+  @param e enumeration of the protocol
   */
-  void setProtocol(eProtocol);
-  void setProtocol(const AString &);
-  void setUsername(const AString &);
-  void setPassword(const AString &);
-  void setServer(const AString &);
-  void setPort(int);
-  void setPath(const AString &);
-  void setFilename(const AString &);
-  void setFragment(const AString &);
-  void setExtension(const AString &);
-  void setFilenameNoExt(const AString &);
-  void setPathAndFilename(const AString &);
+  void setProtocol(eProtocol e);
+  
+  /*!
+  Set protocol
+
+  @param protocol to set
+  */
+  void setProtocol(const AString& protocol);
+  
+  /*!
+  Set username
+
+  @param username to set
+  */
+  void setUsername(const AString& username);
+  
+  /*!
+  Set password
+
+  @param password to set
+  */
+  void setPassword(const AString& password);
+  
+  /*!
+  Set server
+
+  @param server to set
+  */
+  void setServer(const AString& server);
+  
+  /*!
+  Set port
+
+  @param port to set
+  */
+  void setPort(int port);
+  
+  /*!
+  Set path
+
+  @param path to set
+  */
+  void setPath(const AString& path);
+  
+  /*!
+  Set filename
+
+  @param filename to set
+  */
+  void setFilename(const AString& filename);
+  
+  /*!
+  Set fragment
+
+  @param fragment to set
+  */
+  void setFragment(const AString& fragment);
+  
+  /*!
+  Set extension
+
+  @param ext extension to set
+  */
+  void setExtension(const AString& ext);
+  
+  /*!
+  Set filename part only, leave extension as is
+
+  @param filename to set
+  */
+  void setFilenameNoExt(const AString& filename);
+  
+  /*!
+  Set path and filename
+
+  @param path and filename to set
+  */
+  void setPathAndFilename(const AString& path);
 
   /*!
-  Support for data: protocol specifics
+  Support for data: protocol specifics (RFC-2397)
 
        dataurl    := "data:" [ mediatype ] [ ";base64" ] "," data
        mediatype  := [ type "/" subtype ] *( ";" parameter )
        data       := *urlchar
        parameter  := attribute "=" value
 
-     data is URL encoded be default and base64 encoded if so flagged
+  @return data is URL encoded be default and base64 encoded if so flagged
+  */
+  AString& useData();
+  
+  /*!
+  data: protocol media type
+
+  @return media type
+  @see useData for summary
   */
   AString& useMediaType();
+  
+  /*!
+  data: protocol data encoding
+  
+  @return true if data is base64 encoded
+  @see useData for summary
+  */
   bool isBase64Encoded() const;
-  void setIsBase64Encoded(bool);
-  AString& useData();
 
   /*!
-  Parameter access
-  Query string in most cases and parameter list in data:
+  data: protocol set data encoding
+  
+  @param base64enc if true then data is base64 encoded
+  @see useData for summary
   */
-        AQueryString &useParameterPairs();
+  void setIsBase64Encoded(bool base64enc);
+
+  /*!
+  Parameter pair (aka query string) access
+  Query string for most protocol (i.e. name=value&name=value&...)
+  parameter list in data: protocol (i.e. name=value;name=value;...)
+
+  @return query string
+  */
+  AQueryString &useParameterPairs();
+  
+  /*!
+  Parameter pair (aka query string) access
+  Query string for most protocol (i.e. name=value&name=value&...)
+  parameter list in data: protocol (i.e. name=value;name=value;...)
+
+  @return constant reference to query string
+  */
   const AQueryString &getParameterPairs() const;
 
   /*!
-  Displays URL (full includes the u:p@s:p)
+  Displays URL (full includes the username:password\@server:port)
     URL generator (Full URL includes username:password)
     boolHidePassword will replace password with *
+  
+  @param target to append to
+  @param showFull if true everything will be shown including username and hidden (shown as "*") for password
+  @param hidePassword if true and if showFull is true then actual password will be included
   */
-  void emit(AOutputBuffer&, bool boolFull, bool boolHidePassword = false) const;
+  void emit(AOutputBuffer& target, bool showFull, bool hidePassword = false) const;
 
   /*!
   AEmittable
-  AXmlEmittable
+
+  @param target to append to
   */
   virtual void emit(AOutputBuffer& target) const;
+
+  /*!
+  AXmlEmittable
+
+  @param thisRoot to append element to
+  @return thisRoot for convenience
+  */
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
                                            
   /*!
   Return as AString, calls emit internally
   emit() is more efficient, this is more of a convenience when used in ctor init
+  
+  @return copy of URL string
   */
   AString toAString() const;
 
   /*!
-  Access to error message (during parse)
+  Access to last parsing error message
+  
+  @return constant reference to the last error if any
   */
-  const AString &getError() { return m_strError; }
+  const AString& getError() const;
 
   /*!
   Return a result of a comparison to an object of the same type
-    0 if equal, else number of different componenets
+  
+  @param that other object
+  @return 0 if equal, else number of different components
   */
-  int compare(const AUrl& aSource) const;
+  int compare(const AUrl& that) const;
 
 	/*!
   ASerializable
+
+  @param aFile to write to
   */
   virtual void toAFile(AFile& aFile) const;
+
+	/*!
+  ASerializable
+
+  @param aFile to read from
+  */
   virtual void fromAFile(AFile& aFile);
 
   /*!
@@ -198,42 +537,42 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
-  void _logError(const AString &strError);     //a_Log error
+  //! log the error
+  void _logError(const AString &strError);
 
-  //a_Setting methods
+  //! Setting methods
   void __setProtocol(const AString &strProtocol);
 
-  //a_URL components
+  //! URL components
   AString m_strProtocol;
   AString m_strUsername;
   AString m_strPassword;
-  AString m_strServer;    //a_Server name or MediaType if data: protocol
+  AString m_strServer;    //!< Server name or MediaType if data: protocol
   int     m_iPort;
   AString m_strPath;
-  AString m_strFilename;  //a_Raw data for data: will be stored here, will be encoded as need on emit
+  AString m_strFilename;  //!< Raw data for data: will be stored here, will be encoded as need on emit
   AString m_strFragment;
 
-  //a_Support for data:
+  //! Support for data: protocol
   bool m_isBase64;
 
-  //a_Parameters
+  //! Parameter pairs
   AQueryString m_QueryString;
 
 private:    
-  //a_Parse data protocol
+  // Parse data protocol
   void __parseDataProtocol(const AString &strInput, size_t pos);
 
-  //a_Parsing parameters
+  // Parsing parameters
   void __parseQueryString(const AString &strQueryString);
   void __parsePath(const AString &strPath);
 
-  //a__data: protocol emit
+  // data: protocol emit
   void __emitDataProtocol(AOutputBuffer& result) const;
 
-  //a_Last error
+  // Last parsing error
   AString m_strError;
 };
 
 
 #endif
-

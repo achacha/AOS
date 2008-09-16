@@ -71,7 +71,6 @@ AXmlDocument::AXmlDocument(AFile& file)
 }
 
 AXmlDocument::AXmlDocument(const AXmlDocument& that) :
-  AObjectBase(that),
   m_Root(that.m_Root)
 {
   for (LIST_NODEPTR::const_iterator cit = that.m_Instructions.begin(); cit != that.m_Instructions.end(); ++cit)
@@ -261,7 +260,7 @@ AXmlElement& AXmlDocument::emitXml(AXmlElement& thisRoot) const
   return m_Root.emitXml(thisRoot);
 }
 
-AObjectBase* AXmlDocument::clone() const
+AXmlDocument* AXmlDocument::clone() const
 { 
   return new AXmlDocument(*this);
 }

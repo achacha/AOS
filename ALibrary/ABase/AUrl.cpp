@@ -40,10 +40,16 @@ AUrl::AUrl() :
 {
 }
 
-AUrl::AUrl(const AString &strInput)
+AUrl::AUrl(const AString &url)
 {
-  parse(strInput);
+  parse(url);
 }
+
+AUrl::AUrl(const AUrl &that)
+{ 
+  operator =(that);
+}
+
 
 AUrl::~AUrl()
 {
@@ -277,40 +283,40 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
   return *this;
 }
 
-AUrl AUrl::operator &(const AUrl &urlSource) const
+AUrl AUrl::operator &(const AUrl& that) const
 {
   AUrl urlReturn(*this);
-  urlReturn &= urlSource;
+  urlReturn &= that;
 
   return urlReturn;
 }
 
-const AUrl &AUrl::operator &=(const AUrl &urlSource)
+const AUrl &AUrl::operator &=(const AUrl& that)
 {
   //a_URL components
-  if (!urlSource.m_strProtocol.isEmpty()) 
-    m_strProtocol = urlSource.m_strProtocol;
-  if (urlSource.m_iPort != AUrl::INVALID) 
-    m_iPort = urlSource.m_iPort;
-  if (!urlSource.m_strServer.isEmpty()) 
-    m_strServer = urlSource.m_strServer;
-  if (!urlSource.m_strUsername.isEmpty()) 
-    m_strUsername = urlSource.m_strUsername;
-  if (!urlSource.m_strPassword.isEmpty()) 
-    m_strPassword = urlSource.m_strPassword;
-  if (!urlSource.m_strPath.isEmpty())
+  if (!that.m_strProtocol.isEmpty()) 
+    m_strProtocol = that.m_strProtocol;
+  if (that.m_iPort != AUrl::INVALID) 
+    m_iPort = that.m_iPort;
+  if (!that.m_strServer.isEmpty()) 
+    m_strServer = that.m_strServer;
+  if (!that.m_strUsername.isEmpty()) 
+    m_strUsername = that.m_strUsername;
+  if (!that.m_strPassword.isEmpty()) 
+    m_strPassword = that.m_strPassword;
+  if (!that.m_strPath.isEmpty())
   {
-    m_strPath = urlSource.m_strPath;
+    m_strPath = that.m_strPath;
     m_strFilename.clear();
     m_strFragment.clear();
   }
-  if (!urlSource.m_strFilename.isEmpty())
+  if (!that.m_strFilename.isEmpty())
   { 
-    m_strFilename = urlSource.m_strFilename;
-    m_strFragment = urlSource.m_strFragment;
+    m_strFilename = that.m_strFilename;
+    m_strFragment = that.m_strFragment;
   }
 
-  m_QueryString |= urlSource.m_QueryString;
+  m_QueryString |= that.m_QueryString;
 
   return *this;
 }
@@ -776,7 +782,7 @@ void AUrl::fromAFile(AFile &aFile)
   parse(url);
 }
 
-AString AUrl::getParameters() const
+AString AUrl::getQueryString() const
 {
   AString str; 
   m_QueryString.emit(str);
@@ -1013,4 +1019,9 @@ void AUrl::setIsBase64Encoded(bool b)
 AString& AUrl::useData()
 {
   return m_strFilename;
+}
+
+const AString& AUrl::getError() const
+{ 
+  return m_strError;
 }

@@ -13,7 +13,7 @@ $Id$
 
 class ABASE_API ANameValuePair;
 
-//a_Containers involving ANameValuePair
+//! Containers involving ANameValuePair
 typedef std::list<ANameValuePair>                    LIST_NVPair;
 typedef std::list<ANameValuePair *>                  LIST_NVPairPtr;
 typedef std::vector<ANameValuePair>                  VECTOR_NVPair;
@@ -26,13 +26,15 @@ typedef std::multimap<const AString, ANameValuePair> MMAP_AString_NVPairPtr;
 class ABASE_API ANameValuePair : public ADebugDumpable, public ASerializable
 {
 public:
-  //a_ "=" and " " or "/>"  or ">" for HTML/XML attributes (special case)
-  //a_ "=" and "&" for CGI and CGI_CASE parameters (CGI_CASE is case sensitive name)
-  //a_ ": " and "" for HTTP header parameters
-  //a_ "=" amd "" for REGINI with name and value enclosed in quotes (used in WinNT .reg files)
-  //a_ "=" and ";" for COOKIE and DATA parameters
-  //a_ "=" and ";" for FORM_MULTIPART and value may be enclosed in quotes
-  //a_ ":" and "}" for JSON
+  /*!
+  "=" and " " or "/>"  or ">" for HTML/XML attributes (special case)
+  "=" and "&" for CGI and CGI_CASE parameters (CGI_CASE is case sensitive name)
+  ": " and "" for HTTP header parameters
+  "=" amd "" for REGINI with name and value enclosed in quotes (used in WinNT .reg files)
+  "=" and ";" for COOKIE and DATA parameters
+  "=" and ";" for FORM_MULTIPART and value may be enclosed in quotes
+  ":" and "}" for JSON
+  */
   enum NameValueType { 
     HTML, 
     XML, 
@@ -48,11 +50,13 @@ public:
   };
 
 public:
-  //a_ctor/dtor/etc
-  //a_Parses the input (default to CGI type)
-  ANameValuePair(const AString& strName, const AString& strValue = AConstant::ASTRING_EMPTY, NameValueType eType = ANameValuePair::CGI);
+  /*!
+  ctor/dtor/etc
+  Parses the input (default to CGI type)
+  */
+  ANameValuePair(const AString& name, const AString& strValue = AConstant::ASTRING_EMPTY, NameValueType eType = ANameValuePair::CGI);
   ANameValuePair(NameValueType eType = ANameValuePair::CGI);
-  ~ANameValuePair() {}     //a_No virtual methods, no virtula destructor
+  virtual ~ANameValuePair();
 
   //a_Parsing method
   void parse(const AString& strInput, size_t& pos);
@@ -91,7 +95,7 @@ public:
 
   /*!
     Custom value wrap character
-      - character to wrap the value (used for parsing and output), HTML/XML uses \", rest are \x0
+      - character to wrap the value (used for parsing and output), HTML/XML uses \", rest are '\\x0'
   */
   void setValueWrap(char);
 
@@ -101,8 +105,8 @@ public:
   void setWhiteSpace(const AString &);
 
   //a_Assumes name/value pair is valid
-  void setName(const AString& strName);
-  void setNameValue(const AString& strName, const AString& strValue);
+  void setName(const AString& name);
+  void setNameValue(const AString& name, const AString& strValue);
   void setValue(const AString& strValue);
 
   //a_Represent as a string of form 'name=value'
@@ -123,10 +127,10 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
-  //a_Utility functions
+  // Checks if whitespace
   inline bool __isWhiteSpace(char cX);
 
-  //a_Parsing methods
+  // Parsing methods
   void _parseHtmlValue(const AString &strInput, size_t& pos, AString &strReturn);
   void _parseREGINIValue(const AString &strInput, size_t& pos, AString &strReturn);
   void _parseJSONValue(const AString &strInput, size_t& pos, AString &strReturn);
@@ -134,11 +138,11 @@ private:
   void _parseREGININame(const AString &strInput, size_t& pos, AString &strReturn);
   void _parseName(const AString &strInput, size_t& pos, AString &strReturn);
 
-  //a_The NAME/VALUE data
+  // The NAME/VALUE data
   AString m_name;
   AString m_value;
 
-  //a_Delimeters
+  // Delimeters
   NameValueType m_nvtype;
   AString m_separator;       //a_Separates NAME and VALUE
   AString m_terminator;      //a_Delimits start of next pair or <EOS>

@@ -214,115 +214,115 @@ AString AString::fromBool(bool value)
   return (value ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
 }
 
-AString AString::fromS1(s1 value, int iBase)
+AString AString::fromS1(s1 value, int base)
 {
   char pcBuffer[34];
 
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _ltoa_s(value, pcBuffer, 34, iBase);
+  errno_t errornum = _ltoa_s(value, pcBuffer, 34, base);
   if (errornum)
     ATHROW_ERRNO(NULL, AException::APIFailure, errornum);
   return AString(pcBuffer);
 #else
-  return AString(ltoa(value, pcBuffer, iBase));
+  return AString(ltoa(value, pcBuffer, base));
 #endif
 }
 
-AString AString::fromU1(u1 value, int iBase)
+AString AString::fromU1(u1 value, int base)
 {
   char pcBuffer[34];
 
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _ultoa_s(value, pcBuffer, 34, iBase);
+  errno_t errornum = _ultoa_s(value, pcBuffer, 34, base);
   if (errornum)
     ATHROW_ERRNO(NULL, AException::APIFailure, errornum);
   return AString(pcBuffer);
 #else
-  return AString(ultoa(value, pcBuffer, iBase));
+  return AString(ultoa(value, pcBuffer, base));
 #endif
 }
 
-AString AString::fromS2(s2 value, int iBase)
+AString AString::fromS2(s2 value, int base)
 {
   char pcBuffer[34];
 
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _ltoa_s(value, pcBuffer, 34, iBase);
+  errno_t errornum = _ltoa_s(value, pcBuffer, 34, base);
   if (errornum)
     ATHROW_ERRNO(NULL, AException::APIFailure, errornum);
   return AString(pcBuffer);
 #else
-  return AString(ltoa(value, pcBuffer, iBase));
+  return AString(ltoa(value, pcBuffer, base));
 #endif
 }
 
-AString AString::fromU2(u2 value, int iBase)
+AString AString::fromU2(u2 value, int base)
 {
   char pcBuffer[34];
 
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _ultoa_s(value, pcBuffer, 34, iBase);
+  errno_t errornum = _ultoa_s(value, pcBuffer, 34, base);
   if (errornum)
     ATHROW_ERRNO(NULL, AException::APIFailure, errornum);
   return AString(pcBuffer);
 #else
-  return AString(ultoa(value, pcBuffer, iBase));
+  return AString(ultoa(value, pcBuffer, base));
 #endif
 }
 
-AString AString::fromS4(s4 value, int iBase)
+AString AString::fromS4(s4 value, int base)
 {
   char pcBuffer[34];
 
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _ltoa_s(value, pcBuffer, 34, iBase);
+  errno_t errornum = _ltoa_s(value, pcBuffer, 34, base);
   if (errornum)
     ATHROW_ERRNO(NULL, AException::APIFailure, errornum);
   return AString(pcBuffer);
 #else
-  return AString(ltoa(value, pcBuffer, iBase));
+  return AString(ltoa(value, pcBuffer, base));
 #endif
 }
 
-AString AString::fromU4(u4 value, int iBase)
+AString AString::fromU4(u4 value, int base)
 {
   char pcBuffer[34];
 
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _ultoa_s(value, pcBuffer, 34, iBase);
+  errno_t errornum = _ultoa_s(value, pcBuffer, 34, base);
   if (errornum)
     ATHROW_ERRNO(NULL, AException::APIFailure, errornum);
   return AString(pcBuffer);
 #else
-  return AString(ultoa(value, pcBuffer, iBase));
+  return AString(ultoa(value, pcBuffer, base));
 #endif
 }
 
-AString AString::fromS8(s8 value, int iBase)
+AString AString::fromS8(s8 value, int base)
 {
   char pcBuffer[65];
 
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _i64toa_s(value, pcBuffer, 65, iBase);
+  errno_t errornum = _i64toa_s(value, pcBuffer, 65, base);
   if (errornum)
     ATHROW_ERRNO(NULL, AException::APIFailure, errornum);
   return AString(pcBuffer);
 #else
-  return AString(_i64toa(value, pcBuffer, iBase));
+  return AString(_i64toa(value, pcBuffer, base));
 #endif;
 }
 
-AString AString::fromU8(u8 value, int iBase)
+AString AString::fromU8(u8 value, int base)
 {
   char pcBuffer[65];
 
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _ui64toa_s(value, pcBuffer, 65, iBase);
+  errno_t errornum = _ui64toa_s(value, pcBuffer, 65, base);
   if (errornum)
     ATHROW_ERRNO(NULL, AException::APIFailure, errornum);
   return AString(pcBuffer);
 #else
-  return AString(_ui64toa(value, pcBuffer, iBase));
+  return AString(_ui64toa(value, pcBuffer, base));
 #endif;
 }
 
@@ -344,12 +344,12 @@ AString AString::fromDouble(
   return n.toAString();
 }
 
-AString AString::fromSize_t(size_t value, int iBase)
+AString AString::fromSize_t(size_t value, int base)
 {
   switch(sizeof(value))
   {
-    case 8: return fromU8(value, iBase);
-    case 4: return fromU4((u4)value, iBase);
+    case 8: return fromU8(value, base);
+    case 4: return fromU4((u4)value, base);
     default: ATHROW(NULL, AException::ProgrammingError);
   }
 }
@@ -384,29 +384,29 @@ void AString::parseInt(int value)
 #endif
 }
 
-void AString::parseS4(s4 value, int iBase)
+void AString::parseS4(s4 value, int base)
 {
   char pcBuffer[34];
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _ltoa_s(value, pcBuffer, 34, iBase);
+  errno_t errornum = _ltoa_s(value, pcBuffer, 34, base);
   if (errornum)
     ATHROW_ERRNO(this, AException::APIFailure, errornum);
   _assign(pcBuffer, AConstant::npos);
 #else
-  _assign(ltoa(value, pcBuffer, iBase), AConstant::npos);
+  _assign(ltoa(value, pcBuffer, base), AConstant::npos);
 #endif
 }
 
-void AString::parseU4(u4 value, int iBase)
+void AString::parseU4(u4 value, int base)
 {
   char pcBuffer[34];
 #if (_MSC_VER >= 1400)
-  errno_t errornum = _ultoa_s(value, pcBuffer, iBase);
+  errno_t errornum = _ultoa_s(value, pcBuffer, base);
   if (errornum)
     ATHROW_ERRNO(this, AException::APIFailure, errornum);
   _assign(pcBuffer, AConstant::npos);
 #else
-  _assign(ultoa(value, pcBuffer, iBase), AConstant::npos);
+  _assign(ultoa(value, pcBuffer, base), AConstant::npos);
 #endif
 }
 
@@ -1618,36 +1618,36 @@ double AString::toDouble() const
   return (m_Length ? atof(mp_Buffer) : 0);
 }
 
-s4 AString::toS4(int iBase) const
+s4 AString::toS4(int base) const
 { 
   char* pcEnd = "\x0";
-  return (m_Length ? strtol(mp_Buffer, &pcEnd, iBase) : 0);
+  return (m_Length ? strtol(mp_Buffer, &pcEnd, base) : 0);
 }
 
-u4 AString::toU4(int iBase) const
+u4 AString::toU4(int base) const
 { 
   char* pcEnd = "\x0";
-  return (m_Length ? strtoul(mp_Buffer, &pcEnd, iBase) : 0);
+  return (m_Length ? strtoul(mp_Buffer, &pcEnd, base) : 0);
 }
 
-s8 AString::toS8(int iBase) const
+s8 AString::toS8(int base) const
 { 
   char* pcEnd = "\x0";
-  return (m_Length ? _strtoi64(mp_Buffer, &pcEnd, iBase) : 0);
+  return (m_Length ? _strtoi64(mp_Buffer, &pcEnd, base) : 0);
 }
 
-u8 AString::toU8(int iBase) const
+u8 AString::toU8(int base) const
 { 
   char* pcEnd = "\x0";
-  return (m_Length ? _strtoui64(mp_Buffer, &pcEnd, iBase) : 0);
+  return (m_Length ? _strtoui64(mp_Buffer, &pcEnd, base) : 0);
 }
 
-size_t AString::toSize_t(int iBase) const
+size_t AString::toSize_t(int base) const
 {
   switch(sizeof(size_t))
   {
-    case 8: return (size_t)toU8(iBase);
-    case 4: return (size_t)toU4(iBase);
+    case 8: return (size_t)toU8(base);
+    case 4: return (size_t)toU4(base);
     default: ATHROW(NULL, AException::ProgrammingError);
   }
 }

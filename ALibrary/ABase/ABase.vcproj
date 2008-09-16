@@ -1350,10 +1350,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\templateAObject.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\templateAutoPtr.hpp"
 				>
 			</File>

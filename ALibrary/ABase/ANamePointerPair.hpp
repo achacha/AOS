@@ -13,33 +13,66 @@ $Id$
 class ABASE_API ANamePointerPair : public ADebugDumpable
 {
 public:
-  //a_Creation of a simple name/value pair
-  ANamePointerPair(const AString& strName = AConstant::ASTRING_EMPTY, void *pValue = NULL);
-  ANamePointerPair(const ANamePointerPair& nvSource);
-  virtual ~ANamePointerPair() {}
+  /*!
+  ctor
 
-  //a_Access methods
-  const AString& getName()    const { return mstr__Name; }
-  void*          getPointer() const { return mp__Value; }
+  @param name of the pair
+  @param pValue pointer
+  */
+  ANamePointerPair(const AString& name, void *pValue = NULL);
   
-  //a_Comparisson methods
-  bool isName      (const AString& str) const;
-  bool isNameNoCase(const AString& str) const;
+  //! copy ctor
+  ANamePointerPair(const ANamePointerPair&);
+  
+  //! dtor
+  virtual ~ANamePointerPair();
 
-  //a_Methods of change
-  void setNamePointer(const AString& strName, void *pValue); //a_Assumes the pairs are valid
-  void setPointer(void *pValue);
+  /*!
+  Pair name
+  
+  @return constant refence to AString
+  */
+  const AString& getName() const;
+
+  /*!
+  Pair name
+  
+  @return refence to AString
+  */
+  AString& useName();
+
+  /*!
+  Get value
+  
+  @return pointer
+  */
+  void *getPointer() const;
+  
+  /*!
+  Set value
+  
+  @param p new pointer value
+  */
+  void setPointer(void *p);
 
   //a_Represent as a string of form 'name=0xaddress'
-  virtual void emit(AOutputBuffer&) const;
+  virtual void emit(AOutputBuffer& target) const;
 
-  //a_Validation
-  bool isValid() const { return (mstr__Name.getSize() > 0 ? true : false); }
+  /*!
+  Checks if valid
+  
+  @return true if name is not empty
+  */
+  bool isValid() const;
 
-  //a_Clear this object
+  //! Clear this object
   void clear();
   
-  //a_Comparisson
+  /*!
+  Comparisson
+
+  @return 0 if equal, <0 if less than, >0 if greater than
+  */
   int compare(const ANamePointerPair& nvSource) const;
 
   /*!
@@ -48,9 +81,9 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
-  //a_The NAME=VALUE data
-  AString mstr__Name;
-  void   *mp__Value;
+  // The NAME=VALUE data
+  AString m_name;
+  void   *mp_value;
 };
 
 #endif

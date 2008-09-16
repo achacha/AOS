@@ -28,16 +28,22 @@ public:
   
   /*!
   copy ctor
+
+  @param that other thread to copy and start immediately if the original thread was flagged to start
   */
-  AThread(const AThread&);
+  AThread(const AThread& that);
   
   /*!
   Associate thread and thread proc and optionally start on creation
-  if boolStart == true then thread will start upon creation
-  pThis is available via getThis()/setThis()  - doesn't have to be 'this' but makes it easier
-  pParameter is available via getParameter()/setParameter() - this is anything you want to pass to the thread process
   
   Reason for ABase * instead of void * is to allow the use of dynamic_cast<> to verify that you got what you expected
+
+  Thread proc signature:  u4 threadprocName(AThread& thisThread);
+
+  @param pThreadProc to associate with this thread
+  @param boolStart if true then thread will start upon creation
+  @param pThis is available via getThis()/setThis()  - doesn't have to be 'this' but makes it easier
+  @param pParameter is available via getParameter()/setParameter() - this is anything you want to pass to the thread process
   */
   AThread(ATHREAD_PROC *pThreadProc, bool boolStart = false, ABase *pThis = NULL, ABase *pParameter = NULL);
   
@@ -47,15 +53,18 @@ public:
   ~AThread();
 
   /*!
-  Setting the thread process
-  */
-  void setProc(ATHREAD_PROC *pThreadProc);
-  
-  /*!
   Contains pointer to 'this' if the threadproc is a static member of a class and instance is needed by the thread
   Can be anything, AThread does not use this data in any way and is only here for convenience to the thread process
+
+  @param pThis pointer to be available to the threadproc via thisThread.getThis() and is often died to the object that owns the thread
   */
   void setThis(ABase *pThis);
+  
+  /*!
+  Gets the user specified value, can be anything a long as threadproc knows what to do with it
+
+  @return ABase pointer that the user specified at creation or with setThis call
+  */
   ABase *getThis() const;
 
 
@@ -63,18 +72,38 @@ public:
   Passing data to the thread main after it starts
    use set before you start the thread to set the parameter
    use get from inside your function to retrieve the parameter
+  
+  @param pParam some arbitrary parameter to be available for threadproc (can be anything as long a threadproc knows what to do with it)
   */
   void setParameter(ABase *pParam);
+  
+  /*!
+  Gets a user specified parameter, can be anything a long as threadproc knows what to do with it
+
+  @return ABase pointer that the user specified at creation or with setParamater call
+  */
   ABase *getParameter() const;
 
   /*!
-  Access to thread ID (to differentiate between threads...)
+  Get the thread id
+
+  @return thread id (OS specific identifier)
   */
   u4 getId() const;
+  
+  /*!
+  Get thread handle available in Microsoft Windows
+
+  @return Microsoft Windows thread handle
+  */
+#ifdef __WINDOWS__
   HANDLE getHandle() const;
+#endif
 
   /*!
-  Thread start
+  Start the thread
+  
+  @throw AException if threadproc is not set or thread already running
   */
   void start();
   
@@ -84,42 +113,59 @@ public:
     The tread should be start with setRunning(true), then check isRun() (in some loop) and when it is false should exit and setRunning(false)
     Default will wait 6 * 250 = 1.5 seconds then return (or terminate if so specified)
 
-  @param sleep times to wait for the thread to exit
-  @param sleep time
-  @param terminate if did not stop in time (not recommended for well writtent threadprocs)
+  @param tries of to wait for the thread to exit
+  @param sleepTime between tries while waiting for thtead to exit
+  @param terminateIfNotStopped if true will call hard terminate if thread does not stop in time (not recommended for well writtent threadprocs)
   @return true if successfully stopped, false if thread is still running
   */
   bool stop(int tries = 6, u4 sleepTime = 250, bool terminateIfNotStopped = false);
 
   /*!
-  Waits until threadproc is done and returns
-  a.k.a.  pthread_join() on *nix
+  Waits until threadproc is done and returns a.k.a.  pthread_join() on *nix
   On windows it polls the process and sleeps inbetween polls for sleepTime milliseconds
+
+  @param sleepTime applicable to windows to sleep between polling if the thread is still alive
+  @return exit code when thread exits
+  @throw AException if OS error detected or thread not created
   */
   u4 waitForThreadToExit(u4 sleepTime = 50);
 
   /*!
   Each call to suspend increments the suspend_counter by 1, if suspend_counter > 0, thread is suspended
-  Each call to resume decrements the suspend_counter by 1, when suspend_counter == 0 thread resumes
-    setting boolForceResume to true will call resume until the suspend_counter == 0 and force a resume
-  Return value is the current suspend_counter count
-  Exception will be thrown if the thread object is invalid or operation failed (system call failed)
+
+  @return value of the current suspend_counter count
+  @throw AException if the thread object is invalid or operation failed (system call failed)
   */
   u4 suspend();
+  
+  /*!
+  Each call to resume decrements the suspend_counter by 1, when suspend_counter == 0 thread resumes
+    setting boolForceResume to true will call resume until the suspend_counter == 0 and force a resume
+
+  @return value of the current suspend_counter count
+  @throw AException if the thread object is invalid or operation failed (system call failed)
+  */
   u4 resume(bool boolForceResume = false);
 
   /*!
   Checks if the tread is running or exited
+
+  @return true if the operating system determines that the thread is active
   */
   bool isThreadActive();
 
   /*!
   True if a thread object was created (false here may be an issue with OS)
+  
+  @return true if thread has been created
   */
   bool isThreadCreated();
 
   /*!
   Get the return code for a thread that exited
+
+  @return exit code if a thread has already exited
+  @throw AException if thread is running or not started
   */
   u4 getExitCode();
 

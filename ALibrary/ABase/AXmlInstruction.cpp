@@ -30,6 +30,14 @@ AXmlInstruction::AXmlInstruction(AXmlInstruction::TYPE type, AXmlElement *pParen
   setType(type);
 }
 
+AXmlInstruction::AXmlInstruction()
+{
+}
+
+AXmlInstruction::~AXmlInstruction()
+{
+}
+
 AXmlInstruction::AXmlInstruction(const AString& name, AXmlElement *pParent /* = NULL */) :
   AXmlElement(pParent)
 {
@@ -222,4 +230,14 @@ bool AXmlInstruction::isData() const
 bool AXmlInstruction::isInstruction() const
 {
   return true;
+}
+
+AString& AXmlInstruction::useData()
+{ 
+  return m_Data;
+}
+
+AXmlElement* AXmlInstruction::clone() const
+{ 
+  return new AXmlInstruction(*this);
 }

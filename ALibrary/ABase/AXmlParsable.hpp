@@ -21,12 +21,15 @@ public:
 class ABASE_API AXmlParsable
 {
 public:
+  //! virtual dtor
   virtual ~AXmlParsable();
 
   /*!
   Ability to parse self from XML element
+
+  @param target to emit XML into
   */
-  virtual void fromXml(const AXmlElement&) = 0;
+  virtual void fromXml(const AXmlElement& target) = 0;
 };
 
 #endif //INCLUDED__AXmlParsable_HPP_

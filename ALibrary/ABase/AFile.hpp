@@ -105,7 +105,7 @@ public:
 
   /*!
   Line reads, appends result
-  Reads until CRLF or LF  (\r\n or \n) are encountered
+  Reads until CRLF or LF are encountered
 
   @return Number of bytes read and appends to the result
           If maxBytes specified will read <maxBytes, if EOL not found within maxBytes, return value is maxBytes and nothing appended

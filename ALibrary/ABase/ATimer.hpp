@@ -13,26 +13,68 @@ $Id$
 class ABASE_API ATimer : public ADebugDumpable, public AXmlEmittable
 {          
 public:
-  //a_If true, the timer will start upon creation
-  ATimer(bool boolStartNow = false);
+  /*!
+  Create new timer (by default not started)
+
+  @param startNow if true will start timer upon creation
+  */
+  ATimer(bool startNow = false);
+  
+  //! dtor
   ~ATimer();
 
   /*!
   AEmittable
-  AXmlEmittable
+  
+  @param target to append to
   */
   virtual void emit(AOutputBuffer& target) const;
+
+  /*!
+  AXmlEmittable
+
+  @param thisRoot XML element that represents this class to append to
+  @return thisRoot for convenience
+  */
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
-  //a_Timer control
-  void start();           //a_Resets(clears) the timer and starts it again
-  void stop();            //a_Stops timer
-  void clear();           //a_Clears timer, sets to unstarted state
-  bool isRunning() const; //a_true if timer is running
+  /*!
+  Resets(clears) the timer and starts it again
+  */
+  void start();
+  
+  /*!
+  Stops timer
+  */
+  void stop();
 
-  //a_Get difference in milliseconds
+  /*!
+  Clears timer and sets to unstarted state
+  */
+  void clear();
+
+  /*!
+  Checks timer running state
+
+  @return true if timer is running
+  */
+  bool isRunning() const;
+
+  /*!
+  Gets milliseconds between start time and either stop time or if still running current time
+  Will not stop timer if still runnning
+
+  @return interval in milliseconds
+  */
   double getInterval(bool boolStopTimer = false);
-  double getInterval() const;                       //a_Does not stop timer
+
+  /*!
+  Gets milliseconds between start time and either stop time or if still running current time
+  Will not stop timer if still runnning
+
+  @return interval in milliseconds
+  */
+  double getInterval() const;
 
   /*!
   ADebugDumpable

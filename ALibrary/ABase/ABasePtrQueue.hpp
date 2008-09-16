@@ -44,9 +44,9 @@ public:
   /*!
   Push object to back
 
-  @param ABase * to add to the queue, object is OWNED and DELETED by the queue
+  @param p ABase * to add to the queue, object is OWNED and DELETED by the queue
   */
-  void push(ABase *);
+  void push(ABase *p);
 
   /*!
   Checks if queue is empty
@@ -61,7 +61,9 @@ public:
   void clear(bool deleteContent = true);
 
   /*!
-  Get the cirrent size of the queue
+  Get the current size of the queue
+
+  @return size
   */
   size_t size() const;
 
@@ -71,34 +73,44 @@ public:
   @return NULL if unsynchronized
 
   Usage:
+    \code
     {
       ALock lock(queue.getSync());
       // do so operations
     }
+    \endcode
   */
   ASynchronization *useSync();
 
   /*!
   Access the head pointer
   Use sync to guarantee thread safety
+
+  @return head pointer
   */
   ABase *useHead();
 
   /*!
   Access the head pointer
   Use sync to guarantee thread safety
+
+  @return tail pointer
   */
   ABase *useTail();
 
   /*!
   Access the head pointer
   Use sync to guarantee thread safety
+
+  @return constant head pointer
   */
   const ABase *getHead() const;
 
   /*!
   Access the head pointer
   Use sync to guarantee thread safety
+  
+  @return constant tail pointer
   */
   const ABase *getTail() const;
 

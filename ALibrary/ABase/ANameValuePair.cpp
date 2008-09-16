@@ -37,7 +37,7 @@ void ANameValuePair::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-ANameValuePair::ANameValuePair(const AString& strName, const AString& strValue, NameValueType eType) :
+ANameValuePair::ANameValuePair(const AString& name, const AString& strValue, NameValueType eType) :
   m_name(128, 128),
   m_value(128, 128),
   m_separator("=",1),
@@ -45,12 +45,12 @@ ANameValuePair::ANameValuePair(const AString& strName, const AString& strValue, 
   m_valueWrap('\x0'),
   m_nvtype(ANameValuePair::CGI)
 {
-  AASSERT(this, !strName.isEmpty());
+  AASSERT(this, !name.isEmpty());
 
   if (ANameValuePair::CGI != eType)
     setType(eType);
 
-  m_name.assign(strName); 
+  m_name.assign(name); 
   m_value.assign(strValue);
 }
 
@@ -64,6 +64,10 @@ ANameValuePair::ANameValuePair(NameValueType eType) :
 {
   if (ANameValuePair::CGI != eType)
     setType(eType);
+}
+
+ANameValuePair::~ANameValuePair()
+{
 }
 
 void ANameValuePair::emit(AOutputBuffer& target) const
@@ -358,12 +362,12 @@ void ANameValuePair::setValueWrap(char valueWrap)
   m_valueWrap = valueWrap;
 }
 
-void ANameValuePair::setName(const AString& strName)
+void ANameValuePair::setName(const AString& name)
 {
-  if (strName.isEmpty())
+  if (name.isEmpty())
     ATHROW(this, AException::InvalidParameter);
 
-  m_name = strName;
+  m_name = name;
 	
 	switch (m_nvtype)
   {
@@ -377,12 +381,12 @@ void ANameValuePair::setName(const AString& strName)
   }
 }
 
-void ANameValuePair::setNameValue(const AString& strName, const AString& strValue)
+void ANameValuePair::setNameValue(const AString& name, const AString& strValue)
 {
-  if (strName.isEmpty())
+  if (name.isEmpty())
     ATHROW(this, AException::InvalidParameter);
 
-  m_name  = strName;
+  m_name  = name;
   m_value = strValue;
 
 	switch (m_nvtype)

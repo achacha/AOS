@@ -96,11 +96,6 @@ AThread::~AThread()
     ::CloseHandle(mh__Thread);
 }
 
-void AThread::setProc(ATHREAD_PROC *pThreadProc)
-{
-  mp__ThreadProc = pThreadProc;
-}
-
 void AThread::start()
 {
   if (!mp__ThreadProc)
@@ -302,10 +297,12 @@ u4 AThread::getId() const
   return mu4__ThreadId;
 }
 
+#ifdef __WINDOWS__
 HANDLE AThread::getHandle() const 
 { 
   return mh__Thread;
 }
+#endif
 
 void AThread::emit(AOutputBuffer& target) const
 {

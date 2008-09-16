@@ -34,12 +34,13 @@ AXmlElement& MyClass::emitXml(AXmlElement& thisRoot) const
 class ABASE_API AXmlEmittable
 {
 public:
+  //! virtual dtor
   virtual ~AXmlEmittable();
 
   /*!
   Ability to emit self as XML tree
 
-  @param target is the base element of the object and sub-elements are actual members of this object
+  @param thisRoot is the base element of the object and sub-elements are actual members of this object
   @return thisRoot is returned for convenience
   */
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const = 0;
