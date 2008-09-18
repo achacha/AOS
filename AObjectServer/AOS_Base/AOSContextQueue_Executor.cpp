@@ -17,12 +17,12 @@ const AString& AOSContextQueue_Executor::getClass() const
 
 void AOSContextQueue_Executor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  BASECLASS_AOSContextQueue_Executor::adminEmitXml(eBase, request);
+  AOSContextQueueThreadPool_RoundRobinSwarm::adminEmitXml(eBase, request);
 }
 
 void AOSContextQueue_Executor::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  BASECLASS_AOSContextQueue_Executor::adminProcessAction(eBase, request);
+  AOSContextQueueThreadPool_RoundRobinSwarm::adminProcessAction(eBase, request);
 }
 
 AOSContextQueue_Executor::AOSContextQueue_Executor(
@@ -30,7 +30,7 @@ AOSContextQueue_Executor::AOSContextQueue_Executor(
   size_t threadCount,               // = 12
   size_t queueCount                 // = 3
 ) :
-  BASECLASS_AOSContextQueue_Executor(services, threadCount, queueCount)
+  AOSContextQueueThreadPool_RoundRobinSwarm(services, threadCount, queueCount)
 {
   useThreadPool().setThis(this);
   adminRegisterObject(m_Services.useAdminRegistry());

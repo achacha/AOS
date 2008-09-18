@@ -10,7 +10,7 @@ $Id: AOSAdmin.hpp 218 2008-05-29 23:23:59Z achacha $
 #include "AOSAdminCommandContext.hpp"
 #include "AOSServices.hpp"
 
-class AOSAdminCommandInterface
+class AOSAdminCommandInterface : public ABase
 {
 public:
   /*!

@@ -13,9 +13,7 @@ $Id$
 
 class AOSContext;
 
-#define BASECLASS_AOSContextQueue_ErrorExecutor AOSContextQueueThreadPool_RoundRobinSwarm
-
-class AOS_BASE_API AOSContextQueue_ErrorExecutor : public BASECLASS_AOSContextQueue_ErrorExecutor
+class AOS_BASE_API AOSContextQueue_ErrorExecutor : public AOSContextQueueThreadPool_RoundRobinSwarm
 {
 public:
   /*!

@@ -15,7 +15,7 @@ $Id$
 
 class AOSContext;
 
-class AOS_BASE_API AOSSessionData : public ADebugDumpable, public AXmlEmittable, ASerializable
+class AOS_BASE_API AOSSessionData : public ADebugDumpable, public AXmlEmittable, public ASerializable
 {
 public:
   static const AString SESSIONID;       //a_Session ID stored in data with this key

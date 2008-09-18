@@ -11,7 +11,7 @@ $Id: AOSAdmin.hpp 218 2008-05-29 23:23:59Z achacha $
 #include "AHTTPResponseHeader.hpp"
 #include "AXmlDocument.hpp"
 
-class AOSAdminCommandContext
+class AOSAdminCommandContext : public ABase
 {
 public:
   //! root element name of the model

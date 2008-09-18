@@ -23,12 +23,12 @@ void AOSContextQueue_PreExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRe
     AString::fromInt(m_WaitForHttpDataTimeout)
   );
 
-  BASECLASS_AOSContextQueue_PreExecutor::adminEmitXml(eBase, request);
+  AOSContextQueueThreadPool_RoundRobinSwarm::adminEmitXml(eBase, request);
 }
 
 void AOSContextQueue_PreExecutor::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  BASECLASS_AOSContextQueue_PreExecutor::adminProcessAction(eBase, request);
+  AOSContextQueueThreadPool_RoundRobinSwarm::adminProcessAction(eBase, request);
 }
 
 AOSContextQueue_PreExecutor::AOSContextQueue_PreExecutor(
@@ -36,7 +36,7 @@ AOSContextQueue_PreExecutor::AOSContextQueue_PreExecutor(
   size_t threadCount,              // = 16
   size_t queueCount                // = 4
 ) :
-  BASECLASS_AOSContextQueue_PreExecutor(services, threadCount, queueCount)
+  AOSContextQueueThreadPool_RoundRobinSwarm(services, threadCount, queueCount)
 {
   useThreadPool().setThis(this);
 

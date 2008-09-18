@@ -7,9 +7,7 @@
 
 class AOSContext;
 
-#define BASECLASS_AOSContextQueue_Executor AOSContextQueueThreadPool_RoundRobinSwarm
-
-class AOS_BASE_API AOSContextQueue_Executor : public BASECLASS_AOSContextQueue_Executor
+class AOS_BASE_API AOSContextQueue_Executor : public AOSContextQueueThreadPool_RoundRobinSwarm
 {
 public:
   /*!

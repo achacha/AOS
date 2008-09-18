@@ -12,9 +12,7 @@ $Id$
 class AOSRequest;
 class AOSContext;
 
-#define BASECLASS_AOSContextQueue_PreExecutor AOSContextQueueThreadPool_RoundRobinSwarm
-
-class AOS_BASE_API AOSContextQueue_PreExecutor : public BASECLASS_AOSContextQueue_PreExecutor
+class AOS_BASE_API AOSContextQueue_PreExecutor : public AOSContextQueueThreadPool_RoundRobinSwarm
 {
 public:
   AOSContextQueue_PreExecutor(
