@@ -7,9 +7,10 @@ $Id$
 #define INCLUDED__AResultSet_HPP__
 
 #include "apiABase.hpp"
-#include "AObjectBase.hpp"
+#include "AXmlEmittable.hpp"
+#include "ADebugDumpable.hpp"
 
-class ABASE_API AResultSet : public AObjectBase
+class ABASE_API AResultSet : public AXmlEmittable, public ADebugDumpable
 {
 public:
   static const AString ROW;      //a_Name of 'row' for emits
@@ -62,11 +63,6 @@ public:
   virtual void emit(AOutputBuffer&) const;
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
   
-  /*!
-  Clone self
-  */
-  AObjectBase* clone() const { return new AResultSet(*this); }  //a_Clone self using copy ctor (this can just be copied as is)
-
   /*!
   ADebugDumpable
   */

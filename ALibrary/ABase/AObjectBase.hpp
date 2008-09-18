@@ -16,6 +16,9 @@ $Id$
 class AFile;
 
 /*!
+ Simple (optionally synchronized) object representation
+ Has object name and a collection of name/value AString attributes
+ 
  Public methods that must be implemented by every child class:
 
 public:
@@ -32,7 +35,8 @@ public:
 */
 class ABASE_API AObjectBase : 
   public ASynchronization, 
-  public AXmlEmittable
+  public AXmlEmittable,
+  public ADebugDumpable
 {
 public:
   /*!

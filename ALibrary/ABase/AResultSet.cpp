@@ -30,7 +30,6 @@ void AResultSet::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
-  AObjectBase::debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
@@ -92,7 +91,6 @@ AResultSet::AResultSet()
 }
 
 AResultSet::AResultSet(const AResultSet& that) :
-  AObjectBase(that),
   m_ResultSet(that.m_ResultSet)
 {
 
