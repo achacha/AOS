@@ -81,6 +81,17 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         }
 
         //
+        // Add REQUEST header and SESSION data if not in AJAX mode
+        //
+        if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
+        {
+          pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(AOSContext::S_REQUEST));
+
+          if (pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_USING_SESSION_DATA))
+            pContext->useSessionData().emitXml(pContext->useModel().overwriteElement(AOSContext::S_SESSION));
+        }
+
+        //
         // Process modules
         // Unless we are in redirect mode
         //
@@ -90,14 +101,16 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
           pContext->useEventVisitor().startEvent(ASW("Command not found, skipping module execution.",45), AEventVisitor::EL_ERROR);
 
         //
-        // Add REQUEST header and SESSION if not in AJAX mode
+        // Add SESSION data again in-case it was modified if not in AJAX mode
         //
         if (pContext->useContextFlags().isClear(AOSContext::CTXFLAG_IS_AJAX))
         {
-          pContext->useRequestHeader().emitXml(pContext->useModel().overwriteElement(AOSContext::S_REQUEST));
-          
           if (pContext->useContextFlags().isSet(AOSContext::CTXFLAG_IS_USING_SESSION_DATA))
-            pContext->useSessionData().emitXml(pContext->useModel().overwriteElement(AOSContext::S_SESSION));
+          {
+            AXmlElement& session = pContext->useModel().overwriteElement(AOSContext::S_SESSION);
+            session.clear();
+            pContext->useSessionData().emitXml(session);
+          }
         }
 
         //

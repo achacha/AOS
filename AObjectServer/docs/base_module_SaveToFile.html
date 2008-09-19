@@ -24,15 +24,31 @@ model-path = where to get the data to save
    context-object = given a path, look it up in the model and then use than name to lookup data in the context objects (used in saving multi-part data submitted via form or for non-ascii data)
    
 output-filename = name of the file to save realive to <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/
+  If no content was provided, then uploaded filename will be used.
+  @overwrite = if the file should be overwritten (default is false)
 </pre>
 <br />
 
 <h5 class="heading">EXAMPLES</h5>
 <pre class="code_xml">
+<div class="comment">Use uploaded filename and overwrite it in <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/</div>
 &lt;module&gt;
   &lt;model-path&gt;/root/something&lt;/model-path&gt;
-  &lt;output-filename&gt;path/somefile.txt&lt;/output-filename&gt;
+  &lt;output-filename overwrite='true'/&gt;
 &lt;/module&gt;
+
+<div class="comment">Use foo/bar.txt as filename and only create if does not exist in <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/foo/bar.txt</div>
+&lt;module&gt;
+  &lt;model-path&gt;/root/something&lt;/model-path&gt;
+  &lt;output-filename overwrite='false'&gt;foo/bar.txt&lt;output-filename&gt;
+&lt;/module&gt;
+
+<div class="comment">Use foo/ and filename provided by upload and overwrite it in <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/foo/somefilename.ext</div>
+&lt;module&gt;
+  &lt;model-path&gt;/root/something&lt;/model-path&gt;
+  &lt;output-filename overwrite='true'&gt;foo/&lt;output-filename&gt;
+&lt;/module&gt;
+
 </pre>
 <div class="comment">
 Contents of the element at /root/something/ saved to file called <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/path/somefile.txt
@@ -44,6 +60,7 @@ Contents of the element at /root/something/ saved to file called <span style="fo
   &lt;output-filename&gt;path/somefile.txt&lt;/output-filename&gt;
 &lt;/module&gt;
 </pre>
+
 <div class="comment">
 Contexts of the elements are used to lookup an object in ContextObjects then cast to AEmittable and output written to file called <span style="font-weight:bold" title="Location where the current AOS root directory is configured at startup">aos_root</span>/data/path/somefile.txt
 This is a way to get data parsed by multi-part-form, since the name of the

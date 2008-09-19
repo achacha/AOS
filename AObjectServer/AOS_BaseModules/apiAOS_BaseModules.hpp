@@ -12,6 +12,4 @@ $Id$
 #define AOS_BASEMODULES_API __declspec(dllimport)
 #endif
 
-#define AOS__USE_MSXML4__
-
 #endif //INCLUDED__AOS_BaseModules_HPP__

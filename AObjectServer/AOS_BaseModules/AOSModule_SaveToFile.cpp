@@ -61,10 +61,20 @@ AOSContext::ReturnCode AOSModule_SaveToFile::execute(AOSContext& context, const 
     else
       context.addError(getClass(), ARope("Context object named '")+variable+ASWNL("' not found or not AEmittable-type at path: ")+path);
 
-    //a_Set filename to the one from upload
-    filename.clear();
-    if (context.useModel().emitContentFromPath(path+".filename", filename))
-      f.useFilename().assign(filename);
+    //a_See if output-filename is overiding the uploaded filename
+    if (f.useFilename().isEmpty())
+    {
+      //a_Set filename to the one from upload if output-filename was empty
+      filename.clear();
+      if (context.useModel().emitContentFromPath(path+".filename", filename))
+        f.useFilename().assign(filename);
+      else
+      {
+        //a_This would only happen if the file is uploaded incorrectly and controller specifies a directory only
+        context.addError(getClass(), ASWNL("Must have filename provided by upload if the controller is only specifying a directory"));
+        return AOSContext::RETURN_ERROR;
+      }
+    }
   }
   else
   {

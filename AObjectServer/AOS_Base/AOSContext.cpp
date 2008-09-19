@@ -201,7 +201,7 @@ void AOSContext::reset(AFile_Socket *pFile)
   }
 }
 
-void AOSContext::finalize()
+void AOSContext::finalize(bool releaseMemory)
 {
   m_EventVisitor.startEvent(ASW("Finalizing the context",22), AEventVisitor::EL_EVENT);
 
@@ -231,15 +231,23 @@ void AOSContext::finalize()
   m_OutputXmlDocument.clear();
   m_ContextObjects.clear();
 
-  //a_Stop the event
-  m_EventVisitor.endEvent();
-  m_EventVisitor.useLifespanTimer().stop();
+  if (releaseMemory)
+  {
+    m_EventVisitor.clear();
+    m_RequestHeader.clear();
+    m_ResponseHeader.clear();
+  }
+  else
+  {
+    //a_Stop the event
+    m_EventVisitor.endEvent();
+    m_EventVisitor.useLifespanTimer().stop();
+  }
 }
 
 void AOSContext::clear()
 {
   reset(NULL);
-  m_EventVisitor.startEvent(ASW("Clearing context",16));
   m_EventVisitor.clear();
   m_ConnectionFlags.clear();
 }

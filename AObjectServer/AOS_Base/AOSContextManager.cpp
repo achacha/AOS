@@ -509,7 +509,10 @@ void AOSContextManager::_deleteContext(AOSContext **p)
   if (m_FreeStore.size() >= m_FreeStoreMaxSize)
     delete(*p);
   else
+  {
+    (*p)->finalize(true);
     m_FreeStore.push(*p);
+  }
 
   p = NULL;
 }

@@ -77,8 +77,12 @@ public:
   /*!
   Finalize context, used before entering history
   Stopping timers and closing/deleting connection file
+
+  If this is being called before caching in freestore for reuse, releaseMemory should be true to minimize carrying around stuff that is useless
+
+  @param releaseMemory if true will try to release any memory it may have allocated (event visitor entries, etc)
   */
-  void finalize();
+  void finalize(bool releaseMemory = false);
 
   /*!
   Clear out the context, delete the file

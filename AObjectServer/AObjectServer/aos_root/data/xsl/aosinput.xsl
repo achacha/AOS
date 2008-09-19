@@ -20,9 +20,11 @@
 	<table border="2">
 		<tbody>
 			<tr><th>Input Processor</th><td><xsl:value-of select="input"/></td></tr>
-				<xsl:for-each select="module">
-					<tr><th>Module</th><td><xsl:value-of select="."/></td></tr>
+			<tr><th>Module(s)</th><td>
+        <xsl:for-each select="module">
+					<xsl:value-of select="."/><br/>
 				</xsl:for-each>
+      </td></tr>
 			<tr><th>Output Generator</th><td><xsl:value-of select="output"/></td></tr>
 		</tbody>
 	</table>

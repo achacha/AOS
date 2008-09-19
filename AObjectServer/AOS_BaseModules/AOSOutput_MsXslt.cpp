@@ -5,7 +5,7 @@ $Id$
 */
 #include "pchAOS_BaseModules.hpp"
 
-#ifdef AOS__USE_MSXML6__
+#ifdef __WINDOWS__
 #include "AOSOutput_MsXslt.hpp"
 #include "ASystemException.hpp"
 #include "AFile_Physical.hpp"
@@ -293,4 +293,4 @@ void AOSOutput_MsXslt::_dumpToFile(ARope& rope)
   outfile.close();
 }
 
-#endif //AOS__USE_MSXML6__
+#endif // __WINDOWS__

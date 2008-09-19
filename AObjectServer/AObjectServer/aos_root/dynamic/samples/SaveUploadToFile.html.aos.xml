@@ -4,7 +4,7 @@
 
 	<module class="SaveToFile" if="/root/REQUEST/url/query-string/file1">
 		<model-path reference="context-object">/root/REQUEST/url/query-string/file1</model-path>
-		<output-filename overwrite='true'>tmp/upload.file</output-filename>
+		<output-filename overwrite='true'>tmp/</output-filename>
 	</module>
   <module class="LuaScript" if="/root/REQUEST/url/query-string/file1">
     <script><![CDATA[
