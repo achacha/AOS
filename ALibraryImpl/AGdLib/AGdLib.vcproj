@@ -130,7 +130,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="pchAGdLib.hpp"
 				GenerateXMLDocumentationFiles="true"
 				XMLDocumentationFileName="$(IntDir)\doc\"
