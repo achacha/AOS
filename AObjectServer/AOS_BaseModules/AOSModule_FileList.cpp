@@ -85,8 +85,11 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
 
     //a_Add offset and one up
     fileList.addElement(ASW("offset",6)).addData(offsetPath);
-    offsetPath.usePathNames().pop_back();
-    fileList.addElement(ASW("up",2)).addData(offsetPath);
+    if(offsetPath.usePathNames().size() > 0)
+    {
+      offsetPath.usePathNames().pop_back();
+      fileList.addElement(ASW("up",2)).addData(offsetPath);
+    }
   }
   else
   {
