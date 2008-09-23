@@ -280,6 +280,15 @@ void AFilename::emitPath(AOutputBuffer& target, AFilename::FTYPE ftype, bool noT
   //a_Add slash is not a relative path
   if (!m_RelativePath)
     target.append(sep);
+  else if (0 == m_PathNames.size())
+  {
+    //a_Special case, relative and no path, default to . or ./ (depends on noTailingSlash flag)
+    target.append(AConstant::ASTRING_PERIOD);
+    if (!noTrailingSlash)
+      target.append(sep);
+
+    return;
+  }
 
   //a_Path
   LIST_AString::const_iterator cit = m_PathNames.begin();
@@ -594,10 +603,7 @@ bool AFilename::compactPath()
   LIST_AString::iterator it = pathNames.begin();
   if (it != pathNames.end())
   {
-    //a_Copy first part as is
-    m_PathNames.push_back(*it);
-    ++it;
-
+    //a_Iterate and compact as needed
     while(it != pathNames.end())
     {
       if (it->equals(AConstant::ASTRING_PERIOD))
@@ -635,5 +641,8 @@ bool AFilename::compactPath()
     }
   }
 
-  return (!m_PathNames.front().startsWith(AConstant::ASTRING_DOUBLEPERIOD));
+  if (m_PathNames.size() > 0)
+    return (!m_PathNames.front().startsWith(AConstant::ASTRING_DOUBLEPERIOD));
+  else
+    return true;  // No path means its not relative
 }

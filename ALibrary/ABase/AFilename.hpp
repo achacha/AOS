@@ -67,15 +67,28 @@ public:
   inline AFilename::FTYPE getType() const;
 
   /*!
-  AEmittable, AXmlEmittable
+  AXmlEmittable
+
+  @param thisRoom to add xml elements to
+  @return thisRoot for convenience
   */
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
+
+  /*!
+  AEmittable
+  
+  @param target to append to
+  */
   virtual void emit(AOutputBuffer& target) const;
   
   /*!
   Special emit to allow forcing a certain type and if trailing slash to be omitted
+
+  @param target to append to
+  @param type to filter on
+  @param noTrailingSlash appended to directories without filename if true
   */
-  void emit(AOutputBuffer&, AFilename::FTYPE, bool noTrailingSlash = false) const;
+  void emit(AOutputBuffer& target, AFilename::FTYPE type, bool noTrailingSlash = false) const;
 
   /*!
   Emits for parts
