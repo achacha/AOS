@@ -5,8 +5,8 @@ THIS_PATH=os.path.dirname(sys.argv[0]);
 BASE_PATH = os.path.normpath(os.path.join(THIS_PATH,"..",".."));
 ALIBRARY_PATH=os.path.join(BASE_PATH,"ALibrary");
 ALIBRARY_PATH=os.path.join(BASE_PATH,"ALibrary");
-EXEC_RSYNC_BASE=os.path.join(BASE_PATH,"_devtools","bin","rsync.py")+" -tuC --exclude=CVS ";
-EXEC_RSYNC_BASE_WITH_DELETE=os.path.join(BASE_PATH,"_devtools","bin","rsync.py")+" -tuC --exclude=CVS --delete ";
+EXEC_RSYNC_BASE=os.path.join(BASE_PATH,"_devtools","bin","rsync.py")+" -tuC --exclude=.svn ";
+EXEC_RSYNC_BASE_WITH_DELETE=os.path.join(BASE_PATH,"_devtools","bin","rsync.py")+" -tuC --exclude=.svn --delete ";
 
 if (not os.path.exists(ALIBRARY_PATH)):
   print "Unable to find ALibrary at "+ALIBRARY_PATH;
