@@ -1,34 +1,35 @@
 Requirements
 ------------
 Python 2.4 or higher  ( http://www.python.org/ )
-Microsoft Development Environment 2003
-Microsoft XML 4.0 engine ( http://www.microsoft.com/downloads/details.aspx?familyid=3144b72b-b4f2-46da-b4b6- )
-	exact name: MSXML 4.0 Service Pack 2 (Microsoft XML Core Services)
-	download: msxml.msi
+Microsoft Development Environment 2005
+Microsoft XML 6.0 engine ( http://www.microsoft.com/downloads/details.aspx?FamilyID=993C0BCF-3BCF-4009-BE21-27E85E1857B1&displaylang=en )
+	exact name: Microsoft Core XML Services (MSMXL) 6.0   (If the link may goes dead)
 
 
 Preparing First Build
 ---------------------
-1. Unzip into your work directory (Assuming C:\aos\ for this case)
+1. Unzip into your work directory (Assuming C:\aos\ in the instructions below)
 2. Using 'Start | Run' and execute 'cmd' for the command prompt
-3. cd C:\aos\
-
-
-Publish content
----------------
-4. cd AObjectServer          - c:\aos\AObjectServer\
-5. make_aosconfig.py         - this script will publish the content to _debug\aosconfig and _release\aosconfig (more about this later)
 
 
 Building AObjectServer
 ----------------------
-6. With MSDEV open c:\aos\AObjectServer\AObjectServer.sln
-7. Right click on AObjectServer project and "Set As StartUp Project"
-8. Build | Build Solution
+1. With MSDEV open c:\aos\AObjectServer\AObjectServer.sln
+2. Right click on AObjectServer project and "Set As StartUp Project"
+3. Set the correct target "Win32" or "x64"
+3. Build | Build Solution
+
 
 Running AObjectServer
 ---------------------
-Adjust aosconfig/AObjectServer.ini as needed (default ports are 10080 (http), 10443 (https) and 12345 (admin))
+Adjust aos_root/config/AObjectServer.xml as needed (default ports are 80 (http), 443 (https) and 12345 (admin))
+
+The config is tuned for development:
+  Template caching is turned off by default.
+  Static content caching is turned off by default.
+  Output override is turned on (should be off when in production).
+  dumpContext is enabled (should be off when in production).
+  etc...
 
 
 Adding new module project (which can contain any number of modules)
@@ -60,12 +61,16 @@ to avoid name conflicts.  This setup allows you to develop many different module
 and add them to the main site as needed.
 
 This is the directory structure:
-/aosconfig
-  /aos_dynamic  - all dynamic commands definitions with extension .aos.xml
-	/aos_static   - all static content, if dynamic command does not exist, static will be checked next
-	/aos_data     - optional data directory, usable by modules if needed
+/aos_root
+  /dynamic  - all dynamic commands definitions with extension .aos.xml
+	/static   - all static content, if dynamic command does not exist, static will be checked next
+  /config   - XML configuration files loaded for each module
+	/data     - optional data directory, usable by modules if needed
+  /db       - DB creation scripts
+  /certs    - SSL certificates
+  /logs     - Log files
 
-aos_dynamic
+dynamic
 -----------
 We will assume 127.0.0.1 is your server (you can replace this if you have a DNS name, etc).
 
@@ -112,10 +117,10 @@ extern "C" AOS_EXAMPLE_API int aos_register(
   AOSInputExecutor& inputExecutor, 
   AOSModuleExecutor& moduleExecutor, 
   AOSOutputExecutor& outputExecutor, 
-  ALog& alog
+  AOSServices& services
 )
 {
-  alog.add(ASWNL("AOS_Example: aos_register"), ALog::INFO);
+  services.useLog().add(ASWNL("AOS_Example: aos_register"), ALog::INFO);
 
   //Register modules
   moduleExecutor.registerModule(new AOSModule_classified_input(alog));

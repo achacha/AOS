@@ -1,9 +1,14 @@
 #!/bin/python
 import os,sys;
  
+THIS_PATH=os.path.dirname(sys.argv[0]);
+BASE_PATH = os.path.normpath(os.path.join(THIS_PATH,".."));
+EXEC_RSYNC_BASE=os.path.join(BASE_PATH,"_devtools","bin","rsync.py")+" -rtuC --exclude=.svn --exclude=*.user ";
+EXEC_RSYNC_BASE_WITH_DELETE=os.path.join(BASE_PATH,"_devtools","bin","rsync.py")+" -rtuC --delete --exclude=.svn --exclude=*.user ";
+
 def makeSystemCall(param):
 	print param;
-	os.system(param);
+	os.system("cmd /C "+param);
 	 
 def makeSystemCall_mkdir(dirname):
 	if (not os.path.exists(dirname)):
@@ -31,58 +36,157 @@ def makeSystemCall_remove(filename):
 	print CMD;
 	os.system(CMD);
 
+def syncPath(source_path, target_path):
+  CMD = "";
+  if (clean == 1):
+    CMD = EXEC_RSYNC_BASE_WITH_DELETE + source_path + " " + target_path;
+  else:
+    CMD = EXEC_RSYNC_BASE + source_path + " " + target_path; 
+  if (verbose == 1):
+    print CMD;
+  os.system(CMD);
 
-######################################################################
+def showUsage():
+  print "Usage: "+sys.argv[0]+" [options]";
+  print " -win32             - Create Win32 distro"
+  print " -win64             - Create Win64 distro"
+  print " -p <target path>   - target path = where everything is copied to";
+  print " -v                 - verbose mode";
+  print " -clean             - clean first";
+  print " -help              - this help";
+
+def makeAOSConfig(TARGET_PATH):
+  CMD = "make_aosconfig.py -p "+TARGET_PATH;
+  if (verbose == 1):
+    CMD += " -v";
+  if (clean == 1):
+    CMD += " -clean";
+  if (do_win32 == 1):
+    CMD += " -win32";
+  if (do_win64 == 1):
+    CMD += " -win64";
+  makeSystemCall(CMD);
+
+def gatherDistribution(TARGET_PATH, base_path):
+  if (do_win32 == 1):
+    os.chdir(os.path.join(base_path, "_dist_windows", "x86"));
+    CMD = "gather_distribution_x86.py -p "+os.path.join(TARGET_PATH);
+    if (verbose == 1):
+      CMD += " -v";
+    if (clean == 1):
+      CMD += " -clean";
+    makeSystemCall(CMD);
+    os.chdir(os.path.join(base_path, "AObjectServer"));
+
+  if (do_win64 == 1):
+    os.chdir(os.path.join(base_path, "_dist_windows", "a64"));
+    CMD = "gather_distribution_64a.py -p "+os.path.join(TARGET_PATH);
+    if (verbose == 1):
+      CMD += " -v";
+    if (clean == 1):
+      CMD += " -clean";
+    makeSystemCall(CMD);
+    os.chdir(os.path.join(base_path, "AObjectServer"));
+  
+def gatherHeaders(TARGET_PATH, base_path):
+  os.chdir(os.path.join(base_path, "ALibrary"));
+  CMD = "gather_headers_only.py -p "+os.path.join(TARGET_PATH);
+  if (verbose == 1):
+    CMD += " -v";
+  if (clean == 1):
+    CMD += " -clean";
+  if (do_win32 == 1):
+    CMD += " -win32";
+  if (do_win64 == 1):
+    CMD += " -win64";
+  makeSystemCall(CMD);
+  os.chdir(os.path.join(base_path, "AObjectServer"));
+
+  ######################################################################
 ########################## MAIN ######################################
 ######################################################################
 
 TARGET_PATH = os.sep+"aos";
 
-if (len(sys.argv) > 1):
-	TARGET_PATH = sys.argv[1];
+verbose = 0;
+clean = 0;
+argc = 1;
+do_win32 = 0;
+do_win64 = 0;
+while (len(sys.argv) > argc):
+  if (sys.argv[argc] == "-clean"):
+    clean = 1;
+  elif (sys.argv[argc] == "-v"):
+    verbose = 1;
+  elif (sys.argv[argc] == "-win32"):
+    do_win32 = 1;
+  elif (sys.argv[argc] == "-win64"):
+    do_win64 = 1;
+  elif (sys.argv[argc] == "-p"):
+    TARGET_PATH = sys.argv[argc+1];
+    argc += 1;
+  elif (sys.argv[argc] == "-help"):
+    showUsage();
+    sys.exit(-1);
+  else:
+    print "Unknown parameter: "+sys.argv[argc];
+    showUsage();
+    sys.exit(-1);
+  
+  argc += 1;
 
-if (TARGET_PATH == "-help" or TARGET_PATH == "?"):
-	print "Usage: "+sys.argv[0]+" <target path>";
-	print " <target path> = where everything is copied to";
-	sys.exit(0);
+if (do_win32 == 0 and do_win64 == 0):
+  print "Please specify -win32 and/or -win64.";
+  showUsage();
+  sys.exit(-1);
 
 base_path = os.path.split(os.path.join(os.getcwd()))[0];
+makeSystemCall_mkdir(os.path.join(TARGET_PATH, "AObjectServer"));
+makeSystemCall_copy(os.path.join(base_path, "_devtools", "bin", "rsync.py"), os.path.join(TARGET_PATH, "AObjectServer"));
 
 # Gather ALibrary distribution
-os.chdir(os.path.join(base_path, "ALibrary"));
-makeSystemCall("gather_distribution.py "+TARGET_PATH);
-os.chdir(os.path.join(base_path, "AObjectServer"));
+gatherDistribution(TARGET_PATH, base_path);
+
+# Gather headers
+gatherHeaders(TARGET_PATH, base_path);
+
+# Make AOS configuration
+makeAOSConfig(TARGET_PATH);
 
 # AObjectServer and subprojects
 print "----------AObjectServer base--------";
-makeSystemCall_mkdir(os.path.join(TARGET_PATH, "AObjectServer"));
-makeSystemCall_copydir(os.path.join(base_path, "AObjectServer", "AObjectServer", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AObjectServer"));
-makeSystemCall_copy(os.path.join(base_path, "AObjectServer", "AObjectServer.sln"), os.path.join(TARGET_PATH, "AObjectServer"));
+syncPath(os.path.join(base_path, "AObjectServer", "AObjectServer", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AObjectServer"));
 makeSystemCall_copy(os.path.join(base_path, "AObjectServer", "GETTING_STARTED.txt"), TARGET_PATH);
 makeSystemCall_copy(os.path.join(base_path, "AObjectServer", "FAQ.html"), TARGET_PATH);
-
-print "----------AObjectServer--------";
-makeSystemCall_copydir(os.path.join(base_path, "AObjectServer", "AObjectServer", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AObjectServer"));
-
-print "----------AOS_Base--------";
-makeSystemCall_copydir(os.path.join(base_path, "AObjectServer", "AOS_Base", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AOS_Base"));
-
-print "----------AOS_BaseModules--------";
-makeSystemCall_copydir(os.path.join(base_path, "AObjectServer", "AOS_BaseModules", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AOS_BaseModules"));
-
-print "----------AOSWatchDog--------";
-makeSystemCall_copydir(os.path.join(base_path, "AObjectServer", "AOSWatchDog", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AOSWatchDog"));
-
-print "----------aosconfig--------";
-makeSystemCall_copydir_recursive(os.path.join(base_path, "AObjectServer", "aosconfig", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "aosconfig"));
+makeSystemCall_copy(os.path.join(base_path, "AObjectServer", "openssl.config"), os.path.join(TARGET_PATH, "AObjectServer"));
+makeSystemCall_copy(os.path.join(base_path, "AObjectServer", "AObjectServerWithoutALibrary.sln"), os.path.join(TARGET_PATH, "AObjectServer", "AObjectServer.sln"));
 
 print "----------Scripts--------";
-makeSystemCall_copy(os.path.join(base_path, "AObjectServer", "rsync.py"), os.path.join(TARGET_PATH, "AObjectServer"));
-makeSystemCall_copy(os.path.join(base_path, "AObjectServer", "make_aosconfig.py"), os.path.join(TARGET_PATH, "AObjectServer"));
+syncPath(os.path.join(base_path, "AObjectServer", "make_aosconfig*.py"), os.path.join(TARGET_PATH, "AObjectServer"));
+
+print "----------AObjectServer--------";
+syncPath(os.path.join(base_path, "AObjectServer", "AObjectServer", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AObjectServer"));
+
+print "----------AOS_Base--------";
+syncPath(os.path.join(base_path, "AObjectServer", "AOS_Base", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AOS_Base"));
+
+print "----------AOS_BaseModules--------";
+syncPath(os.path.join(base_path, "AObjectServer", "AOS_BaseModules", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AOS_BaseModules"));
+
+print "----------AOSWatchDog--------";
+syncPath(os.path.join(base_path, "AObjectServer", "AOSWatchDog", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "AOSWatchDog"));
+
+print "----------aosconfig--------";
+syncPath(os.path.join(base_path, "AObjectServer", "aos_root", "*.*"), os.path.join(TARGET_PATH, "AObjectServer", "aos_root"));
 
 # AOS_Modules
 print "----------AOS_Modules--------";
-makeSystemCall_copydir_recursive(os.path.join(base_path, "AOS_Modules", "*.*"), os.path.join(TARGET_PATH, "AOS_Modules"));
-
-# Cleanup and finalize
+syncPath(os.path.join(base_path, "AOS_Modules"), os.path.join(TARGET_PATH));
 makeSystemCall_remove(os.path.join(TARGET_PATH, "AOS_Modules", "AOS_Modules.*"));
+makeSystemCall_remove(os.path.join(TARGET_PATH, "AOS_Modules", "lint.cmd"));
+
+# Doxygen help
+print "---------docs----------------";
+syncPath(os.path.join(base_path, "AObjectServer", "docs", "*.*"), os.path.join(TARGET_PATH, "docs"));
+syncPath(os.path.join(base_path, "_doxygen", "AObjectServer", "html", "*.*"), os.path.join(TARGET_PATH, "docs", "AObjectServer_doxygen_html"));
+makeSystemCall_remove(os.path.join(TARGET_PATH, "docs", "docs.vcproj"));
