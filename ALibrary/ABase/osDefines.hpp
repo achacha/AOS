@@ -25,7 +25,7 @@ HAS_MUTABLE - OS/C has 'mutable' keyword
 HAS_BOOL - OS/C has 'bool' keyword (will use unsigned long otherwise with 1 and 0 for true and false)
 LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endian, etc (default big endian)
 **/
-#if defined(_WIN64)
+#if defined(_WIN64) || defined(WIN64)
   //Win64 environment
   #pragma message("ABase (64bit): Windows OS detected")
   #define __WINDOWS__
@@ -57,7 +57,7 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
 
   #define ABASE_OS_INFO "Microsoft Windows (64-bit) " ## __TIMESTAMP__ ## ")"
 
-#elif defined(_WIN32)
+#elif defined(_WIN32) || defined(WIN32)
   //Win32 environment
   #pragma message("ABase (32bit): Windows OS detected")
   #define __WINDOWS__
