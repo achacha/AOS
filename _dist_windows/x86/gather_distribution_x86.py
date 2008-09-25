@@ -50,14 +50,6 @@ def showUsage():
   print " -clean             - clean first";
   print " -help              - this help";
 
-def gatherHeaders():
-  CMD = os.path.join(ALIBRARY_PATH, "gather_headers_only.py")+" -p " + TARGET_PATH;
-  if (verbose == 1):
-    CMD += " -v";
-  if (clean == 1):
-    CMD += " -clean";
-  makeSystemCall(CMD);	
-
 ######################################################################
 ########################## MAIN ######################################
 ######################################################################
@@ -143,11 +135,6 @@ print "|---------EXTERNAL: ALibraryImpl/ADatabase_MySQL-----------|";
 syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ADatabase_MySQL", "lib", "release", "*.*"), target_bin_path_RELEASE);
 syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "ADatabase_MySQL", "lib", "debug", "*.*"), target_bin_path_DEBUG);
 
-# APythonEmbed
-print "|---------EXTERNAL: ALibraryImpl/APythonEmbed--------------|";
-syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "APythonEmbed", "lib", "release", "*.*"), target_bin_path_RELEASE);
-syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "APythonEmbed", "lib", "debug", "*.*"), target_bin_path_DEBUG);
-
 # AZlib
 print "|---------EXTERNAL: ALibraryImpl/AZlib---------------------|";
 syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AZlib", "lib", "release", "*.*"), target_bin_path_RELEASE);
@@ -163,8 +150,10 @@ print "|---------EXTERNAL: ALibraryImpl/AGdLib--------------------|";
 syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "release", "*.*"), target_bin_path_RELEASE);
 syncPath(os.path.join(BASE_PATH, "ALibraryImpl", "AGdLib", "lib", "debug", "*.*"), target_bin_path_DEBUG);
 
-# Gather headers
-gatherHeaders();
+#SQLite3 tools
+print "|---SQLite3 redistributable--------------------------------|";
+syncPath(os.path.join(BASE_PATH, "_devtools", "sqlite3", "sqlite3.exe"), target_bin_path_DEBUG);
+syncPath(os.path.join(BASE_PATH, "_devtools", "sqlite3", "sqlite3.exe"), target_bin_path_RELEASE);
 
 # Copy build results if creating external distribution
 if (os.path.join(target_bin_path_DEBUG, "foo") != os.path.join(DEBUG_INPUT_PATH, "foo")):
@@ -187,8 +176,6 @@ if (os.path.join(target_bin_path_DEBUG, "foo") != os.path.join(DEBUG_INPUT_PATH,
   syncPath(os.path.join(DEBUG_INPUT_PATH, "AGdLib.lib"), target_bin_path_DEBUG);
   syncPath(os.path.join(DEBUG_INPUT_PATH, "ALuaEmbed.dll"), target_bin_path_DEBUG);
   syncPath(os.path.join(DEBUG_INPUT_PATH, "ALuaEmbed.lib"), target_bin_path_DEBUG);
-  syncPath(os.path.join(DEBUG_INPUT_PATH, "APythonEmbed.dll"), target_bin_path_DEBUG);
-  syncPath(os.path.join(DEBUG_INPUT_PATH, "APythonEmbed.lib"), target_bin_path_DEBUG);
   syncPath(os.path.join(DEBUG_INPUT_PATH, "AXsl.lib"), target_bin_path_DEBUG);
   syncPath(os.path.join(DEBUG_INPUT_PATH, "AXsl.dll"), target_bin_path_DEBUG);
   syncPath(os.path.join(DEBUG_INPUT_PATH, "AZlib.dll"), target_bin_path_DEBUG);
@@ -213,15 +200,14 @@ if (os.path.join(target_bin_path_DEBUG, "foo") != os.path.join(DEBUG_INPUT_PATH,
   syncPath(os.path.join(RELEASE_INPUT_PATH, "AGdLib.lib"), target_bin_path_RELEASE);
   syncPath(os.path.join(RELEASE_INPUT_PATH, "ALuaEmbed.dll"), target_bin_path_RELEASE);
   syncPath(os.path.join(RELEASE_INPUT_PATH, "ALuaEmbed.lib"), target_bin_path_RELEASE);
-  syncPath(os.path.join(RELEASE_INPUT_PATH, "APythonEmbed.dll"), target_bin_path_RELEASE);
-  syncPath(os.path.join(RELEASE_INPUT_PATH, "APythonEmbed.lib"), target_bin_path_RELEASE);
   syncPath(os.path.join(RELEASE_INPUT_PATH, "AXsl.lib"), target_bin_path_RELEASE);
   syncPath(os.path.join(RELEASE_INPUT_PATH, "AXsl.dll"), target_bin_path_RELEASE);
   syncPath(os.path.join(RELEASE_INPUT_PATH, "AZlib.dll"), target_bin_path_RELEASE);
   syncPath(os.path.join(RELEASE_INPUT_PATH, "AZlib.lib"), target_bin_path_RELEASE);
   
   #VC redistributable
-  syncPath(os.path.join(THIS_PATH, "..", "vc2008_redist", "vcredist_x86_vc2008.exe"), TARGET_PATH);
+  print "|---Visual C++ redistributable-----------------------------|";
+  syncPath(os.path.join(THIS_PATH, "vc2008_redist", "vcredist_x86_vc2008.exe"), os.path.join(TARGET_PATH, "_dist_windows"));
 
 print "|-----------TOUCH MARKERS----------------------------------|";
 touch(os.path.join(target_bin_path_DEBUG, "___DEBUG_OUTPUT___"));
