@@ -181,12 +181,19 @@ syncPath(os.path.join(base_path, "AObjectServer", "aos_root", "*.*"), os.path.jo
 
 # AOS_Modules
 print "----------AOS_Modules--------";
-syncPath(os.path.join(base_path, "AOS_Modules"), os.path.join(TARGET_PATH));
+makeSystemCall_mkdir(os.path.join(base_path, "AOS_Modules"));
+syncPath(os.path.join(base_path, "AOS_Modules", "AOS_Classified"), os.path.join(TARGET_PATH, "AOS_Modules"));
+syncPath(os.path.join(base_path, "AOS_Modules", "AOS_DadaData"), os.path.join(TARGET_PATH, "AOS_Modules"));
+syncPath(os.path.join(base_path, "AOS_Modules", "AOS_Example"), os.path.join(TARGET_PATH, "AOS_Modules"));
+syncPath(os.path.join(base_path, "AOS_Modules", "AOS_Security"), os.path.join(TARGET_PATH, "AOS_Modules"));
+syncPath(os.path.join(base_path, "AOS_Modules", "AOS_Test"), os.path.join(TARGET_PATH, "AOS_Modules"));
+syncPath(os.path.join(base_path, "AOS_Modules", "AOS_User"), os.path.join(TARGET_PATH, "AOS_Modules"));
+syncPath(os.path.join(base_path, "AOS_Modules", "AOS_Wiki"), os.path.join(TARGET_PATH, "AOS_Modules"));
 makeSystemCall_remove(os.path.join(TARGET_PATH, "AOS_Modules", "AOS_Modules.*"));
 makeSystemCall_remove(os.path.join(TARGET_PATH, "AOS_Modules", "lint.cmd"));
 
 # Doxygen help
 print "---------docs----------------";
-syncPath(os.path.join(base_path, "AObjectServer", "docs", "*.*"), os.path.join(TARGET_PATH, "docs"));
-syncPath(os.path.join(base_path, "_doxygen", "AObjectServer", "html", "*.*"), os.path.join(TARGET_PATH, "docs", "AObjectServer_doxygen_html"));
+syncPath(os.path.join(base_path, "AObjectServer", "docs"), os.path.join(TARGET_PATH));
+syncPath(os.path.join(base_path, "_doxygen", "AObjectServer", "html"), os.path.join(TARGET_PATH, "docs", "AObjectServer_doxygen"));
 makeSystemCall_remove(os.path.join(TARGET_PATH, "docs", "docs.vcproj"));

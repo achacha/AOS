@@ -124,7 +124,7 @@ FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 SOURCE_BROWSER         = YES
 INLINE_SOURCES         = YES
-STRIP_CODE_COMMENTS    = YES
+STRIP_CODE_COMMENTS    = NO
 REFERENCED_BY_RELATION = YES
 REFERENCES_RELATION    = YES
 REFERENCES_LINK_SOURCE = YES
@@ -151,7 +151,7 @@ GENERATE_DOCSET        = NO
 DOCSET_FEEDNAME        = "Doxygen generated docs"
 DOCSET_BUNDLE_ID       = org.doxygen.Project
 HTML_DYNAMIC_SECTIONS  = YES
-CHM_FILE               = AObjectServer.chm
+CHM_FILE               = ..\AObjectServer.chm
 HHC_LOCATION           = "C:\Program Files (x86)\HTML Help Workshop\hhc.exe"
 GENERATE_CHI           = NO
 CHM_INDEX_ENCODING     = 

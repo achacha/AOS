@@ -1,10 +1,7 @@
 Fix : in URL request to be treated as drive specification
-Database connection timeout should re-build connection in pool
 Add more memory footprint to debugDump of objects that grow with time
 Add LUA script ability to generate data: urls from files inline (AOS specific to data/static directory)
-Possibly remove the CODE block in templates
 AOS directory chain loaded into AOSCommand
 AOS directory post-controller modules
 Session manager session cleaner
-SQL table create for MySQL (user, classified, session)
 Move aos_root up one level to peer _debug and _release (adjust lookup)

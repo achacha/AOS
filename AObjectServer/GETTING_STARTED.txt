@@ -6,10 +6,12 @@ Microsoft XML 6.0 engine ( http://www.microsoft.com/downloads/details.aspx?Famil
 	exact name: Microsoft Core XML Services (MSMXL) 6.0   (If the link may goes dead)
 
 
+  
 Preparing First Build
 ---------------------
 1. Unzip into your work directory (Assuming C:\aos\ in the instructions below)
 2. Using 'Start | Run' and execute 'cmd' for the command prompt
+
 
 
 Building AObjectServer
@@ -18,6 +20,7 @@ Building AObjectServer
 2. Right click on AObjectServer project and "Set As StartUp Project"
 3. Set the correct target "Win32" or "x64"
 3. Build | Build Solution
+
 
 
 Running AObjectServer
@@ -31,6 +34,7 @@ The config is tuned for development:
   dumpContext is enabled (should be off when in production).
   etc...
 
+  
 
 Adding new module project (which can contain any number of modules)
 -------------------------
@@ -44,10 +48,12 @@ Adding new module project (which can contain any number of modules)
 	  you can use this blank module as a template for new modules
 
 
+
 Adding your new project to the workspace
 ----------------------------------------
 1. Right click on solution and select Add | Existing Project...
 2. Select your vcproj file
+
 
 
 Creating new content
