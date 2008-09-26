@@ -94,27 +94,27 @@ const AString& ATextOdometer::setRandomInitial()
 
 const ATextOdometer& ATextOdometer::operator ++(void)
 { 
-  __inc();
+  _inc();
   return *this;
 }
 
 const ATextOdometer& ATextOdometer::operator --(void)
 {
-  __dec();
+  _dec();
   return *this;
 }
 
 const ATextOdometer ATextOdometer::operator ++(int)
 {
   ATextOdometer cRet(*this);
-  __inc();
+  _inc();
   return cRet;
 }
 
 const ATextOdometer ATextOdometer::operator --(int)
 {
   ATextOdometer cRet(*this);
-  __dec();
+  _dec();
   return cRet;
 }
 
@@ -144,7 +144,7 @@ void ATextOdometer::emit(AOutputBuffer& target) const
   target.append(mstr_Odometer);
 }
 
-void ATextOdometer::__inc()
+void ATextOdometer::_inc()
 {
   size_t s = 0;
   size_t pos = mstr_Odometer.getSize();
@@ -165,7 +165,7 @@ void ATextOdometer::__inc()
   }
 }
 
-void ATextOdometer::__dec()
+void ATextOdometer::_dec()
 {
   size_t s = 0;
   size_t pos = mstr_Odometer.getSize();

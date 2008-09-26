@@ -128,7 +128,7 @@ public:
 
 private:
   // Checks if whitespace
-  inline bool __isWhiteSpace(char cX);
+  inline bool _isWhiteSpace(char cX);
 
   // Parsing methods
   void _parseHtmlValue(const AString &strInput, size_t& pos, AString &strReturn);

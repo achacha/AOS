@@ -134,7 +134,7 @@ size_t ARope::_append(const char *pSource, size_t bytesLeft)
   while (bytesLeft > 0)
   {
     if (!m_LastBlockFree)
-      __newBlock();  
+      _newBlock();  
     
     AASSERT(this, mp_LastBlock);
     if (bytesLeft > m_LastBlockFree)
@@ -157,7 +157,7 @@ size_t ARope::_append(const char *pSource, size_t bytesLeft)
   return bytesLeft;
 }
 
-void ARope::__newBlock()
+void ARope::_newBlock()
 {
   AASSERT(this, m_LastBlockFree == 0);
   AASSERT(this, getSize() < DEBUG_MAXSIZE_ARope);  //a_Debug only limit
@@ -197,7 +197,7 @@ size_t ARope::read(AFile& file, size_t length /* = AConstant::npos */)
 
   //a_Make sure we have something to read into
   if (!m_LastBlockFree)
-    __newBlock();  
+    _newBlock();  
 
   AASSERT(this, mp_LastBlock);
 
@@ -224,7 +224,7 @@ size_t ARope::read(AFile& file, size_t length /* = AConstant::npos */)
     totalBytesRead += bytesRead;
 
     if (!m_LastBlockFree)
-      __newBlock();  
+      _newBlock();  
   }
 
   return totalBytesRead;

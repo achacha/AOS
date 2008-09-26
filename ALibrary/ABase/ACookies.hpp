@@ -141,7 +141,7 @@ private:
   CONTAINER m_Cookies;
 
   //a_Object maintenance
-  void __copy(const ACookies &cookiesSource);
+  void _copy(const ACookies &cookiesSource);
   
   //a_Cookie access
   ACookie *__findCookie(const AString& name) const;

@@ -69,7 +69,7 @@ void ASocketException::getDescription(AOutputBuffer& target) const throw()
       target.append("Unable to connect."); break;
 
     case SocketError:
-      __getLastWSASocketError(target); break;
+      _getLastWSASocketError(target); break;
     
     default:
       AException::getDescription(target); break;
@@ -77,7 +77,7 @@ void ASocketException::getDescription(AOutputBuffer& target) const throw()
 }
 
 #ifdef __WINDOWS__
-void ASocketException::__getLastWSASocketError(AOutputBuffer& target) const throw()
+void ASocketException::_getLastWSASocketError(AOutputBuffer& target) const throw()
 {
   u4 error_number;
   if (m_iLastSocketError > 0)
@@ -198,7 +198,7 @@ void ASocketException::__getLastWSASocketError(AOutputBuffer& target) const thro
   }
 }
 #else
-void ASocketException::__getLastWSASocketError(AOutputBuffer& target) const throw()
+void ASocketException::_getLastWSASocketError(AOutputBuffer& target) const throw()
 {
   u4 error_number;
   if (m_iLastSocketError > 0)

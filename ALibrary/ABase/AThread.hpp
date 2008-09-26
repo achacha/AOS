@@ -259,13 +259,13 @@ protected:
   /*
   Main thread function
   */
-  ATHREAD_PROC *mp__ThreadProc;
+  ATHREAD_PROC *mp_ThreadProc;
 
   /*
   Parameter that will be stored in this object for the user
   */
-  ABase *mpv__This;
-  ABase *mpv__Parameter;
+  ABase *mpv_This;
+  ABase *mpv_Parameter;
 
   /*
   Flags that threads will use for querying
@@ -277,8 +277,8 @@ protected:
   Thread ID (non zero indicates a created/running thread)
   Thread HANDLE non NULL for valid thread
   */
-  u4     mu4__ThreadId;
-  HANDLE mh__Thread;
+  u4     mu4_ThreadId;
+  HANDLE mh_Thread;
 
   /*
   User controlled variables
@@ -291,7 +291,7 @@ protected:
   /*
   Wrapper thread main
   */
-  static u4 __stdcall __ThreadProc(void *pThis);
+  static u4 __stdcall _ThreadProc(void *pThis);
 };
 
 #endif

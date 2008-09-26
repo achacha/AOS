@@ -60,7 +60,7 @@ bool AFragmentCounter::next()
 		}
 	}
 
-	__set();
+	_set();
 	return true;
 }
 
@@ -78,10 +78,10 @@ void AFragmentCounter::reset()
 	u1 odosize = (digits > m_Digits ? digits : m_Digits);
 	m_strOdometer.setSize(odosize);
 
-	__set();
+	_set();
 }
 
-void AFragmentCounter::__set()
+void AFragmentCounter::_set()
 {
 	u1 digits = (u1)(log10((float)m_Value) + 1);
 	u1 odosize = (digits > m_Digits ? digits : m_Digits);

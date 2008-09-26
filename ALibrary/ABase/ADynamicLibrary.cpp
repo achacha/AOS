@@ -43,10 +43,10 @@ ADynamicLibrary::~ADynamicLibrary()
 
 bool ADynamicLibrary::load(const AString& strLibraryName)
 {
-  return (__load(strLibraryName) == NULL ? false : true);
+  return (_load(strLibraryName) == NULL ? false : true);
 }
 
-void *ADynamicLibrary::__load(const AString& strLibraryName)
+void *ADynamicLibrary::_load(const AString& strLibraryName)
 {
   MAP_Libraries::iterator it = m_Libraries.find(strLibraryName);
   if (it != m_Libraries.end())
@@ -83,7 +83,7 @@ void *ADynamicLibrary::getEntryPoint(const AString& strLibraryName, const AStrin
   HMODULE hmodule = 0;
   if (it == m_Libraries.end())
   {
-    void *pLibrary = __load(strLibraryName);
+    void *pLibrary = _load(strLibraryName);
     if (!pLibrary)
     {
       ATHROW_EX(this, AException::InvalidParameter, AString("Library not loaded: ") + strLibraryName);

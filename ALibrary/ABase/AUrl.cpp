@@ -11,9 +11,9 @@ $Id$
 #include "AException.hpp"
 #include "AXmlElement.hpp"
 
-const AString AUrl::sstr__PathSeparator("/");
-const AString AUrl::sstr__PathSelf("/./");
-const AString AUrl::sstr__PathParent("/../");
+const AString AUrl::sstr_pathSeparator("/");
+const AString AUrl::sstr_pathSelf("/./");
+const AString AUrl::sstr_pathParent("/../");
 
 void AUrl::debugDump(std::ostream& os, int indent) const
 {
@@ -183,7 +183,7 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
         //a_Contract the redirections like ".." by removing preceding directory
         //a_Find all the "." directories and remove them
         size_t iPos, iCutPos;
-        while ((iPos = m_strPath.find(sstr__PathSelf)) != AConstant::npos)
+        while ((iPos = m_strPath.find(sstr_pathSelf)) != AConstant::npos)
         {
           //a_Remove the "."
           if (m_strPath.getSize() > (iPos + 2))
@@ -199,7 +199,7 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
             m_strPath.assign(str);
           }
         }
-        while ((iPos = m_strPath.find(sstr__PathParent)) != AConstant::npos)
+        while ((iPos = m_strPath.find(sstr_pathParent)) != AConstant::npos)
         {
           //a_Degenerate case of /../ being the first part of the path in root
           if (iPos == 0x0)
@@ -357,7 +357,7 @@ void AUrl::parse(const AString &strInput)
     //a_Found parameters, parse them
     AString str;
     strInput.peek(str, pos);
-    __parseQueryString(str);
+    _parseQueryString(str);
 
     strInput.peek(strURL, 0, pos);
   }
@@ -390,7 +390,7 @@ void AUrl::parse(const AString &strInput)
   if (m_strProtocol.equals("data:",5))
   {
     //a_data: protocol
-    __parseDataProtocol(strInput, pos);
+    _parseDataProtocol(strInput, pos);
   }
   else
   {
@@ -495,13 +495,13 @@ void AUrl::parse(const AString &strInput)
       return;
 
     //a_All we can have now is just the path info
-    __parsePath(strURL);
+    _parsePath(strURL);
   }
 
   return;
 }
 
-void AUrl::__parseDataProtocol(const AString &strInput, size_t pos)
+void AUrl::_parseDataProtocol(const AString &strInput, size_t pos)
 {
   //a_Format should be <media type>;{name0=value0;name1=value1}{;base64,}<data>
   AString str;
@@ -541,7 +541,7 @@ void AUrl::__parseDataProtocol(const AString &strInput, size_t pos)
   ATextConverter::decodeBase64(strInput, pos, m_strFilename);
 }
 
-void AUrl::__parsePath(const AString &strPath)
+void AUrl::_parsePath(const AString &strPath)
 {
   //a_Separate the path from filename
   m_strPath.clear();
@@ -583,7 +583,7 @@ void AUrl::__parsePath(const AString &strPath)
   }
 }
 
-void AUrl::__parseQueryString(const AString &strParams)
+void AUrl::_parseQueryString(const AString &strParams)
 {
   m_QueryString.parse(strParams);
 
@@ -678,7 +678,7 @@ void AUrl::emit(AOutputBuffer& target) const
   if (m_strProtocol.equals("data:",5))
   {
     //a_data: protocol emit
-    __emitDataProtocol(target);
+    _emitDataProtocol(target);
   }
   else
   {
@@ -728,7 +728,7 @@ void AUrl::emit(AOutputBuffer& result, bool boolFull, bool boolHidePassword /* =
     result.append(getPathFileAndQueryString());
 }
 
-void AUrl::__emitDataProtocol(AOutputBuffer& result) const
+void AUrl::_emitDataProtocol(AOutputBuffer& result) const
 {
   AASSERT(this, m_strProtocol.equals("data:",5));
   result.append("data:",5);
@@ -890,7 +890,7 @@ void AUrl::setFilenameNoExt(const AString &strName)
 
 void AUrl::setPathAndFilename(const AString &strPath)
 {
-  __parsePath(strPath);
+  _parsePath(strPath);
 }
 
 const AString& AUrl::getProtocol() const

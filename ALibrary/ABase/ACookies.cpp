@@ -30,12 +30,12 @@ ACookies::ACookies(const AString &strLine)
 
 ACookies::ACookies(const ACookies &cookiesSource)
 {
-  __copy(cookiesSource);
+  _copy(cookiesSource);
 }
 
 ACookies &ACookies::operator =(const ACookies& cookiesSource)
 {
-  __copy(cookiesSource);
+  _copy(cookiesSource);
 
   return *this;
 }
@@ -49,7 +49,7 @@ ACookies::~ACookies()
   catch (...) {}
 }
 
-void ACookies::__copy(const ACookies &cookiesSource)
+void ACookies::_copy(const ACookies &cookiesSource)
 {
   clear();
 

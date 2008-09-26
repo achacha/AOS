@@ -105,7 +105,7 @@ private:
 
   size_t m_BlockSize;                        //a_Size of blocks to use
 
-  void __newBlock();                         //a_Gets a new block either from storage or allocation
+  void _newBlock();                         //a_Gets a new block either from storage or allocation
 };
 
 #endif //INCLUDED__ARope_HPP__

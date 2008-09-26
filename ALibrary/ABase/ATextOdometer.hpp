@@ -115,8 +115,8 @@ private:
   /**
    * Modifiers
   **/
-  void __inc();
-  void __dec();
+  void _inc();
+  void _dec();
 };
 
 #endif //INCLUDED__ATextOdometer_HPP__

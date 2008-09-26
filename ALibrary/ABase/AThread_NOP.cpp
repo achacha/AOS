@@ -37,29 +37,29 @@ AThread_NOP::~AThread_NOP()
 void AThread_NOP::start()
 {
   //a_Already started or exited and restart is needed
-  if (mh__Thread)
+  if (mh_Thread)
   {
     //a_Thread is already running
     if (isThreadActive())
       ATHROW(this, AException::ProgrammingError);
     else
     {
-      mh__Thread = NULL;
+      mh_Thread = NULL;
     }
   }
 
   mbool_Run = true;       //a_thread should run
   mbool_Running = false;  //a_threadproc will set to true when it starts and false when stops (one would hope)
   
-  AASSERT(this, mp__ThreadProc);
-  AASSERT(this, ADebugDumpable::isPointerValid(mp__ThreadProc));
-  mh__Thread = (HANDLE)0x1;
+  AASSERT(this, mp_ThreadProc);
+  AASSERT(this, ADebugDumpable::isPointerValid(mp_ThreadProc));
+  mh_Thread = (HANDLE)0x1;
   
   //a_Execute callback
-  m_Ret = mp__ThreadProc(*this);
+  m_Ret = mp_ThreadProc(*this);
   
-  mh__Thread    = NULL;
-  mu4__ThreadId = 0x0;
+  mh_Thread    = NULL;
+  mu4_ThreadId = 0x0;
 }
 
 void AThread_NOP::terminate(u4)
@@ -67,14 +67,14 @@ void AThread_NOP::terminate(u4)
   //a_Doesn't really do anything, just resets the object
   mbool_Run = false;
   mbool_Running = false;
-  mh__Thread    = NULL;
-  mu4__ThreadId = 0x0;
+  mh_Thread    = NULL;
+  mu4_ThreadId = 0x0;
 }
 
 bool AThread_NOP::isThreadActive()
 {
   //a_If no thread object, then it is not active
-  if (!mh__Thread)
+  if (!mh_Thread)
     return false;
   else
     return true;

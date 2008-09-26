@@ -33,7 +33,7 @@ private:
 	u4      m_StopValue;
 	s1      m_Step;
 
-	void __set();
+	void _set();
 };
 
 #endif //INCLUDED__AFragmentCounter_HPP__

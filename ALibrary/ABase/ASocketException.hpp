@@ -62,7 +62,7 @@ public:
   virtual void getDescription(AOutputBuffer& target) const throw();
 
 private:
-  void __getLastWSASocketError(AOutputBuffer&) const throw();
+  void _getLastWSASocketError(AOutputBuffer&) const throw();
   int m_iLastSocketError;
 };
 

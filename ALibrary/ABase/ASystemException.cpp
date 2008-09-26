@@ -44,9 +44,9 @@ void ASystemException::getDescription(AOutputBuffer& target) const throw()
   {
     case SystemError:
       if (m_lastOSError > 0)
-        __getLastOSError(target, m_lastOSError);
+        _getLastOSError(target, m_lastOSError);
       else
-        __getLastOSError(target, ::GetLastError());
+        _getLastOSError(target, ::GetLastError());
     break;
 
     default:
@@ -60,7 +60,7 @@ void ASystemException::setLastOSError(u4 lastOSError)
 }
 
 #ifdef __WINDOWS__
-void ASystemException::__getLastOSError(AOutputBuffer& target, u4 lastOSError) const throw()
+void ASystemException::_getLastOSError(AOutputBuffer& target, u4 lastOSError) const throw()
 {
   LPVOID lpMsgBuf;
   FormatMessage( 
@@ -78,7 +78,7 @@ void ASystemException::__getLastOSError(AOutputBuffer& target, u4 lastOSError) c
   LocalFree(lpMsgBuf);
 }
 #else
-void ASystemException::__getLastOSError(AOutputBuffer& target, u4 lastOSError) const throw()
+void ASystemException::_getLastOSError(AOutputBuffer& target, u4 lastOSError) const throw()
 {
   target.append(ASW("errno=",6));
   target.append(AString::fromLong(errno));

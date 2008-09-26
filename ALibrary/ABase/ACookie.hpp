@@ -247,7 +247,7 @@ public:
 
 private:
   //a_Internal methods
-  void __copy(const ACookie &cookieSource);
+  void _copy(const ACookie &cookieSource);
   
   //a_COOKIE specific
   AString  m_strName;

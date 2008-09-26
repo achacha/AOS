@@ -52,11 +52,11 @@ public:
   };
 
   //! Path separator
-  static const AString sstr__PathSeparator;      //!< "/"
+  static const AString sstr_pathSeparator;      //!< "/"
   //! Path to self separator
-  static const AString sstr__PathSelf;           //!< "/./"
+  static const AString sstr_pathSelf;           //!< "/./"
   //! Path to parent separator
-  static const AString sstr__PathParent;         //!< "/../"
+  static const AString sstr_pathParent;         //!< "/../"
   
 public:
   //! ctor
@@ -561,14 +561,14 @@ protected:
 
 private:    
   // Parse data protocol
-  void __parseDataProtocol(const AString &strInput, size_t pos);
+  void _parseDataProtocol(const AString &strInput, size_t pos);
 
   // Parsing parameters
-  void __parseQueryString(const AString &strQueryString);
-  void __parsePath(const AString &strPath);
+  void _parseQueryString(const AString &strQueryString);
+  void _parsePath(const AString &strPath);
 
   // data: protocol emit
-  void __emitDataProtocol(AOutputBuffer& result) const;
+  void _emitDataProtocol(AOutputBuffer& result) const;
 
   // Last parsing error
   AString m_strError;

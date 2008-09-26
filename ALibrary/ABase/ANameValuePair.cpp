@@ -734,7 +734,7 @@ void ANameValuePair::_parseHtmlValue(const AString &strInput, size_t& pos, AStri
     cX = strInput[pos++];
 
     if (
-         (__isWhiteSpace(cX)) &&
+         (_isWhiteSpace(cX)) &&
          (cInsideQuotes == ' ')
        )
       break;     //a_We are done, next item to follow
@@ -973,7 +973,7 @@ void ANameValuePair::setWhiteSpace(const AString &str)
   m_whitespace = str;
 }
 
-bool ANameValuePair::__isWhiteSpace(char cX)
+bool ANameValuePair::_isWhiteSpace(char cX)
 { 
   return ((m_whitespace.find(cX) == AConstant::npos) ? false : true);
 }

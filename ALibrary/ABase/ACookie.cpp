@@ -69,14 +69,14 @@ void ACookie::setNameValue(const AString &name, const AString &value)
 
 ACookie::ACookie(const ACookie& cookieSource)
 {
-  __copy(cookieSource);
+  _copy(cookieSource);
 }
 
 ACookie::~ACookie()
 {
 }
 
-void ACookie::__copy(const ACookie &cookieSource)
+void ACookie::_copy(const ACookie &cookieSource)
 {
   m_strName           = cookieSource.m_strName;   
   m_strValue          = cookieSource.m_strValue;  
@@ -114,7 +114,7 @@ void ACookie::clear()
 //a_Assignment operator (overlay implied)
 ACookie &ACookie::operator =(const ACookie & cookieSource)
 {
-  __copy(cookieSource);
+  _copy(cookieSource);
 
   return *this;
 }

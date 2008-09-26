@@ -42,7 +42,7 @@ private :
   MAP_Libraries m_Libraries;
 
   //a_Internal load method, returns pointer to a library handle
-  void *__load(const AString& strLibraryName);
+  void *_load(const AString& strLibraryName);
 
   //a_Disallow copying
   ADynamicLibrary(const ADynamicLibrary&) {}

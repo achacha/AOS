@@ -52,7 +52,7 @@ public:
   virtual void getDescription(AOutputBuffer& target) const throw();
 
 private:
-  void __getLastOSError(AOutputBuffer& target, u4 error) const throw();
+  void _getLastOSError(AOutputBuffer& target, u4 error) const throw();
   u4 m_lastOSError;
 };
 
