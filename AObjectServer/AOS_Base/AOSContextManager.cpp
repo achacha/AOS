@@ -209,7 +209,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     }
 
     {
-      AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "History");
+      AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "history");
       ALock lock(m_History.useSync());
       for (ABase *p = m_History.useTail(); p; p = p->usePrev())
       {
@@ -227,7 +227,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     }
 
     {
-      AXmlElement& eErrorHistory = eBase.addElement("object").addAttribute("name", "ErrorHistory");
+      AXmlElement& eErrorHistory = eBase.addElement("object").addAttribute("name", "error_history");
       ALock lock(m_ErrorHistory.useSync());
       for (ABase *p = m_ErrorHistory.useTail(); p; p = p->usePrev())
       {
@@ -276,16 +276,16 @@ void AOSContextManager::adminProcessAction(AXmlElement& eBase, const AHTTPReques
         switch(level)
         {
           case 0:
-            m_History.clear();
-            m_ErrorHistory.clear();
+            _clearHistory();
+            _clearErrorHistory();
           break;
 
           case 1:
-            m_History.clear();
+            _clearHistory();
           break;
 
           case 2:
-            m_ErrorHistory.clear();
+            _clearErrorHistory();
           break;
 
           default:
@@ -487,6 +487,25 @@ void AOSContextManager::deallocate(AOSContext *p)
       if (pC)
         _deleteContext(&pC);
     }
+  }
+}
+
+void AOSContextManager::_clearHistory()
+{
+  while (m_History.size() > 0)
+  {
+    AOSContext *pC = (AOSContext *)m_History.pop();
+    if (pC)
+      _deleteContext(&pC);
+  }
+}
+
+void AOSContextManager::_clearErrorHistory()
+{
+  while (m_ErrorHistory.size() > 0)
+  {
+    AOSContext *pC = (AOSContext *)m_ErrorHistory.pop();
+    _deleteContext(&pC);
   }
 }
 

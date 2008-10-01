@@ -23,15 +23,34 @@ $Id$
 class AOS_BASE_API AOSServices : public AOSAdminInterface
 {
 public:
+  /*!
+  Construct services from base aos_root path
+  
+  @param basePath of aos_root directory
+  */
   AOSServices(const AFilename& basePath);
+  
+  //! virtual dtor
   virtual ~AOSServices();
   
   /*!
-  Access to services
+  The file log
   */
   ALog& useLog();
+  
+  /*!
+  Combined XML configuration
+  */
   AOSConfiguration& useConfiguration();
+  
+  /*!
+  Database connection pool
+  */
   AOSDatabaseConnectionPool& useDatabaseConnectionPool();
+  
+  /*!
+  Admin object registry
+  */
   AOSAdminRegistry& useAdminRegistry();
 
   /*!
@@ -41,12 +60,12 @@ public:
 
   /*!
   AOSModuleExecutor
-  **/
+  */
   AOSModuleExecutor& useModuleExecutor();
 
   /*!
   AOSOutputExecutor
-  **/
+  */
   AOSOutputExecutor& useOutputExecutor();
 
   /*!
@@ -110,6 +129,12 @@ private:
   //a_No default ctor
   AOSServices() {}
 
+  //a_No copy ctor
+  AOSServices(const AOSServices&) {}
+
+  //a_No copy operator
+  AOSServices& operator =(const AOSServices&) { return *this; }
+  
   //a_Input executor
   AOSInputExecutor *mp_InputExecutor;
 

@@ -1,0 +1,16 @@
+Change Log
+----------
+
+1.5.0.3:
+- Cleaned up history clearing via admin
+- Fixed small memory leak
+- Minor fixed to web admin console
+- Better eror reporting when SQLite3 database file is not found
+- aos_root moved up one directory to be a peer to the output directories (so it can be sahred by debug and release without sync)
+- Improved parsing of listener socket init data
+- 
+
+1.5.0.2:
+- Moved aos_root up one directory to be parallel with release and debug directories (allows for a common config/site to be used by both debug and release)
+- Moved AObjectDatabase.db (SQLite3 database) into aos_root/db directory (from aos_root/)
+- Cleaned up examples and sample site

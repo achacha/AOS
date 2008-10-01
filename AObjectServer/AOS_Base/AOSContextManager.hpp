@@ -100,6 +100,12 @@ private:
   ABasePtrQueue m_ErrorHistory;
   size_t m_ErrorHistoryMaxSize;
 
+  //! Clear history
+  void _clearHistory();
+
+  //! Clear error history
+  void _clearErrorHistory();
+
   //! Logging level for all event visitors in the context
   int m_DefaultEventLogLevel;
 

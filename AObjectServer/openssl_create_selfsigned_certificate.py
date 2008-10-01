@@ -16,7 +16,7 @@ if (not os.path.exists("openssl.config")):
 	print "openssl.config missing from current directory (should be executed in output directory)";
 	sys.exit(-1);
 
-OUTPUT_DIR="./aos_root/certs/";
+OUTPUT_DIR="../aos_root/certs/";
 
 ret = makeSystemCall("openssl genrsa -out ca_pkey.pem 2048");
 if (0 != ret):

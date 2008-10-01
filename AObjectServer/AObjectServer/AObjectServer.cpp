@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   try
   {
     //a_Check if config base path was provided
-    AFilename basePath(ASW("./aos_root/",11), false);
+    AFilename basePath(ASW("../aos_root/",11), true);
     if (argc > 1)
     {
       //a_Check existance of config base path
@@ -80,33 +80,33 @@ int main(int argc, char **argv)
     {
       AFilename absPath;
       AFileSystem::expand(basePath, absPath);
-      AString str("Base aos_root directory: ");
+      AString str("Base 'aos_root' directory: ");
       absPath.emit(str);
       AOS_DEBUGTRACE(str.c_str(), NULL);
     }
 
 
     //a_Initialize services
-    AOSServices services(basePath);
+    AAutoPtr<AOSServices> pservices(new AOSServices(basePath), true);
     try
     {
       //a_Ready to start
       {
         str.clear();
         ATime().emitRFCtime(str);
-        services.useLog().add(ASWNL("=+=+=+= AOS Server starting at ")+str, AString(AOS_Base_INFO));
+        pservices->useLog().add(ASWNL("=+=+=+= AOS Server starting at ")+str, AString(AOS_Base_INFO));
       }
 
-      AOSAdmin admin(services);
-      services.adminRegisterObject(services.useAdminRegistry());
+      AOSAdmin admin(*pservices);
+      pservices->adminRegisterObject(pservices->useAdminRegistry());
 
       //
       //a_Initialize the global objects
       //
       AString strError;
-      if (services.initDatabasePool())
+      if (pservices->initDatabasePool())
       {
-        size_t rows = services.loadGlobalObjects(strError);
+        size_t rows = pservices->loadGlobalObjects(strError);
         if (AConstant::npos == rows)
         {
           AOS_DEBUGTRACE((AString("DBERROR: Global init: ")+strError).c_str(), NULL);
@@ -116,9 +116,9 @@ int main(int argc, char **argv)
         {
           str.clear();
           str.assign("Database connection pool connected ");
-          services.useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_CONNECTIONS, str);
+          pservices->useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_CONNECTIONS, str);
           str.append("x to ");
-          services.useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_URL, str);
+          pservices->useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_URL, str);
           AOS_DEBUGTRACE(str.c_str(), NULL);
           str.assign("Querying for global variables, processed ");
           str.append(AString::fromSize_t(rows));
@@ -135,48 +135,48 @@ int main(int argc, char **argv)
       //a_Create and configure the queues
       //
       AAutoPtr<AOSContextQueueInterface> pQueueIsAvail(new AOSContextQueue_IsAvailable(
-        services,
-        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/is-available/queues", 2)
+        *pservices,
+        pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/is-available/queues", 2)
       ), true);
       
       AAutoPtr<AOSContextQueueThreadPool> pQueueError(new AOSContextQueue_ErrorExecutor(
-        services,
-        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/threads", 16), 
-        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/queues", 4)
+        *pservices,
+        pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/threads", 16), 
+        pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/queues", 4)
       ), true);
-      int sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+      int sleepDelay = pservices->useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueError->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for error-executor/sleep-delay is invalid, using default", NULL);
 
       AAutoPtr<AOSContextQueueThreadPool> pQueuePre(new AOSContextQueue_PreExecutor(
-        services, 
-        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/threads", 16), 
-        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/queues", 4)
+        *pservices, 
+        pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/threads", 16), 
+        pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/queues", 4)
       ), true);
-      sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/pre-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+      sleepDelay = pservices->useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/pre-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueuePre->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for pre-executor/sleep-delay is invalid, using default", NULL);
 
       AAutoPtr<AOSContextQueueThreadPool> pQueueExecutor(new AOSContextQueue_Executor(
-        services, 
-        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/threads", 64), 
-        services.useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/queues", 3)
+        *pservices, 
+        pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/threads", 64), 
+        pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/queues", 3)
       ), true);
-      sleepDelay = services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+      sleepDelay = pservices->useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueExecutor->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for executor/sleep-delay is invalid, using default", NULL);
 
       //a_Configure queue state machine
-      services.useContextManager().setQueueForState(AOSContextManager::STATE_PRE_EXECUTE, pQueuePre);
-      services.useContextManager().setQueueForState(AOSContextManager::STATE_EXECUTE, pQueueExecutor);
-      services.useContextManager().setQueueForState(AOSContextManager::STATE_IS_AVAILABLE, pQueueIsAvail);
-      services.useContextManager().setQueueForState(AOSContextManager::STATE_ERROR, pQueueError);
+      pservices->useContextManager().setQueueForState(AOSContextManager::STATE_PRE_EXECUTE, pQueuePre);
+      pservices->useContextManager().setQueueForState(AOSContextManager::STATE_EXECUTE, pQueueExecutor);
+      pservices->useContextManager().setQueueForState(AOSContextManager::STATE_IS_AVAILABLE, pQueueIsAvail);
+      pservices->useContextManager().setQueueForState(AOSContextManager::STATE_ERROR, pQueueError);
 
       //a_Release local ownership, context manager now owns the queues and will delete them when done
       pQueuePre.setOwnership(false);
@@ -185,13 +185,13 @@ int main(int argc, char **argv)
       pQueueError.setOwnership(false);
 
       //a_Associate queue for the listener
-      AOSRequestListener listener(services, AOSContextManager::STATE_PRE_EXECUTE);
+      AOSRequestListener listener(*pservices, AOSContextManager::STATE_PRE_EXECUTE);
 
       //
       //a_Load the processors, modules, generators dynamically from DLLs
       //
       LIST_AString listModules;
-      services.useConfiguration().getDynamicModuleLibraries(listModules);
+      pservices->useConfiguration().getDynamicModuleLibraries(listModules);
 
       //a_Load modules
       LIST_AString::const_iterator cit = listModules.begin();
@@ -212,7 +212,7 @@ int main(int argc, char **argv)
         }
 
         //a_Load the corresponding XML config for each library if exists
-        services.useConfiguration().loadConfig(*cit);
+        pservices->useConfiguration().loadConfig(*cit);
 
         //a_Register modules
         PROC_AOS_Register *procRegister = static_cast<PROC_AOS_Register *>(dllModules.getEntryPoint(*cit, "aos_register"));
@@ -220,10 +220,10 @@ int main(int argc, char **argv)
         {
           if (
             procRegister(
-              services.useInputExecutor(), 
-              services.useModuleExecutor(), 
-              services.useOutputExecutor(), 
-              services
+              pservices->useInputExecutor(), 
+              pservices->useModuleExecutor(), 
+              pservices->useOutputExecutor(), 
+              *pservices
             )
           )
           {
@@ -292,14 +292,14 @@ int main(int argc, char **argv)
       str.assign("main: ");
       str.append(ex);
       traceMultiline(str, NULL);
-      services.useLog().addException(ex);
+      pservices->useLog().addException(ex);
     }
     catch(std::exception& ex)
     {
       str.assign("main: ");
       str.append(ASWNL(ex.what()));
       traceMultiline(str, NULL);
-      services.useLog().addException(ex);
+      pservices->useLog().addException(ex);
     }
     catch(...)
     {
@@ -311,7 +311,7 @@ int main(int argc, char **argv)
     ::MiniDumpWriteDump(::GetCurrentProcess(), ::GetCurrentProcessId(), (HANDLE)hFile, MiniDumpNormal, NULL, NULL, NULL);
 #endif
       AOS_DEBUGTRACE("main: Unknown exception caught", NULL);
-      services.useLog().add(ASWNL("main: Unknown exception caught"), ALog::EXCEPTION);
+      pservices->useLog().add(ASWNL("main: Unknown exception caught"), ALog::EXCEPTION);
     }
   }
   catch(AException& ex)

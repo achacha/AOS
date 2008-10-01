@@ -76,6 +76,14 @@ void AOSServices::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& req
 #ifdef DEBUG_TRACK_ABASE_MEMORY
   adminAddPropertyWithAction(
     eBase,
+    ASWNL("clear_allocations"), 
+    AConstant::ASTRING_EMPTY,
+    ASW("Clear",5), 
+    ASWNL("Clear current allocation tracker")
+  );
+
+  adminAddPropertyWithAction(
+    eBase,
     ASWNL("view_allocations"), 
     AConstant::ASTRING_EMPTY,
     ASW("View",4), 
@@ -84,6 +92,15 @@ void AOSServices::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& req
   );
 
   AString str;
+  if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
+  {
+    if (str.equals(ASWNL("AOSServices.clear_allocations")))
+    {
+      ABase::clearAllocations();
+    }
+  }
+
+  str.clear();
   if (request.getUrl().getParameterPairs().get(ASW("property",8), str))
   {
     if (str.equals(ASWNL("AOSServices.view_allocations")))
@@ -152,7 +169,6 @@ AOSServices::~AOSServices()
 {
   try
   {
-    delete mp_Log;
     delete mp_AdminRegistry;
     delete mp_SessionManager;
     delete mp_ContextManager;
@@ -162,6 +178,7 @@ AOSServices::~AOSServices()
     delete mp_ModuleExecutor;
     delete mp_InputExecutor;
     delete mp_Configuration;
+    delete mp_Log;
   }
   catch(...) {}
 }

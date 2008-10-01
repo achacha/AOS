@@ -41,8 +41,8 @@
     <https>
       <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
       <port>443</port>
-      <cert desc="Relative path from server base for the certificate file">aos_root/certs/aos_cert.pem</cert>
-      <pkey desc="Relative path from server base for the private key file">aos_root/certs/aos_pkey.pem</pkey>
+      <cert desc="Relative path from aos_root base for the certificate file">certs/aos_cert.pem</cert>
+      <pkey desc="Relative path from aos_root base for the private key file">certs/aos_pkey.pem</pkey>
     </https>
     <admin>
       <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
@@ -53,7 +53,7 @@
   <database>
     <!--url>mysql://aos:aos@equinox/aos/</url-->
     <!--url>odbc://aos:aos@localhost/aos_global/</url-->
-    <url>sqlite:///./aos_root/AObjectServer.db</url>
+    <url desc="SQLite3 database in ./aos_root/db/AObjectServer.db, relative to the directory with executable">sqlite:///../aos_root/db/AObjectServer.db</url>
     <connections>2</connections>
   </database>
 

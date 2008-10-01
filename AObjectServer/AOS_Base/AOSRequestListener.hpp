@@ -7,6 +7,7 @@ $Id$
 #define INCLUDED__AOSRequestListener_HPP__
 
 #include "apiAOS_Base.hpp"
+#include "AFilename.hpp"
 #include "AThread.hpp"
 #include "ASync_CriticalSection.hpp"
 #include "AOSContext.hpp"
@@ -49,14 +50,20 @@ private:
   class LISTEN_DATA : public ABase
   {
   public:
-    LISTEN_DATA() : port(-1) {}
-
-    int port;
-    AString host;
+    LISTEN_DATA(AOSServices& services, const AString& configpath);
     
-    //a_Used for HTTPS connections, empty otherwise
-    AString cert;
-    AString pkey;
+    int getPort() const;
+    const AString& getHost() const;
+    const AFilename& getCertificateFilename() const;
+    const AFilename& getPrivateKeyFilename() const;
+
+  private:
+    AFilename m_cert;
+    AFilename m_pkey;
+    int m_port;
+    AString m_host;
+
+    LISTEN_DATA() {}
   };
   
   //a_Queues

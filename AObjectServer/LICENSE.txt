@@ -1,0 +1,31 @@
+AOS License
+-----------
+
+This product is provided as-is, free and without any promised support.  The author of AOS and
+authors/contributors of all included libraries cannot be held responsible for anything.
+
+If you do not agree, do not use the product.
+
+---
+  
+Support will be provided as time allows since I have a full time job and this is more of
+a dedicated hobby.  Ideally I could do this full time, but bills need to be paid.
+
+---  
+  
+Following libraries are provided with full source and are intended to be buildable:
+  AOS_Base  - base application server logic
+  AObjectServer - executable implementation of an HTTP application server
+  AOSWatchDog - optional service executor for Windows XP and 2003
+
+Following libraries are provided in binary libraries and C/C++ headers:
+  ABase
+  ACrypto
+  ADatabase_SQLite
+  ADatabase_ODBC
+  ADatabase_MySQL
+  AGdLib
+  ALuaEmbed
+  AZlib
+
+Access to full source and project makefiles/solutions can be negotiated.

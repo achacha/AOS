@@ -1,0 +1,32 @@
+AOS Contributions
+-----------------
+
+All NON-3rd party libraries were written and are maintained by Alex Chachanashvili
+ http://www.achacha.org/ 
+ achacha@hotmail.com 
+
+Following libraries are NON 3rd party:
+  ABase
+  ACrypto
+  ADatabase_SQLite
+  ADatabase_ODBC
+  ADatabase_MySQL
+  AGdLib
+  ALuaEmbed
+  AZlib
+  AOS_*
+  AObjectServer
+  AOSWatchDog
+  
+  
+3rd party Libraries
+-------------------  
+  
+Following open source freeware libraries were used (portion of any donation received will be passed down):
+
+  lua script language in ALuaEmbed (http://www.lua.org/)
+  SQLite3 in ADatabase_SQLite (http://www.sqlite.org/)
+  openssl C API in ACrypto (http://www.openssl.org/)
+  zlib C API in AZlib (http://www.zlib.net/)
+  gdlib and freetype in AGdLib (http://www.boutell.com/gd/)
+  MySQL C client API in ADatabase_MySQL (http://www.mysql.com/)
