@@ -14,6 +14,16 @@ $Id$
 //a_Static map
 AMapOfPtrs<int, ARandomNumberGenerator> ARandomNumberGenerator::sm_rngMap;
 
+class RandomNumberInitializer
+{
+public:
+  RandomNumberInitializer()
+  {
+    ARandomNumberGenerator::init();
+  }
+};
+static RandomNumberInitializer sg_InitializeRandomNumberGenerators;
+
 void ARandomNumberGenerator::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
@@ -29,42 +39,18 @@ void ARandomNumberGenerator::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-ARandomNumberGenerator& ARandomNumberGenerator::get(
-  RNG_TYPE rng /* = ARandomNumberGenerator::Uniform */,
-  ASynchronization *pSyncObject /* = NULL */
-)
+void ARandomNumberGenerator::init()
+{
+  AASSERT(NULL, sm_rngMap.find(ARandomNumberGenerator::Uniform) == sm_rngMap.end());
+  ARandomNumberGenerator::sm_rngMap[ARandomNumberGenerator::Uniform] = new ARng_Uniform();
+  ARandomNumberGenerator::sm_rngMap[ARandomNumberGenerator::Lecuyer] = new ARng_Lecuyer();
+  ARandomNumberGenerator::sm_rngMap[ARandomNumberGenerator::Marsaglia] = new ARng_Marsaglia();
+}
+
+ARandomNumberGenerator& ARandomNumberGenerator::get(RNG_TYPE rng)
 {
   if (sm_rngMap.find(rng) == sm_rngMap.end())
-  {
-    //a_Create (lock if not NULL), enforce double locking
-    ALock lock(pSyncObject);
-    if (sm_rngMap.find(rng) == sm_rngMap.end())
-    {
-      switch(rng)
-      {
-        case ARandomNumberGenerator::Uniform:
-        {
-          sm_rngMap[ARandomNumberGenerator::Uniform] = new ARng_Uniform();
-        }
-        break;
-
-        case ARandomNumberGenerator::Lecuyer:
-        {
-          sm_rngMap[ARandomNumberGenerator::Lecuyer] = new ARng_Lecuyer();
-        }
-        break;
-
-        case ARandomNumberGenerator::Marsaglia:
-        {
-          sm_rngMap[ARandomNumberGenerator::Marsaglia] = new ARng_Marsaglia();
-        }
-        break;
-
-        default:
-          ATHROW(NULL, AException::NotImplemented);
-      }
-    }
-  }
+    ATHROW(NULL, AException::InitializationFailure);
 
   return *(sm_rngMap[rng]);
 }

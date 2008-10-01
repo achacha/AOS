@@ -6,9 +6,13 @@ $Id$
 #ifndef INCLUDED__apiABase_HPP__
 #define INCLUDED__apiABase_HPP__
 
-//a_Enable to allow windows memory tracking
+// Enable to allow windows memory tracking
 //#define WINDOWS_CRTDBG_ENABLED 1
 
+// DEBUG_TRACK_ABASE_MEMORY - Enable to track ABase* allocations
+// DEBUG_TRACK_ABASE_MEMORY_DISPLAY_TO_COUT - When DEBUG_TRACK_ABASE_MEMORY is defined, this will trace allocations to std::cout
+//#define DEBUG_TRACK_ABASE_MEMORY 1
+//#define DEBUG_TRACK_ABASE_MEMORY_DISPLAY_TO_COUT 1
 
 //a_OS Defines and compiler specifics
 #include "osDefines.hpp"
@@ -81,14 +85,15 @@ $Id$
 
 // Max rows
 #define DEBUG_MAXSIZE_AResultSet 500000
-#endif
 
-//#define ENABLE_EXCEPTION_STACKWALK 1
+// Enable stacktrace in debug mode
+#define ENABLE_EXCEPTION_STACKWALK 1
+#endif
 
 //a_Basic ABase classes
 #include "AConstant.hpp"
 
 //a_Version
-#define ABase_INFO "ABase 1.2.4 " ## ABASE_OS_INFO
+#define ABase_INFO "ABase 1.2.5 " ## ABASE_OS_INFO
 
 #endif //INCLUDED__apiABase_HPP__

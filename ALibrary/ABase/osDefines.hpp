@@ -51,11 +51,9 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
   #ifndef __AFX_H__
     #pragma message("ABase (64 bit): Including windows.h")
     #include <windows.h>   //a_Include windows.h if this is not an MFC app
-    //#pragma message("ASystem (64bit): Including winsock2.h")
-    //#include <winsock2.h>
   #endif
 
-  #define ABASE_OS_INFO "Microsoft Windows (64-bit) " ## __TIMESTAMP__ ## ")"
+  #define ABASE_OS_INFO "Microsoft Windows (64-bit) BUILD(" ## __TIMESTAMP__ ## ")"
 
 #elif defined(_WIN32) || defined(WIN32)
   //Win32 environment
@@ -92,71 +90,9 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
   #ifndef __AFX_H__
     #pragma message("ABase (32bit): Including windows.h")
     #include <windows.h>   //a_Include windows.h if this is not an MFC app
-    #pragma message("ASystem (32bit): Including winsock2.h")
-    #include <winsock2.h>
   #endif
   
 #define ABASE_OS_INFO "Microsoft Windows (32-bit)  BUILD(" ## __TIMESTAMP__ ## ")"
-
-#elif defined (__unix)
-  //a_For all UNIX
-  //a_Defines to be used inside the event log class (invisible to the user, since there is an enum to shield us)
-  #define EVENTLOG_INFORMATION_TYPE 1
-  #define EVENTLOG_WARNING_TYPE     2
-  #define EVENTLOG_ERROR_TYPE       3
-
-  //a_Unix platform
-  #define __UNIX__
-
-  //a_Some flavor of unix 
-  #if defined(__SUNPRO_CC) && defined(__sun)
-    
-    //a_Solaris
-    #define __SUNOS__
-    #pragma message("SunOS detected")
-
-    //a_OS/C flags
-    #define NEEDS_ANSI_HELPERS
-
-    #define __CDECL
-
-    //a_Solaris 2.51 SunC 4.2 is not ANSI C++ 2.0 compliant
-		#ifndef bool
-		typedef unsigned long bool;
-		#endif
-		#ifndef true
-		#define true 1
-		#endif
-		#ifndef false
-		#define false 0
-		#endif
-		#ifndef explicit
-		#define explicit
-		#endif
-		#ifndef mutable
-		#define mutable
-		#endif
-
-  #define ABASE_OS_INFO "Unix Generic"
-
-#elif defined(__linux)
-  
-    //a_Linux
-    #define __LINUX__
-    #pragma message("Linux OS detected")
-
-    //a_OS/C flags
-    #define NEEDS_ANSI_HELPERS
-
-    #define __CDECL
-
-    #define ABASE_OS_INFO "Linux"
-
-  #elif defined (__CYGWIN32__)
-  #else
-    #error OS configuration not supported
-    #define ABASE_OS_INFO "Cygwin"
-  #endif
 #else
   #error No such OS configuration
 #endif
@@ -196,6 +132,20 @@ NDEBUG - non-debug (release) mode
 //   DEBUG_MEMORY_LEAK_ANALYSIS_END();
 //   return 0;
 // }
+
+
+
+//
+// See apiABase.hpp where it is defined
+//
+
+//EXPERIMENTAL: Enbale trace of allocations of ABase* objects (doesn't always work)
+// Takes a very long time too, so best keep this commented out unless really needed for debugging
+#  ifdef DEBUG_TRACK_ABASE_MEMORY 
+#  pragma message("Tracing dynamic allocations of ABase* to std::cout")
+#  endif
+
+
 #ifdef __WINDOWS__
 #  if defined(_DEBUG) && defined(WINDOWS_CRTDBG_ENABLED)
 #  define _CRTDBG_MAP_ALLOC 1
@@ -227,14 +177,6 @@ NDEBUG - non-debug (release) mode
     /*_CrtMemDumpAllObjectsSince(&_memstate_start);*/\
     _CrtDumpMemoryLeaks();\
   }
-
-//EXPERIMENTAL: Enbale trace of allocations of ABase* objects (doesn't always work)
-// Takes a very long time too, so best keep this commented out unless really needed for debugging
-//#  define DEBUG_TRACK_ABASE_MEMORY
-//#  ifdef DEBUG_TRACK_ABASE_MEMORY 
-//#  pragma message("Tracing dynamic allocations of ABase* to std::cout")
-//#  endif
-
 #  else
 #  define DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(a) (void *)0
 #  define DEBUG_MEMORY_SET_START_CHECKPOINT() (void *)0

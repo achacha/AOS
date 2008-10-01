@@ -86,11 +86,11 @@ DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(true);
 
   try
   {
-    //testNew();
+    testNew();
     //testEventVisitor();
     //testAString();
     //testATextGenerator();
-    testARope();
+    //testARope();
   }
   catch(AException& e)
   {

@@ -164,7 +164,7 @@ public:
   /*!
   Get the return code for a thread that exited
 
-  @return exit code if a thread has already exited
+  @return exit code returned by threadproc if a thread has already exited
   @throw AException if thread is running or not started
   */
   u4 getExitCode();

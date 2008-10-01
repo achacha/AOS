@@ -25,9 +25,11 @@ public:
   
   /*!
   Associate thread and thread proc and optionally start on creation
-  if boolStart == true then thread will start upon creation
-  pThis is available via getThis()/setThis()  - doesn't have to be 'this' but makes it easier
-  pParameter is available via getParameter()/setParameter() - this is anything you want to pass to the thread process
+
+  @param pThreadProc to associate with this thread
+  @param boolStart if true then thread will start upon creation
+  @param pThis is available via getThis()/setThis()  - doesn't have to be 'this' but makes it easier
+  @param pParameter is available via getParameter()/setParameter() - this is anything you want to pass to the thread process
   */
   AThread_NOP(ATHREAD_PROC *pThreadProc, bool boolStart = false, ABase *pThis = NULL, ABase *pParameter = NULL);
   
@@ -43,20 +45,28 @@ public:
 
   /*!
   Checks if the tread is running or exited
+
+  @return true always
   */
   bool isThreadActive();
 
   /*!
   Get the return code for a thread that exited
+
+  @return value returned by the threadproc
   */
   u4 getExitCode();
 
-  /*!
-  Do nothing in this class
-  */
+  //! Do nothing in this class
   void terminate(u4 uExitCode = 0x0);
+
+  //! Do nothing in this class
   u4 waitForThreadToExit(u4 sleepTime = 50);
+
+  //! Do nothing in this class
   u4 suspend();
+
+  //! Do nothing in this class
   u4 resume(bool boolForceResume = false);
 
   /*!

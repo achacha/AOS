@@ -27,6 +27,11 @@ ABasePtrQueue::ABasePtrQueue(ASynchronization *pSync) :
 
 ABasePtrQueue::~ABasePtrQueue()
 {
+  try
+  {
+    delete mp_Sync;
+  }
+  catch(...) {}
 }
 
 ABase *ABasePtrQueue::pop()

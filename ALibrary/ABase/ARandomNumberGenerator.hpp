@@ -73,10 +73,17 @@ public:
   };
 
   /*!
-  Returns an instance of the RNG, creates it if needed, stores the created RNGs in memory
-  Not synchronized, will try to use a sync object if you pass it one to synchronize creation (e.g. mutex, cs, etc)
+  Initialize the RNG generators
   */
-  static ARandomNumberGenerator& get(RNG_TYPE rng = ARandomNumberGenerator::Marsaglia, ASynchronization *pSyncObject = NULL);
+  static void init();
+
+  /*!
+  Returns an instance of the RNG
+
+  @param rng Random number generator type to use
+  @return reference to the RNG requested
+  */
+  static ARandomNumberGenerator& get(RNG_TYPE rng = ARandomNumberGenerator::Marsaglia);
     
   /*!
   Interface wrapper functions that use _next()
