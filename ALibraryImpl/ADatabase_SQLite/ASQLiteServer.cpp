@@ -54,6 +54,9 @@ bool ASQLiteServer::init(AString& error)
     error.append("Can't open database: ");
     error.append(sqlite3_errmsg(mp_db));
     sqlite3_close(mp_db);
+    error.append('(');
+    error.append(strPath);
+    error.append(')');
     return false;
   }
 
