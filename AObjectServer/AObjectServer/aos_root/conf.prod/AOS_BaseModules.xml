@@ -3,7 +3,7 @@
 <base-modules>
   <AOSOutput_MsXslt>
     <cache desc="XSL stylesheet cache">
-		  <enabled>false</enabled>
+		  <enabled>true</enabled>
 		</cache>
   </AOSOutput_MsXslt>
 </base-modules>

@@ -2,16 +2,16 @@
 <!-- /config/server -->
 <server>
   <debug>
-    <allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page (should be false in production)">true</allow-dumpContext>
-    <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command (should be false in production)">true</allow-overrideOutput>
+    <allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page (should be false in production)">false</allow-dumpContext>
+    <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command (should be false in production)">false</allow-overrideOutput>
   </debug>
 
   <context-manager>
-    <log-level desc="Default logging level for the context (5=debug 4=info 3=warning 2=event 1=error)">5</log-level>
-    <history-maxsize desc="Number of contexts to save in history (non-error containing)">50</history-maxsize>
+    <log-level desc="Default logging level for the context (5=debug 4=info 3=warning 2=event 1=error)">1</log-level>
+    <history-maxsize desc="Number of contexts to save in history (non-error containing)">20</history-maxsize>
     <error-history-maxsize desc="Number of error containing contexts to save in history">100</error-history-maxsize>
     <freestore>
-      <initial-size desc="Number of context objects to pre-allocate, must be less than or equal to the max-size">10</initial-size>
+      <initial-size desc="Number of context objects to pre-allocate, must be less than or equal to the max-size">300</initial-size>
       <max-size desc="Maximum context objects to keep allocated">500</max-size>
     </freestore>
   </context-manager>
@@ -22,11 +22,11 @@
   </log>
 
   <template-cache desc="Template objects that are read from file and kept in a parsed state for execution">
-    <enabled>false</enabled>
+    <enabled>true</enabled>
   </template-cache>
 
   <static-file-cache desc="Static item cache, maximum memory size is (max_items * max_filesize)">
-    <enabled>false</enabled>
+    <enabled>true</enabled>
     <max_items desc="Maximum number of items to store in the static cache">10240</max_items>
     <max_filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max_filesize>
     <cache_count desc="Number of caches to use (must be a prime number)">13</cache_count>
@@ -54,7 +54,7 @@
     <!--url>mysql://aos:aos@equinox/aos/</url-->
     <!--url>odbc://aos:aos@localhost/aos_global/</url-->
     <url desc="SQLite3 database in ./aos_root/db/AObjectServer.db, relative to the directory with executable">sqlite:///../aos_root/db/AObjectServer.db</url>
-    <connections>2</connections>
+    <connections>8</connections>
   </database>
 
   <reported>
@@ -96,9 +96,9 @@
   <mime-types desc="Filename that contains MIME mappings based on controller's extension">mime_types.ini</mime-types>
   
   <session-manager>
-    <holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">3</holder-size>
-    <timeout desc="Number of milliseconds since session was last used and expires">600000</timeout>
-    <sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration">10000</sleep-cycle>
+    <holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">13</holder-size>
+    <timeout desc="Number of milliseconds since session was last used and expires">60000</timeout>
+    <sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration">5000</sleep-cycle>
     <database-persistence desc="Database persistence of session data">
       <enabled>false</enabled>
     </database-persistence>
@@ -121,32 +121,32 @@
     <first-char-read-tries desc="Number of times to try and read the first character">15</first-char-read-tries>
     <first-char-sleep-start desc="Initial sleep time trying to read first character">30</first-char-sleep-start>
     <first-char-sleep-increment desc="Amount to increment the sleep time for each try">20</first-char-sleep-increment>
-    <wait-for-http-data-timeout desc="Milliseconds to wait for complete header after initial byte before giving up, in ms">60000</wait-for-http-data-timeout>
+    <wait-for-http-data-timeout desc="Milliseconds to wait for complete header after initial byte before giving up, in ms">10000</wait-for-http-data-timeout>
     <http11-pipelining-enabled desc="Enabled pipelining if keep-alive is specified">true</http11-pipelining-enabled>
-    <unavailable-sleep-time desc="Milliseconds to sleep while trying to flush the output and the socket is unavailable (would block)">100</unavailable-sleep-time>
+    <unavailable-sleep-time desc="Milliseconds to sleep while trying to flush the output and the socket is unavailable (would block)">50</unavailable-sleep-time>
     <unavailable-retries desc="Number of retries (sleeps) while waiting for an unavailable socket">100</unavailable-retries>
   </http>
   
   <context-queues>
     <is-available>
-      <queues desc="Queues in the is-available queue manager, each queue has single select thread">2</queues>
+      <queues desc="Queues in the is-available queue manager, each queue has single select thread">13</queues>
       <loop-delay desc="Milliseconds of sleep between bulk selects">10</loop-delay>
       <empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</empty-queue-sleep-delay>
-      <no-data-timeout desc="Milliseconds before a socket is closed due to inactivity">180000</no-data-timeout>
+      <no-data-timeout desc="Milliseconds before a socket is clsoed due to inactivity">180000</no-data-timeout>
     </is-available>
     <pre-executor>
-      <threads desc="Threads in the pre-executor queue manager">3</threads>
-      <queues desc="Queues in the pre-executor queue manager">2</queues>
+      <threads desc="Threads in the pre-executor queue manager">7</threads>
+      <queues desc="Queues in the pre-executor queue manager">13</queues>
       <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
     </pre-executor>
     <executor>
-      <threads desc="Threads in the executor queue manager">3</threads>
-      <queues desc="Queues in the executor queue manager">2</queues>
+      <threads desc="Threads in the executor queue manager">7</threads>
+      <queues desc="Queues in the executor queue manager">13</queues>
       <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
     </executor>
     <error-executor>
-      <threads desc="Threads in the executor queue manager">1</threads>
-      <queues desc="Queues in the executor queue manager">2</queues>
+      <threads desc="Threads in the executor queue manager">3</threads>
+      <queues desc="Queues in the executor queue manager">3</queues>
       <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">100</sleep-delay>
     </error-executor>
   </context-queues>
