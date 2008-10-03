@@ -104,18 +104,6 @@
     </database-persistence>
   </session-manager>
   
-  <load desc="Dynamic libraries to load, registers input processors, modules and output generators">
-    <module>AOS_BaseModules</module>
-    <module>AOS_DadaData</module>
-    <module>AOS_Test</module>
-    <module>AOS_Example</module>
-    <module>AOS_Forum</module>
-    <module>AOS_Blog</module>
-    <module>AOS_Wiki</module>
-    <module>AOS_Classified</module>
-    <module>AOS_User</module>
-  </load>
-  
   <http>
     <blocking desc="Use blocking or non-blocking socket IO">false</blocking>
     <first-char-read-tries desc="Number of times to try and read the first character">15</first-char-read-tries>
@@ -132,7 +120,7 @@
       <queues desc="Queues in the is-available queue manager, each queue has single select thread">13</queues>
       <loop-delay desc="Milliseconds of sleep between bulk selects">10</loop-delay>
       <empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</empty-queue-sleep-delay>
-      <no-data-timeout desc="Milliseconds before a socket is clsoed due to inactivity">180000</no-data-timeout>
+      <no-data-timeout desc="Milliseconds before a socket is closed due to inactivity">180000</no-data-timeout>
     </is-available>
     <pre-executor>
       <threads desc="Threads in the pre-executor queue manager">7</threads>

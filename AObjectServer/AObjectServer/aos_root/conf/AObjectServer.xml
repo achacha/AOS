@@ -17,7 +17,7 @@
   </context-manager>
   
   <log>
-    <mask desc="Mask to use for writing logged events (see documentation, default is errors only)"/>
+    <mask desc="Mask to use for writing logged events (see documentation for Logging, default is errors only 0x000000ff)">0xffffffff</mask>
     <max-file-size desc="Maximum size per log file before creating a new log file and incrementing filename (in bytes, default 1MB)">1048576</max-file-size>
   </log>
 
@@ -103,18 +103,6 @@
       <enabled>false</enabled>
     </database-persistence>
   </session-manager>
-  
-  <load desc="Dynamic libraries to load, registers input processors, modules and output generators">
-    <module>AOS_BaseModules</module>
-    <module>AOS_DadaData</module>
-    <module>AOS_Test</module>
-    <module>AOS_Example</module>
-    <module>AOS_Forum</module>
-    <module>AOS_Blog</module>
-    <module>AOS_Wiki</module>
-    <module>AOS_Classified</module>
-    <module>AOS_User</module>
-  </load>
   
   <http>
     <blocking desc="Use blocking or non-blocking socket IO">false</blocking>

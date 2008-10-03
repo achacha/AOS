@@ -9,7 +9,6 @@ $Id$
 #include "AOSAdmin.hpp"
 #include "AOSServices.hpp"
 #include "ASocketLibrary_SSL.hpp"
-#include "ADynamicLibrary.hpp"
 #include "AGdLibrary.hpp"
 
 #include "AOSRequestListener.hpp"
@@ -25,7 +24,6 @@ $Id$
 #pragma comment(lib, "dbgeng")
 #endif
 
-ADynamicLibrary dllModules;                  //a_Map of DLLs loaded
 ASocketLibrary_SSL g_SecureSocketLibrary;    //a_Global init for SSL and socket library
 AGdLibrary g_GdLibrary;                      //a_Global init for gd library
 
@@ -84,7 +82,6 @@ int main(int argc, char **argv)
       absPath.emit(str);
       AOS_DEBUGTRACE(str.c_str(), NULL);
     }
-
 
     //a_Initialize services
     AAutoPtr<AOSServices> pservices(new AOSServices(basePath), true);
@@ -190,71 +187,10 @@ int main(int argc, char **argv)
       //
       //a_Load the processors, modules, generators dynamically from DLLs
       //
-      LIST_AString listModules;
-      pservices->useConfiguration().getDynamicModuleLibraries(listModules);
-
-      //a_Load modules
-      LIST_AString::const_iterator cit = listModules.begin();
-      while(cit != listModules.end())
+      if (!pservices->loadModules())
       {
-        if (!dllModules.load(*cit))
-        {
-          AString strDebug("Unable to load dynamic library: ");
-          strDebug.append(*cit);
-          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-
-        {
-          AString strDebug("=====[ BEGIN: Processing library '");
-          strDebug.append(*cit);
-          strDebug.append("' ]=====");
-          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-
-        //a_Load the corresponding XML config for each library if exists
-        pservices->useConfiguration().loadConfig(*cit);
-
-        //a_Register modules
-        PROC_AOS_Register *procRegister = static_cast<PROC_AOS_Register *>(dllModules.getEntryPoint(*cit, "aos_register"));
-        if (procRegister)
-        {
-          if (
-            procRegister(
-              pservices->useInputExecutor(), 
-              pservices->useModuleExecutor(), 
-              pservices->useOutputExecutor(), 
-              *pservices
-            )
-          )
-          {
-            AString strDebug("  FAILED to register module: '");
-            strDebug.append(*cit);
-            strDebug.append('\'');
-            AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-          }
-          else
-          {
-            AString strDebug("  Registered: '");
-            strDebug.append(*cit);
-            strDebug.append('\'');
-            AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-          }
-        }
-        else
-        {
-          AString strDebug("  Module: '");
-          strDebug.append(*cit);
-          strDebug.append("': unable to find proc symbol: aos_register");
-          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-
-        {
-          AString strDebug("=====[   END: Processing library '");
-          strDebug.append(*cit);
-          strDebug.append("' ]=====");
-          AOS_DEBUGTRACE(strDebug.c_str(), NULL);
-        }
-        ++cit;
+        AOS_DEBUGTRACE((AString("ERROR: Loading modules: ")+strError).c_str(), NULL);
+        return -1;
       }
 
       //

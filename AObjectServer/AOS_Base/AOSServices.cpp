@@ -185,6 +185,7 @@ AOSServices::~AOSServices()
 
 bool AOSServices::initDatabasePool()
 {
+  AASSERT(this, mp_Configuration);
   mp_DatabaseConnPool = new AOSDatabaseConnectionPool(*this);
 
   int iMaxConnections = mp_Configuration->useConfigRoot().getInt(AOSConfiguration::DATABASE_CONNECTIONS, 2);
@@ -200,6 +201,79 @@ bool AOSServices::initDatabasePool()
   mp_DatabaseConnPool->init(urlServer, iMaxConnections);
   
   return ret;
+}
+
+bool AOSServices::loadModules()
+{
+  AASSERT(this, mp_Configuration);
+  AASSERT(this, mp_Log);
+  AASSERT(this, mp_InputExecutor);
+  AASSERT(this, mp_ModuleExecutor);
+  AASSERT(this, mp_OutputExecutor);
+
+  AFileSystem::FileInfos configList;
+  mp_Configuration->getDynamicModuleConfigsToLoad(configList);
+  for (AFileSystem::FileInfos::iterator it = configList.begin(); it != configList.end(); ++it)
+  {
+    //a_Load the corresponding XML config for each library if exists
+    mp_Configuration->loadConfig((*it).filename);
+
+    //a_Load dynamic library associated with it
+    AString f;
+    (*it).filename.emitFilenameNoExt(f);
+    if (!m_Modules.load(f))
+    {
+      AString strDebug("Unable to load dynamic library: ");
+      strDebug.append(f);
+      mp_Log->add(strDebug, ALog::FAILURE);
+      return false;
+    }
+    else
+    {
+      AString strDebug("=====[ BEGIN: Processing library '");
+      strDebug.append(f);
+      strDebug.append("' ]=====");
+      AOS_DEBUGTRACE(strDebug.c_str(), NULL);
+    }
+    
+    //a_Register input processors, modules, output generators
+    PROC_AOS_Register *procRegister = static_cast<PROC_AOS_Register *>(m_Modules.getEntryPoint(f, "aos_register"));
+    if (procRegister)
+    {
+      if (
+        procRegister(
+          *mp_InputExecutor, 
+          *mp_ModuleExecutor, 
+          *mp_OutputExecutor, 
+          *this
+        )
+      )
+      {
+        AString strDebug("  FAILED to register module: '");
+        strDebug.append(f);
+        strDebug.append('\'');
+        mp_Log->add(strDebug, ALog::FAILURE);
+        return false;
+      }
+      else
+      {
+        AString strDebug("  Registered: '");
+        strDebug.append(f);
+        strDebug.append('\'');
+        AOS_DEBUGTRACE(strDebug.c_str(), NULL);
+      }
+    }
+    else
+    {
+      AString strDebug("  Module: '");
+      strDebug.append(f);
+      strDebug.append("': unable to find proc symbol: aos_register");
+      mp_Log->add(strDebug, ALog::FAILURE);
+      return false;
+    }
+  }
+  
+  return true;
 }
 
 ALog& AOSServices::useLog()
@@ -296,4 +370,9 @@ AOSOutputExecutor& AOSServices::useOutputExecutor()
 { 
   AASSERT(this, mp_OutputExecutor);
   return *mp_OutputExecutor;
+}
+
+const ADynamicLibrary& AOSServices::getModules() const
+{
+  return m_Modules;
 }

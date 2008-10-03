@@ -6,9 +6,9 @@ Change Log
 - Fixed small memory leak
 - Minor fixed to web admin console
 - Better eror reporting when SQLite3 database file is not found
-- aos_root moved up one directory to be a peer to the output directories (so it can be sahred by debug and release without sync)
+- aos_root moved up one directory to be a peer to the output directories (so it can be shared by debug and release without sync)
 - Improved parsing of listener socket init data
-- 
+- Moved all module configs to ./aos_root/conf/autoload and will load a module corresponding the config name (AOS_MyModule.xml will load AOS_MyModule.dll automatically)
 
 1.5.0.2:
 - Moved aos_root up one directory to be parallel with release and debug directories (allows for a common config/site to be used by both debug and release)

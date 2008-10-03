@@ -19,6 +19,7 @@ $Id$
 #include "AOSInputExecutor.hpp"
 #include "AOSModuleExecutor.hpp"
 #include "AOSOutputExecutor.hpp"
+#include "ADynamicLibrary.hpp"
 
 class AOS_BASE_API AOSServices : public AOSAdminInterface
 {
@@ -91,9 +92,19 @@ public:
   /*!
   Initialize the global objects
   All data assumed in table 'global', columns 'name' and 'value'
-  returns # of rows loaded, AConstant::npos if error
+  
+  @param strError to write errors to
+  @return number of rows loaded, AConstant::npos if error
   */
   size_t loadGlobalObjects(AString& strError);
+
+  /*!
+  Load modules specified in the ./aos_config/conf/load directory
+  Every .xml file will load same named .dll/.so in dynamic library lookup path
+  
+  @return false if error occured
+  */
+  bool loadModules();
 
   /*!
   Global objects
@@ -111,6 +122,14 @@ public:
   NOTE: OWNED and DELETED by caller
   */
   ATemplate* createTemplate(u4 deafultLuaLibraries = ALuaEmbed::LUALIB_ALL);
+
+  /*!
+  Get dynamic library object
+  Used in loading modules and contains a map of module names to modules
+
+  @return constant reference to dynamic library object
+  */
+  const ADynamicLibrary& getModules() const;
 
   /*!
   Admin xml
@@ -167,6 +186,9 @@ private:
 
   //a_Cache manager
   AOSCacheManager *mp_CacheManager;
+
+  //a_Modules to load
+  ADynamicLibrary m_Modules;
 };
 
 #endif //INCLUDED__AOSServices_HPP__

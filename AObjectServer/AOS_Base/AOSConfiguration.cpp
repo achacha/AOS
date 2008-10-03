@@ -108,7 +108,7 @@ void AOSConfiguration::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader
   {
     LIST_AString moduleNames;
     ARope rope;
-    if (getDynamicModuleLibraries(moduleNames) > 0)
+    if (m_Services.getModules().getModuleNames(moduleNames) > 0)
     {
       LIST_AString::const_iterator cit = moduleNames.begin();
       while (cit != moduleNames.end())
@@ -218,7 +218,9 @@ AOSConfiguration::AOSConfiguration(
   m_AdminBaseHttpDir.usePathNames().push_back("admin");
 
   //a_TODO: This needs to be a paremeter
-  loadConfig("AObjectServer");
+  AFilename filename(m_AosBaseConfigDir);
+  filename.useFilename().assign("AObjectServer.xml",17);
+  loadConfig(filename);
 
   //a_Get compressed extensions
   _populateGzipCompressionExtensions();
@@ -388,12 +390,8 @@ void AOSConfiguration::setMimeTypeFromRequestExt(AOSContext& context)
   setMimeTypeFromExt(context.useRequestUrl().getExtension(), context);
 }
 
-void AOSConfiguration::loadConfig(const AString& name)
+void AOSConfiguration::loadConfig(const AFilename& filename)
 {
-  AFilename filename(m_AosBaseConfigDir);
-  filename.useFilename().assign(name);
-  filename.setExtension("xml");
-  
   if (AFileSystem::exists(filename))
   {
     m_Services.useLog().add(ASW("Reading XML config: ",20), filename, ALog::DEBUG);
@@ -593,19 +591,13 @@ const AFilename& AOSConfiguration::getAdminBaseHttpDir() const
   return m_AdminBaseHttpDir;
 }
 
-u4 AOSConfiguration::getDynamicModuleLibraries(LIST_AString& target) const
+void AOSConfiguration::getDynamicModuleConfigsToLoad(AFileSystem::FileInfos& target) const
 {
   u4 ret = 0;
-  AXmlElement::CONST_CONTAINER nodes;
-  m_Config.getRoot().find("/config/server/load/module", nodes);
-  for(AXmlElement::CONST_CONTAINER::iterator it = nodes.begin(); it != nodes.end(); ++it)
-  {
-    AString str;
-    (*it)->emitContent(str);
-    target.push_back(str);
-    ++ret;
-  }
-  return ret;
+  AFilename configLoad(getAosBaseConfigDirectory());
+  configLoad.usePathNames().push_back(ASW("autoload",8));
+  configLoad.useFilename().assign("*.xml",5);
+  AFileSystem::dir(configLoad, target);
 }
 
 int AOSConfiguration::getReportedHttpPort() const

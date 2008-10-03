@@ -101,13 +101,12 @@ public:
   const AFilename& getBaseDir() const;
 
   /*!
-  Load configuration for a given module in config directory
+  Load XML configuration for a given module in config directory
+  Attached XML contents to the /config root
 
-  Given "MyModule" loads ./aos_root/config/MyModule.xml
-
-  @param name of the module config to load
+  @param filename of the module config to load
   */
-  void loadConfig(const AString& name);
+  void loadConfig(const AFilename& filename);
 
   /*!
   Convert a given URl to the reported values
@@ -302,11 +301,11 @@ public:
   bool isOutputOverrideAllowed() const;
 
   /*!
-  Dynamic module libraries to load as per configuration file
+  Get a list of XML config files in conf/load from which dynamic libraries to load
 
-  @param libs list to append to
+  @param container for AFileInfo objects for xml config files corresponding to libraries to load
   */
-  u4 getDynamicModuleLibraries(LIST_AString& libs) const;
+  void getDynamicModuleConfigsToLoad(AFileSystem::FileInfos& target) const;
   
   /*!
   Controller for a given URL

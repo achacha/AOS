@@ -147,8 +147,8 @@ void AOSContextQueue_IsAvailable::stop()
 {
   for (size_t i=0; i<m_Queues.size(); ++i)
   {
-    AASSERT(this, m_Queues.at(i)->pthread);
-    m_Queues.at(i)->pthread->setRun(false);
+    if (m_Queues.at(i)->pthread)
+      m_Queues.at(i)->pthread->setRun(false);
   }
   
   int tries = 3;
