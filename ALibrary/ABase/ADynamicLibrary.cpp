@@ -31,12 +31,8 @@ ADynamicLibrary::~ADynamicLibrary()
 {
   try
   {
-    MAP_Libraries::iterator it = m_Libraries.begin();
-    while (it != m_Libraries.end())
-    {
+    for (MAP_Libraries::iterator it = m_Libraries.begin(); it != m_Libraries.end(); ++it)
       ::FreeLibrary((HMODULE)(*it).second);
-      ++it;
-    }
   }
   catch(...){}
 }
@@ -103,3 +99,11 @@ void *ADynamicLibrary::getEntryPoint(const AString& strLibraryName, const AStrin
   return procAddress;
 }
 
+size_t ADynamicLibrary::getModuleNames(LIST_AString& target) const
+{
+  for (MAP_Libraries::const_iterator cit = m_Libraries.begin(); cit != m_Libraries.end(); ++cit)
+  {
+    target.push_back((*cit).first);
+  }
+  return m_Libraries.size();
+}

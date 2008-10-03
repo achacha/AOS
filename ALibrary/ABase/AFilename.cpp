@@ -351,6 +351,11 @@ void AFilename::clearDrive()
   m_Drive = '\x0';
 }
 
+void AFilename::clearExtension()
+{
+  setExtension(AConstant::ASTRING_EMPTY);
+}
+
 void AFilename::join(
   const AEmittable& that,
   bool forceDirectory
@@ -478,8 +483,12 @@ void AFilename::setExtension(const AString& ext)
     m_Filename.setSize(pos);
   }
 
-  m_Filename.append('.');
-  m_Filename.append(ext);
+  //a_Set extension if any, else clear extension
+  if (!ext.isEmpty())
+  {
+    m_Filename.append('.');
+    m_Filename.append(ext);
+  }
 }
 
 bool AFilename::operator <(const AFilename& that) const
