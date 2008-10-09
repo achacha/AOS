@@ -119,8 +119,13 @@ if (verbose == 1):
   
 # Clean if needed  
 if (clean == 1):
-  print "Cleaning target directory: "+target_path;
-  makeSystemCall("del /Q /S "+target_path);
+  if (dryrun == 0):
+    print "Cleaning target directory: "+target_path;
+    makeSystemCall("del /Q /S "+os.path.join(target_path, "aos_root"));
+  else:
+    print "Dry-run detected, would clean: "+os.path.join(target_path, "aos_root");
+    print "Exiting, rest of dry run cannot be determined with clean enabled";
+    sys.exit(0);
 
 
 # Copy extra needed stuff
