@@ -5,7 +5,7 @@ Change Log
 - Cleaned up history clearing via admin
 - Fixed small memory leak
 - Minor fixed to web admin console
-- Better eror reporting when SQLite3 database file is not found
+- Better error reporting when SQLite3 database file is not found
 - aos_root moved up one directory to be a peer to the output directories (so it can be shared by debug and release without sync)
 - Improved parsing of listener socket init data
 - Moved all module configs to ./aos_root/conf/autoload and will load a module corresponding the config name (AOS_MyModule.xml will load AOS_MyModule.dll automatically)

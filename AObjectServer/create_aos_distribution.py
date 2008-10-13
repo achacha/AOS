@@ -141,7 +141,7 @@ syncPath(os.path.join(base_path, "AObjectServer", "AObjectServer", "*.*"), os.pa
 syncPath(os.path.join(base_path, "AObjectServer", "GETTING_STARTED.txt"), TARGET_PATH);
 syncPath(os.path.join(base_path, "AObjectServer", "CHANGELOG.txt"), TARGET_PATH);
 syncPath(os.path.join(base_path, "AObjectServer", "LICENSE.txt"), TARGET_PATH);
-syncPath(os.path.join(base_path, "AObjectServer", "CONTRIB.txt"), TARGET_PATH);
+syncPath(os.path.join(base_path, "AObjectServer", "CONTRIBUTORS.txt"), TARGET_PATH);
 syncPath(os.path.join(base_path, "AObjectServer", "AObjectServerWithoutALibrary.sln"), os.path.join(TARGET_PATH, "AObjectServer"));
 if (os.path.exists(os.path.join(TARGET_PATH, "AObjectServer", "AObjectServer.sln"))):
   os.remove(os.path.join(TARGET_PATH, "AObjectServer", "AObjectServer.sln"));
