@@ -3,8 +3,8 @@ import os,sys;
  
 THIS_PATH=os.path.dirname(sys.argv[0]);
 BASE_PATH = os.path.normpath(os.path.join(THIS_PATH,".."));
-EXEC_RSYNC_BASE=os.path.join(BASE_PATH,"_devtools","bin","rsync.py")+" -rtuC --exclude=.svn --exclude=*.user ";
-EXEC_RSYNC_BASE_WITH_DELETE=os.path.join(BASE_PATH,"_devtools","bin","rsync.py")+" -rtuC --delete --exclude=.svn --exclude=*.user ";
+EXEC_RSYNC_BASE="rsync -rtuC --exclude=.svn --exclude=*.user ";
+EXEC_RSYNC_BASE_WITH_DELETE="rsync -rtuC --delete --exclude=.svn --exclude=*.user ";
 
 def makeSystemCall(param):
 	print param;
@@ -69,7 +69,7 @@ def gatherDistribution(TARGET_PATH, base_path):
   
 def gatherHeaders(TARGET_PATH, base_path):
   os.chdir(os.path.join(base_path, "ALibrary"));
-  CMD = "gather_headers_only.py -p "+os.path.join(TARGET_PATH);
+  CMD = "call_gather_headers.py -p "+os.path.join(TARGET_PATH);
   if (verbose == 1):
     CMD += " -v";
   if (clean == 1):
