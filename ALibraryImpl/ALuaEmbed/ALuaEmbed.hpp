@@ -62,17 +62,17 @@ public:
   */
   enum LuaLibrary
   {
-    LUALIB_NONE     = 0x0000,       // Mask to load no libraries
-    LUALIB_BASE     = 0x0001,       // print() modified to write to ALuaEmbed output buffer
-    LUALIB_TABLE    = 0x0002,
-    LUALIB_STRING   = 0x0004,
-    LUALIB_MATH     = 0x0008,
-    LUALIB_DEBUG    = 0x0010,
-    //LUALIB_OS       = 0x0020,     // Not supported (security)
-    //LUALIB_PACKAGE  = 0x0100,     // Not supported (security)
-    //LUALIB_IO       = 0x0200,     // Not supported (security)
-    LUALIB_ALL_SAFE = 0x000f,       // All web safe libraries (no OS access)
-    LUALIB_ALL      = 0xffff        // Mask to load all libraries
+    LUALIB_NONE     = 0x0000,       //!< Mask to load no libraries
+    LUALIB_BASE     = 0x0001,       //!< print() modified to write to ALuaEmbed output buffer
+    LUALIB_TABLE    = 0x0002,       //!< Tables
+    LUALIB_STRING   = 0x0004,       //!< String manipulation
+    LUALIB_MATH     = 0x0008,       //!< Math
+    LUALIB_DEBUG    = 0x0010,       //!< Debugging
+    //LUALIB_OS       = 0x0020,     //!< Not supported (security)
+    //LUALIB_PACKAGE  = 0x0100,     //!< Not supported (security)
+    //LUALIB_IO       = 0x0200,     //!< Not supported (security)
+    LUALIB_ALL_SAFE = 0x000f,       //!< All web safe libraries (no OS access)
+    LUALIB_ALL      = 0xffff        //!< Mask to load all libraries
   };
 
   typedef int (LUA_OPENLIBRARY_FUNCTION)(lua_State *);
@@ -83,6 +83,8 @@ public:
   Initialize Lua interpreter
   Load libraries into this instance
     Can use LUALIB_CORE|LUALIB_MATH|etc to load some
+  
+  @param maskLibrariesToLoad Mask of the libraries to load
   */
   ALuaEmbed(u4 maskLibrariesToLoad = ALuaEmbed::LUALIB_BASE);
   
@@ -95,6 +97,7 @@ public:
   Load user defined library
 
   Usage example:
+  \code
     static const luaL_Reg userdefined_funcs[] = {
       {"fname", fname_function},
       {NULL, NULL}
@@ -105,10 +108,13 @@ public:
       luaL_register(L, "user", userdefined_funcs);
       return 1;
     }
+  \endcode
 
   After registering you can use: user.fname() in Lua
+
+  @param fptr Pointer to a function that registers user defined functions
   */
-  void loadUserLibrary(LUA_OPENLIBRARY_FPTR);
+  void loadUserLibrary(LUA_OPENLIBRARY_FPTR fptr);
   
   /*!
   Execute Lua code
@@ -123,10 +129,12 @@ public:
   bool execute(const AEmittable& code, ATemplateContext& context, AOutputBuffer& output);
 
   /*!
-  Lua panic function
-  Throws AException instead of calling exit()
+  Lua panic function throws AException
+  
+  @param S Lua state
+  @throws AException instead of calling exit()
   */
-  static int callbackPanic(lua_State *);
+  static int callbackPanic(lua_State *S);
 
   /*!
   ADebugDumpable
@@ -134,10 +142,10 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
-  //a_The Lua state pointer
+  // The Lua state pointer
   struct lua_State *mp_LuaState;
 
-  //a_Init Lua interpreter and load libraries
+  // Init Lua interpreter and load libraries
   void _init(u4 maskLibrariesToLoad);
 };
 
