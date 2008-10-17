@@ -37,6 +37,9 @@ class Context:
   def __setattr__(self, name, value):
     self.flags[name]=value;
 
+  def hasNoPlatform(self):
+    return (self.win32 == 0 and self.win64 == 0 and self.linux32 == 0 and self.linux64 == 0);
+
 
 def syncPath(context, source_path, target_path):
   EXEC_RSYNC_BASE="rsync -tuC --exclude=.svn ";

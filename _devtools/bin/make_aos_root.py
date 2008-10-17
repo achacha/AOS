@@ -6,14 +6,14 @@ import os,sys;
 from acommon import *;
 
 def syncModule(context, module_source_path):
-  print("|----------------------------Content: "+module_source_path+" -> "+context.AOS_TARGET_PATH);
+  print("|----------------------------Content: "+module_source_path+" -> "+context.BASE_CODE_PATH);
   context.recursive = 1;
   syncPath(context, module_source_path, context.BASE_CODE_PATH);
   context.recursive = 0;
 
 def syncDocs(context):
   source_path = os.path.join(context.BASE_AOBJECTSERVER_PATH, "docs");
-  target_path = os.path.join(context.AOS_TARGET_PATH, "docs");
+  target_path = os.path.join(context.AOS_TARGET_PATH, "static");
   print("|----------------------------Docs: "+source_path+" -> "+target_path);
   context.recursive = 1;
   syncPath(context, source_path, target_path);
@@ -82,7 +82,7 @@ while (len(sys.argv) > argc):
 
   argc += 1;
 
-if (context.win32 == 0 and context.win64 == 0 and context.linux32 == 0 and context.linux64 == 0):
+if (context.hasNoPlatform()):
   print("Please select -win32 and/or -win64 and/or -linux32 and/or -linux64");
   showUsage();
   sys.exit(-1);
@@ -109,8 +109,8 @@ if (not os.path.exists(context.AOS_TARGET_PATH)):
 
 # Sync aos_root directories
 sync_aos_root(context, context.BASE_AOBJECTSERVER_PATH);
-#sync_aos_root(context, context.BASE_AOSMODULES_PATH);
-#syncDocs(context);
+sync_aos_root(context, context.BASE_AOSMODULES_PATH);
+syncDocs(context);
 
 syncFileToOutput(context, os.path.join(context.BASE_AOBJECTSERVER_PATH, "openssl_create_selfsigned_certificate.py"));
 syncFileToOutput(context, os.path.join(context.BASE_AOBJECTSERVER_PATH, "openssl.config"));
