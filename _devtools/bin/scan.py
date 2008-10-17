@@ -35,19 +35,19 @@ SCAN_ASW_SCRIPT = os.path.join(THIS_DIR, "scan_ASW.py");
 SCAN_INCLUDE_SCRIPT = os.path.join(THIS_DIR, "scan_include.py");
 
 if (verbose != 0):
-  print "Verbose mode enabled";
-  print "TARGET_PATH="+TARGET_PATH;
-  print "SCAN_ASW_SCRIPT="+SCAN_ASW_SCRIPT;
-  print "SCAN_INCLUDE_SCRIPT="+SCAN_INCLUDE_SCRIPT;
+  print("Verbose mode enabled");
+  print("TARGET_PATH="+TARGET_PATH);
+  print("SCAN_ASW_SCRIPT="+SCAN_ASW_SCRIPT);
+  print("SCAN_INCLUDE_SCRIPT="+SCAN_INCLUDE_SCRIPT);
 
 def processDirectory(fullpath, targets):
   if (os.path.split(fullpath)[1] == ".svn"):
     if (verbose != 0):
-      print "  Ignoring .svn: "+fullpath;
+      print("  Ignoring .svn: "+fullpath);
     return 0;
   
   if (verbose != 0):
-    print "+++Directory detected, adding: "+fullpath;
+    print("+++Directory detected, adding: "+fullpath);
   
   targets.append(fullpath);
   return 1;
@@ -60,19 +60,19 @@ def getAllFilesInSubdirectory(basepath, extension, targets):
   for file in files:
     fullpath = os.path.join(basepath,file);
     if (verbose != 0):
-      print "  Found: "+fullpath;
+      print("  Found: "+fullpath);
     if (os.path.isdir(fullpath)):
       getAllFilesInSubdirectory(fullpath, extension, targets);
     else:
       if (verbose != 0):
-        print "  Ignoring: "+fullpath;
+        print("  Ignoring: "+fullpath);
   return;
 
 def readTargetFile(file, targets):
   f = open(file,"r");
   for dirname in f.readlines():
     dirname = dirname.strip(" \r\n\t");
-    print "Processing: "+dirname;
+    print("Processing: "+dirname);
     getAllFilesInSubdirectory(dirname, "cpp", targets);
   return;
 
@@ -83,11 +83,12 @@ if (TARGET_FILE != ""):
 else:
   getAllFilesInSubdirectory(TARGET_PATH, "cpp", targets);
 
-print "Processing "+str(len(targets))+" files.";
+print("Processing "+str(len(targets))+" files.");
 for target in targets:
   if (verbose != 0):
-    print "ASW processing: "+target;
+    print("ASW processing: "+target);
   os.system(SCAN_ASW_SCRIPT+" "+target);
   if (verbose != 0):
-    print "include processing: "+target;
+    print("include processing: "+target);
   os.system(SCAN_INCLUDE_SCRIPT+" "+target);
+

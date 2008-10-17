@@ -1,33 +1,37 @@
+#!/usr/bin/python
+#
+# Scan includes
+#
 import sys, os, re;
 
 def handleClass(clazz, includes):
   if (clazz.startswith("pch")):
     if (verbose != 0):
-      print "    Ignoring PCH header: "+clazz;
+      print("    Ignoring PCH header: "+clazz);
     return;
   
   if (clazz.startswith("api")):
     if (verbose != 0):
-      print "    Ignoring API header: "+clazz;
+      print("    Ignoring API header: "+clazz);
     return;
 
   if (clazz == "ansiHelpers"):
     if (verbose != 0):
-      print "    Ignoring ansiHelpers";
+      print("    Ignoring ansiHelpers");
     return;
 
   if (clazz == "ASystemException"):
     if (verbose != 0):
-      print "    Remapping ASystemException to AException";
+      print("    Remapping ASystemException to AException");
     clazz = "AException";
   
   if (clazz.startswith("template")):
     if (verbose != 0):
-      print "    Converting template* to A*";
+      print("    Converting template* to A*");
     clazz = "A"+clazz[8:];
 
   if (verbose != 0):
-    print "    Found include class: "+clazz;
+    print("    Found include class: "+clazz);
 
   includes[clazz] = 0;
   return;
@@ -36,7 +40,7 @@ def process(file):
   includes = {};
   lineno = 0;
   if (verbose != 0):
-    print "  Processing file: "+file;
+    print("  Processing file: "+file);
   f = open(file,"r");
   for line in f.readlines():
     lineno += 1;
@@ -52,17 +56,17 @@ def process(file):
         if (line.find(clazz) >= 0):
           includes[clazz] = includes[clazz] + 1;
           if (verbose != 0):
-            print "  Found "+clazz;
+            print("  Found "+clazz);
         elif (verbose != 0):
-          print "  Not found "+clazz;
+          print("  Not found "+clazz);
     elif (verbose != 0):
-      print "  Doing nothing for line (no includes yet): "+line;
+      print("  Doing nothing for line (no includes yet): "+line);
 
   if (verbose != 0):
     print(str(includes));
   for item in includes.items():
     if (item[1] == 0):
-      print " !"+file+": Possibly unused include "+item[0]+".hpp";
+      print(" !"+file+": Possibly unused include "+item[0]+".hpp");
   f.close();
   
 
@@ -78,16 +82,17 @@ while (len(sys.argv) > argc):
   argc += 1;
 
 if (verbose != 0):
-  print "path    = "+path;
-  print "verbose = "+str(verbose);
+  print("path    = "+path);
+  print("verbose = "+str(verbose));
 
 if (os.path.exists(path)):
   if (verbose != 0):
-    print "-------Checking for possible unused headers: "+path;
+    print("-------Checking for possible unused headers: "+path);
   
   files = os.listdir(path);
   for file in files:
     if (file[-4:] == ".cpp"):
       process(os.path.join(path,file));
 else:
-  print "Path does not exist: "+path;
+  print("Path does not exist: "+path);
+

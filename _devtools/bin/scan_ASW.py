@@ -1,3 +1,7 @@
+#!/usr/bin/python
+#
+# Scan ASW in code
+#
 import sys, os;
 
 def process(TOKEN, file):
