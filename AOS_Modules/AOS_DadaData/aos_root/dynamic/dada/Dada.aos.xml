@@ -3,6 +3,6 @@
 	<input/>
 	<module class='Dada.template'/>
 	<output class='Xslt'>
-		<filename>dada/xsl/dada.xsl</filename>
+		<filename base="data">dada/xsl/dada.xsl</filename>
 	</output>
 </controller>

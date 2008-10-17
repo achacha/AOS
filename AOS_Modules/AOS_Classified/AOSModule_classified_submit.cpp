@@ -31,7 +31,7 @@ AOSContext::ReturnCode AOSModule_classified_submit::execute(AOSContext& context,
   // title
   if (context.useRequestParameterPairs().get("title", str))
   {
-    //a_Encode URL to hide any special characters
+    //a_Encode URL to hide any special characters (this is an alternative to makeSQLSafe)
     ATextConverter::encodeURL(str, query);
   }
   else

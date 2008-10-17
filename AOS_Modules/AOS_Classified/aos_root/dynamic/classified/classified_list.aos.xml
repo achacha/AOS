@@ -3,6 +3,6 @@
   <input/>
   <module class="Classified.list"/>
   <output class="Xslt">
-    <filename>classified/xsl/list.xsl</filename>
+    <filename base="data">classified/xsl/list.xsl</filename>
   </output>
 </controller>
