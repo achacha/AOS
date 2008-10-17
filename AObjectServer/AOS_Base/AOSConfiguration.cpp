@@ -227,6 +227,8 @@ AOSConfiguration::AOSConfiguration(
 
   //a_Configure server internals from config
   setAosDefaultFilename("/config/server/default-filename");
+  setAosDefaultInputProcessor("/config/server/default-input-processor");
+  setAosDefaultOutputGenerator("/config/server/default-output-generator");
 
   //a_Configure server reported values
   setReportedServer("/config/server/reported/server");
@@ -593,7 +595,6 @@ const AFilename& AOSConfiguration::getAdminBaseHttpDir() const
 
 void AOSConfiguration::getDynamicModuleConfigsToLoad(AFileSystem::FileInfos& target) const
 {
-  u4 ret = 0;
   AFilename configLoad(getAosBaseConfigDirectory());
   configLoad.usePathNames().push_back(ASW("autoload",8));
   configLoad.useFilename().assign("*.xml",5);

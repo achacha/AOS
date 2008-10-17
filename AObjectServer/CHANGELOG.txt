@@ -1,6 +1,16 @@
 Change Log
 ----------
 
+1.5.0.4:
+- Added partial output JSON emit (based on path(s) it outputs object or array) and made it a bit smarter when outputing JSON property with only content
+- .json as a supported extension type (with associated MIME type in mime_types.ini)
+- New XML step can output entire model or object(s) based on path (originally XML was a default coded into output executor)
+- Added client-side XSLT support for XML step
+- Fixed memory leak in File output generator
+- Added better filename choice to MsXslt output generator
+- AAutoPtr::oprator! added
+- AXmlDocument::clearAll removed, AXmlDocument::clear now handles all cases
+
 1.5.0.3:
 - Cleaned up history clearing via admin
 - Fixed small memory leak
@@ -9,6 +19,7 @@ Change Log
 - aos_root moved up one directory to be a peer to the output directories (so it can be shared by debug and release without sync)
 - Improved parsing of listener socket init data
 - Moved all module configs to ./aos_root/conf/autoload and will load a module corresponding the config name (AOS_MyModule.xml will load AOS_MyModule.dll automatically)
+
 
 1.5.0.2:
 - Moved aos_root up one directory to be parallel with release and debug directories (allows for a common config/site to be used by both debug and release)

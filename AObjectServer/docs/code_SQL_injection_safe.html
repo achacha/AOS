@@ -1,0 +1,74 @@
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body>
+<h1 class="heading">Preventing SQL Injection</h1>
+<div class="description">To protect against SQL injection all user input should be filtered.  
+There are several functions available in ATextConverter class that allow conversion of user input into SQL safe format (removing any single quotes from the data provided by the user).
+This is intended for appending user input into an SQL statement, you can also used stored procedures or 3rd party libraries to do database access which may have this built-in.  
+AOS provides very basic functions to allow queries of raw SQL.</div>
+<br />
+<h3 class="heading">Using ATextConverter::makeSQLSafe</h3>
+<div class="description">ATextConverter::makeSQLSafe is a simple function that replaces ' (single quote) with ` (SQL safe single quote).</div>
+<pre class="code">  
+  AXmlElement& outputXml = context.useModel().addElement("myapp");
+  AString userId;
+  if (!context.useRequestParameterPairs().get(ASW("userid",6), userId))
+  {
+    // Handle the case when user provided value is missing
+    // Usually adding XML element with error that will be handled by the view
+    outputXml.addElement(ASW("error",5)).addElement(ASW("no-userid",9));
+    return AOSContext::RETURN_OK;
+  }
+
+  AString query("select data from mytable where user_id=");
+  <b>ATextConverter::makeSQLSafe(userId, query);            // Makes the user input SQL safe (to prevent SQL injection)</b>
+  
+  AString error;
+  AResultSet result;
+  size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, error);
+  if (rows > 0 && error.isEmpty())
+  {
+    result.emitXml(outputXml);
+  }
+  else
+  {
+    context.addError(this->getClass(), error);
+  }
+  return AOSContext::RETURN_OK;
+</pre>
+<br />
+<h3 class="heading">Using ATextConverter::encodeURL</h3>
+<div class="description">ATextConverter::encodeURL is a simple function that replaces anything that is non alphanum [a-zA-z0-9] with UTL encoded version of %xx and space gets encoded to +, if using this method decodeURL should be called on data returned from the database.</div>
+<pre class="code">  
+  AXmlElement& outputXml = context.useModel().addElement("myapp");
+  AString userId;
+  if (!context.useRequestParameterPairs().get(ASW("userid",6), userId))
+  {
+    // Handle the case when user provided value is missing
+    // Usually adding XML element with error that will be handled by the view
+    outputXml.addElement(ASW("error",5)).addElement(ASW("no-userid",9));
+    return AOSContext::RETURN_OK;
+  }
+
+  AString query("select data from mytable where user_id=");
+  <b>ATextConverter::encodeURL(userId, query);            // Makes the user input SQL safe by encoding anything non-URL safe</b>
+  
+  AString error;
+  AResultSet result;
+  size_t rows = context.useServices().useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, error);
+  if (rows > 0 && error.isEmpty())
+  {
+    result.emitXml(outputXml);
+  }
+  else
+  {
+    context.addError(this->getClass(), error);
+  }
+  return AOSContext::RETURN_OK;
+</pre>
+<br />
+</body>
+</html>

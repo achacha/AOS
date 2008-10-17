@@ -29,6 +29,8 @@
 			</insert-root-x>
 		</data>
 	</module>
-	<output class="JSON"/>
+  <output class="XML">
+    <path>/root/REQUEST/url/query-string</path>
+  </output>
 </controller>
 	

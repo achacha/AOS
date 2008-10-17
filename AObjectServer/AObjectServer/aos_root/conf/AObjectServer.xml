@@ -91,7 +91,7 @@
   
   <default-filename>index.html</default-filename>
   <default-input-processor>application/x-www-form-urlencoded</default-input-processor>
-  <default-output-generator/>
+  <default-output-generator>XML</default-output-generator>
   <default-mime-type desc="MIME type to use when it cannot be mapped from the mime-types file and extension of the controller"><![CDATA[text/xml; charset=utf-8]]></default-mime-type>
   <mime-types desc="Filename that contains MIME mappings based on controller's extension">mime_types.ini</mime-types>
   

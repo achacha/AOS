@@ -6,16 +6,24 @@
 <body class="docs">
 <h1 class="heading">OUTPUT: Generate JSON data from XML data</h1>
 <div class="comment">Use the current model and display it as JSON<br />
-Will convert both XML attributes and sub-elements as JSON variable/objects<br />
+Will convert both XML attributes and sub-elements to JSON variable/objects<br />
 </div>
 <br />
 <h5 class="heading">USAGE</h5>
-<xmp class="code_xml"><output class="JSON"/></xmp>
+<xmp class="code_xml"><output type="JSON">
+  <path>/root/someobject</path>
+  <path>/root/anotherobject</path>
+  <path>/root/moreobjects</path>
+</output></xmp>
+<div class="comment">path - (optional, 0 or more) specifies XML root to use for generating JSON object<br />
+If more than 1 path is used or if path points to multiple nodes, then array notation will be used and JSON array will be returned</div>
 <br />
 <h5 class="heading">OUTPUT</h5>
-JSON notation of the model<br />
+JSON notation of the model and a single object or array of JSON objects.  See <a href="http://www.json.org/">JSON specification</a> for more details.<br />
 <br />
 <h5 class="heading">SAMPLES</h5>
 dynamic/samples/InsertIntoModel.json.aos.xml<br />
+dynamic/samples/InsertIntoModel_object.json.aos.xml<br />
+dynamic/samples/InsertIntoModel_array.json.aos.xml<br />
 <br /></body>
 </html>

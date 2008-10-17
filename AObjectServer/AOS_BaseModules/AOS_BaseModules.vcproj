@@ -505,6 +505,10 @@
 					RelativePath=".\AOSOutput_Template.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\AOSOutput_XML.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Source Files"
@@ -533,6 +537,10 @@
 				</File>
 				<File
 					RelativePath=".\AOSOutput_Template.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSOutput_XML.cpp"
 					>
 				</File>
 			</Filter>

@@ -29,6 +29,9 @@
 			</insert-root-x>
 		</data>
 	</module>
-	<output class="JSON"/>
+	<output class="XML">
+		<clientside-xsl-stylesheet>/xsl/InsertIntoModel.xsl</clientside-xsl-stylesheet>
+    <mime-extension>html</mime-extension>
+	</output>
 </controller>
 	

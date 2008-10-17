@@ -4,9 +4,9 @@
 		<path>/inserted</path>
 		<data>
 			<insert-root>
-				<item>small</item>
-				<item>Medium</item>
-				<item><![CDATA[LARGE]]></item>
+				<item>small-1</item>
+				<item>Medium-1</item>
+				<item><![CDATA[LARGE-1]]></item>
 			</insert-root>
 		</data>
 	</module>
@@ -22,12 +22,13 @@
 	</module>
 	<module class="InsertIntoModel">
 		<data>
-			<insert-root-2>
-				<item>small-2</item>
-				<item>Medium-2</item>
-				<item><![CDATA[LARGE-2]]></item>
-			</insert-root-2>
+			<insert-root-x>
+				<item>small-x</item>
+				<item>Medium-x</item>
+				<item><![CDATA[LARGE-x]]></item>
+			</insert-root-x>
 		</data>
 	</module>
+  <output class="XML"/>
 </controller>
 	

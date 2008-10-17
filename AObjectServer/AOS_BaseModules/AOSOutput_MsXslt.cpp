@@ -185,17 +185,64 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
 {
 	CoInitialize(NULL);
 
-  AFilename xsltFile(m_Services.useConfiguration().getAosBaseDataDirectory());
-  AString xsltName;
-  if (!context.getOutputParams().emitString(AOS_BaseModules_Constants::FILENAME, xsltName))
+  const AXmlElement *peFilename = context.getOutputParams().findElement(AOS_BaseModules_Constants::FILENAME);
+  if (!peFilename)
   {
-    m_Services.useLog().append("AOSOutput_MsXslt: Unable to find '/output/filename' parameter");
+    context.useEventVisitor().addEvent(ASWNL("AOSOutput_File: Unable to find 'path' parameter"), AEventVisitor::EL_ERROR);
     return AOSContext::RETURN_ERROR;
   }
-  xsltFile.join(xsltName, false);
+
+  //a_Get filename requested
+  AString str(1536, 1024);
+  peFilename->emitContent(str);
+
+  AAutoPtr<AFilename> pFilename;
+  AString strBase;
+  if (peFilename->getAttributes().get(AOS_BaseModules_Constants::BASE, strBase))
+  {
+    if (strBase.equals(ASW("data",4)))
+      pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseDataDirectory(), str, false));
+    else if (strBase.equals(ASW("dynamic",7)))
+      pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseDynamicDirectory(), str, false));
+    else if (strBase.equals(ASW("absolute",8)))
+      pFilename.reset(new AFilename(str, false));
+  }
+
+  //a_Static is the default
+  if (!pFilename)
+    pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseStaticDirectory(), str, false));
+  
+  if (!AFileSystem::exists(*pFilename))
+  {
+    context.addError(ASWNL("AOSOutput_File"), ARope("File not found: ",16)+*pFilename);
+    return AOSContext::RETURN_ERROR;
+  }
+
+  //a_See if extension for mime type set
+  AString ext;
+  if (context.getOutputParams().emitContentFromPath(AOS_BaseModules_Constants::MIME_EXTENSION, ext))
+  {
+    m_Services.useConfiguration().setMimeTypeFromExt(ext, context);
+  }
+  else
+  {
+    //a_Set content type based on file extension
+    AString ext;
+    pFilename->emitExtension(ext);
+    m_Services.useConfiguration().setMimeTypeFromExt(ext, context);
+  }
+
+  //AFilename xsltFile(m_Services.useConfiguration().getAosBaseDataDirectory());
+  //AString xsltName;
+  //if (!context.getOutputParams().emitString(AOS_BaseModules_Constants::FILENAME, xsltName))
+  //{
+  //  m_Services.useLog().append("AOSOutput_MsXslt: Unable to find '/output/filename' parameter");
+  //  return AOSContext::RETURN_ERROR;
+  //}
+  //xsltFile.join(xsltName, false);
 
   MSXML2::IXMLDOMDocument2Ptr *p = NULL;
-  XslDocHolder *pXslDocHolder = _getXslDocHolder(xsltFile);
+  XslDocHolder *pXslDocHolder = _getXslDocHolder(*pFilename);
 
   //a_Document exists in cache
   p = (MSXML2::IXMLDOMDocument2Ptr *)pXslDocHolder->m_ComPtr;

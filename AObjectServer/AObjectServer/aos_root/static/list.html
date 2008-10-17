@@ -41,12 +41,6 @@ $(document).ready(function(){
     </ul>
   </li>
   <li>
-    <span class="folder">Database</span>
-    <ul>
-      <li><a target="_target" href="/samples/sql.xml">Simple SQL query</a></li>
-    </ul>
-  </li>
-  <li>
     <span class="folder">Input processing</span>
     <ul>
       <li><a target="_target" href="/samples/DisplayInput.xml">Display Input: XML</a></li>
@@ -60,10 +54,16 @@ $(document).ready(function(){
   <li>
     <span class="folder">Output variations</span>
     <ul>
-      <li><a target="_target" href="/samples/InsertIntoModel.xml">as XML</a></li>
-      <li><a target="_target" href="/samples/InsertIntoModel.json">as JSON</a></li>
-      <li><a target="_target" href="/samples/InsertIntoModel.template">as HTML template</a></li>
-      <li><a target="_target" href="/samples/InsertIntoModel.xslt">as HTML via XSLT</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel.xml">XML: entire model</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel_object.xml">XML: single object at /root/REQUEST/query-string</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel_objects.xml">XML: several objects</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel.json">JSON: entire model</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel_object.json">JSON: single object at /root/REQUEST/query-string</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel_array.json">JSON: several objects as an array</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel.template">HTML: using template</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel.xslt">XSLT: server-side</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel_clientside.xslt">XSLT: client-side full model</a></li>
+      <li><a target="_target" href="/samples/InsertIntoModel_object_clientside.xslt">XSLT: client-side single object at /root/insert-root-x</a></li>
     </ul>
   </li>
   <li>
@@ -89,7 +89,9 @@ $(document).ready(function(){
   <li>
     <span class="folder">SQL</span>
     <ul>
-      <li><a target="_target" href="/samples/sql.xml">Simple SQL query</a></li>
+      <li><a target="_target" href="/samples/sql.xml">2 SQL queries displayed as XML: globals + users into /root/data</a></li>
+      <li><a target="_target" href="/samples/sql_filtered.xml">2 SQL queries displayed as XML filtered for /root/data/globals/row</a></li>
+      <li><a target="_target" href="/samples/sql_globals.html">SQL query of globals only, displayed using client-side XSLT and jQuery table</a></li>
     </ul>
   </li>
   <li>

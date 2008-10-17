@@ -2,6 +2,6 @@
 <controller>
 	<input class="application/x-www-form-urlencoded"/>
 	<output class="Xslt">
-		<filename>xsl/aosinput.xsl</filename>
+		<filename base="data">xsl/aosinput.xsl</filename>
 	</output>
 </controller>

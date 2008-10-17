@@ -4,9 +4,9 @@
 		<path>/inserted</path>
 		<data>
 			<insert-root>
-				<item>small-1</item>
-				<item>Medium-1</item>
-				<item><![CDATA[LARGE-1]]></item>
+				<item>small</item>
+				<item>Medium</item>
+				<item><![CDATA[LARGE]]></item>
 			</insert-root>
 		</data>
 	</module>
@@ -23,12 +23,15 @@
 	<module class="InsertIntoModel">
 		<data>
 			<insert-root-x>
-				<item>small-x</item>
-				<item>Medium-x</item>
-				<item><![CDATA[LARGE-x]]></item>
+				<item>small-2</item>
+				<item>Medium-2</item>
+				<item><![CDATA[LARGE-2]]></item>
 			</insert-root-x>
 		</data>
 	</module>
-	<output class="JSON"/>
+	<output class="JSON">
+    <path>inserted</path>
+    <path>/root/REQUEST/url/query-string</path>
+  </output>
 </controller>
 	

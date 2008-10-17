@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body class="docs">
+<h1 class="heading">OUTPUT: Emit XML model data</h1>
+<div class="comment">Use the current model and display it as XML</div>
+<br />
+<h5 class="heading">USAGE</h5>
+<xmp class="code_xml"><output type="XML">
+  <path>/root/someobject</path>
+  <path>/root/anotherobject</path>
+  <path>/root/moreobjects</path>
+</output></xmp>
+<xmp class="code_xml"><output type="XML">
+  <path>/root/REQUEST</path>
+  <clientside-xsl-stylesheet>reqest.xsl</clientside-xsl-stylesheet>
+</output></xmp>
+<div class="comment">path - (optional, 0 or more) specifies path to lookup in the model, all elements are added to the common element called 'root'<br />
+clientside-xsl-stylesheet - (optional) path to client-side XSL stylesheet to add to the XML document that the browser will use in transform</div>
+<br />
+<h5 class="heading">OUTPUT</h5>
+XML of the model or parts of it.<br />
+<br />
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/InsertIntoModel.xml.aos.xml<br />
+dynamic/samples/InsertIntoModel_object.xml.aos.xml<br />
+dynamic/samples/InsertIntoModel_objects.xml.aos.xml<br />
+<br /></body>
+</html>

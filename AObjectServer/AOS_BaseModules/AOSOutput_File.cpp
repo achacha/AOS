@@ -21,7 +21,6 @@ AOSOutput_File::AOSOutput_File(AOSServices& services) :
 
 AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
 {
- 
   const AXmlElement *peFilename = context.getOutputParams().findElement(AOS_BaseModules_Constants::FILENAME);
   if (!peFilename)
   {
@@ -33,21 +32,21 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
   AString str(1536, 1024);
   peFilename->emitContent(str);
 
-  AFilename *pFilename = NULL;
+  AAutoPtr<AFilename> pFilename;
   AString strBase;
   if (peFilename->getAttributes().get(AOS_BaseModules_Constants::BASE, strBase))
   {
     if (strBase.equals(ASW("data",4)))
-      pFilename = new AFilename(m_Services.useConfiguration().getAosBaseDataDirectory(), str, false);
+      pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseDataDirectory(), str, false));
     else if (strBase.equals(ASW("dynamic",7)))
-      pFilename = new AFilename(m_Services.useConfiguration().getAosBaseDynamicDirectory(), str, false);
+      pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseDynamicDirectory(), str, false));
     else if (strBase.equals(ASW("absolute",8)))
-      pFilename = new AFilename(str, false);
+      pFilename.reset(new AFilename(str, false));
   }
 
   //a_Static is the default
   if (!pFilename)
-    pFilename = new AFilename(m_Services.useConfiguration().getAosBaseStaticDirectory(), str, false);
+    pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseStaticDirectory(), str, false));
   
   if (!AFileSystem::exists(*pFilename))
   {

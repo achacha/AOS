@@ -183,14 +183,13 @@ void AOSContext::reset(AFile_Socket *pFile)
   m_RequestHeader.clear();
   m_ResponseHeader.clear();
   m_OutputBuffer.clear();
-  m_OutputXmlDocument.clear();
-  m_OutputXmlDocument.useRoot().useName().assign(XML_ROOT);
+  m_OutputXmlDocument.clear(XML_ROOT);
   mp_Controller = NULL;
   mp_DirConfig = NULL;
 
   m_ContextFlags.clear();
 
-  if (mp_RequestFile && m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+  if (mp_RequestFile && m_EventVisitor.isLoggingDebug())
   {
     ARope rope("AOSContext::reset[",18);
     rope.append(mp_RequestFile->getSocketInfo().m_address);
@@ -228,7 +227,7 @@ void AOSContext::finalize(bool releaseMemory)
 
   //a_Clear objects, buffers and model
   m_OutputBuffer.clear();
-  m_OutputXmlDocument.clear();
+  m_OutputXmlDocument.clear(XML_ROOT);
   m_ContextObjects.clear();
 
   if (releaseMemory)
@@ -250,6 +249,7 @@ void AOSContext::clear()
   reset(NULL);
   m_EventVisitor.clear();
   m_ConnectionFlags.clear();
+  pDelete(mp_RequestFile);
 }
 
 ABitArray& AOSContext::useConnectionFlags()
@@ -266,19 +266,6 @@ AOSContext::Status AOSContext::init()
 {
   //a_Start the timer
   m_RequestTimer.start();
-
-  //a_Reset context if pipelining, else this is a new or already reset context (from freestore)
-  if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
-  {
-    //a_If not this object would have been reset with a new socket prior to this call
-    reset(NULL);
-  }
-
-  m_EventVisitor.startEvent(ASW("AOSContext::INIT: Processing HTTP header",40), AEventVisitor::EL_INFO);
-  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
-  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
-  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_REDIRECTING);
-  m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_CACHE_CONTROL_NO_CACHE);
 
   try
   {
@@ -391,6 +378,9 @@ bool AOSContext::_waitForFirstChar()
 
 AOSContext::Status AOSContext::_processHttpHeader()
 {
+  if (m_EventVisitor.isLoggingInfo())
+    m_EventVisitor.startEvent(ASW("AOSContext::INIT: Processing HTTP header",40), AEventVisitor::EL_INFO);
+  
   if (!mp_RequestFile)
     ATHROW(this, AException::InvalidObject);
 
@@ -414,7 +404,9 @@ AOSContext::Status AOSContext::_processHttpHeader()
         return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
       }
       else
+      {
         bytesRead = mp_RequestFile->read(c);
+      }
     }
     break;
 
@@ -730,9 +722,29 @@ AOSContext::Status AOSContext::_processHttpHeader()
     return AOSContext::STATUS_HTTP_INCOMPLETE_CRLFCRLF;
   }
 
+  //a_Reset context if pipelining, else this is a new or already reset context (from freestore)
+  if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
+  {
+    if (m_EventVisitor.isLoggingDebug())
+      m_EventVisitor.startEvent(ASWNL("AOSContext: Resetting context before parse"), AEventVisitor::EL_DEBUG);
+
+    //a_If not this object would have been reset with a new socket prior to this call
+    reset(NULL);
+  }
+  else
+  {
+    if (m_EventVisitor.isLoggingDebug())
+      m_EventVisitor.startEvent(ASWNL("AOSContext: Clearing context flags before parse"), AEventVisitor::EL_DEBUG);
+
+    //a_Reset context for the current request
+    m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT);
+    m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_OUTPUT_SENT);
+    m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_REDIRECTING);
+    m_ContextFlags.clearBit(AOSContext::CTXFLAG_IS_CACHE_CONTROL_NO_CACHE);
+  }
+
   //a_Parse the header
-  if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
-    m_EventVisitor.startEvent(ASW("AOSContext: Parsing HTTP header",31), AEventVisitor::EL_DEBUG, 5000.0);
+  m_EventVisitor.startEvent(ASW("AOSContext: Parsing HTTP header",31), AEventVisitor::EL_EVENT, 5000.0);
   m_RequestHeader.parse(str);
 
   return _postProcessHttpHeader();

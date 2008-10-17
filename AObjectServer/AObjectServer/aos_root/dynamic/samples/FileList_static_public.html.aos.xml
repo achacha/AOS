@@ -5,7 +5,7 @@
 	  <filename>public/*.*</filename>
 	</module>
 	<output class="Xslt">
-		<filename>xsl/FileList.xsl</filename>
+		<filename base="data">xsl/FileList.xsl</filename>
 	</output>
 </controller>
 	
