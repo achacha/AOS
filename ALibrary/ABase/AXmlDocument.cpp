@@ -141,22 +141,29 @@ void AXmlDocument::emitJson(
   }
 }
 
-void AXmlDocument::clearAll()
+void AXmlDocument::clear(
+  const AString& rootName, //  = AConstant::ASTRING_EMPTY
+  bool keepInstructions    //  = false
+)
 {
-  LIST_NODEPTR::iterator it = m_Instructions.begin();
-  while (it != m_Instructions.end())
-  {
-    delete (*it);
-    ++it;
-  }
-  m_Instructions.clear();
+  // Clear the DOM
   m_Root.clear();
-  m_Root.useName().clear();
-}
 
-void AXmlDocument::clear()
-{
-  m_Root.clear();
+  // Clear instructions
+  if (!keepInstructions)
+  {
+    LIST_NODEPTR::iterator it = m_Instructions.begin();
+    while (it != m_Instructions.end())
+    {
+      delete (*it);
+      ++it;
+    }
+    m_Instructions.clear();
+  }
+
+  // Set name if specified
+  if (!rootName.isEmpty())
+    m_Root.useName().assign(rootName);
 }
 
 AXmlInstruction& AXmlDocument::addInstruction(AXmlInstruction::TYPE type)
@@ -177,7 +184,7 @@ AXmlInstruction& AXmlDocument::addComment(const AString& comment)
 void AXmlDocument::fromAFile(AFile& file)
 {
   //a_Full clear since we are restoring from file
-  clearAll();
+  clear(AConstant::ASTRING_EMPTY, false);
   
   AString str(256, 128);
   char c;

@@ -405,7 +405,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tMemAlloc.cpp"
+			RelativePath=".\tXMLElement.cpp"
 			>
 		</File>
 	</Files>

@@ -44,78 +44,6 @@ const char xml_config[]= "\
 </root>\
 ";
 
-const char xml_data_big[] ="\
-<?xml version = \"1.0\"?>\
-<!-- root level comment -->\
-<?xml stylesheet=\"acb\"?>\
-<XML ID = \"EQInterfaceDefinitionLanguage\">\
-  <!-- first level comment -->\
-	<Schema xmlns = \"EverQuestData\" xmlns:dt = \"EverQuestDataTypes\"/>\
-	<Gauge item = \"Casting_Gauge\">\
-		<ScreenID>Gauge</ScreenID>\
-		<!--<Font>3</Font> -->\
-		<RelativePosition>true</RelativePosition>\
-		<Location>\
-			<X>0</X>\
-			<Y>2</Y>\
-		</Location>\
-		<Size>\
-			<CX>116</CX>\
-			<CY>8</CY>\
-		</Size>\
-		<GaugeOffsetY>0</GaugeOffsetY>\
-		<Style_VScroll>false</Style_VScroll>\
-		<Style_HScroll>false</Style_HScroll>\
-		<Style_Transparent>false</Style_Transparent>\
-		<!--<TooltipReference/>-->\
-		<FillTint>\
-				<R>240</R>\
-				<G>0</G>\
-				<B>240</B>\
-		</FillTint>\
-		<LinesFillTint>\
-				<R>0</R>\
-				<G>0</G>\
-				<B>0</B>\
-		</LinesFillTint>\
-		<DrawLinesFill>false</DrawLinesFill>\
-		<EQType>7</EQType>\
-		<GaugeDrawTemplate>\
-			<Background>A_GaugeBackground</Background>\
-			<Fill>A_GaugeFill</Fill>\
-			<Lines>A_GaugeLines</Lines>\
-			<LinesFill>A_GaugeLinesFill</LinesFill>\
-			<EndCapLeft>A_GaugeEndCapLeft</EndCapLeft>\
-			<EndCapRight>A_GaugeEndCapRight</EndCapRight>\
-		</GaugeDrawTemplate>\
-	</Gauge>\
-	<Screen item = \"CastingWindow\">\
-		<!--<ScreenID/>-->\
-		<!--<Font/>-->\
-		<RelativePosition>false</RelativePosition>\
-		<Location>\
-			<X>290</X>\
-			<Y>50</Y>\
-		</Location>\
-		<Size>\
-			<CX>128</CX>\
-			<CY>38</CY>\
-		</Size>\
-		<Text>Casting Time</Text>\
-		<Style_VScroll>false</Style_VScroll>\
-		<Style_HScroll>false</Style_HScroll>\
-		<Style_Transparent>false</Style_Transparent>\
-		<TooltipReference>The Breath Meter</TooltipReference>\
-		<DrawTemplate>WDT_Rounded</DrawTemplate>\
-		<Style_Titlebar>true</Style_Titlebar>\
-		<Style_Closebox>false</Style_Closebox>\
-		<Style_Minimizebox>false</Style_Minimizebox>\
-		<Style_Border>true</Style_Border>\
-		<Style_Sizable>false</Style_Sizable>\
-		<Pieces>Casting_Gauge</Pieces>\
-	</Screen>\
-	</XML>\
-	";
 
 const char xml_small_single_quote[] ="<?xml version=\"1.0\" encoding=\"utf-8\" ?><module class='Test' name='start'/>";
 
@@ -461,9 +389,21 @@ void testFilenameEmit()
   return;
 }
 
+void testEmitPath()
+{
+  AFile_AString strfile(xml_config);
+  AXmlElement e;
+  e.fromAFile(strfile);
+
+  const AXmlElement *p = e.findElement(ASWNL("/root/http/host"));
+  AString str;
+  p->emitPath(str);
+  std::cout << str <<std::endl;
+}
+
 int main()
 {
-  testParse();
+//  testParse();
 //  testPathAdd();
 //  testOutput();
 //  testRandomXml();
@@ -477,6 +417,7 @@ int main()
 //  testFind3();
 //  testInsertWithPath();
 //  testFilenameEmit();
+  testEmitPath();
 
 	return 0;
 }

@@ -129,6 +129,7 @@ bool AXmlElement::emitContentFromPath(
 AXmlElement& AXmlElement::emitXml(AXmlElement& thisRoot) const
 {
   AXmlElement& base = thisRoot.addElement(m_Name);
+  base.addAttributes(m_Attributes);
   CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
@@ -954,13 +955,22 @@ void AXmlElement::emitJson(
   target.append(m_Name);
   if (m_Content.size() + m_Attributes.size() == 0)
   {
-    target.append(":''",3);
+    target.append(":\"\"",3);
     if (indent >=0) target.append(AConstant::ASTRING_CRLF);
     return;
   }
   
-  bool needsBraces = m_Content.size() > 0 || m_Attributes.size() > 0;
   target.append(':');
+  if (!hasElements() && !m_Attributes.size())
+  {
+    //a_Just content and no attributes or elements
+    target.append('\"');
+    emitContent(target);
+    target.append('\"');
+    return;
+  }
+
+  bool needsBraces = m_Content.size() > 0 || m_Attributes.size() > 0;
   if (needsBraces)
   {
     target.append('{');
@@ -995,9 +1005,9 @@ void AXmlElement::emitJson(
     {
       if (indent >=0) _indent(target, indent+1);
       target.append((*cit)->getName());
-      target.append(":'",2);
+      target.append(":\"",2);
       target.append((*cit)->getValue());
-      target.append('\'');
+      target.append('\"');
       ++cit;
       if (cit != container.end())
       {
@@ -1223,4 +1233,13 @@ AXmlElement *AXmlElement::setParent(AXmlElement *pParent)
   AXmlElement *pCurrent = mp_Parent;
   mp_Parent = pParent;
   return pCurrent;
+}
+
+void AXmlElement::emitPath(AOutputBuffer& target) const
+{
+  if (mp_Parent)
+    mp_Parent->emitPath(target);
+
+  target.append(AConstant::ASTRING_SLASH);
+  target.append(m_Name);
 }

@@ -68,9 +68,9 @@ void AXmlData::setEncoding(AXmlElement::Encoding encoding)
 void AXmlData::emitJson(AOutputBuffer& target, int indent) const
 {
   if (indent >=0) _indent(target, indent);
-  target.append("data_:\'",7);
+  target.append("_data:\"",7);
   target.append(m_Data);
-  target.append('\'');
+  target.append('\"');
 }
 
 void AXmlData::emitContent(AOutputBuffer& target) const

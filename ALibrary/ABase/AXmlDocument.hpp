@@ -113,14 +113,13 @@ public:
   virtual void emitJson(AOutputBuffer& target, int indent = -1) const;
 
   /*! 
-  Clears root element name, data and instructions (must manually re-add XML_HEADER and set root element name)
+  Only clears root element and retains instructions, assigns new rootName is not empty else keeps old one
+  Since a document requires a root name the only way to clear it is to useRoot().useName().clear() - not recommended
+  
+  @param rootName if non-empty will set it as the new name, else will keep the existing name
+  @param keepInstructions by default instructions added to the document are not cleared
   */
-  void clearAll();
-
-  /*! 
-  Only clears root element and retains the root name and instructions
-  */
-  void clear();
+  void clear(const AString& rootName = AConstant::ASTRING_EMPTY, bool keepInstructions = false);
 
   /*!
   ASerializable

@@ -10,7 +10,14 @@
 #include "AThread.hpp"
 #include "AFile_IOStream.hpp"
 
-void testNew()
+void testGlobalNew()
+{
+  char *p = new char[32];
+  *p = '\x0';
+  delete p;
+}
+
+void testABaseNew()
 {
   AString *p = new AString("foo",3);
   p->append("bar",3);
@@ -86,7 +93,8 @@ DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(true);
 
   try
   {
-    testNew();
+    testGlobalNew();
+    //testABaseNew();
     //testEventVisitor();
     //testAString();
     //testATextGenerator();

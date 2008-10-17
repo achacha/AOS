@@ -558,6 +558,14 @@ public:
   virtual void emitXmlContent(AXmlElement& rootThis) const;
 
   /*!
+  Emit the path of the current element based on absolute root
+  Will traverse up parents until NULL parent is reached
+
+  @param target to emit to
+  */
+  virtual void emitPath(AOutputBuffer& target) const;
+
+  /*!
   Clear the object and release sub-elements
   NOTE: Does NOT clear the name of the object
   */

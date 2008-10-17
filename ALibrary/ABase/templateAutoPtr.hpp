@@ -154,6 +154,11 @@ public:
   T& operator *() { return *m_Pointer; }
 
   /*!
+  Check if pointer is NULL
+  */
+  bool operator !() { return (NULL == m_Pointer); }
+
+  /*!
   Checks if contained pointer is not obviously invalid
   */
   bool isPointerValid() const { return ADebugDumpable::isPointerValid(m_Pointer); }
@@ -277,6 +282,11 @@ public:
   Array access operators
   */
   T &operator [](int iOffset) { return m_Pointer[iOffset]; }
+
+  /*!
+  Check if pointer is NULL
+  */
+  bool operator !() { return (NULL == m_Pointer); }
 
   /*!
   Checks if contained pointer is not obviously invalid
@@ -404,6 +414,11 @@ public:
   Array access operators
   */
   T& operator [](int iOffset) { return m_Pointer[iOffset]; }
+
+  /*!
+  Check if pointer is NULL
+  */
+  bool operator !() { return (NULL == m_Pointer); }
 
   /*!
   Checks if contained pointer is not obviously invalid
