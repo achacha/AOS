@@ -10,5 +10,4 @@ for param in sys.argv[1:]:
   params = params + param + " ";
 
 os.chdir(BASE_ENV_PATH);
-print(os.getcwd());
-os.system("./gather_headers.py "+params);
+os.system(os.path.join(BASE_ENV_PATH, "gather_headers.py "+params));
