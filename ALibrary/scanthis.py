@@ -5,8 +5,8 @@
 import os,sys;
 
 THIS_DIR=os.path.dirname(sys.argv[0]);
-SCAN_SCRIPT=os.path.normpath(os.path.join(THIS_DIR,"..","_devtools","bin","scan.py"));
-
+binpath = os.path.normpath(os.path.join(THIS_DIR,"..","_devtools","bin"));
+SCAN_SCRIPT = os.path.join(binpath, "scan.py");
 if (not os.path.exists(SCAN_SCRIPT)):
   print "Unable to find scan script: "+SCAN_SCRIPT;
   sys.exit(-1);
@@ -18,3 +18,4 @@ if (os.path.exists(SCAN_CONF)):
 else:
   print "Using current directory as base path.";
   os.system(SCAN_SCRIPT+" -p "+THIS_DIR);
+
