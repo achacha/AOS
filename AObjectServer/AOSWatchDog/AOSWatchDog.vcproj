@@ -318,6 +318,8 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(OutDir)"
+				GenerateMapFile="true"
+				MapFileName="$(OutDir)/$(TargetName).map"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
