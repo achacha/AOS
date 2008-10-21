@@ -13,9 +13,11 @@ if (context.TARGET_DEBUG_32 == context.DEBUG_32):
   sys.exit(0);
 
 # If output directory is not there, should create it
-context.executeScript("make_output_directories.py");
-context.executeScript("gather_binaries_ALibrary.py");
-context.executeScript("gather_binaries_AObjectServer.py");
+if (context.targetDoesNotExist()):
+  print("Target does not exist, gather_binaries_ALibrary.py calling make_output_directories.py, gather_binaries_ALibrary.py, gather_binaries_AObjectServer.py")
+  context.executeScript("make_output_directories.py");
+  context.executeScript("gather_binaries_ALibrary.py");
+  context.executeScript("gather_binaries_AObjectServer.py");
   
 # ALibrary include
 print("|========================== AOS_Blog sync binaries ===================================|");

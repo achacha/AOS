@@ -47,9 +47,13 @@ if (not os.path.exists(context.TARGET_PATH)):
   os.mkdir(context.TARGET_PATH);
 
 # Sync aos_root directories
+print("Sync AObjectServer aos_root")
 sync_aos_root(context, context.BASE_AOBJECTSERVER_PATH);
+print("Sync AOS_Modules aos_root")
 sync_aos_root(context, context.BASE_AOSMODULES_PATH);
 
+print("Sync SSL and AOSWatchDog config")
 context.syncFileToOutput(os.path.join(context.BASE_AOBJECTSERVER_PATH, "openssl_create_selfsigned_certificate.py"));
 context.syncFileToOutput(os.path.join(context.BASE_AOBJECTSERVER_PATH, "openssl.config"));
+context.syncFileToOutput(os.path.join(context.BASE_AOBJECTSERVER_PATH, "AOSWatchDog", "AOSWatchDog.ini"));
 
