@@ -315,6 +315,8 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(OutDir)"
 				IgnoreDefaultLibraryNames="libcmt"
+				GenerateMapFile="true"
+				MapFileName="$(OutDir)/$(TargetName).map"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
