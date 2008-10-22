@@ -229,6 +229,7 @@ int main(int argc, char **argv)
       str.append(ex);
       traceMultiline(str, NULL);
       pservices->useLog().addException(ex);
+      return -1;
     }
     catch(std::exception& ex)
     {
@@ -236,6 +237,7 @@ int main(int argc, char **argv)
       str.append(ASWNL(ex.what()));
       traceMultiline(str, NULL);
       pservices->useLog().addException(ex);
+      return -1;
     }
     catch(...)
     {
@@ -248,30 +250,40 @@ int main(int argc, char **argv)
 #endif
       AOS_DEBUGTRACE("main: Unknown exception caught", NULL);
       pservices->useLog().add(ASWNL("main: Unknown exception caught"), ALog::EXCEPTION);
+      return -1;
     }
   }
   catch(AException& ex)
   {
-    str.assign("main: ");
+    str.assign("main caught AException: ");
     str.append(ex);
+    str.append("\r\nWaiting on all threads to exit, may take a few seconds.\r\n");
     traceMultiline(str, NULL);
+    return -1;
   }
   catch(std::exception& ex)
   {
     str.assign("main: ");
     str.append(ASWNL(ex.what()));
+    str.append("\r\nWaiting on all threads to exit, may take a few seconds.\r\n");
     traceMultiline(str, NULL);
+    return -1;
   }
   catch(...)
   {
 #ifdef __WINDOWS__
-    str.assign(argv[0]);
+    str.assign("main: Unknown exception caught. Minidump: ");
+    str.append(argv[0]);
     str.append(".minidump");
     OFSTRUCT ofile;
     HFILE hFile = ::OpenFile(str.c_str(), &ofile, OF_CREATE|OF_WRITE|OF_SHARE_DENY_WRITE);
     ::MiniDumpWriteDump(::GetCurrentProcess(), ::GetCurrentProcessId(), (HANDLE)hFile, MiniDumpNormal, NULL, NULL, NULL);
+#else
+    str.assign("main: Unknown exception caught.");
 #endif
+    str.append("\r\nWaiting on all threads to exit, may take a few seconds.\r\n");
     AOS_DEBUGTRACE("main: Unknown exception caught", NULL);
+    return -1;
   }
 
   DEBUG_MEMORY_LEAK_ANALYSIS_END();

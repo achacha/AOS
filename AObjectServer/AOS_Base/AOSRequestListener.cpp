@@ -107,6 +107,7 @@ void AOSRequestListener::startListening()
         str.append(AString::fromInt(p->getPort()));
         str.append(", already in use.");
         AOS_DEBUGTRACE(str.c_str(), NULL);
+        ATHROW_EX(this, ASocketException::UnableToOpen, str);
       }
       else
       {
@@ -120,6 +121,7 @@ void AOSRequestListener::startListening()
       AString str("HTTP invalid port specified:");
       str.append(AString::fromInt(p->getPort()));
       AOS_DEBUGTRACE(str.c_str(), NULL);
+      ATHROW_EX(this, ASocketException::UnableToOpen, str);
     }
   }
   
@@ -136,6 +138,7 @@ void AOSRequestListener::startListening()
         str.append(AString::fromInt(p->getPort()));
         str.append(" missing cert element, secure socket not listening.");
         AOS_DEBUGTRACE(str.c_str(), NULL);
+        ATHROW_EX(this, ASocketException::UnableToOpen, str);
       }
       
       if (p->getPrivateKeyFilename().getFilename().isEmpty())
@@ -145,6 +148,7 @@ void AOSRequestListener::startListening()
         str.append(AString::fromInt(p->getPort()));
         str.append(" missing pkey element, secure socket not listening.");
         AOS_DEBUGTRACE(str.c_str(), NULL);
+        ATHROW_EX(this, ASocketException::UnableToOpen, str);
       }
 
       if (!ASocketLibrary::canBindToPort(p->getPort()))
@@ -154,6 +158,7 @@ void AOSRequestListener::startListening()
         str.append(AString::fromInt(p->getPort()));
         str.append(", already in use.");
         AOS_DEBUGTRACE(str.c_str(), NULL);
+        ATHROW_EX(this, ASocketException::UnableToOpen, str);
       }
 
       if (ready)
@@ -168,6 +173,7 @@ void AOSRequestListener::startListening()
       AString str("HTTPS invalid port specified:");
       str.append(AString::fromInt(p->getPort()));
       AOS_DEBUGTRACE(str.c_str(), NULL);
+      ATHROW_EX(this, ASocketException::UnableToOpen, str);
     }
   }
 }
