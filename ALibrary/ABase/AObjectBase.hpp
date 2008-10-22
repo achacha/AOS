@@ -35,8 +35,7 @@ public:
 */
 class ABASE_API AObjectBase : 
   public ASynchronization, 
-  public AXmlEmittable,
-  public ADebugDumpable
+  public AXmlEmittable
 {
 public:
   /*!
