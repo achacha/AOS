@@ -646,10 +646,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AObjectBase.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AOutputBuffer.cpp"
 				>
 			</File>
@@ -1119,10 +1115,6 @@
 			</File>
 			<File
 				RelativePath=".\ANumber.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AObjectBase.hpp"
 				>
 			</File>
 			<File
