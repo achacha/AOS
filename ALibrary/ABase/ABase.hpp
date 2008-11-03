@@ -35,28 +35,28 @@ public:
   virtual ~ABase();
 
   /*!
+  Set the next item in the chain
+  @param p ABase * or NULL if none
+  */
+  void setNext(ABase *p);
+
+  /*!
+  Set the previous item in the chain
+  @param p ABase * or NULL if none
+  */
+  void setPrev(ABase *p);
+
+  /*!
   Get the next item in the chain
   @return NULL if none
   */
-  ABase *useNext();
+  ABase *getNext() const;
 
   /*!
   Get the previous item in the chain
   @return NULL if none
   */
-  ABase *usePrev();
-
-  /*!
-  Get the next item in the chain
-  @return NULL if none
-  */
-  const ABase *getNext() const;
-
-  /*!
-  Get the previous item in the chain
-  @return NULL if none
-  */
-  const ABase *getPrev() const;
+  ABase *getPrev() const;
 
 /*!
 If DEBUG_TRACK_ABASE_MEMORY is defined all allocation/deallocation via new/new[]/delete/delete[] of ABase objects is traced to std::cout

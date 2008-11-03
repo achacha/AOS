@@ -10,14 +10,21 @@ $Id$
 #include "AHTTPHeader.hpp"
 #include "ACookies.hpp"
 
+/*!
+HTTP response header class
+*/
 class ABASE_API AHTTPResponseHeader : public AHTTPHeader
 {
 public:
-  //a_1xx - informational
-  //a_2xx - sucess
-  //a_3xx - redirection
-  //a_4xx - client error
-  //a_5xx - server error
+  /*!
+  Valid status codes
+
+  1xx - informational
+  2xx - sucess
+  3xx - redirection
+  4xx - client error
+  5xx - server error
+  */
   enum STATUS_CODES
   {
     SC_100_Continue                          = 100,
@@ -70,9 +77,17 @@ public:
   virtual ~AHTTPResponseHeader();
 
   /*!
-  AEmittable and AXmlEmittable
+  AEmittable
+
+  @param target to emit to
   */
   virtual void emit(AOutputBuffer& target) const;
+
+  /*!
+  AXmlEmittable
+
+  @param thisRoot to emit into
+  */
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
@@ -82,22 +97,30 @@ public:
 
   /*!
   Gets reason phrase for a status code (as per RFC-2616)
-  Returns empty string if not found
+  
+  @return empty string if not found
   */
   static const AString getStatusCodeReasonPhrase(int statusCode);
   
   /*!
   Checks if status code is valid (as per RFC-2616)
+
+  @return if status code is valid
   */
   static bool isValidStatusCode(int statusCode);
 
   /*!
   Access
+
+  @return get status code
   */
   int getStatusCode() const;
 
   /*!
   Set response code and optional description
+  
+  @param eStatusCode set the status code
+  @see AHTTPResponseHeader::STATUS_CODES
   */
   void setStatusCode(AHTTPResponseHeader::STATUS_CODES eStatusCode);
 
@@ -105,29 +128,46 @@ public:
   Set response code and optional description
   Checks validity amd if status code is not a valid one (as per RFC2616),
     you MUST provide a reason
+
+  @param set numeric status code
+  @param reason to use (if status code is a valid one default will be used but this can override that also)
   */
   void setStatusCode(int statusCode, const AString& reason = AConstant::ASTRING_EMPTY);
 
   /*!
   Get current reason phrase (empty of default to be used)
+
+  @return constant reference to AString with reason for current status code
   */
   const AString& getReasonPhrase() const;
 
   /*!
   Response status reason phrase
+
+  @param reason to set
   */
   void setReasonPhrase(const AString& reason);
 
   /*!
-  Access to cookies
+  Access to constant cookies container
+
+  @param constant reference to ACookies
   */
   const ACookies& getCookies() const;
+
+  /*!
+  Access to cookies container
+
+  @param reference to ACookies
+  */
   ACookies& useCookies();
 
   /*!
   Set the last modified time
+
+  @param time to set as last modified
   */
-  void setLastModified(const ATime&);
+  void setLastModified(const ATime& time);
 
   /*!
   ADebugDumpable
@@ -135,11 +175,13 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 protected:
-  //a_First line handled by respnse
-  //a_Format: [HTTPVERSION] [SP] [STATUSCODE] [SP] [STATUSDESCRIPTION]
+  /*!
+  First line handled by respnse
+  Format: [HTTPVERSION] [SP] [STATUSCODE] [SP] [STATUSDESCRIPTION]
+  */
   virtual bool _parseLineZero();
 
-  //a_Handle pairs response specific
+  //! Handle pairs response specific
   virtual bool _handledByChild(const ANameValuePair &nvPair);  
 
 private:

@@ -463,13 +463,13 @@ public:
   size_t findPattern(const AString& strPattern, size_t startIndex = 0) const;
 
   /*!
-  Splits the string based on a delimeter character, empty strings discarded (i.e. 2 delimeters next to each other, leading delimeter, or trailing delimeter)
+  Splits the string based on a delimiter character, empty strings discarded (i.e. 2 delimiters next to each other, leading delimiter, or trailing delimiter)
   strStrip will be used on each resulting string and stripped from front and back (AConstant::ASTRING_EMPTY means don't strip anything)
-  bKeepEmpty if true it will keep empty string (2 delimeters next to each other)
+  bKeepEmpty if true it will keep empty string (2 delimiters next to each other)
   NOTE: Does not clear the list, appends
   */
-  size_t split(LIST_AString& slResult, char delimeter = ' ', const AString& strStrip = AConstant::ASTRING_EMPTY, bool bKeepEmpty = false) const;
-  size_t split(VECTOR_AString& slResult, char delimeter = ' ', const AString& strStrip = AConstant::ASTRING_EMPTY, bool bKeepEmpty = false) const;
+  size_t split(LIST_AString& slResult, char delimiter = ' ', const AString& strStrip = AConstant::ASTRING_EMPTY, bool bKeepEmpty = false) const;
+  size_t split(VECTOR_AString& slResult, char delimiter = ' ', const AString& strStrip = AConstant::ASTRING_EMPTY, bool bKeepEmpty = false) const;
   
   /*!
   Truncate when a given character is found (inclusive, this character will be replaced by end-of-string)
@@ -527,21 +527,21 @@ public:
   /*!
   Strip leading
   */
-  AString& stripLeading(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  AString& stripLeading(const AString& strDelimiters = AConstant::ASTRING_WHITESPACE);
   /*!
   Strip trailing
   */
-  AString& stripTrailing(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  AString& stripTrailing(const AString& strDelimiters = AConstant::ASTRING_WHITESPACE);
   
   /*!
   Strip leading and trailing only
   */
-  AString& stripLeadingAndTrailing(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  AString& stripLeadingAndTrailing(const AString& strDelimiters = AConstant::ASTRING_WHITESPACE);
 
   /*!
   Strip entire string
   */
-  AString& stripEntire(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  AString& stripEntire(const AString& strDelimiters = AConstant::ASTRING_WHITESPACE);
 
   /*!
   Internal helpers
@@ -558,14 +558,14 @@ public:
   peek functions will get the content without removing it
   peek(size_t) will return the byte at a given index
   peek(AString&,size_t,size_t) will append bytes from a given index into another buffer and return bytes appended
-  peekUntil(AString&,size_t,const AString&) will copy bytes from a given index until delimeter is found or everything to end if not; returns new position or npos if not found
-  peekUntil(AString&,size_t,const AString&) will copy bytes from a given index until one of the delimeters is found or everything to end if not; returns new position or npos if not found
+  peekUntil(AString&,size_t,const AString&) will copy bytes from a given index until delimiter is found or everything to end if not; returns new position or npos if not found
+  peekUntil(AString&,size_t,const AString&) will copy bytes from a given index until one of the delimiters is found or everything to end if not; returns new position or npos if not found
   */
   inline u1 peek(size_t index = 0) const;
   size_t peek(AOutputBuffer& bufDestination, size_t index = 0, size_t bytes = AConstant::npos) const;
-  size_t peekUntil(AOutputBuffer& bufDestination, size_t index, char delimeter) const;
-  size_t peekUntil(AOutputBuffer& bufDestination, size_t index, const AString& delimeters) const;
-  size_t peekUntilOneOf(AOutputBuffer& bufDestination, size_t index = 0, const AString& delimeters = AConstant::ASTRING_WHITESPACE) const;
+  size_t peekUntil(AOutputBuffer& bufDestination, size_t index, char delimiter) const;
+  size_t peekUntil(AOutputBuffer& bufDestination, size_t index, const AString& delimiters) const;
+  size_t peekUntilOneOf(AOutputBuffer& bufDestination, size_t index = 0, const AString& delimiters = AConstant::ASTRING_WHITESPACE) const;
 
   /*!
   ARandomAccessBuffer
@@ -590,42 +590,95 @@ public:
   u1 rget();
   
   /*!
-  get functions (unlike peek) will get the content and remove it
-  get(AString&,size_t,size_t) will copy and remove bytes from a given index into another buffer
+  Get (copy and remove) bytes
+
+  @param target to move data into
+  @param sourceIndex to start moving from
+  @param bytes to move
+  @return AConstant::npos if not found, or number of bytes moved
   */
-  size_t get(AString& bufDestination, size_t sourceIndex = 0, size_t bytes = AConstant::npos);                                                //a_Return # of bytes moved
-  size_t getUntilOneOf(AString& bufDestination, const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);     //a_Return # of bytes moved
-  
-  /*!
-  Copy and remove bytes delimeter is found, delimeter is not part of the result
-  removeDelimeter determines if it is removed
-  Returs # of bytes moved
-  */
-  size_t getUntil(AString& bufDestination, const AString& pattern, bool removeDelimeter = true);  //a_Return # of bytes moved
-  size_t getUntil(AString& bufDestination, char delimeter, bool removeDelimeter = true);          //a_Return # of bytes moved
+  size_t get(AString& target, size_t sourceIndex = 0, size_t bytes = AConstant::npos);
 
   /*!
-  remove - Pop removes count at a position
-  rremove - Pops from the end, effectively shrinking the string
+  Get (copy and remove) bytes from a given index into another buffer until one of the delimiters is found
+
+  @param target to move data into
+  @param delimiters to remove until one is found
+  @param removeDelimiter if true will remove all delimiters
+  @return AConstant::npos if not found, or number of bytes moved
+  */
+  size_t getUntilOneOf(AString& target, const AString& delimiters = AConstant::ASTRING_WHITESPACE, bool removeDelimiters = true);
+  
+  /*!
+  Copy and remove bytes delimiter is found, delimiter is not part of the result
+  
+  @param target to move data into
+  @param pattern to look for and stop moving (not one of but entire pattern)
+  @param removeDelimiter determines if it is removed
+  @return # of bytes moved
+  */
+  size_t getUntil(AString& target, const AString& pattern, bool removeDelimiter = true);
+
+  /*!
+  Copy and remove bytes delimiter is found, delimiter is not part of the result
+  
+  @param target to move data into
+  @param delimiter
+  @param removeDelimiter determines if it is removed
+  @return # of bytes moved
+  */
+  size_t getUntil(AString& target, char delimiter, bool removeDelimiter = true);
+
+  /*!
+  Pop removes count at a position
+
+  @param length to remove
+  @param offset to remove at
   */
   void remove(size_t length = 1, size_t offset = 0);
+
+  /*!
+  Pops from the end, effectively shrinking the string
+
+  @param length to remove
+  */
   void rremove(size_t length = 1);
 
   /*!
-  Remove until a given delimeter, if not found will clear
+  Remove until a one of the delimiters is found, if not found will clear
 
-  @return AConstant::npos if not found
+  @param delimiters to remove until one is found
+  @param removeDelimiter if true will remove all delimiters
+  @return AConstant::npos if not found, >=0 otherwise
   */
-  size_t removeUntilOneOf(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
-  size_t removeUntil(char delimeter, bool removeDelimeter = true);
+  size_t removeUntilOneOf(const AString& delimiters = AConstant::ASTRING_WHITESPACE, bool removeDelimiters = true);
 
   /*!
-  Reverse remove until a given delimeter, if not found will clear
+  Remove until a one of the delimiters is found, if not found will clear
 
-  @return AConstant::npos if not found
+  @param delimiter to remove until
+  @param removeDelimiter if true will remove all subsequent found delimiters
+  @return AConstant::npos if not found, >=0 otherwise
   */
-  size_t rremoveUntilOneOf(const AString& delimeters = AConstant::ASTRING_WHITESPACE, bool removeDelimeters = true);
-  size_t rremoveUntil(char delimeter, bool removeDelimeter = true);
+  size_t removeUntil(char delimiter, bool removeDelimiter = true);
+
+  /*!
+  Reverse remove until a given delimiter, if not found will clear
+
+  @param delimiters to remove until one is found
+  @param removeDelimiter if true will remove all delimiters
+  @return AConstant::npos if not found, >=0 otherwise
+  */
+  size_t rremoveUntilOneOf(const AString& delimiters = AConstant::ASTRING_WHITESPACE, bool removeDelimiters = true);
+
+  /*!
+  Reverse remove until a given delimiter, if not found will clear
+
+  @param delimiter to remove until
+  @param removeDelimiter if true will remove all subsequent found delimiters
+  @return AConstant::npos if not found, >=0 otherwise
+  */
+  size_t rremoveUntil(char delimiter, bool removeDelimiter = true);
 
   /*!
   set(u1,size_t) will set 1 byte at an index (yes, its really a poke! :)

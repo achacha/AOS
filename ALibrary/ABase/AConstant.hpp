@@ -67,6 +67,7 @@ public:
   static const AString CHARSET_LOWERCASE_CONSONANTS;  //a_"bcdfghjklmnpqrstvwxyz"
   static const AString CHARSET_LOWERCASE_VOWELS;      //a_"aeiou"
   static const AString CHARSET_NUMBERS;               //a_"0123456789"
+  static const AString CHARSET_NUMERIC;               //a_"0123456789.e+-"
 
   /*!
   Base 10 set

@@ -326,7 +326,9 @@ public:
   /*!
   Check basic validity
 
-  @return true if the URL seems to be valid
+  If any character not in AConstant::CHARSET_URL_RFC2396 then it fails
+
+  @return true if the URL doesn't contain invalid characters
   */
   bool isValid() const;
 

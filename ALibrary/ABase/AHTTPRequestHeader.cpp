@@ -354,3 +354,52 @@ bool AHTTPRequestHeader::isFormMultiPartPost() const
 {
   return (AHTTPRequestHeader::METHOD_ID_POST == m_MethodId && equals(AHTTPRequestHeader::HT_ENT_Content_Type, AHTTPRequestHeader::CONTENT_TYPE_HTML_FORM_MULTIPART));
 }
+
+size_t AHTTPRequestHeader::getAcceptLanguageList(LIST_AString& target) const
+{
+  target.clear();
+
+  AString str;
+  if (!getPairValue(AHTTPHeader::HT_REQ_Accept_Language, str))
+    return 0;
+
+  //a_Split on ,
+  LIST_AString tokens;
+  str.split(tokens, ',', AConstant::ASTRING_WHITESPACE);
+  
+  //a_Parse quality
+  std::multimap<double, AString> langmap;
+  AString strQuality;
+  double quality;
+  for (LIST_AString::iterator it = tokens.begin(); it != tokens.end(); ++it)
+  {
+    size_t pos = (*it).find(';');
+    if (AConstant::npos != pos)
+    {
+      //a_Quality found, search to the first number
+      strQuality.clear();
+      (*it).get(strQuality, pos);
+      strQuality.removeUntilOneOf(AConstant::CHARSET_NUMERIC, false);
+      if (strQuality.getSize() > 0)
+      {
+        quality = strQuality.toDouble();
+      }
+      else
+        quality = 1.0;
+    }
+    else
+      quality = 1.0;
+
+    //a_Add lower case version
+    it->makeLower();
+    langmap.insert(std::multimap<double, AString>::value_type(quality, *it));
+  }
+
+  //a_Add to the list
+  size_t added = 0;
+  for (std::multimap<double, AString>::const_iterator cit = langmap.begin(); cit != langmap.end(); ++cit, ++added)
+    target.push_front(cit->second);
+
+  return added;
+}
+

@@ -15,12 +15,14 @@ $Id$
 class ABASE_API AHTTPHeader : public ADebugDumpable, public ASerializable, public AXmlEmittable, public AParsable
 {
 public:
-  //a_Tokens from RFC-2068
+  /*!
+  Tokens from RFC-2068
+  */
   enum HEADER_TOKENS
   {
     HT_INVALID                  = 0x00000000,
     
-    //a_General-header
+    //! General-header
     HT_GEN_Cache_Control        = 0x10000001,
     HT_GEN_Connection           = 0x10000002,
     HT_GEN_Date                 = 0x10000003,
@@ -30,7 +32,7 @@ public:
     HT_GEN_Via                  = 0x10000007,
     HT_GEN_Keep_Alive           = 0x10000008,
 
-    //a_Request-header
+    //! Request-header
     HT_REQ_Accept               = 0x10000020,
     HT_REQ_Accept_Charset       = 0x10000021,
     HT_REQ_Accept_Encoding      = 0x10000022,
@@ -50,10 +52,10 @@ public:
     HT_REQ_Referer              = 0x10000030,
     HT_REQ_User_Agent           = 0x10000031,
     
-    //a_Special request-header
+    //! Special request-header
     HT_REQ_Cookie               = 0x1000003A,
 
-    //a_Response-header
+    //! Response-header
     HT_RES_Age                  = 0x10000040,
     HT_RES_Location             = 0x10000041,
     HT_RES_Proxy_Authenticate   = 0x10000042,
@@ -105,12 +107,16 @@ public:
   virtual void parse(const AEmittable&);
 
   /*!
-  ASerializable (reading and writing to AFile type)
+  ASerializable (writing to AFile type)
   */
   virtual void toAFile(AFile&) const;
+
+  /*!
+  ASerializable (reading from AFile type)
+  */
   virtual void fromAFile(AFile&);
 
-  /*
+  /*!
     Used in quick parsing of headers
     ...
     file.readLine(str);
@@ -122,53 +128,98 @@ public:
     else
       //display some error about error in line 0
     ...
+  
+  @param line0 to parse
   */
-  bool parseLineZero(const AString &);
-  void parseTokenLine(const AString &);
+  bool parseLineZero(const AString & line0);
+  
+  /*!
+  Parse token lines after line 0
+  These contain the name: value pairs
+
+  @param line to parse
+  */
+  void parseTokenLine(const AString & line);
 
   /*!
   Number of header pairs
+
+  @return number of pairs in the header
   */
-  size_t size() const { return m_Pairs.size(); }
+  size_t size() const;
   
   /*!
   Set header pair
+
+  @param eToken name from HEADER_TOKEN enum
+  @param value of the header pair
+  @see AHTTPHeader::HEADER_TOKEN
   */
-  void setPair(AHTTPHeader::HEADER_TOKENS eToken, const AString& strValue);
-  void setPair(const AString& strName, const AString& strValue);
+  void setPair(AHTTPHeader::HEADER_TOKENS eToken, const AString& value);
+
+  /*!
+  Set header pair
+
+  @param name of the header pair
+  @param value of the header pair
+  */
+  void setPair(const AString& name, const AString& value);
   
   /*!
   Remove header pair
+
+  @param eToken name from HEADER_TOKEN enum
+  @see AHTTPHeader::HEADER_TOKEN
   */
   void removePair(AHTTPHeader::HEADER_TOKENS eToken);
 
   /*!
   Checks existance of a header pair
+
+  @param eToken name from HEADER_TOKEN enum
+  @see AHTTPHeader::HEADER_TOKEN
   */
   bool exists(AHTTPHeader::HEADER_TOKENS eToken) const;
   
   /*!
   Compares value to the string, returns false if not equals or not found
+
+  @param eToken name from HEADER_TOKEN enum
+  @param value to compare to
+  @see AHTTPHeader::HEADER_TOKEN
   */
-  bool equals(AHTTPHeader::HEADER_TOKENS eToken, const AString&) const;
+  bool equals(AHTTPHeader::HEADER_TOKENS eToken, const AString& value) const;
   
   /*!
   Compares value to the string ignoring case, returns false if not equals or not found
+
+  @param eToken name from HEADER_TOKEN enum
+  @param value to compare to without case
+  @see AHTTPHeader::HEADER_TOKEN
   */
-  bool equalsNoCase(AHTTPHeader::HEADER_TOKENS eToken, const AString&) const;
+  bool equalsNoCase(AHTTPHeader::HEADER_TOKENS eToken, const AString& value) const;
 
   /*!
   Find a token and append the value to target
+
+  @param eToken name from HEADER_TOKEN enum
+  @param target to emit to
+  @see AHTTPHeader::HEADER_TOKEN
   */
   bool getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AOutputBuffer& target) const;
   
   /*!
   Find a token as a string and append to target
+  
+  @param name of the header pair
+  @param target to emit to
   */
-  bool getPairValue(const AString& strTokenName, AOutputBuffer& target) const;
+  bool getPairValue(const AString& name, AOutputBuffer& target) const;
 
   /*!
   Version of the header (supported by both response and request)
+  
+  @return HTTP version string
   */
   const AString& getVersion() const;
   
@@ -176,22 +227,30 @@ public:
   Set version
   Valid versions:  "HTTP/0.9"  "HTTP/1.0"  "HTTP/1.1"
   Invalid version will throw exception
+
+  @param version to set to, must be valid
   */
-  void setVersion(const AString&);
+  void setVersion(const AString& version);
 
   /*!
   Utility functions used by both header types
   Checks if HTTP/0.9 or HTTP/1.0 or HTTP/1.1
+  
+  @return true if version string is valid
   */
   bool isValidVersion();
 
   /*!
   Keep-Alive timeout value or AConstant::npos if none
+  
+  @return timeout value from keep-alive: as size_t
   */
-  size_t AHTTPHeader::getKeepAliveTimeout() const;
+  size_t getKeepAliveTimeout() const;
 
   /*!
   Helper to get Content-Length
+
+  @return content length as size_t
   */
   size_t getContentLength() const;
 

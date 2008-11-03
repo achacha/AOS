@@ -11,6 +11,9 @@ $Id$
 #include "AUrl.hpp"
 #include "ACookies.hpp"
 
+/*!
+HTTP request header class
+*/
 class ABASE_API AHTTPRequestHeader : public AHTTPHeader
 {
 public:
@@ -43,89 +46,180 @@ public:
   };
 
 public:
+  //! default ctor
   AHTTPRequestHeader();
+  
+  //! ctor with parse
   AHTTPRequestHeader(const AString &strHeader);
+  
+  //! copy ctor
   AHTTPRequestHeader(const AHTTPRequestHeader&);
+  
+  //! assign operator
   AHTTPRequestHeader& operator=(const AHTTPRequestHeader&);
+  
+  //! virtual dtor
   virtual ~AHTTPRequestHeader();
 
-  //a_Presentation
+  /*!
+  AEmittable
+
+  @param target to emit to
+  */
   virtual void emit(AOutputBuffer& target) const;
+  
+  /*!
+  AXmlEmittable
+
+  @param thisRoot to emit into
+  */
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
-  //a_Clear header
+  /*!
+  Clear header
+  */
   virtual void clear();
 
-  /**
-   * Displays the request that is proxy compatible
-   *   i.e. contains the full URL in the first line of the requets
-   *   including the http://..server../ etc...
-   *   usually witout proxy mode the server is omited
-   *   since you are already connected to it
+  /*!
+  Displays the request that is proxy compatible
+    i.e. contains the full URL in the first line of the requets including the http://..server../ etc...
+         usually witout proxy mode the server is omited since you are already connected to it
+
+  @param target to emit proxy header to
   */
-  void emitProxyHeader(AOutputBuffer&) const;
+  void emitProxyHeader(AOutputBuffer& target) const;
 
   /*!
   Parse URL and set Host:
+
+  @param url to parse and add to the header, server will be set to Host: field
   */
-  void parseUrl(const AString& str);
+  void parseUrl(const AString& url);
   
   /*!
   Method string
   Whatever was in the HTTP header
+  
+  @return constant reference to method AString
   */
   const AString& getMethod() const;
 
   /*!
   Method id
   Maps into enum for all known types and METHOD_ID_UNKNOWN otherwise
+  
+  @return method id
   */
   AHTTPRequestHeader::METHOD_ID getMethodId() const;
 
-  //a_Object access
+  /*!
+  Access the url object
+
+  @return constant reference to AUrl
+  */
   const AUrl& getUrl() const;
+
+  /*!
+  Access the cookie container
+
+  @return constant reference to the ACookies container
+  */
   const ACookies& getCookies() const;
+  
+  /*!
+  Access the url object
+
+  @return reference to AUrl
+  */
   AUrl& useUrl();
+  
+  /*!
+  Access the cookie container
+
+  @return reference to the ACookies container
+  */
   ACookies& useCookies();
 
-  //a_Setting methods
+  /*!
+  Set the method
+
+  @param strNewMethod new method name (all caps and must be valid), use AHTTPRequestHeader::METHOD_* AString constants
+  */
   void setMethod(const AString& strNewMethod);
+  
+  /*!
+  Parse (additional) the cookie line
+  fromAFile will read and parse the entire header but this can be used to parse additional header lines
+
+  @param strCookieLine to parse and add to ACookies container from "Cookie: name=value; ..."
+  */
   void parseCookie(const AString& strCookieLine);
 
   /*!
   Helpers
+
+  @return true if HTTP pipelining is requested
   */
   bool isHttpPipeliningEnabled() const;
 
   /*!
   Is method valid
+
+  @return true if method is valid
   */
   bool isValidMethod() const;
 
   /*!
   Is path valid
+  
+  @see AUrl::isValid
+  @return AUrl.isValid for the request path
   */
   bool isValidPath() const;
 
   /*!
-  Is path valid
+  Is HTTP valid
+
+  HTTP/1.1 must have Host: pair
+  
+  @return true if HTTP validity test is successful
   */
   bool isValidHttp() const;
 
   /*!
   Checks if the request is a FORM POST
+  
+  @return true if a POST
   */
   bool isFormPost() const;
 
   /*!
   Checks if the request is a FORM multi-part POST
+  
+  @return true if POST and multi-part
   */
   bool isFormMultiPartPost() const;
 
   /*!
   If-Modified-Since converted to ATime
+
+  @return ATime object that is used to compare if content has changed since
   */
   ATime getIfModifiedSince() const;
+
+  /*!
+  Gets an ordered list of accepted languages based on q (quality) value in Accept-Language: header pair
+
+  Language is xx-YY  where xx is language code and YY is the localized version of that language
+  e.g.
+    en      - All english languages
+    en-US   - US specific english
+    en-GB   - GB specific english
+
+  @param target that will contain languages, will clear the list before adding languages in sorted order
+  @return number of languages found in Accept-Language: header pair
+  */
+  size_t getAcceptLanguageList(LIST_AString& target) const;
 
   /*!
   ADebugDumpable

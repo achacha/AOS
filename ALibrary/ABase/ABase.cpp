@@ -22,22 +22,22 @@ ABase::~ABase()
 {
 }
 
-ABase *ABase::useNext()
+void ABase::setNext(ABase *p)
+{
+  pNext = p;
+}
+
+void ABase::setPrev(ABase *p)
+{
+  pPrev = p;
+}
+
+ABase *ABase::getNext() const
 {
   return pNext;
 }
 
-ABase *ABase::usePrev()
-{
-  return pPrev;
-}
-
-const ABase *ABase::getNext() const
-{
-  return pNext;
-}
-
-const ABase *ABase::getPrev() const
+ABase *ABase::getPrev() const
 {
   return pPrev;
 }

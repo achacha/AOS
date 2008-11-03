@@ -498,3 +498,8 @@ size_t AHTTPHeader::getContentLength() const
   else
     return AConstant::npos;
 }
+
+size_t AHTTPHeader::size() const
+{
+  return m_Pairs.size();
+}
