@@ -37,7 +37,11 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
   if (peFilename->getAttributes().get(AOS_BaseModules_Constants::BASE, strBase))
   {
     if (strBase.equals(ASW("data",4)))
-      pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseDataDirectory(), str, false));
+    {
+      pFilename.reset(new AFilename());
+      m_Services.useConfiguration().getAosDataDirectory(context, *pFilename);
+      pFilename->join(str, false);
+    }
     else if (strBase.equals(ASW("dynamic",7)))
       pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseDynamicDirectory(), str, false));
     else if (strBase.equals(ASW("absolute",8)))
@@ -46,8 +50,12 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
 
   //a_Static is the default
   if (!pFilename)
-    pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseStaticDirectory(), str, false));
-  
+  {
+    pFilename.reset(new AFilename());
+    m_Services.useConfiguration().getAosStaticDirectory(context, *pFilename);
+    pFilename->join(str, false);
+  }
+
   if (!AFileSystem::exists(*pFilename))
   {
     context.addError(ASWNL("AOSOutput_File"), ARope("File not found: ",16)+*pFilename);

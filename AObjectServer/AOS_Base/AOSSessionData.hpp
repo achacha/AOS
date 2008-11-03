@@ -19,6 +19,7 @@ class AOS_BASE_API AOSSessionData : public ADebugDumpable, public AXmlEmittable,
 {
 public:
   static const AString SESSIONID;       //a_Session ID stored in data with this key
+  static const AString LOCALE;          //a_Session path where locale override can be stored, used during directory lookup
 
 public:
   /*!

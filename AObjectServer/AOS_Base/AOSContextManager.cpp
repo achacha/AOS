@@ -98,7 +98,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     
     {
       ALock lock(m_ErrorHistory.useSync());
-      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->usePrev())
+      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->getPrev())
       {
         AOSContext *pContext = dynamic_cast<AOSContext *>(p);
         if (contextId == AString::fromPointer(pContext))
@@ -111,7 +111,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
 
     {
       ALock lock(m_History.useSync());
-      for (ABase *p = m_History.useTail(); p; p = p->usePrev())
+      for (ABase *p = m_History.useTail(); p; p = p->getPrev())
       {
         AOSContext *pContext = dynamic_cast<AOSContext *>(p);
         if (contextId == AString::fromPointer(pContext))
@@ -211,7 +211,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     {
       AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "history");
       ALock lock(m_History.useSync());
-      for (ABase *p = m_History.useTail(); p; p = p->usePrev())
+      for (ABase *p = m_History.useTail(); p; p = p->getPrev())
       {
         AOSContext *pContext = dynamic_cast<AOSContext *>(p);
         if (pContext)
@@ -229,7 +229,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     {
       AXmlElement& eErrorHistory = eBase.addElement("object").addAttribute("name", "error_history");
       ALock lock(m_ErrorHistory.useSync());
-      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->usePrev())
+      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->getPrev())
       {
         AOSContext *pContext = dynamic_cast<AOSContext *>(p);
         if (pContext)

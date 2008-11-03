@@ -32,35 +32,38 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
   //a_Get the path content
   pePath->emitContent(str);
 
-  AFilename *pFilename = NULL;
+  AAutoPtr<AFilename> pFilename;
   AString strBase;
   if (pePath->getAttributes().get(AOS_BaseModules_Constants::BASE, strBase))
   {
     if (strBase.equals(ASW("dynamic",7)))
     {
-      pFilename = new AFilename(m_Services.useConfiguration().getAosBaseDynamicDirectory());
+      pFilename.reset(new AFilename(m_Services.useConfiguration().getAosBaseDynamicDirectory()));
       pFilename->join(str, false);
     }
     else if (strBase.equals(ASW("data",4)))
     {
-      pFilename = new AFilename(m_Services.useConfiguration().getAosBaseDataDirectory());
+      pFilename.reset(new AFilename());
+      m_Services.useConfiguration().getAosDataDirectory(context, *pFilename);
       pFilename->join(str, false);
     }
     else if (strBase.equals(ASW("absolute",8)))
     {
-      pFilename = new AFilename(str, false);
+      pFilename.reset(new AFilename(str, false));
     }
     else
     {
       //a_Default to static
-      pFilename = new AFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
+      pFilename.reset(new AFilename());
+      m_Services.useConfiguration().getAosStaticDirectory(context, *pFilename);
       pFilename->join(str, false);
     }
   }
   else
   {
     //a_Fallthru default case to static
-    pFilename = new AFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
+    pFilename.reset(new AFilename());
+    m_Services.useConfiguration().getAosStaticDirectory(context, *pFilename);
     pFilename->join(str, false);
   }
 

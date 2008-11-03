@@ -82,6 +82,21 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
     ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   }
 
+  ADebugDumpable::indent(os, indent+1) << "m_LocaleDataDirs={" << std::endl;
+  for (AOSConfiguration::MAP_LOCALE_DIRS::const_iterator cit = m_LocaleDataDirs.begin(); cit != m_LocaleDataDirs.end(); ++cit)
+    ADebugDumpable::indent(os, indent+2) << (*cit).first << "=" << (*cit).second.dir << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_LocaleStaticDirs={" << std::endl;
+  for (AOSConfiguration::MAP_LOCALE_DIRS::const_iterator cit = m_LocaleStaticDirs.begin(); cit != m_LocaleDataDirs.end(); ++cit)
+    ADebugDumpable::indent(os, indent+2) << (*cit).first << "=" << (*cit).second.dir << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
+  ADebugDumpable::indent(os, indent+1) << "m_LocaleRemap={" << std::endl;
+  for (MAP_AString_AString::const_iterator cit = m_LocaleRemap.begin(); cit != m_LocaleRemap.end(); ++cit)
+    ADebugDumpable::indent(os, indent+2) << (*cit).first << "=" << (*cit).second << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
@@ -95,15 +110,10 @@ void AOSConfiguration::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader
 {
   AOSAdminInterface::adminEmitXml(eBase, request);
   
-  adminAddProperty(eBase, ASWNL("aos_base_config_directory"), getAosBaseConfigDirectory());
-  adminAddProperty(eBase, ASWNL("aos_base_dynamic_directory"), getAosBaseDynamicDirectory());
-  adminAddProperty(eBase, ASWNL("aos_base_static_directory"), getAosBaseStaticDirectory());
-  adminAddProperty(eBase, ASWNL("aos_base_data_directory"), getAosBaseDataDirectory());
-
-  adminAddProperty(eBase, ASWNL("reported_server")    , m_ReportedServer);
-  adminAddProperty(eBase, ASWNL("reported_hostname")  , m_ReportedHostname);
-  adminAddProperty(eBase, ASWNL("reported_http_port") , AString::fromInt(m_ReportedHttpPort));
-  adminAddProperty(eBase, ASWNL("reported_https_port"), AString::fromInt(m_ReportedHttpsPort));
+  adminAddProperty(eBase, ASWNL("reported server")    , m_ReportedServer);
+  adminAddProperty(eBase, ASWNL("reported hostname")  , m_ReportedHostname);
+  adminAddProperty(eBase, ASWNL("reported http port") , AString::fromInt(m_ReportedHttpPort));
+  adminAddProperty(eBase, ASWNL("reported https port"), AString::fromInt(m_ReportedHttpsPort));
 
   {
     LIST_AString moduleNames;
@@ -126,23 +136,53 @@ void AOSConfiguration::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader
     }
   }
 
-  adminAddProperty(
-    eBase,
-    ASWNL("aos_default_filename"),
-    getAosDefaultFilename()
-  );
+  {
+    AXmlElement& e = eBase.addElement("object").addAttribute("name","default");
+    adminAddProperty(e, ASWNL("base static directory (for default locale)"), m_AosBaseStaticDir);
+    adminAddProperty(e, ASWNL("base data directory (for default locale)"), m_AosBaseDataDir);
+    adminAddProperty(e, ASWNL("base config directory"), m_AosBaseConfigDir);
+    adminAddProperty(e, ASWNL("base dynamic directory"), m_AosBaseDynamicDir);
+    adminAddProperty(e, ASWNL("base admin directory"), m_AdminBaseHttpDir);
+    adminAddProperty(e, ASWNL("filname"), m_AosDefaultFilename);
+    adminAddProperty(e, ASWNL("input processor"), m_AosDefaultInputProcessor);
+    adminAddProperty(e, ASWNL("output generator"), m_AosDefaultOutputGenerator);
+  }
 
-  adminAddProperty(
-    eBase,
-    ASWNL("aos_default_input_processor"),
-    getAosDefaultInputProcessor()
-  );
+  //a_Locale
+  {
+    AXmlElement& e = eBase.addElement("object").addAttribute("name","locale");
+    adminAddProperty(e, ASWNL("default"), m_DefaultLocale);
 
-  adminAddProperty(
-    eBase,
-    ASWNL("aos_default_output_generator"),
-    getAosDefaultOutputGenerator()
-  );
+    ARope rope;
+    for (AOSConfiguration::MAP_LOCALE_DIRS::const_iterator cit = m_LocaleDataDirs.begin(); cit != m_LocaleDataDirs.end(); ++cit)
+    {  
+      rope.append((*cit).first);
+      rope.append('=');
+      rope.append((*cit).second.dir);
+      rope.append(AConstant::ASTRING_CRLF);
+    }
+    adminAddProperty(e, ASWNL("data"), rope);
+
+    rope.clear();
+    for (AOSConfiguration::MAP_LOCALE_DIRS::const_iterator cit = m_LocaleStaticDirs.begin(); cit != m_LocaleStaticDirs.end(); ++cit)
+    {  
+      rope.append((*cit).first);
+      rope.append('=');
+      rope.append((*cit).second.dir);
+      rope.append(AConstant::ASTRING_CRLF);
+    }
+    adminAddProperty(e, ASWNL("static"), rope);
+
+    rope.clear();
+    for (MAP_AString_AString::const_iterator cit = m_LocaleRemap.begin(); cit != m_LocaleRemap.end(); ++cit)
+    {  
+      rope.append((*cit).first);
+      rope.append('=');
+      rope.append((*cit).second);
+      rope.append(AConstant::ASTRING_CRLF);
+    }
+    adminAddProperty(e, ASWNL("remap"), rope);
+  }
 
   //a_Controllers
   {
@@ -217,13 +257,18 @@ AOSConfiguration::AOSConfiguration(
   m_AosBaseStaticDir.usePathNames().push_back("static");
   m_AdminBaseHttpDir.usePathNames().push_back("admin");
 
-  //a_TODO: This needs to be a paremeter
+  //a_Read the config
   AFilename filename(m_AosBaseConfigDir);
   filename.useFilename().assign("AObjectServer.xml",17);
   loadConfig(filename);
 
   //a_Get compressed extensions
   _populateGzipCompressionExtensions();
+
+  //a_Read in I18N directories
+  _loadLocaleInfo();
+  _populateLocaleDirectories(m_AosBaseStaticDir, m_LocaleStaticDirs);
+  _populateLocaleDirectories(m_AosBaseStaticDir, m_LocaleDataDirs);
 
   //a_Configure server internals from config
   setAosDefaultFilename("/config/server/default-filename");
@@ -285,6 +330,108 @@ void AOSConfiguration::_initStatics()
   GZIP_IS_ENABLED = m_Config.useRoot().getBool(ASWNL("/config/server/gzip-compression/enabled"), GZIP_IS_ENABLED);
   GZIP_MIN_SIZE = m_Config.useRoot().getSize_t(ASWNL("/config/server/gzip-compression/minimum-threshold"), GZIP_MIN_SIZE);
   GZIP_DEFAULT_LEVEL = m_Config.useRoot().getInt(ASWNL("/config/server/gzip-compression/default-level"), GZIP_DEFAULT_LEVEL);
+}
+
+void AOSConfiguration::_loadLocaleInfo()
+{
+  // Get default language
+  if (!m_Config.useRoot().emitContentFromPath("/config/server/locale/base", m_DefaultLocale))
+    ATHROW(this, AException::InvalidConfiguration);  // MUST have default locale for the base directories
+
+  AXmlElement::CONST_CONTAINER langNodes;
+  if (m_Config.useRoot().find("/config/server/locale/remap/lang", langNodes) > 0)
+  {
+    AString name;
+    AString locale;
+    for (AXmlElement::CONST_CONTAINER::iterator it = langNodes.begin(); it != langNodes.end(); ++it)
+    {
+      if (!(*it)->getAttributes().get(ASW("name",4), name))
+        ATHROW(this, AException::InvalidConfiguration);  // MUST have name for each lang
+
+      (*it)->emitContent(locale);
+      if (locale.isEmpty())
+        locale.assign(m_DefaultLocale);
+      
+      name.makeLower();
+      locale.makeLower();
+      m_LocaleRemap[name] = locale;
+      name.clear();
+      locale.clear();
+    }
+  }
+}
+
+void AOSConfiguration::_populateLocaleDirectories(const AFilename& basedir, AOSConfiguration::MAP_LOCALE_DIRS& dirs)
+{
+  AASSERT(this, basedir.getFilename().getSize() == 0);
+
+  // Get all locale variants
+  // static/ -> static.*/
+  AFilename f(basedir);
+  
+  // pathname of the last directory becomes part of the wildcard filename to search on
+  f.useFilename().assign(f.usePathNames().back());
+  f.usePathNames().pop_back();
+  f.useFilename().append(".*",2);
+  AFileSystem::FileInfos fileInfos;
+  if (AFileSystem::dir(f, fileInfos, false, false) > 0)
+  {
+    // Get all locale based directories
+    for (AFileSystem::FileInfos::iterator it = fileInfos.begin(); it != fileInfos.end(); ++it)
+    {
+      if (it->typemask & AFileSystem::Directory)
+      {
+        AString lang;
+        AString& last = it->filename.usePathNames().back();
+        size_t pos = last.rfind('.');
+        if (AConstant::npos != pos)
+        {
+          // default language
+          last.peek(lang, pos+1);
+          AASSERT_EX(&(*it), dirs.find(lang) == dirs.end(), AString("Duplicate language directory: ")+it->filename);
+          lang.makeLower();
+          dirs[lang] = LocaleDirInfo(it->filename);
+        }
+      }
+    }
+  }
+
+  // Link languages to parent (en-gb to en)
+  for (AOSConfiguration::MAP_LOCALE_DIRS::iterator it = dirs.begin(); it != dirs.end(); ++it)
+  {
+    AString lang(it->first);
+    lang.rremoveUntil('-');
+    if (!lang.isEmpty())
+    {
+      AOSConfiguration::MAP_LOCALE_DIRS::iterator itLang = dirs.find(lang);
+      if (itLang != dirs.end())
+      {
+        // parent language exists
+        it->second.setPrev(&(itLang->second));
+      }
+    }
+  }
+
+  // Add entries for remapped locales
+  for (MAP_AString_AString::iterator itRemap = m_LocaleRemap.begin(); itRemap != m_LocaleRemap.end(); ++itRemap)
+  {
+    // Check if the target locale exists
+    AOSConfiguration::MAP_LOCALE_DIRS::iterator itRemappedLocalInfo = dirs.find(itRemap->second);
+    if (itRemappedLocalInfo == dirs.end())
+    {
+      m_Services.useLog().add(AString("Physical locale directory for remap does not exist (ignoring and using default): ")+itRemap->second, ALog::WARNING);
+      continue;
+    }
+    
+    // Warn if remapping an existing directory
+    if (dirs.find(itRemap->first) != dirs.end())
+    {
+      m_Services.useLog().add(AString("Remapping locale replaces an existing directory: ")+itRemap->first+ASWNL(" to ")+itRemap->second, ALog::WARNING);
+    }
+
+    // Remap locale to a directory of an existing locale
+    dirs[itRemap->first] = itRemappedLocalInfo->second;
+  }
 }
 
 AOSConfiguration::~AOSConfiguration()
@@ -556,7 +703,7 @@ const AOSDirectoryConfig * const AOSConfiguration::getDirectoryConfig(const AUrl
       return (*cit).second;
     else
     {
-      if (AConstant::npos == dir.rremoveUntil('/') || AConstant::npos == dir.rremoveUntil('/', false))
+      if (AConstant::npos == dir.rremoveUntil('/', true) || AConstant::npos == dir.rremoveUntil('/', false))
         break;
     }
   }
@@ -568,19 +715,60 @@ const AFilename& AOSConfiguration::getAosBaseConfigDirectory() const
   return m_AosBaseConfigDir;
 }
 
-const AFilename& AOSConfiguration::getAosBaseStaticDirectory() const
-{
-  return m_AosBaseStaticDir;
-}
-
 const AFilename& AOSConfiguration::getAosBaseDynamicDirectory() const
 {
   return m_AosBaseDynamicDir;
 }
 
+const AFilename& AOSConfiguration::getAosBaseStaticDirectory() const
+{
+  return m_AosBaseStaticDir;
+}
+
 const AFilename& AOSConfiguration::getAosBaseDataDirectory() const
 {
   return m_AosBaseDataDir;
+}
+
+void AOSConfiguration::getAosStaticDirectory(AOSContext& context, AFilename& filename) const
+{
+  _getLocaleAosDirectory(context, filename, m_LocaleStaticDirs, m_AosBaseStaticDir);
+}
+
+void AOSConfiguration::getAosDataDirectory(AOSContext& context, AFilename& filename) const
+{
+  _getLocaleAosDirectory(context, filename, m_LocaleDataDirs, m_AosBaseDataDir);
+}
+
+void AOSConfiguration::_getLocaleAosDirectory(AOSContext& context, AFilename& filename, const AOSConfiguration::MAP_LOCALE_DIRS& dirs, const AFilename& defaultDir) const
+{
+  if (dirs.size() > 0)
+  {
+    LIST_AString langs;
+    if (context.useRequestHeader().getAcceptLanguageList(langs) > 0)
+    {
+      for(LIST_AString::iterator it = langs.begin(); it != langs.end(); ++it)
+      {
+        //a_Check if default encoding is used
+        if ((*it).equals(m_DefaultLocale))
+          break;
+        
+        //a_Wildcard, use default
+        if ((*it).equals("*",1))
+          break;
+          
+        AOSConfiguration::MAP_LOCALE_DIRS::const_iterator citLang = dirs.find(*it);
+        if (dirs.end() != citLang)
+        {
+          // Found a match
+          filename.set(citLang->second.dir);
+          return;
+        }
+      }
+    }
+  }
+
+  filename.set(defaultDir);
 }
 
 const AString& AOSConfiguration::getAosDefaultFilename() const

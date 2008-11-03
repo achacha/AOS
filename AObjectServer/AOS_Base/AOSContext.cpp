@@ -321,7 +321,7 @@ AOSContext::Status AOSContext::init()
   //a_Set the command
   if (!setControllerFromRequestUrl())
   {
-    if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
+    if (m_EventVisitor.isLoggingInfo())
     {
       ARope rope("AOSContext::init: Unable to find the command for request URL: ");
       rope.append(m_RequestHeader.useUrl());
@@ -338,7 +338,34 @@ AOSContext::Status AOSContext::init()
     m_Services.useSessionManager().initOrCreateSession(*this);
   }
 
+  str.clear();
+  if (getSessionDataContent(AOSSessionData::LOCALE, str))
+    setLocaleOnRequestHeader(str);
+
   return AOSContext::STATUS_OK;
+}
+
+void AOSContext::setLocaleOnRequestHeader(const AString& locale)
+{
+  //a_Set locale on the request header
+  m_RequestHeader.removePair(AHTTPHeader::HT_REQ_Accept_Language);
+  if (locale.isEmpty())
+  {
+    if (m_EventVisitor.isLoggingDebug())
+    {
+      m_EventVisitor.startEvent(ASWNL("AOSContext::init: Removing request header locale"), AEventVisitor::EL_DEBUG);
+    }
+  }
+  else
+  {
+    m_RequestHeader.setPair(AHTTPHeader::HT_REQ_Accept_Language, locale);
+    if (m_EventVisitor.isLoggingDebug())
+    {
+      ARope rope("AOSContext::init: Changing the request header locale to session override:  Accept-Language: ");
+      rope.append(locale);
+      m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
+    }
+  }
 }
 
 bool AOSContext::_waitForFirstChar()
@@ -990,6 +1017,7 @@ bool AOSContext::getSessionDataContent(const AString& path, AString& value)
     {
       if (m_Services.useSessionManager().exists(sessionId))
       {
+        ALock lock(useSessionData().useSyncObject());
         return useSessionData().useData().emitContentFromPath(path, value);
       }
     }
@@ -1428,8 +1456,7 @@ bool AOSContext::processStaticPage()
   if (m_EventVisitor.isLogging(AEventVisitor::EL_INFO))
     m_EventVisitor.startEvent(ASW("AOSContext::processStaticPage: Serving static content",53), AEventVisitor::EL_INFO);
   
-  AFilename httpFilename(m_Services.useConfiguration().getAosBaseStaticDirectory());
-
+  AFilename httpFilename;
   AString filepart(m_RequestHeader.useUrl().getPathAndFilename());
   if (filepart.isEmpty() 
       || filepart.equals(AConstant::ASTRING_SLASH)
@@ -1454,9 +1481,8 @@ bool AOSContext::processStaticPage()
   int dumpContextLevel = getDumpContextLevel();
 
   ACache_FileSystem::HANDLE pFile(NULL, false);
-  const ATime& ifModifiedSince = m_RequestHeader.getIfModifiedSince();
   ATime modified;
-  ACacheInterface::STATUS fileStatus = m_Services.useCacheManager().getStaticFile(*this, httpFilename, pFile, modified, ifModifiedSince);
+  ACacheInterface::STATUS fileStatus = m_Services.useCacheManager().getStaticFile(*this, httpFilename, pFile, modified);
   switch (fileStatus)
   {
     case ACache_FileSystem::NOT_FOUND:

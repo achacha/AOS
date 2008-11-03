@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+	<module class="SetSessionLocale">
+		<locale/>
+	</module>
+  <output class="File">
+    <filename base="static">lang.html</filename>
+  </output>
+</controller>
+	

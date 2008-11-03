@@ -360,6 +360,14 @@ public:
   void addError(const AString& where, const AEmittable& what, bool addDebugDump = false);
 
   /*!
+  Sets the locale on the request header  Accept-Language:
+  This is used to lookup locale specific directories
+
+  @param locale to set on the request
+  */
+  void setLocaleOnRequestHeader(const AString& locale);
+
+  /*!
   Set response header to do a 302 redirect
   Does NOT set the context flag CTX_IS_REDIRECTING (that is set when AOSContext::RETURN_REDIRECT is detected by executor)
   */

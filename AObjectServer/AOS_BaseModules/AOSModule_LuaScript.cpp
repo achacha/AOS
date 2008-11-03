@@ -23,7 +23,7 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
 {
   const AXmlElement *pNode = params.findElement(ASW("script",6));
   AString strSource;
-  AAutoPtr<AFile> pFile(NULL, false);
+  ACache_FileSystem::HANDLE pFile;
   if (pNode)
   {
     strSource.assign("inline", 6);
@@ -43,12 +43,13 @@ AOSContext::ReturnCode AOSModule_LuaScript::execute(AOSContext& context, const A
       pNode->emitContent(strSource);
       context.useEventVisitor().startEvent(ARope("Executing Lua script: ",22)+strSource);
 
-      //a_File to be used (may need caching for it, but for now keep it dynamic)
-      AFilename f(m_Services.useConfiguration().getAosBaseDataDirectory(), true);
-      f.join(strSource, false);
-      
-      pFile.reset(new AFile_Physical(f));
-      pFile->open();
+      //a_Get from data cache
+      AFilename f(strSource, false);
+      if (ACacheInterface::NOT_FOUND == m_Services.useCacheManager().getDataFile(context, f, pFile))
+      {
+        context.addError(ASWNL("AOSModule_LuaScript"), ASWNL("Unable to find Lua script file, LuaScript module did not execute"));
+        return AOSContext::RETURN_ERROR;
+      }
     }
     else
     {

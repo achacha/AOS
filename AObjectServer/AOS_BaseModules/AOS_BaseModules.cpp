@@ -13,6 +13,7 @@
 #include "AOSModule_NOP.hpp"
 #include "AOSModule_ExecuteQuery.hpp"
 #include "AOSModule_AlterContext.hpp"
+#include "AOSModule_SetSessionLocale.hpp"
 #include "AOSModule_InsertIntoModel.hpp"
 #include "AOSModule_Template.hpp"
 #include "AOSModule_LuaScript.hpp"
@@ -64,6 +65,7 @@ extern "C" AOS_BASEMODULES_API int aos_register(
   moduleExecutor.registerModule(new AOSModule_NOP(services));
   moduleExecutor.registerModule(new AOSModule_ExecuteQuery(services));
   moduleExecutor.registerModule(new AOSModule_AlterContext(services));
+  moduleExecutor.registerModule(new AOSModule_SetSessionLocale(services));
   moduleExecutor.registerModule(new AOSModule_InsertIntoModel(services));
   moduleExecutor.registerModule(new AOSModule_Template(services));
   moduleExecutor.registerModule(new AOSModule_LuaScript(services));

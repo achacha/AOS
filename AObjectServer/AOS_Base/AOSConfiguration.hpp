@@ -258,6 +258,7 @@ public:
   
   /*!
   Location of the config directory
+  This directory is not intended to be localized (see data/ and static/)
 
   @return constant reference to AFilename object
   */
@@ -265,26 +266,41 @@ public:
 
   /*!
   Location of the dynamic directory (controllers)
+  This directory is not intended to be localized (see data/ and static/)
 
   @return constant reference to AFilename object
   */
   const AFilename& getAosBaseDynamicDirectory() const;
 
   /*!
-  Location of the data directory
-  Data dir that is base for all command filename parameters
+  Location of the data directory based on default locale
 
   @return constant reference to AFilename object
   */
   const AFilename& getAosBaseDataDirectory() const;
 
   /*!
-  Location of the static directory
-  Static filesystem (fallback if controller not found)
+  Location of the static directory based on default locale
 
   @return constant reference to AFilename object
   */
   const AFilename& getAosBaseStaticDirectory() const;
+
+  /*!
+  Location of the data directory based on locale, if no locale specific one found, base returned instead
+
+  @param context to check HTTP request for Accept-Languages: pair for correct directory
+  @param target to receive localized directory
+  */
+  void getAosDataDirectory(AOSContext& context, AFilename& target) const;
+
+  /*!
+  Location of the static directory based on locale, if no locale specific one found, base returned instead
+
+  @param context to check HTTP request for Accept-Languages: pair for correct directory
+  @param target to receive localized directory
+  */
+  void getAosStaticDirectory(AOSContext& context, AFilename& target) const;
 
   /*!
   Check is dumpContext is allowed in the configuration file
@@ -345,66 +361,104 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
-  //a_Services
+  // Services
   AOSServices& m_Services;
 
-  //a_Directory where all info lives for this instance
+  // Directory where all info lives for this instance
   AFilename m_BaseDir;
 
-  //a_Configuration bits and Ini profile
+  // Configuration bits and Ini profile
   ABitArray m_ConfigBits;
 
-  //a_Controllers
+  // Controllers
   typedef std::map<AString, AOSController *> MAP_ASTRING_CONTROLLERPTR;
   MAP_ASTRING_CONTROLLERPTR m_ControllerPtrs;
   
-  //a_Directory configs
-  //a_Maps absolute path (relative to dynamic root) to AXmlDocument with config
+  // Directory configs
+  // Maps absolute path (relative to dynamic root) to AXmlDocument with config
   typedef std::map<AString, AOSDirectoryConfig *> MAP_ASTRING_CONFIG;
   MAP_ASTRING_CONFIG m_DirectoryConfigs;
 
-  //a_Extensions that should be compressed by default (assuming min size criterion is met)
+  // Extensions that should be compressed by default (assuming min size criterion is met)
   SET_AString m_CompressedExtensions;
 
-  //a_Initialize statics
+  // Initialize statics
   void _initStatics();
 
-  //a_Populate the extension set
+  // Map of locale to directory
+  // getPrev() points to parent locale as fallthrough, getNext() is always NULL
+  class LocaleDirInfo : public ABase
+  {
+  public:
+    LocaleDirInfo() {}
+    LocaleDirInfo(AFilename& f) : dir(f) {}
+    LocaleDirInfo(const LocaleDirInfo& that) : dir(that.dir) {}
+    LocaleDirInfo& operator=(const LocaleDirInfo& that) { dir.set(that.dir); return *this; }
+    bool operator< (const LocaleDirInfo& that) { return dir < that.dir; }
+
+    AFilename dir;
+  };
+  typedef std::map<AString, LocaleDirInfo> MAP_LOCALE_DIRS;
+
+  // Populate locale specific directories
+  //   if ./static/ is used
+  //      ./static.en/ is for en-* locales that don't have their own directory
+  //      ./static.en-gb/ is for en-GB locale and falls through to ./static.en/ and then ./static/
+  void _populateLocaleDirectories(const AFilename&, AOSConfiguration::MAP_LOCALE_DIRS&);
+  
+  // Locale maps
+  MAP_LOCALE_DIRS m_LocaleStaticDirs;
+  MAP_LOCALE_DIRS m_LocaleDataDirs;
+
+  // Locale equivalents map
+  // loaded from config file and maps language to languare-locale combo (usually when more than one may exist)
+  MAP_AString_AString m_LocaleRemap;
+
+  // Default locale that base directories are in
+  AString m_DefaultLocale;
+
+  // Load locale info
+  void _loadLocaleInfo();
+
+  // Get locale specific directory
+  void _getLocaleAosDirectory(AOSContext& context, AFilename& filename, const AOSConfiguration::MAP_LOCALE_DIRS& dirs, const AFilename& defaultDir) const;
+
+  // Populate the extension set
   void _populateGzipCompressionExtensions();
 
   /*!
   Load commands
   */
   void _loadControllers();
-  void _readController(AFilename&);               //a_May alter the passed filename
-  void _readDirectoryConfig(AFilename&);          //a_May alter the passed filename
+  void _readController(AFilename&);               // May alter the passed filename
+  void _readDirectoryConfig(AFilename&);          // May alter the passed filename
   void _postProcessControllerAndConfig(AFileSystem::FileInfos &);
 
-  //a_MIME type lookup
+  // MIME type lookup
   MAP_AString_AString m_ExtToMimeType;
   void _readMIMETypes();
 
-  //a_Default MIME type
+  // Default MIME type
   AString m_DefaultMimeType;
 
-  //a_AOS directories from base
+  // AOS directories from base
   AFilename m_AosBaseConfigDir;
   AFilename m_AosBaseStaticDir;
   AFilename m_AosBaseDynamicDir;
   AFilename m_AosBaseDataDir;
   
-  //a_Internals
+  // Internals
   AString m_AosDefaultFilename;
   AString m_AosDefaultInputProcessor;
   AString m_AosDefaultOutputGenerator;
   
-  //a_Admin
+  // Admin
   AFilename m_AdminBaseHttpDir;
 
-  //a_XML document with all config files overlayed based on load order
+  // XML document with all config files overlayed based on load order
   AXmlDocument m_Config;
 
-  //a_Reported statics
+  // Reported statics
   AString m_ReportedServer;
   AString m_ReportedHostname;
   int m_ReportedHttpPort;

@@ -23,12 +23,31 @@ public:
   
   /*!
   Get static file from cache or try to load it into the cache
-  If cache enabled will get item from cache and auto ptr will be set on no-delete
-  If not caching or file too large then auto ptr will auto delete the item when out of scope
-  modified - returns the modified time for the file if found
-  ifModifiedSince - is If-Modified: HTTP request header time
+  NOTE: If cache enabled will get item from cache and auto ptr will be set on no-delete
+  NOTE: If not caching or file too large then auto ptr will auto delete the item when out of scope
+
+  @param context of the request for locale and modified-since info
+  @param fname relative to the data directory
+  @param handle [OUT] receives the handle to the file if found, this object will manage the deletion of the file if needed
+  @param modified [OUT] receives the modified time for the file if found
+  @return status, ACacheInterface::NOT_FOUND if not found, otherwise several cache specific status codes
   */
-  ACacheInterface::STATUS getStaticFile(AOSContext&, const AFilename&, ACache_FileSystem::HANDLE&, ATime& modified, const ATime& ifModifiedSince);
+  ACacheInterface::STATUS getStaticFile(AOSContext& context, const AFilename& fname, ACache_FileSystem::HANDLE& handle);
+  ACacheInterface::STATUS getStaticFile(AOSContext& context, const AFilename& fname, ACache_FileSystem::HANDLE& handle, ATime& modified);
+
+  /*!
+  Get data file from cache or try to load it into the cache
+  NOTE: If cache enabled will get item from cache and auto ptr will be set on no-delete
+  NOTE: If not caching or file too large then auto ptr will auto delete the item when out of scope
+  
+  @param context of the request for locale and modified-since info
+  @param fname relative to the data directory
+  @param handle [OUT] receives the handle to the file if found, this object will manage the deletion of the file if needed
+  @param modified [OUT] receives the modified time for the file if found
+  @return status, ACacheInterface::NOT_FOUND if not found, otherwise several cache specific status codes
+  */
+  ACacheInterface::STATUS getDataFile(AOSContext& context, const AFilename& fname, ACache_FileSystem::HANDLE& handle);
+  ACacheInterface::STATUS getDataFile(AOSContext& context, const AFilename& fname, ACache_FileSystem::HANDLE& handle, ATime& modified);
 
   /*!
   Get parsed ATemplate from cache or try to load it into the cache
@@ -64,6 +83,10 @@ private:
   //a_Static file cache
   ACache_FileSystem *mp_StaticFileCache;
   bool m_IsStaticFileCacheEnabled;
+
+  //a_Data file cache
+  ACache_FileSystem *mp_DataFileCache;
+  bool m_IsDataFileCacheEnabled;
 
   //a_Parsed template cache
   typedef std::map<AFilename, ATemplate *> TEMPLATE_CACHE;

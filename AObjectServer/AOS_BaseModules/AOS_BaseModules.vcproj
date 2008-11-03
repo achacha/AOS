@@ -583,6 +583,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\AOSModule_SetSessionLocale.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\AOSModule_Template.hpp"
 					>
 				</File>
@@ -618,6 +622,10 @@
 				</File>
 				<File
 					RelativePath=".\AOSModule_SaveToFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSModule_SetSessionLocale.cpp"
 					>
 				</File>
 				<File

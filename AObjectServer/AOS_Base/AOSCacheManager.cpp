@@ -20,6 +20,10 @@ void AOSCacheManager::debugDump(std::ostream& os, int indent) const
   mp_StaticFileCache->debugDump(os, indent+2);
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
+  ADebugDumpable::indent(os, indent+1) << "m_DataFileCache={" << std::endl;
+  mp_DataFileCache->debugDump(os, indent+2);
+  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
+
   if (mp_StatusTemplateCache)
   {
     ADebugDumpable::indent(os, indent+1) << "mp_StatusTemplateCache={" << std::endl;
@@ -72,6 +76,31 @@ void AOSCacheManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader&
     
     size_t hit = mp_StaticFileCache->getHit();
     size_t miss = mp_StaticFileCache->getMiss();
+    adminAddProperty(elem, ASW("hit",3), AString::fromSize_t(hit));
+    adminAddProperty(elem, ASW("miss",4), AString::fromSize_t(miss));
+    if (hit > 0 || miss > 0)
+    {
+      adminAddProperty(elem, ASW("efficiency",10), AString::fromDouble((double)hit/double(hit+miss)));
+    }
+  }
+
+  {
+    AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("data_file_cache",15));
+
+    adminAddPropertyWithAction(
+      elem, 
+      ASW("enabled",7), 
+      AString::fromBool(m_IsDataFileCacheEnabled),
+      ASW("Update",6), 
+      ASWNL("1:Enable static content caching, 0:Disable and clear, -1:Clear only"),
+      ASW("Set",3)
+    );
+
+    adminAddProperty(elem, ASW("byte_size",9), AString::fromSize_t(mp_DataFileCache->getByteSize()));  
+    adminAddProperty(elem, ASW("item_count",10), AString::fromSize_t(mp_DataFileCache->getItemCount()));  
+    
+    size_t hit = mp_DataFileCache->getHit();
+    size_t miss = mp_DataFileCache->getMiss();
     adminAddProperty(elem, ASW("hit",3), AString::fromSize_t(hit));
     adminAddProperty(elem, ASW("miss",4), AString::fromSize_t(miss));
     if (hit > 0 || miss > 0)
@@ -155,11 +184,21 @@ void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestH
 AOSCacheManager::AOSCacheManager(AOSServices& services) :
   m_Services(services)
 {
-  int maxItems = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/max-items", 20000);
-  int maxFileSizeInK = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/max-filesize", 512 * 1024);
-  int cacheCount = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/cache/cache-count", 97);
-  mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
-  m_IsStaticFileCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/static-file-cache/enabled",40), false);
+  {
+    m_IsStaticFileCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/static-file-cache/enabled",40), false);
+    int maxItems = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/static-file-cache/max-items", 20000);
+    int maxFileSizeInK = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/static-file-cache/max-filesize", 512 * 1024);
+    int cacheCount = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/static-file-cache/cache-count", 13);
+    mp_StaticFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
+  }
+
+  {
+    m_IsDataFileCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/data-file-cache/enabled",40), false);
+    int maxItems = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/data-file-cache/max-items", 20000);
+    int maxFileSizeInK = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/data-file-cache/max-filesize", 512 * 1024);
+    int cacheCount = m_Services.useConfiguration().useConfigRoot().getInt("/config/server/data-file-cache/cache-count", 13);
+    mp_DataFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
+  }
 
   //a_Status template cache
   mp_StatusTemplateCache = new STATUS_TEMPLATE_CACHE();
@@ -176,6 +215,7 @@ AOSCacheManager::~AOSCacheManager()
   try
   {
     delete mp_StaticFileCache;
+    delete mp_DataFileCache;
     
     {
       //a_Release status templates
@@ -194,13 +234,24 @@ AOSCacheManager::~AOSCacheManager()
   catch(...) {}
 }
 
-ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& filename, ACache_FileSystem::HANDLE& pFile, ATime& modified, const ATime& ifModifiedSince)
+ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& fname, ACache_FileSystem::HANDLE& handle)
+{
+  ATime modified;
+  return getStaticFile(context, fname, handle, modified);
+}
+
+ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, const AFilename& fname, ACache_FileSystem::HANDLE& handle, ATime& modified)
 {
   AASSERT(this, mp_StaticFileCache);
+
+  AFilename filename;
+  m_Services.useConfiguration().getAosStaticDirectory(context, filename);
+  filename.join(fname);
   if (m_IsStaticFileCacheEnabled)
   {
     //a_Get from cache
-    return mp_StaticFileCache->get(filename, pFile, modified, ifModifiedSince);
+    const ATime& ifModifiedSince = context.useRequestHeader().getIfModifiedSince();
+    return mp_StaticFileCache->get(filename, handle, modified, ifModifiedSince);
   }
   else
   {
@@ -208,8 +259,8 @@ ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, cons
     if (AFileSystem::isA(filename, AFileSystem::File))
     {
       context.useEventVisitor().startEvent(ARope("Reading physical file: ",23)+filename);
-      pFile.reset(new AFile_Physical(filename));
-      pFile->open();
+      handle.reset(new AFile_Physical(filename));
+      handle->open();
       if (!AFileSystem::getLastModifiedTime(filename, modified))
         ATHROW_EX(&context, AException::NotFound, filename);
 
@@ -217,7 +268,47 @@ ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, cons
     }
     else
     {
-      pFile.reset(NULL);
+      handle.reset(NULL);
+      return ACacheInterface::NOT_FOUND;
+    }
+  }
+}
+
+ACacheInterface::STATUS AOSCacheManager::getDataFile(AOSContext& context, const AFilename& fname, ACache_FileSystem::HANDLE& handle)
+{
+  ATime modified;
+  return getDataFile(context, fname, handle, modified);
+}
+
+ACacheInterface::STATUS AOSCacheManager::getDataFile(AOSContext& context, const AFilename& fname, ACache_FileSystem::HANDLE& handle, ATime& modified)
+{
+  AASSERT(this, mp_DataFileCache);
+
+  AFilename filename;
+  m_Services.useConfiguration().getAosDataDirectory(context, filename);
+  filename.join(fname);
+  if (m_IsDataFileCacheEnabled)
+  {
+    //a_Get from cache
+    const ATime& ifModifiedSince = context.useRequestHeader().getIfModifiedSince();
+    return mp_DataFileCache->get(filename, handle, modified, ifModifiedSince);
+  }
+  else
+  {
+    //a_No caching, read fom file system
+    if (AFileSystem::isA(filename, AFileSystem::File))
+    {
+      context.useEventVisitor().startEvent(ARope("Reading physical file: ",23)+filename);
+      handle.reset(new AFile_Physical(filename));
+      handle->open();
+      if (!AFileSystem::getLastModifiedTime(filename, modified))
+        ATHROW_EX(&context, AException::NotFound, filename);
+
+      return ACacheInterface::FOUND_NOT_CACHED;
+    }
+    else
+    {
+      handle.reset(NULL);
       return ACacheInterface::NOT_FOUND;
     }
   }

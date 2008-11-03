@@ -9,6 +9,7 @@ $Id$
 #include "AOSContext.hpp"
 
 const AString AOSSessionData::SESSIONID("id",2);
+const AString AOSSessionData::LOCALE("locale",6);
 
 void AOSSessionData::debugDump(std::ostream& os, int indent) const
 {
