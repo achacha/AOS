@@ -138,7 +138,7 @@ class Context:
     os.system(CMD);
 
   def syncPath(self, source_path, target_path):
-    EXEC_RSYNC_BASE="rsync -tu --exclude=.svn ";
+    EXEC_RSYNC_BASE="rsync -tup --exclude=.svn ";
     CMD = EXEC_RSYNC_BASE;
     if (self.verbose == 1):
       CMD = CMD + "-v ";
@@ -152,7 +152,7 @@ class Context:
     os.system(CMD);
 
   def syncPathRecursive(self, source_path, target_path):
-    EXEC_RSYNC_BASE="rsync -tu --exclude=.svn -r ";
+    EXEC_RSYNC_BASE="rsync -tup --exclude=.svn -r ";
     CMD = EXEC_RSYNC_BASE;
     if (self.verbose == 1):
       CMD = CMD + "-v ";
@@ -164,7 +164,7 @@ class Context:
     os.system(CMD);
 
   def syncPathFiles(self, source_path, filemask, target_path):
-    EXEC_RSYNC_BASE="rsync -tu --exclude=.svn --exclude=pch*.hpp ";
+    EXEC_RSYNC_BASE="rsync -tup --exclude=.svn --exclude=pch*.hpp ";
     CMD = EXEC_RSYNC_BASE;
     if (self.verbose == 1):
       CMD = CMD + "-v ";
@@ -178,7 +178,7 @@ class Context:
     os.system(CMD);
 
   def syncFile(self, source_file, target_path):
-    EXEC_RSYNC_BASE="rsync -tu ";
+    EXEC_RSYNC_BASE="rsync -tup ";
     CMD = EXEC_RSYNC_BASE;
     if (self.verbose == 1):
       CMD = CMD + "-v ";

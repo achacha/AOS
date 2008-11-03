@@ -52,6 +52,10 @@ sync_aos_root(context, context.BASE_AOBJECTSERVER_PATH);
 print("Sync AOS_Modules aos_root")
 sync_aos_root(context, context.BASE_AOSMODULES_PATH);
 
+# Docs
+print("Sync Docs: "+os.path.join(context.BASE_AOBJECTSERVER_PATH, "docs")+" -> "+context.TARGET_PATH);
+context.syncPathRecursive(os.path.join(context.BASE_AOBJECTSERVER_PATH, "docs"), context.TARGET_PATH);
+
 print("Sync SSL and AOSWatchDog config")
 context.syncFileToOutput(os.path.join(context.BASE_AOBJECTSERVER_PATH, "openssl_create_selfsigned_certificate.py"));
 context.syncFileToOutput(os.path.join(context.BASE_AOBJECTSERVER_PATH, "openssl.config"));
