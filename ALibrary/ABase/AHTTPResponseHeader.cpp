@@ -125,7 +125,7 @@ AXmlElement& AHTTPResponseHeader::emitXml(AXmlElement& thisRoot) const
     thisRoot.addElement(ASW("status",6)).addData(mstr_ReasonPhrase).addAttribute(ASW("code",4), u4(mi_StatusCode));
   
   //a_From parent
-  MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
+  MMAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
   {
     thisRoot.addElement((*cit).second.getName()).addData((*cit).second.getValue(), AXmlElement::ENC_CDATADIRECT);
@@ -204,7 +204,7 @@ bool AHTTPResponseHeader::_parseLineZero()
 
 bool AHTTPResponseHeader::_handledByChild(const ANameValuePair &nvPair)
 {
-  if (!nvPair.getName().compareNoCase(ASW("Set-Cookie",10)))
+  if (!nvPair.getName().compareNoCase(AHTTPHeader::HT_RES_Set_Cookie))
   {
     //a_Special method for this special case
     mcookies_Response.parseSetCookieLine(nvPair.getValue());
@@ -316,5 +316,5 @@ void AHTTPResponseHeader::setLastModified(const ATime& modified)
 {
   AString str;
   modified.emitRFCtime(str);
-  setPair(ASW("Last-Modified",13), str);
+  set(HT_ENT_Last_Modified, str);
 }

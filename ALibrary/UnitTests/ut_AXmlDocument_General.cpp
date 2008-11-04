@@ -21,11 +21,5 @@ int ut_AXmlDocument_General()
   doc.emit(str);
   ASSERT_UNIT_TEST(str.equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<root/>"), "Clear", "0", iRet);
 
-  str.clear();
-  doc.clear();
-  doc.useRoot().useName().clear();
-  doc.emit(str);
-  ASSERT_UNIT_TEST(str.isEmpty(), "Clear", "1", iRet);
-
   return iRet;
 }

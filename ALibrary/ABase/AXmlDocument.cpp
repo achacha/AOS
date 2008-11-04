@@ -159,6 +159,12 @@ void AXmlDocument::clear(
       ++it;
     }
     m_Instructions.clear();
+
+    //a_Madantory first instruction:  <?xml version="1.0" encoding="UTF-8"?>
+    AXmlInstruction *p = new AXmlInstruction(AXmlInstruction::XML_HEADER);
+    p->addAttribute(ASW("version", 7), ASW("1.0", 3));
+    p->addAttribute(ASW("encoding", 8), ASW("UTF-8", 5));
+    m_Instructions.push_back(p);
   }
 
   // Set name if specified

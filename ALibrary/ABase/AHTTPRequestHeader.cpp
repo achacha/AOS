@@ -88,7 +88,7 @@ void AHTTPRequestHeader::clear()
 void AHTTPRequestHeader::parseUrl(const AString& str)
 {
   murl_Request.parse(str);
-  setPair(AHTTPHeader::HT_REQ_Host, murl_Request.getServer());   //a_Required for HTTP/1.1 and nice to have with earlier versions
+  set(AHTTPHeader::HT_REQ_Host, murl_Request.getServer());   //a_Required for HTTP/1.1 and nice to have with earlier versions
 }
 
 const AString& AHTTPRequestHeader::getMethod() const 
@@ -130,12 +130,8 @@ AXmlElement& AHTTPRequestHeader::emitXml(AXmlElement& thisRoot) const
   thisRoot.addElement(ASW("version",7)).addData(mstr_HTTPVersion);
   
   //a_From parent
-  MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
-  while (cit != m_Pairs.end())
-  {
+  for (MMAP_AString_NVPair::const_iterator cit = m_Pairs.begin(); cit != m_Pairs.end(); ++cit)
     thisRoot.addElement((*cit).second.getName()).addData((*cit).second.getValue(), AXmlElement::ENC_CDATADIRECT);
-    ++cit;
-  }
 
   murl_Request.emitXml(thisRoot.addElement(ASW("url",3)));
   mcookies_Request.emitXml(thisRoot.addElement(ASW("cookies",7)));
@@ -175,11 +171,11 @@ void AHTTPRequestHeader::emitProxyHeader(AOutputBuffer& target) const
   target.append(mstr_HTTPVersion);
   target.append(AConstant::ASTRING_CRLF);
 
-  if (mstr_HTTPVersion.equalsNoCase("HTTP/1.1", 8))
+  if (mstr_HTTPVersion.equals(AHTTPHeader::HTTP_VERSION_1_1))
   {
-    //a_RFC2616 Section 14.23 requires Host: for HTTP/1.1
-    if (m_Pairs.find("Host") == m_Pairs.end())
-      ATHROW_EX(this, AException::InvalidObject, ASWNL("HTTP/1.1 requires 'Host:' to contain server requested")); 
+    //a_RFC2616 Section 14.23 requires host: for HTTP/1.1
+    if (!exists(AHTTPHeader::HT_REQ_Host))
+      ATHROW_EX(this, AException::InvalidObject, ASWNL("HTTP/1.1 requires 'host:' to contain server requested")); 
   }
 
   //a_Parent class will do the body
@@ -244,7 +240,7 @@ bool AHTTPRequestHeader::_parseLineZero()
 
 bool AHTTPRequestHeader::_handledByChild(const ANameValuePair &nvHTTPPair)
 {
-  if (!nvHTTPPair.getName().compareNoCase(ASW("Cookie",6)))
+  if (!nvHTTPPair.getName().compare(AHTTPHeader::HT_REQ_Cookie))
   {
     ANameValuePair nvPair(ANameValuePair::COOKIE);
 
@@ -316,17 +312,17 @@ bool AHTTPRequestHeader::isHttpPipeliningEnabled() const
 {
   bool isEnabled = equalsNoCase(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
   isEnabled |= !equalsNoCase(AHTTPHeader::HT_GEN_Connection, ASW("close",5));
-  isEnabled &= mstr_HTTPVersion.equals("HTTP/1.1", 8);
+  isEnabled &= mstr_HTTPVersion.equals(AHTTPHeader::HTTP_VERSION_1_1);
 
   return isEnabled;
 }
 
 bool AHTTPRequestHeader::isValidHttp() const
 {
-  if (mstr_HTTPVersion.equalsNoCase("HTTP/1.1", 8))
+  if (mstr_HTTPVersion.equals(AHTTPHeader::HTTP_VERSION_1_1))
   {
     //a_RFC2616 Section 14.23 requires Host: for HTTP/1.1
-    if (m_Pairs.find(ASW("Host",4)) == m_Pairs.end())
+    if (m_Pairs.find(AHTTPHeader::HT_REQ_Host) == m_Pairs.end())
       return false;
   }
   return true;
@@ -335,7 +331,7 @@ bool AHTTPRequestHeader::isValidHttp() const
 ATime AHTTPRequestHeader::getIfModifiedSince() const
 {
   AString str;
-  if (getPairValue(AHTTPHeader::HT_REQ_If_Modified_Since, str))
+  if (get(AHTTPHeader::HT_REQ_If_Modified_Since, str))
   {
     ATime ret;
     ret.parseRFCtime(str);
@@ -360,7 +356,7 @@ size_t AHTTPRequestHeader::getAcceptLanguageList(LIST_AString& target) const
   target.clear();
 
   AString str;
-  if (!getPairValue(AHTTPHeader::HT_REQ_Accept_Language, str))
+  if (!get(AHTTPHeader::HT_REQ_Accept_Language, str))
     return 0;
 
   //a_Split on ,

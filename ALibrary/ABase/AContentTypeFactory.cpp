@@ -14,7 +14,7 @@ $Id$
 AContentTypeInterface* AContentTypeFactory::createContentTypeDocument(const AHTTPHeader& hdr)
 {
   AString str;
-  if (hdr.getPairValue(AHTTPHeader::HT_ENT_Content_Type, str))
+  if (hdr.get(AHTTPHeader::HT_ENT_Content_Type, str))
   {
     AContentTypeInterface *pDoc = createContentTypeDocument(str);
     pDoc->parseHTTPHeader(hdr);

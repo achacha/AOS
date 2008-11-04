@@ -21,8 +21,8 @@ public:
 
 #define UNIT_TEST_PORT 19997
 #define UNIT_TEST_HOST "127.0.0.1"
-#define UNIT_TEST_REQUEST "X-UnitTest-Id"
-#define UNIT_TEST_RESPONSE "X-UnitTest-Response"
+#define UNIT_TEST_REQUEST "x-unittest-id"
+#define UNIT_TEST_RESPONSE "x-unittest-response"
 u4 threadprocServer(AThread& thread)
 {
   int& iRet = dynamic_cast<Params *>(thread.getParameter())->iRet;
@@ -47,12 +47,12 @@ u4 threadprocServer(AThread& thread)
 
         requestHeader.fromAFile(connection);
 
-        if (requestHeader.getPairValue(UNIT_TEST_REQUEST, testId))
+        if (requestHeader.get(UNIT_TEST_REQUEST, testId))
         {
           responseHeader.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
           if (testId.equals("1"))
           {
-            responseHeader.setPair(UNIT_TEST_RESPONSE, "echo");
+            responseHeader.set(UNIT_TEST_RESPONSE, "echo");
           }
           else
           {
@@ -127,15 +127,15 @@ int ut_AFile_Socket_General()
 
     AHTTPRequestHeader request;
     AHTTPResponseHeader response;
-    request.setPair(AHTTPHeader::HT_REQ_Host, UNIT_TEST_HOST);
-    request.setPair(UNIT_TEST_REQUEST, "1");
+    request.set(AHTTPHeader::HT_REQ_Host, UNIT_TEST_HOST);
+    request.set(UNIT_TEST_REQUEST, "1");
     request.toAFile(client);
     response.fromAFile(client);
 
     AString str;
   //  request.debugDump();
   //  response.debugDump();
-    ASSERT_UNIT_TEST(response.getPairValue(UNIT_TEST_RESPONSE, str), "Non-blocking: Response pair not found", "", iRet);
+    ASSERT_UNIT_TEST(response.get(UNIT_TEST_RESPONSE, str), "Non-blocking: Response pair not found", "", iRet);
     ASSERT_UNIT_TEST(str.equals("echo"), "Non-blocking: Response pair contains invalid value", "", iRet);
   }
 
@@ -146,15 +146,15 @@ int ut_AFile_Socket_General()
 
     AHTTPRequestHeader request;
     AHTTPResponseHeader response;
-    request.setPair(AHTTPHeader::HT_REQ_Host, UNIT_TEST_HOST);
-    request.setPair(UNIT_TEST_REQUEST, "1");
+    request.set(AHTTPHeader::HT_REQ_Host, UNIT_TEST_HOST);
+    request.set(UNIT_TEST_REQUEST, "1");
     request.toAFile(client);
     response.fromAFile(client);
 
     AString str;
   //  request.debugDump();
   //  response.debugDump();
-    ASSERT_UNIT_TEST(response.getPairValue(UNIT_TEST_RESPONSE, str), "Blocking: Response pair not found", "", iRet);
+    ASSERT_UNIT_TEST(response.get(UNIT_TEST_RESPONSE, str), "Blocking: Response pair not found", "", iRet);
     ASSERT_UNIT_TEST(str.equals("echo"), "Blocking: Response pair contains invalid value", "", iRet);
   }
 

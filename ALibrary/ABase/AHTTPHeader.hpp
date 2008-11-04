@@ -16,74 +16,60 @@ class ABASE_API AHTTPHeader : public ADebugDumpable, public ASerializable, publi
 {
 public:
   /*!
-  Tokens from RFC-2068
+  Field names from RFC-2616 (HTTP/1.1)
+
+  By definition field-names are case insensitive and stored as all lowercase
   */
-  enum HEADER_TOKENS
-  {
-    HT_INVALID                  = 0x00000000,
-    
-    //! General-header
-    HT_GEN_Cache_Control        = 0x10000001,
-    HT_GEN_Connection           = 0x10000002,
-    HT_GEN_Date                 = 0x10000003,
-    HT_GEN_Pragma               = 0x10000004,
-    HT_GEN_Transfer_Encoding    = 0x10000005,
-    HT_GEN_Upgrade              = 0x10000006,
-    HT_GEN_Via                  = 0x10000007,
-    HT_GEN_Keep_Alive           = 0x10000008,
-
-    //! Request-header
-    HT_REQ_Accept               = 0x10000020,
-    HT_REQ_Accept_Charset       = 0x10000021,
-    HT_REQ_Accept_Encoding      = 0x10000022,
-    HT_REQ_Accept_Language      = 0x10000023,
-    HT_REQ_Accept_Ranges        = 0x10000024,
-    HT_REQ_Authorization        = 0x10000025,
-    HT_REQ_From                 = 0x10000026,
-    HT_REQ_Host                 = 0x10000027,
-    HT_REQ_If_Modified_Since    = 0x10000028,
-    HT_REQ_If_Match             = 0x10000029,
-    HT_REQ_If_None_Match        = 0x1000002A,
-    HT_REQ_If_Range             = 0x1000002B,
-    HT_REQ_If_Unmodified_Since  = 0x1000002C,
-    HT_REQ_Max_Forwards         = 0x1000002D,
-    HT_REQ_Proxy_Authorization  = 0x1000002E,
-    HT_REQ_Range                = 0x1000002F,
-    HT_REQ_Referer              = 0x10000030,
-    HT_REQ_User_Agent           = 0x10000031,
-    
-    //! Special request-header
-    HT_REQ_Cookie               = 0x1000003A,
-
-    //! Response-header
-    HT_RES_Age                  = 0x10000040,
-    HT_RES_Location             = 0x10000041,
-    HT_RES_Proxy_Authenticate   = 0x10000042,
-    HT_RES_Public               = 0x10000043,
-    HT_RES_Retry_After          = 0x10000044,
-    HT_RES_Server               = 0x10000045,
-    HT_RES_TE                   = 0x10000046,      
-    HT_RES_Vary                 = 0x10000047,
-    HT_RES_Warning              = 0x10000048,
-    HT_RES_WWW_Authenticate     = 0x10000049,
-
-    //a_Special response-header
-    HT_RES_Set_Cookie           = 0x1000004A,
-
-    //a_Entity-header
-    HT_ENT_Allow                = 0x10000060,
-    HT_ENT_Content_Base         = 0x10000061,
-    HT_ENT_Content_Encoding     = 0x10000062,
-    HT_ENT_Content_Language     = 0x10000063,
-    HT_ENT_Content_Length       = 0x10000064,
-    HT_ENT_Content_Location     = 0x10000065,
-    HT_ENT_Content_MD5          = 0x10000066,
-    HT_ENT_Content_Range        = 0x10000067,
-    HT_ENT_Content_Type         = 0x10000068,
-    HT_ENT_ETag                 = 0x10000069,
-    HT_ENT_Expires              = 0x1000006A,
-    HT_ENT_Last_Modified        = 0x1000006B
-  };
+  static const AString HT_GEN_Cache_Control;
+  static const AString HT_GEN_Connection;
+  static const AString HT_GEN_Date;
+  static const AString HT_GEN_Pragma;
+  static const AString HT_GEN_Transfer_Encoding;
+  static const AString HT_GEN_Upgrade;
+  static const AString HT_GEN_Via;
+  static const AString HT_GEN_Keep_Alive;
+  static const AString HT_REQ_Accept;
+  static const AString HT_REQ_Accept_Charset;
+  static const AString HT_REQ_Accept_Encoding;
+  static const AString HT_REQ_Accept_Language;
+  static const AString HT_REQ_Accept_Ranges;
+  static const AString HT_REQ_Authorization;
+  static const AString HT_REQ_From;
+  static const AString HT_REQ_Host;
+  static const AString HT_REQ_If_Modified_Since;
+  static const AString HT_REQ_If_Match;
+  static const AString HT_REQ_If_None_Match;
+  static const AString HT_REQ_If_Range;
+  static const AString HT_REQ_If_Unmodified_Since;
+  static const AString HT_REQ_Max_Forwards;
+  static const AString HT_REQ_Proxy_Authorization;
+  static const AString HT_REQ_Range;
+  static const AString HT_REQ_Referer;
+  static const AString HT_REQ_User_Agent;
+  static const AString HT_REQ_Cookie;
+  static const AString HT_RES_Age;
+  static const AString HT_RES_Location;
+  static const AString HT_RES_Proxy_Authenticate;
+  static const AString HT_RES_Public;
+  static const AString HT_RES_Retry_After;
+  static const AString HT_RES_Server;
+  static const AString HT_RES_Vary;
+  static const AString HT_RES_Warning;
+  static const AString HT_RES_WWW_Authenticate;
+  static const AString HT_RES_TE;
+  static const AString HT_RES_Set_Cookie;
+  static const AString HT_ENT_Allow;
+  static const AString HT_ENT_Content_Base;
+  static const AString HT_ENT_Content_Encoding;
+  static const AString HT_ENT_Content_Language;
+  static const AString HT_ENT_Content_Length;
+  static const AString HT_ENT_Content_Location;
+  static const AString HT_ENT_Content_MD5;
+  static const AString HT_ENT_Content_Range;
+  static const AString HT_ENT_Content_Type;
+  static const AString HT_ENT_ETag;
+  static const AString HT_ENT_Expires;
+  static const AString HT_ENT_Last_Modified;
 
   //! HTML POST form: application/x-www-form-urlencoded
   static const AString CONTENT_TYPE_HTML_FORM;
@@ -91,8 +77,12 @@ public:
   //! HTML multi-part POST form: multipart/form-data
   static const AString CONTENT_TYPE_HTML_FORM_MULTIPART;
 
-  //! String that denotes default HTTP version supported "HTTP/1.1"
-  static const AString DEFAULT_HTTP_VERSION;
+  //! HTTP/0.9 version string
+  static const AString HTTP_VERSION_0_9;
+  //! HTTP/1.0 version string
+  static const AString HTTP_VERSION_1_0;
+  //! HTTP/1.1 version string
+  static const AString HTTP_VERSION_1_1;
 
 public:
   virtual ~AHTTPHeader();
@@ -130,8 +120,9 @@ public:
     ...
   
   @param line0 to parse
+  @return true if parsed successfully
   */
-  bool parseLineZero(const AString & line0);
+  bool parseLineZero(const AString& line0);
   
   /*!
   Parse token lines after line 0
@@ -139,82 +130,96 @@ public:
 
   @param line to parse
   */
-  void parseTokenLine(const AString & line);
-
-  /*!
-  Number of header pairs
-
-  @return number of pairs in the header
-  */
-  size_t size() const;
+  void parseTokenLine(const AString& line);
   
   /*!
-  Set header pair
+  Access to the container of HTTP name -> value(s)
 
-  @param eToken name from HEADER_TOKEN enum
-  @param value of the header pair
-  @see AHTTPHeader::HEADER_TOKEN
+  @return reference to the container
   */
-  void setPair(AHTTPHeader::HEADER_TOKENS eToken, const AString& value);
+  MMAP_AString_NVPair& useContainer();
 
   /*!
-  Set header pair
+  Access to the container of HTTP name -> value(s)
+
+  @return constant reference to the container
+  */
+  const MMAP_AString_NVPair& getContainer() const;
+
+  /*!
+  Add header pair
 
   @param name of the header pair
   @param value of the header pair
   */
-  void setPair(const AString& name, const AString& value);
+  void add(const AString& name, const AString& value);
+
+  /*!
+  Set header pair (replaces the value of the first if already exists and removes the rest)
+
+  @param name of the header pair
+  @param value of the header pair
+  */
+  void set(const AString& name, const AString& value);
   
   /*!
   Remove header pair
 
-  @param eToken name from HEADER_TOKEN enum
-  @see AHTTPHeader::HEADER_TOKEN
+  @param name of the field
   */
-  void removePair(AHTTPHeader::HEADER_TOKENS eToken);
+  void remove(const AString& name);
 
   /*!
   Checks existance of a header pair
 
-  @param eToken name from HEADER_TOKEN enum
-  @see AHTTPHeader::HEADER_TOKEN
+  @param name of the field
+  @return true if exists (one or more)
   */
-  bool exists(AHTTPHeader::HEADER_TOKENS eToken) const;
+  bool exists(const AString& name) const;
   
   /*!
-  Compares value to the string, returns false if not equals or not found
+  Count existance of a header pair
 
-  @param eToken name from HEADER_TOKEN enum
-  @param value to compare to
-  @see AHTTPHeader::HEADER_TOKEN
+  @param name of the field
+  @return number of field name values that exist
   */
-  bool equals(AHTTPHeader::HEADER_TOKENS eToken, const AString& value) const;
+  size_t count(const AString& name) const;
+
+  /*!
+  Compares value to the string, returns false if not equals or not found
+  Will check all field names in the header
+
+  @param name of the field
+  @param value to compare to
+  */
+  bool equals(const AString& name, const AString& value) const;
   
   /*!
   Compares value to the string ignoring case, returns false if not equals or not found
+  Will check all field names in the header
 
-  @param eToken name from HEADER_TOKEN enum
+  @param name of the field
   @param value to compare to without case
-  @see AHTTPHeader::HEADER_TOKEN
   */
-  bool equalsNoCase(AHTTPHeader::HEADER_TOKENS eToken, const AString& value) const;
+  bool equalsNoCase(const AString& name, const AString& value) const;
 
   /*!
-  Find a token and append the value to target
-
-  @param eToken name from HEADER_TOKEN enum
-  @param target to emit to
-  @see AHTTPHeader::HEADER_TOKEN
-  */
-  bool getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AOutputBuffer& target) const;
-  
-  /*!
-  Find a token as a string and append to target
+  Find the field names and appends to target (comma separated)
   
   @param name of the header pair
   @param target to emit to
+  @return field values added
   */
-  bool getPairValue(const AString& name, AOutputBuffer& target) const;
+  size_t get(const AString& name, AOutputBuffer& target) const;
+
+  /*!
+  Find the field names and add to target list
+  
+  @param name of the header pair
+  @param target list to add to
+  @return field values added to target
+  */
+  size_t get(const AString& name, LIST_AString& target) const;
 
   /*!
   Version of the header (supported by both response and request)
@@ -267,8 +272,8 @@ protected:
   AHTTPHeader(const AHTTPHeader&);
   AHTTPHeader& operator=(const AHTTPHeader&);
 
-  //! Storage of name value pairs
-  MAP_AString_NVPair m_Pairs;
+  //! Storage of name -> value(s)
+  MMAP_AString_NVPair m_Pairs;
   
   //! Managed by the request and response derived classes
   AString mstr_LineZero;
@@ -279,10 +284,6 @@ protected:
   
   //! If this pair is handled by child it will return 1, else 0 means no and added to this object
   virtual bool _handledByChild(const ANameValuePair& nvPair) = 0;  
-
-  // Mapping from types to strings
-  const AString              _mapTypeToString(AHTTPHeader::HEADER_TOKENS eToken) const;
-  AHTTPHeader::HEADER_TOKENS _mapStringToType(const AString& strToken) const;
 
   // Status code description
   AString _getStatusCodeDescription(int iStatusCode);

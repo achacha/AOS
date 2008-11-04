@@ -371,6 +371,7 @@ void ANameValuePair::setName(const AString& name)
 	
 	switch (m_nvtype)
   {
+    case ANameValuePair::HTTP:
     case ANameValuePair::HTML:
     case ANameValuePair::COOKIE:
     case ANameValuePair::FORM_MULTIPART:
@@ -391,10 +392,11 @@ void ANameValuePair::setNameValue(const AString& name, const AString& strValue)
 
 	switch (m_nvtype)
   {
+    case ANameValuePair::HTTP:
     case ANameValuePair::HTML:
     case ANameValuePair::COOKIE:
-    case ANameValuePair::DATA:
     case ANameValuePair::FORM_MULTIPART:
+    case ANameValuePair::DATA:
     case ANameValuePair::CGI:
   	  m_name.makeLower();
     break;
@@ -422,16 +424,20 @@ void ANameValuePair::parse(const AString& strInput, size_t& pos)
     break;
 
     case ANameValuePair::XML:
-    case ANameValuePair::HTML:
     case ANameValuePair::JSON:
-    case ANameValuePair::CGI: 
     case ANameValuePair::CGI_CASE: 
+    case ANameValuePair::CUSTOM:
+      _parseName(strInput, pos, m_name);
+    break;
+
     case ANameValuePair::HTTP:
+    case ANameValuePair::HTML:
     case ANameValuePair::COOKIE:
     case ANameValuePair::FORM_MULTIPART:
     case ANameValuePair::DATA:
-    case ANameValuePair::CUSTOM:
+    case ANameValuePair::CGI:
       _parseName(strInput, pos, m_name);
+      m_name.makeLower();
     break;
 
     default:

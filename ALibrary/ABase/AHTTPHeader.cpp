@@ -10,15 +10,68 @@ $Id$
 #include "ARope.hpp"
 #include "AThread.hpp"
 
-const AString AHTTPHeader::DEFAULT_HTTP_VERSION("HTTP/1.1",8);
+const AString AHTTPHeader::HTTP_VERSION_0_9("HTTP/0.9",8);
+const AString AHTTPHeader::HTTP_VERSION_1_0("HTTP/1.0",8);
+const AString AHTTPHeader::HTTP_VERSION_1_1("HTTP/1.1",8);
 
 const AString AHTTPHeader::CONTENT_TYPE_HTML_FORM("application/x-www-form-urlencoded");
 const AString AHTTPHeader::CONTENT_TYPE_HTML_FORM_MULTIPART("multipart/form-data");
 
+const AString AHTTPHeader::HT_GEN_Cache_Control      ("cache-control",13);
+const AString AHTTPHeader::HT_GEN_Connection         ("connection",10);
+const AString AHTTPHeader::HT_GEN_Date               ("date",4);
+const AString AHTTPHeader::HT_GEN_Pragma             ("pragma",6);
+const AString AHTTPHeader::HT_GEN_Transfer_Encoding  ("transfer-encoding",17);
+const AString AHTTPHeader::HT_GEN_Upgrade            ("upgrade",7);
+const AString AHTTPHeader::HT_GEN_Via                ("via",3);
+const AString AHTTPHeader::HT_GEN_Keep_Alive         ("keep-alive",10);
+const AString AHTTPHeader::HT_REQ_Accept             ("accept",6);
+const AString AHTTPHeader::HT_REQ_Accept_Charset     ("accept-charset",14);
+const AString AHTTPHeader::HT_REQ_Accept_Encoding    ("accept-encoding",15);
+const AString AHTTPHeader::HT_REQ_Accept_Language    ("accept-language",15);
+const AString AHTTPHeader::HT_REQ_Accept_Ranges      ("accept-ranges",13);
+const AString AHTTPHeader::HT_REQ_Authorization      ("authorization",13);
+const AString AHTTPHeader::HT_REQ_From               ("from",4);
+const AString AHTTPHeader::HT_REQ_Host               ("host",4);
+const AString AHTTPHeader::HT_REQ_If_Modified_Since  ("if-modified-since",17);
+const AString AHTTPHeader::HT_REQ_If_Match           ("if-match",8);
+const AString AHTTPHeader::HT_REQ_If_None_Match      ("if-none-match",13);
+const AString AHTTPHeader::HT_REQ_If_Range           ("if-range",8);
+const AString AHTTPHeader::HT_REQ_If_Unmodified_Since("if-unmodified-since",19);
+const AString AHTTPHeader::HT_REQ_Max_Forwards       ("max-forwards",12);
+const AString AHTTPHeader::HT_REQ_Proxy_Authorization("proxy-authorization",19);
+const AString AHTTPHeader::HT_REQ_Range              ("range",5);
+const AString AHTTPHeader::HT_REQ_Referer            ("referer",7);
+const AString AHTTPHeader::HT_REQ_User_Agent         ("user-agent",10);
+const AString AHTTPHeader::HT_REQ_Cookie             ("cookie",6);
+const AString AHTTPHeader::HT_RES_Age                ("age",3);
+const AString AHTTPHeader::HT_RES_Location           ("location",8);
+const AString AHTTPHeader::HT_RES_Proxy_Authenticate ("proxy-authenticate",18);
+const AString AHTTPHeader::HT_RES_Public             ("public",6);
+const AString AHTTPHeader::HT_RES_Retry_After        ("retry-after",11);
+const AString AHTTPHeader::HT_RES_Server             ("server",6);
+const AString AHTTPHeader::HT_RES_Vary               ("vary",4);
+const AString AHTTPHeader::HT_RES_Warning            ("warning",7);
+const AString AHTTPHeader::HT_RES_WWW_Authenticate   ("www-authenticate",16);
+const AString AHTTPHeader::HT_RES_TE                 ("te",2);
+const AString AHTTPHeader::HT_RES_Set_Cookie         ("set-cookie",10);
+const AString AHTTPHeader::HT_ENT_Allow              ("allow",5);
+const AString AHTTPHeader::HT_ENT_Content_Base       ("content-base",12);
+const AString AHTTPHeader::HT_ENT_Content_Encoding   ("content-encoding",16);
+const AString AHTTPHeader::HT_ENT_Content_Language   ("content-language",16);
+const AString AHTTPHeader::HT_ENT_Content_Length     ("content-length",14);
+const AString AHTTPHeader::HT_ENT_Content_Location   ("content-location",16);
+const AString AHTTPHeader::HT_ENT_Content_MD5        ("content-md5",11);
+const AString AHTTPHeader::HT_ENT_Content_Range      ("content-range",13);
+const AString AHTTPHeader::HT_ENT_Content_Type       ("content-type",12);
+const AString AHTTPHeader::HT_ENT_ETag               ("etag",4);
+const AString AHTTPHeader::HT_ENT_Expires            ("expires",7);
+const AString AHTTPHeader::HT_ENT_Last_Modified      ("last-modified",13);
+
 void AHTTPHeader::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
-  MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
+  MMAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
   {
     AString str;
@@ -30,7 +83,7 @@ void AHTTPHeader::debugDump(std::ostream& os, int indent) const
 }
 
 AHTTPHeader::AHTTPHeader() :
-  mstr_HTTPVersion(DEFAULT_HTTP_VERSION)
+  mstr_HTTPVersion(HTTP_VERSION_1_1)
 {
 }
 
@@ -53,10 +106,10 @@ AHTTPHeader::~AHTTPHeader()
 
 void AHTTPHeader::_copy(const AHTTPHeader& that)
 {
-  MAP_AString_NVPair::const_iterator cit = that.m_Pairs.begin();
+  MMAP_AString_NVPair::const_iterator cit = that.m_Pairs.begin();
   while (cit != that.m_Pairs.end())
   {
-    m_Pairs.insert(MAP_AString_NVPair::value_type((*cit).first, (*cit).second));
+    m_Pairs.insert(MMAP_AString_NVPair::value_type((*cit).first, (*cit).second));
     ++cit;
   }
   mstr_LineZero.assign(that.mstr_LineZero);
@@ -67,7 +120,7 @@ void AHTTPHeader::clear()
 {
   m_Pairs.clear();
   mstr_LineZero.clear();
-  mstr_HTTPVersion.assign(DEFAULT_HTTP_VERSION);
+  mstr_HTTPVersion.assign(HTTP_VERSION_1_1);
 }
 
 void AHTTPHeader::emit(AOutputBuffer& target) const
@@ -75,7 +128,7 @@ void AHTTPHeader::emit(AOutputBuffer& target) const
   //a_This emit() only emits the body of the header
   //a_The child class takes care of line zero
   //a_This child classes will call this after they handle the request or response logic
-  MAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
+  MMAP_AString_NVPair::const_iterator cit = m_Pairs.begin();
   while (cit != m_Pairs.end())
   {
     (*cit).second.emit(target);
@@ -84,75 +137,65 @@ void AHTTPHeader::emit(AOutputBuffer& target) const
   }
 }
 
-bool AHTTPHeader::exists(AHTTPHeader::HEADER_TOKENS eToken) const
+bool AHTTPHeader::exists(const AString& name) const
 {
-  AString strName = _mapTypeToString(eToken);
-  if (strName.isEmpty())
-    ATHROW(this, AException::InvalidParameter);
-
-  return (m_Pairs.find(strName) == m_Pairs.end() ? false : true);
+  AASSERT(this, name.findOneOf(AConstant::CHARSET_UPPERCASE_LETTERS));
+  return (m_Pairs.find(name) == m_Pairs.end() ? false : true);
 }
 
-bool AHTTPHeader::equals(AHTTPHeader::HEADER_TOKENS eToken, const AString& str) const
+size_t AHTTPHeader::count(const AString& name) const
 {
-  AString strName = _mapTypeToString(eToken);
-  if (strName.isEmpty())
-    ATHROW(this, AException::InvalidParameter);
+  AASSERT(this, name.findOneOf(AConstant::CHARSET_UPPERCASE_LETTERS));
+  return m_Pairs.count(name);
+}
 
-  MAP_AString_NVPair::const_iterator cit = m_Pairs.find(strName);
-  if (cit != m_Pairs.end() && !(*cit).second.getValue().compare(str))
-  {
-    return true;
-  }
+bool AHTTPHeader::equals(const AString& name, const AString& value) const
+{
+  AASSERT(this, name.findOneOf(AConstant::CHARSET_UPPERCASE_LETTERS));
+  std::pair<MMAP_AString_NVPair::const_iterator, MMAP_AString_NVPair::const_iterator> citPairs = m_Pairs.equal_range(name);
+  for(MMAP_AString_NVPair::const_iterator cit = citPairs.first; cit != citPairs.second; ++cit)
+    if ((*cit).second.getValue().equals(value))
+      return true;
 
   return false;
 }
 
-bool AHTTPHeader::equalsNoCase(AHTTPHeader::HEADER_TOKENS eToken, const AString& str) const
+bool AHTTPHeader::equalsNoCase(const AString& name, const AString& value) const
 {
-  AString strName = _mapTypeToString(eToken);
-  if (strName.isEmpty())
-    ATHROW(this, AException::InvalidParameter);
-
-  MAP_AString_NVPair::const_iterator cit = m_Pairs.find(strName);
-  if (cit != m_Pairs.end() && !(*cit).second.getValue().compareNoCase(str))
-  {
-    return true;
-  }
+  AASSERT(this, name.findOneOf(AConstant::CHARSET_UPPERCASE_LETTERS));
+  std::pair<MMAP_AString_NVPair::const_iterator, MMAP_AString_NVPair::const_iterator> citPairs = m_Pairs.equal_range(name);
+  for(MMAP_AString_NVPair::const_iterator cit = citPairs.first; cit != citPairs.second; ++cit)
+    if ((*cit).second.getValue().equalsNoCase(value))
+      return true;
 
   return false;
 }
 
-bool AHTTPHeader::getPairValue(AHTTPHeader::HEADER_TOKENS eToken, AOutputBuffer& target) const
+size_t AHTTPHeader::get(const AString& name, AOutputBuffer& target) const
 {
-  AString strName = _mapTypeToString(eToken);
-  if (strName.isEmpty())
-    ATHROW(this, AException::InvalidParameter);
-
-  MAP_AString_NVPair::const_iterator cit = m_Pairs.find(strName);
-  if (cit != m_Pairs.end())
+  AASSERT(this, name.findOneOf(AConstant::CHARSET_UPPERCASE_LETTERS));
+  size_t added = 0;
+  std::pair<MMAP_AString_NVPair::const_iterator, MMAP_AString_NVPair::const_iterator> citPairs = m_Pairs.equal_range(name);
+  for(MMAP_AString_NVPair::const_iterator cit = citPairs.first; cit != citPairs.second; ++added)
   {
     target.append((*cit).second.getValue());
-    return true;
+    ++cit;
+    if (cit != citPairs.second)
+      target.append(',');
   }
-  else
-  {
-    return false;
-  }
+
+  return added;
 }
 
-bool AHTTPHeader::getPairValue(const AString& strTokenName, AOutputBuffer& target) const
+size_t AHTTPHeader::get(const AString& name, LIST_AString& target) const
 {
-  MAP_AString_NVPair::const_iterator cit = m_Pairs.find(strTokenName);
-  if (cit != m_Pairs.end())
-  {
-    target.append((*cit).second.getValue());
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  AASSERT(this, name.findOneOf(AConstant::CHARSET_UPPERCASE_LETTERS));
+  size_t added = 0;
+  std::pair<MMAP_AString_NVPair::const_iterator, MMAP_AString_NVPair::const_iterator> citPairs = m_Pairs.equal_range(name);
+  for(MMAP_AString_NVPair::const_iterator cit = citPairs.first; cit != citPairs.second; ++cit, ++added)
+    target.push_back((*cit).second.getValue());
+  
+  return added;
 }
 
 void AHTTPHeader::parse(const AEmittable& source)
@@ -193,7 +236,6 @@ void AHTTPHeader::parse(const AEmittable& source)
   while (u4Pos < u4Length)
   {
     nvpair.parse(strHeader, u4Pos);
-
     if (!nvpair.getName().isEmpty())
     {
       //a_Check to see if the request and response was to handle it
@@ -203,26 +245,26 @@ void AHTTPHeader::parse(const AEmittable& source)
           ATHROW_EX(this, AException::DataConflict, AString("Duplicate name '",16)+nvpair.getName()+ASW("'",1));
 
         //a_Child did not handle it, we will
-        m_Pairs[nvpair.getName()] = nvpair;
+        m_Pairs.insert(MMAP_AString_NVPair::value_type(nvpair.getName(), nvpair));
         AASSERT(this, m_Pairs.size() < DEBUG_MAXSIZE_AHTTPHeader);  //a_Debug only limit
       }
     }
   }
 }
 
-bool AHTTPHeader::parseLineZero(const AString &strLine)
+bool AHTTPHeader::parseLineZero(const AString &line)
 {
-  mstr_LineZero = strLine;
+  mstr_LineZero = line;
   return _parseLineZero();
 }
 
-void AHTTPHeader::parseTokenLine(const AString &strLine)
+void AHTTPHeader::parseTokenLine(const AString &line)
 {
   AASSERT(this, m_Pairs.size() < DEBUG_MAXSIZE_AHTTPHeader);  //a_Debug only limit
   
   ANameValuePair nvpair(ANameValuePair::HTTP);
   size_t u4Pos = 0;
-  nvpair.parse(strLine, u4Pos);
+  nvpair.parse(line, u4Pos);
 
   if (!nvpair.getName().isEmpty())
   {
@@ -233,173 +275,33 @@ void AHTTPHeader::parseTokenLine(const AString &strLine)
         ATHROW_EX(this, AException::DataConflict, nvpair.getName());
 
       //a_Child did not handle it, we will
-      m_Pairs[nvpair.getName()] = nvpair;
+      m_Pairs.insert(MMAP_AString_NVPair::value_type(nvpair.getName(), nvpair));
     }
   }
 }
 
-void AHTTPHeader::setPair(const AString& strName, const AString& strValue)
+void AHTTPHeader::set(const AString& name, const AString& value)
 {
-  MAP_AString_NVPair::iterator it = m_Pairs.find(strName);
-  if (it != m_Pairs.end())
-  {
-    //a_Exists
-    (*it).second.setValue(strValue);
-  }
-  else
-  {
-    AASSERT(this, m_Pairs.size() < DEBUG_MAXSIZE_AHTTPHeader);
-    ANameValuePair& nvpair = m_Pairs[strName];
-    nvpair.setType(ANameValuePair::HTTP);
-    nvpair.setName(strName);
-    nvpair.setValue(strValue);
-  }
+  remove(name);
+  add(name, value);
 }
 
-void AHTTPHeader::setPair(AHTTPHeader::HEADER_TOKENS eToken, const AString &strValue)
+void AHTTPHeader::add(const AString& name, const AString& value)
 {
-  AString strName = _mapTypeToString(eToken);
-  if (strName.isEmpty())
-    ATHROW(this, AException::InvalidParameter);
-
-  setPair(strName, strValue);
+  AASSERT(this, name.findOneOf(AConstant::CHARSET_UPPERCASE_LETTERS));
+  AASSERT(this, m_Pairs.size() < DEBUG_MAXSIZE_AHTTPHeader);
+  m_Pairs.insert(MMAP_AString_NVPair::value_type(name, ANameValuePair(name, value, ANameValuePair::HTTP)));
 }
 
-void AHTTPHeader::removePair(AHTTPHeader::HEADER_TOKENS eToken)
+void AHTTPHeader::remove(const AString& name)
 {
-  AString strName = _mapTypeToString(eToken);
-  if (strName.isEmpty())
-    ATHROW(this, AException::InvalidParameter);
-
-  MAP_AString_NVPair::iterator it = m_Pairs.find(strName);
-  if (it != m_Pairs.end())
+  AASSERT(this, name.findOneOf(AConstant::CHARSET_UPPERCASE_LETTERS));
+  MMAP_AString_NVPair::iterator it = m_Pairs.find(name);
+  while (it != m_Pairs.end())
   {
     m_Pairs.erase(it);
+    it = m_Pairs.find(name);
   }
-}
-
-const AString AHTTPHeader::_mapTypeToString(AHTTPHeader::HEADER_TOKENS eToken) const
-{
-  switch (eToken)
-  {
-    case HT_GEN_Cache_Control       : return ASW("Cache-Control",13);
-    case HT_GEN_Connection          : return ASW("Connection",10);
-    case HT_GEN_Date                : return ASW("Date",4);
-    case HT_GEN_Pragma              : return ASW("Pragma",6);
-    case HT_GEN_Transfer_Encoding   : return ASW("Transfer-Encoding",17);
-    case HT_GEN_Upgrade             : return ASW("Upgrade",7);
-    case HT_GEN_Via                 : return ASW("Via",3);
-    case HT_GEN_Keep_Alive          : return ASW("Keep-Alive",10);
-    case HT_REQ_Accept              : return ASW("Accept",6);
-    case HT_REQ_Accept_Charset      : return ASW("Accept-Charset",14);
-    case HT_REQ_Accept_Encoding     : return ASW("Accept-Encoding",15);
-    case HT_REQ_Accept_Language     : return ASW("Accept-Language",15);
-    case HT_REQ_Accept_Ranges       : return ASW("Accept-Ranges",13);
-    case HT_REQ_Authorization       : return ASW("Authorization",13);
-    case HT_REQ_From                : return ASW("From",4);
-    case HT_REQ_Host                : return ASW("Host",4);
-    case HT_REQ_If_Modified_Since   : return ASW("If-Modified-Since",17);
-    case HT_REQ_If_Match            : return ASW("If-Match",8);
-    case HT_REQ_If_None_Match       : return ASW("If-None-Match",13);
-    case HT_REQ_If_Range            : return ASW("If-Range",8);
-    case HT_REQ_If_Unmodified_Since : return ASW("If-Unmodified-Since",19);
-    case HT_REQ_Max_Forwards        : return ASW("Max-Forwards",12);
-    case HT_REQ_Proxy_Authorization : return ASW("Proxy-Authorization",19);
-    case HT_REQ_Range               : return ASW("Range",5);
-    case HT_REQ_Referer             : return ASW("Referer",7);
-    case HT_REQ_User_Agent          : return ASW("User-Agent",10);
-    case HT_REQ_Cookie              : return ASW("Cookie",6);
-    case HT_RES_Age                 : return ASW("Age",3);
-    case HT_RES_Location            : return ASW("Location",8);
-    case HT_RES_Proxy_Authenticate  : return ASW("Proxy-Authenticate",18);
-    case HT_RES_Public              : return ASW("Public",6);
-    case HT_RES_Retry_After         : return ASW("Retry-After",11);
-    case HT_RES_Server              : return ASW("Server",6);
-    case HT_RES_Vary                : return ASW("Vary",4);
-    case HT_RES_Warning             : return ASW("Warning",7);
-    case HT_RES_WWW_Authenticate    : return ASW("WWW-Authenticate",16);
-    case HT_RES_TE                  : return ASW("TE",2);
-    case HT_RES_Set_Cookie          : return ASW("Set-Cookie",10);
-    case HT_ENT_Allow               : return ASW("Allow",5);
-    case HT_ENT_Content_Base        : return ASW("Content-Base",12);
-    case HT_ENT_Content_Encoding    : return ASW("Content-Encoding",16);
-    case HT_ENT_Content_Language    : return ASW("Content-Language",16);
-    case HT_ENT_Content_Length      : return ASW("Content-Length",14);
-    case HT_ENT_Content_Location    : return ASW("Content-Location",16);
-    case HT_ENT_Content_MD5         : return ASW("Content-MD5",11);
-    case HT_ENT_Content_Range       : return ASW("Content-Range",13);
-    case HT_ENT_Content_Type        : return ASW("Content-Type",12);
-    case HT_ENT_ETag                : return ASW("ETag",4);
-    case HT_ENT_Expires             : return ASW("Expires",7);
-    case HT_ENT_Last_Modified       : return ASW("Last-Modified",13);
-  }
-
-  return AConstant::ASTRING_EMPTY;
-}
-
-AHTTPHeader::HEADER_TOKENS AHTTPHeader::_mapStringToType(const AString &strToken) const
-{
-  //a_Very frequent (mixed)
-  if (!strToken.compareNoCase(ASW("Content-Type",12)))        return HT_ENT_Content_Type;
-  if (!strToken.compareNoCase(ASW("Content-Length",14)))      return HT_ENT_Content_Length;
-  if (!strToken.compareNoCase(ASW("Content-Encoding",16)))    return HT_ENT_Content_Encoding;
-  if (!strToken.compareNoCase(ASW("User-Agent",10)))          return HT_REQ_User_Agent;
-  if (!strToken.compareNoCase(ASW("Referer",7)))              return HT_REQ_Referer;
-  if (!strToken.compareNoCase(ASW("Connection",10)))          return HT_GEN_Connection;
-  if (!strToken.compareNoCase(ASW("Host",4)))                 return HT_REQ_Host;
-  if (!strToken.compareNoCase(ASW("Keep-Alive",10)))          return HT_GEN_Keep_Alive;
-  if (!strToken.compareNoCase(ASW("Cookie",6)))               return HT_REQ_Cookie;
-  if (!strToken.compareNoCase(ASW("Set-Cookie",10)))          return HT_RES_Set_Cookie;
-  if (!strToken.compareNoCase(ASW("WWW-Authenticate",16)))    return HT_RES_WWW_Authenticate;
-  if (!strToken.compareNoCase(ASW("Authorization",13)))       return HT_REQ_Authorization;
-
-  //a_Entity                                                  
-  if (!strToken.compareNoCase(ASW("Allow",5)))                return HT_ENT_Allow;
-  if (!strToken.compareNoCase(ASW("Content-Base",12)))        return HT_ENT_Content_Base;
-  if (!strToken.compareNoCase(ASW("Content-Language",16)))    return HT_ENT_Content_Language;
-  if (!strToken.compareNoCase(ASW("Content-Location",16)))    return HT_ENT_Content_Location;
-  if (!strToken.compareNoCase(ASW("Content-MD5",11)))         return HT_ENT_Content_MD5;
-  if (!strToken.compareNoCase(ASW("Content-Range",13)))       return HT_ENT_Content_Range;
-  if (!strToken.compareNoCase(ASW("ETag",4)))                 return HT_ENT_ETag;
-  if (!strToken.compareNoCase(ASW("Expires",7)))              return HT_ENT_Expires;
-  if (!strToken.compareNoCase(ASW("Last-Modified",13)))       return HT_ENT_Last_Modified;
-
-  //a_Request
-  if (!strToken.compareNoCase(ASW("Accept",6)))               return HT_REQ_Accept;
-  if (!strToken.compareNoCase(ASW("Accept-Charset",14)))      return HT_REQ_Accept_Charset;
-  if (!strToken.compareNoCase(ASW("Accept-Encoding",15)))     return HT_REQ_Accept_Encoding;
-  if (!strToken.compareNoCase(ASW("Accept-Language",15)))     return HT_REQ_Accept_Language;
-  if (!strToken.compareNoCase(ASW("Accept-Ranges",13)))       return HT_REQ_Accept_Ranges;
-  if (!strToken.compareNoCase(ASW("From",4)))                 return HT_REQ_From;
-  if (!strToken.compareNoCase(ASW("If-Modified-Since",17)))   return HT_REQ_If_Modified_Since;
-  if (!strToken.compareNoCase(ASW("If-Match",8)))             return HT_REQ_If_Match;
-  if (!strToken.compareNoCase(ASW("If-None-Match",13)))       return HT_REQ_If_None_Match;
-  if (!strToken.compareNoCase(ASW("If-Range",8)))             return HT_REQ_If_Range;
-  if (!strToken.compareNoCase(ASW("If-Unmodified-Since",19))) return HT_REQ_If_Unmodified_Since;
-  if (!strToken.compareNoCase(ASW("Max-Forwards",12)))        return HT_REQ_Max_Forwards;
-  if (!strToken.compareNoCase(ASW("Proxy-Authorization",19))) return HT_REQ_Proxy_Authorization;
-  if (!strToken.compareNoCase(ASW("Range",5)))                return HT_REQ_Range;
-
-  //a_Response
-  if (!strToken.compareNoCase(ASW("Age",3)))                  return HT_RES_Age;
-  if (!strToken.compareNoCase(ASW("Location",8)))             return HT_RES_Location;
-  if (!strToken.compareNoCase(ASW("Proxy-Authenticate",18)))  return HT_RES_Proxy_Authenticate;
-  if (!strToken.compareNoCase(ASW("Public",6)))               return HT_RES_Public;
-  if (!strToken.compareNoCase(ASW("Retry-After",11)))         return HT_RES_Retry_After;
-  if (!strToken.compareNoCase(ASW("Server",6)))               return HT_RES_Server;
-  if (!strToken.compareNoCase(ASW("Vary",4)))                 return HT_RES_Vary;
-  if (!strToken.compareNoCase(ASW("Warning",7)))              return HT_RES_Warning;
-  if (!strToken.compareNoCase(ASW("TE",2)))                   return HT_RES_TE;
-
-  //a_General                                                          
-  if (!strToken.compareNoCase(ASW("Cache-Control",13)))       return HT_GEN_Cache_Control;
-  if (!strToken.compareNoCase(ASW("Date",4)))                 return HT_GEN_Date;
-  if (!strToken.compareNoCase(ASW("Pragma",6)))               return HT_GEN_Pragma;
-  if (!strToken.compareNoCase(ASW("Transfer-Encoding",17)))   return HT_GEN_Transfer_Encoding;
-  if (!strToken.compareNoCase(ASW("Upgrade",7)))              return HT_GEN_Upgrade;
-  if (!strToken.compareNoCase(ASW("Via",3)))                  return HT_GEN_Via;
-
-  ATHROW(this, AException::InvalidToken);
 }
 
 void AHTTPHeader::setVersion(const AString& version)
@@ -479,7 +381,7 @@ void AHTTPHeader::fromAFile(AFile& aFile)
 size_t AHTTPHeader::getKeepAliveTimeout() const
 {
   AString str;
-  if (getPairValue(AHTTPHeader::HT_GEN_Keep_Alive, str))
+  if (get(AHTTPHeader::HT_GEN_Keep_Alive, str))
     return str.toSize_t();
   else
     return AConstant::npos;
@@ -493,13 +395,8 @@ const AString& AHTTPHeader::getVersion() const
 size_t AHTTPHeader::getContentLength() const
 {
   AString str;
-  if (getPairValue(AHTTPHeader::HT_ENT_Content_Length, str))
+  if (get(AHTTPHeader::HT_ENT_Content_Length, str))
     return str.toSize_t();
   else
     return AConstant::npos;
-}
-
-size_t AHTTPHeader::size() const
-{
-  return m_Pairs.size();
 }

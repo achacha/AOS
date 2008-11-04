@@ -182,5 +182,5 @@ void ACookieJar::emitCookies(AHTTPRequestHeader& header)
   AString str;
   emitCookies(str, header.getUrl().getServer(), header.getUrl().getPath(), header.getUrl().isProtocol(AUrl::HTTPS));
   if (!str.isEmpty())
-    header.setPair(AHTTPRequestHeader::HT_REQ_Cookie, str);
+    header.set(AHTTPRequestHeader::HT_REQ_Cookie, str);
 }
