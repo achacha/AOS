@@ -22,17 +22,17 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
   if (AHTTPRequestHeader::METHOD_ID_POST == context.useRequestHeader().getMethodId())
   {
     //a_Force a close since this is a POST
-    context.useResponseHeader().setPair(AHTTPResponseHeader::HT_GEN_Connection, ASW("close",5));
+    context.useResponseHeader().set(AHTTPResponseHeader::HT_GEN_Connection, ASW("close",5));
     
     AString strLength;
-    if (context.useRequestHeader().getPairValue(AHTTPHeader::HT_ENT_Content_Length, strLength))
+    if (context.useRequestHeader().get(AHTTPHeader::HT_ENT_Content_Length, strLength))
     {
       //a_Increase read buffer
       //context.useSocket().setReadBlockSize(32767);
       
       //a_Get the boundary string
       AString strBoundary;
-      context.useRequestHeader().getPairValue(AHTTPHeader::HT_ENT_Content_Type, strBoundary);
+      context.useRequestHeader().get(AHTTPHeader::HT_ENT_Content_Type, strBoundary);
       size_t pos = strBoundary.find(ASW("boundary=", 9));
       if (AConstant::npos == pos)
       {
@@ -256,7 +256,7 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
     {
       //a_411 Length Required for POST
       context.useEventVisitor().startEvent(getClass()+ASW(": Content-Length missing, http error 411",40), AEventVisitor::EL_WARN);
-      context.useResponseHeader().setPair(AHTTPResponseHeader::HT_GEN_Connection, ASW("close",5));
+      context.useResponseHeader().set(AHTTPResponseHeader::HT_GEN_Connection, ASW("close",5));
       context.useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_411_Length_Required);
       return AOSContext::RETURN_ERROR;
     }

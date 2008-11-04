@@ -19,7 +19,7 @@ bool AOSContextUtils::getContentWithReference(AOSContext& context, const AXmlEle
     else if (str.equals(AOSContext::S_MODEL))
       return context.useModel().emitContentFromPath(str, result);
     else if (str.equals(AOSContext::S_REFERER))
-      return context.useRequestHeader().getPairValue(AHTTPHeader::HT_REQ_Referer, result);
+      return context.useRequestHeader().get(AHTTPHeader::HT_REQ_Referer, result);
     else
       return false;
   }

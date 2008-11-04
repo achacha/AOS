@@ -81,7 +81,7 @@ AOSContext::ReturnCode AOSModule_AlterContext::execute(AOSContext& context, cons
 
       if (!name.isEmpty())
       {
-        context.useRequestHeader().setPair(name, value);
+        context.useRequestHeader().set(name, value);
       }
     }
   }
@@ -99,7 +99,7 @@ AOSContext::ReturnCode AOSModule_AlterContext::execute(AOSContext& context, cons
 
       if (!name.isEmpty())
       {
-        context.useResponseHeader().setPair(name, value);
+        context.useResponseHeader().set(name, value);
       }
     }
   }

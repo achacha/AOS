@@ -81,10 +81,16 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
     if (!offsetPath.compactPath())
     {
       //The relative path goes below base
-      context.useEventVisitor().addEvent(ASWNL("AOSModule_FileList: relative path has negative redirect beyond base"), AEventVisitor::EL_ERROR);
-      return AOSContext::RETURN_ERROR;
+      offsetPath.clear();
+      if (context.useEventVisitor().isLoggingWarn())
+      {
+        context.useEventVisitor().addEvent(ASWNL("AOSModule_FileList: relative path has negative redirect beyond base, displaying base directory"), AEventVisitor::EL_WARN);
+      }
     }
-    pFilename->join(offsetPath, false);
+    else
+    {
+      pFilename->join(offsetPath, false);
+    }
 
     //a_Add offset and one up
     fileList.addElement(ASW("offset",6)).addData(offsetPath);
@@ -109,8 +115,8 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
     fileList.useAttributes().insert(ASW("count",5), AString::fromSize_t(files.size()));
     for(AFileSystem::FileInfos::iterator it = files.begin(); it != files.end(); ++it)
     {
-      if (it->filename.compactPath())
-        it->emitXml(fileList.addElement(AOS_BaseModules_Constants::S_FILE));
+      it->filename.compactPath();
+      it->emitXml(fileList.addElement(AOS_BaseModules_Constants::S_FILE));
     }
   }
   else

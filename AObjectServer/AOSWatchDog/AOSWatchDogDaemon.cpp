@@ -182,7 +182,7 @@ bool AOSWatchDogDaemon::_init()
   }
   m_RequestHeader.useUrl().parse(ASWNL("http://127.0.0.1/ping"));
   m_RequestHeader.useUrl().setPort(str.toInt());
-  m_RequestHeader.setPair(AHTTPHeader::HT_REQ_Host, ASW("127.0.0.1",9));
+  m_RequestHeader.set(AHTTPHeader::HT_REQ_Host, ASW("127.0.0.1",9));
 
   //a_Init ADMIN request header
   str.clear();
@@ -196,7 +196,7 @@ bool AOSWatchDogDaemon::_init()
   {
     m_AdminRequestHeader.useUrl().parse(ASWNL("http://127.0.0.1/admin?command=shutdown"));
     m_AdminRequestHeader.useUrl().setPort(str.toInt());
-    m_AdminRequestHeader.setPair(AHTTPHeader::HT_REQ_Host, ASW("127.0.0.1",9));
+    m_AdminRequestHeader.set(AHTTPHeader::HT_REQ_Host, ASW("127.0.0.1",9));
   }
 
   //a_Timing values

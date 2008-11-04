@@ -121,7 +121,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
           else
           {
             //a_Set the current content type as text/html
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html",9));
+            pContext->useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html; charset=utf-8",24));
 
             int statusCode = pContext->useResponseHeader().getStatusCode();
             

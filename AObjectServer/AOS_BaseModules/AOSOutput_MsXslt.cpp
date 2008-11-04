@@ -319,7 +319,7 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
 	}
 
   //a_Add content type, length and other useful response data to response header
-  context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html", 9));
+  context.useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html; charset=utf-8",23));
 
   CoUninitialize();
 

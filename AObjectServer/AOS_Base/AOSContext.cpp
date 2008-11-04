@@ -288,14 +288,14 @@ AOSContext::Status AOSContext::init()
   ATime timeNow;
   AString str;
   timeNow.emitRFCtime(str);
-  m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Date, str);
+  m_ResponseHeader.set(AHTTPHeader::HT_GEN_Date, str);
 
   //a_Set session id on response if not part of request
   m_Services.useSessionManager().addSessionId(*this);
   
   //a_Set the hostname from either Hostname: request header or use config if not found or HTTP/1.0
   str.clear();
-  if (m_RequestHeader.getPairValue(AHTTPHeader::HT_REQ_Host, str))
+  if (m_RequestHeader.get(AHTTPHeader::HT_REQ_Host, str))
     m_RequestHeader.useUrl().setServer(str);
   else
     m_RequestHeader.useUrl().setServer(m_Services.useConfiguration().getReportedHostname());
@@ -330,7 +330,7 @@ AOSContext::Status AOSContext::init()
   }
 
   //a_Initialize response header
-  m_ResponseHeader.setPair(AHTTPHeader::HT_RES_Server, m_Services.useConfiguration().getReportedServer());
+  m_ResponseHeader.set(AHTTPHeader::HT_RES_Server, m_Services.useConfiguration().getReportedServer());
 			
   //a_Create session data since it is required
   if (mp_Controller && mp_Controller->isSessionRequired())
@@ -348,7 +348,7 @@ AOSContext::Status AOSContext::init()
 void AOSContext::setLocaleOnRequestHeader(const AString& locale)
 {
   //a_Set locale on the request header
-  m_RequestHeader.removePair(AHTTPHeader::HT_REQ_Accept_Language);
+  m_RequestHeader.remove(AHTTPHeader::HT_REQ_Accept_Language);
   if (locale.isEmpty())
   {
     if (m_EventVisitor.isLoggingDebug())
@@ -358,7 +358,7 @@ void AOSContext::setLocaleOnRequestHeader(const AString& locale)
   }
   else
   {
-    m_RequestHeader.setPair(AHTTPHeader::HT_REQ_Accept_Language, locale);
+    m_RequestHeader.set(AHTTPHeader::HT_REQ_Accept_Language, locale);
     if (m_EventVisitor.isLoggingDebug())
     {
       ARope rope("AOSContext::init: Changing the request header locale to session override:  Accept-Language: ");
@@ -832,7 +832,7 @@ AOSContext::Status AOSContext::_postProcessHttpHeader()
   {
     //a_HTTP pipelining turned on
     m_ConnectionFlags.setBit(AOSContext::CONFLAG_IS_HTTP11_PIPELINING);
-    m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
+    m_ResponseHeader.set(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
     //TODO: do we really need this? m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Keep_Alive, ASW("timeout=15, max=100",19));
     if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
       m_EventVisitor.startEvent(ASW("Connection: keep-alive set on response header",45), AEventVisitor::EL_DEBUG);
@@ -841,7 +841,7 @@ AOSContext::Status AOSContext::_postProcessHttpHeader()
   {
     //a_Connection close
     m_ConnectionFlags.clearBit(AOSContext::CONFLAG_IS_HTTP11_PIPELINING);
-    m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Connection, ASW("close",5));
+    m_ResponseHeader.set(AHTTPHeader::HT_GEN_Connection, ASW("close",5));
     if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
       m_EventVisitor.startEvent(ASW("Connection: Close set on response header",40), AEventVisitor::EL_DEBUG);
   }
@@ -903,7 +903,7 @@ AString AOSContext::getInputCommand() const
   else
   {
     AString contentType;
-    m_RequestHeader.getPairValue(AHTTPHeader::HT_ENT_Content_Type, contentType);
+    m_RequestHeader.get(AHTTPHeader::HT_ENT_Content_Type, contentType);
     contentType.truncateAt(';');
     return contentType;
   }
@@ -995,7 +995,12 @@ AOSSessionData *AOSContext::setSessionObject(AOSSessionData *pObj)
 
 bool AOSContext::existsSessionData() const
 {
-  if (!mp_SessionObject)
+  if (mp_SessionObject)
+  {
+    // Session object exists
+    return true;
+  }
+  else
   {
     //a_See if session id exists
     AString sessionId;
@@ -1003,8 +1008,9 @@ bool AOSContext::existsSessionData() const
     {
       return m_Services.useSessionManager().exists(sessionId);
     }
+    else
+      return false;  // id doesn't exist in cookies so session doesn't exist
   }
-  return false;
 }
 
 bool AOSContext::getSessionDataContent(const AString& path, AString& value)
@@ -1021,6 +1027,12 @@ bool AOSContext::getSessionDataContent(const AString& path, AString& value)
         return useSessionData().useData().emitContentFromPath(path, value);
       }
     }
+  }
+  else
+  {
+    // Session object exists already
+    ALock lock(useSessionData().useSyncObject());
+    return useSessionData().useData().emitContentFromPath(path, value);
   }
   return false;
 }
@@ -1161,7 +1173,7 @@ size_t AOSContext::writeResponseHeader()
     if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
       m_EventVisitor.startEvent(ASWNL("Cache-Control: no-cache set on response"), AEventVisitor::EL_DEBUG);
 
-    m_ResponseHeader.setPair(AHTTPResponseHeader::HT_GEN_Cache_Control, ASW("no-cache",8));
+    m_ResponseHeader.set(AHTTPResponseHeader::HT_GEN_Cache_Control, ASW("no-cache",8));
   }
   else
   {
@@ -1176,7 +1188,7 @@ size_t AOSContext::writeResponseHeader()
   //a_Add some common response header pairs
   ATime timeNow;
   timeNow.emitRFCtime(str);
-  m_ResponseHeader.setPair(AHTTPHeader::HT_GEN_Date, str);
+  m_ResponseHeader.set(AHTTPHeader::HT_GEN_Date, str);
 
   str.clear();
   m_ResponseHeader.emit(str);
@@ -1214,9 +1226,9 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
 
     //TODO: Add compressed to the cache
 
-    m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
-    m_ResponseHeader.setPair(AHTTPHeader::HT_RES_Vary, ASW("Accept-Encoding",15));
-    m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(compressed.getSize()));
+    m_ResponseHeader.set(AHTTPHeader::HT_ENT_Content_Encoding, ASW("gzip",4));
+    m_ResponseHeader.set(AHTTPHeader::HT_RES_Vary, ASW("Accept-Encoding",15));
+    m_ResponseHeader.set(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(compressed.getSize()));
 
     //a_The writing of the output
     headerWritten = writeResponseHeader();
@@ -1257,7 +1269,7 @@ void AOSContext::writeOutputBuffer(bool forceXmlDocument)
     //a_Write header if not already written, if it was already written, we assume it is correct
     if (m_ContextFlags.isClear(AOSContext::CTXFLAG_IS_RESPONSE_HEADER_SENT))
     {
-      m_ResponseHeader.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(m_OutputBuffer.getSize()));
+      m_ResponseHeader.set(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(m_OutputBuffer.getSize()));
       headerWritten = writeResponseHeader();  //a_Sets flag that it was sent
     }
 
@@ -1397,8 +1409,8 @@ void AOSContext::persistSession()
 void AOSContext::setResponseRedirect(const AString& url)
 {
   m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_302_Moved_Temporarily);
-  m_ResponseHeader.setPair(AHTTPResponseHeader::HT_RES_Location, url);
-  m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AConstant::ASTRING_ZERO);
+  m_ResponseHeader.set(AHTTPResponseHeader::HT_RES_Location, url);
+  m_ResponseHeader.set(AHTTPResponseHeader::HT_ENT_Content_Length, AConstant::ASTRING_ZERO);
   m_ContextFlags.setBit(AOSContext::CTXFLAG_IS_REDIRECTING);
   m_OutputBuffer.clear();
 }
@@ -1426,7 +1438,7 @@ int AOSContext::_calculateGZipLevel(size_t documentSize)
       //a_Check if the client can accept gzip
       AString strAcceptEncoding;
       if (
-           m_RequestHeader.getPairValue(AHTTPHeader::HT_REQ_Accept_Encoding, strAcceptEncoding)
+           m_RequestHeader.get(AHTTPHeader::HT_REQ_Accept_Encoding, strAcceptEncoding)
         && AConstant::npos != strAcceptEncoding.findNoCase(S_GZIP)
       )
       return AOSConfiguration::GZIP_DEFAULT_LEVEL;
@@ -1521,7 +1533,7 @@ bool AOSContext::processStaticPage()
         
         //a_Set modified date
         m_ResponseHeader.setLastModified(modified);
-        m_ResponseHeader.setPair(AHTTPResponseHeader::HT_ENT_Content_Length, AString::fromS8(bytesToSend));
+        m_ResponseHeader.set(AHTTPResponseHeader::HT_ENT_Content_Length, AString::fromS8(bytesToSend));
         
         AString ext;
         httpFilename.emitExtension(ext);

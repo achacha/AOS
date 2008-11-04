@@ -90,7 +90,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
         //a_Ack the keep-alive if pipelining is on
         if (pContext->useConnectionFlags().isSet(AOSContext::CONFLAG_IS_HTTP11_PIPELINING))
         {
-          pContext->useResponseHeader().setPair(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive", 10));
+          pContext->useResponseHeader().set(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive", 10));
         }
 
         //a_Try to initialize the context and read the HTTP header
@@ -138,9 +138,9 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
           {
             //a_Handle OPTIONS request
             pContext->useResponseHeader().setStatusCode(AHTTPResponseHeader::SC_200_Ok);
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_RES_Public, ASW("OPTIONS, GET, HEAD, POST",24));
-            pContext->useResponseHeader().setPair(ASW("Compliance",10), ASW("rfc=1945, rfc=2068",18));
-            pContext->useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Length, AConstant::ASTRING_ZERO);
+            pContext->useResponseHeader().set(AHTTPHeader::HT_RES_Public, ASW("OPTIONS, GET, HEAD, POST",24));
+            pContext->useResponseHeader().set(ASW("compliance",10), ASW("rfc=1945, rfc=2068",18));
+            pContext->useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Length, AConstant::ASTRING_ZERO);
 
             //a_Send header and no body
             if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))

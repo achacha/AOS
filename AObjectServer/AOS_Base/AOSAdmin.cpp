@@ -243,12 +243,12 @@ void AOSAdmin::_processRequest(AFile_Socket& client, AHTTPRequestHeader& request
     //a_Set MIME type from extension
     AString str(64,16);
     if (m_Services.useConfiguration().getMimeTypeFromExt(strExt, str))
-      response.setPair(AHTTPResponseHeader::HT_ENT_Content_Type, str);
+      response.set(AHTTPResponseHeader::HT_ENT_Content_Type, str);
     else
-      response.setPair(AHTTPResponseHeader::HT_ENT_Content_Type, ASW("text/plain",10));
+      response.set(AHTTPResponseHeader::HT_ENT_Content_Type, ASW("text/plain",10));
 
-    response.setPair(AHTTPHeader::HT_RES_Server, AOS_ADMIN_SERVER_NAME);
-    response.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(outputBuffer.getSize()));
+    response.set(AHTTPHeader::HT_RES_Server, AOS_ADMIN_SERVER_NAME);
+    response.set(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(outputBuffer.getSize()));
 
     response.emit(client);
     outputBuffer.emit(client);
@@ -260,12 +260,12 @@ void AOSAdmin::_processAdmin(AFile_Socket& client, AHTTPRequestHeader& request)
   ARope outputBuffer;
   AString command;
   AHTTPResponseHeader response;
-  response.setPair(AHTTPHeader::HT_RES_Server, AOS_ADMIN_SERVER_NAME);
+  response.set(AHTTPHeader::HT_RES_Server, AOS_ADMIN_SERVER_NAME);
 
   if (!request.useUrl().useParameterPairs().get(ASW("command",7), command))
   {
     //a_No command
-    response.setPair(AHTTPHeader::HT_RES_Location, ASW("/",1));
+    response.set(AHTTPHeader::HT_RES_Location, ASW("/",1));
     response.setStatusCode(AHTTPResponseHeader::SC_302_Moved_Temporarily);
   }
   else
@@ -298,9 +298,9 @@ void AOSAdmin::_processAdmin(AFile_Socket& client, AHTTPRequestHeader& request)
   }
 
   //a_Generate response header and emit
-  response.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(outputBuffer.getSize()));
-  response.setPair(AHTTPHeader::HT_GEN_Cache_Control, ASW("no-cache",8));
-  response.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
+  response.set(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(outputBuffer.getSize()));
+  response.set(AHTTPHeader::HT_GEN_Cache_Control, ASW("no-cache",8));
+  response.set(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
   response.emit(client);
   
   //a_Emit response
@@ -315,7 +315,7 @@ void AOSAdmin::_shutdown(
 {
   AString str(2048, 1024);
   AXmlDocument xmlDoc(ASW("admin",5));
-  response.setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
+  response.set(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
 
   AXmlElement& elem = xmlDoc.useRoot().addElement(ASW("shutdown",8));
 

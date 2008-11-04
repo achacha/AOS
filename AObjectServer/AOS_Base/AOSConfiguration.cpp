@@ -526,11 +526,11 @@ void AOSConfiguration::setMimeTypeFromExt(const AString& ext, AOSContext& contex
   AString mimetype;
   if (getMimeTypeFromExt(ext, mimetype))
   {
-    context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, mimetype);
+    context.useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, mimetype);
   }
   else
   {
-    context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, m_DefaultMimeType);
+    context.useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, m_DefaultMimeType);
   }
 }
 

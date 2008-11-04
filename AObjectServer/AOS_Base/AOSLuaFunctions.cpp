@@ -87,7 +87,7 @@ static int aos_getRequestHeader(lua_State *L)
   else
   {
     AString str;
-    if (pContext->useRequestHeader().getPairValue(name, str))
+    if (pContext->useRequestHeader().get(name, str))
     {
       lua_pushlstring(L, str.c_str(), str.getSize());
       return 1;
@@ -249,7 +249,7 @@ static int aos_setResponseHeader(lua_State *L)
   s = luaL_checklstring(L, 2, &len);
   const AString& value = AString::wrap(s, len);
 
-  pContext->useResponseHeader().setPair(name, value);
+  pContext->useResponseHeader().set(name, value);
   return 0;
 }
 
