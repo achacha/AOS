@@ -88,6 +88,6 @@ AOSContext::ReturnCode AOSOutput_Captcha_generate::execute(AOSContext& context)
   }
 
   canvas.emitPNG(context.useOutputBuffer());
-  context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("image/png",9));
+  context.useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, ASW("image/png",9));
   return AOSContext::RETURN_OK;
 }

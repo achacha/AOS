@@ -69,7 +69,7 @@ AOSContext::ReturnCode AOSOutput_generate_image::execute(AOSContext& context)
       { context.addError(getClass(), AString(err)); return AOSContext::RETURN_ERROR; }
 
   canvas.emitPNG(context.useOutputBuffer());
-  context.useResponseHeader().setPair(AHTTPHeader::HT_ENT_Content_Type, ASW("image/png",9));
+  context.useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, ASW("image/png",9));
   return AOSContext::RETURN_OK;
 }
 
