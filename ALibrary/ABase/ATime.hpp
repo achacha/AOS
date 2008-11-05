@@ -118,13 +118,13 @@ public:
   void emitYYYYMMDD(AOutputBuffer& target) const;
 
   /*!
-  RFC-822/1036 conversion to
+  RFC-822/1036/1123 conversion to
   example: Wdy, DD Mon YYYY HH:MM:SS TIMEZONE
   */
   void emitRFCtime(AOutputBuffer&) const;
 
   /*
-  RFC-822/1036 conversion from
+  RFC-822/1036/1123 conversion from
   example: Wdy, DD Mon YYYY HH:MM:SS TIMEZONE
   */
   void parseRFCtime(const AString&);
