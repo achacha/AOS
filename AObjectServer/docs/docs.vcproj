@@ -363,6 +363,10 @@
 				Name="config"
 				>
 				<File
+					RelativePath=".\config_locale.html"
+					>
+				</File>
+				<File
 					RelativePath=".\config_logging.html"
 					>
 				</File>

@@ -18,8 +18,15 @@ class AOSContext;
 class AOS_BASE_API AOSSessionData : public ADebugDumpable, public AXmlEmittable, public ASerializable
 {
 public:
-  static const AString SESSIONID;       //a_Session ID stored in data with this key
-  static const AString LOCALE;          //a_Session path where locale override can be stored, used during directory lookup
+  
+  // Session ID stored in data with this key
+  static const AString SESSIONID;       
+  
+  // Session path where locale override can be stored, used during directory lookup
+  static const AString LOCALE;          
+  
+  // Name of the root element for session data
+  static const AString ROOT;
 
 public:
   /*!

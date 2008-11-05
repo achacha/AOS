@@ -1,0 +1,56 @@
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="docs.css" type="text/css"/>
+</head>
+<body class="docs">
+<h1 class="heading">Configuring locale</h1>
+
+<h3 class="heading">Setting up locale specific directories</h3>
+<div class="comment">
+Locale is read from <b>Accept-Language:</b> HTTP request header</div>.  This is set by the client, however can be manually overriden in the session (<i>/data/locale</i>) to replace the entry parsed from the client, after
+the header is parsed the session is checked for a locale override and written to the request header to be used in all subsequent static and data directory lookup.<br />
+Only static and data directories can be localized.<br/>
+<br />
+When a client requests a static file http://localhost/lang.html then locale is checked:<br />
+ - if Accept-Language: en-pirate is specified, the content returned will be in ./static.en-pirate/lang.html<br />
+ - if Accept-Langugae: en-us is specified and default locale is en-us then ./static/lang.html<br />
+ - if Accept-Langugae: en-us is specified and default locale is en-gb then ./static.en-us/lang.html will be used<br />
+</div>
+<br />
+<b>./static</b> - base locale<br />
+<b>./static.en-us</b> - Locale of en-us<br />
+<b>./static.en-pirate</b> - Locale of en-pirate<br />
+<b>./static.ru-ru</b> - Locale of ru-ru<br />
+<b>./data</b> - base locale<br />
+<b>./data.en-us</b> - Locale of en-us<br />
+<b>./data.en-pirate</b> - Locale of en-pirate<br />
+<b>./data.ru-ru</b> - Locale of ru-ru<br />
+
+<br />
+<h3 class="heading">AObjectServer.xml locale config</h3>
+<div class="comment">
+<b>AObjectServer.xml</b><br />
+- /config/server/locale/base is the default locale to use for ./static and ./data, if no locale is specific default is used anyways<br />
+- You can remap locale to an existing locale in  at /config/server/locale/remap<br />
+</div>
+<xmp class="code_xml"><locale>
+  <base desc="This is the default language for the base directory">en-us</base>
+  <remap desc="Allows some locales to be remapped or when more than one locale can exist for a given language, default will do xx-yy, then xx, then use default">
+    <lang desc="Remap locale en is effectively en-us, since more than one en-XX can exist" name="en">en-us</lang>
+    <lang desc="Remap locale zh to use zh-cn" name="zh">zh-cn</lang>
+    <lang desc="Remap locale es to use es-es" name="es">es-es</lang>
+    <lang desc="Remap locale de to use de-de" name="de">de-de</lang>
+  </remap>
+</locale></xmp>
+<br />
+
+<h5 class="heading">SAMPLES</h5>
+dynamic/samples/SetSessionLocale_en-gb.html.aos.xml<br />
+dynamic/samples/SetSessionLocale_en-pirate.html.aos.xml<br />
+dynamic/samples/SetSessionLocale_ru-ru.html.aos.xml<br />
+dynamic/samples/SetSessionLocale_remove.html.aos.xml<br />
+<br />
+
+</body>
+</html>

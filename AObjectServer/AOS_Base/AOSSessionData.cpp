@@ -10,6 +10,7 @@ $Id$
 
 const AString AOSSessionData::SESSIONID("id",2);
 const AString AOSSessionData::LOCALE("locale",6);
+const AString AOSSessionData::ROOT("data",4);
 
 void AOSSessionData::debugDump(std::ostream& os, int indent) const
 {
@@ -32,7 +33,7 @@ void AOSSessionData::debugDump(std::ostream& os, int indent) const
 AOSSessionData::AOSSessionData(const AString& sessionId) :
   m_AgeTimer(true),
   m_LastUsedTimer(true),
-  m_Data(ASW("data",4)),
+  m_Data(ROOT),
   m_InUseCount(0),
   mp_SyncObject(NULL)
 {
@@ -42,7 +43,7 @@ AOSSessionData::AOSSessionData(const AString& sessionId) :
 AOSSessionData::AOSSessionData(AFile& aFile) :
   m_AgeTimer(true),
   m_LastUsedTimer(true),
-  m_Data(ASW("data",4)),
+  m_Data(ROOT),
   m_InUseCount(0),
   mp_SyncObject(NULL)
 {
