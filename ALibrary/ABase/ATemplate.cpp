@@ -248,3 +248,10 @@ void ATemplate::emit(AOutputBuffer& target) const
     ++cit;
   }
 }
+
+void ATemplate::clear()
+{
+  //a_Delete nodes
+  for (NODES::iterator it = m_Nodes.begin(); it != m_Nodes.end(); ++it)
+    delete (*it);
+}

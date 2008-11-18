@@ -10,16 +10,7 @@ $Id$
 #include "AXmlInstruction.hpp"
 #include "AException.hpp"
 
-const AString AXmlElement::sstr_Start("<");
-const AString AXmlElement::sstr_StartComment("<!--");
-const AString AXmlElement::sstr_StartInstruction("<?");
-const AString AXmlElement::sstr_StartEnd("</");
-const AString AXmlElement::sstr_EndSingular("/>");
-const AString AXmlElement::sstr_End(">");
-const AString AXmlElement::sstr_EndOrWhitespace("/> \t\n\r");
-const AString AXmlElement::sstr_EndComment("-->");
-const AString AXmlElement::sstr_EndInstruction("?>");
-const AString AXmlElement::sstr_EndInstructionOrWhitespace("?> \t\n\r");
+const AString AXmlDocument::DEFAULT_ROOT("root",4);
 
 void AXmlDocument::debugDump(std::ostream& os /* = std::cerr */, int indent /* = 0x0 */) const
 {

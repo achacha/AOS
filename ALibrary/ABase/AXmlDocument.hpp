@@ -24,6 +24,10 @@ To access the XML use useRoot() call to get the root AXmlElement object
 class ABASE_API AXmlDocument : public AXmlEmittable, public ASerializable, public AJsonEmittable, public ADebugDumpable
 {
 public:
+  //! Default name for the root element inthe document: root
+  static const AString DEFAULT_ROOT;
+
+public:
   /*!
   ctor
   Construct element with a root element
@@ -32,7 +36,7 @@ public:
   @param rootName of the root element
   @param pXmlHeader is a new XML_HEADER instruction that is different from <?xml version="1.0" encoding="UTF-8"?>
   */
-  AXmlDocument(const AString& rootName, AXmlInstruction *pXmlHeader = NULL);
+  AXmlDocument(const AString& rootName = AXmlDocument::DEFAULT_ROOT, AXmlInstruction *pXmlHeader = NULL);
 
   //! ctor from AFile
   AXmlDocument(AFile&);
@@ -141,8 +145,6 @@ public:
   virtual AXmlDocument* clone() const;
 
 private:
-  AXmlDocument() {}  //a_No default dtor, must have root element name
-
   //a_Instruction elements order sensitive and go before the xml data
   typedef std::list<AXmlInstruction *> LIST_NODEPTR;
   LIST_NODEPTR m_Instructions;

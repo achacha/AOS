@@ -469,7 +469,7 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
     target.append(AConstant::ASTRING_CRLF);
   }
   
-  //a_Remaineder
+  //a_Remainder
   assert(source.getSize() >= y * 0x10);
   size_t remainder = source.getSize() - y * 0x10;
   if (remainder)

@@ -12,6 +12,18 @@ $Id$
 #include "AXmlData.hpp"
 #include "AFile.hpp"
 
+
+const AString AXmlElement::sstr_Start("<");
+const AString AXmlElement::sstr_StartComment("<!--");
+const AString AXmlElement::sstr_StartInstruction("<?");
+const AString AXmlElement::sstr_StartEnd("</");
+const AString AXmlElement::sstr_EndSingular("/>");
+const AString AXmlElement::sstr_End(">");
+const AString AXmlElement::sstr_EndOrWhitespace("/> \t\n\r");
+const AString AXmlElement::sstr_EndComment("-->");
+const AString AXmlElement::sstr_EndInstruction("?>");
+const AString AXmlElement::sstr_EndInstructionOrWhitespace("?> \t\n\r");
+
 void AXmlElement::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << std::endl;

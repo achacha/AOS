@@ -50,7 +50,7 @@ void AFileSystem::FileInfo::debugDump(std::ostream& os, int indent) const
 
 void AFileSystem::FileInfo::emit(AOutputBuffer& target) const
 {
-  target.append("mask[",5);
+  target.append("FILEINFO: mask[",15);
   target.append(AString::fromS4(typemask));
   target.append("] len(",6);
   target.append(AString::fromS8(length));
