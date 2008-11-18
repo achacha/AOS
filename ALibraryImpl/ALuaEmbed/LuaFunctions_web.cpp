@@ -57,7 +57,7 @@ static int web_HttpGet(lua_State *L)
   //a_Set up request header
   AHTTPRequestHeader request;
   request.parseUrl(url);
-  request.setPair(AHTTPHeader::HT_GEN_Connection, "close");
+  request.set(AHTTPHeader::HT_GEN_Connection, "close");
   if (pCookieJar)
     pCookieJar->emitCookies(request);
 
@@ -153,9 +153,9 @@ static int web_HttpPost(lua_State *L)
   AHTTPRequestHeader request;
   request.setMethod(AHTTPRequestHeader::METHOD_POST);
   request.parseUrl(url);
-  request.setPair(AHTTPHeader::HT_GEN_Connection, "close");
-  request.setPair(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(data.getSize()));
-  request.setPair(AHTTPHeader::HT_ENT_Content_Type, AHTTPHeader::CONTENT_TYPE_HTML_FORM);
+  request.set(AHTTPHeader::HT_GEN_Connection, "close");
+  request.set(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(data.getSize()));
+  request.set(AHTTPHeader::HT_ENT_Content_Type, AHTTPHeader::CONTENT_TYPE_HTML_FORM);
   if (pCookieJar)
     pCookieJar->emitCookies(request);
 
