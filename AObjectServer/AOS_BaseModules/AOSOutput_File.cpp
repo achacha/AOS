@@ -24,7 +24,7 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
   const AXmlElement *peFilename = context.getOutputParams().findElement(AOS_BaseModules_Constants::FILENAME);
   if (!peFilename)
   {
-    context.useEventVisitor().addEvent(ASWNL("AOSOutput_File: Unable to find 'path' parameter"), AEventVisitor::EL_ERROR);
+    context.useEventVisitor().addEvent(ASWNL("AOSOutput_File: Unable to find 'filename' parameter"), AEventVisitor::EL_ERROR);
     return AOSContext::RETURN_ERROR;
   }
 

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <message>Howdy! Y'all can access this message here when locale is en-us by usin' <b>% [RESOURCE]{{{/resource/message}}}[RESOURCE]%</b></message>
+</resource>

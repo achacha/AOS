@@ -489,6 +489,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSResourceManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSServices.cpp"
 				>
 			</File>
@@ -506,6 +510,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSXmlElementUtils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ATemplateNodeHandler_RESOURCE.cpp"
 				>
 			</File>
 			<File
@@ -663,6 +671,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSResourceManager.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSServices.hpp"
 				>
 			</File>
@@ -684,6 +696,10 @@
 			</File>
 			<File
 				RelativePath=".\apiAOS_Base.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ATemplateNodeHandler_RESOURCE.hpp"
 				>
 			</File>
 			<File

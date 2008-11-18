@@ -31,6 +31,9 @@ public:
 
   //! String for file
   static const AString S_FILE;
+
+  //! Template
+  static const AString TEMPLATE;
 };
 
 #endif

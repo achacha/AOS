@@ -1323,7 +1323,7 @@ void AOSContext::dumpContext(int dumpContextLevel)
     {
       case 2:
         eContext.addElement(ASW("buffer",6)).addData(m_OutputBuffer, AXmlElement::ENC_CDATAHEXDUMP);
-        eContext.addElement(ASW("debugDump",9)).addData(*this, AXmlElement::ENC_CDATADIRECT);
+        eContext.addElement(ASW("debugDump",9)).addData(*this, AXmlElement::ENC_CDATASAFE);
         m_Services.useConfiguration().getConfigRoot().emitXml(eDumpContext.addElement(ASW("configuration",13)));
       case 1:
         emitXml(eContext);

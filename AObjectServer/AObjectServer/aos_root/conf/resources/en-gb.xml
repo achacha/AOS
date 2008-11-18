@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <message>This brilliant message is in en-gb, accessed via <b>% [RESOURCE]{{{/resource/message}}}[RESOURCE]%</b></message>
+</resource>

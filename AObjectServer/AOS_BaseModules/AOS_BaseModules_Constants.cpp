@@ -13,3 +13,4 @@ const AString AOS_BaseModules_Constants::PATH("path",4);
 const AString AOS_BaseModules_Constants::SQL("sql",3);
 const AString AOS_BaseModules_Constants::MIME_EXTENSION("mime-extension",14);
 const AString AOS_BaseModules_Constants::S_FILE("file",4);
+const AString AOS_BaseModules_Constants::TEMPLATE("template", 8);

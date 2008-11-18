@@ -360,12 +360,12 @@ AOSContextManager::AOSContextManager(AOSServices& services) :
 
   m_Queues.resize(AOSContextManager::STATE_LAST, NULL);
 
-  adminRegisterObject(m_Services.useAdminRegistry());
-
   for (int i=0; i<freeStoreInitialSize; ++i)
   {
     m_FreeStore.push(new AOSContext(NULL, m_Services));
   }
+
+  adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSContextManager::~AOSContextManager()

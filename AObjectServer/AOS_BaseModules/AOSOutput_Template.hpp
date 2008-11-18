@@ -11,21 +11,7 @@ $Id$
 class ATemplate;
 
 /*!
-Example:
-
-\xmlonly
-...
-<module class="Template">
-  <mime-extension>html</mime-extension>
-  <filename if="...">script/something.html</filename>
-  <filename ifnot="...">script/something_not.html</filename>
-  <filename if="...">script/something_more.html</filename>
-</module>
-...
-\endxmlonly
-
-mime-extension - uses the extension to lookup MIME type to use for output (mime_types.ini), if not specified default is used (configured in AObjectServer.xml)
-
+Template output
 */
 class AOS_BASEMODULES_API AOSOutput_Template : public AOSOutputGeneratorInterface
 {

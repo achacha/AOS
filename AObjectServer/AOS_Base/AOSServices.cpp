@@ -12,6 +12,7 @@ $Id$
 #include "ATemplate.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 #include "ATemplateNodeHandler_SESSION.hpp"
+#include "ATemplateNodeHandler_RESOURCE.hpp"
 
 void AOSServices::debugDump(std::ostream& os, int indent) const
 {
@@ -134,6 +135,7 @@ AOSServices::AOSServices(const AFilename& basePath) :
   mp_SessionManager(NULL),
   mp_ContextManager(NULL),
   mp_CacheManager(NULL),
+  mp_ResourceManager(NULL),
   mp_Log(NULL)
 {
   //a_Create log (must be done first as other objects rely on it)
@@ -157,6 +159,7 @@ AOSServices::AOSServices(const AFilename& basePath) :
   u4 maxFileSize = mp_Configuration->useConfigRoot().getU4("server/log/max-file-size", ALog_AFile::DEFAULT_MAX_FILE_SIZE);
   mp_Log->setLoggerMaxFileSize(maxFileSize);
 
+  mp_ResourceManager = new AOSResourceManager(*this);
   mp_ContextManager = new AOSContextManager(*this);
   mp_CacheManager = new AOSCacheManager(*this);
   mp_InputExecutor = new AOSInputExecutor(*this);
@@ -172,6 +175,7 @@ AOSServices::~AOSServices()
     delete mp_AdminRegistry;
     delete mp_SessionManager;
     delete mp_ContextManager;
+    delete mp_ResourceManager;
     delete mp_CacheManager;
     delete mp_DatabaseConnPool;
     delete mp_OutputExecutor;
@@ -349,6 +353,7 @@ ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
 
   //a_Add session data handler
   pTemplate->addHandler(new ATemplateNodeHandler_SESSION());
+  pTemplate->addHandler(new ATemplateNodeHandler_RESOURCE());
 
   pTemplate.setOwnership(false);
   return pTemplate;
@@ -375,4 +380,9 @@ AOSOutputExecutor& AOSServices::useOutputExecutor()
 const ADynamicLibrary& AOSServices::getModules() const
 {
   return m_Modules;
+}
+
+AOSResourceManager& AOSServices::useResourceManager()
+{
+  return *mp_ResourceManager;
 }

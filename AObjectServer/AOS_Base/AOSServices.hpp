@@ -20,6 +20,7 @@ $Id$
 #include "AOSModuleExecutor.hpp"
 #include "AOSOutputExecutor.hpp"
 #include "ADynamicLibrary.hpp"
+#include "AOSResourceManager.hpp"
 
 class AOS_BASE_API AOSServices : public AOSAdminInterface
 {
@@ -85,6 +86,11 @@ public:
   AOSCacheManager& useCacheManager();
 
   /*!
+  AOSContext manager
+  */
+  AOSResourceManager& useResourceManager();
+
+  /*!
   Initialize database pool
   */
   bool initDatabasePool();
@@ -145,49 +151,52 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
-  //a_No default ctor
+  // No default ctor
   AOSServices() {}
 
-  //a_No copy ctor
+  // No copy ctor
   AOSServices(const AOSServices&) {}
 
-  //a_No copy operator
+  // No copy operator
   AOSServices& operator =(const AOSServices&) { return *this; }
   
-  //a_Input executor
+  // Input executor
   AOSInputExecutor *mp_InputExecutor;
 
-  //a_Module executor
+  // Module executor
   AOSModuleExecutor *mp_ModuleExecutor;
 
-  //a_Input executor
+  // Input executor
   AOSOutputExecutor *mp_OutputExecutor;
 
-  //a_Physical log
+  // Physical log
   ALog_AFile *mp_Log;
   
-  //a_Global objects for all requests
+  // Global objects for all requests
   ABasePtrContainer m_GlobalObjects;
 
-  //a_Configuration
+  // Configuration
   AOSConfiguration *mp_Configuration;
   
-  //a_Admin registry
+  // Admin registry
   AOSAdminRegistry *mp_AdminRegistry;
 
   //Database connection pool
   AOSDatabaseConnectionPool *mp_DatabaseConnPool;
 
-  //a_Session manager
+  // Session manager
   AOSSessionManager *mp_SessionManager;
 
-  //a_Context manager
+  // Context manager
   AOSContextManager *mp_ContextManager;
 
-  //a_Cache manager
+  // Cache manager
   AOSCacheManager *mp_CacheManager;
 
-  //a_Modules to load
+  // Resource manager
+  AOSResourceManager *mp_ResourceManager;
+  
+  // Modules to load
   ADynamicLibrary m_Modules;
 };
 
