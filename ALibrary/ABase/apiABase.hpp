@@ -7,7 +7,7 @@ $Id$
 #define INCLUDED__apiABase_HPP__
 
 // Enable to allow windows memory tracking
-//#define WINDOWS_CRTDBG_ENABLED 1
+#define WINDOWS_CRTDBG_ENABLED 1
 
 // DEBUG_TRACK_ABASE_MEMORY - Enable to track ABase* allocations
 // DEBUG_TRACK_ABASE_MEMORY_DISPLAY_TO_COUT - When DEBUG_TRACK_ABASE_MEMORY is defined, this will trace allocations to std::cout
