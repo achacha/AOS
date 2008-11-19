@@ -505,6 +505,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSSessionMapHolder.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AOSUser.cpp"
 				>
 			</File>
@@ -684,6 +688,10 @@
 			</File>
 			<File
 				RelativePath=".\AOSSessionManager.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSSessionMapHolder.hpp"
 				>
 			</File>
 			<File

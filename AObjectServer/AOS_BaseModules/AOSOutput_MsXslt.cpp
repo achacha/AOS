@@ -232,15 +232,6 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
     m_Services.useConfiguration().setMimeTypeFromExt(ext, context);
   }
 
-  //AFilename xsltFile(m_Services.useConfiguration().getAosBaseDataDirectory());
-  //AString xsltName;
-  //if (!context.getOutputParams().emitString(AOS_BaseModules_Constants::FILENAME, xsltName))
-  //{
-  //  m_Services.useLog().append("AOSOutput_MsXslt: Unable to find '/output/filename' parameter");
-  //  return AOSContext::RETURN_ERROR;
-  //}
-  //xsltFile.join(xsltName, false);
-
   MSXML2::IXMLDOMDocument2Ptr *p = NULL;
   XslDocHolder *pXslDocHolder = _getXslDocHolder(*pFilename);
 

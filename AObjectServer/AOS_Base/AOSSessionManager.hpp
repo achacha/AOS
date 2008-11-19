@@ -9,7 +9,7 @@ $Id$
 #include "apiAOS_Base.hpp"
 #include "AOSAdminInterface.hpp"
 #include "AOSSessionData.hpp"
-#include "ASynchronization.hpp"
+#include "AOSSessionMapHolder.hpp"
 #include "AThread.hpp"
 
 class AOSServices;
@@ -103,22 +103,11 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
-  //! Map of session id to session data
-  typedef std::map<AString, AOSSessionData *> SESSION_MAP;
-  class SessionMapHolder
-  {
-  public:
-    SessionMapHolder(ASynchronization *pSynch) : mp_SynchObject(pSynch) {}
-    ~SessionMapHolder() { delete(mp_SynchObject); }
-    SESSION_MAP m_SessionMap;
-    ASynchronization *mp_SynchObject;
-  };
-  
   //! Holder for session maps
-  typedef std::vector<SessionMapHolder *> SESSION_MAPHOLDER_CONTAINER;
+  typedef std::vector<AOSSessionMapHolder *> SESSION_MAPHOLDER_CONTAINER;
   SESSION_MAPHOLDER_CONTAINER m_SessionHolderContainer;
  
-  AOSSessionManager::SessionMapHolder *_getSessionHolder(const AString&);
+  AOSSessionMapHolder *_getSessionHolder(const AString&);
 
   //!Reference to services
   AOSServices& m_Services;

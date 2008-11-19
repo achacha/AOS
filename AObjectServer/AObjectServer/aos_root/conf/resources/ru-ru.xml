@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resource>
+<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../xsd/resource.xsd">
   <message>Это сообщение в ru-ru кодировки получить через <b>% [RESOURCE]{{{/resource/message}}}[RESOURCE]%</b></message>
 </resource>

@@ -14,6 +14,7 @@ $Id$
 #include "ASerializable.hpp"
 
 class AOSContext;
+class AOSSessionMapHolder;
 
 class AOS_BASE_API AOSSessionData : public ADebugDumpable, public AXmlEmittable, public ASerializable
 {
@@ -31,14 +32,19 @@ public:
 public:
   /*!
   ctor
+
   @param sessionId of this data and is added to the data as 'id' parameter
+  @param holder of this data
   */
-  AOSSessionData(const AString& sessionId);
+  AOSSessionData(const AString& sessionId, AOSSessionMapHolder& holder);
   
   /*!
   ctor calls fromAFile
+
+  @param file to read session from
+  @param holder of this data
   */
-  AOSSessionData(AFile&);
+  AOSSessionData(AFile& file, AOSSessionMapHolder& holder);
 
   /*!
   dtor
@@ -62,36 +68,53 @@ public:
   Data associated with the session
   Persiatable if needed via ASerialization interface
 
-  @return Data
+  @return Reference to the session data
   */
   AXmlElement& useData();
+
+  /*!
+  Data associated with the session
+  Persiatable if needed via ASerialization interface
+
+  @return Constant reference to the session data
+  */
   const AXmlElement& getData() const;
   
   /*!
-  Get a synchronization object associated with this data
+  Get a synchronization object associated with THIS data
+  
+  @return Sync object of this instance
   */
   ASynchronization *useSyncObject();
 
   /*!
   Initialize the data for each request
   Calling code responsible for syncronizing this call
+
+  @param context RequestContext
   */
   void init(AOSContext& context);
   
   /*!
   Finalize the usage for the given request
   Calling code responsible for syncronizing this call
+
+  @param context RequestContext
   */
   void finalize(AOSContext& context);
 
   /*!
   Overall age timer of the session
+
+  @return Constant reference to the ATimer object
   */
   const ATimer& getAgeTimer() const;
   
   /*!
   Last used timer
   Gets reset when object is de-serialized via fromAFile
+
+  @return Constant reference to the ATimer object
   */
   const ATimer& getLastUsedTimer() const;
 
@@ -118,10 +141,19 @@ public:
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
 private:
+  //! Reference to the container holding this data
+  AOSSessionMapHolder& m_Holder;
+  
+  //! Session data
   AXmlDocument m_Data;
+  
+  //! Session life timer
   ATimer m_AgeTimer;
+  
+  //! Session last used timer
   ATimer m_LastUsedTimer;
-  volatile long m_InUseCount;
+  
+  //! Data sync object
   ASynchronization *mp_SyncObject;
 };
 

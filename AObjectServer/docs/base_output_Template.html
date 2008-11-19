@@ -14,11 +14,18 @@ You can have both if and ifnot on a template<br />
 <xmp class="code_xml"><module class="Template">
   <mime-extension>html</mime-extension>
   <filename if="/root/somepath/exists">script/something.html</filename>
+  <template if="/root/somepath/exists">/root/somepath/exists = %[MODEL]{{{/root/somepath/exists}}}[MODEL]%</template>
+  <template>/root/executed = %[MODEL]{{{/root/executed}}}[MODEL]%</template>
   <filename ifnot="/root/somepath/doesnotexist">script/something_not.html</filename>
+  <template>Some template text inserted here</template>
   <filename if="/root/somepath/alsoexists">script/something_more.html</filename>
 </module></xmp>
 <pre>
 filename: template filename
+  if: checks for existence of model element
+  ifnot: check for absence of model element
+
+template: inlined template code
   if: checks for existence of model element
   ifnot: check for absence of model element
 
@@ -41,6 +48,7 @@ Sequence of templates concatinated together and if they meet conditions (if spec
 dynamic/samples/DisplayInputWithTemplate.html.aos.xml<br />
 dynamic/samples/DisplayInputWithTemplateParts.html.aos.xml<br />
 dynamic/samples/InsertIntoModel.template.aos.xml<br />
+dynamic/samples/ExecuteTemplateWithResources.html.aos.xml<br />
 <br />
 </body>
 </html>

@@ -307,6 +307,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\code_Localization.html"
+					>
+				</File>
+				<File
 					RelativePath=".\code_SQL_injection_safe.html"
 					>
 				</File>

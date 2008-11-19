@@ -5,6 +5,7 @@ $Id$
 */
 #include "pchAOS_Base.hpp"
 #include "AOSSessionData.hpp"
+#include "AOSSessionMapHolder.hpp"
 #include "ASync_CriticalSection.hpp"
 #include "AOSContext.hpp"
 
@@ -23,28 +24,26 @@ void AOSSessionData::debugDump(std::ostream& os, int indent) const
     << "m_AgeTimer=" << m_AgeTimer.getInterval() << " ms"
     << "  m_LastUsedTimer=" << m_AgeTimer.getInterval() << " ms" << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) 
-    << "m_InUseCount=" << m_InUseCount
-    << "  mp_SyncObject=" << AString::fromPointer(mp_SyncObject) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "  mp_SyncObject=" << AString::fromPointer(mp_SyncObject) << std::endl;
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-AOSSessionData::AOSSessionData(const AString& sessionId) :
+AOSSessionData::AOSSessionData(const AString& sessionId, AOSSessionMapHolder& holder) :
+  m_Holder(holder),
   m_AgeTimer(true),
   m_LastUsedTimer(true),
   m_Data(ROOT),
-  m_InUseCount(0),
   mp_SyncObject(NULL)
 {
   m_Data.useRoot().setString(SESSIONID, sessionId);
 }
 
-AOSSessionData::AOSSessionData(AFile& aFile) :
+AOSSessionData::AOSSessionData(AFile& aFile, AOSSessionMapHolder& holder) :
+  m_Holder(holder),
   m_AgeTimer(true),
   m_LastUsedTimer(true),
   m_Data(ROOT),
-  m_InUseCount(0),
   mp_SyncObject(NULL)
 {
   fromAFile(aFile);
@@ -53,8 +52,7 @@ AOSSessionData::AOSSessionData(AFile& aFile) :
 
 AOSSessionData::~AOSSessionData()
 {
-  AASSERT(this, 0 == m_InUseCount);  //a_Uneven number of calls to init/finalize
-  AASSERT(this, !mp_SyncObject);     //a_Uneven number of calls to init/finalize
+  delete mp_SyncObject;
 }
 
 bool AOSSessionData::getSessionId(AOutputBuffer& target) const
@@ -129,7 +127,8 @@ void AOSSessionData::clear()
 
 void AOSSessionData::init(AOSContext& context)
 {
-  if (!m_InUseCount)
+  ALock lock(m_Holder.useSyncObject());
+  if (!mp_SyncObject)
   {
     mp_SyncObject = new ASync_CriticalSection();
     if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
@@ -137,13 +136,12 @@ void AOSSessionData::init(AOSContext& context)
       context.useEventVisitor().startEvent(ASW("AOSSessionData::init: Allocated session data sync object",56), AEventVisitor::EL_DEBUG);
     }
   }
-  ++m_InUseCount;
   AASSERT(this, mp_SyncObject);  //If we are here and it asserts the calling code is not synchronizing correctly
 }
 
 void AOSSessionData::finalize(AOSContext& context)
 {
-  m_InUseCount = 0;
+  ALock lock(m_Holder.useSyncObject());
   pDelete(mp_SyncObject);
   
   if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))

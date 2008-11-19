@@ -11,7 +11,6 @@ $Id$
 #include "AOSContext.hpp"
 #include "AThread.hpp"
 #include "AResultSet.hpp"
-#include "AFile_AString.hpp"
 
 #define DEFAULT_HOLDER_SIZE 13
 #define DEFAULT_SLEEP_DURATION 3000
@@ -28,14 +27,9 @@ void AOSSessionManager::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_SessionHolderContainer={" << std::endl;
   for (size_t i=0; i<m_HolderSize; ++i)
   {
-    SessionMapHolder *pSessionMapHolder = m_SessionHolderContainer[i];
-    ALock lock(pSessionMapHolder->mp_SynchObject);
-    SESSION_MAP::const_iterator cit = pSessionMapHolder->m_SessionMap.begin();
-    while (cit != pSessionMapHolder->m_SessionMap.end())
-    {
-      (*cit).second->debugDump(os, indent+2);
-      ++cit;
-    }
+    AOSSessionMapHolder *pSessionMapHolder = m_SessionHolderContainer[i];
+    ALock lock(pSessionMapHolder->useSyncObject());
+    pSessionMapHolder->debugDump(os, indent+2);
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
@@ -66,11 +60,11 @@ void AOSSessionManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
 
   for (size_t i=0; i<m_HolderSize; ++i)
   {
-    SessionMapHolder *pSessionMapHolder = m_SessionHolderContainer[i];
-    ALock lock(pSessionMapHolder->mp_SynchObject);
-    AXmlElement& eHashMap = adminAddProperty(eBase, ASW("SessionMap",10), AString::fromSize_t(pSessionMapHolder->m_SessionMap.size()));  
+    AOSSessionMapHolder *pSessionMapHolder = m_SessionHolderContainer[i];
+    ALock lock(pSessionMapHolder->useSyncObject());
+    AXmlElement& eHashMap = adminAddProperty(eBase, ASW("SessionMap",10), AString::fromSize_t(pSessionMapHolder->useContainer().size()));  
     eHashMap.addAttribute(ASW("hash", 4), AString::fromSize_t(i));
-    eHashMap.addElement(ASW("size", 4), AString::fromSize_t(pSessionMapHolder->m_SessionMap.size()));
+    eHashMap.addElement(ASW("size", 4), AString::fromSize_t(pSessionMapHolder->useContainer().size()));
   }
 }
 
@@ -93,7 +87,7 @@ AOSSessionManager::AOSSessionManager(AOSServices& services) :
   //a_Create holders
   m_SessionHolderContainer.resize(m_HolderSize);
   for (size_t i=0; i<m_HolderSize; ++i)
-    m_SessionHolderContainer[i] = new SessionMapHolder(new ASync_CriticalSection());
+    m_SessionHolderContainer[i] = new AOSSessionMapHolder(new ASync_CriticalSection());
 
   //a_Start manager thread
   m_Thread.setThis(this);
@@ -117,19 +111,7 @@ AOSSessionManager::~AOSSessionManager()
 
   //a_Cleanup sessions
   for (size_t i=0; i<m_HolderSize; ++i)
-  {
-    SessionMapHolder *pSessionMapHolder = m_SessionHolderContainer[i];
-    {
-      ALock lock(pSessionMapHolder->mp_SynchObject);
-      SESSION_MAP::iterator it = pSessionMapHolder->m_SessionMap.begin();
-      while (it != pSessionMapHolder->m_SessionMap.end())
-      {
-        pDelete((*it).second);
-        ++it;
-      }
-    }
-    delete(pSessionMapHolder);
-  }
+    delete(m_SessionHolderContainer[i]);
 }
 
 u4 AOSSessionManager::threadprocSessionManager(AThread& thread)
@@ -148,27 +130,10 @@ u4 AOSSessionManager::threadprocSessionManager(AThread& thread)
     do
     {
       //Iterate next map and remove any expired sessions
-      SessionMapHolder *pSessionMapHolder = pThis->m_SessionHolderContainer[currentMap];
-      if (!pSessionMapHolder->m_SessionMap.empty())
+      AOSSessionMapHolder *pSessionMapHolder = pThis->m_SessionHolderContainer[currentMap];
+      if (!pSessionMapHolder->useContainer().empty())
       {
-        ALock lock(pSessionMapHolder->mp_SynchObject);
-        SESSION_MAP::iterator it = pSessionMapHolder->m_SessionMap.begin(); 
-        while (it != pSessionMapHolder->m_SessionMap.end())
-        {
-          AOSSessionData *pData = it->second;
-          if (pData->getLastUsedTimer().getInterval() > pThis->m_TimeoutInterval)
-          {
-            //a_Timed out session
-            SESSION_MAP::iterator itKill = it;
-            ++it;
-            pSessionMapHolder->m_SessionMap.erase(itKill);
-            delete pData;
-          }
-          else
-          {
-            ++it;
-          }
-        }
+        pSessionMapHolder->purgeExpired(pThis->m_TimeoutInterval);
       }
 
       //a_Next map for cleaning
@@ -194,11 +159,10 @@ u4 AOSSessionManager::threadprocSessionManager(AThread& thread)
 
 bool AOSSessionManager::exists(const AString& sessionId)
 {
-  SessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
+  AOSSessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
   AASSERT(this, pSessionMapHolder);
-  
-  //a_Find session in the bucket
-  bool isFound = (pSessionMapHolder->m_SessionMap.end() != pSessionMapHolder->m_SessionMap.find(sessionId));
+
+  bool isFound = pSessionMapHolder->exists(sessionId);
   if (
     !isFound
     && m_DatabasePersistence)
@@ -212,28 +176,10 @@ bool AOSSessionManager::exists(const AString& sessionId)
 
 AOSSessionData *AOSSessionManager::getSessionData(const AString& sessionId)
 {
-  SessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
+  AOSSessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
   AASSERT(this, pSessionMapHolder);
   
-  //a_Find session in the bucket
-  SESSION_MAP::iterator it = pSessionMapHolder->m_SessionMap.find(sessionId);
-  if (it != pSessionMapHolder->m_SessionMap.end())
-  {
-    ALock lock(pSessionMapHolder->mp_SynchObject);
-    (*it).second->restartLastUsedTimer();        //a_Restart session timer
-    return ((*it).second);
-  }
-  else
-  {
-    //a_Not found, create new one
-    AOSSessionData *pData = NULL;    
-    ALock lock(pSessionMapHolder->mp_SynchObject);
-    
-    //a_Create a new session
-    pData = new AOSSessionData(sessionId);
-    pSessionMapHolder->m_SessionMap.insert(SESSION_MAP::value_type(sessionId, pData));
-    return pData;
-  }
+  return pSessionMapHolder->getOrCreateSessionData(sessionId);
 }
 
 void AOSSessionManager::generateSessionId(AOutputBuffer& sessionId) const
@@ -253,20 +199,12 @@ AOSSessionData *AOSSessionManager::createNewSessionData(AString& sessionId)
     generateSessionId(sessionId);
   }
 
-  SessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
+  AOSSessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
   AASSERT(this, pSessionMapHolder);
-
-  {
-    ALock lock(pSessionMapHolder->mp_SynchObject);
-    
-    //a_Create a new session
-    AOSSessionData *pData = new AOSSessionData(sessionId);
-    pSessionMapHolder->m_SessionMap.insert(SESSION_MAP::value_type(sessionId, pData));
-    return pData;
-  }
+  return pSessionMapHolder->getOrCreateSessionData(sessionId);
 }
 
-AOSSessionManager::SessionMapHolder *AOSSessionManager::_getSessionHolder(const AString& sessionId)
+AOSSessionMapHolder *AOSSessionManager::_getSessionHolder(const AString& sessionId)
 {
   size_t hash = sessionId.getHash(m_HolderSize);
   return m_SessionHolderContainer.at(hash);
@@ -368,17 +306,10 @@ AOSSessionData *AOSSessionManager::_restoreSession(const AString& sessionId)
   AOSSessionData *pData = NULL;
   if (rows > 0)
   {
-    result.getData(0,0);
-
-    SessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
+    AOSSessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
     AASSERT(this, pSessionMapHolder);
-    ALock lock(pSessionMapHolder->mp_SynchObject);
-    
-    //a_Create a new session
-    pData = new AOSSessionData(sessionId);
-    AFile_AString datafile(result.getData(0,0));
-    pData->fromAFile(datafile);
-    pSessionMapHolder->m_SessionMap.insert(SESSION_MAP::value_type(sessionId, pData));
+
+    pSessionMapHolder->setSessionData(sessionId, result.getData(0,0));
   }
 
   return pData;
@@ -439,11 +370,11 @@ void AOSSessionManager::finalizeSession(AOSContext& context)
 {
   AString sessionId;
   AVERIFY(&context, context.useRequestCookies().getValue(AOSSessionManager::SESSIONID, sessionId));
-  SessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
+  AOSSessionMapHolder *pSessionMapHolder = _getSessionHolder(sessionId);
   AASSERT(this, pSessionMapHolder);
 
   {
-    ALock lock(pSessionMapHolder->mp_SynchObject);
+    ALock lock(pSessionMapHolder->useSyncObject());
     AOSSessionData *pSessionData = context.setSessionObject(NULL);
     AASSERT(this, pSessionData);
     pSessionData->finalize(context);
