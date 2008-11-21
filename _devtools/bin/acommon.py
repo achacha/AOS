@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import os,sys;
 
+RSYNC_PARAMS="-tupEgo --progress --exclude=.svn";
+
 class Context:
   flags = {};
   def __init__(self, devenv_bin):
@@ -164,7 +166,21 @@ class Context:
     os.system(CMD);
 
   def syncPathFiles(self, source_path, filemask, target_path):
-    EXEC_RSYNC_BASE="rsync -tup --exclude=.svn --exclude=pch*.hpp ";
+    EXEC_RSYNC_BASE="rsync "+RSYNC_PARAMS+" --exclude=pch*.hpp ";
+    CMD = EXEC_RSYNC_BASE;
+    if (self.verbose == 1):
+      CMD = CMD + "-v ";
+    if (self.dryrun == 1):
+      CMD = CMD + "-n ";
+    if (self.recursive == 1):
+      CMD = CMD + "-r ";
+    CMD = CMD + os.path.join(source_path,filemask) + " " + target_path;
+    if (self.verbose == 1):
+      print(os.getcwd()+":"+CMD);
+    os.system(CMD);
+
+  def syncPathFilesWithPCH(self, source_path, filemask, target_path):
+    EXEC_RSYNC_BASE="rsync "+RSYNC_PARAMS+" ";
     CMD = EXEC_RSYNC_BASE;
     if (self.verbose == 1):
       CMD = CMD + "-v ";
@@ -178,7 +194,7 @@ class Context:
     os.system(CMD);
 
   def syncFile(self, source_file, target_path):
-    EXEC_RSYNC_BASE="rsync -tup ";
+    EXEC_RSYNC_BASE="rsync "+RSYNC_PARAMS+" ";
     CMD = EXEC_RSYNC_BASE;
     if (self.verbose == 1):
       CMD = CMD + "-v ";

@@ -124,7 +124,15 @@ if (context.win32 == 1 or context.win64 == 1):
   #SQLite3 tools
   print "|---SQLite3 redistributable--------------------------------|";
   if (context.binary == 0):
-    context.syncPathFiles(os.path.join(context.BASE_DEVENV_PATH, "sqlite3"), "sqlite3.exe", context.TARGET_DEBUG_32);
-    context.syncPathFiles(os.path.join(context.BASE_DEVENV_PATH, "sqlite3"), "sqlite3.exe", context.TARGET_DEBUG_64);
-  context.syncPathFiles(os.path.join(context.BASE_DEVENV_PATH, "sqlite3"), "sqlite3.exe", context.TARGET_RELEASE_32);
-  context.syncPathFiles(os.path.join(context.BASE_DEVENV_PATH, "sqlite3"), "sqlite3.exe", context.TARGET_RELEASE_64);
+    if (context.win32 == 1):
+      context.syncPathFiles(os.path.join(context.BASE_DEVENV_PATH, "sqlite3"), "sqlite3.exe", context.TARGET_DEBUG_32);
+    elif(context.win64 == 1):
+      context.syncPathFiles(os.path.join(context.BASE_DEVENV_PATH, "sqlite3"), "sqlite3.exe", context.TARGET_DEBUG_64);
+    else:
+      print "SQLite3 binary not defined for this platform (debug)";
+  if (context.win32 == 1):
+    context.syncPathFiles(os.path.join(context.BASE_DEVENV_PATH, "sqlite3"), "sqlite3.exe", context.TARGET_RELEASE_32);
+  elif(context.win64 == 1):
+    context.syncPathFiles(os.path.join(context.BASE_DEVENV_PATH, "sqlite3"), "sqlite3.exe", context.TARGET_RELEASE_64);
+  else:
+    print "SQLite3 binary not defined for this platform (release)";

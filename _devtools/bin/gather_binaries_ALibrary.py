@@ -18,8 +18,6 @@ if (context.targetDoesNotExist()):
   print("Target does not exist, gather_binaries_ALibrary.py calling make_output_directories.py")
   context.executeScript("make_output_directories.py");
 
-sys.exit(0);
-  
 # ALibrary include
 print("|========================== ABase sync binaries ==============================|");
 context.syncLibrary("ABase");
@@ -35,3 +33,5 @@ print("|========================== AGdLib sync binaries ========================
 context.syncLibrary("AGdLib");
 print("|========================== ALuaEmbed sync binaries ==========================|");
 context.syncLibrary("ALuaEmbed");
+print("|========================== AZlib sync binaries ==========================|");
+context.syncLibrary("AZlib");

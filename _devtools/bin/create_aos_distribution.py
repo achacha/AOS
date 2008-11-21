@@ -69,12 +69,12 @@ if (context.binary == 0):
   print "----------AOS_Modules--------";
   if (not os.path.exists(os.path.join(context.TARGET_PATH, "AOS_Modules"))):
     os.makedirs(os.path.join(context.TARGET_PATH, "AOS_Modules"));
-  context.syncPathFiles(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Classified"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Classified"));
-  context.syncPathFiles(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Example"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Example"));
-  context.syncPathFiles(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Test"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Test"));
-  context.syncPathFiles(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_User"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_User"));
-  context.syncPathFiles(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Wiki"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Wiki"));
-  context.syncPathFiles(os.path.join(context.BASE_AOSMODULES_PATH), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules"));
+  context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Classified"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Classified"));
+  context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Example"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Example"));
+  context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Test"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Test"));
+  context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_User"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_User"));
+  context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Wiki"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Wiki"));
+  context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules"));
   os.system("rm "+os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Modules.*"));
   os.remove(os.path.join(context.TARGET_PATH, "AOS_Modules", "lint.cmd"));
 else:
