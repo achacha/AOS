@@ -1,9 +1,10 @@
 Change Log
 ----------
 
-1.5.0.4:
-- I18n support via localized data and static directories and configuration to remap locales
+1.6.0.0:
+- I18n locale support via localized data and static directories and configuration to remap locales
 - SetSessionLocale module added to allow setting a locale for a user which is written to the request header's Accept-Languages: token
+- Added RESOURCE token for templates to support locale based resources
 - AHTTPHeader and sub-classes handle headers with multiple field names; added string constant names used in HTTP fields
 - Added partial output JSON emit (based on path(s) it outputs object or array) and made it a bit smarter when outputing JSON property with only content
 - .json as a supported extension type (with associated MIME type in mime_types.ini)
@@ -13,6 +14,9 @@ Change Log
 - Added better filename choice to MsXslt output generator
 - AAutoPtr::oprator! added
 - AXmlDocument::clearAll removed, AXmlDocument::clear now handles all cases, <?xml> is retained in all clears
+- Improved session data handling
+- Changed output controller Template to allow concatination of inline and file-based templates conditionally
+
 
 1.5.0.3:
 - Cleaned up history clearing via admin

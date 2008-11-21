@@ -25,12 +25,19 @@
     <enabled>true</enabled>
   </template-cache>
 
-  <static-file-cache desc="Static item cache, maximum memory size is (max_items * max_filesize)">
+  <static-file-cache desc="Static item cache (all static directories), maximum memory size is (max_items * max_filesize)">
     <enabled>true</enabled>
-    <max_items desc="Maximum number of items to store in the static cache">10240</max_items>
-    <max_filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max_filesize>
-    <cache_count desc="Number of caches to use (must be a prime number)">13</cache_count>
+    <max-items desc="Maximum number of items to store in the static cache">10240</max-items>
+    <max-filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max-filesize>
+    <cache-count desc="Number of caches to use (must be a prime number)">13</cache-count>
   </static-file-cache>
+
+  <data-file-cache desc="Data item cache (all data directories), maximum memory size is (max_items * max_filesize)">
+    <enabled>false</enabled>
+    <max-items desc="Maximum number of items to store in the static cache">10240</max-items>
+    <max-filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max-filesize>
+    <cache-count desc="Number of caches to use (must be a prime number)">13</cache-count>
+  </data-file-cache>
 
   <listen>
     <!-- Listener ports -->
@@ -80,6 +87,16 @@
     <minimum-threshold desc="Compress files larger than this, in bytes">4096</minimum-threshold>
   </gzip-compression>
 
+  <locale>
+    <base desc="This is the default language for the base directory">en-us</base>
+    <remap desc="Allows some locales to be remapped or when more than one locale can exist for a given language, default will do xx-yy, then xx, then use default">
+      <lang desc="Remap locale en is effectively en-us, since more than one en-XX can exist" name="en">en-us</lang>
+      <lang desc="Remap locale" name="zh">zh-cn</lang>
+      <lang desc="Remap locale" name="es">es-es</lang>
+      <lang desc="Remap locale" name="de">de-de</lang>
+    </remap>
+  </locale>
+  
   <!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
   <error-templates desc="HTTP status response templates, located relative to aos_data directory">
     <default desc="Default template when a status code does not have an explicit template">http/default.template</default>
@@ -91,7 +108,7 @@
   
   <default-filename>index.html</default-filename>
   <default-input-processor>application/x-www-form-urlencoded</default-input-processor>
-  <default-output-generator/>
+  <default-output-generator>XML</default-output-generator>
   <default-mime-type desc="MIME type to use when it cannot be mapped from the mime-types file and extension of the controller"><![CDATA[text/xml; charset=utf-8]]></default-mime-type>
   <mime-types desc="Filename that contains MIME mappings based on controller's extension">mime_types.ini</mime-types>
   
