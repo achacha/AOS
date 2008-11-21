@@ -51,7 +51,7 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="pchAGdLib.hpp"
-				GenerateXMLDocumentationFiles="true"
+				GenerateXMLDocumentationFiles="false"
 				XMLDocumentationFileName="$(IntDir)\doc\"
 				BrowseInformation="1"
 				BrowseInformationFile="$(IntDir)\"
@@ -131,7 +131,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				PrecompiledHeaderThrough="pchAGdLib.hpp"
-				GenerateXMLDocumentationFiles="true"
+				GenerateXMLDocumentationFiles="false"
 				XMLDocumentationFileName="$(IntDir)\doc\"
 				BrowseInformation="1"
 				BrowseInformationFile="$(IntDir)\"
@@ -214,6 +214,7 @@
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="pchAGdLib.hpp"
+				GenerateXMLDocumentationFiles="false"
 				WarningLevel="3"
 				DebugInformationFormat="0"
 			/>
@@ -297,6 +298,7 @@
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="pchAGdLib.hpp"
+				GenerateXMLDocumentationFiles="false"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
