@@ -29,7 +29,7 @@ template: inlined template code
   if: checks for existence of model element
   ifnot: check for absence of model element
 
-mime-extension: (optional) sets the MIME content type, if not present, the extension of the request URL is used (and if there is non, XML is the default)
+mime-extension: (optional) sets the MIME content type from extension, if not present, the extension of the request URL is used (and if there is non, XML is the default), this is NOT the actual MIME type but rather an extension to lookup in mime_types.ini
 </pre>
 <br />
 <h5 class="heading">OUTPUT</h5>
