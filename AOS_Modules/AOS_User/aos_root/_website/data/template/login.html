@@ -28,6 +28,15 @@ Login form will query the password and use SHA-1 to encode it and submit.<br/>
 Redirect to SESSION variable /SESSION/user/ru = %[SESSION]{{{user/ru}}}[SESSION]%	
  if succesful which would have been set by the controller that redirected you here</p>
 <br/>
+Currently any username and password will work.<br/>
+<br/>
+NOTE: If the command is using secure redirect (default) then hostname of this URL must match the reported hostname.
+Default reported hostname is the IP so the URL should use IP also otherwise the redirect cookie is set against
+the hostname of this URL and after redirect the cookies used will be for the reported host and thus may be lost.
+This is due to http: to https: redirect and change in hostnames; cookies are tied to the hostname despite the
+fact localhost = 127.0.0.1 = your IP, but result in 3 separate cookies.  If you get redirected back to the login
+page as already logged in you have a hostname mismatch.<br/>
+<br/>
 <form id="login" method="get" action="/user/User_Authenticate">
   <input type="hidden" name="un"/>
   <input type="hidden" name="pwd"/>
