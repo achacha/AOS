@@ -1,9 +1,0 @@
-<html>
-<head>
-  <title>HTTP status code 400: Bad request</title>
-</head>
-<body>
-<font color="red">HTTP400: Bad request.</font>
-<!-- %[LUA]{{{ print(model.emitContentFromPath("/root/REQUEST/AUrl/url")); }}}[LUA]% -->
-</body>
-</html>

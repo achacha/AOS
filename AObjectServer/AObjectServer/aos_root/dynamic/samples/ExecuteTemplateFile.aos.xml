@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<controller>
-  <input/>
-  <module class="Template">
-    <filename>template/TestLuaScript.template</filename>
-    <outpath>output/template</outpath>
-  </module>
-  <output/>
-</controller>

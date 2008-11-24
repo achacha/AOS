@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../xsd/resource.xsd">
-  <message>Howdy! Y'all can access this message here when locale is en-us by usin' <b>% [RESOURCE]{{{/resource/message}}}[RESOURCE]%</b></message>
-</resource>
