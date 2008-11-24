@@ -57,7 +57,7 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "m_ReportedHttpsPort=" << m_ReportedHttpsPort << std::endl;
 
   {
-    //a_Controllers
+    // Controllers
     ADebugDumpable::indent(os, indent+1) << "m_ControllerPtrs={" << std::endl;
     for (MAP_ASTRING_CONTROLLERPTR::const_iterator cit = m_ControllerPtrs.begin(); cit != m_ControllerPtrs.end(); ++cit)
     {
@@ -69,7 +69,7 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
   }
 
   {
-    //a_Directory configs
+    // Directory configs
     ADebugDumpable::indent(os, indent+1) << "m_DirectoryConfigs={" << std::endl;
     MAP_ASTRING_CONFIG::const_iterator cit = m_DirectoryConfigs.begin();
     while (cit != m_DirectoryConfigs.end())
@@ -148,10 +148,10 @@ void AOSConfiguration::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader
     adminAddProperty(e, ASWNL("output generator"), m_AosDefaultOutputGenerator);
   }
 
-  //a_Locale
+  // Locale
   {
     AXmlElement& e = eBase.addElement("object").addAttribute("name","locale");
-    adminAddProperty(e, ASWNL("default"), m_DefaultLocale);
+    adminAddProperty(e, ASWNL("default"), m_BaseLocale);
 
     ARope rope;
     for (AOSConfiguration::MAP_LOCALE_DIRS::const_iterator cit = m_LocaleDataDirs.begin(); cit != m_LocaleDataDirs.end(); ++cit)
@@ -184,7 +184,7 @@ void AOSConfiguration::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader
     adminAddProperty(e, ASWNL("remap"), rope);
   }
 
-  //a_Controllers
+  // Controllers
   {
     ARope rope;
     for (MAP_ASTRING_CONTROLLERPTR::const_iterator cit = m_ControllerPtrs.begin(); cit != m_ControllerPtrs.end(); ++cit)
@@ -251,40 +251,52 @@ AOSConfiguration::AOSConfiguration(
 {
   adminRegisterObject(services.useAdminRegistry());
 
+  // Config directory
   m_AosBaseConfigDir.usePathNames().push_back("conf");
-  m_AosBaseDynamicDir.usePathNames().push_back("dynamic");
-  m_AosBaseDataDir.usePathNames().push_back("data");
-  m_AosBaseStaticDir.usePathNames().push_back("static");
+
+  // Admin 
   m_AdminBaseHttpDir.usePathNames().push_back("admin");
 
-  //a_Read the config
+  // Read the config
   AFilename filename(m_AosBaseConfigDir);
   filename.useFilename().assign("AObjectServer.xml",17);
   loadConfig(filename);
 
-  //a_Get compressed extensions
+  const AString& websiteDirectory = m_Config.useRoot().getString("/config/server/website-directory", AConstant::ASTRING_EMPTY);
+  if (!websiteDirectory.isEmpty())
+  {
+    m_AosBaseDynamicDir.usePathNames().push_back(websiteDirectory);
+    m_AosBaseDataDir.usePathNames().push_back(websiteDirectory);
+    m_AosBaseStaticDir.usePathNames().push_back(websiteDirectory);
+  }
+
+  m_AosBaseDynamicDir.usePathNames().push_back("dynamic");
+  m_AosBaseDataDir.usePathNames().push_back("data");
+  m_AosBaseStaticDir.usePathNames().push_back("static");
+  
+  // Get compressed extensions
   _populateGzipCompressionExtensions();
 
-  //a_Read in I18N directories
+  // Read in I18N directories
   _loadLocaleInfo();
   _populateLocaleDirectories(m_AosBaseStaticDir, m_LocaleStaticDirs);
   _populateLocaleDirectories(m_AosBaseStaticDir, m_LocaleDataDirs);
 
-  //a_Configure server internals from config
+  // Configure server internals from config
   setAosDefaultFilename("/config/server/default-filename");
   setAosDefaultInputProcessor("/config/server/default-input-processor");
   setAosDefaultOutputGenerator("/config/server/default-output-generator");
 
-  //a_Configure server reported values
+  // Configure server reported values
   setReportedServer("/config/server/reported/server");
   setReportedHostname("/config/server/reported/hostname");
   setReportedHttpPort("/config/server/reported/http");
   setReportedHttpsPort("/config/server/reported/https");
 
-  //a_Read string data
+  // Read string data
   m_DefaultMimeType = m_Config.useRoot().getString("/config/server/default-mime-type", ASW("text/xml; charset=utf-8",23));
 
-  //a_Statics
+  // Statics
   _initStatics();
 
   int logLevel = m_Config.useRoot().getInt("/config/server/log-level", -1);
@@ -313,7 +325,7 @@ AOSConfiguration::AOSConfiguration(
   }
   catch(AException& ex)
   {
-    //a_Log any exception and re-throw since we just created the log
+    // Log any exception and re-throw since we just created the log
     services.useLog().addException(ex);
     throw;
   }
@@ -335,8 +347,8 @@ void AOSConfiguration::_initStatics()
 void AOSConfiguration::_loadLocaleInfo()
 {
   // Get default language
-  if (!m_Config.useRoot().emitContentFromPath("/config/server/locale/base", m_DefaultLocale))
-    ATHROW(this, AException::InvalidConfiguration);  // MUST have default locale for the base directories
+  m_BaseLocale = m_Config.useRoot().getString("/config/server/locale/base", ASW("en-us",5));
+  m_Services.useLog().add(AString("Base locale: ")+m_BaseLocale);
 
   AXmlElement::CONST_CONTAINER langNodes;
   if (m_Config.useRoot().find("/config/server/locale/remap/lang", langNodes) > 0)
@@ -350,7 +362,7 @@ void AOSConfiguration::_loadLocaleInfo()
 
       (*it)->emitContent(locale);
       if (locale.isEmpty())
-        locale.assign(m_DefaultLocale);
+        locale.assign(m_BaseLocale);
       
       name.makeLower();
       locale.makeLower();
@@ -482,7 +494,7 @@ void AOSConfiguration::_readMIMETypes()
         if (m_ExtToMimeType.find(strName) == m_ExtToMimeType.end())
         {
           m_ExtToMimeType[strName] = strValue;
-          //a_Creates too much spam on startup m_Services.useLog().add(ASWNL("Adding MIME type"), strName, strValue, ALog::INFO);
+          // Creates too much spam on startup m_Services.useLog().add(ASWNL("Adding MIME type"), strName, strValue, ALog::INFO);
         }
         else
         {
@@ -498,9 +510,14 @@ const AFilename& AOSConfiguration::getBaseDir() const
   return m_BaseDir;
 }
 
+const AString& AOSConfiguration::getBaseLocale() const
+{
+  return m_BaseLocale;
+}
+
 bool AOSConfiguration::getMimeTypeFromExt(const AString& ext, AString& target) const
 {
-  //a_No extension, no mapping
+  // No extension, no mapping
   if (ext.isEmpty())
     return false;
 
@@ -593,13 +610,13 @@ void AOSConfiguration::_loadControllers()
 
 void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
 {
-  //a_Open config file before mangling the path
+  // Open config file before mangling the path
   AFile_Physical configFile(filename);
   AString strPath(1536, 512);
 
-  //a_Add directory config to map
-  filename.removeBasePath(m_AosBaseDynamicDir, true);   //a_Remove dynamic dir
-  filename.emitPath(strPath);                           //a_Path only for map key
+  // Add directory config to map
+  filename.removeBasePath(m_AosBaseDynamicDir, true);   // Remove dynamic dir
+  filename.emitPath(strPath);                           // Path only for map key
   AASSERT_EX(this, m_DirectoryConfigs.find(strPath) == m_DirectoryConfigs.end(), filename);
   
   {
@@ -608,23 +625,23 @@ void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
     AOS_DEBUGTRACE(str.c_str(), NULL);
   }  
 
-  //a_Parse XML document
+  // Parse XML document
   configFile.open();
   AAutoPtr<AXmlDocument> pDoc(new AXmlDocument(configFile), true);
   configFile.close();
   AASSERT_EX(pDoc, pDoc->useRoot().getName().equals(AOSDirectoryConfig::ELEMENT), filename);
   
-  //a_Add directory config
+  // Add directory config
   AOSDirectoryConfig *p =  new AOSDirectoryConfig(strPath, pDoc->useRoot(), m_Services.useLog());
   m_DirectoryConfigs[strPath] = p;
 
-  //a_Register the command with admin
+  // Register the command with admin
   p->adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 void AOSConfiguration::_readController(AFilename& filename)
 {
-  //a_Load from all XML command files
+  // Load from all XML command files
   AFile_Physical commandFile(filename);
   commandFile.open();
   AXmlDocument doc(commandFile);
@@ -633,7 +650,7 @@ void AOSConfiguration::_readController(AFilename& filename)
   AXmlElement::CONST_CONTAINER nodes;
   doc.useRoot().find(AOSController::S_CONTROLLER_ROOT, nodes);
   
-  //a_Parse each /command/command type
+  // Parse each /command/command type
   AString strPath(1536, 512);
   AString dynamicDir(m_AosBaseDynamicDir.toAString());
   AXmlElement::CONST_CONTAINER::const_iterator cit = nodes.begin();
@@ -642,11 +659,11 @@ void AOSConfiguration::_readController(AFilename& filename)
     const AXmlElement *pElement = dynamic_cast<const AXmlElement *>(*cit);
     if (pElement)
     {
-      //a_Get relative path
+      // Get relative path
       filename.emit(strPath);
       AASSERT(this, strPath.getSize() >= dynamicDir.getSize());
       strPath.remove(dynamicDir.getSize()-1);
-      strPath.rremove(8);   //a_.aos.xml to be removed
+      strPath.rremove(8);   // .aos.xml to be removed
 
       {
         AString str(strPath);
@@ -655,14 +672,14 @@ void AOSConfiguration::_readController(AFilename& filename)
         AOS_DEBUGTRACE(str.c_str(), NULL);
       }  
 
-      //a_Parse command and associate to relative path
+      // Parse command and associate to relative path
       AAutoPtr<AOSController> p(new AOSController(strPath, m_Services.useLog()), true);
       p->fromXml(*pElement);
       AASSERT(this, m_ControllerPtrs.end() == m_ControllerPtrs.find(strPath));
       m_ControllerPtrs[strPath] = p;
       p.setOwnership(false);
 
-      //a_Register the command with admin
+      // Register the command with admin
       p->adminRegisterObject(m_Services.useAdminRegistry());
 
       strPath.clear();
@@ -749,11 +766,11 @@ void AOSConfiguration::_getLocaleAosDirectory(AOSContext& context, AFilename& fi
     {
       for(LIST_AString::iterator it = langs.begin(); it != langs.end(); ++it)
       {
-        //a_Check if default encoding is used
-        if ((*it).equals(m_DefaultLocale))
+        // Check if default encoding is used
+        if ((*it).equals(m_BaseLocale))
           break;
         
-        //a_Wildcard, use default
+        // Wildcard, use default
         if ((*it).equals("*",1))
           break;
           
@@ -838,7 +855,7 @@ void AOSConfiguration::setReportedHostname(const AString& configPath)
     AString str;
     m_Config.useRoot().emitString(configPath, str);
 
-    //a_If hostname exists, set, else use default ip
+    // If hostname exists, set, else use default ip
     if (!str.isEmpty())
     {
       m_ReportedHostname.assign(str);

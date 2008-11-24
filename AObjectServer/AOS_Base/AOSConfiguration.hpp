@@ -101,6 +101,14 @@ public:
   const AFilename& getBaseDir() const;
 
   /*!
+  Base locale for directories without locale specification
+  Used for data/ static/ directories
+
+  @return constant reference to the base locale string  (defaults to en-us)
+  */
+  const AString& getBaseLocale() const;
+
+  /*!
   Load XML configuration for a given module in config directory
   Attached XML contents to the /config root
 
@@ -415,7 +423,7 @@ private:
   MAP_AString_AString m_LocaleRemap;
 
   // Default locale that base directories are in
-  AString m_DefaultLocale;
+  AString m_BaseLocale;
 
   // Load locale info
   void _loadLocaleInfo();

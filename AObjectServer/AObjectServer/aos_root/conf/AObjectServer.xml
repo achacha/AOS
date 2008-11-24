@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- /config/server -->
 <server>
+  <website-directory desc="Directory name of the website content that contains dynamic, data.*, static.* directories">_website</website-directory>
+
   <debug>
     <allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page (should be false in production)">true</allow-dumpContext>
     <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command (should be false in production)">true</allow-overrideOutput>

@@ -65,28 +65,60 @@ AOSResourceManager::~AOSResourceManager()
 
 void AOSResourceManager::_load()
 {
-  AFilename f(m_Services.useConfiguration().getAosBaseConfigDirectory());
-  f.usePathNames().push_back(ASW("resources",9));
-  
+  // data.* query
+  AFilename fData(m_Services.useConfiguration().getAosBaseDataDirectory());
+  fData.usePathNames().pop_back();
+  fData.useFilename().assign("data*.*", 7);
+
   AFileSystem::FileInfos files;
-  if (AFileSystem::dir(f, files) > 0)
+  if (AFileSystem::dir(fData, files, false, false) > 0)
   {
+    AString locale;
     for (AFileSystem::FileInfos::iterator it = files.begin(); it != files.end(); ++it)
     {
-      AFile_Physical resource(it->filename);
-      resource.open();
-      
-      AString locale;
-      it->filename.emitFilenameNoExt(locale);
-      AASSERT(this, locale.getSize() > 0);
-      m_Resources[locale].fromAFile(resource);
-      
-      AString str("Loading resource file: ");
-      str.append(locale);
-      str.append('=');
-      str.append(it->filename);
-      AOS_DEBUGTRACE(str.c_str(), NULL);
-      m_Services.useLog().add(str, ALog::WARNING);
+      if (it->typemask & AFileSystem::Directory)
+      {
+        const AString& dirName = it->filename.usePathNames().back();
+        size_t pos = dirName.rfind('.');
+        if (AConstant::npos == pos)
+        {
+          // Default locale
+          locale.assign(m_Services.useConfiguration().getBaseLocale());
+        }
+        else
+        {
+          locale.clear();
+          dirName.peek(locale, pos+1);
+        }
+
+        // Check if resource.xml exists for this data directory
+        it->filename.useFilename().assign("resource.xml", 12);
+        if (AFileSystem::exists(it->filename))
+        {
+          // Exists, load it
+          AFile_Physical resource(it->filename);
+          resource.open();
+          
+          AASSERT(this, locale.getSize() > 0);
+          AASSERT(this, m_Resources.end() == m_Resources.find(locale));
+          m_Resources[locale].fromAFile(resource);
+          
+          AString str("Loading resource file: ");
+          str.append(locale);
+          str.append('=');
+          str.append(it->filename);
+          AOS_DEBUGTRACE(str.c_str(), NULL);
+          m_Services.useLog().add(str, ALog::WARNING);
+        }
+        else
+        {
+          // Does not have a resource file
+          AString str("No resource.xml found: ");
+          str.append(it->filename);
+          AOS_DEBUGTRACE(str.c_str(), NULL);
+          m_Services.useLog().add(str, ALog::DEBUG);
+        }
+      }
     }
   }
 }

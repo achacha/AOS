@@ -2,6 +2,7 @@ Change Log
 ----------
 
 1.6.0.0:
+- Major reorganization of the aos_root directory to handle localization better
 - I18n locale support via localized data and static directories and configuration to remap locales
 - SetSessionLocale module added to allow setting a locale for a user which is written to the request header's Accept-Languages: token
 - Added RESOURCE token for templates to support locale based resources
