@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller gzip="8">
+	<output class="File">
+		<filename>samples/TheCallOfCthulhu.html</filename>
+	</output>
+</controller>
+	

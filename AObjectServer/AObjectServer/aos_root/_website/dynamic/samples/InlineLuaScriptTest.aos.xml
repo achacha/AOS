@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+  <input/>
+  <module class="LuaScript">
+    <filename>lua/LuaTestScript_1.lua</filename>
+    <path>script</path>
+  </module>
+  <module class="LuaScript">
+    <filename>lua/LuaTestScript_2.lua</filename>
+    <path>script</path>
+  </module>
+  <module class="LuaScript">
+    <filename>lua/LuaTestScript_3.lua</filename>
+    <path>script</path>
+  </module>
+  <module class="LuaScript">
+    <filename>lua/LuaTestScript_4.lua</filename>
+    <path>script</path>
+  </module>
+  <output class="Template">
+	  <filename>template/InlineLuaScriptTest.template</filename>
+	</output>
+</controller>

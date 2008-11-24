@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+	<input class="multipart/form-data"/>
+
+	<module class="SaveToFile" if="/root/REQUEST/url/query-string/file1">
+		<model-path reference="context-object">/root/REQUEST/url/query-string/file1</model-path>
+		<output-filename overwrite='true'>tmp/</output-filename>
+	</module>
+  <module class="LuaScript" if="/root/REQUEST/url/query-string/file1">
+    <script><![CDATA[
+model.addText("/root/MESSAGE", "/root/REQUEST/url/query-string/file1 written to file.");
+]]></script>
+  </module>
+
+	<output class="Template">
+		<filename if="/root/REQUEST/url/query-string/file1">template/GenericMessage.html</filename>
+		<filename ifnot="/root/REQUEST/url/query-string/file1">html/SaveUploadToFile.html</filename>
+	</output>
+</controller>

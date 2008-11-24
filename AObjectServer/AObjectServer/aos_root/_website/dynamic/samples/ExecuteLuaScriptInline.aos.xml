@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+  <input/>
+  <module class="LuaScript">
+    <script><![CDATA[
+model.addText("/root/inline-script-added", "Inserted ");
+model.addText("/root/inline-script-added", "directly ");
+model.addText("/root/inline-script-added", "by ");
+model.addText("/root/inline-script-added", "ExecuteLuaScriptInline ");
+model.addText("/root/inline-script-added", "command.");
+print(model.getText("/root/inline-script-added"));	
+]]></script>
+    <path>output/script</path>
+  </module>
+  <output/>
+</controller>

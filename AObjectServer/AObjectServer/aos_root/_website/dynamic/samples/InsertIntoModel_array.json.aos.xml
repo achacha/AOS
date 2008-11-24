@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+	<module class="InsertIntoModel">
+		<path>/inserted</path>
+		<data>
+			<insert-root>
+				<item>small</item>
+				<item>Medium</item>
+				<item><![CDATA[LARGE]]></item>
+			</insert-root>
+		</data>
+	</module>
+	<module class="InsertIntoModel">
+		<path>/inserted</path>
+		<data>
+			<insert-root>
+				<item>small-2</item>
+				<item>Medium-2</item>
+				<item><![CDATA[LARGE-2]]></item>
+			</insert-root>
+		</data>
+	</module>
+	<module class="InsertIntoModel">
+		<data>
+			<insert-root-x>
+				<item>small-2</item>
+				<item>Medium-2</item>
+				<item><![CDATA[LARGE-2]]></item>
+			</insert-root-x>
+		</data>
+	</module>
+	<output class="JSON">
+    <path>inserted</path>
+    <path>/root/REQUEST/url/query-string</path>
+  </output>
+</controller>
+	

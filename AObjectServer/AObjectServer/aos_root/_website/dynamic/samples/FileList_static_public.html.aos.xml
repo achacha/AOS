@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+	<input/>
+	<module class="FileList">
+	  <filename>public/*.*</filename>
+	</module>
+	<output class="Xslt">
+		<filename base="data">xsl/FileList.xsl</filename>
+	</output>
+</controller>
+	

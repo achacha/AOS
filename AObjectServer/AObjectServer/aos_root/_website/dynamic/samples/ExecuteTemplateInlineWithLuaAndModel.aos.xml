@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+  <input/>
+  <module class="Template">
+    <template>
+<![CDATA[Plain text,
+%[LUA]{{{
+print "Lua script";
+model.addText("/root/justinserted","model text");
+}}}[LUA]%, %[MODEL]{{{/root/justinserted}}}[MODEL]%!
+]]></template>
+    <path>output/template</path>
+  </module>
+</controller>

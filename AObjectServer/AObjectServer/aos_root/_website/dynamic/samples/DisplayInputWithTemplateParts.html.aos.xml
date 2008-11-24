@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<controller>
+	<input class="application/x-www-form-urlencoded"/>
+	<output class="Template">
+		<filename>template/TemplateParts_Header.html</filename>
+		<filename>template/TemplateParts_Logo.html</filename>
+		<filename>template/TemplateParts_Middle.html</filename>
+		<filename>template/TemplateParts_Footer.html</filename>
+	</output>
+</controller>
