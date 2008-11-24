@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?> 
-<controller>
-	<input/>
-	<module class='SessionTest'/>
-	<output class='Template'>
-	  <filename>samples/sessiontest.html</filename>
-	</output>
-</controller>
