@@ -10,7 +10,7 @@
 void testSimpleParse()
 {
   AFile_AString strfile(
-"Hello %[MODEL]{{{user/name}}}[MODEL]%!\
+"Hello ' % [MODEL]{{{user/name}}}[MODEL]%!\
 ");
 
   ABasePtrContainer objects;
@@ -47,7 +47,7 @@ void testSimpleParse()
   tm.process(ctx, rope);
   std::cout << "\r\n---------------------process---------------------" << std::endl;
   rope.emit(iosfile);
-  std::cout << "---------------------emit---------------------" << std::endl;
+  std::cout << "---------------------process---------------------" << std::endl;
 }
 
 int main()

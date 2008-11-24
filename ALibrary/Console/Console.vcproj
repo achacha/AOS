@@ -405,7 +405,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tHttpReqestHeader.cpp"
+			RelativePath=".\tTemplateParse.cpp"
 			>
 		</File>
 	</Files>
