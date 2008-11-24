@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<controller>
+	<input class="application/x-www-form-urlencoded"/>
+	<module class="AlterContext">
+		<add-parameter>
+			<name>param-added-0</name>
+			<value>0</value>
+		</add-parameter>
+		<add-parameter>
+			<name>param-added-0</name>
+			<value>1</value>
+		</add-parameter>
+		<add-request-cookie>
+			<name>reqcookie0</name>
+			<value>0</value>
+		</add-request-cookie>
+		<add-request-cookie>
+			<name>reqcookie1</name>
+			<value>1</value>
+		</add-request-cookie>
+		<add-request-header>
+			<name>req-header-0</name>
+			<value>value0</value>
+		</add-request-header>
+		<add-request-header>
+			<name>req-header-1</name>
+			<value>value1</value>
+		</add-request-header>
+		<add-response-header>
+			<name>res-header-0</name>
+			<value>value0</value>
+		</add-response-header>
+		<add-response-header>
+			<name>res-header-1</name>
+			<value>value1</value>
+		</add-response-header>
+		<add-response-cookie>
+			<name>rescookie0</name>
+			<value>0</value>
+			<max-age>10</max-age>
+		</add-response-cookie>
+	</module>
+	<module class="PublishInput"/>
+	<output/>
+</controller>
+	
