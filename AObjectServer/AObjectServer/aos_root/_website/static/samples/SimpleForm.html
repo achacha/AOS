@@ -1,0 +1,21 @@
+<html>
+<body>
+
+<!-- Note that action contains query string constants -->
+Manually add queryOne and query2 on the FORM's action query string<br/>
+<form action="/samples/DisplayInput.xml?queryOne=1&query2=Two" method="POST">
+
+<!-- Varion FORM based input types -->
+textline: <input type="text" name="textline"/><br/>
+radio set 1: <input type="radio" name="radio1" checked="1" value="1"/>1 <input type="radio" name="radio1" value="2"/>2  <input type="radio" name="radio1" value="3"/>3<br/>
+radio set 2: <input type="radio" name="radio2" checked="1" value="a"/>a <input type="radio" name="radio2" value="b"/>b  <input type="radio" name="radio2" value="c"/>c<br/>
+textarea: <textarea name="textarea" width="40" height="23"></textarea><br/>
+<br/>
+<input type="hidden" name="hidden" value="something not visible"/>
+<br/>
+checkbox: <input type="checkbox" name="dumpContext" value="1"/> dumpContext=1?<br/>
+<hr/>
+<input type="submit"/><br/>
+</form>
+</body>
+</html>

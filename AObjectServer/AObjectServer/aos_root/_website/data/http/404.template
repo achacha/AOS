@@ -1,0 +1,9 @@
+<html>
+<head>
+  <title>HTTP status code 404: File not found</title>
+</head>
+<body>
+<font color="red">HTTP404: File not found.</font>
+<!-- %[LUA]{{{ print(model.emitContentFromPath("/root/REQUEST/AUrl/url")); }}}[LUA]% -->
+</body>
+</html>

@@ -1,0 +1,27 @@
+<html>
+<head>
+</head>
+<body bgcolor="#f0f0ff">
+
+<h2>Content found under /root/inserted/data/insert-root/item</h2>
+<b>%[LUA]{{{ print(model.getText("/root/inserted/data/insert-root/item")); }}}[LUA]%</b>
+<br/>
+<br/>
+<small><font color="blue">Request time: %[LUA]{{{ print(model.getText("/root/request_time")); }}}[LUA]% milliseconds</font></small><br/>
+<small><font color="blue">Context time: %[LUA]{{{ print(model.getText("/root/context_time")); }}}[LUA]% milliseconds</font></small><br/>
+<br/>
+<h2>Embedded Lua script</h2>
+<table border='1'><tr><td><pre>
+local var x=5;
+x = x+2;
+print(x);
+</pre></td></tr></table>
+<table border='1'><tr><td>
+%[LUA]{{{
+local var x=5;
+x = x+2;
+print(x);
+}}}[LUA]%
+</td></tr></table>
+</body>
+</html>
