@@ -13,7 +13,16 @@ $Id$
 
 struct SSLData
 {
-  SSLData() : ctx(NULL), ssl(NULL), server_cert(NULL), meth(NULL) {}
+  SSLData() : ctx(NULL), ssl(NULL), server_cert(NULL), meth(NULL)
+  {
+  }
+  
+  ~SSLData()
+  { 
+    if (ssl) 
+      SSL_free(ssl);
+  }
+
   SSL_CTX*    ctx;
   SSL*        ssl;
   X509*       server_cert;
@@ -184,10 +193,13 @@ void AFile_Socket_SSL::_initSSL(bool isOutboundSocket)
 
   //a_Outbound sockets need SSL class, accepted ones will use context of the server to create it
   if (isOutboundSocket)
+  {
+    AASSERT(this, !pData->ssl);
     if (NULL == (pData->ssl = SSL_new(pData->ctx)))
       ATHROW_EX(this, ASocketException::APIFailure, ASWNL("Unable to allocate SSL object"));
-}
 
+  }
+}
 void AFile_Socket_SSL::_connectSSL()
 {
   AASSERT(this, mp_SSLData);

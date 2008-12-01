@@ -1,5 +1,5 @@
-#ifndef INCLUDED__pchAMySQL_HPP__
-#define INCLUDED__pchAMySQL_HPP__
+#ifndef INCLUDED__pchACrypto_HPP__
+#define INCLUDED__pchACrypto_HPP__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -22,5 +22,7 @@
 #include <openssl/rand.h>
 #include <openssl/dsa.h>
 #include <openssl/dh.h>
+#include <openssl/engine.h>
+#include <openssl/conf.h>
 
-#endif //INCLUDED__pchAMySQL_HPP__
+#endif //INCLUDED__pchACrypto_HPP__

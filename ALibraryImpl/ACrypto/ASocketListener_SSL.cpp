@@ -19,7 +19,16 @@ $Id$
 
 struct SSLData
 {
-  SSLData() : ctx(NULL), ssl(NULL), client_cert(NULL), meth(NULL) {}
+  SSLData() : ctx(NULL), ssl(NULL), client_cert(NULL), meth(NULL)
+  {
+  }
+
+  ~SSLData()
+  { 
+    if (ssl) 
+      SSL_free(ssl);
+  }
+
   SSL_CTX*    ctx;
   SSL*        ssl;
   X509*       client_cert;
@@ -122,8 +131,7 @@ void ASocketListener_SSL::_initSSL()
     ATHROW_EX(this, AException::APIFailure, strError);
   }
 
-  
-
+  AASSERT(this, !pServerData->ssl);
   pServerData->ssl = SSL_new(pServerData->ctx);
   AASSERT(this, pServerData->ssl);
 }
@@ -138,6 +146,7 @@ ASocketLibrary::SocketInfo ASocketListener_SSL::accept(void *pSSLData)
   ASocketLibrary::SocketInfo info = ASocketListener::accept();
   
   BIO *sbio=BIO_new_socket((int)info.m_handle, BIO_NOCLOSE);
+  AASSERT(this, !pClientData->ssl);
   pClientData->ssl = SSL_new(pServerData->ctx);
   SSL_set_bio(pClientData->ssl,sbio,sbio);
 
