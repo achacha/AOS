@@ -11,6 +11,10 @@ $Id: AOSOutput_XML.hpp 218 2008-05-29 23:23:59Z achacha $
 class AOS_BASEMODULES_API AOSOutput_XML : public AOSOutputGeneratorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSOutput_XML(AOSServices&);
 
   /*!

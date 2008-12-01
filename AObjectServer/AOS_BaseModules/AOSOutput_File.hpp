@@ -14,6 +14,10 @@ File output
 class AOS_BASEMODULES_API AOSOutput_File : public AOSOutputGeneratorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSOutput_File(AOSServices&);
 
   /*!

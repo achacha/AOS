@@ -18,6 +18,10 @@ class AOSContext;
 class AOS_BASE_API AOSCacheManager : public AOSAdminInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSCacheManager(AOSServices&);
   virtual ~AOSCacheManager();
   

@@ -8,9 +8,10 @@ $Id$
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
 
+const AString AOSContextQueueThreadPool_RoundRobinSwarm::CLASS("AOSContextQueueThreadPool_RoundRobinSwarm");
+
 const AString& AOSContextQueueThreadPool_RoundRobinSwarm::getClass() const
 {
-  static const AString CLASS("AOSContextQueueThreadPool_RoundRobinSwarm");
   return CLASS;
 }
 

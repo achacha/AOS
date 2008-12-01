@@ -11,7 +11,12 @@ $Id$
 #include "ASocketException.hpp"
 #include "AOSServices.hpp"
 
-#define WAIT_FOR_CONNECTION_DELAY 100
+const AString AOSRequestListener::CLASS("AOSRequestListener");
+
+const AString& AOSRequestListener::getClass() const
+{
+  return CLASS;
+}
 
 AOSRequestListener::LISTEN_DATA::LISTEN_DATA(AOSServices& services, const AString& configpath) : 
   m_port(-1)
@@ -56,12 +61,6 @@ const AFilename& AOSRequestListener::LISTEN_DATA::getCertificateFilename() const
 const AFilename& AOSRequestListener::LISTEN_DATA::getPrivateKeyFilename() const
 {
   return m_pkey;
-}
-
-const AString& AOSRequestListener::getClass() const
-{
-  static const AString CLASS("AOSRequestListener");
-  return CLASS;
 }
 
 void AOSRequestListener::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
@@ -192,7 +191,8 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
   AASSERT(NULL, pThis);
   AASSERT(NULL, pData.get());
 
-  static bool httpBlockingMode = pThis->m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/listen/http/blocking",35), false);
+  bool httpBlockingMode = pThis->m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/listen/http/blocking",35), false);
+  int WAIT_FOR_CONNECTION_DELAY = pThis->m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/listen/http/listener-sleep",41), 50);
 
   thread.setRunning(true);
   AOSContext *pContext = NULL;
@@ -279,6 +279,8 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
   AAutoPtr<LISTEN_DATA> pData(dynamic_cast<LISTEN_DATA *>(thread.getParameter()), true);
   AASSERT(NULL, pThis);
   AASSERT(NULL, pData.get());
+
+  int WAIT_FOR_CONNECTION_DELAY = pThis->m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/listen/https/listener-sleep",42), 50);
 
   AString cert, pkey;
   pData->getCertificateFilename().emit(cert);

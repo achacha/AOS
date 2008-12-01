@@ -18,6 +18,10 @@ class AOSModules;
 class AOS_BASE_API AOSModuleExecutor : public AOSAdminInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModuleExecutor(AOSServices&);
   virtual ~AOSModuleExecutor();
 

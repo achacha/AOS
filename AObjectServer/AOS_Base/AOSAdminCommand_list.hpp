@@ -12,6 +12,10 @@ $Id: AOSAdmin.hpp 218 2008-05-29 23:23:59Z achacha $
 class AOSAdminCommand_list : public AOSAdminCommandInterface
 {
 public:
+  //! Command name
+  static const AString COMMAND;
+
+public:
   /*!
   ctor with services
   */

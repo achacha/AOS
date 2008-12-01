@@ -19,6 +19,9 @@ class AOSServices;
 class AOS_BASE_API AOSRequestListener : public AOSAdminInterface
 {
 public:
+  static const AString CLASS;
+
+public:
   /*!
   Create HTTP and HTTPS listeners
   firstQueue - first queue to receive AOSContext* once accepted (not OWNED by this object)

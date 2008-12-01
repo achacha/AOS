@@ -18,6 +18,9 @@ class AOSContext;
 class AOS_BASE_API AOSSessionManager : public AOSAdminInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
   //! Name of the cookie that stores session id
   static const AString SESSIONID;
 

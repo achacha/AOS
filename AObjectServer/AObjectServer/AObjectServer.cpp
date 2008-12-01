@@ -5,6 +5,9 @@ $Id$
 */
 #include "pchAObjectServer.hpp"
 
+#include "MemLeakDetect.h"
+CMemLeakDetect memLeakDetect;
+
 #include "AOS.hpp"
 #include "AOSAdmin.hpp"
 #include "AOSServices.hpp"

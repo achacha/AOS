@@ -15,10 +15,11 @@ $Id: AOSAdmin.cpp 218 2008-05-29 23:23:59Z achacha $
 
 const char _AOS_ADMIN_BUILD_INFO_[] = "AOS Admin \tBUILD(" __TIME__ " " __DATE__ ")";
 
+const AString AOSAdminCommand_version::COMMAND("version",7);
+
 const AString& AOSAdminCommand_version::getName() const
 {
-  static const AString VERSION("version",7);
-  return VERSION;
+  return COMMAND;
 }
 
 AOSAdminCommand_version::AOSAdminCommand_version(AOSServices& services) :
@@ -29,16 +30,16 @@ AOSAdminCommand_version::AOSAdminCommand_version(AOSServices& services) :
 void AOSAdminCommand_version::_process(AOSAdminCommandContext& context)
 {
   //a_Add versions
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(AOS_Base_INFO));
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(_AOS_ADMIN_BUILD_INFO_));
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(ABase_INFO));
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(ALuaEmbed_INFO));
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(AZlib_INFO));
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(GDLib_INFO));
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(ADatabase_SQLite_INFO));
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(ADatabase_MySQL_INFO));
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(ADatabase_ODBC_INFO));
-  context.useModel().useRoot().addElement(ASW("version",7)).addData(ASWNL(ACrypto_INFO));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(AOS_Base_INFO));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(_AOS_ADMIN_BUILD_INFO_));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(ABase_INFO));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(ALuaEmbed_INFO));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(AZlib_INFO));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(GDLib_INFO));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(ADatabase_SQLite_INFO));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(ADatabase_MySQL_INFO));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(ADatabase_ODBC_INFO));
+  context.useModel().useRoot().addElement(COMMAND).addData(ASWNL(ACrypto_INFO));
 }
 
 void AOSAdminCommand_version::_insertStylesheet(AOSAdminCommandContext& context)

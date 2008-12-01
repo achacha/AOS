@@ -9,6 +9,14 @@ $Id$
 #include "AOSOutputGeneratorInterface.hpp"
 #include "AOSServices.hpp"
 
+const AString AOSOutputExecutor::OVERRIDE_OUTPUT("overrideOutput");
+const AString AOSOutputExecutor::CLASS("AOSOutputExecutor");
+
+const AString& AOSOutputExecutor::getClass() const
+{
+  return CLASS;
+}
+
 void AOSOutputExecutor::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -22,12 +30,6 @@ void AOSOutputExecutor::debugDump(std::ostream& os, int indent) const
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
-}
-
-const AString& AOSOutputExecutor::getClass() const
-{
-  static const AString CLASS("AOSOutputExecutor");
-  return CLASS;
 }
 
 void AOSOutputExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
@@ -99,8 +101,6 @@ void AOSOutputExecutor::registerOutputGenerator(AOSOutputGeneratorInterface *pGe
 
 void AOSOutputExecutor::execute(AOSContext& context)
 {
-  static const AString OVERRIDE_OUTPUT("overrideOutput",14);
-
   AString command;
   if (
     context.useRequestParameterPairs().exists(OVERRIDE_OUTPUT)

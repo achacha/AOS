@@ -9,7 +9,13 @@ $Id$
 #include "AOSInputProcessorInterface.hpp"
 #include "AOSServices.hpp"
 
-const AString AOSInputExecutor::OVERRIDE_INPUT;
+const AString AOSInputExecutor::OVERRIDE_INPUT("overrideInput");
+const AString AOSInputExecutor::CLASS("AOSInputExecutor");
+
+const AString& AOSInputExecutor::getClass() const
+{
+  return CLASS;
+}
 
 void AOSInputExecutor::debugDump(std::ostream& os, int indent) const
 {
@@ -36,12 +42,6 @@ void AOSInputExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader
     adminAddProperty(eBase, ASW("processor",9), (*cit).second->getClass());
     ++cit;
   }
-}
-
-const AString& AOSInputExecutor::getClass() const
-{
-  static const AString CLASS("AOSInputExecutor");
-  return CLASS;
 }
 
 AOSInputExecutor::AOSInputExecutor(AOSServices& services) :
@@ -102,7 +102,15 @@ void AOSInputExecutor::registerInputProcessor(AOSInputProcessorInterface *pProce
 void AOSInputExecutor::execute(AOSContext& context)
 {
   AString command;
-  if (!context.useRequestHeader().useUrl().useParameterPairs().get(OVERRIDE_INPUT, command))
+  if (
+    context.useRequestParameterPairs().exists(OVERRIDE_INPUT)
+    && m_Services.useConfiguration().isOutputOverrideAllowed()
+  )
+  {
+    //a_Override requested and allowed
+    context.useRequestParameterPairs().get(OVERRIDE_INPUT, command);
+  }
+  else
   {
     command = context.getInputCommand();
     if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))

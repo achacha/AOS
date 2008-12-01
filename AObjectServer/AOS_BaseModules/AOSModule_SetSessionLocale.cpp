@@ -6,9 +6,10 @@ $Id: AOSModule_SetSessionLocale.cpp 218 2008-05-29 23:23:59Z achacha $
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_SetSessionLocale.hpp"
 
+const AString AOSModule_SetSessionLocale::CLASS("SetSessionLocale");
+
 const AString& AOSModule_SetSessionLocale::getClass() const
 {
-  static const AString CLASS("SetSessionLocale");
   return CLASS;
 }
 

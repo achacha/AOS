@@ -7,9 +7,10 @@ $Id: AOSOutput_XML.cpp 218 2008-05-29 23:23:59Z achacha $
 #include "AOSOutput_XML.hpp"
 #include "AXmlDocument.hpp"
 
+const AString AOSOutput_XML::CLASS("XML");
+
 const AString& AOSOutput_XML::getClass() const
 {
-  static const AString CLASS("XML");
   return CLASS;
 }
 

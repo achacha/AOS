@@ -11,6 +11,13 @@ $Id$
 #include "ASQLiteServer.hpp"
 #include "AOSServices.hpp"
 
+const AString AOSDatabaseConnectionPool::CLASS("AOSDatabaseConnectionPool");
+
+const AString& AOSDatabaseConnectionPool::getClass() const
+{
+  return CLASS;
+}
+
 AOSDatabaseConnectionPool::AOSDatabaseConnectionPool(AOSServices& services) :
   m_Services(services),
   mp_DatabasePool(NULL),
@@ -26,12 +33,6 @@ AOSDatabaseConnectionPool::~AOSDatabaseConnectionPool()
     pDelete(mp_DatabasePool);
   }
   catch(...) {}
-}
-
-const AString& AOSDatabaseConnectionPool::getClass() const
-{
-  static const AString CLASS("AOSDatabaseConnectionPool");
-  return CLASS;
 }
 
 void AOSDatabaseConnectionPool::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)

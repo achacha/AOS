@@ -17,6 +17,13 @@ class AOSAdminRegistry;
 class AOS_BASE_API AOSInputExecutor : public AOSAdminInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+  //! Parameter name for overriding the input
+  static const AString OVERRIDE_INPUT;
+
+public:
   AOSInputExecutor(AOSServices&);
   virtual ~AOSInputExecutor();
 
@@ -40,9 +47,7 @@ public:
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
-private:
-  static const AString OVERRIDE_INPUT;
-  
+private:  
   AOSServices& m_Services;
 
   typedef std::map<AString, AOSInputProcessorInterface *> InputProcessorContainer;

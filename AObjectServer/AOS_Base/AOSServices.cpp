@@ -14,6 +14,13 @@ $Id$
 #include "ATemplateNodeHandler_SESSION.hpp"
 #include "ATemplateNodeHandler_RESOURCE.hpp"
 
+const AString AOSServices::CLASS("AOSServices");
+
+const AString& AOSServices::getClass() const
+{
+  return CLASS;
+}
+
 void AOSServices::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -48,12 +55,6 @@ void AOSServices::debugDump(std::ostream& os, int indent) const
   m_GlobalObjects.debugDump(os, indent+2);
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
-}
-
-const AString& AOSServices::getClass() const
-{
-  static const AString CLASS("AOSServices");
-  return CLASS;
 }
 
 void AOSServices::adminRegisterObject(AOSAdminRegistry& adminRegistry)

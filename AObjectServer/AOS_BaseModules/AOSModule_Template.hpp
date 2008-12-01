@@ -15,6 +15,10 @@ Loads and evaluates a template and optionally writes output to an element
 class AOS_BASEMODULES_API AOSModule_Template : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_Template(AOSServices&);
 
   /*!

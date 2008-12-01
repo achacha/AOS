@@ -8,9 +8,10 @@ $Id$
 #include "AFile_Physical.hpp"
 #include "AFileSystem.hpp"
 
+const AString AOSOutput_File::CLASS("File");
+
 const AString& AOSOutput_File::getClass() const
 {
-  static const AString CLASS("File");
   return CLASS;
 }
 

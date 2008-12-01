@@ -16,6 +16,12 @@ $Id$
 #define DEFAULT_SLEEP_DURATION 3000
 
 const AString AOSSessionManager::SESSIONID("AOSSession", 10);
+const AString AOSSessionManager::CLASS("AOSSessionManager");
+
+const AString& AOSSessionManager::getClass() const
+{
+  return CLASS;
+}
 
 void AOSSessionManager::debugDump(std::ostream& os, int indent) const
 {
@@ -34,12 +40,6 @@ void AOSSessionManager::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
-}
-
-const AString& AOSSessionManager::getClass() const
-{
-  static const AString CLASS("AOSSessionManager");
-  return CLASS;
 }
 
 void AOSSessionManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)

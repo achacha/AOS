@@ -36,5 +36,9 @@ admin console and disable the controller which will then skip the controller and
 using the URL in a press-release and your server may not be able to handle the volume of dynmaic requests (static ones especially if cached are much cheaper).<br />
 <br />
 
+<h5 class="heading">controller overrides</h5>
+<div class="comment">AObjectServer.xml allows you to configure if URL parameter based overrides are allowed (and this should only be allowed during development/debugging).</div>
+<b>overrideInput</b> allows the controller input processor to be overridden.  Mostly used to disable input processing by setting it to NOP.<br />
+<b>overrideOutput</b> allows the controller output generator to be overridden.  Can be used to switch output generation to NOP, XML, JSON, etc to allow easier output debugging.<br />
 </body>
 </html>

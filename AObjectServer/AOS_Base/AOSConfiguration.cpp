@@ -15,6 +15,8 @@ $Id$
 #include "AOSServices.hpp"
 #include "AINIProfile.hpp"
 
+const AString AOSConfiguration::CLASS("AOSConfiguration");
+
 const AString AOSConfiguration::DATABASE_URL("/config/server/database/url");
 const AString AOSConfiguration::DATABASE_CONNECTIONS("/config/server/database/connections");
 
@@ -102,7 +104,6 @@ void AOSConfiguration::debugDump(std::ostream& os, int indent) const
 
 const AString& AOSConfiguration::getClass() const
 {
-  static const AString CLASS("AOSConfiguration");
   return CLASS;
 }
 
@@ -317,6 +318,10 @@ AOSConfiguration::AOSConfiguration(
       default: m_Services.useLog().setEventMask(ALog::DEFAULT);
     }
   }
+
+  m_IsOverrideInputAllowed = m_Config.getRoot().getBool("/config/server/debug/allow-overrideInput", false);
+  m_IsOverrideOutputAllowed = m_Config.getRoot().getBool("/config/server/debug/allow-overrideOutput", false);
+  m_IsDumpContextAllowed = m_Config.getRoot().getBool("/config/server/debug/allow-dumpContext", false);
 
   try
   {
@@ -985,12 +990,17 @@ AXmlElement& AOSConfiguration::useConfigRoot()
 
 bool AOSConfiguration::isDumpContextAllowed() const
 {
-  return m_Config.getRoot().getBool(ASW("/config/server/debug/allow-dumpContext",38), false);
+  return m_IsDumpContextAllowed;
+}
+
+bool AOSConfiguration::isInputOverrideAllowed() const
+{
+  return m_IsOverrideInputAllowed;
 }
 
 bool AOSConfiguration::isOutputOverrideAllowed() const
 {
-  return m_Config.getRoot().getBool(ASW("/config/server/debug/allow-overrideOutput",41), false);
+  return m_IsOverrideOutputAllowed;
 }
 
 void AOSConfiguration::convertUrlToReportedServerAndPort(AUrl& url) const

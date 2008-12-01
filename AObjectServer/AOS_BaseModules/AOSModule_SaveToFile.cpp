@@ -8,10 +8,11 @@ $Id$
 #include "AXmlElement.hpp"
 #include "AFile_Physical.hpp"
 
+const AString AOSModule_SaveToFile::CLASS("SaveToFile");
+
 const AString& AOSModule_SaveToFile::getClass() const
 {
-  static const AString MODULE_CLASS("SaveToFile");
-  return MODULE_CLASS;
+  return CLASS;
 }
 
 AOSModule_SaveToFile::AOSModule_SaveToFile(AOSServices& services) :

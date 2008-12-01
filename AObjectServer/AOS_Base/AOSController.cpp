@@ -24,6 +24,13 @@ const AString AOSController::S_GZIP("gzip",4);
 const AString AOSController::S_SESSION("session",7);
 const AString AOSController::S_CACHECONTROLNOCACHE("nocache",7);
 
+const AString AOSController::CLASS("AOSController");
+
+const AString& AOSController::getClass() const
+{
+  return CLASS;
+}
+
 void AOSController::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -79,12 +86,6 @@ AOSController::AOSController(const AString& path, ALog& log) :
 
 AOSController::~AOSController()
 {
-}
-
-const AString& AOSController::getClass() const
-{
-  static const AString CLASS("AOSController");
-  return CLASS;
 }
 
 void AOSController::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader& request)

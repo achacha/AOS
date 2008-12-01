@@ -6,6 +6,13 @@ $Id$
 #include "pchAOS_BaseModules.hpp"
 #include "AOSOutput_Template.hpp"
 
+const AString AOSOutput_Template::CLASS("Template");
+
+const AString& AOSOutput_Template::getClass() const
+{
+  return CLASS;
+}
+
 void AOSOutput_Template::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(AOSOutput_Template @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -25,12 +32,6 @@ void AOSOutput_Template::adminEmitXml(
 
 void AOSOutput_Template::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-}
-
-const AString& AOSOutput_Template::getClass() const
-{
-  static const AString CLASS("Template");
-  return CLASS;
 }
 
 AOSOutput_Template::AOSOutput_Template(AOSServices& services) :

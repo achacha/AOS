@@ -5,6 +5,13 @@
 #include "AOSModuleInterface.hpp"
 #include "AOSServices.hpp"
 
+const AString AOSModuleExecutor::CLASS("AOSModuleExecutor");
+
+const AString& AOSModuleExecutor::getClass() const
+{
+  return CLASS;
+}
+
 void AOSModuleExecutor::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -19,12 +26,6 @@ void AOSModuleExecutor::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
-}
-
-const AString& AOSModuleExecutor::getClass() const
-{
-  static const AString CLASS("AOSModuleExecutor");
-  return CLASS;
 }
 
 void AOSModuleExecutor::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)

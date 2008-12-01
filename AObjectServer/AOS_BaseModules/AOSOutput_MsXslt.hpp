@@ -12,15 +12,13 @@ $Id$
 
 /*!
 XSL transform
-
-<output class="Xslt">
-	<filename>xsl/file.xsl</filename>
-</output>
-
-Filename relative to the data directory.
 */
 class AOS_BASEMODULES_API AOSOutput_MsXslt : public AOSOutputGeneratorInterface
 {
+public:
+  //! Class name
+  static const AString CLASS;
+
 public:
   AOSOutput_MsXslt(AOSServices&);
   virtual ~AOSOutput_MsXslt();

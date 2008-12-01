@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_BaseModules.hpp"
 #include "AOSInput_NOP.hpp"
 
+const AString AOSInput_NOP::CLASS("NOP");
+
 const AString& AOSInput_NOP::getClass() const
 {
-  static const AString CLASS("NOP");
   return CLASS;
 }
 

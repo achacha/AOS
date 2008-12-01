@@ -10,11 +10,16 @@ $Id$
 #include "AOSContextQueueInterface.hpp"
 #include "ASync_CriticalSectionSpinLock.hpp"
 #include "ASync_CriticalSection.hpp"
+#include "ABasePtrQueue.hpp"
 
 class AThread;
 
 class AOS_BASE_API AOSContextQueue_IsAvailable : public AOSContextQueueInterface
 {
+public:
+  //! Class name
+  static const AString CLASS;
+
 public:
   /*!
   queueCount - number of queues to use, each queue has its own select thread
@@ -52,14 +57,12 @@ protected:
   AOSContext *_nextContext();
 
 private:
-  typedef std::list<AOSContext *> REQUESTS;
-
   //a_Structure of a queue and its own worker thread
   class QueueWithThread : public ABase
   {
   public:
     ASync_CriticalSection sync;
-    REQUESTS queue;
+    ABasePtrQueue queue;
     AThread *pthread;
     size_t count;      //a_Usage meter
 

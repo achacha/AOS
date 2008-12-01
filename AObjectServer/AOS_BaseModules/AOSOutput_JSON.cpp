@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_BaseModules.hpp"
 #include "AOSOutput_JSON.hpp"
 
+const AString AOSOutput_JSON::CLASS("JSON");
+
 const AString& AOSOutput_JSON::getClass() const
 {
-  static const AString CLASS("JSON");
   return CLASS;
 }
 

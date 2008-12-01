@@ -29,6 +29,10 @@ To access data stored (if your file input name="fileinput"):
 class AOS_BASEMODULES_API AOSInput_HtmlFormMultiPart : public AOSInputProcessorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSInput_HtmlFormMultiPart(AOSServices&);
   virtual AOSContext::ReturnCode execute(AOSContext&);
 

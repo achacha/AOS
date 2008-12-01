@@ -11,6 +11,10 @@ $Id$
 class AOS_BASEMODULES_API AOSInput_NOP : public AOSInputProcessorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSInput_NOP(AOSServices&);
   virtual AOSContext::ReturnCode execute(AOSContext&);
 

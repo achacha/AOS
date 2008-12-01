@@ -11,6 +11,10 @@ $Id$
 class AOS_BASEMODULES_API AOSInput_HtmlForm : public AOSInputProcessorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSInput_HtmlForm(AOSServices&);
   virtual AOSContext::ReturnCode execute(AOSContext&);
 

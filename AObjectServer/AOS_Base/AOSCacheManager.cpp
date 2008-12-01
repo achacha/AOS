@@ -12,6 +12,8 @@ $Id$
 #include "AFileSystem.hpp"
 #include "ATextOdometer.hpp"
 
+const AString AOSCacheManager::CLASS("AOSCacheManager");
+
 void AOSCacheManager::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -49,7 +51,6 @@ void AOSCacheManager::debugDump(std::ostream& os, int indent) const
 
 const AString& AOSCacheManager::getClass() const
 {
-  static const AString CLASS("AOSCacheManager");
   return CLASS;
 }
 

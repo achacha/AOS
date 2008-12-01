@@ -383,6 +383,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dbgint.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MemLeakDetect.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MemLeakDetect.h"
+				>
+			</File>
+			<File
 				RelativePath=".\pchAObjectServer.cpp"
 				>
 				<FileConfiguration

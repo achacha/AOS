@@ -7,10 +7,11 @@ $Id: AOSAdmin.cpp 218 2008-05-29 23:23:59Z achacha $
 #include "AOSAdminCommand_list.hpp"
 #include "AXmlElement.hpp"
 
+const AString AOSAdminCommand_list::COMMAND("list",4);
+
 const AString& AOSAdminCommand_list::getName() const
 {
-  static const AString VERSION("list",4);
-  return VERSION;
+  return COMMAND;
 }
 
 AOSAdminCommand_list::AOSAdminCommand_list(AOSServices& services) :

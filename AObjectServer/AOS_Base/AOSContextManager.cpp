@@ -11,6 +11,8 @@ $Id$
 #include "AOSServices.hpp"
 #include "AOSContextQueueInterface.hpp"
 
+const AString AOSContextManager::CLASS("AOSContextManager");
+
 void AOSContextManager::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -71,7 +73,6 @@ void AOSContextManager::debugDump(std::ostream& os, int indent) const
 
 const AString& AOSContextManager::getClass() const
 {
-  static const AString CLASS("AOSContextManager");
   return CLASS;
 }
 

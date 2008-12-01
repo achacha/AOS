@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_ExecuteQuery.hpp"
 
+const AString AOSModule_ExecuteQuery::CLASS("ExecuteQuery");
+
 const AString& AOSModule_ExecuteQuery::getClass() const
 {
-  static const AString CLASS("ExecuteQuery");
   return CLASS;
 }
 

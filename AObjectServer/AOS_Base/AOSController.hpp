@@ -20,6 +20,9 @@ class ALog;
 class AOS_BASE_API AOSController : public AXmlEmittable, public AXmlParsable, public AOSAdminInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
   /*!
   Constant strings
   */

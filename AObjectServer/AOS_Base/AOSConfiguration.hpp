@@ -47,6 +47,9 @@ public:
   //! Number of retries before considering socket unavailable for too long
   static int UNAVAILABLE_RETRIES;
 
+  //! Class name
+  static const AString CLASS;
+
 public:
   /*!
   ctor
@@ -58,18 +61,6 @@ public:
   
   //! virtual dtor
   virtual ~AOSConfiguration();
-
-  /*!
-  Initialize static structures of this class (used in reporting actual hostname and port)
-  App server may be behind a load balancer or web server and may need to report something else
-  This is not required and localhost, 80, 443 is assumed by default
-
-  @param hostname to attach to
-  @param http_port port for http listener
-  @param https_port port for secure http listener
-  @param serverId Name of the server that is used in HTTP response header in Server: tag
-  */
-  static void initializeStaticHostInfo(const AString& hostname, int http_port, int https_port, const AString& serverId);
 
   //! Path to the database URL
   static const AString DATABASE_URL;
@@ -318,7 +309,14 @@ public:
   bool isDumpContextAllowed() const;
   
   /*!
-  Check if outputOverride is allowed in the configuration file
+  Check if overrideInput is allowed as parameter
+
+  @return true if allowed
+  */
+  bool isInputOverrideAllowed() const;
+
+  /*!
+  Check if overrideOutput is allowed as parameter
 
   @return true if allowed
   */
@@ -471,6 +469,11 @@ private:
   AString m_ReportedHostname;
   int m_ReportedHttpPort;
   int m_ReportedHttpsPort;
+
+  //Overrides
+  bool m_IsOverrideInputAllowed;
+  bool m_IsOverrideOutputAllowed;
+  bool m_IsDumpContextAllowed;
 };
 
 #endif //INCLUDED__AOSConfiguration_HPP__

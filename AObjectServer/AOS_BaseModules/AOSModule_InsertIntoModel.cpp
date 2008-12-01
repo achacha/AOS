@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_InsertIntoModel.hpp"
 
+const AString AOSModule_InsertIntoModel::CLASS("InsertIntoModel");
+
 const AString& AOSModule_InsertIntoModel::getClass() const
 {
-  static const AString CLASS("InsertIntoModel");
   return CLASS;
 }
 

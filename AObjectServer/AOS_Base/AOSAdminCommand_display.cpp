@@ -9,10 +9,11 @@ $Id: AOSAdmin.cpp 218 2008-05-29 23:23:59Z achacha $
 #include "AFilename.hpp"
 #include "AFileSystem.hpp"
 
+const AString AOSAdminCommand_display::COMMAND("display",7);
+
 const AString& AOSAdminCommand_display::getName() const
 {
-  static const AString VERSION("display",7);
-  return VERSION;
+  return COMMAND;
 }
 
 AOSAdminCommand_display::AOSAdminCommand_display(AOSServices& services) :

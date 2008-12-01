@@ -11,6 +11,10 @@ $Id$
 class AOS_BASEMODULES_API AOSOutput_NOP : public AOSOutputGeneratorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSOutput_NOP(AOSServices&);
 
   /*!

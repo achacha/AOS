@@ -14,6 +14,10 @@ AlterContext
 class AOS_BASEMODULES_API AOSModule_AlterContext : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_AlterContext(AOSServices&);
 
   /*!

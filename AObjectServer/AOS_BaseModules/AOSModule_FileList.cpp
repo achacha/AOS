@@ -8,9 +8,10 @@ $Id$
 #include "AFilename.hpp"
 #include "AFileSystem.hpp"
 
+const AString AOSModule_FileList::MODULE_CLASS("FileList");
+
 const AString& AOSModule_FileList::getClass() const
 {
-  static const AString MODULE_CLASS("FileList");
   return MODULE_CLASS;
 }
 

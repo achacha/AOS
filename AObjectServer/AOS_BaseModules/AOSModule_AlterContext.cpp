@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_BaseModules.hpp"
 #include "AOSModule_AlterContext.hpp"
 
+const AString AOSModule_AlterContext::CLASS("AlterContext");
+
 const AString& AOSModule_AlterContext::getClass() const
 {
-  static const AString CLASS("AlterContext");
   return CLASS;
 }
 

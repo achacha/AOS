@@ -7,9 +7,10 @@ $Id: AOSAdmin.cpp 218 2008-05-29 23:23:59Z achacha $
 #include "AOSAdminCommand_modify.hpp"
 #include "AXmlElement.hpp"
 
+const AString AOSAdminCommand_modify::COMMAND("modify",6);
+
 const AString& AOSAdminCommand_modify::getName() const
 {
-  static const AString COMMAND("modify",6);
   return COMMAND;
 }
 

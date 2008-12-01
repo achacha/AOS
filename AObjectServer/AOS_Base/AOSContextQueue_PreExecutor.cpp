@@ -9,9 +9,10 @@ $Id$
 #include "AOSServices.hpp"
 #include "AOSController.hpp"
 
+const AString AOSContextQueue_PreExecutor::CLASS("AOSContextQueue_PreExecutor");
+
 const AString& AOSContextQueue_PreExecutor::getClass() const
 {
-  static const AString CLASS("AOSContextQueue_PreExecutor");
   return CLASS;
 }
 

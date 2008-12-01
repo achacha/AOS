@@ -14,6 +14,10 @@ LuaScript module
 class AOS_BASEMODULES_API AOSModule_LuaScript : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_LuaScript(AOSServices&);
 
   /*!

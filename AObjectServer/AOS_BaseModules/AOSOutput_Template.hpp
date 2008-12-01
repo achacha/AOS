@@ -16,6 +16,10 @@ Template output
 class AOS_BASEMODULES_API AOSOutput_Template : public AOSOutputGeneratorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSOutput_Template(AOSServices&);
   virtual ~AOSOutput_Template();
 

@@ -16,6 +16,9 @@ class AOSContext;
 class AOS_BASE_API AOSResourceManager : public AOSAdminInterface
 {
 public:
+  static const AString CLASS;
+
+public:
   //! ctor
   AOSResourceManager(AOSServices&);
   

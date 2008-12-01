@@ -14,6 +14,10 @@ AlterContext
 class AOS_BASEMODULES_API AOSModule_SetSessionLocale : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_SetSessionLocale(AOSServices&);
 
   /*!

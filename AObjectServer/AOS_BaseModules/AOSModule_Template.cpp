@@ -7,10 +7,11 @@ $Id$
 #include "AOSModule_Template.hpp"
 #include "AFile_Physical.hpp"
 
+const AString AOSModule_Template::CLASS("Template");
+
 const AString& AOSModule_Template::getClass() const
 {
-  static const AString MODULE_CLASS("Template");
-  return MODULE_CLASS;
+  return CLASS;
 }
 
 AOSModule_Template::AOSModule_Template(AOSServices& services) :

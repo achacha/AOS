@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_BaseModules.hpp"
 #include "AOSInput_HtmlFormMultiPart.hpp"
 
+const AString AOSInput_HtmlFormMultiPart::CLASS("multipart/form-data");
+
 const AString& AOSInput_HtmlFormMultiPart::getClass() const
 {
-  static const AString CLASS("multipart/form-data");
   return CLASS;
 }
 

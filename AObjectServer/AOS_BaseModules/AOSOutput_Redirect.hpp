@@ -14,6 +14,10 @@ Redirect
 class AOS_BASEMODULES_API AOSOutput_Redirect : public AOSOutputGeneratorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSOutput_Redirect(AOSServices&);
 
   /*!

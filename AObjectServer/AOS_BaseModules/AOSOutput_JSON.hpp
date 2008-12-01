@@ -11,6 +11,10 @@ $Id$
 class AOS_BASEMODULES_API AOSOutput_JSON : public AOSOutputGeneratorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSOutput_JSON(AOSServices&);
 
   /*!

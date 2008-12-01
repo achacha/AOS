@@ -5,7 +5,8 @@
 
   <debug>
     <allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page (should be false in production)">true</allow-dumpContext>
-    <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output class of a command (should be false in production)">true</allow-overrideOutput>
+    <allow-overrideInput desc="If true, will allow overrideInput to alter the input processor class of a controller (should be false in production)">true</allow-overrideInput>
+    <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output generator class of a controller (should be false in production)">true</allow-overrideOutput>
   </debug>
 
   <context-manager>
@@ -46,10 +47,12 @@
     <http>
       <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
       <port>80</port>
+      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">50</listener-sleep>
     </http>
     <https>
       <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
       <port>443</port>
+      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">50</listener-sleep>
       <cert desc="Relative path from aos_root base for the certificate file">certs/aos_cert.pem</cert>
       <pkey desc="Relative path from aos_root base for the private key file">certs/aos_pkey.pem</pkey>
     </https>

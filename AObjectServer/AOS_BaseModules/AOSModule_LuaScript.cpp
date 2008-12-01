@@ -8,10 +8,11 @@ $Id$
 #include "AFile_Physical.hpp"
 #include "ATemplateNodeHandler_LUA.hpp"
 
+const AString AOSModule_LuaScript::CLASS("LuaScript");
+
 const AString& AOSModule_LuaScript::getClass() const
 {
-  static const AString MODULE_CLASS("LuaScript");
-  return MODULE_CLASS;
+  return CLASS;
 }
 
 AOSModule_LuaScript::AOSModule_LuaScript(AOSServices& services) :

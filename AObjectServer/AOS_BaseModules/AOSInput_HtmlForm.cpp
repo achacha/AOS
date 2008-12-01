@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_BaseModules.hpp"
 #include "AOSInput_HtmlForm.hpp"
 
+const AString AOSInput_HtmlForm::CLASS("application/x-www-form-urlencoded");
+
 const AString& AOSInput_HtmlForm::getClass() const
 {
-  static const AString CLASS("application/x-www-form-urlencoded");
   return CLASS;
 }
 

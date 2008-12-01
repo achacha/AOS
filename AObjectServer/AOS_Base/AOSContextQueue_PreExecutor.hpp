@@ -15,6 +15,10 @@ class AOSContext;
 class AOS_BASE_API AOSContextQueue_PreExecutor : public AOSContextQueueThreadPool_RoundRobinSwarm
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSContextQueue_PreExecutor(
     AOSServices&,  
     size_t threadCount = 16,

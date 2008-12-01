@@ -14,9 +14,10 @@ $Id$
 
 #import <msxml6.dll>
 
+const AString AOSOutput_MsXslt::CLASS("Xslt");
+
 const AString& AOSOutput_MsXslt::getClass() const
 {
-  static const AString CLASS("Xslt");
   return CLASS;
 }
 

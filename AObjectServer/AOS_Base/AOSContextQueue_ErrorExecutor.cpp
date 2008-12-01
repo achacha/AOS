@@ -9,9 +9,10 @@ $Id$
 #include "AOSServices.hpp"
 #include "ASocketException.hpp"
 
+const AString AOSContextQueue_ErrorExecutor::CLASS("AOSContextQueue_ErrorExecutor");
+
 const AString& AOSContextQueue_ErrorExecutor::getClass() const
 {
-  static const AString CLASS("AOSContextQueue_ErrorExecutor");
   return CLASS;
 }
 

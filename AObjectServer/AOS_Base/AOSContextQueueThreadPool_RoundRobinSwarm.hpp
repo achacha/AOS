@@ -16,6 +16,10 @@ class AOSContext;
 class AOS_BASE_API AOSContextQueueThreadPool_RoundRobinSwarm : public AOSContextQueueThreadPool
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   /*!
   ctor
   */

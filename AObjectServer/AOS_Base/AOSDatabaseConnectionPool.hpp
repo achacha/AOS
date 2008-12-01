@@ -16,6 +16,10 @@ class AOSServices;
 class AOS_BASE_API AOSDatabaseConnectionPool : public AOSAdminInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   /*!
   Create connection pool with 'count' connections
   

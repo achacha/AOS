@@ -7,9 +7,10 @@ $Id$
 #include "AOSOutput_Redirect.hpp"
 #include "AOS_BaseModules_Constants.hpp"
 
+const AString AOSOutput_Redirect::CLASS("Redirect");
+
 const AString& AOSOutput_Redirect::getClass() const
 {
-  static const AString CLASS("Redirect");
   return CLASS;
 }
 

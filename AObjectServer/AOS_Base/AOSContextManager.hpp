@@ -18,6 +18,9 @@ class AOSContextQueueInterface;
 class AOS_BASE_API AOSContextManager : public AOSAdminInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
   //! Queue stages
   enum ContextQueueState
   {

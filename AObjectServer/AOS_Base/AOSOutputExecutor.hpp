@@ -16,6 +16,13 @@ class AOSOutputGeneratorInterface;
 class AOS_BASE_API AOSOutputExecutor : public AOSAdminInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+  
+  //! Output override parameter name
+  static const AString OVERRIDE_OUTPUT;
+
+public:
   AOSOutputExecutor(AOSServices&);
   virtual ~AOSOutputExecutor();
 

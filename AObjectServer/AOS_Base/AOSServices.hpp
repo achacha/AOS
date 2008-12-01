@@ -25,6 +25,10 @@ $Id$
 class AOS_BASE_API AOSServices : public AOSAdminInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   /*!
   Construct services from base aos_root path
   

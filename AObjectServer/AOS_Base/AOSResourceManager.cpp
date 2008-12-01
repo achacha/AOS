@@ -10,6 +10,13 @@ $Id: AOSResourceManager.cpp 252 2008-08-02 21:26:15Z achacha $
 #include "AFileSystem.hpp"
 #include "AFile_Physical.hpp"
 
+const AString AOSResourceManager::CLASS("AOSResourceManager");
+
+const AString& AOSResourceManager::getClass() const
+{
+  return CLASS;
+}
+
 void AOSResourceManager::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -24,12 +31,6 @@ void AOSResourceManager::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
-}
-
-const AString& AOSResourceManager::getClass() const
-{
-  static const AString CLASS("AOSResourceManager");
-  return CLASS;
 }
 
 void AOSResourceManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
