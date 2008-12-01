@@ -9,9 +9,10 @@ $Id: AOSOutput_generate_image.cpp 95 2008-06-09 21:27:46Z achacha $
 #include "ATextGenerator.hpp"
 #include "ADigest_SHA1.hpp"
 
+const AString AOSOutput_Captcha_generate::CLASS("Captcha.generate");
+
 const AString& AOSOutput_Captcha_generate::getClass() const
 {
-  static const AString CLASS("Captcha.generate");
   return CLASS;
 }
 

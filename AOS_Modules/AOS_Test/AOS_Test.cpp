@@ -6,7 +6,7 @@ $Id$
 #include "pchAOS_Test.hpp"
 #include "apiAOS_Test.hpp"
 
-#include "AOSModule_Test.hpp"
+#include "AOSModule_TestPass.hpp"
 #include "AOSModule_TestFail.hpp"
 #include "AOSModule_SessionTest.hpp"
 
@@ -37,7 +37,7 @@ extern "C" AOS_TEST_API int aos_register(
   services.useLog().add(ASWNL("AOS_Test: aos_register"), ALog::INFO);
 
   //Register modules
-  moduleExecutor.registerModule(new AOSModule_Test(services));
+  moduleExecutor.registerModule(new AOSModule_TestPass(services));
   moduleExecutor.registerModule(new AOSModule_TestFail(services));
   moduleExecutor.registerModule(new AOSModule_SessionTest(services));
   

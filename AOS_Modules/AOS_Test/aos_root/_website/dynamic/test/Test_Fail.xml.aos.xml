@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?> 
-<controller name='TestFail'>
+<controller>
 	<input/>
-	<module class='Test' name='start'>
+	<module class='Test.Pass'>
 		<name>foo</name>
 		<value>bar</value>
 	</module>
-	<module class='TestFail' name='work'>
+	<module class='Test.Fail'>
 		<name>red</name>
 		<value>pink</value>
 	</module>
-	<module class='Test' name='end'>
+	<module class='Test.Pass'>
 		<name>blue</name>
 		<value>teal</value>
 	</module>

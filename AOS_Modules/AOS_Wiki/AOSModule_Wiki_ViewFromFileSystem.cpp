@@ -11,9 +11,10 @@ $Id$
 #include "AFileSystem.hpp"
 #include "ATextGenerator.hpp"
 
+const AString AOSModule_Wiki_ViewFromFileSystem::CLASS("Wiki.ViewFromFileSystem");
+
 const AString& AOSModule_Wiki_ViewFromFileSystem::getClass() const
 {
-  static const AString CLASS("Wiki.ViewFromFileSystem");
   return CLASS;
 }
 

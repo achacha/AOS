@@ -7,9 +7,10 @@ $Id$
 #include "AOSModule_User_Logout.hpp"
 #include "AOSUser.hpp"
 
+const AString AOSModule_User_Logout::CLASS("User.Logout");
+
 const AString& AOSModule_User_Logout::getClass() const
 {
-  static const AString CLASS("User.Logout");
   return CLASS;
 }
 

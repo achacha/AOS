@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?> 
-<controller name='Test2'>
+<controller>
 	<input/>
-	<module class='Test' name='step0'>
+	<module class='Test.Pass'>
 		<name>foo</name>
 		<value>bar</value>
-		<if object='/next' value='red' jump='red'/>
-		<if object='/next' value='blue' jump='blue'/>
 	</module>
-	<module class='Test' name='red'>
+	<module class='Test.Pass'>
 		<name>red</name>
 		<value>pink</value>
 	</module>
-	<module class='Test' name='blue'>
+	<module class='Test.Pass'>
 		<name>blue</name>
 		<value>teal</value>
 	</module>

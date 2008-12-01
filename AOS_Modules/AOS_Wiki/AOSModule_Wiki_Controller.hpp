@@ -16,6 +16,9 @@ $Id$
 class AOS_WIKI_API AOSModule_Wiki_Controller : public AOSModuleInterface
 {
 public:
+  static const AString CLASS;
+
+public:
   AOSModule_Wiki_Controller(AOSServices&);
   virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   

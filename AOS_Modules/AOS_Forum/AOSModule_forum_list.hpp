@@ -11,6 +11,10 @@ $Id$
 class AOS_FORUM_API AOSModule_forum_list : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_forum_list(AOSServices&);
   virtual ~AOSModule_forum_list();
 

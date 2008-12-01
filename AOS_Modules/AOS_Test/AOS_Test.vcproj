@@ -385,11 +385,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_Test.cpp"
+				RelativePath=".\AOSModule_TestFail.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_TestFail.cpp"
+				RelativePath=".\AOSModule_TestPass.cpp"
 				>
 			</File>
 			<File
@@ -443,11 +443,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_Test.hpp"
+				RelativePath=".\AOSModule_TestFail.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\AOSModule_TestFail.hpp"
+				RelativePath=".\AOSModule_TestPass.hpp"
 				>
 			</File>
 			<File

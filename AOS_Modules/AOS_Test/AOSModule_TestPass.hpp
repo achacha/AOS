@@ -3,20 +3,20 @@ Written by Alex Chachanashvili
 
 $Id$
 */
-#ifndef INCLUDED__AOSModule_rss20_HPP__
-#define INCLUDED__AOSModule_rss20_HPP__
+#ifndef INCLUDED__AOSModule_TestPass_HPP__
+#define INCLUDED__AOSModule_TestPass_HPP__
 
-#include "apiAOS_Example.hpp"
+#include "apiAOS_Test.hpp"
 
-class AOS_EXAMPLE_API AOSModule_rss20 : public AOSModuleInterface
+class AOS_TEST_API AOSModule_TestPass : public AOSModuleInterface
 {
 public:
   //! Class name
   static const AString CLASS;
 
 public:
-  AOSModule_rss20(AOSServices&);
-  
+  AOSModule_TestPass(AOSServices&);
+
   virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   
   /*!
@@ -25,4 +25,4 @@ public:
   virtual const AString& getClass() const;
 };
 
-#endif //INCLUDED__AOSModule_rss20_HPP__
+#endif //INCLUDED__AOSModule_TestPass_HPP__

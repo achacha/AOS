@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_Test.hpp"
 #include "AOSModule_TestFail.hpp"
 
+const AString AOSModule_TestFail::CLASS("Test.fail");
+
 const AString& AOSModule_TestFail::getClass() const
 {
-  static const AString CLASS("TestFail");
   return CLASS;
 }
 

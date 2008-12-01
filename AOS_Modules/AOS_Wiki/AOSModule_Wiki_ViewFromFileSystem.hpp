@@ -14,6 +14,10 @@ View Wiki data at wikipath parameter and base file system path
 class AOS_WIKI_API AOSModule_Wiki_ViewFromFileSystem : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_Wiki_ViewFromFileSystem(AOSServices&);
   virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   

@@ -16,9 +16,10 @@ const AString AOSModule_DadaDataTemplate::S_DELIM_END("}",1);
 const AString AOSModule_DadaDataTemplate::S_DADA("dada",4);
 const AString AOSModule_DadaDataTemplate::S_LINE("line",4);
 
+const AString AOSModule_DadaDataTemplate::CLASS("Dada.template");
+
 const AString& AOSModule_DadaDataTemplate::getClass() const
 {
-  static const AString CLASS("Dada.template");
   return CLASS;
 }
 

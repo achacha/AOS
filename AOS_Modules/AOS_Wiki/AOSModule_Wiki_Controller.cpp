@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_Wiki.hpp"
 #include "AOSModule_Wiki_Controller.hpp"
 
+const AString AOSModule_Wiki_Controller::CLASS("Wiki.Controller");
+
 const AString& AOSModule_Wiki_Controller::getClass() const
 {
-  static const AString CLASS("Wiki.Controller");
   return CLASS;
 }
 

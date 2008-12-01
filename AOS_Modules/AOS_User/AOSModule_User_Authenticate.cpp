@@ -8,9 +8,10 @@ $Id$
 #include "AOSUser.hpp"
 #include "AOSContextUtils.hpp"
 
+const AString AOSModule_User_Authenticate::CLASS("User.Authenticate");
+
 const AString& AOSModule_User_Authenticate::getClass() const
 {
-  static const AString CLASS("User.Authenticate");
   return CLASS;
 }
 

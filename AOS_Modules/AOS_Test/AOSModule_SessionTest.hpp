@@ -11,6 +11,10 @@ $Id$
 class AOS_TEST_API AOSModule_SessionTest : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_SessionTest(AOSServices&);
 
   virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);

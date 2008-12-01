@@ -16,6 +16,10 @@ class AXmlElement;
 class AOS_DADADATA_API AOSModule_DadaDataTemplate : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_DadaDataTemplate(AOSServices&);
   
   virtual void init();

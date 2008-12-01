@@ -14,6 +14,10 @@ AuthenticateUser
 class AOS_USER_API AOSModule_User_LoginController : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_User_LoginController(AOSServices&);
   virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   

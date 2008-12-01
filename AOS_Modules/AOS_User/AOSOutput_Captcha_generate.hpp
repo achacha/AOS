@@ -12,6 +12,10 @@ $Id: AOSOutput_AOSOutput_captcha_generate.hpp 95 2008-06-09 21:27:46Z achacha $
 class AOS_USER_API AOSOutput_Captcha_generate : public AOSOutputGeneratorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSOutput_Captcha_generate(AOSServices&);
 
   /*!

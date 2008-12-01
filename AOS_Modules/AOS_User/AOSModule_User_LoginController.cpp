@@ -7,9 +7,10 @@ $Id$
 #include "AOSModule_User_LoginController.hpp"
 #include "AOSUser.hpp"
 
+const AString AOSModule_User_LoginController::CLASS("User.LoginController");
+
 const AString& AOSModule_User_LoginController::getClass() const
 {
-  static const AString CLASS("User.LoginController");
   return CLASS;
 }
 

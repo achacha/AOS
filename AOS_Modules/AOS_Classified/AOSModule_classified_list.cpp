@@ -9,9 +9,10 @@ $Id$
 #include "AResultSet.hpp"
 #include "ATextConverter.hpp"
 
+const AString AOSModule_classified_list::CLASS("Classified.list");
+
 const AString& AOSModule_classified_list::getClass() const
 {
-  static const AString CLASS("Classified.list");
   return CLASS;
 }
 

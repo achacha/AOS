@@ -12,6 +12,10 @@ $Id$
 class AOS_EXAMPLE_API AOSOutput_generate_image : public AOSOutputGeneratorInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSOutput_generate_image(AOSServices&);
 
   /*!

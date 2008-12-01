@@ -11,6 +11,10 @@ $Id$
 class AOS_BLOG_API AOSModule_BlogView : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_BlogView(AOSServices&);
   
   /*!

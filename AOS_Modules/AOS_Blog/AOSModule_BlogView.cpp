@@ -9,9 +9,10 @@ $Id$
 #include "AResultSet.hpp"
 #include "ATextConverter.hpp"
 
+const AString AOSModule_BlogView::CLASS("Blog.view");
+
 const AString& AOSModule_BlogView::getClass() const
 {
-  static const AString CLASS("Blog.view");
   return CLASS;
 }
 

@@ -11,6 +11,10 @@ $Id$
 class AOS_CLASSIFIED_API AOSModule_classified_list : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_classified_list(AOSServices&);
   
   virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);

@@ -7,9 +7,10 @@ $Id$
 #include "AOSModule_Wiki_ViewFromDatabase.hpp"
 #include "AResultSet.hpp"
 
+const AString AOSModule_Wiki_ViewFromDatabase::CLASS("Wiki.ViewFromDatabase");
+
 const AString& AOSModule_Wiki_ViewFromDatabase::getClass() const
 {
-  static const AString CLASS("Wiki.ViewFromDatabase");
   return CLASS;
 }
 

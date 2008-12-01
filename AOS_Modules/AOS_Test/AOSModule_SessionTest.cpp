@@ -10,9 +10,10 @@ const AString AOSModule_SessionTest::S_COUNT("count");
 const AString AOSModule_SessionTest::S_SESSIONCREATED("test/sessionCreated");
 const AString AOSModule_SessionTest::S_OUTPATH("test/count");
 
+const AString AOSModule_SessionTest::CLASS("Test.session");
+
 const AString& AOSModule_SessionTest::getClass() const
 {
-  static const AString CLASS("SessionTest");
   return CLASS;
 }
 

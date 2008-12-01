@@ -10,6 +10,15 @@ class AOS_SAMPLEPROJECTUPPERCASE_API AOSModule_SAMPLEMODULE : public AOSModuleIn
 {
 public:
   /*!
+  Class name
+  Used to access this instance of the module
+  Also used in registering it with administration
+  MUST BE unique across all modules, input processors, output generators and all internal classes (which start with AOS)
+  */
+  static const AString CLASS;
+
+public:
+  /*!
   ctor
   
   @param services AOSServices object stored as reference by base class

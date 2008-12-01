@@ -1,9 +1,10 @@
 #include "pchAOS_SAMPLEPROJECT.hpp"
 #include "AOSModule_SAMPLEMODULE.hpp"
 
+const AString AOSModule_SAMPLEMODULE::CLASS("SAMPLEMODULE");
+
 const AString& AOSModule_SAMPLEMODULE::getClass() const
 {
-  static const AString CLASS("SAMPLEMODULE");
   return CLASS;
 }
 

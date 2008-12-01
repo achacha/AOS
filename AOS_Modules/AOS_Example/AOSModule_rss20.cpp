@@ -6,9 +6,10 @@ $Id$
 #include "pchAOS_Example.hpp"
 #include "AOSModule_rss20.hpp"
 
+const AString AOSModule_rss20::CLASS("Example.rss20");
+
 const AString& AOSModule_rss20::getClass() const
 {
-  static const AString CLASS("Example.rss20");
   return CLASS;
 }
 

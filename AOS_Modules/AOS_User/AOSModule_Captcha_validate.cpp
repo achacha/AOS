@@ -6,9 +6,10 @@ $Id: AOSModule_rss20.cpp 89 2008-05-29 23:25:42Z achacha $
 #include "pchAOS_User.hpp"
 #include "AOSModule_Captcha_validate.hpp"
 
+const AString AOSModule_Captcha_validate::CLASS("Captcha.validate");
+
 const AString& AOSModule_Captcha_validate::getClass() const
 {
-  static const AString CLASS("Captcha.validate");
   return CLASS;
 }
 

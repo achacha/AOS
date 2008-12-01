@@ -9,9 +9,10 @@ $Id$
 #include "AResultSet.hpp"
 #include "ATextConverter.hpp"
 
+const AString AOSModule_classified_submit::CLASS("Classified.submit");
+
 const AString& AOSModule_classified_submit::getClass() const
 {
-  static const AString CLASS("Classified.submit");
   return CLASS;
 }
 

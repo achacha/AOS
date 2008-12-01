@@ -11,8 +11,12 @@ $Id$
 class AOS_TEST_API AOSModule_TestFail : public AOSModuleInterface
 {
 public:
+  //! Class name
+  static const AString CLASS;
+
+public:
   AOSModule_TestFail(AOSServices&);
-  \
+  
   virtual AOSContext::ReturnCode execute(AOSContext&, const AXmlElement&);
   
   /*!
