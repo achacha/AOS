@@ -136,3 +136,16 @@ const ABase *ABasePtrQueue::getTail() const
 {
   return mp_Tail;
 }
+
+void ABasePtrQueue::remove(ABase *p)
+{
+  p->unlink();
+  if (p == mp_Head)
+    mp_Head = mp_Head->pNext;
+
+  if (p == mp_Tail)
+    mp_Tail = mp_Tail->pPrev;
+
+  --m_Size;
+  AASSERT(this, m_Size >= 0);
+}

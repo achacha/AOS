@@ -42,6 +42,20 @@ ABase *ABase::getPrev() const
   return pPrev;
 }
 
+void ABase::unlink()
+{
+  if (pPrev)
+    pPrev->pNext = pNext;
+
+  if (pNext)
+  {
+    pNext->pPrev = pPrev;
+    pNext = NULL;
+  }
+
+  pPrev = NULL;
+}
+
 #ifdef DEBUG_TRACK_ABASE_MEMORY
 #define MAX_STACKDATA_BUFFER 2048
 #define MAX_STACKDATA_FILE_BUFFER 1024

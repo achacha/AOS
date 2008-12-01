@@ -115,6 +115,16 @@ public:
   const ABase *getTail() const;
 
   /*!
+  Removes pointer from container
+  Does not verify that it is actually part of this queue, if not part of this queue then size
+    will be inconsistent and size may go negative
+  Unlinks the ABase* and then makes sure it is not head or tail of this container
+
+  @param p ABase*
+  */
+  void remove(ABase *p);
+
+  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;

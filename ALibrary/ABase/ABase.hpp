@@ -36,27 +36,45 @@ public:
 
   /*!
   Set the next item in the chain
+  
   @param p ABase * or NULL if none
   */
   void setNext(ABase *p);
 
   /*!
   Set the previous item in the chain
+  
   @param p ABase * or NULL if none
   */
   void setPrev(ABase *p);
 
   /*!
   Get the next item in the chain
+  
   @return NULL if none
   */
   ABase *getNext() const;
 
   /*!
   Get the previous item in the chain
+  
   @return NULL if none
   */
   ABase *getPrev() const;
+
+  /*!
+  Unlink current item from a list
+  Assigns next of the previous to the next of this effectively removing it from a list
+
+  Effectively: 
+    this->getPrev().setNext(this->getNext());
+    this->getNext().setPrev(this->getPrev());
+  If this->getPrev() is NULL, then previous' next is set to NULL
+  If this->getNext() is NULL, then next's previous is set to NULL
+
+  This item is not unlinked from the linked list it was part of and previous and next are set to NULL
+  */
+  void unlink();
 
 /*!
 If DEBUG_TRACK_ABASE_MEMORY is defined all allocation/deallocation via new/new[]/delete/delete[] of ABase objects is traced to std::cout
