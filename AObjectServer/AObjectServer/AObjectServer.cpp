@@ -5,8 +5,10 @@ $Id$
 */
 #include "pchAObjectServer.hpp"
 
+#ifndef NDEBUG
 #include "MemLeakDetect.h"
 CMemLeakDetect memLeakDetect;
+#endif
 
 #include "AOS.hpp"
 #include "AOSAdmin.hpp"

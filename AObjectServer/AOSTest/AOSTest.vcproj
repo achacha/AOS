@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../include,../../AObjectServer/AOS_Base"
+				AdditionalIncludeDirectories="../../include,../../AObjectServer/AOS_Base,../../AObjectServer/AObjectServer"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -364,7 +364,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\tServices.cpp"
+				RelativePath="..\AObjectServer\dbgint.h"
+				>
+			</File>
+			<File
+				RelativePath="..\AObjectServer\MemLeakDetect.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\AObjectServer\MemLeakDetect.h"
+				>
+			</File>
+			<File
+				RelativePath=".\tAllocations.cpp"
 				>
 			</File>
 		</Filter>

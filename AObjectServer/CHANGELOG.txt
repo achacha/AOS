@@ -17,6 +17,7 @@ Change Log
 - AXmlDocument::clearAll removed, AXmlDocument::clear now handles all cases, <?xml> is retained in all clears
 - Improved session data handling
 - Changed output controller Template to allow concatination of inline and file-based templates conditionally
+- Upgraded to Lua 5.1.4
 
 
 1.5.0.3:

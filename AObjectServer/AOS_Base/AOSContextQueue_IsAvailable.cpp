@@ -135,6 +135,7 @@ AOSContextQueue_IsAvailable::QueueWithThread::QueueWithThread() :
 
 AOSContextQueue_IsAvailable::QueueWithThread::~QueueWithThread()
 {
+  queue.clear(true);
 }
 
 void AOSContextQueue_IsAvailable::start()

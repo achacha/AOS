@@ -373,10 +373,10 @@ AOSContextManager::~AOSContextManager()
 {
   try
   {
-    for (CONTEXT_INUSE::iterator itU = m_InUse.begin(); itU != m_InUse.end(); ++itU)
-    {
-      delete *itU;
-    }
+    //for (CONTEXT_INUSE::iterator itU = m_InUse.begin(); itU != m_InUse.end(); ++itU)
+    //{
+    //  delete *itU;
+    //}
 
     for (QUEUES::iterator itQ = m_Queues.begin(); itQ != m_Queues.end(); ++itQ)
     {
@@ -384,6 +384,7 @@ AOSContextManager::~AOSContextManager()
     }
     
     m_FreeStore.clear(true);
+    m_History.clear(true);
   }
   catch(...) {}
 }

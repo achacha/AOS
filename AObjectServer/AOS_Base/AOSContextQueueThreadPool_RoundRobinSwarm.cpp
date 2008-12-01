@@ -95,13 +95,8 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
 {
   //a_Add context to the next queue
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
-  ++m_AddCounters.at(currentQueue);
-  m_Queues.at(currentQueue)->push(pContext);
-
-  if (pContext && pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
+  if (pContext && pContext->useEventVisitor().isLoggingInfo())
   {
-    //  std::cout << typeid(*this).name() << ":" << getClass() <<  "::add(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
-  
     AString str;
     str.append(getClass());
     str.append("::add[",6);
@@ -110,16 +105,18 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
     str.append(AString::fromPointer(pContext));
     pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
   }
+
+  ++m_AddCounters.at(currentQueue);
+  m_Queues.at(currentQueue)->push(pContext);
 }                                                                                                                                                                                                 
 
 AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
 {
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
   AOSContext *pContext = (AOSContext *)m_Queues.at(currentQueue)->pop();
-  if (pContext && pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
-  {
-    //    std::cout << typeid(*this).name() << ":" << getClass() <<  "::next(" << AString::fromPointer(pContext) << "): " << pContext->useRequestParameterPairs() << " (" << pContext->useRequestUrl() << ")" << std::endl;
 
+  if (pContext && pContext->useEventVisitor().isLoggingInfo())
+  {
     AString str;
     str.append(getClass());
     str.append("::_nextContext[",15);
@@ -128,5 +125,6 @@ AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
     str.append(AString::fromPointer(pContext));
     pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
   }
+
   return pContext;
 }
