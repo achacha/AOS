@@ -75,12 +75,8 @@ AXmlDocument::~AXmlDocument()
 {
   try
   {
-    LIST_NODEPTR::iterator it = m_Instructions.begin();
-    while (it != m_Instructions.end())
-    {
+    for(LIST_NODEPTR::iterator it = m_Instructions.begin(); it != m_Instructions.end(); ++it)
       delete (*it);
-      ++it;
-    }
   }
   catch(...) {}
 }

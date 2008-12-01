@@ -116,7 +116,7 @@ AEventVisitor::~AEventVisitor()
   try
   {
     delete mp_CurrentEvent;
-    m_Events.clear();
+    m_Events.clear(true);
   }
   catch(...) {}
 }
