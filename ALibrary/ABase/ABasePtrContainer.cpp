@@ -75,8 +75,9 @@ void ABasePtrContainer::insert(
   }
   else
   {
+    AASSERT(this, m_BasePtrs.find(name) == m_BasePtrs.end());
     ITEM *pitem = new ITEM(pBase, ownership);
-    m_BasePtrs[name] = pitem;  //a_Insert new item
+    m_BasePtrs.insert(HOLDER::value_type(name, pitem));  //a_Insert new item
   }
 }
 
