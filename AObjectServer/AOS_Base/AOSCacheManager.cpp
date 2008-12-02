@@ -372,7 +372,7 @@ ACacheInterface::STATUS AOSCacheManager::getTemplate(AOSContext& context, const 
     if (AFileSystem::exists(filename))
     {
       //a_File exists, parse and return
-      pTemplate.reset(m_Services.createTemplate());
+      pTemplate.reset(m_Services.createTemplate(), true);
       AFile_Physical file(filename);
       file.open();
       pTemplate->fromAFile(file);

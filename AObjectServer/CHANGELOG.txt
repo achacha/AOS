@@ -18,7 +18,7 @@ Change Log
 - Improved session data handling
 - Changed output controller Template to allow concatination of inline and file-based templates conditionally
 - Upgraded to Lua 5.1.4
-
+- Fixed the way GdLib image was being deallocated to correctly release all memory
 
 1.5.0.3:
 - Cleaned up history clearing via admin

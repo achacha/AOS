@@ -95,7 +95,7 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
 {
   //a_Add context to the next queue
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
-  if (pContext && pContext->useEventVisitor().isLoggingInfo())
+  if (pContext && pContext->useEventVisitor().isLoggingDebug())
   {
     AString str;
     str.append(getClass());
@@ -103,7 +103,7 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
     str.append(AString::fromInt(currentQueue));
     str.append("]=",2);
     str.append(AString::fromPointer(pContext));
-    pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
+    pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_DEBUG);
   }
 
   ++m_AddCounters.at(currentQueue);
@@ -115,7 +115,7 @@ AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
   AOSContext *pContext = (AOSContext *)m_Queues.at(currentQueue)->pop();
 
-  if (pContext && pContext->useEventVisitor().isLoggingInfo())
+  if (pContext && pContext->useEventVisitor().isLoggingDebug())
   {
     AString str;
     str.append(getClass());
@@ -123,7 +123,7 @@ AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
     str.append(AString::fromInt(currentQueue));
     str.append("]=",2);
     str.append(AString::fromPointer(pContext));
-    pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_INFO);
+    pContext->useEventVisitor().startEvent(str, AEventVisitor::EL_DEBUG);
   }
 
   return pContext;

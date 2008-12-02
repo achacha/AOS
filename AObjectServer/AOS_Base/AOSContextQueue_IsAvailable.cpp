@@ -61,6 +61,7 @@ AOSContextQueue_IsAvailable::~AOSContextQueue_IsAvailable()
     stop();
     for (size_t i=0; i<m_Queues.size(); ++i)
     {
+      m_Queues.at(i)->queue.clear(true);
       delete m_Queues.at(i);
     }
   }
@@ -177,12 +178,12 @@ void AOSContextQueue_IsAvailable::stop()
         }
       }
     }
-    if (i == m_Queues.size())
-    {
-      m_Queues.clear();
-      return;
-    }
 
+    // Everything stopped
+    if (i == m_Queues.size())
+      return;
+
+    // Time to terminate the threads
     if (tries == 0)
       break;
   }
@@ -405,10 +406,7 @@ void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
     
     //a_Start timeout timer
     pContext->useTimeoutTimer().start();
-    m_Queues.at(currentQueue)->queue.push(pContext);
-    ++m_Queues.at(currentQueue)->count;
-    
-    if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
+    if (pContext->useEventVisitor().isLoggingDebug())
     {
       ARope rope(getClass());
       rope.append("::add[",6);
@@ -417,6 +415,9 @@ void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
       rope.append(AString::fromPointer(pContext));
       pContext->useEventVisitor().addEvent(rope, AEventVisitor::EL_DEBUG);
     }
+
+    m_Queues.at(currentQueue)->queue.push(pContext);
+    ++m_Queues.at(currentQueue)->count;
   }
 }
 

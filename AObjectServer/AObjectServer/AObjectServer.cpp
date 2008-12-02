@@ -5,7 +5,7 @@ $Id$
 */
 #include "pchAObjectServer.hpp"
 
-#ifndef NDEBUG
+#if !defined(NDEBUG) && defined(WIN32)
 #include "MemLeakDetect.h"
 CMemLeakDetect memLeakDetect;
 #endif
@@ -22,7 +22,9 @@ CMemLeakDetect memLeakDetect;
 #include "AOSContextQueue_Executor.hpp"
 #include "AOSContextQueue_ErrorExecutor.hpp"
 
-#ifdef __WINDOWS__
+// Enable this to enable memory allocation checking and difference report for debug build
+//#define __ENABLE_MEMORY_LEAK_ANALYSIS__
+#if defined(__WINDOWS__) && defined(__ENABLE_MEMORY_LEAK_ANALYSIS__)
 #include "dbghelp.h"
 #include "dbgeng.h"
 #pragma comment(lib, "dbghelp")
@@ -50,9 +52,9 @@ int main(int argc, char **argv)
 {
   //a_AString available for errors so that allocation is not done during exception (in case we ran out of memory, etc)
   AString str(2048, 512);
+#if defined(__WINDOWS__) && defined(__ENABLE_MEMORY_LEAK_ANALYSIS__)
   DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(false);
 
-#ifdef __WINDOWS__
   LPAPI_VERSION lpVersion = ::ImagehlpApiVersion();
   if (lpVersion->MajorVersion < 4)
   {
@@ -220,7 +222,9 @@ int main(int argc, char **argv)
       //
       //a_Server is running, wait for exit request
       //
+#if defined(__WINDOWS__) && defined(__ENABLE_MEMORY_LEAK_ANALYSIS__)
       DEBUG_MEMORY_SET_START_CHECKPOINT();
+#endif
       do
       {
         //a_This is the watcher for the main loop, when admin is not running the server has stopped
@@ -291,7 +295,9 @@ int main(int argc, char **argv)
     return -1;
   }
 
+#if defined(__WINDOWS__) && defined(__ENABLE_MEMORY_LEAK_ANALYSIS__)
   DEBUG_MEMORY_LEAK_ANALYSIS_END();
-  
+#endif
+
   return 0;
 }
