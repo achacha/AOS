@@ -271,7 +271,7 @@ class Context:
     print(" -win64             - Create windows 64-bit distro");
     print(" -linux32           - Create linux 32-bit distro");
     print(" -linux64           - Create linux 64-bit distro");
-    print(" -p <target path>   - Will create 'ALibrary/include' directory and gather all pertinent headers");
+    print(" -p <target path>   - Sets new target directory and creates if needed");
     print(" -binary            - Sync release binaries only");
     print(" -dryrun            - Sync as dry run");
     print(" -clean             - Clean first");
