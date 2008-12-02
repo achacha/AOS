@@ -22,7 +22,7 @@ AGdCanvas::AGdCanvas(int sx, int sy)
 
 AGdCanvas::~AGdCanvas()
 {
-  gdFree(m_GdImagePtr);
+  gdImageDestroy(m_GdImagePtr);
 }
 
 gdImagePtr& AGdCanvas::useGdImagePtr()
