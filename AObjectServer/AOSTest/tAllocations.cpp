@@ -1,6 +1,6 @@
 
 #include "AOS.hpp"
-#include "AGdCanvas.hpp"
+#include "AXmlDocument.hpp"
 
 #ifndef NDEBUG
 #include "MemLeakDetect.h"
@@ -9,8 +9,10 @@ CMemLeakDetect memLeakDetect;
 
 int main()
 {
-  AGdCanvas canvas(100, 100);
-  canvas.setPixel(50, 50, gdTrueColor(200,100,250));
+  AXmlDocument doc;
+  AXmlElement &e0 = doc.useRoot().overwriteElement("foo/bar");
+  AXmlElement &e1 = doc.useRoot().overwriteElement("foo/bar");
+  e1.setData(ASWNL("This is a test"));
 
   return 0;
 }

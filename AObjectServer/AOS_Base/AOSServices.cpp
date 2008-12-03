@@ -357,7 +357,7 @@ ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
   pTemplate->addHandler(new ATemplateNodeHandler_RESOURCE());
 
   pTemplate.setOwnership(false);
-  return pTemplate;
+  return pTemplate.use();
 }
 
 AOSInputExecutor& AOSServices::useInputExecutor() 

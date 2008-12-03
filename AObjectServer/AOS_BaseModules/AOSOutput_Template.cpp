@@ -57,9 +57,6 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
     m_Services.useConfiguration().setMimeTypeFromExt(context.useRequestUrl().getExtension(), context);
   }
   
-  // Create a new template
-  AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate(), true);
-
   // Iterate parameters and build the template
   const AXmlElement::CONTAINER& container = context.getOutputParams().getContentContainer();
   for (AXmlElement::CONTAINER::const_iterator cit = container.begin(); cit != container.end(); ++cit)
@@ -101,6 +98,9 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
     AString str(1024, 512);
     if ((*cit)->getName().equals(AOS_BaseModules_Constants::TEMPLATE))
     {
+      // Create a new template
+      AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate(), true);
+
       // Add inline template
       str.clear();
       (*cit)->emitContent(str);
