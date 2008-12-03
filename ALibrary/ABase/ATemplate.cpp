@@ -195,11 +195,9 @@ void ATemplate::process(
     context.useEventVisitor().startEvent(ASW("ATemplate::process:loop",23), AEventVisitor::EL_DEBUG);
   }
 
-  NODES::const_iterator cit = m_Nodes.begin();
-  while (cit != m_Nodes.end())
+  for (NODES::const_iterator cit = m_Nodes.begin(); cit != m_Nodes.end(); ++cit)
   {
     (*cit)->process(context, output);
-    ++cit;
   }
 
   if (hibernateHandlersWhenDone)
