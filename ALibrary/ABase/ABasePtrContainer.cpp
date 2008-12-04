@@ -14,17 +14,11 @@ void ABasePtrContainer::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
   ADebugDumpable::indent(os, indent+1) << "m_BasePtrs={" << std::endl;
-  HOLDER::const_iterator cit = m_BasePtrs.begin();
-  while (cit != m_BasePtrs.end())
+  for(HOLDER::const_iterator cit = m_BasePtrs.begin(); cit != m_BasePtrs.end(); ++cit)
   {
-    const ABase *p = (*cit).second->get();
-    ADebugDumpable::indent(os, indent+2) << 
-      (*cit).first << 
-      "=[" << 
-      typeid(*p).name() << 
-      "]:";
-    os << std::endl;
-    ++cit;
+    ADebugDumpable::indent(os, indent+2) << (*cit).first << "={" << std::endl;
+    (*cit).second->debugDump(os, indent+3);
+    ADebugDumpable::indent(os, indent+2) << "}" << std::endl;
   }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
 
@@ -75,7 +69,6 @@ void ABasePtrContainer::insert(
   }
   else
   {
-    AASSERT(this, m_BasePtrs.find(name) == m_BasePtrs.end());
     ITEM *pitem = new ITEM(pBase, ownership);
     m_BasePtrs.insert(HOLDER::value_type(name, pitem));  //a_Insert new item
   }
@@ -118,13 +111,18 @@ void ABasePtrContainer::remove(const AString& name)
 {
   HOLDER::iterator it = m_BasePtrs.find(name);
   if (it != m_BasePtrs.end())
-    m_BasePtrs.erase(it);  //a_Remove from object base
+  {
+    delete *it->second;    //a_Delete holder object first
+    m_BasePtrs.erase(it);  //a_Remove holder from collection
+  }
   else
     ATHROW_EX(this, AException::NotFound, name);
 }
 
 void ABasePtrContainer::clear()
 {
+  for (HOLDER::iterator it = m_BasePtrs.begin(); it != m_BasePtrs.end(); ++it)
+    delete it->second;
   m_BasePtrs.clear();
 }
 

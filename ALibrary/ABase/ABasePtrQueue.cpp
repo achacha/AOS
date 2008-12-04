@@ -71,13 +71,13 @@ void ABasePtrQueue::push(ABase *p)
   }
   else
   {
+    AASSERT(this, 0 == m_Size);
+    ++m_Size;
+
     p->pNext = NULL;
     p->pPrev = NULL;
     mp_Tail = p;
     mp_Head = p;
-
-    AASSERT(this, 0 == m_Size);
-    ++m_Size;
   }
 }
 
@@ -139,6 +139,7 @@ const ABase *ABasePtrQueue::getTail() const
 
 void ABasePtrQueue::remove(ABase *p)
 {
+  ALock lock(mp_Sync);
   p->unlink();
   if (p == mp_Head)
     mp_Head = mp_Head->pNext;
