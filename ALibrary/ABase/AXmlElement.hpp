@@ -122,7 +122,7 @@ public:
   @return true if found and removed
   */
   bool remove(const AString& path);
-
+  
   /*!
   Checks if this element contains child elements
 
@@ -566,10 +566,16 @@ public:
   virtual void emitPath(AOutputBuffer& target) const;
 
   /*!
-  Clear the object and release sub-elements
+  Clear the content and attributes
+  Detaches from parent
   NOTE: Does NOT clear the name of the object
   */
   virtual void clear();
+
+  /*!
+  Clears the content only
+  */
+  void clearContent();
 
   /*!
   Content

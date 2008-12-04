@@ -86,13 +86,7 @@ AXmlElement::~AXmlElement()
 
 void AXmlElement::clear()
 {
-  CONTAINER::iterator it = m_Content.begin();
-  while (it != m_Content.end())
-  {
-    delete (*it);
-    ++it;
-  }
-  m_Content.clear();
+  clearContent();
   m_Attributes.clear();
   mp_Parent = NULL;
 }
@@ -825,9 +819,16 @@ void AXmlElement::_addData(
   
   //a_Overwrite clears existing content
   if (overwrite)
-    m_Content.clear();
+    clearContent();
 
   m_Content.push_back(p);
+}
+
+void AXmlElement::clearContent()
+{
+  for (CONTAINER::iterator it = m_Content.begin(); it != m_Content.end(); ++it)
+    delete *it;
+  m_Content.clear();
 }
 
 AXmlElement& AXmlElement::addAttribute(const AString& name, const double value)
