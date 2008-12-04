@@ -5,7 +5,12 @@ $Id$
 */
 #include "pchAObjectServer.hpp"
 
-#if !defined(NDEBUG) && defined(WIN32)
+// This memoy leak detector is pretty fast but only works in Windows 32-bit mode
+// Should be enabled to check for leaks
+// After using the code, invoke a shutdown from admin console and check debug output window for any leaks
+// Ignore the 2 leaks in OpenSSL, they are process lifetime leaks and I have not found an API call to clean them up yet
+#define __ENABLE_MEMLEAK_DETECT__
+#if !defined(NDEBUG) && defined(WIN32) && defined(__ENABLE_MEMLEAK_DETECT__)
 #include "MemLeakDetect.h"
 CMemLeakDetect memLeakDetect;
 #endif
@@ -22,9 +27,8 @@ CMemLeakDetect memLeakDetect;
 #include "AOSContextQueue_Executor.hpp"
 #include "AOSContextQueue_ErrorExecutor.hpp"
 
-// Enable this to enable memory allocation checking and difference report for debug build
-//#define __ENABLE_MEMORY_LEAK_ANALYSIS__
-#if defined(__WINDOWS__) && defined(__ENABLE_MEMORY_LEAK_ANALYSIS__)
+// Internal heavy-duty leak/error detector
+#if defined(__WINDOWS__) && defined(WINDOWS_CRTDBG_ENABLED)
 #include "dbghelp.h"
 #include "dbgeng.h"
 #pragma comment(lib, "dbghelp")
@@ -52,7 +56,7 @@ int main(int argc, char **argv)
 {
   //a_AString available for errors so that allocation is not done during exception (in case we ran out of memory, etc)
   AString str(2048, 512);
-#if defined(__WINDOWS__) && defined(__ENABLE_MEMORY_LEAK_ANALYSIS__)
+#if defined(__WINDOWS__) && defined(WINDOWS_CRTDBG_ENABLED)
   DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(false);
 
   LPAPI_VERSION lpVersion = ::ImagehlpApiVersion();
@@ -222,7 +226,7 @@ int main(int argc, char **argv)
       //
       //a_Server is running, wait for exit request
       //
-#if defined(__WINDOWS__) && defined(__ENABLE_MEMORY_LEAK_ANALYSIS__)
+#if defined(__WINDOWS__) && defined(WINDOWS_CRTDBG_ENABLED)
       DEBUG_MEMORY_SET_START_CHECKPOINT();
 #endif
       do
@@ -295,7 +299,7 @@ int main(int argc, char **argv)
     return -1;
   }
 
-#if defined(__WINDOWS__) && defined(__ENABLE_MEMORY_LEAK_ANALYSIS__)
+#if defined(__WINDOWS__) && defined(WINDOWS_CRTDBG_ENABLED)
   DEBUG_MEMORY_LEAK_ANALYSIS_END();
 #endif
 

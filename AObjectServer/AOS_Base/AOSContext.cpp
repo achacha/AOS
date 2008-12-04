@@ -187,6 +187,7 @@ void AOSContext::reset(AFile_Socket *pFile)
   mp_Controller = NULL;
   mp_DirConfig = NULL;
 
+  m_ContextObjects.clear();
   m_ContextFlags.clear();
 
   if (mp_RequestFile && m_EventVisitor.isLoggingDebug())
@@ -1704,6 +1705,7 @@ ALuaTemplateContext& AOSContext::useLuaTemplateContext()
     mp_LuaTemplateContext->addUserDefinedLibrary(luaopen_aos);  //a_Add AOS function library loader
 
     //a_Reference self from inside the objects
+    AASSERT(this, NULL == mp_LuaTemplateContext->useObjects().get(OBJECTNAME));
     mp_LuaTemplateContext->useObjects().insert(OBJECTNAME, this, false);
   }
   return *mp_LuaTemplateContext;
