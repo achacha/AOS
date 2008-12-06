@@ -252,10 +252,15 @@ int ut_AString_Utility()
   int iRet = 0x0;
 
   testBasics(iRet);
+  NEWLINE_UNIT_TEST();
   testConversion(iRet);
+  NEWLINE_UNIT_TEST();
   testTrim(iRet);
+  NEWLINE_UNIT_TEST();
   testSplit(iRet);
+  NEWLINE_UNIT_TEST();
   testWrap(iRet);
+  NEWLINE_UNIT_TEST();
   testJustify(iRet);
 
   return iRet;

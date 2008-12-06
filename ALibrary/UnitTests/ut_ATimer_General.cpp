@@ -17,6 +17,7 @@ int ut_ATimer_General()
 
   int iRet = 0x0;
 
+#pragma message("ut_ATimer_General needs conversion to new macros")
   //a_Creation
   ATimer timer;
   if (timer.getInterval() != 0)

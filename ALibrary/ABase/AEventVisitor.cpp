@@ -172,7 +172,7 @@ void AEventVisitor::startEvent(
     mp_CurrentEvent->m_interval = m_stateTimer.getInterval();
 
     //a_Push current event into event list
-    m_Events.push(mp_CurrentEvent);
+    m_Events.pushBack(mp_CurrentEvent);
   }
 
   //a_New event
@@ -200,7 +200,7 @@ void AEventVisitor::endEvent()
   if (mp_CurrentEvent)
   {
     mp_CurrentEvent->m_interval = m_stateTimer.getInterval();
-    m_Events.push(mp_CurrentEvent);
+    m_Events.pushBack(mp_CurrentEvent);
   }
 
   //a_New event

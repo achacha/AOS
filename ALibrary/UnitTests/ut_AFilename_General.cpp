@@ -187,9 +187,13 @@ int ut_AFilename_General()
   int iRet = 0x0;
 
   testGeneric(iRet);
+  NEWLINE_UNIT_TEST();
   testCompare(iRet);
+  NEWLINE_UNIT_TEST();
   testValid(iRet);
+  NEWLINE_UNIT_TEST();
   testManipulate(iRet);
+  NEWLINE_UNIT_TEST();
   testCompact(iRet);
 
   return iRet;

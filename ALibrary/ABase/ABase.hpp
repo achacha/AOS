@@ -53,14 +53,28 @@ public:
   
   @return NULL if none
   */
-  ABase *getNext() const;
+  const ABase *getNext() const;
 
   /*!
   Get the previous item in the chain
   
   @return NULL if none
   */
-  ABase *getPrev() const;
+  const ABase *getPrev() const;
+
+  /*!
+  Use the next item in the chain
+  
+  @return NULL if none
+  */
+  ABase *useNext();
+
+  /*!
+  Use the previous item in the chain
+  
+  @return NULL if none
+  */
+  ABase *usePrev();
 
   /*!
   Unlink current item from a list
@@ -73,8 +87,10 @@ public:
   If this->getNext() is NULL, then next's previous is set to NULL
 
   This item is not unlinked from the linked list it was part of and previous and next are set to NULL
+
+  @return this for convenience
   */
-  void unlink();
+  ABase *unlink();
 
 /*!
 If DEBUG_TRACK_ABASE_MEMORY is defined all allocation/deallocation via new/new[]/delete/delete[] of ABase objects is traced to std::cout

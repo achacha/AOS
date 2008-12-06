@@ -652,28 +652,29 @@ int ut_ANumber_General(void)
 //a_Assignment
 //////////////////////////////////////////////////
   _utTestSetNumber(iRet);
+  NEWLINE_UNIT_TEST();
 
 //a_Operator tests
 //////////////////////////////////////////////////////////
   _testUnaryLinearOperators(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   _testUnaryMultiplicativeOperators(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   _testDivision(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   _testUnaryNonLinearOperators(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   _testBinaryOperators(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   _testComparison(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   _testTests(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
 
 //a_Casting/conversion tests
 ///////////////////////////////////////////////////////////
   _testRounding(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   _testPrecision(iRet);
 
   return iRet;

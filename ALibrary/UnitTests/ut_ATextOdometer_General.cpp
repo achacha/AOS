@@ -10,6 +10,8 @@ int ut_ATextOdometer_General()
 {
   std::cerr << "ut_ATextOdometer_General" << std::endl;
 
+#pragma message("ut_ATextOdometer_General needs to use new unit test macros")
+
   int iRet = 0x0;
 
   ATextOdometer todo(2);

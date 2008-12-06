@@ -32,17 +32,27 @@ void ABase::setPrev(ABase *p)
   pPrev = p;
 }
 
-ABase *ABase::getNext() const
+const ABase *ABase::getNext() const
 {
   return pNext;
 }
 
-ABase *ABase::getPrev() const
+const ABase *ABase::getPrev() const
 {
   return pPrev;
 }
 
-void ABase::unlink()
+ABase *ABase::useNext()
+{
+  return pNext;
+}
+
+ABase *ABase::usePrev()
+{
+  return pPrev;
+}
+
+ABase *ABase::unlink()
 {
   if (pPrev)
     pPrev->pNext = pNext;
@@ -54,6 +64,8 @@ void ABase::unlink()
   }
 
   pPrev = NULL;
+
+  return this;
 }
 
 #ifdef DEBUG_TRACK_ABASE_MEMORY

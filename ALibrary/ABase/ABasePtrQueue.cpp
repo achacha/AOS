@@ -34,43 +34,155 @@ ABasePtrQueue::~ABasePtrQueue()
   catch(...) {}
 }
 
-ABase *ABasePtrQueue::pop()
+const ABase *ABasePtrQueue::getAt(size_t index) const
 {
-  ABase *ret = NULL;
   ALock lock(mp_Sync);
-  if (mp_Head)
-  {
-    //a_Queue not empty
-    ret = mp_Head;
-    if (!(mp_Head = mp_Head->pNext))
-      mp_Tail = NULL;    //a_Queue was emptied
-    else
-      mp_Head->pPrev = NULL;
-
-    AASSERT(this, m_Size>0);
-    --m_Size;
-  }
-  return ret;
+  return _getAt(index);
 }
 
-void ABasePtrQueue::push(ABase *p)
+ABase *ABasePtrQueue::useAt(size_t index)
+{
+  ALock lock(mp_Sync);
+  return _getAt(index);
+}
+
+ABase *ABasePtrQueue::_getAt(size_t index) const
+{
+  size_t pos = 0;
+  ABase *p = NULL;
+  if (index > (m_Size >> 1))
+  {
+    // Go backwards
+    p = mp_Tail;
+    index = m_Size - index - 1;
+    while(p && pos < index)
+    {
+      p = p->pPrev;
+      ++pos;
+    }
+  }
+  else
+  {
+    // Go forwards
+    p = mp_Head;
+    while(p && pos < index)
+    {
+      p = p->pNext;
+      ++pos;
+    }
+  }
+  return p;
+}
+
+ABase *ABasePtrQueue::popFront(size_t index)
+{
+  ALock lock(mp_Sync);
+
+  //a_Out of bounds
+  if (index >= m_Size)
+    return NULL;
+
+  // Pop from offset
+  ABase *p = _getAt(index);
+  if (p)
+    return _remove(p);
+  else
+    return p;
+}
+
+ABase *ABasePtrQueue::popBack(size_t index)
+{
+  ALock lock(mp_Sync);
+
+  //a_Out of bounds
+  if (index >= m_Size)
+    return NULL;
+
+  // Pop from offset
+  ABase *p = _getAt(m_Size - index - 1);
+  if (p)
+    return _remove(p);
+  else
+    return p;
+}
+
+ABase *ABasePtrQueue::_remove(ABase *p)
+{
+  AASSERT(this, p);
+  if (p->pNext)
+  {
+    if (p->pPrev)
+    {
+      // Has prev and next
+      p->pNext->pPrev = p->pPrev;
+      p->pPrev->pNext = p->pNext;
+      p->pNext = NULL;
+      p->pPrev = NULL;
+    }
+    else
+    {
+      // Has next and no prev (first in list)
+      AASSERT(this, p == mp_Head);
+      mp_Head = p->pNext;
+      mp_Head->pPrev = NULL;
+      p->pNext = NULL;
+    }
+  }
+  else
+  {
+    // This is the last one
+    if (p->pPrev)
+    {
+      // Has prev and no next
+      AASSERT(this, p == mp_Tail);
+      mp_Tail = p->pPrev;
+      mp_Tail->pNext = NULL;
+      p->pPrev = NULL;
+    }
+    else
+    {
+      // no next and no prev
+      AASSERT(this, mp_Head == mp_Tail);
+      mp_Head = NULL;
+      mp_Tail = NULL;
+    }
+  }
+
+  AASSERT(this, m_Size > 0);
+  --m_Size;
+  
+  return p;
+}
+
+ABase *ABasePtrQueue::remove(ABase *p)
+{
+  ALock lock(mp_Sync);
+
+  AASSERT(this, findFromFront(p) >= 0);
+  
+  return _remove(p);
+}
+
+ABase *ABasePtrQueue::pushFront(ABase *p)
 {
   AASSERT(this, m_Size<DEBUG_MAXSIZE_ABasePtrQueue);  //a_Debug only limit
   
   ALock lock(mp_Sync);
-  if (mp_Tail)
+  if (mp_Head)
   {
     //a_Queue not empty, append item
-    mp_Tail->pNext = p;
-    p->pPrev = mp_Tail;
-    mp_Tail = p;
-    mp_Tail->pNext = NULL;
+    p->pNext = mp_Head;
+    mp_Head->pPrev = p;
+    mp_Head = p;
+    mp_Head->pPrev = NULL;
 
     AASSERT(this, m_Size>0);
     ++m_Size;
   }
   else
   {
+    //a_Queue empty
+    AASSERT(this, !mp_Tail);
     AASSERT(this, 0 == m_Size);
     ++m_Size;
 
@@ -79,6 +191,38 @@ void ABasePtrQueue::push(ABase *p)
     mp_Tail = p;
     mp_Head = p;
   }
+  return p;
+}
+
+ABase *ABasePtrQueue::pushBack(ABase *p)
+{
+  AASSERT(this, m_Size<DEBUG_MAXSIZE_ABasePtrQueue);  //a_Debug only limit
+  
+  ALock lock(mp_Sync);
+  if (mp_Tail)
+  {
+    //a_Queue not empty, append item
+    p->pPrev = mp_Tail;
+    mp_Tail->pNext = p;
+    mp_Tail = p;
+    mp_Tail->pNext = NULL;
+
+    AASSERT(this, m_Size>0);
+    ++m_Size;
+  }
+  else
+  {
+    //a_Queue empty
+    AASSERT(this, !mp_Head);
+    AASSERT(this, 0 == m_Size);
+    ++m_Size;
+
+    p->pNext = NULL;
+    p->pPrev = NULL;
+    mp_Tail = p;
+    mp_Head = p;
+  }
+  return p;
 }
 
 void ABasePtrQueue::clear(bool deleteContent)
@@ -137,16 +281,38 @@ const ABase *ABasePtrQueue::getTail() const
   return mp_Tail;
 }
 
-void ABasePtrQueue::remove(ABase *p)
+size_t ABasePtrQueue::findFromFront(ABase *p)
 {
+  AASSERT(this, p);
+
   ALock lock(mp_Sync);
-  p->unlink();
-  if (p == mp_Head)
-    mp_Head = mp_Head->pNext;
+  size_t pos = 0;
+  ABase *pX = mp_Head;
+  while (pX)
+  {
+    if (pX == p)
+      return pos;
 
-  if (p == mp_Tail)
-    mp_Tail = mp_Tail->pPrev;
+    pX = pX->pNext;
+    ++pos;
+  }
+  return AConstant::npos;
+}
 
-  --m_Size;
-  AASSERT(this, m_Size >= 0);
+size_t ABasePtrQueue::findFromBack(ABase *p)
+{
+  AASSERT(this, p);
+
+  ALock lock(mp_Sync);
+  size_t pos = 0;
+  ABase *pX = mp_Tail;
+  while (pX)
+  {
+    if (pX == p)
+      return pos;
+
+    pX = pX->pPrev;
+    ++pos;
+  }
+  return AConstant::npos;
 }

@@ -42,6 +42,13 @@ public:
   virtual ~AThreadPool();
 
   /*!
+  Waits until monitor thread exits
+
+  @param sleepTime applicable to windows to sleep between polling if the thread is still alive
+  */
+  void waitForThreadsToExit(u4 sleepTime = 200);
+
+  /*!
   Set total number of threads to create after start() is called
   After this # of threads is created over time the pool stops creating new threads
   This is an iteration count that is independent of the thread count that run simultaneously
@@ -54,6 +61,8 @@ public:
 
   /*!
   Get total threads left to create
+
+  @return total threads created
   */
   size_t getTotalThreadCreationCount() const;
 
@@ -91,43 +100,85 @@ public:
   How many threads to keep active
   Will create new threads as need
   If new count is less than existing threads will be signaled to stop and if they don't stop in time they will be terminated
+  
+  @param count of threads to keep active
   */
-  void setThreadCount(size_t);
+  void setThreadCount(size_t count);
   
   /*!
   Current desired thread count
   This is the thread count to maintain not how many are active or running
+  
+  @return desired active thread count
   */
   size_t getThreadCount() const;
   
   /*
   Number of active threads (may or may not be running)
+
+  @return current actual active thread count
   */
   size_t getActiveThreadCount();
 
   /*!
   Number of the active threads that are flagged as also still running
+  
+  @return current actual active thread count also flagged as running
   */
   size_t getRunningThreadCount();
 
   /*!
-  How long the monitor sleeps between monitoring cycles
+  Set how long the monitor sleeps between monitoring cycles
+
+  @return sleep time in milliseconds
   */
   u4 getMonitorCycleSleep() const;    
+
+  /*!
+  Set how long the monitor sleeps between monitoring cycles
+
+  @param sleeptime in milliseconds
+  */
   void setMonitorCycleSleep(u4 sleeptime);
 
   /*!
-  AThread this pointer and parameter for getThis() and getParameter()
-  All newly created threads get these values, does not affect already running threads
+  AThread this pointer accessed with getThis()
+  All newly created threads get the value, does not affect already running threads
   */
   void setThis(ABase *);
+
+  /*!
+  AThread parameter accessed with getParameter()
+  All newly created threads get the value, does not affect already running threads
+  */
   void setParameter(ABase *);
 
   /*!
-  AThread this pointer and parameter for getThis() and getParameter()
-  All newly created threads get these values
+  Access user set this pointer
+  Can be anything and can be used when thread is part of another object
+
+  e.g.
+  u4 threadproc(AThread& thread)
+  {
+    MyObject *pObject = dynamic_cast<ABase *>(thread.getThis());
+  }
+
+  @return user set this pointer
   */
   ABase *getThis();
+
+  /*!
+  Access user set parameter pointer
+  Can be anything
+
+  e.g.
+  u4 threadproc(AThread& thread)
+  {
+    MyObject *pObject = dynamic_cast<ABase *>(thread.getParameter());
+  }
+
+  @return user set pointer
+  */
   ABase *getParameter();
 
   /*!
@@ -141,25 +192,33 @@ public:
     // during this time the thread monitor thread will not make any changes
     // this may affect thread pool execution due to synchronization
   }
+  
+  @return container of AThread objects
   */
   const AThreadPool::THREADS& getThreads() const;
 
   /*!
   ASynchronization object that blocks the monitor thread
   MUST lock when using getTheads() call to maintain some consistency
+  
   @see AThreadPool::getThreads()
+  @return synchronization object for this pool
   */
   ASynchronization& useSync();
 
   /*!
   Thread pool timer, starts when manager starts and stops when it stops/exits
+
+  @return constant ATimer object reference
   */
   const ATimer& getThreadPoolTimer() const;
 
   /*!
   AEmittable
+
+  @param target to emit into
   */
-  virtual void emit(AOutputBuffer&) const;
+  virtual void emit(AOutputBuffer& target) const;
 
   /*!
   ADebugDumpable

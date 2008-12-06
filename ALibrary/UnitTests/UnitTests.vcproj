@@ -508,6 +508,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\ut_ABasePtrQueue_General.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ut_ABitArray_General.cpp"
 				>
 				<FileConfiguration

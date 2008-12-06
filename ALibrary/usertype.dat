@@ -233,3 +233,4 @@ const_iterator
 const_reverse_iterator
 
 ASSERT_UNIT_TEST
+NEWLINE_UNIT_TEST

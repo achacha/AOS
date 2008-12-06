@@ -269,8 +269,11 @@ int ut_AString_Search()
   int iRet = 0x0;
 
   testSearchBasic(iRet);
+  NEWLINE_UNIT_TEST();
   testReverse(iRet);
+  NEWLINE_UNIT_TEST();
   testStringPartial(iRet);
+  NEWLINE_UNIT_TEST();
   testPattern(iRet);
 
   return iRet;

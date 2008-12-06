@@ -11,6 +11,7 @@ $Id$
 int ut_AINIProfile_General()
 {
   std::cerr << "ut_AINIProfile_General" << std::endl;
+#pragma message("ut_AINIProfile_General needs to use new unit test macros")
 
   int iRet = 0x0;
 

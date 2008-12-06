@@ -100,7 +100,9 @@ int ut_ARandomNumberGenerator_General()
   int iRet = 0x0;
 
   runRNGTest(iRet, ARandomNumberGenerator::Uniform);
+  NEWLINE_UNIT_TEST();
   runRNGTest(iRet, ARandomNumberGenerator::Lecuyer);
+  NEWLINE_UNIT_TEST();
   runRNGTest(iRet, ARandomNumberGenerator::Marsaglia);
 
   return iRet;

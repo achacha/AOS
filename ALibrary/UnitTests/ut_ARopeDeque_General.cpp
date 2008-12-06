@@ -697,21 +697,21 @@ int ut_ARopeDeque_General()
   int iRet = 0x0;
 
   testGeneral(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   testPopBack(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   testPopFront(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   testPeekUntil(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   testRemoveUntil(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   testPopFrontUntil(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   testGetUntilOneOf(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   testAccess(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   testPopFrontUntilOneOf(iRet);
 
   return iRet;

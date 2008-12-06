@@ -47,6 +47,7 @@ int ut_AXmlElement_General();             // 80
 int ut_AXmlDocument_General();            // 82
 int ut_AUrl_General();                    // 100
 int ut_ACookie_General();                 // 105
+int ut_ABasePtrQueue_General();           // 110
 int ut_Macros();                          // 200
 
 //a_Max testcase ID

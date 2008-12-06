@@ -58,10 +58,10 @@ void testHtml(int& iRet)
   ANameValuePair nvPair;
   nvPair.setType(ANameValuePair::HTML);
   size_t pos = 0;
-  nvPair.parse(" \r\n coLoR =    \t \t  \" red \" \r\n  ", pos);
+  nvPair.parse(" \r\n coLoR =    \t \t  \" rEd \" \r\n  ", pos);
 
-  ASSERT_UNIT_TEST(nvPair.isName("coLoR"), "Html name test", "", iRet);
-  ASSERT_UNIT_TEST(nvPair.isValue(" red "), "Html value test", "", iRet);
+  ASSERT_UNIT_TEST(nvPair.isName("color"), "Html name test", "", iRet);
+  ASSERT_UNIT_TEST(nvPair.isValue(" rEd "), "Html value test", "", iRet);
 }
 
 void testJson(int& iRet)
@@ -104,10 +104,15 @@ int ut_ANameValuePair_General()
   std::cerr << "ut_ANameValuePair_General" << std::endl;
   
   testSimple(iRet);
+  NEWLINE_UNIT_TEST();
   testXml(iRet);
+  NEWLINE_UNIT_TEST();
   testJson(iRet);
+  NEWLINE_UNIT_TEST();
   testRegValue(iRet);
+  NEWLINE_UNIT_TEST();
   testHtml(iRet);
+  NEWLINE_UNIT_TEST();
   testFormMultiPart(iRet);
 
   return iRet;

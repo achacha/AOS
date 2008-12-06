@@ -13,11 +13,16 @@ class ASynchronization;
 
 /*!
 Queue of ABase* types
+Internally implemented as a double linked list
+Indexed operations are linear O(1)
+
+Container does NOT delete anything implicitly when destroyed
+MUST call clear(true) to delete contents and clear container
 
 Optimzed for push/pop operations
 
 This is a very basic queue that is thread safe for pop/push/clear operations
-You can manually access head/tail but you MUST use sync when traversing it to avoid race conditions
+You can use head/tail but you MUST use sync when traversing it to avoid race conditions
 */
 class ABASE_API ABasePtrQueue : public ADebugDumpable
 {
@@ -35,21 +40,73 @@ public:
   virtual ~ABasePtrQueue();
 
   /*!
+  Get ABase * at given index from front
+
+  @param index of the element from front (0 based)
+  @return access to ABase * (NULL if list empty or index out of bounds)
+  */
+  const ABase *getAt(size_t index) const;
+  
+  /*!
+  Use ABase * at given index from front
+
+  @param index of the element from front (0 based)
+  @return access to ABase * (NULL if list empty or index out of bounds)
+  */
+  ABase *useAt(size_t index);
+
+  /*!
   Pop object from the front
 
-  @return ABase * or NULL if empty
+  @param index of the element from front (0 based)
+  @return removed ABase * (NULL if list empty or index out of bounds)
   */
-  ABase *pop();
+  ABase *popFront(size_t index = 0);
+
+  /*!
+  Pop object from the back
+
+  @param index of the element from back (0 based)
+  @return removed ABase * (NULL if list empty or index out of bounds)
+  */
+  ABase *popBack(size_t index = 0);
+
+  /*!
+  Push object to front
+
+  @param p ABase * to add to the queue, object is OWNED and DELETED by the queue
+  @return p for convenience
+  */
+  ABase *pushFront(ABase *p);
 
   /*!
   Push object to back
 
   @param p ABase * to add to the queue, object is OWNED and DELETED by the queue
+  @return p for convenience
   */
-  void push(ABase *p);
+  ABase *pushBack(ABase *p);
+
+  /*!
+  Find ABase * pointer in the queue starting with front
+
+  @param p ABase * to find
+  @return index from front to p or AConstant::npos if not found
+  */
+  size_t findFromFront(ABase *p);
+
+  /*!
+  Find ABase * pointer in the queue starting with back
+
+  @param p ABase * to find
+  @return index from back to p or AConstant::npos if not found
+  */
+  size_t findFromBack(ABase *p);
 
   /*!
   Checks if queue is empty
+
+  @return true if empty
   */
   bool isEmpty() const;
 
@@ -84,7 +141,8 @@ public:
 
   /*!
   Access the head pointer
-  Use sync to guarantee thread safety
+  NOT thread safe
+  NOTE: Use sync to guarantee thread safety
 
   @return head pointer
   */
@@ -92,7 +150,8 @@ public:
 
   /*!
   Access the head pointer
-  Use sync to guarantee thread safety
+  NOT thread safe
+  NOTE: Use sync to guarantee thread safety
 
   @return tail pointer
   */
@@ -100,7 +159,8 @@ public:
 
   /*!
   Access the head pointer
-  Use sync to guarantee thread safety
+  NOT thread safe
+  NOTE: Use sync to guarantee thread safety
 
   @return constant head pointer
   */
@@ -108,7 +168,8 @@ public:
 
   /*!
   Access the head pointer
-  Use sync to guarantee thread safety
+  NOT thread safe
+  NOTE: Use sync to guarantee thread safety
   
   @return constant tail pointer
   */
@@ -116,18 +177,26 @@ public:
 
   /*!
   Removes pointer from container
-  Does not verify that it is actually part of this queue, if not part of this queue then size
-    will be inconsistent and size may go negative
+  Does not verify that it is actually part of this queue at runtime (does in debug)
+    NOTE: if not part of this queue then size will be inconsistent and size may go negative
   Unlinks the ABase* and then makes sure it is not head or tail of this container
 
   @param p ABase*
+  @return p for convenience
   */
-  void remove(ABase *p);
+  ABase *remove(ABase *p);
 
   /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
+
+protected:
+  //! Internal accessor
+  ABase *_getAt(size_t index) const;
+  
+  //! Internal unsynchronized remove
+  ABase *_remove(ABase *p);
 
 private:
   ASynchronization *mp_Sync;

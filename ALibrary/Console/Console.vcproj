@@ -405,7 +405,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tTemplateParse.cpp"
+			RelativePath=".\tABaseQueue.cpp"
 			>
 		</File>
 	</Files>

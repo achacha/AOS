@@ -15,3 +15,5 @@ $Id$
     std::cerr << std::endl;\
   } else { std::cerr << "." << std::flush; } \
 }
+
+#define NEWLINE_UNIT_TEST() { std::cerr << std::endl; }

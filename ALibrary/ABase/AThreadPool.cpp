@@ -10,6 +10,7 @@ $Id$
 
 #define DEFAULT_MONITOR_CYCLE_SLEEP 1000
 #define DEFAULT_STOP_CYCLE_SLEEP 100
+#define DEFAULT_MONITOR_STARTUP_SLEEPTIME 10
 
 void AThreadPool::debugDump(std::ostream& os, int indent) const
 {
@@ -56,7 +57,7 @@ AThreadPool::AThreadPool(
 {
   m_MonitorThread.setThis(this);
 
-  //a_By default 'this' will be to the thread pool
+  // By default 'this' will be to the thread pool
   if (!mp_This)
     mp_This = this;
 }
@@ -79,7 +80,7 @@ AThreadPool::AThreadPool(
 {
   m_MonitorThread.setThis(this);
 
-  //a_By default 'this' will be to the thread pool
+  // By default 'this' will be to the thread pool
   if (!mp_This)
     mp_This = this;
 }
@@ -101,24 +102,25 @@ void AThreadPool::emit(AOutputBuffer&) const
 
 u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
 {
+  thread.setRunning(true);
+  
   AThreadPool *pThis = (AThreadPool *)thread.getThis();
   AASSERT(pThis, pThis);
 
   bool shouldSleepMore = false;
-  thread.setRunning(true);
   pThis->m_ThreadPoolTimer.start();
   try
   {
     do
     {
-      size_t threadcount = pThis->m_Threads.size();  //a_all running threads
+      size_t threadcount = pThis->m_Threads.size();  // all running threads
       if (threadcount == pThis->m_DesiredThreadCount || !pThis->m_TotalThreadCreationCount)
       {
-        //a_Short sleep since desired number of threads are running or we are not creating any more
+        // Short sleep since desired number of threads are running or we are not creating any more
         AThread::sleep(pThis->m_monitorCycleSleep);
       }
 
-      //a_Stopping condition
+      // Stopping condition
       if (
              !threadcount
           && (
@@ -139,14 +141,14 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
           && pThis->m_TotalThreadCreationCount > 0 
           && threadcount < pThis->m_DesiredThreadCount)
         {
-          //a_More
+          // More
           ALock lock(pThis->m_SynchObjectThreadPool);
           AASSERT(pThis, pThis->mp_threadproc);
           AASSERT(pThis, ADebugDumpable::isPointerValid(pThis->mp_threadproc));
 
           AThread *pthread = new AThread(pThis->mp_threadproc, true, pThis->mp_This, pThis->mp_Parameter);
           pThis->m_Threads.push_back(pthread);
-          shouldSleepMore = true;                //a_Allow the thread to start
+          shouldSleepMore = true;                // Allow the thread to start
           ++threadcount;
 
           if (AConstant::npos != pThis->m_TotalThreadCreationCount)
@@ -155,7 +157,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
       }
       else if (threadcount > pThis->m_DesiredThreadCount)
       {
-        //a_Less
+        // Less
         ALock lock(pThis->m_SynchObjectThreadPool);
         size_t diff = threadcount - pThis->m_DesiredThreadCount;
         THREADS::iterator it = pThis->m_Threads.begin();
@@ -169,14 +171,14 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
         }
       }
 
-      //a_Short sleep to allow time for threads to start up or shut down gracefully
+      // Short sleep to allow time for threads to start up or shut down gracefully
       if (shouldSleepMore)
       {
         AThread::sleep(pThis->m_monitorCycleSleep);
         shouldSleepMore = false;
       }
 
-      //a_Terminate any thread that has been flagged for stopping and has not stopped yet
+      // Terminate any thread that has been flagged for stopping and has not stopped yet
       THREADS::iterator it = pThis->m_Threads.begin();
       while (it != pThis->m_Threads.end())
       {
@@ -184,7 +186,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
         if (!(*it)->isRunning())
         {
           ALock lock(pThis->m_SynchObjectThreadPool);
-          //a_Thread somehow died, cleanup
+          // Thread somehow died, cleanup
           THREADS::iterator itKill = it;
           ++it;
           pThis->m_Threads.erase(itKill);
@@ -227,8 +229,10 @@ void AThreadPool::start()
     if (!m_TotalThreadCreationCount)
       m_TotalThreadCreationCount = AConstant::npos;
     
+    // Start monitor thread and wait until it flags itself as started
     m_MonitorThread.start();
-
+    while (!m_MonitorThread.isRunning())
+      AThread::sleep(DEFAULT_MONITOR_STARTUP_SLEEPTIME);
   }
 }
 
@@ -241,7 +245,7 @@ void AThreadPool::setCreatingNewThreads(
 
 void AThreadPool::setRunStateOnThreads(bool isRun)
 {
-  //a_Sets run state on all threads
+  // Sets run state on all threads
   ALock lock(const_cast<ASync_CriticalSection *>(&m_SynchObjectThreadPool));
   for (THREADS::iterator it = m_Threads.begin(); it != m_Threads.end(); ++it)
     (*it)->setRun(isRun);
@@ -252,10 +256,10 @@ void AThreadPool::stop()
   m_CreateNewThreads = false;
   m_TotalThreadCreationCount = 0;
 
-  //a_Signal threads to stop
+  // Signal threads to stop
   setRunStateOnThreads(false);
 
-  //a_Wait a bit for threads to stop
+  // Wait a bit for threads to stop
   int retry1 = 30;
   while (retry1 && m_Threads.size() > 0)
   {
@@ -263,7 +267,7 @@ void AThreadPool::stop()
     --retry1;
   }
   
-  //a_Stop monitor and wait for it to exit
+  // Stop monitor and wait for it to exit
   m_MonitorThread.setRun(false);
   int retry2 = 10;
   while (retry2 && m_MonitorThread.isRunning())
@@ -274,13 +278,13 @@ void AThreadPool::stop()
   if (!retry2 && m_MonitorThread.isRunning())
   {
     m_MonitorThread.terminate();
-    m_ThreadPoolTimer.stop();      //a_Only needed when a monitor thread is terminated
+    m_ThreadPoolTimer.stop();      // Only needed when a monitor thread is terminated
   }
 
   if (!retry1 && m_Threads.size() > 0)
   {
     ALock lock(m_SynchObjectThreadPool);
-    //a_Now that monitor is dead, kill anything that is still alive
+    // Now that monitor is dead, kill anything that is still alive
     for (THREADS::iterator it = m_Threads.begin(); it != m_Threads.end(); ++it)
     {
       (*it)->terminate();
@@ -379,4 +383,10 @@ size_t AThreadPool::getTotalThreadCreationCount() const
 const ATimer& AThreadPool::getThreadPoolTimer() const
 {
   return m_ThreadPoolTimer;
+}
+
+void AThreadPool::waitForThreadsToExit(u4 sleepTime)
+{
+  while (this->m_MonitorThread.isRunning())
+    AThread::sleep(sleepTime);
 }

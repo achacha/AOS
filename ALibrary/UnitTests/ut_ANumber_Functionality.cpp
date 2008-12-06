@@ -339,10 +339,15 @@ int ut_ANumber_Functionality(void)
 //a_Functionality tests
 ///////////////////////////////////////////////////////////
   _testFactorial(iRet);
+  NEWLINE_UNIT_TEST();
   _testEulerNumber(iRet);
+  NEWLINE_UNIT_TEST();
   _testTrig(iRet);
+  NEWLINE_UNIT_TEST();
   _testPrime(iRet);
+  NEWLINE_UNIT_TEST();
   _checkPiDigits(iRet);
+  NEWLINE_UNIT_TEST();
   _testSquareRoot(iRet);
 
   return iRet;
