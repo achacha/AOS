@@ -228,7 +228,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
           AOSContext *pContext = (AOSContext *)p;
           FD_SET((SOCKET)pContext->useSocket().getSocketInfo().m_handle, &sockSet);
           ++count;
-          p = p->getNext();
+          p = p->useNext();
         }
         
         if (count > 0)
@@ -242,7 +242,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
             while (availCount > 0 && count2 <= count && p)
             {
               AOSContext *pContext = (AOSContext *)p;
-              p = p->getNext();
+              p = p->useNext();
               if (FD_ISSET(pContext->useSocket().getSocketInfo().m_handle, &sockSet))
               {
                 pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_ISAVAILABLE_SELECT_SET);
@@ -347,7 +347,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
             while (p)
             {
               AOSContext *pContext = (AOSContext *)p;
-              p = p->getNext();
+              p = p->useNext();
               if (pContext->useTimeoutTimer().getInterval() > pOwner->m_NoDataTimeout)
               {
                 AString str("AOSContextQueue_IsAvailable: No data after timeout: ",52);
@@ -416,7 +416,7 @@ void AOSContextQueue_IsAvailable::add(AOSContext *pContext)
       pContext->useEventVisitor().addEvent(rope, AEventVisitor::EL_DEBUG);
     }
 
-    m_Queues.at(currentQueue)->queue.push(pContext);
+    m_Queues.at(currentQueue)->queue.pushBack(pContext);
     ++m_Queues.at(currentQueue)->count;
   }
 }

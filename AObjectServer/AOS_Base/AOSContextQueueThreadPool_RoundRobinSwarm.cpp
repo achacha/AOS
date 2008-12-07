@@ -107,13 +107,13 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::add(AOSContext *pContext)
   }
 
   ++m_AddCounters.at(currentQueue);
-  m_Queues.at(currentQueue)->push(pContext);
+  m_Queues.at(currentQueue)->pushBack(pContext);
 }                                                                                                                                                                                                 
 
 AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
 {
   volatile long currentQueue = ::InterlockedIncrement(&m_currentReadQueue) % m_queueCount;
-  AOSContext *pContext = (AOSContext *)m_Queues.at(currentQueue)->pop();
+  AOSContext *pContext = (AOSContext *)m_Queues.at(currentQueue)->popFront();
 
   if (pContext && pContext->useEventVisitor().isLoggingDebug())
   {

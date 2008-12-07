@@ -99,7 +99,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     
     {
       ALock lock(m_ErrorHistory.useSync());
-      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->getPrev())
+      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->usePrev())
       {
         AOSContext *pContext = dynamic_cast<AOSContext *>(p);
         if (contextId == AString::fromPointer(pContext))
@@ -112,7 +112,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
 
     {
       ALock lock(m_History.useSync());
-      for (ABase *p = m_History.useTail(); p; p = p->getPrev())
+      for (ABase *p = m_History.useTail(); p; p = p->usePrev())
       {
         AOSContext *pContext = dynamic_cast<AOSContext *>(p);
         if (contextId == AString::fromPointer(pContext))
@@ -212,7 +212,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     {
       AXmlElement& eHistory = eBase.addElement("object").addAttribute("name", "history");
       ALock lock(m_History.useSync());
-      for (ABase *p = m_History.useTail(); p; p = p->getPrev())
+      for (ABase *p = m_History.useTail(); p; p = p->usePrev())
       {
         AOSContext *pContext = dynamic_cast<AOSContext *>(p);
         if (pContext)
@@ -230,7 +230,7 @@ void AOSContextManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeade
     {
       AXmlElement& eErrorHistory = eBase.addElement("object").addAttribute("name", "error_history");
       ALock lock(m_ErrorHistory.useSync());
-      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->getPrev())
+      for (ABase *p = m_ErrorHistory.useTail(); p; p = p->usePrev())
       {
         AOSContext *pContext = dynamic_cast<AOSContext *>(p);
         if (pContext)
@@ -363,7 +363,7 @@ AOSContextManager::AOSContextManager(AOSServices& services) :
 
   for (int i=0; i<freeStoreInitialSize; ++i)
   {
-    m_FreeStore.push(new AOSContext(NULL, m_Services));
+    m_FreeStore.pushBack(new AOSContext(NULL, m_Services));
   }
 
   adminRegisterObject(m_Services.useAdminRegistry());
@@ -453,7 +453,7 @@ void AOSContextManager::deallocate(AOSContext *p)
     if (m_ErrorHistoryMaxSize > 0)
     {
       p->finalize();
-      m_ErrorHistory.push(p);
+      m_ErrorHistory.pushBack(p);
     }
     else
       _deleteContext(&p);
@@ -461,7 +461,7 @@ void AOSContextManager::deallocate(AOSContext *p)
     while (m_ErrorHistory.size() > m_ErrorHistoryMaxSize)
     {
       //a_Remove last
-      AOSContext *pC = (AOSContext *)m_ErrorHistory.pop();
+      AOSContext *pC = (AOSContext *)m_ErrorHistory.popFront();
       _deleteContext(&pC);
     }
   }
@@ -471,7 +471,7 @@ void AOSContextManager::deallocate(AOSContext *p)
     if (m_HistoryMaxSize > 0)
     {
       p->finalize();
-      m_History.push(p);
+      m_History.pushBack(p);
     }
     else
     {
@@ -481,7 +481,7 @@ void AOSContextManager::deallocate(AOSContext *p)
     while (m_History.size() > m_HistoryMaxSize)
     {
       //a_Remove last
-      AOSContext *pC = (AOSContext *)m_History.pop();
+      AOSContext *pC = (AOSContext *)m_History.popFront();
       if (pC)
         _deleteContext(&pC);
     }
@@ -492,7 +492,7 @@ void AOSContextManager::_clearHistory()
 {
   while (m_History.size() > 0)
   {
-    AOSContext *pC = (AOSContext *)m_History.pop();
+    AOSContext *pC = (AOSContext *)m_History.popFront();
     if (pC)
       _deleteContext(&pC);
   }
@@ -502,14 +502,14 @@ void AOSContextManager::_clearErrorHistory()
 {
   while (m_ErrorHistory.size() > 0)
   {
-    AOSContext *pC = (AOSContext *)m_ErrorHistory.pop();
+    AOSContext *pC = (AOSContext *)m_ErrorHistory.popFront();
     _deleteContext(&pC);
   }
 }
 
 AOSContext *AOSContextManager::_newContext(AFile_Socket *pSocket)
 {
-  AOSContext *pContext = (AOSContext *)m_FreeStore.pop();
+  AOSContext *pContext = (AOSContext *)m_FreeStore.popFront();
   
   if (!pContext)
     return new AOSContext(pSocket, m_Services);
@@ -528,7 +528,7 @@ void AOSContextManager::_deleteContext(AOSContext **p)
   else
   {
     (*p)->finalize(true);
-    m_FreeStore.push(*p);
+    m_FreeStore.pushBack(*p);
   }
 
   p = NULL;

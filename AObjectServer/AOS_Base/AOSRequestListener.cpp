@@ -97,82 +97,88 @@ void AOSRequestListener::startListening()
 
   //a_HTTP setup
   {
-    LISTEN_DATA *p = new LISTEN_DATA(m_Services, ASW("/config/server/listen/http",26));
-    if (p->getPort() > 0)
+    if (m_Services.useConfiguration().useConfigRoot().exists(ASW("/config/server/listen/http",26)))
     {
-      if (!ASocketLibrary::canBindToPort(p->getPort()))
+      LISTEN_DATA *p = new LISTEN_DATA(m_Services, ASW("/config/server/listen/http",26));
+      if (p->getPort() > 0)
       {
-        AString str("Unable to bind to HTTP port ");
-        str.append(AString::fromInt(p->getPort()));
-        str.append(", already in use.");
-        AOS_DEBUGTRACE(str.c_str(), NULL);
-        ATHROW_EX(this, ASocketException::UnableToOpen, str);
+        if (!ASocketLibrary::canBindToPort(p->getPort()))
+        {
+          AString str("Unable to bind to HTTP port ");
+          str.append(AString::fromInt(p->getPort()));
+          str.append(", already in use.");
+          AOS_DEBUGTRACE(str.c_str(), NULL);
+          ATHROW_EX(this, ASocketException::UnableToOpen, str);
+        }
+        else
+        {
+          mthread_Listener.setThis(this);
+          mthread_Listener.setParameter(p);
+          mthread_Listener.start();
+        }
       }
       else
       {
-        mthread_Listener.setThis(this);
-        mthread_Listener.setParameter(p);
-        mthread_Listener.start();
+        AString str("HTTP invalid port specified:");
+        str.append(AString::fromInt(p->getPort()));
+        AOS_DEBUGTRACE(str.c_str(), NULL);
+        ATHROW_EX(this, ASocketException::UnableToOpen, str);
       }
-    }
-    else
-    {
-      AString str("HTTP invalid port specified:");
-      str.append(AString::fromInt(p->getPort()));
-      AOS_DEBUGTRACE(str.c_str(), NULL);
-      ATHROW_EX(this, ASocketException::UnableToOpen, str);
     }
   }
   
   //a_HTTPS setup
   {
-    LISTEN_DATA *p = new LISTEN_DATA(m_Services, ASW("/config/server/listen/https",27));
-    if (p->getPort() > 0)
+    if (m_Services.useConfiguration().useConfigRoot().exists(ASW("/config/server/listen/https",27)))
     {
-      bool ready = true;
-      if (p->getCertificateFilename().getFilename().isEmpty())
+      LISTEN_DATA *p = new LISTEN_DATA(m_Services, ASW("/config/server/listen/https",27));
+      if (p->getPort() > 0)
       {
-        ready = false;
-        AString str("AObjectServer HTTPS on port ");
-        str.append(AString::fromInt(p->getPort()));
-        str.append(" missing cert element, secure socket not listening.");
-        AOS_DEBUGTRACE(str.c_str(), NULL);
-        ATHROW_EX(this, ASocketException::UnableToOpen, str);
-      }
-      
-      if (p->getPrivateKeyFilename().getFilename().isEmpty())
-      {
-        ready = false;
-        AString str("AObjectServer HTTPS on port ");
-        str.append(AString::fromInt(p->getPort()));
-        str.append(" missing pkey element, secure socket not listening.");
-        AOS_DEBUGTRACE(str.c_str(), NULL);
-        ATHROW_EX(this, ASocketException::UnableToOpen, str);
-      }
+        bool ready = true;
+        if (p->getCertificateFilename().getFilename().isEmpty())
+        {
+          ready = false;
+          AString str("AObjectServer HTTPS on port ");
+          str.append(AString::fromInt(p->getPort()));
+          str.append(" missing cert element, secure socket not listening.");
+          AOS_DEBUGTRACE(str.c_str(), NULL);
+          ATHROW_EX(this, ASocketException::UnableToOpen, str);
+        }
+        
+        if (p->getPrivateKeyFilename().getFilename().isEmpty())
+        {
+          ready = false;
+          AString str("AObjectServer HTTPS on port ");
+          str.append(AString::fromInt(p->getPort()));
+          str.append(" missing pkey element, secure socket not listening.");
+          AOS_DEBUGTRACE(str.c_str(), NULL);
+          ATHROW_EX(this, ASocketException::UnableToOpen, str);
+        }
 
-      if (!ASocketLibrary::canBindToPort(p->getPort()))
+        if (!ASocketLibrary::canBindToPort(p->getPort()))
+        {
+          ready = false;
+          AString str("Unable to bind to https port ");
+          str.append(AString::fromInt(p->getPort()));
+          str.append(", already in use.");
+          AOS_DEBUGTRACE(str.c_str(), NULL);
+          ATHROW_EX(this, ASocketException::UnableToOpen, str);
+        }
+
+        if (ready)
+        {
+          mthread_SecureListener.setThis(this);
+          mthread_SecureListener.setParameter(p);
+          mthread_SecureListener.start();
+        }
+      }
+      else
       {
-        ready = false;
-        AString str("Unable to bind to https port ");
+        AString str("HTTPS invalid port specified:");
         str.append(AString::fromInt(p->getPort()));
-        str.append(", already in use.");
         AOS_DEBUGTRACE(str.c_str(), NULL);
         ATHROW_EX(this, ASocketException::UnableToOpen, str);
       }
-
-      if (ready)
-      {
-        mthread_SecureListener.setThis(this);
-        mthread_SecureListener.setParameter(p);
-        mthread_SecureListener.start();
-      }
-    }
-    else
-    {
-      AString str("HTTPS invalid port specified:");
-      str.append(AString::fromInt(p->getPort()));
-      AOS_DEBUGTRACE(str.c_str(), NULL);
-      ATHROW_EX(this, ASocketException::UnableToOpen, str);
     }
   }
 }
@@ -192,7 +198,8 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
   AASSERT(NULL, pData.get());
 
   bool httpBlockingMode = pThis->m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/listen/http/blocking",35), false);
-  int WAIT_FOR_CONNECTION_DELAY = pThis->m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/listen/http/listener-sleep",41), 50);
+  int WAIT_FOR_CONNECTION_DELAY = pThis->m_Services.useConfiguration().useConfigRoot().getInt(ASW("/config/server/listen/http/listener-sleep",41), 50);
+  AASSERT(pThis, WAIT_FOR_CONNECTION_DELAY > 0);
 
   thread.setRunning(true);
   AOSContext *pContext = NULL;
@@ -280,7 +287,8 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
   AASSERT(NULL, pThis);
   AASSERT(NULL, pData.get());
 
-  int WAIT_FOR_CONNECTION_DELAY = pThis->m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/listen/https/listener-sleep",42), 50);
+  int WAIT_FOR_CONNECTION_DELAY = pThis->m_Services.useConfiguration().useConfigRoot().getInt(ASW("/config/server/listen/https/listener-sleep",42), 50);
+  AASSERT(pThis, WAIT_FOR_CONNECTION_DELAY > 0);
 
   AString cert, pkey;
   pData->getCertificateFilename().emit(cert);

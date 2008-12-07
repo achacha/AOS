@@ -9,10 +9,17 @@ $Id$
 // Should be enabled to check for leaks
 // After using the code, invoke a shutdown from admin console and check debug output window for any leaks
 // Ignore the 2 leaks in OpenSSL, they are process lifetime leaks and I have not found an API call to clean them up yet
-#define __ENABLE_MEMLEAK_DETECT__
+//#define __ENABLE_MEMLEAK_DETECT__
 #if !defined(NDEBUG) && defined(WIN32) && defined(__ENABLE_MEMLEAK_DETECT__)
 #include "MemLeakDetect.h"
 CMemLeakDetect memLeakDetect;
+#else
+#if defined(__WINDOWS__)
+#include "dbghelp.h"
+#include "dbgeng.h"
+#pragma comment(lib, "dbghelp")
+#pragma comment(lib, "dbgeng")
+#endif
 #endif
 
 #include "AOS.hpp"
@@ -26,14 +33,6 @@ CMemLeakDetect memLeakDetect;
 #include "AOSContextQueue_PreExecutor.hpp"
 #include "AOSContextQueue_Executor.hpp"
 #include "AOSContextQueue_ErrorExecutor.hpp"
-
-// Internal heavy-duty leak/error detector
-#if defined(__WINDOWS__) && defined(WINDOWS_CRTDBG_ENABLED)
-#include "dbghelp.h"
-#include "dbgeng.h"
-#pragma comment(lib, "dbghelp")
-#pragma comment(lib, "dbgeng")
-#endif
 
 ASocketLibrary_SSL g_SecureSocketLibrary;    //a_Global init for SSL and socket library
 AGdLibrary g_GdLibrary;                      //a_Global init for gd library
