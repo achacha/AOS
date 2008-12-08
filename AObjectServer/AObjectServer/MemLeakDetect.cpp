@@ -10,7 +10,7 @@ find memory related bugs.
 ****************************************************************/
 #include "pchAObjectServer.hpp"
 
-#if !defined(NDEBUG) && defined(WIN32)
+#if !defined(NDEBUG) && defined(WIN32) && !defined(WIN64)
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
 #pragma warning(disable:4312)

@@ -86,7 +86,7 @@ AOSOutput_MsXslt::~AOSOutput_MsXslt()
   DocContainer::iterator it = m_Dox.begin();
   while (it != m_Dox.end())
   {
-    ((MSXML2::IXMLDOMDocument2Ptr *)((*it).second).m_ComPtr)->Release();
+    ((MSXML2::IXMLDOMDocument3Ptr *)((*it).second).m_ComPtr)->Release();
     delete (*it).second.m_ComPtr;
     ++it;
   }
@@ -103,7 +103,7 @@ void AOSOutput_MsXslt::deinit()
 
 AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& filename)
 {
-  MSXML2::IXMLDOMDocument2Ptr *p = new MSXML2::IXMLDOMDocument2Ptr;
+  MSXML2::IXMLDOMDocument3Ptr *p = new MSXML2::IXMLDOMDocument3Ptr;
   *p = NULL;
 
   if (filename.isEmpty())
@@ -143,7 +143,7 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& fi
 
     rope.append(AConstant::ASTRING_EOL);
 
-    ((MSXML2::IXMLDOMDocument2Ptr *)p)->Release();
+    ((MSXML2::IXMLDOMDocument3Ptr *)p)->Release();
     delete p;
     ATHROW_EX(this, AException::OperationFailed, rope);
   }
@@ -233,11 +233,11 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
     m_Services.useConfiguration().setMimeTypeFromExt(ext, context);
   }
 
-  MSXML2::IXMLDOMDocument2Ptr *p = NULL;
+  MSXML2::IXMLDOMDocument3Ptr *p = NULL;
   XslDocHolder *pXslDocHolder = _getXslDocHolder(*pFilename);
 
   //a_Document exists in cache
-  p = (MSXML2::IXMLDOMDocument2Ptr *)pXslDocHolder->m_ComPtr;
+  p = (MSXML2::IXMLDOMDocument3Ptr *)pXslDocHolder->m_ComPtr;
   AASSERT(this, p);
 
   //a_Emit the context XML document
@@ -252,7 +252,7 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
 
   try
   {
-    MSXML2::IXMLDOMDocument2Ptr pXMLDoc = NULL;
+    MSXML2::IXMLDOMDocument3Ptr pXMLDoc = NULL;
     HRESULT h = pXMLDoc.CreateInstance(__uuidof(MSXML2::DOMDocument60));
     if (FAILED(h))
       ATHROW_LAST_OS_ERROR(this);

@@ -10,7 +10,7 @@ $Id$
 // After using the code, invoke a shutdown from admin console and check debug output window for any leaks
 // Ignore the 2 leaks in OpenSSL, they are process lifetime leaks and I have not found an API call to clean them up yet
 //#define __ENABLE_MEMLEAK_DETECT__
-#if !defined(NDEBUG) && defined(WIN32) && defined(__ENABLE_MEMLEAK_DETECT__)
+#if !defined(NDEBUG) && defined(WIN32) && !defined(WIN64) && defined(__ENABLE_MEMLEAK_DETECT__)
 #include "MemLeakDetect.h"
 CMemLeakDetect memLeakDetect;
 #else

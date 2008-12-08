@@ -15,7 +15,7 @@ Future		:
 
 
 ****************************************************************/
-#if !defined(NDEBUG)
+#if !defined(NDEBUG) && defined(WIN32) &&!defined(WIN64)
 #if !defined(MEMLEAKDETECT_H)
 #define MEMLEAKDETECT_H
 
