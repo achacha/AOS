@@ -32,14 +32,14 @@
     <enabled>false</enabled>
     <max-items desc="Maximum number of items to store in the static cache">10240</max-items>
     <max-filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max-filesize>
-    <cache-count desc="Number of caches to use (must be a prime number)">13</cache-count>
+    <cache-count desc="Number of caches to use (must be a prime number)">5</cache-count>
   </static-file-cache>
 
   <data-file-cache desc="Data item cache (all data directories), maximum memory size is (max_items * max_filesize)">
     <enabled>false</enabled>
     <max-items desc="Maximum number of items to store in the static cache">10240</max-items>
     <max-filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max-filesize>
-    <cache-count desc="Number of caches to use (must be a prime number)">13</cache-count>
+    <cache-count desc="Number of caches to use (must be a prime number)">5</cache-count>
   </data-file-cache>
 
   <listen>
@@ -47,12 +47,12 @@
     <http>
       <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
       <port>80</port>
-      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">50</listener-sleep>
+      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">40</listener-sleep>
     </http>
     <https>
       <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
       <port>443</port>
-      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">50</listener-sleep>
+      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">80</listener-sleep>
       <cert desc="Relative path from aos_root base for the certificate file">certs/aos_cert.pem</cert>
       <pkey desc="Relative path from aos_root base for the private key file">certs/aos_pkey.pem</pkey>
     </https>

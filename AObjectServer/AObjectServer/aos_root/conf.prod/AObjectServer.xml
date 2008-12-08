@@ -45,12 +45,12 @@
     <http>
       <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
       <port>80</port>
-      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">30</listener-sleep>
+      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">20</listener-sleep>
     </http>
     <https>
       <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
       <port>443</port>
-      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">30</listener-sleep>
+      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">50</listener-sleep>
       <cert desc="Relative path from aos_root base for the certificate file">certs/aos_cert.pem</cert>
       <pkey desc="Relative path from aos_root base for the private key file">certs/aos_pkey.pem</pkey>
     </https>
