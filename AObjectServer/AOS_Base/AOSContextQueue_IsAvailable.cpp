@@ -211,13 +211,13 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
   timeout.tv_usec = 0;
 
   thread.setRunning(true);
+  fd_set sockSet;
   while (thread.isRun())
   {
     try
     {
       if (pThis->queue.size() > 0)
       {
-        fd_set sockSet;
         FD_ZERO(&sockSet);
         
         int count = 0;
