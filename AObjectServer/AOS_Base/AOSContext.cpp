@@ -190,14 +190,14 @@ void AOSContext::reset(AFile_Socket *pFile)
   m_ContextObjects.clear();
   m_ContextFlags.clear();
 
-  if (mp_RequestFile && m_EventVisitor.isLoggingDebug())
+  if (mp_RequestFile && m_EventVisitor.isLoggingEvent())
   {
     ARope rope("AOSContext::reset[",18);
     rope.append(mp_RequestFile->getSocketInfo().m_address);
     rope.append(':');
     rope.append(AString::fromInt(mp_RequestFile->getSocketInfo().m_port));
     rope.append(']');
-    m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
+    m_EventVisitor.startEvent(rope, AEventVisitor::EL_EVENT);
   }
 }
 
@@ -406,21 +406,24 @@ bool AOSContext::_waitForFirstChar()
 
 AOSContext::Status AOSContext::_processHttpHeader()
 {
-  if (m_EventVisitor.isLoggingInfo())
-    m_EventVisitor.startEvent(ASW("AOSContext::INIT: Processing HTTP header",40), AEventVisitor::EL_INFO);
-  
+  if (m_EventVisitor.isLoggingEvent())
+  {
+    m_EventVisitor.startEvent(ASW("AOSContext::INIT: Processing HTTP header",40), AEventVisitor::EL_EVENT);
+  }
+
   if (!mp_RequestFile)
     ATHROW(this, AException::InvalidObject);
 
-  m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP method",31), AEventVisitor::EL_INFO);
-  AString str(8188, 1024);
-
+  if (m_EventVisitor.isLoggingInfo())
+    m_EventVisitor.startEvent(ASW("AOSContext: Reading HTTP method",31), AEventVisitor::EL_INFO);
+  
   // Sum( N * sleeptime, 0 to N-1)
   char c = '\x0';
   size_t bytesRead = 0;
   
   bytesRead = mp_RequestFile->read(c);
 
+  AString str(8188, 1024);
   switch (bytesRead)
   {
     case AConstant::unavail:
@@ -668,9 +671,12 @@ AOSContext::Status AOSContext::_processHttpHeader()
     //a_Not enough data to read the method
     mp_RequestFile->putBack(str);
 
-    AString strEvent("AOSContext: Insufficiet data reading HTTP method: ",50);
-    strEvent.append(str);
-    m_EventVisitor.startEvent(strEvent, AEventVisitor::EL_INFO);
+    if (m_EventVisitor.isLoggingInfo())
+    {
+      AString strEvent("AOSContext: Insufficiet data reading HTTP method: ",50);
+      strEvent.append(str);
+      m_EventVisitor.startEvent(strEvent, AEventVisitor::EL_INFO);
+    }
 
     return AOSContext::STATUS_HTTP_INCOMPLETE_METHOD;
   }

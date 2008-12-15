@@ -516,6 +516,15 @@ AOSContext *AOSContextManager::_newContext(AFile_Socket *pSocket)
   else
   {
     pContext->reset(pSocket);
+    if (pContext->useEventVisitor().isLoggingEvent())
+    {
+      ARope rope;
+      rope.append(" - ",3);
+      rope.append(pSocket->getSocketInfo().m_address);
+      rope.append(':');
+      rope.append(AString::fromInt(pSocket->getSocketInfo().m_port));
+      pContext->useEventVisitor().useName().append(rope);
+    }
     return pContext;
   }
 }
