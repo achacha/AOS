@@ -1,20 +1,18 @@
-/*************************************************************
-Author		: David A. Jones
-File Name	: MemLeakDetect.h
-Date		: July 30, 2004
-Synopsis	:		 
-A trace memory feature for source code to trace and
-find memory related bugs. 
+/*
+Author   : David A. Jones
+File Name: MemLeakDetect.h
+Date     : July 30, 2004
+Synopsis : A trace memory feature for source code to trace and find memory related bugs. 
 
-Future		:
+Future:
 1) Memory corruption
 2) Freeing memory without allocating
 3) Freeing memory twice
 4) Not Freeing memory at all
 5) over running memory boundardies
 
-
-****************************************************************/
+$Id: AObjectServer.cpp 322 2008-12-08 23:46:57Z achacha $
+*/
 #if !defined(NDEBUG) && defined(WIN32) &&!defined(WIN64)
 #if !defined(MEMLEAKDETECT_H)
 #define MEMLEAKDETECT_H

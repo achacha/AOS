@@ -27,6 +27,7 @@ int main(int argc, char **argv)
     std::cout << "  start   - Start an already installed service.\r\n";
     std::cout << "  stop    - Stop an already started service.\r\n";
     std::cout << "  remove  - Remove an already installed service.\r\n";
+    std::cout << "  status  - Status of the service.\r\n";
     std::cout << "  console - Run watchdog in console mode (not as a service).\r\n";
   }
   AString strCommand(argv[1]);

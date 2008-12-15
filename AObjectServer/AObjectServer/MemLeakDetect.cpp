@@ -1,13 +1,11 @@
-/*************************************************************
-Author		: David A. Jones
-File Name	: MemLeakDetect.h
-Date		: July 30, 2004
-Synopsis		 
-A trace memory feature for source code to trace and
-find memory related bugs. 
+/*
+Author   : David A. Jones
+File Name: MemLeakDetect.h
+Date     : July 30, 2004
+Synopsis : A trace memory feature for source code to trace and find memory related bugs. 
 
-
-****************************************************************/
+$Id: AObjectServer.cpp 322 2008-12-08 23:46:57Z achacha $
+*/
 #include "pchAObjectServer.hpp"
 
 #if !defined(NDEBUG) && defined(WIN32) && !defined(WIN64)

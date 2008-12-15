@@ -25,7 +25,14 @@ Building AObjectServer
 
 Running AObjectServer
 ---------------------
-Adjust aos_root/config/AObjectServer.xml as needed (default ports are 80 (http), 443 (https) and 12345 (admin))
+_debug/AObjectServer.exe       - Win32 debug console mode
+_release/AObjectServer.exe     - Win32 optimized release console mode
+_debug64a/AObjectServer.exe    - Win64 debug console mode
+_release64a/AObjectServer.exe  - Win64 optimized release  console mode
+
+AObjectServer.exe <location of aos_root directory>        - default is to load ../aos_root/
+
+Adjust ../aos_root/config/AObjectServer.xml as needed (default ports are 80 (http), 443 (https) and 12345 (admin))
 
 The config is tuned for development:
   Template caching is turned off by default.
@@ -34,6 +41,30 @@ The config is tuned for development:
   dumpContext is enabled (should be off when in production).
   etc...
 
+You can create different configuration by copying aos_root directory to a new place and giving AObjectServer the path to it.
+
+
+Using windows services
+----------------------
+AOSWatchDog launches AObjectServer.exe when it is not found.
+
+AOSWatchDog status        - status of the service
+AOSWatchDog install       - install new service
+AOSWatchDog start         - start the service
+AOSWatchDog stop          - stop the service
+AOSWatchDog remove        - remove the service
+AOSWatchDog console       - run the watchdog as a console
+
+Stopping the watchdog does not stop the AObjectServer, it only stops the watch dog service from restarting it.
+To bounce AObjectServer:
+  1. Go to admin port: (http://you.ip.goes.here:12345/)
+  2. Issue a shutdown command OR use direct URL: http://you.ip.goes.here:12345/admin?command=shutdown
+
+Once AObjectServer shuts down, then AOSWatchDog will start a new instance of it.
+
+To completely shut it down:
+  1. Stop AOSWatchDog service
+  2. Shut AObjectServer down
   
 
 Adding new module project (which can contain any number of modules)

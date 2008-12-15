@@ -1,4 +1,4 @@
-/***
+/*
 *dbgint.h - Supports debugging features of the C runtime library.
 *
 *       Copyright (c) Microsoft Corporation. All rights reserved.
@@ -8,7 +8,8 @@
 *
 *       [Internal]
 *
-****/
+$Id: AObjectServer.cpp 322 2008-12-08 23:46:57Z achacha $
+*/
 #if !defined(NDEBUG)
 
 #if _MSC_VER > 1000
