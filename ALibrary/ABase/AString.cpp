@@ -115,6 +115,28 @@ AString::AString
 
 AString::AString
 (
+  const AString& source,
+  size_t length,
+  u2 increment
+) :
+  mp_Buffer(NULL),
+  m_Length(0),
+  mbool_Wrapped(false),
+  m_InternalBufferSize(0),
+  m_BufferIncrement(increment)
+{
+  AASSERT(this, increment > 0);
+
+  //a_Adjust the size
+  _resize(length);   //a_Allocate space
+
+  //a_Copy content (if any)
+  if (source.m_Length > 0)
+    _assign(source.mp_Buffer, source.m_Length);
+}
+
+AString::AString
+(
   const AString& source
 ) :
   mp_Buffer(NULL),

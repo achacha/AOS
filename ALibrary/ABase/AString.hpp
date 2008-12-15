@@ -74,30 +74,52 @@ public:
   AString();
 
   /*!
-  If constructed with a length of -1, strlen will be used.
+  If constructed with a length of -1, strlen will be used
+
+  @param pccSource const char * source
+  @param length of the data in source, if not provided strlen is called on pccSource
   */
-  AString(const char *, size_t length = AConstant::npos);
+  AString(const char *pccSource, size_t length = AConstant::npos);
   
   /*!
   Constructed from AEmittable
+
+  @param source to emit into this new object
   */
-  AString(const AEmittable&);
+  AString(const AEmittable& source);
 
   /*!
   Copy constructor
+
+  @param that other AString
   */
-  AString(const AString&);
+  AString(const AString& that);
 
   /*!
   AString from a single character
+
+  @param c character to use as source
   */
-  explicit AString(const char);
+  explicit AString(const char c);
 
   /*!
   Specialized version of the constructor used for optimizing
   the manipulation of this string
+
+  @param length for initially allocated internal buffer
+  @param increment to use when reallocating if internal buffer needs to grow
   */
   explicit AString(size_t length, u2 increment);
+
+  /*!
+  Specialized version of the constructor used for optimizing
+  the manipulation of this string
+
+  @param that other AString
+  @param length for initially allocated internal buffer
+  @param increment to use when reallocating if internal buffer needs to grow
+  */
+  explicit AString(const AString& that, size_t length, u2 increment);
 
   /*!
   Constructor that accepts wide-char in Unicode and stores as UTF8

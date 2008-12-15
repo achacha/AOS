@@ -95,8 +95,8 @@ AEventVisitor::AEventVisitor
   m_ErrorCount(0),
   mp_CurrentEvent(NULL),
   m_stateTimeLimit(INVALID_TIME_INTERVAL),
-  m_Name(name),
-  m_LevelThreshold(threshold)
+  m_LevelThreshold(threshold),
+  m_Name(name, 2048, 1024)
 {
 }
 
