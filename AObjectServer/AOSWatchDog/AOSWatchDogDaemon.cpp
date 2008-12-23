@@ -39,13 +39,13 @@ u4 AOSWatchDogDaemon::callbackMain(AThread& thread)
     if (ret == 2)
     {
       //a_Process may be up but not responding
-      _stopAObjectServer();
-      _startAObjectServer();
+      stopServer();
+      startServer();
     }
     else if (ret == 0)
     {
       //a_Start process
-      _startAObjectServer();
+      startServer();
     }
     else if (ret < 0)
     {
@@ -54,7 +54,7 @@ u4 AOSWatchDogDaemon::callbackMain(AThread& thread)
     }
 
     //a_Wait a bit
-    int i=0;
+    u4 i=0;
     while (i++ < m_SleepCycles)
     {
       if (!thread.isRun())
@@ -127,6 +127,9 @@ int AOSWatchDogDaemon::_isAObjectServerAlive()
 
 bool AOSWatchDogDaemon::_init()
 {
+  //For debugging use only
+  //MessageBox(NULL,"callbackMain: Waiting for debugger to attach", "AOSWatchDog was asked to wait on startup.",MB_SERVICE_NOTIFICATION);
+
   //a_Get module filename and add relative location of the INI
   AString thisPath(1536, 256);
   DWORD dwRet = ::GetModuleFileName(NULL, thisPath.startUsingCharPtr(), 1536);
@@ -134,13 +137,15 @@ bool AOSWatchDogDaemon::_init()
   {
     thisPath.stopUsingCharPtr(dwRet);
   }
-  
-  m_aosExecutablePath.set(thisPath, false);
-  m_aosExecutablePath.useFilename().assign("AObjectServer.exe");
-  
-  AFilename iniFilename(m_aosExecutablePath);
+    
+  AFilename iniFilename(thisPath, false);
+
+  AString str;
   iniFilename.useFilename().assign("AOSWatchDog.ini");
-  AFILE_TRACER_DEBUG_MESSAGE((AString("Using INI file: ")+iniFilename.toAString()).c_str(), NULL);
+  str.assign("Using INI file: ");
+  str.append(iniFilename);
+  AFILE_TRACER_DEBUG_MESSAGE(str.c_str(), NULL);
+
   try
   {
     m_ini.clear();
@@ -169,34 +174,88 @@ bool AOSWatchDogDaemon::_init()
     return false;
   }
 
-  //a_Init request header
-  AString str;
-  if (!m_ini.getValue("config", "aos_server_port", str))
+  //a_Check if we should wait for debugger to attach
+  if (!m_ini.isValue("config", "wait_on_startup", "true"))
+    MessageBox(NULL,"callbackMain: Waiting for debugger to attach", "AOSWatchDog was asked to wait on startup.",MB_SERVICE_NOTIFICATION);
+
+  m_aosExecutablePath.set(thisPath, false);
+  str.clear();
+  if (m_ini.getValue("config", "server_executable", str))
+    m_aosExecutablePath.useFilename().assign(str);
+  else
+    m_aosExecutablePath.useFilename().assign("AObjectServer.exe");
+
+  //
+  // Init request header
+  //
+  str.clear();
+  if (!m_ini.getValue("config", "server_isalive_command", str))
   {
     //a_Config error wait for service stop
-    AFILE_TRACER_DEBUG_MESSAGE("callbackMain: AOSWatchDog.ini: missing [config]aos_server_port. Graceful shutdown disabled.", NULL);
-    MessageBox(NULL,"callbackMain: AOSWatchDog.ini: missing [config]aos_server_port", "AOSWatchDog:  File Not Found.  Unable to continue, please stop the service.",MB_SERVICE_NOTIFICATION);
+    AFILE_TRACER_DEBUG_MESSAGE("callbackMain: AOSWatchDog.ini: missing [config]server_isalive_command.  Required for monitoring.", NULL);
+    MessageBox(NULL,"callbackMain: AOSWatchDog.ini: missing [config]server_isalive_command", "AOSWatchDog:  Unable to continue.",MB_SERVICE_NOTIFICATION);
     AThread::sleep(5000);
 
     return false;
   }
-  m_RequestHeader.useUrl().parse(ASWNL("http://127.0.0.1/ping"));
-  m_RequestHeader.useUrl().setPort(str.toInt());
-  m_RequestHeader.set(AHTTPHeader::HT_REQ_Host, ASW("127.0.0.1",9));
+  else
+  {
+    AString hostname;
+    m_ini.getValue("config", "server_hostname", hostname);
+    AString ip = ASocketLibrary::getIPFromAddress(hostname);
+    m_RequestHeader.useUrl().setServer(ip);
+    m_RequestHeader.set(AHTTPHeader::HT_REQ_Host, ip);  //HTTP/1.1 reqiured
+    m_RequestHeader.useUrl().setProtocol(AUrl::HTTP);
 
-  //a_Init ADMIN request header
+    AString port;
+    if (m_ini.getValue("config", "server_port", port))
+      m_RequestHeader.useUrl().setPort(port.toInt());
+    else
+      m_RequestHeader.useUrl().setPort(80);
+        
+    AUrl overlay(str);
+    m_RequestHeader.useUrl().overlay(str);
+
+    str.assign("callbackMain: ISALIVE header configured: ");
+    str.append(m_AdminRequestHeader.useUrl());
+    str.append(AConstant::ASTRING_CRLF);
+    str.append(m_RequestHeader);
+    AFILE_TRACER_DEBUG_MESSAGE(str.c_str(), NULL);
+  }
+
+  //
+  // Init ADMIN request header
+  //
   str.clear();
-  if (!m_ini.getValue("config", "aos_admin_port", str))
+  if (!m_ini.getValue("config", "server_shutdown_command", str))
   {
     //a_Config error wait for service stop
-    AFILE_TRACER_DEBUG_MESSAGE("callbackMain: AOSWatchDog.ini: missing [config]aos_admin_port. Waiting for stop.", NULL);
+    AFILE_TRACER_DEBUG_MESSAGE("callbackMain: AOSWatchDog.ini: missing [config]server_shutdown_url. Server shutdown feature disabled.", NULL);
     m_AdminRequestHeader.useUrl().setPort(0);
   }
   else
   {
-    m_AdminRequestHeader.useUrl().parse(ASWNL("http://127.0.0.1/admin?command=shutdown"));
-    m_AdminRequestHeader.useUrl().setPort(str.toInt());
-    m_AdminRequestHeader.set(AHTTPHeader::HT_REQ_Host, ASW("127.0.0.1",9));
+    AString hostname;
+    m_ini.getValue("config", "server_admin_hostname", hostname);
+    AString ip = ASocketLibrary::getIPFromAddress(hostname);
+    m_AdminRequestHeader.useUrl().setServer(ip);
+    m_AdminRequestHeader.set(AHTTPHeader::HT_REQ_Host, ip);  //HTTP/1.1 reqiured
+    m_AdminRequestHeader.useUrl().setProtocol(AUrl::HTTP);
+
+    AString port;
+    if (m_ini.getValue("config", "server_admin_port", port))
+      m_AdminRequestHeader.useUrl().setPort(port.toInt());
+    else
+      m_AdminRequestHeader.useUrl().setPort(12345);
+        
+    AUrl overlay(str);
+    m_AdminRequestHeader.useUrl().overlay(overlay);
+
+    str.assign("callbackMain: ADMIN header configured: ");
+    str.append(m_AdminRequestHeader.useUrl());
+    str.append(AConstant::ASTRING_CRLF);
+    str.append(m_AdminRequestHeader);
+    AFILE_TRACER_DEBUG_MESSAGE(str.c_str(), NULL);
   }
 
   //a_Timing values
@@ -207,19 +266,19 @@ bool AOSWatchDogDaemon::_init()
   str.clear();
   if (m_ini.getValue("config", "sleep_cycles", str))
     m_SleepCycles = str.toU4();
-
+  
   return true;
 }
 
-bool AOSWatchDogDaemon::_startAObjectServer()
+bool AOSWatchDogDaemon::startServer()
 {
-  AFILE_TRACER_DEBUG_SCOPE("_startAObjectServer", (void *)this);
+  AFILE_TRACER_DEBUG_SCOPE("startServer", (void *)this);
 
   AString exe, path;
   m_aosExecutablePath.emit(exe);
   m_aosExecutablePath.emitPath(path);
-  AFILE_TRACER_DEBUG_MESSAGE((AString("_startAObjectServer:  exe=")+exe).c_str(), NULL);
-  AFILE_TRACER_DEBUG_MESSAGE((AString("_startAObjectServer: path=")+path).c_str(), NULL);
+  AFILE_TRACER_DEBUG_MESSAGE((AString("startServer:  exe=")+exe).c_str(), NULL);
+  AFILE_TRACER_DEBUG_MESSAGE((AString("startServer: path=")+path).c_str(), NULL);
 
   BOOL success = ::CreateProcess(
     exe.c_str(),             //LPCTSTR lpApplicationName,
@@ -243,7 +302,7 @@ bool AOSWatchDogDaemon::_startAObjectServer()
   }
 
   //a_Success
-  AString strDebug("Process started(");
+  AString strDebug("startServer: Process started(");
   strDebug.append(m_aosExecutablePath);
   strDebug.append("):PROCINFO:");
   strDebug.append(success ? "TRUE" : "FALSE");
@@ -260,9 +319,9 @@ bool AOSWatchDogDaemon::_startAObjectServer()
   return true;
 }
 
-bool AOSWatchDogDaemon::_stopAObjectServer()
+bool AOSWatchDogDaemon::stopServer()
 {
-  AFILE_TRACER_DEBUG_SCOPE("_stopAObjectServer", (void *)this);
+  AFILE_TRACER_DEBUG_SCOPE("stopServer", (void *)this);
   
   if (m_AdminRequestHeader.getUrl().getPort() == 0)
   {
@@ -275,7 +334,7 @@ bool AOSWatchDogDaemon::_stopAObjectServer()
     AFile_Socket httpSocket(m_AdminRequestHeader, true);
     try
     {
-      AFILE_TRACER_DEBUG_MESSAGE((AString("_stopAObjectServer: opening socket: ")+m_AdminRequestHeader.useUrl().getServer()+":"+AString::fromInt(m_AdminRequestHeader.useUrl().getPort())).c_str(), NULL);
+      AFILE_TRACER_DEBUG_MESSAGE((AString("stopServer: opening socket: ")+m_AdminRequestHeader.useUrl().getServer()+":"+AString::fromInt(m_AdminRequestHeader.useUrl().getPort())).c_str(), NULL);
       httpSocket.open();
       m_AdminRequestHeader.toAFile(httpSocket);
       response.fromAFile(httpSocket);
@@ -283,14 +342,53 @@ bool AOSWatchDogDaemon::_stopAObjectServer()
     }
     catch(AException& ex)
     {
-      AString str("_stopAObjectServer: AException: ");
+      AString str("stopServer: AException: ");
       ex.emit(str);
       AFILE_TRACER_DEBUG_MESSAGE(str.c_str(), NULL);
       return _terminateAObjectServer();
     }
     catch(...)
     {
-      ARope error("_stopAObjectServer: Unknown exception trying to stop AObjectServer.\r\n");
+      ARope error("stopServer: Unknown exception trying to stop AObjectServer.\r\n");
+      AFILE_TRACER_DEBUG_MESSAGE(error.toAString().c_str(), NULL);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool AOSWatchDogDaemon::bounceServer()
+{
+  AFILE_TRACER_DEBUG_SCOPE("bounceServer", (void *)this);
+  
+  if (m_AdminRequestHeader.getUrl().getPort() == 0)
+  {
+    _terminateAObjectServer();
+  }
+  else
+  {
+    //a_Signal admin for shutdown
+    AHTTPResponseHeader response;
+    AFile_Socket httpSocket(m_AdminRequestHeader, true);
+    try
+    {
+      AFILE_TRACER_DEBUG_MESSAGE((AString("bounceServer: opening socket: ")+m_AdminRequestHeader.useUrl().getServer()+":"+AString::fromInt(m_AdminRequestHeader.useUrl().getPort())).c_str(), NULL);
+      httpSocket.open();
+      m_AdminRequestHeader.toAFile(httpSocket);
+      response.fromAFile(httpSocket);
+      memset(&m_ProcessInformation, 0, sizeof(PROCESS_INFORMATION));
+    }
+    catch(AException& ex)
+    {
+      AString str("bounceServer: AException: ");
+      ex.emit(str);
+      AFILE_TRACER_DEBUG_MESSAGE(str.c_str(), NULL);
+      return _terminateAObjectServer();
+    }
+    catch(...)
+    {
+      ARope error("bounceServer: Unknown exception trying to bounce AObjectServer.\r\n");
       AFILE_TRACER_DEBUG_MESSAGE(error.toAString().c_str(), NULL);
       return false;
     }
@@ -327,7 +425,7 @@ int AOSWatchDogDaemon::controlStopPending()
   AFILE_TRACER_DEBUG_MESSAGE("controlStopPending: Attempting to stop the controlled process", NULL);
   if (smp_MainServiceThread)
   {
-    if (!_stopAObjectServer())
+    if (!stopServer())
       return 0;
     smp_MainServiceThread->setRun(false);
   }

@@ -2,7 +2,8 @@
 #define INCLUDED__AOSWatchDogDaemon_HPP__
 
 #define ENABLE_AFILE_TRACER_DEBUG                      // This will enable it, comment it out to disable
-#define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
+//#define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
+#define AFILE_TRACER_FILENAME "C:/tmp/debug.aos.log"   //OPTIONAL: Use another filename
 
 #include "debugFileTracer.hpp"
 #include "ADaemon.hpp"
@@ -21,10 +22,17 @@ public:
   //! Callbacks
   virtual int controlStopPending();
 
+  //! Utility to bounce server
+  bool bounceServer();
+
+  //! Start server
+  bool startServer();
+  
+  //! Stop server
+  bool stopServer();
+
 private:
   bool _init();
-  bool _startAObjectServer();
-  bool _stopAObjectServer();
   bool _terminateAObjectServer();
   
   u4 m_SleepTime;

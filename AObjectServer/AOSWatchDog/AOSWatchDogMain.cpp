@@ -14,7 +14,20 @@ $Id$
 
 ASocketLibrary g_socketLibrary;
 
-static const AString _BUILD_INFO_(ASWNL("AOSWatchDog \tBUILD(")+__TIME__+" "+__DATE__+")");
+static const AString _BUILD_INFO_(ASWNL("AOSWatchDog v1.0.0.0  \tBUILD(")+__TIME__+" "+__DATE__+")");
+
+void showHelp()
+{
+  std::cout << "AOSWatchDog [command from below]\r\n";
+  std::cout << "  install     - Installs Windows service.\r\n";
+  std::cout << "  start       - Start an already installed service.\r\n";
+  std::cout << "  bounce      - Signal AOS server to stop which will then get restarted by this watchdog.\r\n";
+  std::cout << "  stop        - Signal AOS server to shutdown and stop an already started service.\r\n";
+  std::cout << "  stop_server - Signal AOS server to shutdown only.\r\n";
+  std::cout << "  remove      - Remove an already installed service.\r\n";
+  std::cout << "  status      - Status of the service.\r\n";
+  std::cout << "  console     - Run watchdog in console mode (not as a service).\r\n";
+}
 
 int main(int argc, char **argv)
 {
@@ -22,13 +35,8 @@ int main(int argc, char **argv)
 
   if (argc <= 1)
   {
-    std::cout << "AOSWatchDog [status | install | start | stop | remove | console]\r\n";
-    std::cout << "  install - Installs Windows service.\r\n";
-    std::cout << "  start   - Start an already installed service.\r\n";
-    std::cout << "  stop    - Stop an already started service.\r\n";
-    std::cout << "  remove  - Remove an already installed service.\r\n";
-    std::cout << "  status  - Status of the service.\r\n";
-    std::cout << "  console - Run watchdog in console mode (not as a service).\r\n";
+    showHelp();
+    return 0;
   }
   AString strCommand(argv[1]);
   
@@ -76,6 +84,20 @@ int main(int argc, char **argv)
       else
         std::cout << "Service stop failed." << std::endl;
     }
+    else if (strCommand.equalsNoCase("stop_server"))
+    {
+      if (watchdog.stopServer())
+        std::cout << "Server signaled to stop." << std::endl;
+      else
+        std::cout << "Server signal to stop failed." << std::endl;
+    }
+    else if (strCommand.equalsNoCase("bounce"))
+    {
+      if (watchdog.bounceServer())
+        std::cout << "Server signaled to bounce." << std::endl;
+      else
+        std::cout << "Service bounce failed." << std::endl;
+    }
     else if (strCommand.equalsNoCase("status"))
     {
       std::cout << watchdog.getStatus() << std::endl;
@@ -90,6 +112,7 @@ int main(int argc, char **argv)
       {
         ios.readLine(input);
       }
+      watchdog.stopServer();
       thread.setRun(false);
       
       std::cout << "Thread signaled to stop." << std::flush;
@@ -100,7 +123,10 @@ int main(int argc, char **argv)
       }
     }
     else
+    {
       std::cout << "Unknown command: " << strCommand << std::endl;
+      showHelp();
+    }
   }
   catch(AException& ex)
   {

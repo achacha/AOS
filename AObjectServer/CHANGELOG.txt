@@ -1,6 +1,12 @@
 Change Log
 ----------
 
+1.6.1.0:
+- AOSWatchDog has been made a lot more generic, replacing your existing ini with new one will transparently work
+- AOSWatchDog can now bounce the server
+- Cleaned up handling of INI files to use AFile instead of std::istream for better portability
+
+
 1.6.0.0:
 - Major reorganization of the aos_root directory to handle localization better
 - I18n locale support via localized data and static directories and configuration to remap locales
