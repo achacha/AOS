@@ -99,7 +99,7 @@ AUrl AUrl::operator |(const AUrl &urlSource) const
   return urlReturn;
 }
 
-const AUrl &AUrl::operator |=(const AUrl &urlSource)
+void AUrl::overlay(const AUrl &urlSource)
 {
   //a_URL components
   if (m_strProtocol.isEmpty()) m_strProtocol = urlSource.m_strProtocol;
@@ -135,6 +135,8 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
       //If target URL didn't have form items, remove local items since we are using target filename
       if (urlSource.m_QueryString.size() == 0)
         m_QueryString.clear();
+      else
+        m_QueryString |= urlSource.m_QueryString;
     }
   }
   else
@@ -168,6 +170,8 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
           //If target URL didn't have form items, remove local items since we are using target filename
           if (urlSource.m_QueryString.size() == 0)
             m_QueryString.clear();
+          else
+            m_QueryString |= urlSource.m_QueryString;
         }
         else
         {
@@ -178,6 +182,8 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
           //If target URL didn't have form items, remove local items since we are using target filename
           if (urlSource.m_QueryString.size() == 0)
             m_QueryString.clear();
+          else
+            m_QueryString |= urlSource.m_QueryString;
         }
          
         //a_Contract the redirections like ".." by removing preceding directory
@@ -248,6 +254,8 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
             //If target URL didn't have form items, remove local items since we are using target filename
             if (urlSource.m_QueryString.size() == 0)
               m_QueryString.clear();
+            else
+              m_QueryString |= urlSource.m_QueryString;
           }
         }
         else
@@ -261,6 +269,8 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
             //If target URL didn't have form items, remove local items since we are using target filename
             if (urlSource.m_QueryString.size() == 0)
               m_QueryString.clear();
+            else
+              m_QueryString |= urlSource.m_QueryString;
           }
         }
       }
@@ -275,11 +285,18 @@ const AUrl &AUrl::operator |=(const AUrl &urlSource)
           //If target URL didn't have form items, remove local items since we are using target filename
           if (urlSource.m_QueryString.size() == 0)
             m_QueryString.clear();
+          else
+            m_QueryString |= urlSource.m_QueryString;
         }
       }
     }
   }
-    
+}
+
+const AUrl &AUrl::operator |=(const AUrl &urlSource)
+{
+  overlay(urlSource);
+
   return *this;
 }
 

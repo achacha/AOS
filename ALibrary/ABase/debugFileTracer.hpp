@@ -24,7 +24,7 @@ $Id$
 \code
     #define ENABLE_AFILE_TRACER_DEBUG                      // This will enable it, comment it out to disable
     #define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
-    #define AFILE_TRACER_FILENAME "/mypath/myfilename.ext" //OPTIONAL: Use anothe filename
+    #define AFILE_TRACER_FILENAME "/mypath/myfilename.ext" //OPTIONAL: Use another filename
     #include "debugFileTracer.hpp"
 
     int MyClass::myMethod()
@@ -66,7 +66,7 @@ $Id$
 #  define AFILE_TRACER_FILENAME DD_FILENAME
 #endif
 
-#define DD_OPENFLAGS  std::ios::out|std::ios::app
+#define DD_OPENFLAGS  std::ios::out|std::ios::app|std::ios::binary
 
 /*!
   Message Mode: 0 - Writes in ctor and dtor   1 - Writes only in ctor

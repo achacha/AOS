@@ -856,8 +856,9 @@ int ADaemon::removeNTService()
   if(!DeleteService(m_schService))
   {
     //a_Unable to delete
+    DWORD errorNumber = GetLastError();
     _closeService();
-    ATHROW_LAST_OS_ERROR(NULL);
+    ATHROW_LAST_OS_ERROR_KNOWN(NULL, errorNumber);
   }
 
   AFILE_TRACER_DEBUG_MESSAGE("Service removed.", this);

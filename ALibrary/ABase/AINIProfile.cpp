@@ -7,7 +7,7 @@ $Id$
 #include "templateAutoPtr.hpp"
 #include "AINIProfile.hpp"
 #include "AException.hpp"
-#include "AFile_IOStream.hpp"
+#include "AFile_Physical.hpp"
 #include "AFilename.hpp"
 
 //a_Leaf of the node that builds the tree
@@ -197,13 +197,8 @@ void AINIProfile::parse()
     return;
 
   //a_Open file
-	std::ifstream fs(mstr_Filename.c_str(), std::ios_base::in);
-	if (fs.fail())
-  {
-    //a_File does not exist, nothing to parse
-    return;
-  }
-	AFile_IOStream f(NULL, &fs);
+  AFile_Physical f(mstr_Filename);
+  f.open();
 
   AString str;
   _ININode* pCurrent = NULL;
@@ -543,23 +538,17 @@ void AINIProfile::_writeINI(_ININode* pNode) const
   if ( mstr_Filename.isEmpty() )
     ATHROW(this, AException::EmptyFilename);
 
-  {
-    //a_File for write
-		std::ofstream fs(mstr_Filename.c_str(), std::ios_base::out | std::ios_base::binary /*| std::ios_base::trunc*/);
-		if (fs.fail())
-		  ATHROW(this, AException::UnableToOpen);
-		
-		if (!pNode)
-		{
-			//a_Tree is empty, empty the file
-			return;
-		}
-		else
-		{
-      //a_Recursively iterates through the tree and writes
-      AFile_IOStream f(&fs, NULL);
-			_writeINIRecursiveLoop(pNode, f);
-    }
+	if (!pNode)
+	{
+		//a_Tree is empty, empty the file
+		return;
+	}
+	else
+	{
+    //a_Recursively iterates through the tree and writes
+    AFile_Physical f(mstr_Filename, "wb");
+    f.open();
+		_writeINIRecursiveLoop(pNode, f);
   }
 }
 

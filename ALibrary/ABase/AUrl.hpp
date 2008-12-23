@@ -88,10 +88,19 @@ public:
   const AUrl &operator =(const AUrl& that);
   
   /*!
-  Will merge URLs, leaving this data alone if not empty
+  Will overlay URLs, leaving this data alone if not empty
+
+  @param that other object
+  */
+  void overlay(const AUrl &that);
+
+  /*!
+  Will overlay URLs, leaving this data alone if not empty
+  Calls overlay()
 
   @param that other object
   @return *this
+  @see overlay
   */
   const AUrl &operator |=(const AUrl& that);
 
