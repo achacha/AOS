@@ -5,6 +5,8 @@ Change Log
 - AOSWatchDog has been made a lot more generic, replacing your existing ini with new one will transparently work
 - AOSWatchDog can now bounce the server
 - Cleaned up handling of INI files to use AFile instead of std::istream for better portability
+- Added handling to AXmlElement to return default value when XML path contains no content
+- Sped up logging monitor and session cleaning thread, improved shutdown times
 
 
 1.6.0.0:

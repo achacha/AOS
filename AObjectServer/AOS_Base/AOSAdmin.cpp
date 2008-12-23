@@ -324,40 +324,46 @@ void AOSAdmin::_shutdown(
   mthread_AdminListener.setRun(false);
   m_IsShutdownRequested = true;
 
+  AOSRequestListener *pListener = dynamic_cast<AOSRequestListener *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSRequestListener")));
+  AOSContextQueue_IsAvailable *pcqIsAvailable = dynamic_cast<AOSContextQueue_IsAvailable *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_IsAvailable")));;
+  AOSContextQueue_PreExecutor *pcqPreExecutor = dynamic_cast<AOSContextQueue_PreExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_PreExecutor")));;
+  AOSContextQueue_Executor *pcqExecutor = dynamic_cast<AOSContextQueue_Executor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_Executor")));;
+  AOSContextQueue_ErrorExecutor *pcqErrorExecutor = dynamic_cast<AOSContextQueue_ErrorExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_ErrorExecutor")));;
+
   m_Services.useLog().add(ASW("ADMIN: Shutdown",15), ALog::INFO);
   AOS_DEBUGTRACE("Shutdown request received... initiating shutdown sequence.", NULL);
 
   AOS_DEBUGTRACE("Trying to stop AOSRequestListener...", NULL);
-  AOSRequestListener *pListener = dynamic_cast<AOSRequestListener *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSRequestListener")));
   AASSERT(NULL, pListener);
   pListener->stopListening();
   AOS_DEBUGTRACE("AOSRequestListener stopped.", NULL);
   elem.addElement(ASWNL("AOSRequestListener"));
 
+  AOS_DEBUGTRACE("Signaling queue threads to start existing worker threads...", NULL);
+  AASSERT(NULL, pcqPreExecutor);
+  pcqPreExecutor->useThreadPool().setRunStateOnThreads(false);
+  AASSERT(NULL, pcqExecutor);
+  pcqExecutor->useThreadPool().setRunStateOnThreads(false);
+  AASSERT(NULL, pcqErrorExecutor);
+  pcqErrorExecutor->useThreadPool().setRunStateOnThreads(false);
+
   AOS_DEBUGTRACE("Trying to stop AOSRequestQueue_IsAvailable...", NULL);
-  AOSContextQueue_IsAvailable *pcqIsAvailable = dynamic_cast<AOSContextQueue_IsAvailable *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_IsAvailable")));;
   AASSERT(NULL, pcqIsAvailable);
   pcqIsAvailable->stop();
   AOS_DEBUGTRACE("AOSRequestQueue_IsAvailable stopped.", NULL);
   elem.addElement(ASWNL("AOSContextQueue_IsAvailable"));
 
   AOS_DEBUGTRACE("Trying to stop AOSContextQueue_PreExecutor...", NULL);
-  AOSContextQueue_PreExecutor *pcqPreExecutor = dynamic_cast<AOSContextQueue_PreExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_PreExecutor")));;
-  AASSERT(NULL, pcqPreExecutor);
   pcqPreExecutor->stop();
   AOS_DEBUGTRACE("AOSContextQueue_PreExecutor stopped.", NULL);
   elem.addElement(ASWNL("AOSContextQueue_PreExecutor"));
 
   AOS_DEBUGTRACE("Trying to stop AOSContextQueue_Executor...", NULL);
-  AOSContextQueue_Executor *pcqExecutor = dynamic_cast<AOSContextQueue_Executor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_Executor")));;
-  AASSERT(NULL, pcqExecutor);
   pcqExecutor->stop();
   AOS_DEBUGTRACE("AOSContextQueue_Executor stopped.", NULL);
   elem.addElement(ASWNL("AOSContextQueue_Executor"));
 
   AOS_DEBUGTRACE("Trying to stop AOSContextQueue_ErrorExecutor...", NULL);
-  AOSContextQueue_ErrorExecutor *pcqErrorExecutor = dynamic_cast<AOSContextQueue_ErrorExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_ErrorExecutor")));;
-  AASSERT(NULL, pcqErrorExecutor);
   pcqErrorExecutor->stop();
   AOS_DEBUGTRACE("AOSContextQueue_ErrorExecutor stopped.", NULL);
   elem.addElement(ASWNL("AOSContextQueue_ErrorExecutor"));

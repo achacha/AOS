@@ -20,6 +20,7 @@
   <log>
     <mask desc="Mask to use for writing logged events (see documentation, default is errors only)"/>
     <max-file-size desc="Maximum size per log file before creating a new log file and incrementing filename (in bytes, default 1MB)">1048576</max-file-size>
+    <cycle-sleep desc="How long to sleeep between log write cycles, if no log messages aare available logger will keep sleeping for this time, in milliseconds, default is 1000"/>
   </log>
 
   <template-cache desc="Template objects that are read from file and kept in a parsed state for execution">
@@ -118,7 +119,7 @@
   <session-manager>
     <holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">13</holder-size>
     <timeout desc="Number of milliseconds since session was last used and expires">60000</timeout>
-    <sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration">5000</sleep-cycle>
+    <sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration, default is 3000"/>
     <database-persistence desc="Database persistence of session data">
       <enabled>false</enabled>
     </database-persistence>

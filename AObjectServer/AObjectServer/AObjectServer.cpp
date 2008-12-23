@@ -231,7 +231,7 @@ int main(int argc, char **argv)
       do
       {
         //a_This is the watcher for the main loop, when admin is not running the server has stopped
-        AThread::sleep(5000);
+        AThread::sleep(3000);
       }
       while(!admin.isShutdownRequested() || admin.isRunning());
     }

@@ -160,6 +160,9 @@ AOSServices::AOSServices(const AFilename& basePath) :
   u4 maxFileSize = mp_Configuration->useConfigRoot().getU4("server/log/max-file-size", ALog_AFile::DEFAULT_MAX_FILE_SIZE);
   mp_Log->setLoggerMaxFileSize(maxFileSize);
 
+  u4 cycle_sleep = mp_Configuration->useConfigRoot().getU4("server/log/cycle-sleep", ALog_AFile::DEFAULT_CYCLE_SLEEP);
+  mp_Log->setLoggerCycleSleep(cycle_sleep);
+
   mp_ResourceManager = new AOSResourceManager(*this);
   mp_ContextManager = new AOSContextManager(*this);
   mp_CacheManager = new AOSCacheManager(*this);
