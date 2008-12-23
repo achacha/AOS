@@ -121,12 +121,16 @@ bool AXmlElement::emitContentFromPath(
   if (pNode)
   {
     AXmlElement::CONTAINER::const_iterator cit = pNode->m_Content.begin();
+    if (cit == pNode->m_Content.end())
+      return false;
+
+    bool hasContent = false;
     while (cit != pNode->m_Content.end())
     {
-      (*cit)->emitContent(target);
+      hasContent |= (*cit)->emitContent(target);
       ++cit;
     }
-    return true;
+    return hasContent;
   }
   else
     return false;
@@ -155,14 +159,18 @@ void AXmlElement::emitXmlContent(AXmlElement& target) const
   }
 }
 
-void AXmlElement::emitContent(AOutputBuffer& target) const
+bool AXmlElement::emitContent(AOutputBuffer& target) const
 {
   CONTAINER::const_iterator cit = m_Content.begin();
+  if (cit == m_Content.end())
+    return false;
+
   while (cit != m_Content.end())
   {   
     (*cit)->emitContent(target);
     ++cit;
   }
+  return true;
 }
 
 void AXmlElement::_indent(AOutputBuffer& target, int indent) const

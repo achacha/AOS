@@ -101,6 +101,23 @@ void testAddAndSerialize(int& iRet)
   ASSERT_UNIT_TEST(str0.equals(str1), "Serialization", "", iRet);
 }
 
+void testXmlElementAccess(int& iRet)
+{
+  AXmlElement root("root");
+  root.addElement("base");
+  AXmlElement& config = root.addElement("config");
+  config.addElement("red").addData("100");
+  config.addElement("blue").addAttribute("id", "3").addData("endless");
+  config.addElement("green");
+
+  ASSERT_UNIT_TEST(root.getU4("/root/base", 13) == 13, "Access", "0", iRet);
+  ASSERT_UNIT_TEST(root.getU4("/root/config/blue@id", 13) == 3, "Access", "1", iRet);
+  ASSERT_UNIT_TEST(root.getU4("/root/red", 13) == 100, "Access", "2", iRet);
+  ASSERT_UNIT_TEST(root.getU4("/root/green", 13) == 13, "Access", "3", iRet);
+
+}
+
+
 int ut_AXmlElement_General()
 {
   std::cerr << "ut_AXmlElement_General" << std::endl;
@@ -108,8 +125,10 @@ int ut_AXmlElement_General()
   int iRet = 0x0;
   
   testGetSet(iRet);
-  std::cerr << std::endl;
+  NEWLINE_UNIT_TEST();
   testAddAndSerialize(iRet);
+  NEWLINE_UNIT_TEST();
+  testXmlElementAccess(iRet);
 
   return iRet;
 }

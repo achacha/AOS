@@ -77,8 +77,9 @@ public:
   Unencoded raw data emit
 
   @param target to emit content to
+  @return true if non-empty content was appended
   */
-  virtual void emitContent(AOutputBuffer& target) const;
+  virtual bool emitContent(AOutputBuffer& target) const;
   
   /*!
   Checks if element type

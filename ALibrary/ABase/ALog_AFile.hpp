@@ -24,6 +24,10 @@ class ASync_Mutex;
 class ABASE_API ALog_AFile : public ALog
 {
 public:
+  //! Default sleep cycle
+  static const u4 DEFAULT_CYCLE_SLEEP;
+  
+  //! Default max file size
   static const u4 DEFAULT_MAX_FILE_SIZE;
 
 public:
@@ -101,20 +105,20 @@ protected:
   virtual void _add(const AEmittable&, u4 eventType);
 
 private:
-  //a_Worker thread that writes the data
+  // Worker thread that writes the data
   AThread m_LoggerThread;
   static u4 threadprocLogger(AThread&);
   u4 m_CycleSleep;
   
-  //a_Special error handling
+  // Special error handling
   bool m_enableSeparateFilesForErrors;
 
-  //a_Log rotation
+  // Log rotation
   bool m_enableLogFileRotate;
   u4 m_logMaxFileSize;
   AFragmentString m_filenameRotation;
 
-  //a_Data buffer for the log
+  // Data buffer for the log
   class LogBuffer
   {
   public:
@@ -126,7 +130,7 @@ private:
   typedef std::list<LogBuffer *> BufferContainer;
   BufferContainer m_BuffersToWrite;
 
-  //a_Pointer to the AFile based object and filename of this log
+  // Pointer to the AFile based object and filename of this log
   bool m_DeleteFileObject;
   AFile *mp_File;
 };

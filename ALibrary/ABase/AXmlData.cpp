@@ -73,10 +73,15 @@ void AXmlData::emitJson(AOutputBuffer& target, int indent) const
   target.append('\"');
 }
 
-void AXmlData::emitContent(AOutputBuffer& target) const
+bool AXmlData::emitContent(AOutputBuffer& target) const
 {
   if (!m_Data.isEmpty())
+  {
     target.append(m_Data);  //a_Direct output
+    return true;
+  }
+  else
+    return false;
 }
 
 void AXmlData::emit(AOutputBuffer& target) const

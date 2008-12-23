@@ -518,8 +518,9 @@ public:
   Emit content only, unecoded raw data
 
   @param target to emit to
+  @return true if there was some content, false if no content or singular element
   */
-  virtual void emitContent(AOutputBuffer& target) const;
+  virtual bool emitContent(AOutputBuffer& target) const;
 
   /*!
   Emit Xml from path

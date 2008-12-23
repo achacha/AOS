@@ -13,8 +13,7 @@ $Id$
 #include "AXmlElement.hpp"
 #include "ATextGenerator.hpp"
 
-#define DEFAULT_CYCLE_SLEEP 10000
-
+const u4 ALog_AFile::DEFAULT_CYCLE_SLEEP=1000;
 const u4 ALog_AFile::DEFAULT_MAX_FILE_SIZE = 1024 * 1024;
 
 void ALog_AFile::debugDump(std::ostream& os, int indent) const
