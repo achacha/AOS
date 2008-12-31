@@ -11,13 +11,13 @@ ALog::ScopeEvents::ScopeEvents(const AString& scopeName, ALog& parentLog) :
   m_ScopeName(scopeName),
   m_Timer(true)
 {
-  m_ParentLog.add(m_ScopeName, ALog::SCOPE_START);
+  m_ParentLog.add(m_ScopeName, ALog::EVENT_SCOPE_START);
 }
 
 ALog::ScopeEvents::~ScopeEvents()
 {
   m_Timer.stop();
-  m_ParentLog.add(m_ScopeName, m_Timer, ALog::SCOPE_END);
+  m_ParentLog.add(m_ScopeName, m_Timer, ALog::EVENT_SCOPE_END);
 }
 
 void ALog::ScopeEvents::add(
@@ -25,7 +25,7 @@ void ALog::ScopeEvents::add(
   u4 event_type //= ALog::MESSAGE
 )
 {
-  m_ParentLog.add(m_ScopeName, source0, event_type | ALog::SCOPE);
+  m_ParentLog.add(m_ScopeName, source0, event_type | ALog::EVENT_SCOPE);
 }
 
 void ALog::ScopeEvents::add(
@@ -34,7 +34,7 @@ void ALog::ScopeEvents::add(
   u4 event_type //= ALog::MESSAGE
 )
 {
-  m_ParentLog.add(m_ScopeName, source0, source1, event_type | ALog::SCOPE);
+  m_ParentLog.add(m_ScopeName, source0, source1, event_type | ALog::EVENT_SCOPE);
 }
 
 void ALog::ScopeEvents::add(
@@ -44,14 +44,14 @@ void ALog::ScopeEvents::add(
   u4 event_type //= ALog::MESSAGE
 )
 {
-  m_ParentLog.add(m_ScopeName, source0, source1, source2, event_type | ALog::SCOPE);
+  m_ParentLog.add(m_ScopeName, source0, source1, source2, event_type | ALog::EVENT_SCOPE);
 }
 
 size_t ALog::ScopeEvents::_append(const char *pcc, size_t len)
 {
   AASSERT(this, AConstant::npos != len);
   AASSERT(this, NULL != pcc);
-  m_ParentLog.add(m_ScopeName, ASW(pcc, len), ALog::MESSAGE | ALog::SCOPE);
+  m_ParentLog.add(m_ScopeName, ASW(pcc, len), ALog::EVENT_MESSAGE | ALog::EVENT_SCOPE);
   return len;
 }
 

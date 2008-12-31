@@ -24,7 +24,7 @@ Must have some synchronization object, use ASync_Counter in single threaded mode
 
 Example:
 ALog myLog(new ASynch_Mutex("MyLogMutex"));                      // everything logged by default
-myLog.removeEventMask(ALog::ALL_MESSAGES | ALog::ALL_WARNINGS);  //remove warnings and messages
+myLog.removeEventMask(ALog::EVENTMASK_ALL_MESSAGES | ALog::EVENTMASK_ALL_WARNINGS);  //remove warnings and messages
 
 myLog.add(ASW("Some event",10), ALog::CRITICAL);  // adds a critical event, ASW is an efficient 'const char*' wrapper to 'const AString' (see AString.hpp)
 myLog.append(ASW("Another",7));                   // uses AOutputBuffer interface to log a MESSAGE (by default)
@@ -66,34 +66,34 @@ public:
   */
   enum EVENT_MASK
   {
-    EXCEPTION      = 0x00000001,         //Exception
-    CRITICAL_ERROR = 0x00000002,         //Critical error
-    FAILURE        = 0x00000004,         //Functional failure
-    ALL_ERRORS     = 0x000000ff,         //All errors
+    EVENT_EXCEPTION        = 0x00000001,       //Exception
+    EVENT_CRITICAL_ERROR   = 0x00000002,       //Critical error
+    EVENT_FAILURE          = 0x00000004,       //Functional failure
+    EVENTMASK_ALL_ERRORS   = 0x000000ff,       //All errors
     
-    WARNING        = 0x00000100,         //Warning
-    ALL_WARNINGS   = 0x00000f00,         //All warnings
+    EVENT_WARNING          = 0x00000100,       //Warning
+    EVENTMASK_ALL_WARNINGS = 0x00000f00,       //All warnings
     
-    MESSAGE        = 0x00001000,         //Log message
-    STATISTIC      = 0x00002000,         //Statistics of some sort
-    TIMING         = 0x00004000,         //Timing data
-    ALL_MESSAGES   = 0x000ff000,         //All messages
+    EVENT_MESSAGE          = 0x00001000,       //Log message
+    EVENT_STATISTIC        = 0x00002000,       //Statistics of some sort
+    EVENT_TIMING           = 0x00004000,       //Timing data
+    EVENTMASK_ALL_MESSAGES = 0x000ff000,       //All messages
 
-    INFO           = 0x00100000,         //Semi-important information
-    COMMENT        = 0x00200000,         //Not so important comment
-    DEBUG          = 0x00400000,         //Debug only, lots of log spam
-    ALL_INFO       = 0x00f00000,         //All informational
+    EVENT_INFO             = 0x00100000,       //Semi-important information
+    EVENT_COMMENT          = 0x00200000,       //Not so important comment
+    EVENT_DEBUG            = 0x00400000,       //Debug only, lots of log spam
+    EVENTMASK_ALL_INFO     = 0x00f00000,       //All informational
 
     // 0x0f00000 range of 4 bits currently free
 
-    SCOPE_START    = 0x10000000,         //Scope start
-    SCOPE          = 0x20000000,         //Scope during
-    SCOPE_END      = 0x40000000,         //Scope end
-    ALL_SCOPE      = 0xf0000000,         //All scope messages
+    EVENT_SCOPE_START      = 0x10000000,         //Scope start
+    EVENT_SCOPE            = 0x20000000,         //Scope during
+    EVENT_SCOPE_END        = 0x40000000,         //Scope end
+    EVENT_ALL_SCOPE        = 0xf0000000,         //All scope messages
 
-    SILENT         = 0x00000000,         //No messages
-    DEFAULT        = 0xff0fffff,         //All except INFO logged, INFO must be explicitly turned on
-    ALL            = 0xffffffff          //Everything
+    EVENTMASK_SILENT       = 0x00000000,         //No messages
+    EVENTMASK_DEFAULT      = 0xff0fffff,         //All except INFO logged, INFO must be explicitly turned on
+    EVENTMASK_ALL          = 0xffffffff          //Everything
   };
 
 public:
@@ -101,7 +101,7 @@ public:
   ctor with optional synchronization object to use, NULL implies unsynchronized
   ALog will OWN this synch object and will delete it when done with it
   */
-  ALog(ASynchronization *, ALog::EVENT_MASK mask = ALog::DEFAULT);
+  ALog(ASynchronization *, ALog::EVENT_MASK mask = ALog::EVENTMASK_DEFAULT);
   
   //! virtual dtor
   virtual ~ALog();
@@ -109,10 +109,10 @@ public:
   /*!
   Filtering (setting and clearing bits)
 
-  myLog.setEventMask(ALog::ALL_ERRORS);       //only log errors
-  myLog.addEventMask(ALog::TIMING);           //now log errors and TIMING
-  myLog.addEventMask(ALog::ALL_SCOPE);        //now log erros, TIMING and all scope
-  myLog.removeEventMask(ALog::SCOPE);         //now log errors, TIMING, SCOPE_START and SCOPE_END
+  myLog.setEventMask(ALog::EVENTMASK_ALL_ERRORS);  //only log errors
+  myLog.addEventMask(ALog::EVENT_TIMING);          //now log errors and TIMING
+  myLog.addEventMask(ALog::EVENTMASK_ALL_SCOPE);   //now log erros, TIMING and all scope
+  myLog.removeEventMask(ALog::EVENT_SCOPE);        //now log errors, TIMING, SCOPE_START and SCOPE_END
 
   */
   void setEventMask(u4 mask);             //!< =          (sets a logging mask)
@@ -129,10 +129,10 @@ public:
 
   All AEmittables are appended together, separated by :
   */
-  void add(const AEmittable&, u4 eventType = ALog::MESSAGE);
-  void add(const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
-  void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
-  void add(const AEmittable&, const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
+  void add(const AEmittable&, u4 eventType = ALog::EVENT_MESSAGE);
+  void add(const AEmittable&, const AEmittable&, u4 eventType = ALog::EVENT_MESSAGE);
+  void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::EVENT_MESSAGE);
+  void add(const AEmittable&, const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::EVENT_MESSAGE);
 
   /*!
   Specialized events
@@ -176,9 +176,9 @@ public:
     Events that occured within this scope
     All AEmittables are appended together, separated by :
     */
-    void add(const AEmittable&, u4 eventType = ALog::MESSAGE);
-    void add(const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
-    void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::MESSAGE);
+    void add(const AEmittable&, u4 eventType = ALog::EVENT_MESSAGE);
+    void add(const AEmittable&, const AEmittable&, u4 eventType = ALog::EVENT_MESSAGE);
+    void add(const AEmittable&, const AEmittable&, const AEmittable&, u4 eventType = ALog::EVENT_MESSAGE);
 
     /*!
     AOutputBuffer
@@ -217,11 +217,11 @@ public:
       
       //...do some stuff...
       
-      scope.add(ASW("Something happend in this scope",31), ALog::WARNING);
+      scope.add(ASW("Something happend in this scope",31), ALog::EVENT_WARNING);
 
       //...do some stuff...
 
-      scope.add(ASW("Execution time=",14), myTimer, ALog::TIMING);
+      scope.add(ASW("Execution time=",14), myTimer, ALog::EVENT_TIMING);
 
       //Once this class goes out of scope, it will write itself to the log
       //with all additional data (execution time of scope included on last line [milliseconds])

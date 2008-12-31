@@ -119,7 +119,7 @@ class ElRocho
 
 #if defined(__WINDOWS__) && defined(USE_WINDOWS_DEBUG_OUTPUT)
       ofDumpo << std::ends;
-      ::OutputDebugString(ofDumpo.str().c_str());
+      ::OutputDebugStringA(ofDumpo.str().c_str());
 #else
       ofDumpo.close();
 #endif
@@ -143,7 +143,7 @@ class ElRocho
 
 #if defined(__WINDOWS__) && defined(USE_WINDOWS_DEBUG_OUTPUT)
         ofDumpo << std::ends;
-        ::OutputDebugString(ofDumpo.str().c_str());
+        ::OutputDebugStringA(ofDumpo.str().c_str());
 #else
         ofDumpo.close();
 #endif
@@ -167,7 +167,7 @@ class ElRocho
 
 #if defined(__WINDOWS__) && defined(USE_WINDOWS_DEBUG_OUTPUT)
       ofDumpo << std::ends;
-      ::OutputDebugString(ofDumpo.str().c_str());
+      ::OutputDebugStringA(ofDumpo.str().c_str());
 #else
       ofDumpo.close();
 #endif

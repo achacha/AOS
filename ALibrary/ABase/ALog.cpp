@@ -56,13 +56,13 @@ size_t ALog::_append(const char *pcc, size_t len)
 {
   AASSERT(this, AConstant::npos != len);
   AASSERT(this, NULL != pcc);
-  add(ASW(pcc, len), ALog::MESSAGE);
+  add(ASW(pcc, len), ALog::EVENT_MESSAGE);
   return len;
 }
 
 void ALog::add(
   const AEmittable& source0, 
-  u4 eventType //= ALog::MESSAGE
+  u4 eventType //= ALog::EVENT_MESSAGE
 )
 {
   //a_Log event only if event type is not filtered out
@@ -97,7 +97,7 @@ void ALog::add(
 void ALog::add(
   const AEmittable& source0, 
   const AEmittable& source1, 
-  u4 eventType // = ALog::MESSAGE
+  u4 eventType // = ALog::EVENT_MESSAGE
 )
 {
   if (m_EventMask & eventType)
@@ -133,7 +133,7 @@ void ALog::add(
   const AEmittable& source0,
   const AEmittable& source1,
   const AEmittable& source2,
-  u4 eventType //= ALog::MESSAGE
+  u4 eventType //= ALog::EVENT_MESSAGE
 )
 {
   if (m_EventMask & eventType)
@@ -170,7 +170,7 @@ void ALog::add(
   const AEmittable& source1,
   const AEmittable& source2,
   const AEmittable& source3,
-  u4 eventType //= ALog::MESSAGE
+  u4 eventType //= ALog::EVENT_MESSAGE
 )
 {
   if (m_EventMask & eventType)
@@ -237,12 +237,12 @@ ALog::ScopeEvents ALog::addScopeEvents(const AString& scopeName)
 void ALog::addException(const AException& ex)
 {
   const AEmittable& ee = ex;
-  add(ee, ALog::EXCEPTION);
+  add(ee, ALog::EVENT_EXCEPTION);
 }
 
 void ALog::addException(const std::exception& ex)
 {
-  add(ASWNL(ex.what()), ALog::EXCEPTION);
+  add(ASWNL(ex.what()), ALog::EVENT_EXCEPTION);
 }
 
 size_t ALog::flush(AFile&)

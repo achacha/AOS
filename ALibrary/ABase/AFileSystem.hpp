@@ -19,16 +19,18 @@ public:
   Path types used by isA, getType
   */
   enum PathType {
-    Exists       = 0x0001,
-    Directory    = 0x0002,
-    File         = 0x0004,    // NOTE: A Directory is also a File
-    ReadOnly     = 0x0008,
-    Compressed   = 0x0010,
-    Encrypted    = 0x0020,
-    System       = 0x0040,
-    Hidden       = 0x0080,
-    Temporary    = 0x0100,
-    DoesNotExist = 0xFFFF
+    Exists        = 0x0001,    //! Exists
+    Directory     = 0x0002,    //! Directory
+    File          = 0x0004,    //! File
+    ReadOnly      = 0x0008,    //! Read Only
+    Compressed    = 0x0010,    //! Compressed
+    Encrypted     = 0x0020,    //! Encrypted
+    System        = 0x0040,    //! System
+    Hidden        = 0x0080,    //! Hidden
+    Temporary     = 0x0100,    //! Temporary
+    NotAFile      = 0xfffb,    //! ~File
+    NotADirectory = 0xfffb,    //! ~Directory
+    DoesNotExist  = 0xFFFF
   };
 
   class ABASE_API FileInfo : public AXmlEmittable, public ADebugDumpable
@@ -54,6 +56,16 @@ public:
 
     //! Equality operator
     bool operator ==(const FileInfo&) const;
+
+    /*!
+    @return true if current item is a directory and not a file
+    */
+    bool isDirectory() const;
+
+    /*!
+    @return true if current item is a file and not a directory
+    */
+    bool isFile() const;
   };
 
   typedef std::list<AFileSystem::FileInfo> FileInfos;

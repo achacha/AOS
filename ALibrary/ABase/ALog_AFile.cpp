@@ -243,7 +243,7 @@ void ALog_AFile::_add(
 
   if (
        m_enableSeparateFilesForErrors 
-    && (eventType & ALog::ALL_ERRORS)
+    && (eventType & ALog::EVENTMASK_ALL_ERRORS)
   )
   {
     //a_Generate semi-random filename

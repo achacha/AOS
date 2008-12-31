@@ -43,7 +43,7 @@ public:
   
   ASynchronization object will be OWNED by this class and DELETED when done
   */
-  ALog_AFile(ASynchronization *, const AFilename&, ALog::EVENT_MASK mask = ALog::DEFAULT);
+  ALog_AFile(ASynchronization *, const AFilename&, ALog::EVENT_MASK mask = ALog::EVENTMASK_DEFAULT);
   
   /*!
   Log to AFile object (no file rotation is done)
@@ -58,7 +58,7 @@ public:
   ASynchronization object will be OWNED by this class and DELETED when done
   AFile object will be NOT BE OWNED, you must delete it
   */
-  ALog_AFile::ALog_AFile(ASynchronization *pSynch, AFile *pFile, ALog::EVENT_MASK mask = ALog::DEFAULT);
+  ALog_AFile::ALog_AFile(ASynchronization *pSynch, AFile *pFile, ALog::EVENT_MASK mask = ALog::EVENTMASK_DEFAULT);
   
   // dtor
   virtual ~ALog_AFile();

@@ -36,6 +36,16 @@ bool AFileSystem::FileInfo::operator ==(const FileInfo& that) const
   return filename == that.filename;
 }
 
+bool AFileSystem::FileInfo::isDirectory() const
+{
+  return ((typemask & AFileSystem::Exists) && (typemask & AFileSystem::Directory));
+}
+
+bool AFileSystem::FileInfo::isFile() const
+{
+  return ((typemask & AFileSystem::Exists) && (typemask & AFileSystem::File));
+}
+
 void AFileSystem::FileInfo::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -62,7 +72,8 @@ AXmlElement& AFileSystem::FileInfo::emitXml(AXmlElement& thisRoot) const
 {
   if (typemask & AFileSystem::Directory)
     thisRoot.useAttributes().insert(ASW("dir",3), AConstant::ASTRING_ONE);
-  else
+
+  if (typemask & AFileSystem::File)
     thisRoot.useAttributes().insert(ASW("file",4), AConstant::ASTRING_ONE);
 
   if (!typemask)
@@ -343,8 +354,7 @@ u4 AFileSystem::_winAttrToMask(u4 attr)
   u4 ret = 0;
   if (attr & FILE_ATTRIBUTE_DIRECTORY)
     ret |= Directory;
-
-  if (attr & FILE_ATTRIBUTE_DIRECTORY)
+  else
     ret |= File;
 
   if (attr & FILE_ATTRIBUTE_READONLY)
