@@ -81,14 +81,14 @@ void AOSOutputExecutor::registerOutputGenerator(AOSOutputGeneratorInterface *pGe
   if (it != m_OutputGenerators.end())
   {
     //a_Command already has this processor
-    m_Services.useLog().add(ASWNL("AOSOutputExecutor::registerOutputGenerator:replacing output generator"), (*it).first, command, ALog::WARNING);
+    m_Services.useLog().add(ASWNL("AOSOutputExecutor::registerOutputGenerator:replacing output generator"), (*it).first, command, ALog::EVENT_WARNING);
     delete (*it).second;
     (*it).second = pGenerator;
   }
   else
   {
     //a_Add new command
-    m_Services.useLog().add(ASWNL("AOSOutputExecutor::registerOutputGenerator"), command, ALog::INFO);
+    m_Services.useLog().add(ASWNL("AOSOutputExecutor::registerOutputGenerator"), command, ALog::EVENT_INFO);
     m_OutputGenerators[command] = pGenerator;
   }
 

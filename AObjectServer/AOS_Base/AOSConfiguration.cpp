@@ -303,19 +303,19 @@ AOSConfiguration::AOSConfiguration(
   int logLevel = m_Config.useRoot().getInt("/config/server/log-level", -1);
   if (-1 != logLevel)
   {
-    m_Services.useLog().setEventMask(ALog::SILENT);
+    m_Services.useLog().setEventMask(ALog::EVENTMASK_SILENT);
     switch(logLevel)
     {
-      case 5 : m_Services.useLog().addEventMask(ALog::ALL);
+      case 5 : m_Services.useLog().addEventMask(ALog::EVENTMASK_ALL);
         break;
 
-      case 4 : m_Services.useLog().addEventMask(ALog::ALL_INFO);
-      case 3 : m_Services.useLog().addEventMask(ALog::ALL_MESSAGES);
-      case 2 : m_Services.useLog().addEventMask(ALog::ALL_WARNINGS);
-      case 1 : m_Services.useLog().addEventMask(ALog::ALL_ERRORS);
+      case 4 : m_Services.useLog().addEventMask(ALog::EVENTMASK_ALL_INFO);
+      case 3 : m_Services.useLog().addEventMask(ALog::EVENTMASK_ALL_MESSAGES);
+      case 2 : m_Services.useLog().addEventMask(ALog::EVENTMASK_ALL_WARNINGS);
+      case 1 : m_Services.useLog().addEventMask(ALog::EVENTMASK_ALL_ERRORS);
         break;
 
-      default: m_Services.useLog().setEventMask(ALog::DEFAULT);
+      default: m_Services.useLog().setEventMask(ALog::EVENTMASK_DEFAULT);
     }
   }
 
@@ -436,14 +436,14 @@ void AOSConfiguration::_populateLocaleDirectories(const AFilename& basedir, AOSC
     AOSConfiguration::MAP_LOCALE_DIRS::iterator itRemappedLocalInfo = dirs.find(itRemap->second);
     if (itRemappedLocalInfo == dirs.end())
     {
-      m_Services.useLog().add(AString("Physical locale directory for remap does not exist (ignoring and using default): ")+itRemap->second, ALog::WARNING);
+      m_Services.useLog().add(AString("Physical locale directory for remap does not exist (ignoring and using default): ")+itRemap->second, ALog::EVENT_WARNING);
       continue;
     }
     
     // Warn if remapping an existing directory
     if (dirs.find(itRemap->first) != dirs.end())
     {
-      m_Services.useLog().add(AString("Remapping locale replaces an existing directory: ")+itRemap->first+ASWNL(" to ")+itRemap->second, ALog::WARNING);
+      m_Services.useLog().add(AString("Remapping locale replaces an existing directory: ")+itRemap->first+ASWNL(" to ")+itRemap->second, ALog::EVENT_WARNING);
     }
 
     // Remap locale to a directory of an existing locale
@@ -499,11 +499,11 @@ void AOSConfiguration::_readMIMETypes()
         if (m_ExtToMimeType.find(strName) == m_ExtToMimeType.end())
         {
           m_ExtToMimeType[strName] = strValue;
-          // Creates too much spam on startup m_Services.useLog().add(ASWNL("Adding MIME type"), strName, strValue, ALog::INFO);
+          // Creates too much spam on startup m_Services.useLog().add(ASWNL("Adding MIME type"), strName, strValue, ALog::EVENT_INFO);
         }
         else
         {
-          m_Services.useLog().add(ASWNL("Ignoring duplicate MIME type"), strName, strValue, filename, ALog::WARNING);
+          m_Services.useLog().add(ASWNL("Ignoring duplicate MIME type"), strName, strValue, filename, ALog::EVENT_WARNING);
         }
       }
     }
@@ -565,7 +565,7 @@ void AOSConfiguration::loadConfig(const AFilename& filename)
 {
   if (AFileSystem::exists(filename))
   {
-    m_Services.useLog().add(ASW("Reading XML config: ",20), filename, ALog::DEBUG);
+    m_Services.useLog().add(ASW("Reading XML config: ",20), filename, ALog::EVENT_DEBUG);
     
     AFile_Physical file(filename);
     file.open();
@@ -573,7 +573,7 @@ void AOSConfiguration::loadConfig(const AFilename& filename)
     m_Config.useRoot().addContent(configDoc.useRoot());
   }
   else
-    m_Services.useLog().add(ASW("XML config does not exist: ",27), filename, ALog::WARNING);
+    m_Services.useLog().add(ASW("XML config does not exist: ",27), filename, ALog::EVENT_WARNING);
 }
 
 void AOSConfiguration::_loadControllers()
@@ -609,7 +609,7 @@ void AOSConfiguration::_loadControllers()
     str.append(m_AosBaseDynamicDir);
     str.append("'");
     AOS_DEBUGTRACE(str.c_str(), NULL);
-    m_Services.useLog().add(str, m_AosBaseDynamicDir, ALog::WARNING);
+    m_Services.useLog().add(str, m_AosBaseDynamicDir, ALog::EVENT_WARNING);
   }
 }
 
@@ -842,14 +842,14 @@ void AOSConfiguration::setReportedServer(const AString& configPath)
       m_Config.useRoot().emitString(configPath, m_ReportedServer);
       AString str("Setting reported server: ");
       str.append(m_ReportedServer);
-      m_Services.useLog().add(str, ALog::DEBUG);
+      m_Services.useLog().add(str, ALog::EVENT_DEBUG);
     }
   }
   else
   {
     AString str("AOSConfiguration::setReportedServer: Unable to find path: ");
     str.append(configPath);
-    m_Services.useLog().add(str, ALog::WARNING);
+    m_Services.useLog().add(str, ALog::EVENT_WARNING);
   }
 }
 
@@ -867,7 +867,7 @@ void AOSConfiguration::setReportedHostname(const AString& configPath)
       
       AString str("Setting reported hostname: ");
       str.append(m_ReportedHostname);
-      m_Services.useLog().add(str, ALog::DEBUG);
+      m_Services.useLog().add(str, ALog::EVENT_DEBUG);
     }
     else
     {
@@ -878,7 +878,7 @@ void AOSConfiguration::setReportedHostname(const AString& configPath)
   {
     AString str("AOSConfiguration::setReportedHostname: Unable to find path: ");
     str.append(configPath);
-    m_Services.useLog().add(str, ALog::WARNING);
+    m_Services.useLog().add(str, ALog::EVENT_WARNING);
   }
 }
 
@@ -890,13 +890,13 @@ void AOSConfiguration::setReportedHttpPort(const AString& configPath)
     
     AString str("Setting reported http port: ");
     str.append(AString::fromInt(m_ReportedHttpPort));
-    m_Services.useLog().add(str, ALog::DEBUG);
+    m_Services.useLog().add(str, ALog::EVENT_DEBUG);
   }
   else
   {
     AString str("AOSConfiguration::setReportedHttpPort: Unable to find path: ");
     str.append(configPath);
-    m_Services.useLog().add(str, ALog::WARNING);
+    m_Services.useLog().add(str, ALog::EVENT_WARNING);
   }
 }
 
@@ -908,13 +908,13 @@ void AOSConfiguration::setReportedHttpsPort(const AString& configPath)
     
     AString str("Setting reported https port: ");
     str.append(AString::fromInt(m_ReportedHttpsPort));
-    m_Services.useLog().add(str, ALog::DEBUG);
+    m_Services.useLog().add(str, ALog::EVENT_DEBUG);
   }
   else
   {
     AString str("AOSConfiguration::setReportedHttpsPort: Unable to find path: ");
     str.append(configPath);
-    m_Services.useLog().add(str, ALog::WARNING);
+    m_Services.useLog().add(str, ALog::EVENT_WARNING);
   }
 }
 
@@ -926,10 +926,10 @@ void AOSConfiguration::setAosDefaultFilename(const AString& configPath)
     
     AString str("Setting default filename: ");
     str.append(m_AosDefaultFilename);
-    m_Services.useLog().add(str, ALog::DEBUG);
+    m_Services.useLog().add(str, ALog::EVENT_DEBUG);
   }
   else
-    m_Services.useLog().add(ARope("AOSConfiguration::setAosDefaultFilename: Unable to find path: ")+configPath, ALog::WARNING);
+    m_Services.useLog().add(ARope("AOSConfiguration::setAosDefaultFilename: Unable to find path: ")+configPath, ALog::EVENT_WARNING);
 }
 
 void AOSConfiguration::setAosDefaultInputProcessor(const AString& configPath)
@@ -940,13 +940,13 @@ void AOSConfiguration::setAosDefaultInputProcessor(const AString& configPath)
     
     AString str("Setting default input processor: ");
     str.append(m_AosDefaultInputProcessor);
-    m_Services.useLog().add(str, ALog::DEBUG);
+    m_Services.useLog().add(str, ALog::EVENT_DEBUG);
   }
   else
   {
     AString str("AOSConfiguration::setAosDefaultInputProcessor: Unable to find path: ");
     str.append(configPath);
-    m_Services.useLog().add(str, ALog::WARNING);
+    m_Services.useLog().add(str, ALog::EVENT_WARNING);
   }
 }
 
@@ -958,13 +958,13 @@ void AOSConfiguration::setAosDefaultOutputGenerator(const AString& configPath)
     
     AString str("Setting default output generator: ");
     str.append(m_AosDefaultOutputGenerator);
-    m_Services.useLog().add(str, ALog::DEBUG);
+    m_Services.useLog().add(str, ALog::EVENT_DEBUG);
   }
   else
   {
     AString str("AOSConfiguration::setAosDefaultOutputGenerator: Unable to find path: ");
     str.append(configPath);
-    m_Services.useLog().add(str, ALog::WARNING);
+    m_Services.useLog().add(str, ALog::EVENT_WARNING);
   }
 }
 

@@ -41,7 +41,7 @@ void AOSAdminCommandRegistry::insert(AOSAdminCommandInterface *pCommand)
 
   if (m_AdminCommands.end() != m_AdminCommands.find(pCommand->getName()))
   {
-    m_Services.useLog().add(ASWNL("AOSAdminRegistry::insert"), ASWNL("Duplicate admin command detected, ignoring"), pCommand->getName(), ALog::WARNING);
+    m_Services.useLog().add(ASWNL("AOSAdminRegistry::insert"), ASWNL("Duplicate admin command detected, ignoring"), pCommand->getName(), ALog::EVENT_WARNING);
   }
 
   //a_Insert/replace

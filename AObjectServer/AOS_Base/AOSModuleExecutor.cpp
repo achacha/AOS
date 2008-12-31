@@ -76,7 +76,7 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
   if (it != m_Modules.end())
   {
     //a_Controller already has modules
-    m_Services.useLog().add(AString("AOSModuleExecutor::registerModule:replacing controller"), (*it).first, controller, ALog::WARNING);
+    m_Services.useLog().add(AString("AOSModuleExecutor::registerModule:replacing controller"), (*it).first, controller, ALog::EVENT_WARNING);
     (*it).second->deinit();
     delete (*it).second;
     (*it).second = pModule;
@@ -84,7 +84,7 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
   else
   {
     //a_Add new command
-    m_Services.useLog().add(AString("AOSModuleExecutor::registerModule"), controller, ALog::INFO);
+    m_Services.useLog().add(AString("AOSModuleExecutor::registerModule"), controller, ALog::EVENT_INFO);
     m_Modules[controller] = pModule;
   }
 

@@ -145,7 +145,7 @@ AOSServices::AOSServices(const AFilename& basePath) :
   logfile.useFilename().assign(ASW("aos.log",7));
   AFilename mutexfile(logfile);
   mutexfile.useFilename().assign(ASW("aos.mutex",9));
-  mp_Log = new ALog_AFile(new ASync_Mutex(mutexfile.toAString()), logfile, ALog::ALL_ERRORS);
+  mp_Log = new ALog_AFile(new ASync_Mutex(mutexfile.toAString()), logfile, ALog::EVENTMASK_ALL_ERRORS);
 
   //a_Must have admin registry before configuration
   mp_AdminRegistry = new AOSAdminRegistry(*mp_Log);
@@ -233,7 +233,7 @@ bool AOSServices::loadModules()
     {
       AString strDebug("Unable to load dynamic library: ");
       strDebug.append(f);
-      mp_Log->add(strDebug, ALog::FAILURE);
+      mp_Log->add(strDebug, ALog::EVENT_FAILURE);
       return false;
     }
     else
@@ -260,7 +260,7 @@ bool AOSServices::loadModules()
         AString strDebug("  FAILED to register module: '");
         strDebug.append(f);
         strDebug.append('\'');
-        mp_Log->add(strDebug, ALog::FAILURE);
+        mp_Log->add(strDebug, ALog::EVENT_FAILURE);
         return false;
       }
       else
@@ -276,7 +276,7 @@ bool AOSServices::loadModules()
       AString strDebug("  Module: '");
       strDebug.append(f);
       strDebug.append("': unable to find proc symbol: aos_register");
-      mp_Log->add(strDebug, ALog::FAILURE);
+      mp_Log->add(strDebug, ALog::EVENT_FAILURE);
       return false;
     }
   }

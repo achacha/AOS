@@ -54,7 +54,7 @@ extern "C" AOS_BASEMODULES_API int aos_register(
   AOSServices& services
 )
 {
-  services.useLog().add(ASWNL("AOS_BaseModules: aos_register"), ALog::INFO);
+  services.useLog().add(ASWNL("AOS_BaseModules: aos_register"), ALog::EVENT_INFO);
 
   //Register input processors
   inputExecutor.registerInputProcessor(new AOSInput_HtmlForm(services));

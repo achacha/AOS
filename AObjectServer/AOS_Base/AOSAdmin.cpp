@@ -108,7 +108,7 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
   str.append(listener.getSocketInfo().m_address);
   str.append(':');
   str.append(AString::fromInt(listener.getSocketInfo().m_port));
-  pThis->m_Services.useLog().add(str, ALog::MESSAGE);
+  pThis->m_Services.useLog().add(str, ALog::EVENT_MESSAGE);
   AOS_DEBUGTRACE(str.c_str(), NULL);
 
   str.clear();
@@ -135,7 +135,7 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
         }
         if (!request.parseLineZero(str))
         {
-          pThis->m_Services.useLog().add(ASWNL("AOSAdmin::threadprocAdminListener: Unable to parse line 0"), str, ALog::FAILURE);
+          pThis->m_Services.useLog().add(ASWNL("AOSAdmin::threadprocAdminListener: Unable to parse line 0"), str, ALog::EVENT_FAILURE);
           continue;
         }
 
@@ -188,7 +188,7 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
     }
     catch(...)
     {
-      pThis->m_Services.useLog().add(ASWNL("AOSAdmin::threadprocAdminListener: Unknown exception caught."), ALog::EXCEPTION);
+      pThis->m_Services.useLog().add(ASWNL("AOSAdmin::threadprocAdminListener: Unknown exception caught."), ALog::EVENT_EXCEPTION);
     }
   }
 
@@ -227,14 +227,14 @@ void AOSAdmin::_processRequest(AFile_Socket& client, AHTTPRequestHeader& request
       //a_Send the file
       AFile_Physical localFile(httpFileServe.toAString(), ASW("rb",2));
       localFile.open();
-      m_Services.useLog().add(ASW("ADMIN: Static file",18), httpFileServe, ALog::INFO);
+      m_Services.useLog().add(ASW("ADMIN: Static file",18), httpFileServe, ALog::EVENT_INFO);
       localFile.readUntilEOF(outputBuffer);
       localFile.close();
     }
     else
     {
       //a_File not found
-      m_Services.useLog().add(ASW("ADMIN: Static file NOT FOUND",28), httpFileServe, ALog::INFO);
+      m_Services.useLog().add(ASW("ADMIN: Static file NOT FOUND",28), httpFileServe, ALog::EVENT_INFO);
       response.setStatusCode(AHTTPResponseHeader::SC_404_Not_Found);
       outputBuffer.append("File not found: ",16);
       outputBuffer.append(httpFileServe);
@@ -330,7 +330,7 @@ void AOSAdmin::_shutdown(
   AOSContextQueue_Executor *pcqExecutor = dynamic_cast<AOSContextQueue_Executor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_Executor")));;
   AOSContextQueue_ErrorExecutor *pcqErrorExecutor = dynamic_cast<AOSContextQueue_ErrorExecutor *>(m_Services.useAdminRegistry().getAdminObject(ASWNL("AOSContextQueue_ErrorExecutor")));;
 
-  m_Services.useLog().add(ASW("ADMIN: Shutdown",15), ALog::INFO);
+  m_Services.useLog().add(ASW("ADMIN: Shutdown",15), ALog::EVENT_INFO);
   AOS_DEBUGTRACE("Shutdown request received... initiating shutdown sequence.", NULL);
 
   AOS_DEBUGTRACE("Trying to stop AOSRequestListener...", NULL);

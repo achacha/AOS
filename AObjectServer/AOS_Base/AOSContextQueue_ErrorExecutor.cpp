@@ -89,7 +89,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
         )
         {
           //a_Log to file, output is done already
-          m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
+          m_Services.useLog().add(pContext->useEventVisitor(), ALog::EVENT_FAILURE);
         }
         else
         {          
@@ -192,18 +192,18 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
     catch(AException& e)
     {
       pContext->useEventVisitor().addEvent(e, AEventVisitor::EL_ERROR);
-      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::EVENT_FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
     }
     catch(std::exception& e)
     {
       pContext->useEventVisitor().addEvent(ASWNL(e.what()), AEventVisitor::EL_ERROR);
-      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::EVENT_FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
     }
     catch(...)
     {
-      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::EVENT_FAILURE);
       pContext->useEventVisitor().addEvent(ASWNL("Unknown exception caught in AOSContextQueue_ErrorExecutor::_threadproc"), AEventVisitor::EL_ERROR);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
       break;

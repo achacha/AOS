@@ -971,7 +971,7 @@ void AOSContext::addError(
   {
     m_RequestHeader.getUrl().emit(rope, true);
   }
-  m_Services.useLog().add(where, what, rope, ALog::CRITICAL_ERROR);
+  m_Services.useLog().add(where, what, rope, ALog::EVENT_CRITICAL_ERROR);
   m_EventVisitor.startEvent(where+":"+what, AEventVisitor::EL_ERROR);
   m_OutputXmlDocument.useRoot().addElement(S_ERROR).addData(what);
 }

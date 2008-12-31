@@ -228,10 +228,12 @@ int main(int argc, char **argv)
 #if defined(__WINDOWS__) && defined(WINDOWS_CRTDBG_ENABLED)
       DEBUG_MEMORY_SET_START_CHECKPOINT();
 #endif
+      u4 sleepTime = pservices->useConfiguration().useConfigRoot().getU4("/server/main/sleep", 3000);
+      AASSERT(NULL, sleepTime > 100);  // Should never bee lower than 100 ms, waste of cycles
       do
       {
         //a_This is the watcher for the main loop, when admin is not running the server has stopped
-        AThread::sleep(3000);
+        AThread::sleep(sleepTime);
       }
       while(!admin.isShutdownRequested() || admin.isRunning());
     }
@@ -261,7 +263,7 @@ int main(int argc, char **argv)
     ::MiniDumpWriteDump(::GetCurrentProcess(), ::GetCurrentProcessId(), (HANDLE)hFile, MiniDumpNormal, NULL, NULL, NULL);
 #endif
       AOS_DEBUGTRACE("main: Unknown exception caught", NULL);
-      pservices->useLog().add(ASWNL("main: Unknown exception caught"), ALog::EXCEPTION);
+      pservices->useLog().add(ASWNL("main: Unknown exception caught"), ALog::EVENT_EXCEPTION);
       return -1;
     }
   }

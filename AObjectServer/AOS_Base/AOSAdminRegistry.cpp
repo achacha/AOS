@@ -36,7 +36,7 @@ void AOSAdminRegistry::insert(const AString& name, AOSAdminInterface& object)
 
 
   if (m_AdminObjects.find(name) != m_AdminObjects.end())
-    m_Log.add(ASWNL("Admin object already registered"), name, ALog::WARNING);
+    m_Log.add(ASWNL("Admin object already registered"), name, ALog::EVENT_WARNING);
 
   //a_Insert/replace
   m_AdminObjects[name] = &object;

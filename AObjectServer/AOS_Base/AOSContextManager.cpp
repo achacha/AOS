@@ -444,7 +444,7 @@ void AOSContextManager::deallocate(AOSContext *p)
   //a_Write to log
   if (p->useEventVisitor().getErrorCount() > 0)
   {
-    m_Services.useLog().add(p->useEventVisitor(), ALog::CRITICAL_ERROR);
+    m_Services.useLog().add(p->useEventVisitor(), ALog::EVENT_CRITICAL_ERROR);
   }
 
   if (p->useEventVisitor().getErrorCount() > 0)

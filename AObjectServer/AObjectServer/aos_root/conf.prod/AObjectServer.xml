@@ -101,6 +101,10 @@
     </remap>
   </locale>
   
+  <main>
+    <sleep desc="Milliseconds to sleep while checking for a shutdown, default is 3000"/>
+  </main>
+
   <!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
   <error-templates desc="HTTP status response templates, located relative to aos_data directory">
     <default desc="Default template when a status code does not have an explicit template">http/default.template</default>

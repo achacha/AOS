@@ -109,7 +109,7 @@ void AOSResourceManager::_load()
           str.append('=');
           str.append(it->filename);
           AOS_DEBUGTRACE(str.c_str(), NULL);
-          m_Services.useLog().add(str, ALog::WARNING);
+          m_Services.useLog().add(str, ALog::EVENT_WARNING);
         }
         else
         {
@@ -117,7 +117,7 @@ void AOSResourceManager::_load()
           AString str("No resource.xml found: ");
           str.append(it->filename);
           AOS_DEBUGTRACE(str.c_str(), NULL);
-          m_Services.useLog().add(str, ALog::DEBUG);
+          m_Services.useLog().add(str, ALog::EVENT_DEBUG);
         }
       }
     }

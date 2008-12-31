@@ -7,6 +7,7 @@ Change Log
 - Cleaned up handling of INI files to use AFile instead of std::istream for better portability
 - Added handling to AXmlElement to return default value when XML path contains no content
 - Sped up logging monitor and session cleaning thread, improved shutdown times
+- Fixed directory listing, not directory is AFileSystem::Directory type and file is AFileSystem::File type as expected
 
 
 1.6.0.0:

@@ -382,7 +382,7 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
     }
     catch(...)
     {
-      pOwner->m_Services.useLog().add(ASWNL("Unknown exception caught in AOSContextQueue_IsAvailable::threadproc"), ALog::EXCEPTION);
+      pOwner->m_Services.useLog().add(ASWNL("Unknown exception caught in AOSContextQueue_IsAvailable::threadproc"), ALog::EVENT_EXCEPTION);
     }
   }
 

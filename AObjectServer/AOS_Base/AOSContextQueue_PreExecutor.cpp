@@ -216,7 +216,7 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
             pContext->useRequestUrl().emit(rope);
             rope.append(']');
             pContext->useEventVisitor().startEvent(rope);
-            m_Services.useLog().add(rope, ALog::INFO);
+            m_Services.useLog().add(rope, ALog::EVENT_INFO);
           }
           break;
 
@@ -318,19 +318,19 @@ u4 AOSContextQueue_PreExecutor::_threadproc(AThread& thread)
     catch(AException& e)
     {
       pContext->useEventVisitor().addEvent(e, AEventVisitor::EL_ERROR);
-      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::EVENT_FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }
     catch(std::exception& e)
     {
       pContext->useEventVisitor().addEvent(ASWNL(e.what()), AEventVisitor::EL_ERROR);
-      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::EVENT_FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
     }
     catch(...)
     {
       pContext->useEventVisitor().addEvent(ASW("Unknown exception caught in AOSContextQueue_PreExecutor::threadproc",67), AEventVisitor::EL_ERROR);
-      m_Services.useLog().add(pContext->useEventVisitor(), ALog::FAILURE);
+      m_Services.useLog().add(pContext->useEventVisitor(), ALog::EVENT_FAILURE);
       m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_ERROR, &pContext);
       break;
     }

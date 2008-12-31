@@ -150,7 +150,7 @@ u4 AOSSessionManager::threadprocSessionManager(AThread& thread)
   }
   catch(...)
   {
-    pThis->m_Services.useLog().add(ASWNL("Unknown exception caught in AOSSessionManager monitor thread"), ALog::FAILURE);
+    pThis->m_Services.useLog().add(ASWNL("Unknown exception caught in AOSSessionManager monitor thread"), ALog::EVENT_FAILURE);
   }
   thread.setRunning(false); // Flag thread as stopping
   
@@ -215,7 +215,7 @@ void AOSSessionManager::persistSession(const AString& sessionId)
   AOSSessionData *pData = getSessionData(sessionId);
   if (!pData)
   {
-    m_Services.useLog().add(ARope("Trying to persist non-existing session: ")+sessionId, ALog::WARNING);
+    m_Services.useLog().add(ARope("Trying to persist non-existing session: ")+sessionId, ALog::EVENT_WARNING);
     return;
   }
   persistSession(pData);
@@ -241,7 +241,7 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
   size_t rows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
   if (!strError.isEmpty())
   {
-    m_Services.useLog().add(strError, ALog::FAILURE);
+    m_Services.useLog().add(strError, ALog::EVENT_FAILURE);
     return;
   }
 
@@ -265,7 +265,7 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
     m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
     if (!strError.isEmpty())
     {
-      m_Services.useLog().add(strError, ALog::FAILURE);
+      m_Services.useLog().add(strError, ALog::EVENT_FAILURE);
     }
   }           
   else
@@ -280,7 +280,7 @@ void AOSSessionManager::persistSession(AOSSessionData *pData)
     m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
     if (!strError.isEmpty())
     {
-      m_Services.useLog().add(strError, ALog::FAILURE);
+      m_Services.useLog().add(strError, ALog::EVENT_FAILURE);
     }
   }
 }
@@ -299,7 +299,7 @@ AOSSessionData *AOSSessionManager::_restoreSession(const AString& sessionId)
   size_t rows = m_Services.useDatabaseConnectionPool().useDatabasePool().executeSQL(query, result, strError);
   if (!strError.isEmpty())
   {
-    m_Services.useLog().add(strError, ALog::FAILURE);
+    m_Services.useLog().add(strError, ALog::EVENT_FAILURE);
     return NULL;
   }
 
