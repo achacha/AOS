@@ -34,7 +34,7 @@ extern "C" AOS_WIKI_API int aos_register(
   AOSServices& services
 )
 {
-  services.useLog().add(ASWNL("AOS_Wiki: aos_register"), ALog::INFO);
+  services.useLog().add(ASWNL("AOS_Wiki: aos_register"), ALog::EVENT_INFO);
 
   //Register modules
   moduleExecutor.registerModule(new AOSModule_Wiki_Controller(services));

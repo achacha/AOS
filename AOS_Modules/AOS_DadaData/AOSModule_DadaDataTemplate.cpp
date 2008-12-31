@@ -100,10 +100,10 @@ void AOSModule_DadaDataTemplate::init()
         }
       }
       else
-        m_Services.useLog().add(ARope("AOS_DadaData: Missing file: ")+filename, ALog::WARNING);
+        m_Services.useLog().add(ARope("AOS_DadaData: Missing file: ")+filename, ALog::EVENT_WARNING);
     }
     else
-      m_Services.useLog().add(ASWNL("AOS_DadaData: AOS_DadaData/template missing 'name' attribute"), ALog::FAILURE);
+      m_Services.useLog().add(ASWNL("AOS_DadaData: AOS_DadaData/template missing 'name' attribute"), ALog::EVENT_FAILURE);
 
     ++it;
   }

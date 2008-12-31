@@ -97,10 +97,10 @@ void ADadaDataHolder::readData(AOSServices& services, const AXmlElement *pSet)
         _loadWords(str, filename, services.useLog());
       }
       else
-        services.useLog().add(ASWNL("AOS_DadaData: <data> missing 'type' attribute"), ALog::FAILURE);
+        services.useLog().add(ASWNL("AOS_DadaData: <data> missing 'type' attribute"), ALog::EVENT_FAILURE);
     }
     else
-      services.useLog().add(ARope("Missing word file: ")+filename, ALog::WARNING);
+      services.useLog().add(ARope("Missing word file: ")+filename, ALog::EVENT_WARNING);
     
     ++it;
   }

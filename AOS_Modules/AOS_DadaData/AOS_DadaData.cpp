@@ -33,7 +33,7 @@ extern "C" AOS_DADADATA_API int aos_register(
   AOSServices& services
 )
 {
-  services.useLog().add(ASWNL("AOS_DadaData: aos_register"), ALog::INFO);
+  services.useLog().add(ASWNL("AOS_DadaData: aos_register"), ALog::EVENT_INFO);
 
   //Register modules
   moduleExecutor.registerModule(new AOSModule_DadaDataTemplate(services));
