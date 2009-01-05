@@ -6,7 +6,7 @@ $Id$
 #include "pchAOS_Test.hpp"
 #include "AOSModule_TestPass.hpp"
 
-const AString AOSModule_TestPass::CLASS("Test.Pass");
+const AString AOSModule_TestPass::CLASS("Test.pass");
 
 const AString& AOSModule_TestPass::getClass() const
 {

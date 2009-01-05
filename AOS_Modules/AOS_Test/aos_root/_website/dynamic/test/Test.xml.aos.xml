@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?> 
 <controller session='false'>
 	<input/>
-	<module class='Test.Pass'>
+	<module class='Test.pass'>
 		<fname>Enigo</fname>
 		<lname>Montoya</lname>
 		<phrase><![CDATA[ My name is Enigo Montoya, you have killed my father, prepare to die! ]]></phrase>

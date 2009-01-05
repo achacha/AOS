@@ -8,7 +8,6 @@
 			<max-age>10</max-age>
 		</add-response-cookie>
 	</module>
-	<module class="PublishInput"/>
 	<output/>
 </controller>
 	

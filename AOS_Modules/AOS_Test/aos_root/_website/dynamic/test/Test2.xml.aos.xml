@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?> 
 <controller>
 	<input/>
-	<module class='Test.Pass'>
+	<module class='Test.pass'>
 		<name>foo</name>
 		<value>bar</value>
 	</module>
-	<module class='Test.Pass'>
+	<module class='Test.pass'>
 		<name>red</name>
 		<value>pink</value>
 	</module>
-	<module class='Test.Pass'>
+	<module class='Test.pass'>
 		<name>blue</name>
 		<value>teal</value>
 	</module>
