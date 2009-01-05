@@ -71,6 +71,12 @@ void AOSResourceManager::_load()
   fData.usePathNames().pop_back();
   fData.useFilename().assign("data*.*", 7);
 
+  if (!AFileSystem::existsExpandWildcards(fData))
+  {
+    m_Services.useLog().add(ASWNL("Data directories not found (data*.*), not required, continuing."), ALog::EVENT_INFO);
+    return;
+  }
+
   AFileSystem::FileInfos files;
   if (AFileSystem::dir(fData, files, false, false) > 0)
   {

@@ -326,7 +326,6 @@ AOSConfiguration::AOSConfiguration(
   try
   {
     _readMIMETypes();
-    _loadControllers();
   }
   catch(AException& ex)
   {
@@ -334,6 +333,121 @@ AOSConfiguration::AOSConfiguration(
     services.useLog().addException(ex);
     throw;
   }
+}
+
+void AOSConfiguration::loadControllers()
+{
+  try
+  {
+    AFileSystem::FileInfos fileList;
+    AFileSystem::FileInfos directoryConfigs;
+    const AString& EXT1 = ASW("aos",3);
+    const AString& EXT2 = ASW("xml",3);
+    if (AFileSystem::dir(m_AosBaseDynamicDir, fileList, true, true) > 0)
+    {
+      for(AFileSystem::FileInfos::iterator it = fileList.begin(); it != fileList.end(); ++it)
+      {
+        if (!it->filename.equalsExtension(EXT1, EXT2))
+        {
+          continue;
+        }
+        
+        if (it->filename.useFilename().equals(AOSDirectoryConfig::FILENAME))
+        {
+          _readDirectoryConfig(it->filename);
+        }
+        else
+        {
+          _readController(it->filename);
+        }
+      }
+
+      _postProcessControllerAndConfig(directoryConfigs);
+    }
+    else
+    {
+      AString str("WARNING: No command files found at: '");
+      str.append(m_AosBaseDynamicDir);
+      str.append("'");
+      AOS_DEBUGTRACE(str.c_str(), NULL);
+      m_Services.useLog().add(str, m_AosBaseDynamicDir, ALog::EVENT_WARNING);
+    }
+  }
+  catch(AException& ex)
+  {
+    // Log any exception and re-throw since we just created the log
+    m_Services.useLog().addException(ex);
+    throw;
+  }
+}
+  
+bool AOSConfiguration::validateControllers()
+{
+  bool status = true;
+  AOSInputExecutor& inputExecutor = m_Services.useInputExecutor();
+  AOSModuleExecutor& moduleExecutor = m_Services.useModuleExecutor();
+  AOSOutputExecutor& outputExecutor = m_Services.useOutputExecutor();
+  for(MAP_ASTRING_CONTROLLERPTR::iterator it = m_ControllerPtrs.begin(); it != m_ControllerPtrs.end(); ++it)
+  {
+    // Input
+    {
+      const AString& name = it->second->getInputProcessorClassName();
+      if (!name.isEmpty() && !inputExecutor.exists(name))
+      {
+        // Input processor does not exist
+        AString strError("Input processor not found (");
+        strError.append(name);
+        strError.append(") in controller: ");
+        strError.append(it->first);
+        strError.append(AConstant::ASTRING_EOL);
+        strError.append(*(it->second));
+        m_Services.useLog().add(strError, ALog::EVENT_FAILURE);
+        status = false;
+      }
+    }
+
+    // Modules
+    {
+      const AOSModules::LIST_AOSMODULE_PTRS& modules = it->second->getModules().get();
+      for (AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = modules.begin(); cit != modules.end(); ++cit)
+      {
+        const AString& name = (*cit)->getModuleClassName();
+        AASSERT(it->second, !name.isEmpty());
+        if (!moduleExecutor.exists(name))
+        {
+          // Input processor does not exist
+          AString strError("Module not found (");
+          strError.append(name);
+          strError.append(") in controller: ");
+          strError.append(it->first);
+          strError.append(AConstant::ASTRING_EOL);
+          strError.append(*(it->second));
+          m_Services.useLog().add(strError, ALog::EVENT_FAILURE);
+          status = false;
+        }
+      }
+    }
+
+
+    // Output
+    {
+      const AString& name = it->second->getOutputGeneratorClassName();
+      if (!name.isEmpty() && !outputExecutor.exists(name))
+      {
+        // Input processor does not exist
+        AString strError("Output generator not found (");
+        strError.append(name);
+        strError.append(") in controller: ");
+        strError.append(it->first);
+        strError.append(AConstant::ASTRING_EOL);
+        strError.append(*(it->second));
+        m_Services.useLog().add(strError, ALog::EVENT_FAILURE);
+        status = false;
+      }
+    }
+  }
+  
+  return status;
 }
 
 void AOSConfiguration::_initStatics()
@@ -390,6 +504,12 @@ void AOSConfiguration::_populateLocaleDirectories(const AFilename& basedir, AOSC
   f.useFilename().assign(f.usePathNames().back());
   f.usePathNames().pop_back();
   f.useFilename().append(".*",2);
+  if (!AFileSystem::existsExpandWildcards(f))
+  {
+    m_Services.useLog().add(AString("Assuming single locale, locale config directory not found: ")+f, ALog::EVENT_INFO);
+    return;
+  }
+
   AFileSystem::FileInfos fileInfos;
   if (AFileSystem::dir(f, fileInfos, false, false) > 0)
   {
@@ -576,43 +696,6 @@ void AOSConfiguration::loadConfig(const AFilename& filename)
     m_Services.useLog().add(ASW("XML config does not exist: ",27), filename, ALog::EVENT_WARNING);
 }
 
-void AOSConfiguration::_loadControllers()
-{
-  AFileSystem::FileInfos fileList;
-  AFileSystem::FileInfos directoryConfigs;
-  const AString& EXT1 = ASW("aos",3);
-  const AString& EXT2 = ASW("xml",3);
-  if (AFileSystem::dir(m_AosBaseDynamicDir, fileList, true, true) > 0)
-  {
-    for(AFileSystem::FileInfos::iterator it = fileList.begin(); it != fileList.end(); ++it)
-    {
-      if (!it->filename.equalsExtension(EXT1, EXT2))
-      {
-        continue;
-      }
-      
-      if (it->filename.useFilename().equals(AOSDirectoryConfig::FILENAME))
-      {
-        _readDirectoryConfig(it->filename);
-      }
-      else
-      {
-        _readController(it->filename);
-      }
-    }
-
-    _postProcessControllerAndConfig(directoryConfigs);
-  }
-  else
-  {
-    AString str("WARNING: No command files found at: '");
-    str.append(m_AosBaseDynamicDir);
-    str.append("'");
-    AOS_DEBUGTRACE(str.c_str(), NULL);
-    m_Services.useLog().add(str, m_AosBaseDynamicDir, ALog::EVENT_WARNING);
-  }
-}
-
 void AOSConfiguration::_readDirectoryConfig(AFilename& filename)
 {
   // Open config file before mangling the path
@@ -791,6 +874,46 @@ void AOSConfiguration::_getLocaleAosDirectory(AOSContext& context, AFilename& fi
   }
 
   filename.set(defaultDir);
+}
+
+void AOSConfiguration::getAosStaticDirectoryChain(AOSContext& context, LIST_AFilename& directories)
+{
+  _getLocaleAosDirectoryChain(context, directories, m_LocaleStaticDirs);
+  directories.push_back(m_AosBaseStaticDir);
+}
+
+void AOSConfiguration::getAosDataDirectoryChain(AOSContext& context, LIST_AFilename& directories)
+{
+  _getLocaleAosDirectoryChain(context, directories, m_LocaleDataDirs);
+  directories.push_back(m_AosBaseDataDir);
+}
+
+void AOSConfiguration::_getLocaleAosDirectoryChain(AOSContext& context, LIST_AFilename& directories, const AOSConfiguration::MAP_LOCALE_DIRS& dirs) const
+{
+  if (dirs.size() > 0)
+  {
+    LIST_AString langs;
+    if (context.useRequestHeader().getAcceptLanguageList(langs) > 0)
+    {
+      for(LIST_AString::iterator it = langs.begin(); it != langs.end(); ++it)
+      {
+        // Check if default encoding is used
+        if ((*it).equals(m_BaseLocale))
+          break;
+        
+        // Wildcard, use default
+        if ((*it).equals("*",1))
+          break;
+          
+        AOSConfiguration::MAP_LOCALE_DIRS::const_iterator citLang = dirs.find(*it);
+        if (dirs.end() != citLang)
+        {
+          // Found a match
+          directories.push_back(citLang->second.dir);
+        }
+      }
+    }
+  }
 }
 
 const AString& AOSConfiguration::getAosDefaultFilename() const

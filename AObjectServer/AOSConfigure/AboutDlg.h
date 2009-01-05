@@ -1,3 +1,6 @@
+/*
+$Id: AObjectServer.cpp 322 2008-12-08 23:46:57Z achacha $
+*/
 #pragma once
 #include "resource.h"
 

@@ -26,6 +26,14 @@ public:
   virtual ~AOSModuleExecutor();
 
   /*!
+  Checks if module with given class name exists
+
+  @param className of the generator
+  @return true if exists
+  */
+  bool exists(const AString& className) const;
+
+  /*!
   Executes appropriate modules based on AOSContext::getCommand() or AOSContext::getDirectoryConfig()
   */
   virtual void execute(AOSContext&, const AOSModules& modules);

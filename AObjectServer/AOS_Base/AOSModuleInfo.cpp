@@ -14,17 +14,21 @@ void AOSModuleInfo::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_Class=" << m_Class << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_ClassName=" << m_ClassName << std::endl;
   
   ADebugDumpable::indent(os, indent+1) << "m_ModuleParams={" << std::endl;
-  m_ModuleParams.debugDump(os, indent+2);
+  {
+    AString str;
+    m_ModuleParams.emit(str, 2);
+    os << str << std::endl;
+  }
   ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
  
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
 AOSModuleInfo::AOSModuleInfo(const AString& className, const AXmlElement& paramsBase) :
-  m_Class(className),
+  m_ClassName(className),
   m_ModuleParams(ASW("params",6))
 {
   paramsBase.emitXmlContent(m_ModuleParams);
@@ -32,9 +36,9 @@ AOSModuleInfo::AOSModuleInfo(const AString& className, const AXmlElement& params
   paramsBase.getAttributes().get(COND_IF_NOT, m_IfNot);
 }
 
-const AString& AOSModuleInfo::getModuleClass() const
+const AString& AOSModuleInfo::getModuleClassName() const
 {
-  return m_Class;
+  return m_ClassName;
 }
 
 AXmlElement& AOSModuleInfo::useParams()

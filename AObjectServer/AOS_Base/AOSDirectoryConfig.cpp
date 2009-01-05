@@ -53,7 +53,7 @@ void AOSDirectoryConfig::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestH
     ARope ropeName(AOSController::S_MODULE);
     ropeName.append('.');
     ropeName.append(AString::fromInt(i));
-    adminAddProperty(thisRoot, ropeName, (*cit)->getModuleClass());
+    adminAddProperty(thisRoot, ropeName, (*cit)->getModuleClassName());
     ropeName.append(".params",7);
 
     rope.clear();
@@ -85,7 +85,7 @@ AXmlElement& AOSDirectoryConfig::emitXml(AXmlElement& thisRoot) const
   for (AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = m_Modules.get().begin(); cit != m_Modules.get().end(); ++cit)
   {
     AXmlElement& eModule = thisRoot.addElement(AOSController::S_MODULE);
-    eModule.addAttribute(AOSController::S_CLASS, (*cit)->getModuleClass());
+    eModule.addAttribute(AOSController::S_CLASS, (*cit)->getModuleClassName());
     if ((*cit)->getParams().hasElements())
       eModule.addContent((*cit)->getParams().clone());
   }

@@ -22,13 +22,18 @@ public:
 public:
   /*!
   Create module info
+
+  @param className of the module
+  @param paramsBase element for the module parameters
   */
   AOSModuleInfo(const AString& className, const AXmlElement& paramsBase);
 
   /*!
-  Get module class
+  Get module class name
+  
+  @return module class name
   */
-  const AString& getModuleClass() const;
+  const AString& getModuleClassName() const;
 
   /*!
   Get module parameters
@@ -57,7 +62,7 @@ private:
   AOSModuleInfo() {}
   
   //! Classname
-  AString m_Class;
+  AString m_ClassName;
 
   //! If or If-Not of the module
   AString m_If;

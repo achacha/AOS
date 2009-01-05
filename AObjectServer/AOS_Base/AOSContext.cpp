@@ -906,7 +906,7 @@ AString AOSContext::getInputCommand() const
 {
   AASSERT(this, mp_Controller);
   if (mp_Controller)
-    return mp_Controller->getInputProcessorName();
+    return mp_Controller->getInputProcessorClassName();
   else
   {
     AString contentType;
@@ -920,7 +920,7 @@ AString AOSContext::getOutputCommand() const
 {
   AASSERT(this, mp_Controller);
   if (mp_Controller)
-    return mp_Controller->getOutputGeneratorName();
+    return mp_Controller->getOutputGeneratorClassName();
   else 
     return AConstant::ASTRING_EMPTY;
 }
@@ -1123,7 +1123,7 @@ size_t AOSContext::getModuleNames(LIST_AString& names) const
   AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = mp_Controller->getModules().get().begin();
   while (cit != mp_Controller->getModules().get().end())
   {
-    names.push_back((*cit)->getModuleClass());
+    names.push_back((*cit)->getModuleClassName());
     ++ret;
     ++cit;
   }
@@ -1138,7 +1138,7 @@ const AXmlElement& AOSContext::getModuleParams(const AString& moduleName) const
   AOSModules::LIST_AOSMODULE_PTRS::const_iterator cit = mp_Controller->getModules().get().begin();
   while (cit != mp_Controller->getModules().get().end())
   {
-    if (moduleName.equals((*cit)->getModuleClass()))
+    if (moduleName.equals((*cit)->getModuleClassName()))
       return (*cit)->getParams();
 
     ++cit;

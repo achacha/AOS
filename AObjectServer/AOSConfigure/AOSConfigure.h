@@ -1,7 +1,6 @@
-
-// AOSConfigure.h : main header file for the PROJECT_NAME application
-//
-
+/*
+$Id: AObjectServer.cpp 322 2008-12-08 23:46:57Z achacha $
+*/
 #pragma once
 
 #ifndef __AFXWIN_H__

@@ -95,6 +95,11 @@ void AOSModuleExecutor::registerModule(AOSModuleInterface *pModule)
   pModule->adminRegisterObject(m_Services.useAdminRegistry(), ASW("AOSModuleExecutor",17));
 }
 
+bool AOSModuleExecutor::exists(const AString& className) const
+{
+  return (m_Modules.end() != m_Modules.find(className));
+}
+
 void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
 {
   int i = 0;
@@ -102,13 +107,13 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
   {
     try
     {
-      ModuleContainer::iterator it = m_Modules.find((*cit)->getModuleClass());
+      ModuleContainer::iterator it = m_Modules.find((*cit)->getModuleClassName());
       if (it == m_Modules.end())
       {
         if (context.useEventVisitor().isLogging(AEventVisitor::EL_WARN))
         {
           ARope rope("Skipping unknown module: ",25);
-          rope.append((*cit)->getModuleClass());
+          rope.append((*cit)->getModuleClassName());
           context.useEventVisitor().startEvent(rope, AEventVisitor::EL_WARN);
         }
       }
@@ -120,7 +125,7 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
           if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
           {
             ARope rope("Skipping (condition) module: ",29);
-            rope.append((*cit)->getModuleClass());
+            rope.append((*cit)->getModuleClassName());
             context.useEventVisitor().startEvent(rope, AEventVisitor::EL_DEBUG);
           }
           continue;
@@ -130,7 +135,7 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
         if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
         {
           ARope rope("Executing module: ",18);
-          rope.append((*cit)->getModuleClass());
+          rope.append((*cit)->getModuleClassName());
           context.useEventVisitor().startEvent(rope, AEventVisitor::EL_INFO);
         }
 
@@ -138,7 +143,7 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
         {
           AXmlElement& e = context.useModel().overwriteElement(ASW("execute",7)).addElement(ASW("module",6));
           e.addAttribute(ASW("seq",3), AString::fromInt(i++));
-          e.addData((*cit)->getModuleClass());
+          e.addData((*cit)->getModuleClassName());
         }
 
         ATimer timer(true);
@@ -147,7 +152,7 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
         {
           case AOSContext::RETURN_ERROR:
             //a_Error occured
-            context.addError((*cit)->getModuleClass()+ASW("::execute",9), ASWNL("Returned false"));
+            context.addError((*cit)->getModuleClassName()+ASW("::execute",9), ASWNL("Returned false"));
           return;
 
           case AOSContext::RETURN_REDIRECT:
@@ -166,7 +171,7 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
     {
       AString strWhere("AOSModuleExecutor::execute(", 27);
       if (*cit)
-        strWhere.append((*cit)->getModuleClass());
+        strWhere.append((*cit)->getModuleClassName());
       else
         strWhere.append("NULL",4);
       strWhere.append(')');
@@ -176,7 +181,7 @@ void AOSModuleExecutor::execute(AOSContext& context, const AOSModules& modules)
     {
       AString strWhere("AOSModuleExecutor::execute(", 27);
       if (*cit)
-        strWhere.append((*cit)->getModuleClass());
+        strWhere.append((*cit)->getModuleClassName());
       else
         strWhere.append("NULL",4);
       strWhere.append(')');

@@ -108,6 +108,17 @@ public:
   void loadConfig(const AFilename& filename);
 
   /*!
+  Load all the controllers from the file system
+  Checks dynamic and static directories and generates the website based on them
+  */
+  void loadControllers();
+
+  /*!
+  Checks all the loaded controllers against executors in the AOSServices
+  */
+  bool validateControllers();
+
+  /*!
   Convert a given URl to the reported values
   server and port are used as per configuration
 
@@ -302,6 +313,22 @@ public:
   void getAosStaticDirectory(AOSContext& context, AFilename& target) const;
 
   /*!
+  Location of the static directories based on locale, default is appended to end
+
+  @param context to check HTTP request for Accept-Languages: pair for correct directory
+  @param directories to add to, last entry is always the default locale location
+  */
+  void getAosStaticDirectoryChain(AOSContext& context, LIST_AFilename& directories);
+
+  /*!
+  Location of the data directories based on locale, default is appended to end
+
+  @param context to check HTTP request for Accept-Languages: pair for correct directory
+  @param directories to add to, last entry is always the default locale location
+  */
+  void getAosDataDirectoryChain(AOSContext& context, LIST_AFilename& directories);
+
+  /*!
   Check is dumpContext is allowed in the configuration file
 
   @return true if allowed
@@ -429,13 +456,15 @@ private:
   // Get locale specific directory
   void _getLocaleAosDirectory(AOSContext& context, AFilename& filename, const AOSConfiguration::MAP_LOCALE_DIRS& dirs, const AFilename& defaultDir) const;
 
+  // Get chain of locale directries to look up, last entry is always the default
+  void _getLocaleAosDirectoryChain(AOSContext& context, LIST_AFilename& directories, const AOSConfiguration::MAP_LOCALE_DIRS& dirs) const;
+
   // Populate the extension set
   void _populateGzipCompressionExtensions();
 
   /*!
   Load commands
   */
-  void _loadControllers();
   void _readController(AFilename&);               // May alter the passed filename
   void _readDirectoryConfig(AFilename&);          // May alter the passed filename
   void _postProcessControllerAndConfig(AFileSystem::FileInfos &);

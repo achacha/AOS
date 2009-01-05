@@ -27,6 +27,14 @@ public:
   virtual ~AOSOutputExecutor();
 
   /*!
+  Checks if output generator with given class name exists
+
+  @param className of the generator
+  @return true if exists
+  */
+  bool exists(const AString& className) const;
+
+  /*!
   Execute module specified in request header content-type field
   */
   virtual void execute(AOSContext&);

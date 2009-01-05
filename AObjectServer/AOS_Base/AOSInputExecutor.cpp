@@ -81,14 +81,14 @@ void AOSInputExecutor::registerInputProcessor(AOSInputProcessorInterface *pProce
   if (it != m_InputProcessors.end())
   {
     //a_Command already has this processor
-    m_Services.useLog().add(AString("AOSInputExecutor::registerModule:replacing input processor"), (*it).first, command, ALog::EVENT_WARNING);
+    m_Services.useLog().add(ASWNL("AOSInputExecutor::registerInputProcessor:replacing input processor"), (*it).first, command, ALog::EVENT_WARNING);
     delete (*it).second;
     (*it).second = pProcessor;
   }
   else
   {
     //a_Add new command
-    m_Services.useLog().add(AString("AOSInputExecutor::registerModule"), command, ALog::EVENT_INFO);
+    m_Services.useLog().add(ASWNL("AOSInputExecutor::registerInputProcessor"), command, ALog::EVENT_INFO);
     m_InputProcessors[command] = pProcessor;
   }
 
@@ -97,6 +97,11 @@ void AOSInputExecutor::registerInputProcessor(AOSInputProcessorInterface *pProce
 
   //a_Register the module's admin interface
   pProcessor->adminRegisterObject(m_Services.useAdminRegistry(), ASW("AOSInputExecutor",16));
+}
+
+bool AOSInputExecutor::exists(const AString& className) const
+{
+  return (m_InputProcessors.end() != m_InputProcessors.find(className));
 }
 
 void AOSInputExecutor::execute(AOSContext& context)

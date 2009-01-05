@@ -99,6 +99,11 @@ void AOSOutputExecutor::registerOutputGenerator(AOSOutputGeneratorInterface *pGe
   pGenerator->adminRegisterObject(m_Services.useAdminRegistry(), ASW("AOSOutputExecutor",17));
 }
 
+bool AOSOutputExecutor::exists(const AString& className) const
+{
+  return (m_OutputGenerators.end() != m_OutputGenerators.find(className));
+}
+
 void AOSOutputExecutor::execute(AOSContext& context)
 {
   AString command;

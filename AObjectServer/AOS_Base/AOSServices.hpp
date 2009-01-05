@@ -40,6 +40,19 @@ public:
   virtual ~AOSServices();
   
   /*!
+  Initialize services
+  MUST be called after constructor when ready to create services
+  */
+  void init();
+
+  /*!
+  Get base path of the configuration to use
+  
+  @return constant reference to AFilename object
+  */
+  const AFilename& getBaseBath() const;
+  
+  /*!
   The file log
   */
   ALog& useLog();
@@ -163,6 +176,9 @@ private:
 
   // No copy operator
   AOSServices& operator =(const AOSServices&) { return *this; }
+  
+  // Base path
+  AFilename m_BasePath;
   
   // Input executor
   AOSInputExecutor *mp_InputExecutor;

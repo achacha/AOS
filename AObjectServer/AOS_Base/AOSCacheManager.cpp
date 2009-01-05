@@ -245,34 +245,40 @@ ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, cons
 {
   AASSERT(this, mp_StaticFileCache);
 
-  AFilename filename;
-  m_Services.useConfiguration().getAosStaticDirectory(context, filename);
-  filename.join(fname);
-  if (m_IsStaticFileCacheEnabled)
+  LIST_AFilename directories;
+  m_Services.useConfiguration().getAosStaticDirectoryChain(context, directories);
+  for (LIST_AFilename::iterator it = directories.begin(); it != directories.end(); ++it)
   {
-    //a_Get from cache
-    const ATime& ifModifiedSince = context.useRequestHeader().getIfModifiedSince();
-    return mp_StaticFileCache->get(filename, handle, modified, ifModifiedSince);
-  }
-  else
-  {
-    //a_No caching, read fom file system
-    if (AFileSystem::isA(filename, AFileSystem::File))
+    it->join(fname);
+    if (m_IsStaticFileCacheEnabled)
     {
-      context.useEventVisitor().startEvent(ARope("Reading physical file: ",23)+filename);
-      handle.reset(new AFile_Physical(filename));
-      handle->open();
-      if (!AFileSystem::getLastModifiedTime(filename, modified))
-        ATHROW_EX(&context, AException::NotFound, filename);
-
-      return ACacheInterface::FOUND_NOT_CACHED;
+      //a_Get from cache
+      const ATime& ifModifiedSince = context.useRequestHeader().getIfModifiedSince();
+      ACacheInterface::STATUS status = mp_StaticFileCache->get(*it, handle, modified, ifModifiedSince);
+      if (ACacheInterface::NOT_FOUND == status)
+        continue;
+      else
+        return status;
     }
     else
     {
-      handle.reset(NULL);
-      return ACacheInterface::NOT_FOUND;
+      //a_No caching, read from file system
+      if (AFileSystem::isA(*it, AFileSystem::File))
+      {
+        // Found existing file
+        context.useEventVisitor().startEvent(ARope("Reading physical file: ",23)+*it);
+        handle.reset(new AFile_Physical(*it));
+        handle->open();
+        if (!AFileSystem::getLastModifiedTime(*it, modified))
+          ATHROW_EX(&context, AException::NotFound, *it);     // Why did isA think it was a good file?
+
+        return ACacheInterface::FOUND_NOT_CACHED;
+      }
     }
   }
+
+  handle.reset(NULL);
+  return ACacheInterface::NOT_FOUND;
 }
 
 ACacheInterface::STATUS AOSCacheManager::getDataFile(AOSContext& context, const AFilename& fname, ACache_FileSystem::HANDLE& handle)
@@ -285,34 +291,39 @@ ACacheInterface::STATUS AOSCacheManager::getDataFile(AOSContext& context, const 
 {
   AASSERT(this, mp_DataFileCache);
 
-  AFilename filename;
-  m_Services.useConfiguration().getAosDataDirectory(context, filename);
-  filename.join(fname);
-  if (m_IsDataFileCacheEnabled)
+  LIST_AFilename directories;
+  m_Services.useConfiguration().getAosDataDirectoryChain(context, directories);
+  for (LIST_AFilename::iterator it = directories.begin(); it != directories.end(); ++it)
   {
-    //a_Get from cache
-    const ATime& ifModifiedSince = context.useRequestHeader().getIfModifiedSince();
-    return mp_DataFileCache->get(filename, handle, modified, ifModifiedSince);
-  }
-  else
-  {
-    //a_No caching, read fom file system
-    if (AFileSystem::isA(filename, AFileSystem::File))
+    it->join(fname);
+    if (m_IsDataFileCacheEnabled)
     {
-      context.useEventVisitor().startEvent(ARope("Reading physical file: ",23)+filename);
-      handle.reset(new AFile_Physical(filename));
-      handle->open();
-      if (!AFileSystem::getLastModifiedTime(filename, modified))
-        ATHROW_EX(&context, AException::NotFound, filename);
-
-      return ACacheInterface::FOUND_NOT_CACHED;
+      //a_Get from cache
+      const ATime& ifModifiedSince = context.useRequestHeader().getIfModifiedSince();
+      ACacheInterface::STATUS status = mp_DataFileCache->get(*it, handle, modified, ifModifiedSince);
+      if (ACacheInterface::NOT_FOUND == status)
+        continue;
+      else
+        return status;
     }
     else
     {
-      handle.reset(NULL);
-      return ACacheInterface::NOT_FOUND;
+      //a_No caching, read fom file system
+      if (AFileSystem::isA(*it, AFileSystem::File))
+      {
+        context.useEventVisitor().startEvent(ARope("Reading physical file: ",23)+*it);
+        handle.reset(new AFile_Physical(*it));
+        handle->open();
+        if (!AFileSystem::getLastModifiedTime(*it, modified))
+          ATHROW_EX(&context, AException::NotFound, *it);
+
+        return ACacheInterface::FOUND_NOT_CACHED;
+      }
     }
   }
+
+  handle.reset(NULL);
+  return ACacheInterface::NOT_FOUND;
 }
 
 ACacheInterface::STATUS AOSCacheManager::getTemplate(AOSContext& context, const AFilename& filename, AAutoPtr<ATemplate>& pTemplate)

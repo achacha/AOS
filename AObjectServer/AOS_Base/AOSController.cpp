@@ -55,6 +55,10 @@ void AOSController::debugDump(std::ostream& os, int indent) const
     ADebugDumpable::indent(os, indent+1) << "m_InputParams={}" << std::endl;
   }
 
+  ADebugDumpable::indent(os, indent+1) << "m_Modules={" << std::endl;
+  m_Modules.debugDump(os, indent+1);
+  ADebugDumpable::indent(os, indent+1) << std::endl;
+
   ADebugDumpable::indent(os, indent+1) << "m_OutputGenerator=" << m_OutputGenerator << std::endl;
   if (m_OutputParams.hasElements())
   {
@@ -63,8 +67,6 @@ void AOSController::debugDump(std::ostream& os, int indent) const
   }
   else
     ADebugDumpable::indent(os, indent+1) << "m_OutputParams={}" << std::endl;
-
-  m_Modules.debugDump(os, indent+1);
  
   AOSAdminInterface::debugDump(os, indent+1);
 
@@ -111,7 +113,7 @@ void AOSController::adminEmitXml(AXmlElement& thisRoot, const AHTTPRequestHeader
     ARope ropeName(S_MODULE);
     ropeName.append('.');
     ropeName.append(AString::fromInt(i));
-    adminAddProperty(thisRoot, ropeName, (*cit)->getModuleClass());
+    adminAddProperty(thisRoot, ropeName, (*cit)->getModuleClassName());
     ropeName.append(".params",7);
 
     rope.clear();
@@ -240,7 +242,7 @@ AXmlElement& AOSController::emitXml(AXmlElement& thisRoot) const
   while (cit != m_Modules.get().end())
   {
     AXmlElement& eModule = thisRoot.addElement(S_MODULE);
-    eModule.addAttribute(S_CLASS, (*cit)->getModuleClass());
+    eModule.addAttribute(S_CLASS, (*cit)->getModuleClassName());
     if ((*cit)->getParams().hasElements())
       eModule.addContent((*cit)->getParams().clone());
     ++cit;
@@ -253,6 +255,13 @@ AXmlElement& AOSController::emitXml(AXmlElement& thisRoot) const
     eOutput.addContent(m_OutputParams.clone());
 
   return thisRoot;
+}
+
+void AOSController::emit(AOutputBuffer& target) const
+{
+  AXmlElement root("Controller");
+  emitXml(root);
+  root.emit(target, 0);
 }
 
 void AOSController::fromXml(const AXmlElement& element)
@@ -396,12 +405,12 @@ int AOSController::getGZipLevel() const
   return m_GZipLevel;
 }
 
-const AString& AOSController::getInputProcessorName() const
+const AString& AOSController::getInputProcessorClassName() const
 { 
   return m_InputProcessor;
 }
 
-const AString& AOSController::getOutputGeneratorName() const 
+const AString& AOSController::getOutputGeneratorClassName() const 
 { 
   return m_OutputGenerator;
 }

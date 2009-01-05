@@ -1,4 +1,6 @@
-
+/*
+$Id: AObjectServer.cpp 322 2008-12-08 23:46:57Z achacha $
+*/
 #pragma once
 
 // The following macros define the minimum required platform.  The minimum required platform

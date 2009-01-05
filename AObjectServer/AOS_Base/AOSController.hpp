@@ -50,6 +50,11 @@ public:
   virtual void fromXml(const AXmlElement&);
 
   /*!
+  AEmittable
+  */
+  virtual void emit(AOutputBuffer& target) const;
+
+  /*!
   AXmlEmittable
   */
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
@@ -112,12 +117,12 @@ public:
   Name of the input processor
   Often the MIME type of the HTTP request
   */
-  const AString& getInputProcessorName() const;
+  const AString& getInputProcessorClassName() const;
   
   /*!
   Name of the output generator
   */
-  const AString& getOutputGeneratorName() const;
+  const AString& getOutputGeneratorClassName() const;
 
   /*!
   Input processor parameters

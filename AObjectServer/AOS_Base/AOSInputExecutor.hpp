@@ -31,6 +31,14 @@ public:
   virtual void execute(AOSContext&);
 
   /*!
+  Checks if input processor with given class name exists
+
+  @param className of the processor
+  @return true if exists
+  */
+  bool exists(const AString& className) const;
+
+  /*!
    * The executor owns the input processors and will delete them when done
    * NOTE: Default calls init(), if this method is overridden that needs to be accounted for
   **/

@@ -1,8 +1,6 @@
-
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently,
-// but are changed infrequently
-
+/*
+$Id: AObjectServer.cpp 322 2008-12-08 23:46:57Z achacha $
+*/
 #pragma once
 
 #ifndef _SECURE_ATL

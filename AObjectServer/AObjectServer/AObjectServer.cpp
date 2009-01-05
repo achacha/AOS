@@ -34,8 +34,8 @@ CMemLeakDetect memLeakDetect;
 #include "AOSContextQueue_Executor.hpp"
 #include "AOSContextQueue_ErrorExecutor.hpp"
 
-ASocketLibrary_SSL g_SecureSocketLibrary;    //a_Global init for SSL and socket library
-AGdLibrary g_GdLibrary;                      //a_Global init for gd library
+ASocketLibrary_SSL g_SecureSocketLibrary;    // Global init for SSL and socket library
+AGdLibrary g_GdLibrary;                      // Global init for gd library
 
 void traceMultiline(const AString& str, void *ptr)
 {
@@ -53,7 +53,7 @@ void traceMultiline(const AString& str, void *ptr)
 /////////////////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-  //a_AString available for errors so that allocation is not done during exception (in case we ran out of memory, etc)
+  // AString available for errors so that allocation is not done during exception (in case we ran out of memory, etc)
   AString str(2048, 512);
 #if defined(__WINDOWS__) && defined(WINDOWS_CRTDBG_ENABLED)
   DEBUG_MEMORY_LEAK_ANALYSIS_BEGIN(false);
@@ -66,14 +66,21 @@ int main(int argc, char **argv)
   }
 #endif
 
-  std::cout << AOS_Base_INFO << std::endl;
+  AOS_DEBUGTRACE(AString(AOS_Base_INFO).c_str(), NULL);
+  
+  {
+    AFilename f;
+    AFileSystem::getCWD(f);
+    AOS_DEBUGTRACE((AString("Current working directory: ")+f).c_str(), NULL);
+  }
+  
   try
   {
-    //a_Check if config base path was provided
+    // Check if config base path was provided
     AFilename basePath(ASW("../aos_root/",11), true);
     if (argc > 1)
     {
-      //a_Check existance of config base path
+      // Check existance of config base path
       basePath.set(AString(argv[1]), true);
     }
 
@@ -93,22 +100,26 @@ int main(int argc, char **argv)
       AOS_DEBUGTRACE(str.c_str(), NULL);
     }
 
-    //a_Initialize services
+    //
+    // Initialize services
+    //
     AAutoPtr<AOSServices> pservices(new AOSServices(basePath), true);
+        
     try
     {
-      //a_Ready to start
-      {
-        str.clear();
-        ATime().emitRFCtime(str);
-        pservices->useLog().add(ASWNL("=+=+=+= AOS Server starting at ")+str, AString(AOS_Base_INFO));
-      }
-
+      //
+      // Initialize services
+      //
+      pservices->init();
+      
+      //
+      // Initialize admin objects
+      //
       AOSAdmin admin(*pservices);
       pservices->adminRegisterObject(pservices->useAdminRegistry());
 
       //
-      //a_Initialize the global objects
+      // Initialize the global objects
       //
       AString strError;
       if (pservices->initDatabasePool())
@@ -139,7 +150,16 @@ int main(int argc, char **argv)
       }
 
       //
-      //a_Create and configure the queues
+      // Load the processors, modules, generators dynamically from DLLs
+      //
+      if (!pservices->loadModules())
+      {
+        AOS_DEBUGTRACE("ERROR: Failed to load modules, check the log for details.", NULL);
+        return -1;
+      }
+
+      //
+      // Create and configure the queues
       //
       AAutoPtr<AOSContextQueueInterface> pQueueIsAvail(new AOSContextQueue_IsAvailable(
         *pservices,
@@ -179,32 +199,23 @@ int main(int argc, char **argv)
       else
         AOS_DEBUGTRACE("Sleep delay for executor/sleep-delay is invalid, using default", NULL);
 
-      //a_Configure queue state machine
+      // Configure queue state machine
       pservices->useContextManager().setQueueForState(AOSContextManager::STATE_PRE_EXECUTE, pQueuePre);
       pservices->useContextManager().setQueueForState(AOSContextManager::STATE_EXECUTE, pQueueExecutor);
       pservices->useContextManager().setQueueForState(AOSContextManager::STATE_IS_AVAILABLE, pQueueIsAvail);
       pservices->useContextManager().setQueueForState(AOSContextManager::STATE_ERROR, pQueueError);
 
-      //a_Release local ownership, context manager now owns the queues and will delete them when done
+      // Release local ownership, context manager now owns the queues and will delete them when done
       pQueuePre.setOwnership(false);
       pQueueIsAvail.setOwnership(false);
       pQueueExecutor.setOwnership(false);
       pQueueError.setOwnership(false);
 
-      //a_Associate queue for the listener
+      // Associate queue for the listener
       AOSRequestListener listener(*pservices, AOSContextManager::STATE_PRE_EXECUTE);
 
       //
-      //a_Load the processors, modules, generators dynamically from DLLs
-      //
-      if (!pservices->loadModules())
-      {
-        AOS_DEBUGTRACE((AString("ERROR: Loading modules: ")+strError).c_str(), NULL);
-        return -1;
-      }
-
-      //
-      //a_Start all the queues (listener is the last thing to start, see below)
+      // Start all the queues (listener is the last thing to start, see below)
       //
       pQueuePre->start();
       pQueueIsAvail->start();
@@ -213,26 +224,29 @@ int main(int argc, char **argv)
 
 
       //
-      //a_Start listener
+      // Start listener
       //
       listener.startListening();
 
       //
-      //a_Start admin listener
+      // Start admin listener
       //
       admin.startAdminListener();
 
       //
-      //a_Server is running, wait for exit request
+      // Server is running, wait for exit request
       //
 #if defined(__WINDOWS__) && defined(WINDOWS_CRTDBG_ENABLED)
       DEBUG_MEMORY_SET_START_CHECKPOINT();
 #endif
+      
+      str.clear(true);
+      
       u4 sleepTime = pservices->useConfiguration().useConfigRoot().getU4("/server/main/sleep", 3000);
       AASSERT(NULL, sleepTime > 100);  // Should never bee lower than 100 ms, waste of cycles
       do
       {
-        //a_This is the watcher for the main loop, when admin is not running the server has stopped
+        // This is the watcher for the main loop, when admin is not running the server has stopped
         AThread::sleep(sleepTime);
       }
       while(!admin.isShutdownRequested() || admin.isRunning());

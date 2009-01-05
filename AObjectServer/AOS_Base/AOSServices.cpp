@@ -24,6 +24,9 @@ const AString& AOSServices::getClass() const
 void AOSServices::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
+  
+  ADebugDumpable::indent(os, indent+1) << "m_BasePath=" << m_BasePath << std::endl;
+  
   ADebugDumpable::indent(os, indent+1) << "m_Log=" << std::endl;
   mp_Log->debugDump(os, indent+2);
 
@@ -128,6 +131,7 @@ void AOSServices::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeade
 }
 
 AOSServices::AOSServices(const AFilename& basePath) :
+  m_BasePath(basePath),
   mp_InputExecutor(NULL),
   mp_ModuleExecutor(NULL),
   mp_OutputExecutor(NULL),
@@ -140,7 +144,7 @@ AOSServices::AOSServices(const AFilename& basePath) :
   mp_Log(NULL)
 {
   //a_Create log (must be done first as other objects rely on it)
-  AFilename logfile(basePath);
+  AFilename logfile(m_BasePath);
   logfile.usePathNames().push_back(ASW("logs",4));
   logfile.useFilename().assign(ASW("aos.log",7));
   AFilename mutexfile(logfile);
@@ -149,27 +153,6 @@ AOSServices::AOSServices(const AFilename& basePath) :
 
   //a_Must have admin registry before configuration
   mp_AdminRegistry = new AOSAdminRegistry(*mp_Log);
-
-  //a_Read in the config file
-  mp_Configuration = new AOSConfiguration(basePath, *this);
-
-  //a_Now adjust log settings based on config
-  AString str = mp_Configuration->useConfigRoot().getString("server/log/mask", AConstant::ASTRING_EMPTY);
-  if (!str.isEmpty())
-    mp_Log->setEventMask(str.toU4(16));
-  u4 maxFileSize = mp_Configuration->useConfigRoot().getU4("server/log/max-file-size", ALog_AFile::DEFAULT_MAX_FILE_SIZE);
-  mp_Log->setLoggerMaxFileSize(maxFileSize);
-
-  u4 cycle_sleep = mp_Configuration->useConfigRoot().getU4("server/log/cycle-sleep", ALog_AFile::DEFAULT_CYCLE_SLEEP);
-  mp_Log->setLoggerCycleSleep(cycle_sleep);
-
-  mp_ResourceManager = new AOSResourceManager(*this);
-  mp_ContextManager = new AOSContextManager(*this);
-  mp_CacheManager = new AOSCacheManager(*this);
-  mp_InputExecutor = new AOSInputExecutor(*this);
-  mp_ModuleExecutor = new AOSModuleExecutor(*this);
-  mp_OutputExecutor = new AOSOutputExecutor(*this);
-  mp_SessionManager = new AOSSessionManager(*this);
 }
 
 AOSServices::~AOSServices()
@@ -189,6 +172,47 @@ AOSServices::~AOSServices()
     delete mp_Log;
   }
   catch(...) {}
+}
+
+void AOSServices::init()
+{
+  AASSERT(this, NULL == mp_Configuration);
+  AASSERT(this, NULL == mp_ResourceManager);
+  AASSERT(this, NULL == mp_ContextManager);
+  AASSERT(this, NULL == mp_CacheManager);
+  AASSERT(this, NULL == mp_InputExecutor);
+  AASSERT(this, NULL == mp_ModuleExecutor);
+  AASSERT(this, NULL == mp_OutputExecutor);
+  AASSERT(this, NULL == mp_SessionManager);
+  AASSERT(this, mp_Log);
+  AASSERT(this, mp_AdminRegistry);
+
+  //a_Read in the config file
+  mp_Configuration = new AOSConfiguration(m_BasePath, *this);
+
+  //a_Now adjust log settings based on config
+  AString str = mp_Configuration->useConfigRoot().getString("server/log/mask", AConstant::ASTRING_EMPTY);
+  if (!str.isEmpty())
+    mp_Log->setEventMask(str.toU4(16));
+  u4 maxFileSize = mp_Configuration->useConfigRoot().getU4("server/log/max-file-size", ALog_AFile::DEFAULT_MAX_FILE_SIZE);
+  mp_Log->setLoggerMaxFileSize(maxFileSize);
+
+  u4 cycle_sleep = mp_Configuration->useConfigRoot().getU4("server/log/cycle-sleep", ALog_AFile::DEFAULT_CYCLE_SLEEP);
+  mp_Log->setLoggerCycleSleep(cycle_sleep);
+
+  str.assign("-_-Starting ");
+  str.append(AOS_Base_INFO);
+  str.append(" at ");
+  ATime().emitRFCtime(str);
+  mp_Log->add(str);
+
+  mp_ResourceManager = new AOSResourceManager(*this);
+  mp_ContextManager = new AOSContextManager(*this);
+  mp_CacheManager = new AOSCacheManager(*this);
+  mp_InputExecutor = new AOSInputExecutor(*this);
+  mp_ModuleExecutor = new AOSModuleExecutor(*this);
+  mp_OutputExecutor = new AOSOutputExecutor(*this);
+  mp_SessionManager = new AOSSessionManager(*this);
 }
 
 bool AOSServices::initDatabasePool()
@@ -280,8 +304,17 @@ bool AOSServices::loadModules()
       return false;
     }
   }
-  
-  return true;
+
+  // Load the website controllers
+  mp_Configuration->loadControllers();
+
+  // Validate the controllers
+  return mp_Configuration->validateControllers();
+}
+
+const AFilename& AOSServices::getBaseBath() const
+{
+  return m_BasePath;
 }
 
 ALog& AOSServices::useLog()
@@ -292,6 +325,7 @@ ALog& AOSServices::useLog()
 
 AOSConfiguration& AOSServices::useConfiguration()
 {
+  AASSERT(this, mp_Configuration);
   return *mp_Configuration;
 }
 
@@ -309,6 +343,8 @@ AOSDatabaseConnectionPool& AOSServices::useDatabaseConnectionPool()
 
 size_t AOSServices::loadGlobalObjects(AString& strError)
 {
+  AASSERT(this, mp_DatabaseConnPool);
+
   AResultSet resultSet;
   if (mp_DatabaseConnPool->useDatabasePool().executeSQL("select * from global", resultSet, strError))
   {
@@ -335,16 +371,19 @@ ABasePtrContainer& AOSServices::useGlobalObjects()
 
 AOSSessionManager& AOSServices::useSessionManager()
 {
+  AASSERT(this, mp_SessionManager);
   return *mp_SessionManager;
 }         
 
 AOSContextManager& AOSServices::useContextManager()
 {
+  AASSERT(this, mp_ContextManager);
   return *mp_ContextManager;
 }
 
 AOSCacheManager& AOSServices::useCacheManager()
 {
+  AASSERT(this, mp_CacheManager);
   return *mp_CacheManager;
 }
 
@@ -388,5 +427,6 @@ const ADynamicLibrary& AOSServices::getModules() const
 
 AOSResourceManager& AOSServices::useResourceManager()
 {
+  AASSERT(this, mp_ResourceManager);
   return *mp_ResourceManager;
 }
