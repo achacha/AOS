@@ -141,7 +141,6 @@ void CConfigureDlg::_addFolderNode(HTREEITEM htiParent, const AFilename& base)
   AFileSystem::dir(base, files, false, false);
   for (AFileSystem::FileInfos::const_iterator cit = files.begin(); cit != files.end(); ++cit)
   {
-    afxDump << (AString("PROCESSING: ")+(*cit).filename.toAString()+AConstant::ASTRING_EOL).c_str();
     if ((*cit).isDirectory())
     {
       if (NULL == htiFolderLast)
