@@ -211,7 +211,15 @@ u4 AFileSystem::_getFilesFromPath(
 
 bool AFileSystem::exists(const AFilename& source)
 {
-  return (!_access(source.toAString().c_str(), 0) ? true : false);
+  return (!_access(source.toAString().c_str(), 0));
+}
+
+bool AFileSystem::existsExpandWildcards(const AFilename& source)
+{
+  WIN32_FIND_DATA findData;
+  HANDLE hFind = ::FindFirstFile(source.toAString().c_str(), &findData);
+  ::FindClose(hFind);
+  return (INVALID_HANDLE_VALUE != hFind);
 }
 
 void AFileSystem::getCWD(AFilename& target)

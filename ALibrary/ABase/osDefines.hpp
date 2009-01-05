@@ -53,7 +53,7 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
     #include <windows.h>   //a_Include windows.h if this is not an MFC app
   #endif
 
-  #define ABASE_OS_INFO "Microsoft Windows (64-bit) BUILD(" ## __TIMESTAMP__ ## ")"
+  #define ABASE_OS_INFO "Microsoft Windows (64-bit) ABASE_BUILD(" ## __TIME__ ## ")"
 
 #elif defined(_WIN32) || defined(WIN32)
   //Win32 environment
@@ -94,7 +94,7 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
     #include <winsock2.h>
   #endif
   
-#define ABASE_OS_INFO "Microsoft Windows (32-bit)  BUILD(" ## __TIMESTAMP__ ## ")"
+#define ABASE_OS_INFO "Microsoft Windows (32-bit) ABASE_BUILD(" ## __TIMESTAMP__ ## ")"
 #else
   #error No such OS configuration
 #endif

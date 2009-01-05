@@ -81,7 +81,7 @@ ALog_AFile::ALog_AFile(
   m_filenameRotation.next(f.useFilename());
   while (AFileSystem::exists(f))
   {
-    filename.clear();
+    f.clear();
     m_filenameRotation.next(f.useFilename());
   }
   

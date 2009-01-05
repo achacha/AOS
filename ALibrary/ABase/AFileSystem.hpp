@@ -157,10 +157,27 @@ public:
   static bool canReadAndWrite(const AFilename&);
 
   /*!
-  Check if a file exists or make it exist
+  Check if a file exists (does NOT expand wildcards)
+
+  @param filename to check
+  @see existsExpandWildcards
   */
-  static bool exists(const AFilename&);
-  static void touch(const AFilename&);
+  static bool exists(const AFilename& filename);
+  
+  /*!
+  Check if a file exists expanding wildcards such as ? and *
+
+  @param filename to check
+  @see exists
+  */
+  static bool existsExpandWildcards(const AFilename& filename);
+
+  /*!
+  Touch a file (create zero length file if did not exist)
+
+  @param filename to touch
+  */
+  static void touch(const AFilename& filename);
 
   /*!
   Create single directory, does not recursively create directories (see method below)
