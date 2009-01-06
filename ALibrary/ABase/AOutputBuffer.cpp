@@ -176,6 +176,12 @@ size_t AOutputBuffer::appendU8_LSB(u8 d)
 #endif
 }
 
+void AOutputBuffer::appendLine(const char *pccsource)
+{
+  append(pccsource);
+  AConstant::ASTRING_EOL.emit(*this);
+}
+
 void AOutputBuffer::appendLine(const AEmittable& source)
 {
   source.emit(*this);

@@ -65,6 +65,7 @@ public:
   /*!
   Append string and EOL
   */
+  void appendLine(const char *);       //a_Appends the string and AConstant::ASTRING_EOL
   void appendLine(const AEmittable&);  //a_Appends the string and AConstant::ASTRING_EOL
 
   /*!
