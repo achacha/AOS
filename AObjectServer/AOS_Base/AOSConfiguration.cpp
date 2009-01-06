@@ -255,14 +255,16 @@ AOSConfiguration::AOSConfiguration(
   // Config directory
   m_AosBaseConfigDir.usePathNames().push_back("conf");
 
-  // Admin 
-  m_AdminBaseHttpDir.usePathNames().push_back("admin");
-
   // Read the config
   AFilename filename(m_AosBaseConfigDir);
   filename.useFilename().assign("AObjectServer.xml",17);
   loadConfig(filename);
 
+  // Admin site location
+  const AString& adminBaseDir = m_Config.useRoot().getString("/config/server/admin/base-http-dir", "admin/");
+  m_AdminBaseHttpDir.join(adminBaseDir, true);
+
+  // Website location
   const AString& websiteDirectory = m_Config.useRoot().getString("/config/server/website-directory", AConstant::ASTRING_EMPTY);
   if (!websiteDirectory.isEmpty())
   {
