@@ -24,7 +24,13 @@ int ut_AXmlAttributes_General()
   ASSERT_UNIT_TEST(names.size() == 3, "getNames size", "0", iRet);
   ASSERT_UNIT_TEST(names.find("foo") != names.end(), "getNames find", "0", iRet);
   ASSERT_UNIT_TEST(names.find("bar") != names.end(), "getNames find", "1", iRet);
-  ASSERT_UNIT_TEST(names.find("baz") != names.end(), "getNames find", "1", iRet);
+  ASSERT_UNIT_TEST(names.find("baz") != names.end(), "getNames find", "2", iRet);
+  ASSERT_UNIT_TEST(names.find("goo") == names.end(), "getNames find", "3", iRet);
+  ASSERT_UNIT_TEST(attrs.exists("@foo"), "attrs.exists", "0", iRet);
+  ASSERT_UNIT_TEST(attrs.exists("@bar"), "attrs.exists", "1", iRet);
+  ASSERT_UNIT_TEST(attrs.exists("@baz"), "attrs.exists", "2", iRet);
+  ASSERT_UNIT_TEST(!attrs.exists("@goo"), "attrs.exists", "3", iRet);
+  
   
   //a_Test emit
   AString str;

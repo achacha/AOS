@@ -107,14 +107,15 @@ void testXmlElementAccess(int& iRet)
   root.addElement("base");
   AXmlElement& config = root.addElement("config");
   config.addElement("red").addData("100");
-  config.addElement("blue").addAttribute("id", "3").addData("endless");
+  config.addElement("blue").addAttribute("id", "3").addData("99");
   config.addElement("green");
 
-  ASSERT_UNIT_TEST(root.getU4("/root/base", 13) == 13, "Access", "0", iRet);
-  ASSERT_UNIT_TEST(root.getU4("/root/config/blue@id", 13) == 3, "Access", "1", iRet);
-  ASSERT_UNIT_TEST(root.getU4("/root/red", 13) == 100, "Access", "2", iRet);
-  ASSERT_UNIT_TEST(root.getU4("/root/green", 13) == 13, "Access", "3", iRet);
+//  root.debugDump();
 
+  ASSERT_UNIT_TEST(root.getU4("/root/base", 13) == 13, "Access", "0", iRet);
+  ASSERT_UNIT_TEST(root.getU4("/root/config/blue@id", 13) == 99, "Access", "1", iRet);
+  ASSERT_UNIT_TEST(root.getU4("/root/config/red", 13) == 100, "Access", "2", iRet);
+  ASSERT_UNIT_TEST(root.getU4("/root/green", 13) == 13, "Access", "3", iRet);
 }
 
 

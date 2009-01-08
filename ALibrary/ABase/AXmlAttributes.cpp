@@ -84,9 +84,15 @@ void AXmlAttributes::emit(AOutputBuffer& target) const
 
 ANameValuePair *AXmlAttributes::_findPair(const AString& name)
 {
+  AString str;
+  if ('@' == name.at(0, '\x0'))
+    name.peek(str, 1);
+  else
+    str.assign(name);
+
   for (AXmlAttributes::CONTAINER::iterator it = m_Pairs.begin(); it != m_Pairs.end(); ++it)
   {
-    if ((*it)->getName().equalsNoCase(name))
+    if ((*it)->getName().equalsNoCase(str))
       return (*it);
   }
   return NULL;
@@ -108,9 +114,15 @@ bool AXmlAttributes::remove(const AString& name)
 
 const ANameValuePair *AXmlAttributes::_findPair(const AString& name) const
 {
+  AString str;
+  if ('@' == name.at(0, '\x0'))
+    name.peek(str, 1);
+  else
+    str.assign(name);
+
   for (AXmlAttributes::CONTAINER::const_iterator cit = m_Pairs.begin(); cit != m_Pairs.end(); ++cit)
   {
-    if ((*cit)->getName().equalsNoCase(name))
+    if ((*cit)->getName().equalsNoCase(str))
       return (*cit);
   }
   return NULL;
@@ -126,6 +138,11 @@ bool AXmlAttributes::get(const AString& name, AOutputBuffer& target) const
   }
   else
     return false;
+}
+
+bool AXmlAttributes::exists(const AString& name) const
+{
+  return (NULL != _findPair(name));
 }
 
 void AXmlAttributes::insert(const AString& name, const AString& value /* = AConstant::ASTRING_EMPTY */)

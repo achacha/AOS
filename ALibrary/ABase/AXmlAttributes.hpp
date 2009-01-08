@@ -68,11 +68,19 @@ public:
   /*!
   Get attribute value
 
-  @param name of the attribute
+  @param name of the attribute can be either attrname or @attrname, leading @ will be stripped
   @param target to append value to
   @return true if found
   */
   bool get(const AString& name, AOutputBuffer& target) const;
+
+  /*!
+  Check if attribute exists
+
+  @param name of the attribute can be either attrname or @attrname, leading @ will be stripped
+  @return true if found
+  */
+  bool exists(const AString& name) const;
   
   /*!
   Gets value as a boolean or returns defaultValue if not found

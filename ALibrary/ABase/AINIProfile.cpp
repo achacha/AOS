@@ -9,6 +9,7 @@ $Id$
 #include "AException.hpp"
 #include "AFile_Physical.hpp"
 #include "AFilename.hpp"
+#include "AFileSystem.hpp"
 
 //a_Leaf of the node that builds the tree
 struct _INILeaf
@@ -194,6 +195,10 @@ void AINIProfile::parse()
 
   //a_If the file does not exist or not set, do not parse (may be a new file to be created)
   if (mstr_Filename.isEmpty())
+    return;
+
+  // If it doesn't exist, assume empty INI
+  if (!AFileSystem::exists(AFilename(mstr_Filename, false)))
     return;
 
   //a_Open file

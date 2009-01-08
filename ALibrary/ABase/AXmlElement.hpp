@@ -94,16 +94,39 @@ public:
   AXmlAttributes& useAttributes();
 
   /*!
+  Check if a name equals this element and attribute exists
+  Format: name@attr
+
+  e.g.
+    Given: <a foo='1'>something</a>
+
+    a@foo  exists
+    a      exists
+    @foo   exists
+    b      does not
+
+  @param nameattr of this element+attribute
+  @return true if name matches and attribute exists
+  */
+  bool isNameEquals(const AString& nameattr) const;
+  
+  /*!
   Get name of this element
+
+  If comparing to name@attribute, use isNameEquals
   
   @return constant reference to the element name
+  @see isNameEquals
   */
   const AString& getName() const;
 
   /*!
   Use name of this element
+
+  If comparing to name@attribute, use isNameEquals
   
   @return reference to the element name
+  @see isNameEquals
   */
   AString& useName();
 
@@ -268,7 +291,7 @@ public:
   const AXmlElement *findElement(const AString& path) const;
 
   /*!
-  Searching for path
+  Searching for path (ignores anything after @)
   If this element is 'a' and contains "b/bb,c/cc@foo",d/dd
   The "/a/c/cc@foo" will be found.  Current element must be first element of the path if absolute
   If path is relative then c/cc will find 2nd child cc in child c

@@ -198,7 +198,7 @@ AXmlElement *AXmlElement::findElement(const AString& xpath)
   {
     if ('/' == xpath.at(0))
     {
-      if (m_Name.equals(xparts.front()))
+      if (isNameEquals(xparts.front()))
       {
         xparts.pop_front();
         if (xparts.size() > 0)
@@ -232,7 +232,7 @@ const AXmlElement *AXmlElement::findElement(const AString& xpath) const
   {
     if ('/' == xpath.at(0))
     {
-      if (m_Name.equals(xparts.front()))
+      if (isNameEquals(xparts.front()))
       {
         xparts.pop_front();
         if (xparts.size() > 0)
@@ -263,7 +263,7 @@ AXmlElement *AXmlElement::_get(LIST_AString& xparts) const
   CONTAINER::const_iterator cit = m_Content.begin();
   while (cit != m_Content.end())
   {
-    if ((*cit)->getName().equals(strName))
+    if ((*cit)->isNameEquals(strName))
     {
       xparts.pop_front();
       if (xparts.size() > 0)
@@ -287,6 +287,22 @@ AXmlElement& AXmlElement::addComment(const AString& comment)
   m_Content.push_back(p);
 
   return *this;
+}
+
+bool AXmlElement::isNameEquals(const AString& nameattr) const
+{
+  size_t pos = nameattr.find('@');
+  if (AConstant::npos == pos)
+    return m_Name.equals(nameattr);
+  else
+  {
+    AString name;
+    AString attr;
+    nameattr.peek(name, 0, pos);
+    nameattr.peek(attr, pos);
+
+    return (m_Name.equals(name) && m_Attributes.exists(attr));
+  }
 }
 
 const AString& AXmlElement::getName() const 
@@ -319,14 +335,6 @@ size_t AXmlElement::find(const AString& path, AXmlElement::CONST_CONTAINER& resu
   AString strAttribute;
   AString strPath(path);
   bool leadingSlash = false;
-
-  size_t pos = path.find('@');
-  if (AConstant::npos != pos)
-  {
-    //a_Extract attribute
-    strPath.get(strAttribute, pos);
-    strPath.setSize(strPath.getSize() - 1);  //a_Remove the trailing '@'
-  }
 
   if ('/' == strPath.at(0))
   {
@@ -375,14 +383,6 @@ size_t AXmlElement::_find(const AString& path, AXmlElement::CONTAINER& result)
   AString strPath(path);
   bool leadingSlash = false;
 
-  size_t pos = path.find('@');
-  if (AConstant::npos != pos)
-  {
-    //a_Extract attribute
-    strPath.get(strAttribute, pos);
-    strPath.setSize(strPath.getSize() - 1);  //a_Remove the trailing '@'
-  }
-
   if ('/' == strPath.at(0))
   {
     leadingSlash = true;  //a_Signals that slash leads the path so much include current name
@@ -426,7 +426,7 @@ size_t AXmlElement::_find(const AString& path, AXmlElement::CONTAINER& result)
 
 size_t AXmlElement::_const_find(LIST_AString listPath, AXmlElement::CONST_CONTAINER& result) const
 {
-  if (listPath.front().equals(m_Name))
+  if (isNameEquals(listPath.front()))
   {
     listPath.pop_front();
 
@@ -445,7 +445,8 @@ size_t AXmlElement::_const_find(LIST_AString listPath, AXmlElement::CONST_CONTAI
         CONTAINER::const_iterator cit = m_Content.begin();
         while (cit != m_Content.end())
         {
-          if ((*cit)->getName().equals(listPath.front()))
+          // Name only, add if martches
+          if ((*cit)->isNameEquals(listPath.front()))
           {
             result.push_back(*cit);
             ++ret;
@@ -461,7 +462,7 @@ size_t AXmlElement::_const_find(LIST_AString listPath, AXmlElement::CONST_CONTAI
         CONTAINER::const_iterator cit = m_Content.begin();
         while (cit != m_Content.end())
         {
-          if ((*cit)->getName().equals(listPath.front()))
+          if ((*cit)->isNameEquals(listPath.front()))
           {
             ret += (*cit)->_const_find(listPath, result);
           }
@@ -479,7 +480,7 @@ size_t AXmlElement::_const_find(LIST_AString listPath, AXmlElement::CONST_CONTAI
 
 size_t AXmlElement::_nonconst_find(LIST_AString listPath, AXmlElement::CONTAINER& result)
 {
-  if (listPath.front().equals(m_Name))
+  if (isNameEquals(listPath.front()))
   {
     listPath.pop_front();
 
@@ -498,7 +499,7 @@ size_t AXmlElement::_nonconst_find(LIST_AString listPath, AXmlElement::CONTAINER
         CONTAINER::const_iterator cit = m_Content.begin();
         while (cit != m_Content.end())
         {
-          if ((*cit)->getName().equals(listPath.front()))
+          if ((*cit)->isNameEquals(listPath.front()))
           {
             result.push_back(*cit);
             ++ret;
@@ -514,7 +515,7 @@ size_t AXmlElement::_nonconst_find(LIST_AString listPath, AXmlElement::CONTAINER
         CONTAINER::const_iterator cit = m_Content.begin();
         while (cit != m_Content.end())
         {
-          if ((*cit)->getName().equals(listPath.front()))
+          if ((*cit)->isNameEquals(listPath.front()))
           {
             ret += (*cit)->_nonconst_find(listPath, result);
           }
@@ -616,7 +617,7 @@ AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParen
   CONTAINER::iterator it = m_Content.begin();
   while (it != m_Content.end())
   {
-    if ((*it)->getName().equals(strName))
+    if ((*it)->isNameEquals(strName))
     {
       AXmlElement *p = dynamic_cast<AXmlElement *>(*it);
       if (!xparts.size())
@@ -707,7 +708,7 @@ AXmlElement *AXmlElement::_addElement(const AString& path, bool overwrite)
   if ('/' == path.at(0) && xparts.size() > 0)
   {
     //a_xpath starts with /, make sure names match
-    if (xparts.front().equals(m_Name))
+    if (isNameEquals(xparts.front()))
       xparts.pop_front();
     else
     {
