@@ -45,7 +45,7 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
     else if (strBase.equals(ASW("data",4)))
     {
       pFilename.reset(new AFilename());
-      m_Services.useConfiguration().getAosDataDirectory(context, *pFilename);
+      m_Services.useConfiguration().getAosDataDirectory(context.useRequestHeader(), *pFilename);
       pFilename->join(str, false);
     }
     else if (strBase.equals(ASW("absolute",8)))
@@ -56,7 +56,7 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
     {
       //a_Default to static
       pFilename.reset(new AFilename());
-      m_Services.useConfiguration().getAosStaticDirectory(context, *pFilename);
+      m_Services.useConfiguration().getAosStaticDirectory(context.useRequestHeader(), *pFilename);
       pFilename->join(str, false);
     }
   }
@@ -64,7 +64,7 @@ AOSContext::ReturnCode AOSModule_FileList::execute(AOSContext& context, const AX
   {
     //a_Fallthru default case to static
     pFilename.reset(new AFilename());
-    m_Services.useConfiguration().getAosStaticDirectory(context, *pFilename);
+    m_Services.useConfiguration().getAosStaticDirectory(context.useRequestHeader(), *pFilename);
     pFilename->join(str, false);
   }
 

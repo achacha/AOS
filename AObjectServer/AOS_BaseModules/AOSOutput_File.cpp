@@ -40,7 +40,7 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
     if (strBase.equals(ASW("data",4)))
     {
       pFilename.reset(new AFilename());
-      m_Services.useConfiguration().getAosDataDirectory(context, *pFilename);
+      m_Services.useConfiguration().getAosDataDirectory(context.useRequestHeader(), *pFilename);
       pFilename->join(str, false);
     }
     else if (strBase.equals(ASW("dynamic",7)))
@@ -53,7 +53,7 @@ AOSContext::ReturnCode AOSOutput_File::execute(AOSContext& context)
   if (!pFilename)
   {
     pFilename.reset(new AFilename());
-    m_Services.useConfiguration().getAosStaticDirectory(context, *pFilename);
+    m_Services.useConfiguration().getAosStaticDirectory(context.useRequestHeader(), *pFilename);
     pFilename->join(str, false);
   }
 

@@ -24,6 +24,7 @@ $Id$
 #include "AOSAdminCommand_list.hpp"
 #include "AOSAdminCommand_display.hpp"
 #include "AOSAdminCommand_modify.hpp"
+#include "AOSAdminCommand_website_list.hpp"
 
 AOSAdmin::AOSAdmin(
   AOSServices& services
@@ -53,6 +54,7 @@ void AOSAdmin::startAdminListener()
   m_AdminCommandRegistry.insert(new AOSAdminCommand_list(m_Services));
   m_AdminCommandRegistry.insert(new AOSAdminCommand_display(m_Services));
   m_AdminCommandRegistry.insert(new AOSAdminCommand_modify(m_Services));
+  m_AdminCommandRegistry.insert(new AOSAdminCommand_website_list(m_Services));
   
   //a_Get port and start listener thread
   if (m_Services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/listen/admin/port"), -1) > 0)
@@ -109,6 +111,8 @@ u4 AOSAdmin::threadprocAdminListener(AThread& thread)
   str.append(':');
   str.append(AString::fromInt(listener.getSocketInfo().m_port));
   pThis->m_Services.useLog().add(str, ALog::EVENT_MESSAGE);
+  str.append(" admin_root: ");
+  str.append(pThis->m_Services.useConfiguration().getAdminBaseHttpDir());
   AOS_DEBUGTRACE(str.c_str(), NULL);
 
   str.clear();
@@ -288,11 +292,19 @@ void AOSAdmin::_processAdmin(AFile_Socket& client, AHTTPRequestHeader& request)
 
         response.setStatusCode(AHTTPResponseHeader::SC_400_Bad_Request);
         xmlDoc.emit(outputBuffer);
+        response.set(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
       }
       else
       {
         AOSAdminCommandContext context(request, response, outputBuffer);
         pCommand->process(context);
+
+        // If the command did not write to output, assume that the XML model is the output
+        if (outputBuffer.isEmpty())
+        {
+          context.useModel().emit(outputBuffer);
+          response.set(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
+        }
       }
     }
   }
@@ -300,7 +312,6 @@ void AOSAdmin::_processAdmin(AFile_Socket& client, AHTTPRequestHeader& request)
   //a_Generate response header and emit
   response.set(AHTTPHeader::HT_ENT_Content_Length, AString::fromSize_t(outputBuffer.getSize()));
   response.set(AHTTPHeader::HT_GEN_Cache_Control, ASW("no-cache",8));
-  response.set(AHTTPHeader::HT_ENT_Content_Type, ASW("text/xml; charset=utf-8",23));
   response.emit(client);
   
   //a_Emit response

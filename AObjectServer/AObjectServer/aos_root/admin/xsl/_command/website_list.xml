@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="website_list.xsl"?>
+<admin>
+	<website>
+		<file type="1">10k.dat</file>
+		<file type="1">10k.txt</file>
+		<file type="1">AOS_overview.html</file>
+		<file type="1">aos.png</file>
+		<dir type="0">blog</dir>
+		<dir type="0">canvas</dir>
+		<dir type="0">captcha</dir>
+		<dir type="0">classified</dir>
+		<file type="1">compression.html</file>
+		<dir type="0">dada</dir>
+		<file type="1">favicon.ico</file>
+		<dir type="0">forum</dir>
+		<controller type="3">iframes.html</controller>
+		<dir type="0">imagegen</dir>
+		<dir type="0">images</dir>
+		<file type="1">index.html</file>
+		<dir type="0">js</dir>
+		<file type="1">lang.html</file>
+		<file type="1">list.html</file>
+		<controller type="2">login</controller>
+		<controller type="2">nop</controller>
+		<controller type="2">ping</controller>
+		<dir type="0">public</dir>
+		<dir type="0">samples</dir>
+		<dir type="0">secure</dir>
+		<dir type="0">test</dir>
+		<dir type="0">tiny_mce</dir>
+		<dir type="0">tooltips</dir>
+		<dir type="0">user</dir>
+		<dir type="0">wiki</dir>
+		<dir type="0">xsl</dir>
+	</website>
+	<data cwd="/">
+		<base/>
+		<url><![CDATA[/admin?command=website%5flist]]></url>
+		<root>../aos_root/</root>
+		<locale/>
+		<dynamicDir>../aos_root/_website/dynamic/</dynamicDir>
+		<staticDir>../aos_root/_website/static/</staticDir>
+	</data>
+</admin>

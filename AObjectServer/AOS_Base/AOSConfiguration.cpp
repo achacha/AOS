@@ -263,6 +263,7 @@ AOSConfiguration::AOSConfiguration(
   // Admin site location
   const AString& adminBaseDir = m_Config.useRoot().getString("/config/server/admin/base-http-dir", "admin/");
   m_AdminBaseHttpDir.join(adminBaseDir, true);
+  m_AdminBaseHttpDir.compactPath();
 
   // Website location
   const AString& websiteDirectory = m_Config.useRoot().getString("/config/server/website-directory", AConstant::ASTRING_EMPTY);
@@ -837,22 +838,22 @@ const AFilename& AOSConfiguration::getAosBaseDataDirectory() const
   return m_AosBaseDataDir;
 }
 
-void AOSConfiguration::getAosStaticDirectory(AOSContext& context, AFilename& filename) const
+void AOSConfiguration::getAosStaticDirectory(AHTTPRequestHeader& request, AFilename& filename) const
 {
-  _getLocaleAosDirectory(context, filename, m_LocaleStaticDirs, m_AosBaseStaticDir);
+  _getLocaleAosDirectory(request, filename, m_LocaleStaticDirs, m_AosBaseStaticDir);
 }
 
-void AOSConfiguration::getAosDataDirectory(AOSContext& context, AFilename& filename) const
+void AOSConfiguration::getAosDataDirectory(AHTTPRequestHeader& request, AFilename& filename) const
 {
-  _getLocaleAosDirectory(context, filename, m_LocaleDataDirs, m_AosBaseDataDir);
+  _getLocaleAosDirectory(request, filename, m_LocaleDataDirs, m_AosBaseDataDir);
 }
 
-void AOSConfiguration::_getLocaleAosDirectory(AOSContext& context, AFilename& filename, const AOSConfiguration::MAP_LOCALE_DIRS& dirs, const AFilename& defaultDir) const
+void AOSConfiguration::_getLocaleAosDirectory(AHTTPRequestHeader& request, AFilename& filename, const AOSConfiguration::MAP_LOCALE_DIRS& dirs, const AFilename& defaultDir) const
 {
   if (dirs.size() > 0)
   {
     LIST_AString langs;
-    if (context.useRequestHeader().getAcceptLanguageList(langs) > 0)
+    if (request.getAcceptLanguageList(langs) > 0)
     {
       for(LIST_AString::iterator it = langs.begin(); it != langs.end(); ++it)
       {
@@ -878,24 +879,24 @@ void AOSConfiguration::_getLocaleAosDirectory(AOSContext& context, AFilename& fi
   filename.set(defaultDir);
 }
 
-void AOSConfiguration::getAosStaticDirectoryChain(AOSContext& context, LIST_AFilename& directories)
+void AOSConfiguration::getAosStaticDirectoryChain(AHTTPRequestHeader& request, LIST_AFilename& directories)
 {
-  _getLocaleAosDirectoryChain(context, directories, m_LocaleStaticDirs);
+  _getLocaleAosDirectoryChain(request, directories, m_LocaleStaticDirs);
   directories.push_back(m_AosBaseStaticDir);
 }
 
-void AOSConfiguration::getAosDataDirectoryChain(AOSContext& context, LIST_AFilename& directories)
+void AOSConfiguration::getAosDataDirectoryChain(AHTTPRequestHeader& request, LIST_AFilename& directories)
 {
-  _getLocaleAosDirectoryChain(context, directories, m_LocaleDataDirs);
+  _getLocaleAosDirectoryChain(request, directories, m_LocaleDataDirs);
   directories.push_back(m_AosBaseDataDir);
 }
 
-void AOSConfiguration::_getLocaleAosDirectoryChain(AOSContext& context, LIST_AFilename& directories, const AOSConfiguration::MAP_LOCALE_DIRS& dirs) const
+void AOSConfiguration::_getLocaleAosDirectoryChain(AHTTPRequestHeader& request, LIST_AFilename& directories, const AOSConfiguration::MAP_LOCALE_DIRS& dirs) const
 {
   if (dirs.size() > 0)
   {
     LIST_AString langs;
-    if (context.useRequestHeader().getAcceptLanguageList(langs) > 0)
+    if (request.getAcceptLanguageList(langs) > 0)
     {
       for(LIST_AString::iterator it = langs.begin(); it != langs.end(); ++it)
       {

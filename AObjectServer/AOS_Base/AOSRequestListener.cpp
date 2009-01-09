@@ -214,6 +214,8 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
       str.append(listener.getSocketInfo().m_address);
       str.append(':');
       str.append(AString::fromInt(listener.getSocketInfo().m_port));
+      str.append(" aos_root: ");
+      str.append(pThis->m_Services.useConfiguration().getBaseDir());
       AOS_DEBUGTRACE(str.c_str(), NULL);
     }
 
@@ -307,6 +309,8 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
     str.append(listener.getSocketInfo().m_address);
     str.append(':');
     str.append(AString::fromInt(listener.getSocketInfo().m_port));
+    str.append(" aos_root: ");
+    str.append(pThis->m_Services.useConfiguration().getBaseDir());
     AOS_DEBUGTRACE(str.c_str(), NULL);
   }
 

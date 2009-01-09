@@ -246,7 +246,7 @@ ACacheInterface::STATUS AOSCacheManager::getStaticFile(AOSContext& context, cons
   AASSERT(this, mp_StaticFileCache);
 
   LIST_AFilename directories;
-  m_Services.useConfiguration().getAosStaticDirectoryChain(context, directories);
+  m_Services.useConfiguration().getAosStaticDirectoryChain(context.useRequestHeader(), directories);
   for (LIST_AFilename::iterator it = directories.begin(); it != directories.end(); ++it)
   {
     it->join(fname);
@@ -292,7 +292,7 @@ ACacheInterface::STATUS AOSCacheManager::getDataFile(AOSContext& context, const 
   AASSERT(this, mp_DataFileCache);
 
   LIST_AFilename directories;
-  m_Services.useConfiguration().getAosDataDirectoryChain(context, directories);
+  m_Services.useConfiguration().getAosDataDirectoryChain(context.useRequestHeader(), directories);
   for (LIST_AFilename::iterator it = directories.begin(); it != directories.end(); ++it)
   {
     it->join(fname);

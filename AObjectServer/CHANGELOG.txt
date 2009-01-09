@@ -8,7 +8,10 @@ Change Log
 - Added handling to AXmlElement to return default value when XML path contains no content
 - Sped up logging monitor and session cleaning thread, improved shutdown times
 - Fixed directory listing, not directory is AFileSystem::Directory type and file is AFileSystem::File type as expected
-
+- Added controller validation to make sure all needed input processors, modules and output generators exist
+- Added handling of chained locales for static and data directories
+- Added handling for very simple sites without any data directories or locale config
+- Cleaned up logging
 
 1.6.0.0:
 - Major reorganization of the aos_root directory to handle localization better

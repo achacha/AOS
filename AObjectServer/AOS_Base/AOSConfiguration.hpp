@@ -299,34 +299,34 @@ public:
   /*!
   Location of the data directory based on locale, if no locale specific one found, base returned instead
 
-  @param context to check HTTP request for Accept-Languages: pair for correct directory
+  @param request to check HTTP request for Accept-Languages: pair for correct directory
   @param target to receive localized directory
   */
-  void getAosDataDirectory(AOSContext& context, AFilename& target) const;
+  void getAosDataDirectory(AHTTPRequestHeader& request, AFilename& target) const;
 
   /*!
   Location of the static directory based on locale, if no locale specific one found, base returned instead
 
-  @param context to check HTTP request for Accept-Languages: pair for correct directory
+  @param request to check HTTP request for Accept-Languages: pair for correct directory
   @param target to receive localized directory
   */
-  void getAosStaticDirectory(AOSContext& context, AFilename& target) const;
+  void getAosStaticDirectory(AHTTPRequestHeader& request, AFilename& target) const;
 
   /*!
   Location of the static directories based on locale, default is appended to end
 
-  @param context to check HTTP request for Accept-Languages: pair for correct directory
+  @param request to check HTTP request for Accept-Languages: pair for correct directory
   @param directories to add to, last entry is always the default locale location
   */
-  void getAosStaticDirectoryChain(AOSContext& context, LIST_AFilename& directories);
+  void getAosStaticDirectoryChain(AHTTPRequestHeader& request, LIST_AFilename& directories);
 
   /*!
   Location of the data directories based on locale, default is appended to end
 
-  @param context to check HTTP request for Accept-Languages: pair for correct directory
+  @param request to check HTTP request for Accept-Languages: pair for correct directory
   @param directories to add to, last entry is always the default locale location
   */
-  void getAosDataDirectoryChain(AOSContext& context, LIST_AFilename& directories);
+  void getAosDataDirectoryChain(AHTTPRequestHeader& request, LIST_AFilename& directories);
 
   /*!
   Check is dumpContext is allowed in the configuration file
@@ -454,10 +454,10 @@ private:
   void _loadLocaleInfo();
 
   // Get locale specific directory
-  void _getLocaleAosDirectory(AOSContext& context, AFilename& filename, const AOSConfiguration::MAP_LOCALE_DIRS& dirs, const AFilename& defaultDir) const;
+  void _getLocaleAosDirectory(AHTTPRequestHeader& request, AFilename& filename, const AOSConfiguration::MAP_LOCALE_DIRS& dirs, const AFilename& defaultDir) const;
 
   // Get chain of locale directries to look up, last entry is always the default
-  void _getLocaleAosDirectoryChain(AOSContext& context, LIST_AFilename& directories, const AOSConfiguration::MAP_LOCALE_DIRS& dirs) const;
+  void _getLocaleAosDirectoryChain(AHTTPRequestHeader& request, LIST_AFilename& directories, const AOSConfiguration::MAP_LOCALE_DIRS& dirs) const;
 
   // Populate the extension set
   void _populateGzipCompressionExtensions();
