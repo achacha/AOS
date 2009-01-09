@@ -26,15 +26,39 @@ public:
   AQueryString(const AQueryString&);
   virtual ~AQueryString();
 
-  //a_Assignment operator (overwrite assumed)
-  AQueryString &operator =(const AQueryString&);
-  void copy(const AQueryString&);
+  /*!
+  Assignment operator (overwrite assumed)
 
-  //a_A way to add two query strings together
-  //a_Duplicate names generated when values are different
+  @param that other AQueryString
+  */
+  AQueryString &operator =(const AQueryString& that);
+
+  /*!
+  Assignment operator (overwrite assumed)
+
+  @param that other AQueryString
+  */
+  void copy(const AQueryString& that);
+
+  /*!
+  A way to add two query strings together
+  Duplicate names generated when values are different
+  
+  @param that other AQueryString
+  */
   void operator |=(const AQueryString& that) { append(that); }
-  void append(const AQueryString&);
 
+  /*!
+  A way to add two query strings together
+  Duplicate names generated when values are different
+  
+  @param that other AQueryString
+  */
+  void append(const AQueryString& that);
+
+  /*!
+  Clear the query string
+  */
   void clear();
   
   /*!
@@ -43,9 +67,13 @@ public:
   void parse(const AString& strLine, ANameValuePair::NameValueType type = ANameValuePair::CGI);
 
   /*!
-  AEmittable and AXmlEmittable
+  AEmittable
   */
   virtual void emit(AOutputBuffer& target) const;
+  
+  /*!
+  AXmlEmittable
+  */
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
@@ -67,53 +95,90 @@ public:
   ) const;
 
   /*!
-  Insert name/value pair
+  Set name/value pair, removing any instance of name existing in the query string
+
+  @param name of pair
+  @param value of pair
   */
-  virtual void insert(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);
+  void set(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);
+
+  /*!
+  Insert name/value pair
+
+  @param name of pair
+  @param value of pair
+  */
+  void insert(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);
   
   /*!
   Remove name and all of its values
   If value specified only that value is removed
+
+  @param name of pair
+  @param value of pair
   */
-  virtual void remove(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);  //no value specified means remove the key and all values
+  void remove(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);  //no value specified means remove the key and all values
   
   /*!
   Count how many of a given name exist
+
+  @param name of pair
+  @return number of values found for the given name
   */
-  virtual size_t count(const AString& name) const;
+  size_t count(const AString& name) const;
 
   /*!
   Check if name exists
+
+  @param name of pair
+  @return true if found
   */
-  virtual bool exists(const AString& name) const;
+  bool exists(const AString& name) const;
 
   /*!
   Gets the first one it finds, but there may be more
   Returns true if found, else false
   Call to count can be used if not sure how many values exist
+
+  @param name of the first found pair
+  @param target to append to
+  @return true if found
   */
-  virtual bool get(const AString& name, AString&) const;
+  bool get(const AString& name, AString& target) const;
 
   /*!
   Get a list of all values associated with a given name
   Returns # found (same as count)
+
+  @param name of pair(s)
+  @param target to append to
+  @return number of values found
   */
-  virtual size_t get(const AString& name, LIST_NVPair& result) const;
+  size_t get(const AString& name, LIST_NVPair& target) const;
 
   /*!
   Get values delimeted
+
+  @param name of pair
+  @param value of pair
+  @param delimeter to use
   */
-  virtual size_t getDelimited(const AString& name, AString& values, const AString& delimeter = AConstant::ASTRING_COMMA) const;     //a_Will generate a string "value1,value2,value3..."
+  size_t getDelimited(const AString& name, AString& values, const AString& delimeter = AConstant::ASTRING_COMMA) const;     //a_Will generate a string "value1,value2,value3..."
 
   /*!
   Number of values
+
+  @return number of pairs
   */
   size_t size() const;
 
   /*!
   All unique names
+
+  @param target to add names to
+  @return number of pairs added to set
   */
-  size_t getNames(SET_AString&) const;
+  size_t getNames(SET_AString& target) const;
 
   /*!
   ASerializable

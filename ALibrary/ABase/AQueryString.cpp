@@ -202,6 +202,15 @@ bool AQueryString::exists(const AString& name) const
   return m_Pairs.count(str) > 0;
 }
 
+void AQueryString::set(const AString& name, const AString &value)
+{
+  AString str(name);
+  str.makeLower();
+
+  m_Pairs.erase(str);
+  m_Pairs.insert(MMAP_AString_NVPair::value_type(str, ANameValuePair(str, value, ANameValuePair::CGI)));
+}
+
 void AQueryString::insert(const AString &name, const AString &value)
 {
   AString str(name);

@@ -276,6 +276,7 @@ public:
 
   /*!
   Find path based on this element as root
+  If element name contains @attrib, it checks if attribute named exists on the element
   
   @param path to look up
   @return reference to the AXmlElement or NULL if not found
@@ -284,6 +285,7 @@ public:
 
   /*!
   Find path based on this element as root
+  If element name contains @attrib, it checks if attribute named exists on the element
   
   @param path to look up
   @return constant reference to the AXmlElement or NULL if not found
@@ -296,6 +298,8 @@ public:
   The "/a/c/cc@foo" will be found.  Current element must be first element of the path if absolute
   If path is relative then c/cc will find 2nd child cc in child c
   Adds const AXmlElement* to the result container, will not clear the result, will append
+
+  If element name contains @attrib, it checks if attribute named exists on the element
 
   @param path to look up
   @param result to append 'const AXmlElement' references to
