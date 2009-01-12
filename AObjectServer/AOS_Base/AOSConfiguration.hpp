@@ -254,6 +254,14 @@ public:
   Set the mime type based on extension or use configured default if extension is not found
   
   @param ext Extension to try and map, if not found will use default
+  @param responseHeader AHTTPResponseHeader that will get set
+  */
+  void setMimeTypeFromExt(const AString& ext, AHTTPResponseHeader& responseHeader);
+
+  /*!
+  Set the mime type based on extension or use configured default if extension is not found
+  
+  @param ext Extension to try and map, if not found will use default
   @param context AOSContext contains the HTTP response header that will get set
   */
   void setMimeTypeFromExt(const AString& ext, AOSContext& context);

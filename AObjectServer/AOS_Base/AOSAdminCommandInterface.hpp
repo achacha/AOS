@@ -40,7 +40,7 @@ protected:
   /*!
   Insert stylesheet into the model
   */
-  virtual void _insertStylesheet(AOSAdminCommandContext&) = 0;
+  virtual void _insertStylesheet(AOSAdminCommandContext&);
 
   //! AOS services object
   AOSServices& m_Services;

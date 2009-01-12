@@ -28,3 +28,7 @@ void AOSAdminCommandInterface::process(AOSAdminCommandContext& context)
   //a_Output
   context.useModel().emit(context.useOutput());
 }
+
+void AOSAdminCommandInterface::_insertStylesheet(AOSAdminCommandContext&)
+{
+}

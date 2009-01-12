@@ -754,6 +754,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\AOSAdminCommand_website_view.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\AOSAdminCommandContext.hpp"
 					>
 				</File>
@@ -792,6 +796,10 @@
 				</File>
 				<File
 					RelativePath=".\AOSAdminCommand_website_list.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AOSAdminCommand_website_view.cpp"
 					>
 				</File>
 				<File

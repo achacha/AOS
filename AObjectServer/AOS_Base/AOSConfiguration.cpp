@@ -666,17 +666,22 @@ const AString& AOSConfiguration::getDefaultMimeType() const
   return m_DefaultMimeType;
 }
 
-void AOSConfiguration::setMimeTypeFromExt(const AString& ext, AOSContext& context)
+void AOSConfiguration::setMimeTypeFromExt(const AString& ext, AHTTPResponseHeader& responseHeader)
 {
   AString mimetype;
   if (getMimeTypeFromExt(ext, mimetype))
   {
-    context.useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, mimetype);
+    responseHeader.set(AHTTPHeader::HT_ENT_Content_Type, mimetype);
   }
   else
   {
-    context.useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, m_DefaultMimeType);
+    responseHeader.set(AHTTPHeader::HT_ENT_Content_Type, m_DefaultMimeType);
   }
+}
+
+void AOSConfiguration::setMimeTypeFromExt(const AString& ext, AOSContext& context)
+{
+  setMimeTypeFromExt(ext, context.useResponseHeader());
 }
 
 void AOSConfiguration::setMimeTypeFromRequestExt(AOSContext& context)

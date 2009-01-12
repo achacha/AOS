@@ -25,6 +25,7 @@ $Id$
 #include "AOSAdminCommand_display.hpp"
 #include "AOSAdminCommand_modify.hpp"
 #include "AOSAdminCommand_website_list.hpp"
+#include "AOSAdminCommand_website_view.hpp"
 
 AOSAdmin::AOSAdmin(
   AOSServices& services
@@ -55,6 +56,7 @@ void AOSAdmin::startAdminListener()
   m_AdminCommandRegistry.insert(new AOSAdminCommand_display(m_Services));
   m_AdminCommandRegistry.insert(new AOSAdminCommand_modify(m_Services));
   m_AdminCommandRegistry.insert(new AOSAdminCommand_website_list(m_Services));
+  m_AdminCommandRegistry.insert(new AOSAdminCommand_website_view(m_Services));
   
   //a_Get port and start listener thread
   if (m_Services.useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/listen/admin/port"), -1) > 0)

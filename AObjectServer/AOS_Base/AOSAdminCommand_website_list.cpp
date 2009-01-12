@@ -49,7 +49,6 @@ void AOSAdminCommand_website_list::_process(AOSAdminCommandContext& context)
 
   AString locale;
   context.useRequestHeader().useUrl().useParameterPairs().get("locale", locale);
-
   if (!locale.isEmpty())
     context.useRequestHeader().set(AHTTPHeader::HT_REQ_Accept_Language, locale);
 
@@ -62,10 +61,7 @@ void AOSAdminCommand_website_list::_process(AOSAdminCommandContext& context)
 
   _buildWebsiteXml(website, staticPath, dynamicPath);
 
-  //TODO: REMOVE DEBUG STUFF
   data.addElement("locale").addData(locale);
-  data.addElement("dynamicDir").addData(dynamicPath);
-  data.addElement("staticDir").addData(staticPath);
 }
 
 void AOSAdminCommand_website_list::_insertStylesheet(AOSAdminCommandContext& context)
