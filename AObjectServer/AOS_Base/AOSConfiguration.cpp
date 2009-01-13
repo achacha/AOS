@@ -243,6 +243,7 @@ AOSConfiguration::AOSConfiguration(
   m_AosBaseStaticDir(baseDir),
   m_AosBaseDynamicDir(baseDir),
   m_AdminBaseHttpDir(baseDir),
+  m_BaseWebSiteDir(baseDir),
   m_Services(services),
   m_Config(ASW("config",6)),
   m_ReportedServer(AOS_SERVER_NAME),
@@ -269,6 +270,7 @@ AOSConfiguration::AOSConfiguration(
   const AString& websiteDirectory = m_Config.useRoot().getString("/config/server/website-directory", AConstant::ASTRING_EMPTY);
   if (!websiteDirectory.isEmpty())
   {
+    m_BaseWebSiteDir.usePathNames().push_back(websiteDirectory);
     m_AosBaseDynamicDir.usePathNames().push_back(websiteDirectory);
     m_AosBaseDataDir.usePathNames().push_back(websiteDirectory);
     m_AosBaseStaticDir.usePathNames().push_back(websiteDirectory);
@@ -636,6 +638,11 @@ void AOSConfiguration::_readMIMETypes()
 const AFilename& AOSConfiguration::getBaseDir() const
 {
   return m_BaseDir;
+}
+
+const AFilename& AOSConfiguration::getBaseWebSiteDir() const
+{
+  return m_BaseWebSiteDir;
 }
 
 const AString& AOSConfiguration::getBaseLocale() const

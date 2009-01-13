@@ -25,26 +25,18 @@ void AOSAdminCommand_website_list::_process(AOSAdminCommandContext& context)
   AXmlElement& data = context.useModel().useRoot().addElement("data");
 
   AString str;
-  AFilename basePath;
-  if (context.useRequestHeader().useUrl().useParameterPairs().get("basepath", str))
+  AFilename relativePath;
+  if (context.useRequestHeader().useUrl().useParameterPairs().get("path", str))
   {
-    basePath.set(str, false);
-    if (!basePath.compactPath())
+    relativePath.set(str, true);
+    if (!relativePath.compactPath())
     {
-      basePath.clear();
+      relativePath.clear();
       str.clear();
     }
   }
-
-  if (str.isEmpty())
-    data.addElement("base").addData("/");
-  else
-    data.addElement("base").addData(basePath);
   
-  AUrl url(context.useRequestHeader().useUrl());
-  url.useParameterPairs().remove("basepath");
-  data.addElement("url").addData(url, AXmlElement::ENC_CDATADIRECT);
-  data.addAttribute("cwd", basePath);
+  data.addElement("base", relativePath);
   data.addElement("root").addData(m_Services.useConfiguration().getBaseDir()); 
 
   AString locale;
@@ -52,14 +44,9 @@ void AOSAdminCommand_website_list::_process(AOSAdminCommandContext& context)
   if (!locale.isEmpty())
     context.useRequestHeader().set(AHTTPHeader::HT_REQ_Accept_Language, locale);
 
-  AFilename staticPath;
-  m_Services.useConfiguration().getAosStaticDirectory(context.useRequestHeader(), staticPath);
-  staticPath.join(basePath, true);
+  _buildWebsiteXml(context, website, relativePath);
 
-  AFilename dynamicPath(m_Services.useConfiguration().getAosBaseDynamicDirectory());
-  dynamicPath.join(basePath, true);
-
-  _buildWebsiteXml(website, staticPath, dynamicPath);
+  data.addElement("url").addData(ASWNL("/admin?command=website_list"), AXmlElement::ENC_CDATADIRECT);
 
   data.addElement("locale").addData(locale);
 }
@@ -70,6 +57,40 @@ void AOSAdminCommand_website_list::_insertStylesheet(AOSAdminCommandContext& con
     .addAttribute(ASW("type",4), ASW("text/xsl",8))
     .addAttribute(ASW("href",4), ASW("/xsl/_command/website_list.xsl",30));
 }
+
+struct _WebSiteFilename
+{
+  enum TYPE
+  {
+    TYPE_UNKNOWN = 0,
+    DIR_STATIC   = 1,
+    DIR_DYNAMIC  = 2,    
+    FILE_STATIC  = 3,
+    FILE_DYNAMIC = 4
+  };
+
+  _WebSiteFilename() : type(TYPE_UNKNOWN)
+  {
+  }
+
+  _WebSiteFilename(const AFilename& f, _WebSiteFilename::TYPE t, const AString& i = AConstant::ASTRING_EMPTY) :
+    type(t),
+    filename(f),
+    info(i)
+  {
+  }
+  
+  _WebSiteFilename(const _WebSiteFilename& that) :
+    type(that.type),
+    filename(that.filename),
+    info(that.info)
+  {
+  }
+    
+  AFilename filename;
+  TYPE type;
+  AString info;
+};
 
 struct _WebSiteInfo
 {
@@ -87,98 +108,144 @@ struct _WebSiteInfo
 
   AOSController *pController;
   u4 type;
+  
+  typedef std::list<_WebSiteFilename> CONTAINER;
+  CONTAINER paths;
 };
 
-void AOSAdminCommand_website_list::_buildWebsiteXml(AXmlElement& node, AFilename& staticPath, AFilename& dynamicPath)
+typedef std::map<AString, _WebSiteInfo> WEBSITE_CONTAINER;
+
+void AOSAdminCommand_website_list::_buildWebsiteXml(AOSAdminCommandContext& context, AXmlElement& node, AFilename& relativePath)
 {
   // 0000 - Invalid
   // 0001 - static dir(1), 0010 - dynamic dir(2), 0011 - dyamic and static
   // 0100 - static(4), 1000 - dynamic(8), 1100 dynamic over static(12)
-  std::map<AString, _WebSiteInfo> content;
+  WEBSITE_CONTAINER content;
   
-  //Check static
-  AFileSystem::FileInfos files;
-  if (AFileSystem::exists(staticPath) && AFileSystem::dir(staticPath, files, false, false))
+  LIST_AFilename dirs;
+  m_Services.useConfiguration().getAosStaticDirectoryChain(context.useRequestHeader(), dirs);
+  for (LIST_AFilename::reverse_iterator itDir = dirs.rbegin(); itDir != dirs.rend(); ++itDir)
   {
-    for (AFileSystem::FileInfos::iterator it = files.begin(); it != files.end(); ++it)
+    itDir->join(relativePath, true);
+    
+    //Check static
+    AFileSystem::FileInfos files;
+    if (AFileSystem::exists(*itDir) && AFileSystem::dir(*itDir, files, false, false))
     {
-      if (it->isDirectory())
+      for (AFileSystem::FileInfos::iterator it = files.begin(); it != files.end(); ++it)
       {
-        content[it->filename.usePathNames().back()].type = 1;
-      }
-      else
-      {
-        content[it->filename.useFilename()].type = 0x4;
+        if (it->isDirectory())
+        {
+          // Don't add a new entry if it already exists
+          it->filename.removeBasePath(*itDir);
+          if (content.find(it->filename.usePathNames().back()) == content.end())
+          {
+            _WebSiteFilename wsf;
+            wsf.filename = it->filename;
+            wsf.type = _WebSiteFilename::DIR_STATIC;
+            it->filename.emitPath(wsf.info);
+            content[it->filename.usePathNames().back()].paths.push_back(wsf);
+          }
+
+          content[it->filename.usePathNames().back()].type = 1;
+        }
+        else
+        {
+          it->filename.removeBasePath(m_Services.useConfiguration().getBaseWebSiteDir());
+          content[it->filename.useFilename()].type = 0x4;
+          
+          _WebSiteFilename wsf;
+          wsf.filename = it->filename;
+          wsf.type = _WebSiteFilename::FILE_STATIC;
+          it->filename.emitPath(wsf.info);
+          content[it->filename.useFilename()].paths.push_back(wsf);
+        }
       }
     }
   }
 
-  files.clear();
+  AFilename dynamicPath(m_Services.useConfiguration().getAosBaseDynamicDirectory());
+  dynamicPath.join(relativePath, true);
+
+  AFileSystem::FileInfos files;
   if (AFileSystem::exists(dynamicPath) && AFileSystem::dir(dynamicPath, files, false, false))
   {
     for (AFileSystem::FileInfos::iterator it = files.begin(); it != files.end(); ++it)
     {
       if (it->isDirectory())
       {
+        // Don't add a new entry for dynamic if it already exists
+        it->filename.removeBasePath(dynamicPath);
+        if (content.find(it->filename.usePathNames().back()) == content.end())
+        {
+          _WebSiteFilename wsf;
+          wsf.filename = it->filename;
+          wsf.type = _WebSiteFilename::DIR_DYNAMIC;
+          it->filename.emitPath(wsf.info);
+          content[it->filename.usePathNames().back()].paths.push_back(wsf);
+        }
         content[it->filename.usePathNames().back()].type |= 0x2;
       }
       else
       {
+        it->filename.removeBasePath(m_Services.useConfiguration().getBaseWebSiteDir());
         if (it->filename.equalsExtension("aos","xml"))
         {
-          it->filename.useFilename().rremove(8);  // remove ".aos.xml"
-          content[it->filename.useFilename()].type |= 0x8;
+          AFilename f(it->filename);
+          f.useFilename().rremove(8);  // remove ".aos.xml"
+          content[f.useFilename()].type |= 0x8;
+
+          _WebSiteFilename wsf;
+          wsf.filename = it->filename;
+          wsf.type = _WebSiteFilename::FILE_DYNAMIC;
+          it->filename.emitPath(wsf.info);
+          content[f.useFilename()].paths.push_back(wsf);
         }
         else
         {
-          content[it->filename.useFilename()].type = -1;
+          content[it->filename.useFilename()].type = 0;
+          content[it->filename.useFilename()].paths.push_back(_WebSiteFilename(it->filename, _WebSiteFilename::TYPE_UNKNOWN));
         }
       }
     }
   }
 
-  for (std::map<AString, _WebSiteInfo>::iterator it = content.begin(); it != content.end(); ++it)
+  for (WEBSITE_CONTAINER::iterator it = content.begin(); it != content.end(); ++it)
   {
     switch(it->second.type)
     {
       case 1: // dir: static
-      {
-        node.addElement("dir").addData(it->first).addAttribute("type", it->second.type);
-      }
-      break;
-
       case 2: // dir: dynamic
-      {
-        node.addElement("dir").addData(it->first).addAttribute("type", it->second.type);
-      }
-      break;
-
       case 3: // dir: static+dynamic
       {
-        node.addElement("dir").addData(it->first).addAttribute("type", it->second.type);
+        AXmlElement& n = node.addElement("dir").addAttribute("type", it->second.type);
+        n.addElement("name", it->first);
+        for (_WebSiteInfo::CONTAINER::reverse_iterator itPath = it->second.paths.rbegin(); itPath != it->second.paths.rend(); ++itPath)
+        {
+          AXmlElement& p = n.addElement("path");
+          p.addAttribute("type", (u4)itPath->type).addElement("data").addData(itPath->filename);
+          p.addElement("info").addData(itPath->info);
+        }
       }
       break;
 
       case 4: // file: static
-      {
-        node.addElement("file").addData(it->first).addAttribute("type", it->second.type);
-      }
-      break;
-
       case 8: // dynamic
-      {
-        node.addElement("file").addData(it->first).addAttribute("type", it->second.type);
-      }
-      break;
-
       case 12: // both
       {
-        node.addElement("file").addData(it->first).addAttribute("type", it->second.type);
+        AXmlElement& n = node.addElement("file").addAttribute("type", it->second.type);
+        n.addElement("name", it->first);
+        for (_WebSiteInfo::CONTAINER::reverse_iterator itPath = it->second.paths.rbegin(); itPath != it->second.paths.rend(); ++itPath)
+        {
+          AXmlElement& p = n.addElement("path");
+          p.addAttribute("type", (u4)itPath->type).addElement("data").addData(itPath->filename);
+          p.addElement("info").addData(itPath->info);
+        }
       }
       break;
 
       default:
-        node.addElement("ERROR").addData(it->first).addAttribute("type", it->second.type);
+        node.addElement("file").addAttribute("type", it->second.type).addElement("name", it->first);
     }
   }
 }

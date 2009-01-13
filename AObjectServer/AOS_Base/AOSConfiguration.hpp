@@ -87,9 +87,16 @@ public:
   /*!
   Base directory
 
-  @return reference to AFilename
+  @return constant reference to AFilename
   */
   const AFilename& getBaseDir() const;
+
+  /*!
+  Base website directory
+
+  @return constant reference to AFilename
+  */
+  const AFilename& getBaseWebSiteDir() const;
 
   /*!
   Base locale for directories without locale specification
@@ -407,6 +414,9 @@ private:
 
   // Directory where all info lives for this instance
   AFilename m_BaseDir;
+
+  // Directory where all website content info lives for this instance
+  AFilename m_BaseWebSiteDir;
 
   // Configuration bits and Ini profile
   ABitArray m_ConfigBits;

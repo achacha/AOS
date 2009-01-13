@@ -36,15 +36,9 @@ void AOSAdminCommand_website_view::process(AOSAdminCommandContext& context)
   context.useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, "text/plain; charset=utf-8");
 
   AString str;
-  AFilename path;
-  if (context.useRequestHeader().useUrl().useParameterPairs().get("static", str))
+  AFilename path(m_Services.useConfiguration().getBaseWebSiteDir());
+  if (context.useRequestHeader().useUrl().useParameterPairs().get("path", str))
   {
-    m_Services.useConfiguration().getAosStaticDirectory(context.useRequestHeader(), path);
-    path.join(str, false);
-  }
-  else if (context.useRequestHeader().useUrl().useParameterPairs().get("dynamic", str))
-  {
-    path.set(m_Services.useConfiguration().getAosBaseDynamicDirectory());
     path.join(str, false);
   }
   else

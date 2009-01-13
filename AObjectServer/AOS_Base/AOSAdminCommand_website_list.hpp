@@ -40,7 +40,11 @@ protected:
   virtual void _insertStylesheet(AOSAdminCommandContext&);
 
   // Recursive website builder
-  void _buildWebsiteXml(AXmlElement& node, AFilename& staticPath, AFilename& dynamicPath);
+  void _buildWebsiteXml(
+    AOSAdminCommandContext& context, 
+    AXmlElement& node,
+    AFilename& relativePath
+  );
 
 };
 
