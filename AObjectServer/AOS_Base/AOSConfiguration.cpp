@@ -903,6 +903,16 @@ void AOSConfiguration::getAosDataDirectoryChain(AHTTPRequestHeader& request, LIS
   directories.push_back(m_AosBaseDataDir);
 }
 
+const AOSConfiguration::MAP_LOCALE_DIRS& AOSConfiguration::getLocaleStaticDirs() const
+{
+  return m_LocaleStaticDirs;
+}
+
+const AOSConfiguration::MAP_LOCALE_DIRS& AOSConfiguration::getLocaleDataDirs() const
+{
+  return m_LocaleDataDirs;
+}
+
 void AOSConfiguration::_getLocaleAosDirectoryChain(AHTTPRequestHeader& request, LIST_AFilename& directories, const AOSConfiguration::MAP_LOCALE_DIRS& dirs) const
 {
   if (dirs.size() > 0)

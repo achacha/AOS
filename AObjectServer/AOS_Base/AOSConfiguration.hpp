@@ -50,6 +50,23 @@ public:
   //! Class name
   static const AString CLASS;
 
+  //! Map of locale to directory
+  //! getPrev() points to parent locale as fallthrough, getNext() is always NULL
+  class LocaleDirInfo : public ABase
+  {
+  public:
+    LocaleDirInfo() {}
+    LocaleDirInfo(AFilename& f) : dir(f) {}
+    LocaleDirInfo(const LocaleDirInfo& that) : dir(that.dir) {}
+    LocaleDirInfo& operator=(const LocaleDirInfo& that) { dir.set(that.dir); return *this; }
+    bool operator< (const LocaleDirInfo& that) { return dir < that.dir; }
+
+    AFilename dir;
+  };
+  
+  //! Map of locale name to a directory
+  typedef std::map<AString, LocaleDirInfo> MAP_LOCALE_DIRS;
+
 public:
   /*!
   ctor
@@ -105,6 +122,20 @@ public:
   @return constant reference to the base locale string  (defaults to en-us)
   */
   const AString& getBaseLocale() const;
+
+  /*!
+  Get a map of locales to static directories
+
+  @return map of locales to static directories
+  */
+  const AOSConfiguration::MAP_LOCALE_DIRS& getLocaleStaticDirs() const;
+  
+  /*!
+  Get a map of locales to data directories
+
+  @return map of locales to data directories
+  */
+  const AOSConfiguration::MAP_LOCALE_DIRS& getLocaleDataDirs() const;
 
   /*!
   Load XML configuration for a given module in config directory
@@ -435,21 +466,6 @@ private:
 
   // Initialize statics
   void _initStatics();
-
-  // Map of locale to directory
-  // getPrev() points to parent locale as fallthrough, getNext() is always NULL
-  class LocaleDirInfo : public ABase
-  {
-  public:
-    LocaleDirInfo() {}
-    LocaleDirInfo(AFilename& f) : dir(f) {}
-    LocaleDirInfo(const LocaleDirInfo& that) : dir(that.dir) {}
-    LocaleDirInfo& operator=(const LocaleDirInfo& that) { dir.set(that.dir); return *this; }
-    bool operator< (const LocaleDirInfo& that) { return dir < that.dir; }
-
-    AFilename dir;
-  };
-  typedef std::map<AString, LocaleDirInfo> MAP_LOCALE_DIRS;
 
   // Populate locale specific directories
   //   if ./static/ is used

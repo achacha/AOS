@@ -48,7 +48,23 @@ void AOSAdminCommand_website_list::_process(AOSAdminCommandContext& context)
 
   data.addElement("url").addData(ASWNL("/admin?command=website_list"), AXmlElement::ENC_CDATADIRECT);
 
+  // Current locale and available locales
   data.addElement("locale").addData(locale);
+  AXmlElement& eAvail = data.addElement("select_locale").addElement("select").addAttribute("name", "locale");
+
+  bool hasSelected = false;
+  AXmlElement& eDefault = eAvail.addElement("option").addData(m_Services.useConfiguration().getBaseLocale()).addAttribute("base", "true");
+  for (AOSConfiguration::MAP_LOCALE_DIRS::const_iterator cit = m_Services.useConfiguration().getLocaleStaticDirs().begin(); cit != m_Services.useConfiguration().getLocaleStaticDirs().end(); ++cit)
+  {
+    AXmlElement& eBase = eAvail.addElement("option").addData(cit->first);
+    if (cit->first.equals(locale))
+    {
+      eBase.addAttribute("selected", "true");
+      hasSelected = true;
+    }
+  }
+  if (!hasSelected)
+    eDefault.addAttribute("selected", "true");
 }
 
 void AOSAdminCommand_website_list::_insertStylesheet(AOSAdminCommandContext& context)

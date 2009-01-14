@@ -15,49 +15,40 @@
 			<head>
 				<title>Website</title>
 				<style type="text/css">
-IMG.folder { padding:1px 4px 1px 1px; height:20px; width:24px; }				
+IMG.folder { padding:1px 4px 1px 1px; height:16px; width:20px; }				
 IMG.folder_link { padding:0px 3px 0px 3px; height:12px; width:12px; border:0; }
 A.folder { padding:1px 5px 1px 1px; color:#1010f0; font-size:large; font-weight:bolder; }				
 
-IMG.file { padding:1px 4px 1px 1px; height:18px; width:20px; }				
+IMG.file { padding:1px 4px 1px 1px; height:14px; width:18px; }				
 IMG.file_link { padding:0px 3px 0px 3px; height:12px; width:12px; border:0; }				
 A.file_first { color:#0000f0; font-weight:bolder; }
 A.file { color:#808080; }
 
 SPAN.folder_line { background-color:#ddddff; padding: 0px 0px 0px 0px; vertical-align:top; }
 SPAN.file_line { background-color:#f0f0ff; }
+
+SPAN.path { color:blue; font-face:Arial; font-weight:bolder; }
 				</style>
 			</head>
 			<body>
-				<font size="+2"><b><xsl:value-of select="/admin/data/base"/></b></font>
-				<img alt=" --- " src="/images/blank_16x16.png"/>
-				<span style="font-weight:lighter; font-size:small; font-family:arial;"><xsl:text> ( </xsl:text>
-				LOCALE: <xsl:value-of select="$locale"/>
-					<xsl:text> {</xsl:text>
-					<a>
-						<xsl:attribute name="href">/admin?command=website_list&amp;locale=en-us</xsl:attribute>
-						<xsl:text>en-us</xsl:text>
-					</a>
-					<xsl:text>,</xsl:text>
-					<a>
-						<xsl:attribute name="href">/admin?command=website_list&amp;locale=en-gb</xsl:attribute>
-						<xsl:text>en-gb</xsl:text>
-					</a>
-					<xsl:text>,</xsl:text>
-					<a>
-						<xsl:attribute name="href">/admin?command=website_list&amp;locale=en-pirate</xsl:attribute>
-						<xsl:text>en-pirate</xsl:text>
-					</a>
-					<xsl:text>,</xsl:text>
-					<a>
-						<xsl:attribute name="href">/admin?command=website_list&amp;locale=ru-ru</xsl:attribute>
-						<xsl:text>ru-ru</xsl:text>
-					</a>
-				<xsl:text>}, ROOT: </xsl:text><xsl:value-of select="/admin/data/root"/>
-				<xsl:text> ) </xsl:text>
-				</span>
-				<span style="float:right; text-align:left; position:relative;"><a target="_top" href="/">Home</a></span>
+				<div><span style="float:left;"><i>Base path: <font size="-1"><xsl:value-of select="/admin/data/root"/></font></i></span><span style="float:right; text-align:left;"><a target="_top" href="/">Home</a></span></div>
 				<br clear="all"/>
+				<form method="get">
+					<input type="hidden" name="command" value="website_list"/>					
+					<input type="hidden" name="path">
+						<xsl:attribute name="value"><xsl:value-of select="/admin/data/base"/></xsl:attribute>
+					</input>
+					<table width="100%" border="1">
+						<tr>
+							<th>Path</th>
+							<th>Locale</th>
+						</tr>
+						<tr>
+							<td align="center" width="70%"><span class="path"><xsl:value-of select="/admin/data/base"/></span></td>
+							<td align="center"><xsl:copy-of select="/admin/data/select_locale/select"/> <input type="submit" name="Set" value="Set"/></td>
+						</tr>
+					</table>
+				</form>
 				<hr/>
 				<xsl:apply-templates select="/admin/website"/>
 			</body>
