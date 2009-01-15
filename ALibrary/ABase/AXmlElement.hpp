@@ -313,12 +313,14 @@ public:
   NOTE: the reference returned is to the NEWLY ADDED element and not the current element as with other non-add methods
 
   @param path to create/add
+  @param insertIntoFront makes new element the first one if true, and appends to content end if false
   @return the newly added element
   */
-  AXmlElement& addElement(const AString& path);
+  AXmlElement& addElement(const AString& path, bool insertIntoFront = false);
 
   /*!
   Overwrite an element or create new one if it does not exist
+  Will find the first one
 
   NOTE: If path is found the reference returned is to the overwritten element and not the current element as with other non-add methods
   NOTE: If path not found the reference returned is to the NEWLY ADDED element and not the current element as with other non-add methods
@@ -340,7 +342,7 @@ public:
   @param overwrite - will try to find existing structure to replace, otherwise will create new path
   @return the newly added element
   */
-  AXmlElement& addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool overwrite = false);
+  AXmlElement& addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool overwrite = false, bool insertIntoFront = false);
 
   /*!
   Add AEmittable type (encoded as needed)
@@ -461,12 +463,14 @@ public:
 
   @param pContent to add to this element (will be OWNED by this element and deleted when done)
   @param path to add to
+  @param insertIntoFront if true will replace first found, if false fill replace last found
   @return this object
   */
-  AXmlElement& addContent(AXmlElement *pContent, const AString& path = AConstant::ASTRING_EMPTY);
+  AXmlElement& addContent(AXmlElement *pContent, const AString& path = AConstant::ASTRING_EMPTY, bool insertIntoFront = false);
   
+
   /*!
-  AXmlEmittable added as content to the element
+  AXmlEmittable added as content to the end of this element
   that.emitXml(*this) is called
   
   @param that other object to XML emit into current element
@@ -682,7 +686,7 @@ protected:
   size_t _nonconst_find(LIST_AString listPath, AXmlElement::CONTAINER& result);
 
   //! Add element
-  AXmlElement *_addElement(const AString& path, bool overwrite);
+  AXmlElement *_addElement(const AString& path, bool overwrite, bool insertIntoFront = false);
 
   //! Remove child element
   void _removeChildElement(AXmlElement *);
@@ -692,10 +696,10 @@ protected:
   void _addData(const AEmittable& value, AXmlElement::Encoding encoding = AXmlElement::ENC_NONE, bool overwrite = false);
 
   //! Creates a new element
-  AXmlElement *_createAndAppend(LIST_AString& xparts, AXmlElement* pParent);
+  AXmlElement *_createAndAppend(LIST_AString& xparts, AXmlElement* pParent, bool insertIntoFront = false);
   
   //! Attempts to overwrite if not found then creates
-  AXmlElement *_getOrCreate(LIST_AString& xparts, AXmlElement* pParent);
+  AXmlElement *_getOrCreate(LIST_AString& xparts, AXmlElement* pParent, bool insertIntoFront = false);
 
 public:
 #ifdef __DEBUG_DUMP__

@@ -9,7 +9,7 @@ $Id$
 #include "AFile_AString.hpp"
 #include "AXmlData.hpp"
 
-void testGetSet(int& iRet)
+void testAXmlElementGetSet(int& iRet)
 {
   AXmlElement elem("root");
   elem.addAttribute("a1", "foo");
@@ -26,7 +26,7 @@ void testGetSet(int& iRet)
   ASSERT_UNIT_TEST(str0.equals("<root/>"), "clear", "0", iRet);
 }
 
-void testAddAndSerialize(int& iRet)
+void testAXmlElementAddAndSerialize(int& iRet)
 {
   AXmlElement elem("root");
   AXmlElement& path1 = elem.addElement(ASWNL("path0")).addElement(ASWNL("path1"));
@@ -101,7 +101,7 @@ void testAddAndSerialize(int& iRet)
   ASSERT_UNIT_TEST(str0.equals(str1), "Serialization", "", iRet);
 }
 
-void testXmlElementAccess(int& iRet)
+void testAXmlElementAccess(int& iRet)
 {
   AXmlElement root("root");
   root.addElement("base");
@@ -118,6 +118,20 @@ void testXmlElementAccess(int& iRet)
   ASSERT_UNIT_TEST(root.getU4("/root/green", 13) == 13, "Access", "3", iRet);
 }
 
+void testAXmlElementConcat(int& iRet)
+{
+  AXmlElement root("root");
+  root.addElement("green").addAttribute("id", "0");
+  root.addElement("green").addAttribute("id", "1");
+  root.overwriteElement("green").addAttribute("id", "2");
+  root.addElement("red", true);
+  root.addElement("blue");
+  root.overwriteElement("green").addAttribute("id","new");
+
+  AString str;
+  root.emit(str, -1);
+  ASSERT_UNIT_TEST(str.equals("<root><red/><green id=\"new\"/><green id=\"1\"/><blue/></root>"), "Concat", "0", iRet);
+}
 
 int ut_AXmlElement_General()
 {
@@ -125,11 +139,13 @@ int ut_AXmlElement_General()
 
   int iRet = 0x0;
   
-  testGetSet(iRet);
+  testAXmlElementGetSet(iRet);
   NEWLINE_UNIT_TEST();
-  testAddAndSerialize(iRet);
+  testAXmlElementAddAndSerialize(iRet);
   NEWLINE_UNIT_TEST();
-  testXmlElementAccess(iRet);
+  testAXmlElementAccess(iRet);
+  NEWLINE_UNIT_TEST();
+  testAXmlElementConcat(iRet);
 
   return iRet;
 }

@@ -259,7 +259,7 @@ void AFilename::emitPath(AOutputBuffer& target, AFilename::FTYPE ftype, bool noT
     sep = '\\';
 
   //a_Drive
-  if (m_Drive && !m_RelativePath)
+  if (m_Drive)
   {
     switch (ftype)
     {
@@ -272,8 +272,11 @@ void AFilename::emitPath(AOutputBuffer& target, AFilename::FTYPE ftype, bool noT
       break;
       
       default:
-        target.append(m_Drive);
-        target.append(':');
+        if (!m_RelativePath)
+        {
+          target.append(m_Drive);
+          target.append(':');
+        }
     }
   }
 
@@ -394,6 +397,12 @@ const LIST_AString& AFilename::getPathNames() const
 const AString& AFilename::getFilename() const
 {
   return m_Filename;
+}
+
+void AFilename::emitPathAndFilename(AOutputBuffer& target) const
+{
+  emitPath(target);
+  target.append(m_Filename);
 }
 
 void AFilename::emitPathAndFilenameNoExt(AOutputBuffer& target) const
@@ -651,7 +660,39 @@ bool AFilename::compactPath()
   }
 
   if (m_PathNames.size() > 0)
-    return (!m_PathNames.front().startsWith(AConstant::ASTRING_DOUBLEPERIOD));
+    return (!m_PathNames.front().equals(AConstant::ASTRING_DOUBLEPERIOD));
   else
     return true;  // No path means its not relative
+}
+
+void AFilename::makeAbsolute()
+{
+  // Remove leading . or ..
+  if (
+       m_PathNames.size() > 0
+    && 
+      (
+           m_PathNames.front().equals(AConstant::ASTRING_DOUBLEPERIOD)
+        || m_PathNames.front().equals(AConstant::ASTRING_PERIOD)
+      )
+  )
+  {
+    m_PathNames.pop_front();
+  }
+
+  m_RelativePath = false;
+}
+
+void AFilename::makeRelative()
+{
+  if (
+       m_PathNames.size() > 0
+    && !m_PathNames.front().equals(AConstant::ASTRING_DOUBLEPERIOD)
+    && !m_PathNames.front().equals(AConstant::ASTRING_PERIOD)
+  )
+  {
+    m_PathNames.push_front(AConstant::ASTRING_PERIOD);
+  }
+
+  m_RelativePath = true;
 }

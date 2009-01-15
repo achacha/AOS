@@ -7,7 +7,7 @@ $Id$
 #include "AFilename.hpp"
 #include "AXmlElement.hpp"
 
-void testGeneric(int& iRet)
+void testAFilenameGeneric(int& iRet)
 {
   AString strOut(1024, 256);
   AFilename fn(ASWNL("c:\\path0\\path1//filename.extension"), false);
@@ -101,7 +101,7 @@ void testGeneric(int& iRet)
   ASSERT_UNIT_TEST(!fn.isDirectory(), "AFilename set", "3", iRet);
 }
 
-void testCompare(int& iRet)
+void testAFilenameCompare(int& iRet)
 {
   AFilename fOne(ASWNL("c:\\path0\\path1\\filename.ext"), false);
   AFilename fTwo(ASWNL("c:\\path0\\path1\\filename.ext"), false);
@@ -123,7 +123,7 @@ void testCompare(int& iRet)
   ASSERT_UNIT_TEST(fOne < fTwo, "AFilename operator <", "3", iRet);
 }
 
-void testValid(int& iRet)
+void testAFilenameValid(int& iRet)
 {
   AFilename f(ASWNL("c:\\path0\\path1\\filename.ext"), false);
   ASSERT_UNIT_TEST(f.isValid(), "AFilename validity", "0", iRet);
@@ -133,7 +133,7 @@ void testValid(int& iRet)
   ASSERT_UNIT_TEST(f.isValid(), "AFilename validity", "1", iRet);
 }
 
-void testManipulate(int& iRet)
+void testAFilenameManipulate(int& iRet)
 {
   AFilename f(ASWNL("/foo/bar/baz/filename.ext0.ext1.ext2.ext3"), false);
   f.removeExtension(4);
@@ -147,7 +147,32 @@ void testManipulate(int& iRet)
   ASSERT_UNIT_TEST(f.isRelativePath(), "AFilename::removeBasePath", "1", iRet);
 }
 
-void testCompact(int& iRet)
+void testAFilenameConversion(int& iRet)
+{
+  {
+    AFilename f(ASWNL("c:\\dir0\\dir1\\myfile"), false);
+    AString str;
+    f.emit(str);
+    ASSERT_UNIT_TEST(str.equals(ASWNL("c:/dir0/dir1/myfile")), "AFilename::conversion", "0", iRet);
+
+    f.makeRelative();
+    str.clear();
+    f.emit(str);
+    ASSERT_UNIT_TEST(str.equals(ASWNL("./dir0/dir1/myfile")), "AFilename::conversion", "1", iRet);
+
+    f.makeAbsolute();
+    str.clear();
+    f.emit(str);
+    ASSERT_UNIT_TEST(str.equals(ASWNL("c:/dir0/dir1/myfile")), "AFilename::conversion", "2", iRet);
+
+    f.setType(AFilename::FTYPE_MSDOS);
+    str.clear();
+    f.emit(str);
+    ASSERT_UNIT_TEST(str.equals(ASWNL("c:\\dir0\\dir1\\myfile")), "AFilename::conversion", "3", iRet);
+  }
+}
+
+void testAFilenameCompact(int& iRet)
 {
   AString str("./../foo/../bar/../baz/");
   AFilename f(str, true);
@@ -186,15 +211,17 @@ int ut_AFilename_General()
   std::cerr << "ut_AFilename_General" << std::endl;
   int iRet = 0x0;
 
-  testGeneric(iRet);
+  testAFilenameGeneric(iRet);
   NEWLINE_UNIT_TEST();
-  testCompare(iRet);
+  testAFilenameCompare(iRet);
   NEWLINE_UNIT_TEST();
-  testValid(iRet);
+  testAFilenameValid(iRet);
   NEWLINE_UNIT_TEST();
-  testManipulate(iRet);
+  testAFilenameManipulate(iRet);
   NEWLINE_UNIT_TEST();
-  testCompact(iRet);
+  testAFilenameCompact(iRet);
+  NEWLINE_UNIT_TEST();
+  testAFilenameConversion(iRet);
 
   return iRet;
 }

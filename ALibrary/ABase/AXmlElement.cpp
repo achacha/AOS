@@ -611,7 +611,7 @@ bool AXmlElement::hasElements() const
   return false;
 }
 
-AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParent)
+AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParent, bool insertIntoFront)
 {
   AString& strName = xparts.front();
   CONTAINER::iterator it = m_Content.begin();
@@ -632,7 +632,7 @@ AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParen
           if (!xparts.size())
             return p;
           else
-            return p->_getOrCreate(xparts, this);
+            return p->_getOrCreate(xparts, this, insertIntoFront);
         }
         else
           ATHROW_EX(this, AException::DataConflict, strName);  //a_ Not AXmlElement type
@@ -643,7 +643,7 @@ AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParen
   
   //a_strName not found, create it
   AXmlElement *p = new AXmlElement(strName, pParent);
-  addContent(p);
+  addContent(p, AConstant::ASTRING_EMPTY, insertIntoFront);
   xparts.pop_front();
   if (xparts.size() == 0)
   {
@@ -651,39 +651,39 @@ AXmlElement *AXmlElement::_getOrCreate(LIST_AString& xparts, AXmlElement* pParen
   }
   else
   {
-    return p->_getOrCreate(xparts, this);
+    return p->_getOrCreate(xparts, this, insertIntoFront);
   }
 }
 
-AXmlElement *AXmlElement::_createAndAppend(LIST_AString& xparts, AXmlElement *pParent)
+AXmlElement *AXmlElement::_createAndAppend(LIST_AString& xparts, AXmlElement *pParent, bool insertIntoFront)
 {
   AString& strName = xparts.front();
   AXmlElement *p = new AXmlElement(strName, pParent);
-  addContent(p);
+  addContent(p, AConstant::ASTRING_EMPTY, insertIntoFront);
   xparts.pop_front();
   if (xparts.size() > 0)
-    return p->_createAndAppend(xparts, this);
+    return p->_createAndAppend(xparts, this, insertIntoFront);
   else
     return p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path)
+AXmlElement& AXmlElement::addElement(const AString& path, bool insertIntoFront)
 {
-  AXmlElement *p = _addElement(path, false);
+  AXmlElement *p = _addElement(path, false, insertIntoFront);
   AASSERT(this, p);
   return *p;
 }
 
 AXmlElement& AXmlElement::overwriteElement(const AString& path)
 {
-  AXmlElement *p = _addElement(path, true);
+  AXmlElement *p = _addElement(path, true, false);
   AASSERT(this, p);
   return *p;
 }
 
-AXmlElement& AXmlElement::addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding, bool overwrite)
+AXmlElement& AXmlElement::addElement(const AString& path, const AEmittable& object, AXmlElement::Encoding encoding, bool overwrite, bool insertIntoFront)
 {
-  AXmlElement *p = _addElement(path, overwrite);
+  AXmlElement *p = _addElement(path, overwrite, insertIntoFront);
   AASSERT(this, p);
 
   //a_Emit to rope
@@ -694,7 +694,7 @@ AXmlElement& AXmlElement::addElement(const AString& path, const AEmittable& obje
   return *p;
 }
 
-AXmlElement *AXmlElement::_addElement(const AString& path, bool overwrite)
+AXmlElement *AXmlElement::_addElement(const AString& path, bool overwrite, bool insertIntoFront)
 {
   if (m_Name.isEmpty())
     ATHROW_EX(this, AException::InvalidObject, ASWNL("AXmlElement does not have a name"));
@@ -725,9 +725,9 @@ AXmlElement *AXmlElement::_addElement(const AString& path, bool overwrite)
   if (xparts.size() > 0)
   { 
     if (overwrite)
-      p = _getOrCreate(xparts, this);
+      p = _getOrCreate(xparts, this, insertIntoFront);
     else
-      p = _createAndAppend(xparts, this);
+      p = _createAndAppend(xparts, this, insertIntoFront);
   }
   else
     p = this;
@@ -864,7 +864,8 @@ AXmlElement& AXmlElement::addAttributes(const AXmlAttributes& attrs)
 
 AXmlElement& AXmlElement::addContent(
   AXmlElement *pnode, 
-  const AString& path // = AConstant::ASTRING_EMPTY
+  const AString& path, // = AConstant::ASTRING_EMPTY
+  bool insertIntoFront // = false
 )
 {
   if (path.isEmpty() || path.equals(AConstant::ASTRING_SLASH))
@@ -873,7 +874,10 @@ AXmlElement& AXmlElement::addContent(
     AASSERT(this, pnode);
 
     pnode->setParent(this);
-    m_Content.push_back(pnode);
+    if (insertIntoFront)
+      m_Content.push_front(pnode);
+    else
+      m_Content.push_back(pnode);
   }
   else
   {
@@ -882,14 +886,16 @@ AXmlElement& AXmlElement::addContent(
     if (!parts.size())
       ATHROW(this, AException::InvalidParameter);
 
-    AXmlElement *pNewParent = _createAndAppend(parts,this);
+    AXmlElement *pNewParent = _createAndAppend(parts, this, insertIntoFront);
     AASSERT_EX(this, pNewParent, path);
-    pNewParent->addContent(pnode);
+    pNewParent->addContent(pnode, AConstant::ASTRING_EMPTY, insertIntoFront);
   }
   return *this;
 }
 
-AXmlElement& AXmlElement::addContent(const AXmlEmittable& data)
+AXmlElement& AXmlElement::addContent(
+  const AXmlEmittable& data
+)
 {
   data.emitXml(*this);  
   return *this;

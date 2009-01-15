@@ -161,6 +161,13 @@ public:
   void emitNoExt(AOutputBuffer& target, AFilename::FTYPE type) const;
 
   /*!
+  Emits path and filename
+
+  @param target to emit to
+  */
+  void emitPathAndFilename(AOutputBuffer& target) const;
+
+  /*!
   Emits path and filename only without extension
 
   @param target to emit to
@@ -336,6 +343,24 @@ public:
   @param makeResultAbsolute if set the result path will be absolute, else relative
   */
   void removeBasePath(const AFilename& base, bool makeResultAbsolute = false);
+
+  /*!
+  Changes filename to absolute by removing any relative leading path like . or ..
+  Sets the absolute path flag to true
+  
+  Converts ./foo  -> /foo
+  Converts ../foo -> /foo
+  */
+  void makeAbsolute();
+  
+  /*!
+  Changes filename to relative from .
+  Drive letter is dropped during emit for MS format (not applicable to unix and cygwin)
+  Sets the absolute path flag to false
+  
+  Converts /foo  -> ./foo
+  */
+  void makeRelative();
 
   /*!
   Remove extension(s)
