@@ -800,6 +800,20 @@ void AOSConfiguration::_postProcessControllerAndConfig(AFileSystem::FileInfos& d
   }
 }
 
+const AOSController * const AOSConfiguration::getController(const AFilename& commandFilename) const
+{
+  AString command;
+  commandFilename.emitPathAndFilename(command);
+  if (commandFilename.getFilename().isEmpty())
+    command.append(m_AosDefaultFilename);
+
+  MAP_ASTRING_CONTROLLERPTR::const_iterator cit = m_ControllerPtrs.find(command);
+  if (cit != m_ControllerPtrs.end())
+    return (*cit).second;
+  else
+    return NULL;
+}
+
 const AOSController * const AOSConfiguration::getController(const AUrl& commandUrl) const
 {
   AString command(commandUrl.getPathAndFilename());
@@ -811,6 +825,24 @@ const AOSController * const AOSConfiguration::getController(const AUrl& commandU
     return (*cit).second;
   else
     return NULL;
+}
+
+const AOSDirectoryConfig * const AOSConfiguration::getDirectoryConfig(const AFilename& commandFilename) const
+{
+  AString dir;
+  commandFilename.emitPath(dir);
+  while (dir.getSize() > 0)
+  {
+    MAP_ASTRING_CONFIG::const_iterator cit = m_DirectoryConfigs.find(dir);
+    if (cit != m_DirectoryConfigs.end())
+      return (*cit).second;
+    else
+    {
+      if (AConstant::npos == dir.rremoveUntil('/', true) || AConstant::npos == dir.rremoveUntil('/', false))
+        break;
+    }
+  }
+  return NULL;
 }
 
 const AOSDirectoryConfig * const AOSConfiguration::getDirectoryConfig(const AUrl& commandUrl) const

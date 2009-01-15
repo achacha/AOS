@@ -23,6 +23,8 @@ IMG.file { padding:1px 4px 1px 1px; height:14px; width:18px; }
 IMG.file_link { padding:0px 3px 0px 3px; height:12px; width:12px; border:0; }				
 A.file_first { color:#0000f0; font-weight:bolder; }
 A.file { color:#808080; }
+A.controller { color:#808080; }
+A.controller_disabled { color:#b0b0b0; }
 
 SPAN.folder_line { background-color:#ddddff; padding: 0px 0px 0px 0px; vertical-align:top; }
 SPAN.file_line { background-color:#f0f0ff; }
@@ -67,7 +69,7 @@ SPAN.path { color:blue; font-face:Arial; font-weight:bolder; }
 		<xsl:if test="/admin/data/base != '/'">
 			<img alt="+" title="back" src="/images/folder_open.gif" class="folder"/>
 			<a>
-				<xsl:attribute name="href"><xsl:value-of select="/admin/data/url"/>&amp;locale=<xsl:value-of select="$locale"/>&amp;path=<xsl:value-of select="/admin/data/base"/>../</xsl:attribute>
+				<xsl:attribute name="href">/admin?command=website_list&amp;locale=<xsl:value-of select="$locale"/>&amp;path=<xsl:value-of select="/admin/data/base"/>../</xsl:attribute>
 				<b>..</b>
 			</a>
 			<br/>
@@ -107,28 +109,25 @@ SPAN.path { color:blue; font-face:Arial; font-weight:bolder; }
 			</xsl:choose>
 
 			<span class="folder_line">
-				<xsl:for-each select="path">
-					<a class="folder">
-						<xsl:attribute name="href"><xsl:value-of select="/admin/data/url"/>&amp;locale=<xsl:value-of select="$locale"/>&amp;path=<xsl:value-of select="/admin/data/base"/><xsl:value-of select="data"/></xsl:attribute>
+        <a class="folder">
+          <xsl:attribute name="href">/admin?command=website_list&amp;locale=<xsl:value-of select="$locale"/>&amp;path=<xsl:value-of select="/admin/data/base"/><xsl:value-of select="path[1]/data"/></xsl:attribute>
 
-						<xsl:choose>
-							<xsl:when test="@type = 1">
-								<xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute>
-							</xsl:when>
-			
-							<xsl:when test="@type = 2">
-								<xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute>
-							</xsl:when>
-			
-							<xsl:otherwise>
-								<xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:value-of select="$name"/>
-		
-					</a>
-					<xsl:text>  </xsl:text>
-				</xsl:for-each>
+          <xsl:choose>
+            <xsl:when test="@type = 1">
+              <xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute>
+            </xsl:when>
+    
+            <xsl:when test="@type = 2">
+              <xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute>
+            </xsl:when>
+    
+            <xsl:otherwise>
+              <xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute>
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:value-of select="$name"/>
+  
+        </a>
 			</span>
 		</span>
 	</xsl:template>
@@ -151,11 +150,11 @@ SPAN.path { color:blue; font-face:Arial; font-weight:bolder; }
 				</xsl:when>
 
 				<xsl:when test="@type = 8">
-					<img title="dynamic controller" src="/images/controller.png" class="file"/>
+					<img title="!dynamic controller" src="/images/controller.png" class="controller"/>
 				</xsl:when>
 
 				<xsl:when test="@type = 12">
-					<img title="dynamic controller overlaying static file" src="/images/controller_overlay.png" class="file"/>
+					<img title="!dynamic controller overlaying static file" src="/images/controller_overlay.png" class="file"/>
 				</xsl:when>
 				
 				<xsl:otherwise>
@@ -166,6 +165,23 @@ SPAN.path { color:blue; font-face:Arial; font-weight:bolder; }
 			<span class="file_line">
 				<xsl:for-each select="path">
 					<xsl:element name="a">
+						<xsl:attribute name="title">
+							<xsl:choose>
+								<xsl:when test="controller">
+									<xsl:if test="controller[@enabled = '0']">enabled=0</xsl:if>
+									<xsl:if test="controller[@enabled = '1']">enabled=1</xsl:if>
+									<xsl:if test="controller[@ajax = '0']"> ajax=0</xsl:if>
+									<xsl:if test="controller[@ajax = '1']"> ajax=1</xsl:if>
+									<xsl:if test="controller[@session = '0']"> session=0</xsl:if>
+									<xsl:if test="controller[@session = '1']"> session=1</xsl:if>
+									<xsl:if test="controller[@nocache = '0']"> nocache=0</xsl:if>
+									<xsl:if test="controller[@nocache = '1']"> nocache=1</xsl:if>
+									<xsl:if test="controller[@gzip = '0']"> gzip=0</xsl:if>
+									<xsl:if test="controller[@gzip = '1']"> gzip=1</xsl:if>
+								</xsl:when>
+								<xsl:otherwise><xsl:value-of select="info"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
 						<xsl:if test="position() = 1">
 							<xsl:attribute name="class">file_first</xsl:attribute>
 						</xsl:if>
@@ -177,21 +193,19 @@ SPAN.path { color:blue; font-face:Arial; font-weight:bolder; }
 
 						<xsl:choose>
 							<xsl:when test="@type = 3">
-								<xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute>
 								<xsl:if test="last() > 1">
 									<img src="/images/file_static.png" class="file_link"/>
 								</xsl:if>
 							</xsl:when>
 			
 							<xsl:when test="@type = 4">
-								<xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute>
 								<xsl:if test="last() > 1">
 									<img src="/images/controller.png" class="file_link"/>
 								</xsl:if>
 							</xsl:when>
 							
 							<xsl:otherwise>
-								<xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute>
+								<!--xsl:attribute name="title"><xsl:value-of select="info"/></xsl:attribute-->
 								<img src="/images/file.png" class="file_link"/>
 							</xsl:otherwise>
 						</xsl:choose>

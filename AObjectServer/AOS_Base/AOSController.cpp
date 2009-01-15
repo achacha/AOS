@@ -9,7 +9,7 @@ $Id$
 #include "AOSAdminRegistry.hpp"
 #include "AOSModules.hpp"
 
-const AString AOSController::S_CONTROLLER("controller",10);
+const AString AOSController::ELEMENT("controller",10);
 const AString AOSController::S_CONTROLLER_ROOT("/controller",11);
   
 const AString AOSController::S_INPUT("input",5);

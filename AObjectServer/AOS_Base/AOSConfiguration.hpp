@@ -403,22 +403,44 @@ public:
   void getDynamicModuleConfigsToLoad(AFileSystem::FileInfos& target) const;
   
   /*!
+  Controller for a given filename (should be absolute based on / as root, as if it was a URL)
+
+  Returned pointer should never be deleted by the caller
+
+  @param f AFilename
+  @return constant pointer AOSController for a given AFilename
+  */
+  const AOSController * const getController(const AFilename& f) const;
+
+  /*!
   Controller for a given URL
 
   Returned pointer should never be deleted by the caller
 
+  @param url AUrl
   @return constant pointer AOSController for a given URL
   */
-  const AOSController* const getController(const AUrl&) const;
+  const AOSController* const getController(const AUrl& url) const;
 
   /*!
   Directory config for a given URL
 
   Returned pointer should never be deleted by the caller
 
+  @param f AFilename
   @return constant pointer AOSDirectoryConfig for a given URL
   */
-  const AOSDirectoryConfig* const getDirectoryConfig(const AUrl&) const;
+  const AOSDirectoryConfig* const getDirectoryConfig(const AFilename& f) const;
+
+  /*!
+  Directory config for a given URL
+
+  Returned pointer should never be deleted by the caller
+
+  @param url AUrl
+  @return constant pointer AOSDirectoryConfig for a given URL
+  */
+  const AOSDirectoryConfig* const getDirectoryConfig(const AUrl& url) const;
 
   /*!
   Get a set of extensions that are to be compressed based on config

@@ -23,10 +23,12 @@ public:
   //! Class name
   static const AString CLASS;
 
+  //! Root element name
+  static const AString ELEMENT;
+
   /*!
   Constant strings
   */
-  static const AString S_CONTROLLER;
   static const AString S_CONTROLLER_ROOT;
   static const AString S_INPUT;
   static const AString S_MODULE;

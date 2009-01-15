@@ -46,8 +46,6 @@ void AOSAdminCommand_website_list::_process(AOSAdminCommandContext& context)
 
   _buildWebsiteXml(context, website, relativePath);
 
-  data.addElement("url").addData(ASWNL("/admin?command=website_list"), AXmlElement::ENC_CDATADIRECT);
-
   // Current locale and available locales
   data.addElement("locale").addData(locale);
   AXmlElement& eAvail = data.addElement("select_locale").addElement("select").addAttribute("name", "locale");
@@ -112,17 +110,20 @@ struct _WebSiteInfo
 {
   _WebSiteInfo() :
     pController(NULL),
+    pDirConfig(NULL),
     type(0)
   {
   }
 
   _WebSiteInfo(const _WebSiteInfo& that) :
     pController(that.pController),
+    pDirConfig(that.pDirConfig),
     type(that.type)
   {
   }
 
-  AOSController *pController;
+  const AOSController *pController;
+  const AOSDirectoryConfig *pDirConfig;
   u4 type;
   
   typedef std::list<_WebSiteFilename> CONTAINER;
@@ -154,27 +155,28 @@ void AOSAdminCommand_website_list::_buildWebsiteXml(AOSAdminCommandContext& cont
         {
           // Don't add a new entry if it already exists
           it->filename.removeBasePath(*itDir);
-          if (content.find(it->filename.usePathNames().back()) == content.end())
-          {
-            _WebSiteFilename wsf;
-            wsf.filename = it->filename;
-            wsf.type = _WebSiteFilename::DIR_STATIC;
-            it->filename.emitPath(wsf.info);
-            content[it->filename.usePathNames().back()].paths.push_back(wsf);
-          }
+          const AString& folderName = it->filename.usePathNames().back();
+          _WebSiteInfo& info = content[folderName];
 
-          content[it->filename.usePathNames().back()].type = 1;
+          _WebSiteFilename wsf;
+          wsf.filename = it->filename;
+          wsf.type = _WebSiteFilename::DIR_STATIC;
+          it->filename.emitPath(wsf.info);
+          info.paths.push_back(wsf);
+          info.type = 1;
         }
         else
         {
           it->filename.removeBasePath(m_Services.useConfiguration().getBaseWebSiteDir());
-          content[it->filename.useFilename()].type = 0x4;
+          _WebSiteInfo& info = content[it->filename.useFilename()];
+
+          info.type = 0x4;
           
           _WebSiteFilename wsf;
           wsf.filename = it->filename;
           wsf.type = _WebSiteFilename::FILE_STATIC;
           it->filename.emitPath(wsf.info);
-          content[it->filename.useFilename()].paths.push_back(wsf);
+          info.paths.push_back(wsf);
         }
       }
     }
@@ -190,17 +192,17 @@ void AOSAdminCommand_website_list::_buildWebsiteXml(AOSAdminCommandContext& cont
     {
       if (it->isDirectory())
       {
-        // Don't add a new entry for dynamic if it already exists
         it->filename.removeBasePath(dynamicPath);
-        if (content.find(it->filename.usePathNames().back()) == content.end())
-        {
-          _WebSiteFilename wsf;
-          wsf.filename = it->filename;
-          wsf.type = _WebSiteFilename::DIR_DYNAMIC;
-          it->filename.emitPath(wsf.info);
-          content[it->filename.usePathNames().back()].paths.push_back(wsf);
-        }
-        content[it->filename.usePathNames().back()].type |= 0x2;
+        const AString& folderName = it->filename.usePathNames().back();
+        _WebSiteInfo& info = content[folderName];
+
+        // Don't add a new entry for dynamic if it already exists
+        _WebSiteFilename wsf;
+        wsf.filename = it->filename;
+        wsf.type = _WebSiteFilename::DIR_DYNAMIC;
+        it->filename.emitPath(wsf.info);
+        info.paths.push_back(wsf);
+        info.type |= 0x2;
       }
       else
       {
@@ -209,18 +211,29 @@ void AOSAdminCommand_website_list::_buildWebsiteXml(AOSAdminCommandContext& cont
         {
           AFilename f(it->filename);
           f.useFilename().rremove(8);  // remove ".aos.xml"
-          content[f.useFilename()].type |= 0x8;
-
+          _WebSiteInfo& info = content[f.useFilename()];
+          info.type |= 0x8;
+          
           _WebSiteFilename wsf;
           wsf.filename = it->filename;
           wsf.type = _WebSiteFilename::FILE_DYNAMIC;
           it->filename.emitPath(wsf.info);
-          content[f.useFilename()].paths.push_back(wsf);
+          info.paths.push_back(wsf);
+
+          // Lookup controller
+          f.usePathNames().pop_front();
+          f.makeAbsolute();
+          
+          if (f.useFilename().equals("__this__"))
+            info.pDirConfig = m_Services.useConfiguration().getDirectoryConfig(f);
+          else
+            info.pController = m_Services.useConfiguration().getController(f);
         }
         else
         {
-          content[it->filename.useFilename()].type = 0;
-          content[it->filename.useFilename()].paths.push_back(_WebSiteFilename(it->filename, _WebSiteFilename::TYPE_UNKNOWN));
+          _WebSiteInfo& info = content[it->filename.useFilename()];
+          info.type = 0;
+          info.paths.push_back(_WebSiteFilename(it->filename, _WebSiteFilename::TYPE_UNKNOWN));
         }
       }
     }
@@ -246,8 +259,6 @@ void AOSAdminCommand_website_list::_buildWebsiteXml(AOSAdminCommandContext& cont
       break;
 
       case 4: // file: static
-      case 8: // dynamic
-      case 12: // both
       {
         AXmlElement& n = node.addElement("file").addAttribute("type", it->second.type);
         n.addElement("name", it->first);
@@ -256,6 +267,30 @@ void AOSAdminCommand_website_list::_buildWebsiteXml(AOSAdminCommandContext& cont
           AXmlElement& p = n.addElement("path");
           p.addAttribute("type", (u4)itPath->type).addElement("data").addData(itPath->filename);
           p.addElement("info").addData(itPath->info);
+        }
+      }
+      break;
+
+      case 8: // dynamic
+      case 12: // both
+      {
+        AXmlElement& n = node.addElement("file").addAttribute("type", it->second.type);
+        n.addElement("name", it->first);
+        for (_WebSiteInfo::CONTAINER::iterator itPath = it->second.paths.begin(); itPath != it->second.paths.end(); ++itPath)
+        {
+          AXmlElement *p;
+          if (it->second.pController->isEnabled())
+            p = &n.addElement("path", true);
+          else
+            p = &n.addElement("path");
+
+          p->addAttribute("type", (u4)itPath->type).addElement("data").addData(itPath->filename);
+          p->addElement("info").addData(itPath->info);
+
+          if ((itPath->type & _WebSiteFilename::FILE_DYNAMIC) && it->second.pController)
+            it->second.pController->emitXml(p->addElement(AOSController::ELEMENT));
+          if (it->second.pDirConfig)
+            it->second.pDirConfig->emitXml(p->addElement(AOSDirectoryConfig::ELEMENT));
         }
       }
       break;

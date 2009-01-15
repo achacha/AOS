@@ -884,9 +884,9 @@ AXmlElement& AOSContext::emitXml(AXmlElement& thisRoot) const
 
   //a_Check if command exists, if not it could be static content
   if (mp_Controller)
-    mp_Controller->emitXml(thisRoot.addElement(AOSController::S_CONTROLLER));
+    mp_Controller->emitXml(thisRoot.addElement(AOSController::ELEMENT));
   else
-    thisRoot.addElement(AOSController::S_CONTROLLER, AConstant::ASTRING_NULL);
+    thisRoot.addElement(AOSController::ELEMENT, AConstant::ASTRING_NULL);
 
   //a_Add globals
   m_Services.useGlobalObjects().emitXml(thisRoot.addElement(S_GLOBAL));
