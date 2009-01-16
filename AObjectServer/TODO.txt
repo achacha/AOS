@@ -4,4 +4,3 @@ Add LUA script ability to generate data: urls from files inline (AOS specific to
 AOS directory chain loaded into AOSCommand
 AOS directory post-controller modules
 Session manager session cleaner
-Move aos_root up one level to peer _debug and _release (adjust lookup)

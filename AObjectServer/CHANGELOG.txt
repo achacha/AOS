@@ -1,6 +1,13 @@
 Change Log
 ----------
 
+1.7.0.0:
+- Admin website lister and content viewer
+- Improved AXmlElement API to allow inserting elements at the head
+- AFilename allows conversion to relative and to absolute path
+- Corrected CoInitializeEx usage in AOSOutput_MsXsl
+
+
 1.6.1.0:
 - AOSWatchDog has been made a lot more generic, replacing your existing ini with new one will transparently work
 - AOSWatchDog can now bounce the server
@@ -12,6 +19,7 @@ Change Log
 - Added handling of chained locales for static and data directories
 - Added handling for very simple sites without any data directories or locale config
 - Cleaned up logging
+
 
 1.6.0.0:
 - Major reorganization of the aos_root directory to handle localization better

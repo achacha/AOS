@@ -39,17 +39,18 @@ void AOSAdminCommand_website_list::_process(AOSAdminCommandContext& context)
   data.addElement("base", relativePath);
   data.addElement("root").addData(m_Services.useConfiguration().getBaseDir()); 
 
+  // Set HTTP request locale from parameter
   AString locale;
   context.useRequestHeader().useUrl().useParameterPairs().get("locale", locale);
   if (!locale.isEmpty())
     context.useRequestHeader().set(AHTTPHeader::HT_REQ_Accept_Language, locale);
 
+  // Build XML model for the site
   _buildWebsiteXml(context, website, relativePath);
 
   // Current locale and available locales
   data.addElement("locale").addData(locale);
   AXmlElement& eAvail = data.addElement("select_locale").addElement("select").addAttribute("name", "locale");
-
   bool hasSelected = false;
   AXmlElement& eDefault = eAvail.addElement("option").addData(m_Services.useConfiguration().getBaseLocale()).addAttribute("base", "true");
   for (AOSConfiguration::MAP_LOCALE_DIRS::const_iterator cit = m_Services.useConfiguration().getLocaleStaticDirs().begin(); cit != m_Services.useConfiguration().getLocaleStaticDirs().end(); ++cit)
@@ -239,6 +240,9 @@ void AOSAdminCommand_website_list::_buildWebsiteXml(AOSAdminCommandContext& cont
     }
   }
 
+  //
+  // Process collected file system data and convert to XML
+  //
   for (WEBSITE_CONTAINER::iterator it = content.begin(); it != content.end(); ++it)
   {
     switch(it->second.type)
@@ -274,15 +278,20 @@ void AOSAdminCommand_website_list::_buildWebsiteXml(AOSAdminCommandContext& cont
       case 8: // dynamic
       case 12: // both
       {
-        AXmlElement& n = node.addElement("file").addAttribute("type", it->second.type);
-        n.addElement("name", it->first);
+        AXmlElement *n;
+        if (it->second.pDirConfig)
+          n = &node.addElement("dir-config").addAttribute("type", it->second.type);
+        else
+          n = &node.addElement("file").addAttribute("type", it->second.type);
+
+        n->addElement("name", it->first);
         for (_WebSiteInfo::CONTAINER::iterator itPath = it->second.paths.begin(); itPath != it->second.paths.end(); ++itPath)
         {
           AXmlElement *p;
-          if (it->second.pController->isEnabled())
-            p = &n.addElement("path", true);
+          if (it->second.pController && it->second.pController->isEnabled())
+            p = &n->addElement("path", true);
           else
-            p = &n.addElement("path");
+            p = &n->addElement("path");
 
           p->addAttribute("type", (u4)itPath->type).addElement("data").addData(itPath->filename);
           p->addElement("info").addData(itPath->info);

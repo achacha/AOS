@@ -76,7 +76,7 @@ void AOSOutput_MsXslt::adminProcessAction(AXmlElement& eBase, const AHTTPRequest
 AOSOutput_MsXslt::AOSOutput_MsXslt(AOSServices& services) :
   AOSOutputGeneratorInterface(services)
 {
-	CoInitialize(NULL);
+  CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
   m_IsCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/base-modules/AOSOutput_MsXslt/cache/enabled",51), true);
 }
@@ -184,8 +184,6 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_getXslDocHolder(const AFilena
 
 AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
 {
-	CoInitialize(NULL);
-
   const AXmlElement *peFilename = context.getOutputParams().findElement(AOS_BaseModules_Constants::FILENAME);
   if (!peFilename)
   {
@@ -312,8 +310,6 @@ AOSContext::ReturnCode AOSOutput_MsXslt::execute(AOSContext& context)
 
   //a_Add content type, length and other useful response data to response header
   context.useResponseHeader().set(AHTTPHeader::HT_ENT_Content_Type, ASW("text/html; charset=utf-8",23));
-
-  CoUninitialize();
 
   return AOSContext::RETURN_OK;
 }
