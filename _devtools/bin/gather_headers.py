@@ -50,8 +50,10 @@ if (context.win64 == 1 or context.linux64 == 1):
 print("|----------HEADERS: ALibrary/ABase-------------------------|");
 if (context.win32 == 1 or context.linux32 == 1):
   context.syncPathFiles(os.path.join(context.BASE_ALIBRARY_PATH, "ABase"), "*.h*", context.TARGET_ALIBRARY_INCLUDE_PATH_32);
+  context.syncPathFiles(os.path.join(context.BASE_ALIBRARY_PATH, "ABase"), "ADaemon.cpp", context.TARGET_ALIBRARY_INCLUDE_PATH_32);
 if (context.win64 == 1 or context.linux64 == 1):
   context.syncPathFiles(os.path.join(context.BASE_ALIBRARY_PATH, "ABase"), "*.h*", context.TARGET_ALIBRARY_INCLUDE_PATH_64);
+  context.syncPathFiles(os.path.join(context.BASE_ALIBRARY_PATH, "ABase"), "ADaemon.cpp", context.TARGET_ALIBRARY_INCLUDE_PATH_64);
 
 # ADatabase_MySQL
 print("|----------HEADERS: ALibraryImpl/ADatabase_MySQL-----------|");
