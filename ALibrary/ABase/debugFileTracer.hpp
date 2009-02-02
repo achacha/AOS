@@ -23,8 +23,9 @@ $Id$
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \code
     #define ENABLE_AFILE_TRACER_DEBUG                      // This will enable it, comment it out to disable
-    #define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
-    #define AFILE_TRACER_FILENAME "/mypath/myfilename.ext" //OPTIONAL: Use another filename
+    #define DEBUGFILETRACER_USE_WINDOWS_DEBUG_OUTPUT       // Enable Windows debug output
+    #define DEBUGFILETRACER_USE_FILE_OUTPUT                // Enable file based tracing
+    #define AFILE_TRACER_FILENAME "/mypath/myfilename.ext" // OPTIONAL: Use another filename when file based tracing is used
     #include "debugFileTracer.hpp"
 
     int MyClass::myMethod()
@@ -55,15 +56,34 @@ $Id$
 
 */
 
+#ifdef ENABLE_AFILE_TRACER_DEBUG
+#if !defined(DEBUGFILETRACER_USE_FILE_OUTPUT) && !defined(DEBUGFILETRACER_USE_WINDOWS_DEBUG_OUTPUT)
+#pragma error("ENABLE_AFILE_TRACER is defined but output is not")
+#endif
+
 #if defined(__WINDOWS__)
-#  define DD_FILENAME "c:\\temp\\debugFileTracer.dump"
+#  define DD_FILENAME "c:\\ALibrary_debugFileTracer.log"
 #else
-#  define DD_FILENAME "/tmp/debugFileTracer.dump"
+#  define DD_FILENAME "/tmp/ALibrary_debugFileTracer.log"
 #endif
 
 //!This is the user specified filename
 #ifndef AFILE_TRACER_FILENAME
 #  define AFILE_TRACER_FILENAME DD_FILENAME
+#endif
+
+#if defined(DEBUGFILETRACER_USE_FILE_OUTPUT)
+#  if defined(__WINDOWS__) && defined(DEBUGFILETRACER_USE_WINDOWS_DEBUG_OUTPUT)
+#    pragma message("debugFileTracer ENABLED: writing to windows DEBUG OUTPUT and FILE: " AFILE_TRACER_FILENAME)
+#  else
+#    pragma message("debugFileTracer ENABLED: writing only to FILE: " AFILE_TRACER_FILENAME)
+#  endif
+#else
+#  if defined(__WINDOWS__) && defined(DEBUGFILETRACER_USE_WINDOWS_DEBUG_OUTPUT)
+#    pragma message("debugFileTracer ENABLED: writing only to windows DEBUG OUTPUT")
+#  else
+#    pragma message("debugFileTracer DISABLED")
+#  endif
 #endif
 
 #define DD_OPENFLAGS  std::ios::out|std::ios::app|std::ios::binary
@@ -97,32 +117,36 @@ class ElRocho
 #endif
       }
 
-#if defined(__WINDOWS__) && defined(USE_WINDOWS_DEBUG_OUTPUT)
-      std::stringstream ofDumpo;
-#else
+#if defined(__WINDOWS__) && defined(DEBUGFILETRACER_USE_WINDOWS_DEBUG_OUTPUT)
+      std::stringstream osDumpo;
+      if (pcvAddress) osDumpo << std::hex << pcvAddress << ": ";
+      if (iMessageMode == 0) osDumpo << "+++ctor: ";
+			if (pccMessage) osDumpo << pccMessage << std::endl;
+      osDumpo << std::ends;
+      ::OutputDebugStringA(osDumpo.str().c_str());
+#endif
+
+#if defined(DEBUGFILETRACER_USE_FILE_OUTPUT)
       if (pccFilename)
       {
         size_t length = strlen(pccFilename) + 1;
         m__pcFilename = new char[length];   //a_Filename to use for output
-#if (_MSC_VER >= 1400)
+  #if (_MSC_VER >= 1400)
         strcpy_s(m__pcFilename, length , pccFilename);
-#else
+  #else
         strcpy(m__pcFilename, pccFilename);
-#endif
       }
       std::ofstream ofDumpo((m__pcFilename ? m__pcFilename : DD_FILENAME), DD_OPENFLAGS);
-#endif
+  #endif
 
+      }
+      std::ofstream ofDumpo((m__pcFilename ? m__pcFilename : DD_FILENAME), DD_OPENFLAGS);
       if (pcvAddress) ofDumpo << std::hex << pcvAddress << ": ";
       if (iMessageMode == 0) ofDumpo << "+++ctor: ";
-			if (pccMessage) ofDumpo << pccMessage << std::endl;
-
-#if defined(__WINDOWS__) && defined(USE_WINDOWS_DEBUG_OUTPUT)
-      ofDumpo << std::ends;
-      ::OutputDebugStringA(ofDumpo.str().c_str());
-#else
+		  if (pccMessage) ofDumpo << pccMessage << std::endl;
       ofDumpo.close();
 #endif
+
     }
 
     ~ElRocho()
@@ -130,21 +154,22 @@ class ElRocho
       //a_display dtor message if not only message mode
       if (!m__iMessageMode)
       {                 
-#if defined(__WINDOWS__) && defined(USE_WINDOWS_DEBUG_OUTPUT)
-        std::stringstream ofDumpo;
-#else
-        std::ofstream ofDumpo((m__pcFilename ? m__pcFilename : DD_FILENAME), DD_OPENFLAGS);
+#if defined(__WINDOWS__) && defined(DEBUGFILETRACER_USE_WINDOWS_DEBUG_OUTPUT)
+        std::stringstream osDumpo;
+        if (m__pcvAddress) osDumpo << std::hex << m__pcvAddress << ": ";
+        osDumpo << "---dtor:";
+        if (m__pcMessage) osDumpo << m__pcMessage;
+			  osDumpo << std::endl;
+        osDumpo << std::ends;
+        ::OutputDebugStringA(osDumpo.str().c_str());
 #endif
 
+#if defined(DEBUGFILETRACER_USE_FILE_OUTPUT)
+        std::ofstream ofDumpo((m__pcFilename ? m__pcFilename : DD_FILENAME), DD_OPENFLAGS);
         if (m__pcvAddress) ofDumpo << std::hex << m__pcvAddress << ": ";
         ofDumpo << "---dtor:";
         if (m__pcMessage) ofDumpo << m__pcMessage;
 			  ofDumpo << std::endl;
-
-#if defined(__WINDOWS__) && defined(USE_WINDOWS_DEBUG_OUTPUT)
-        ofDumpo << std::ends;
-        ::OutputDebugStringA(ofDumpo.str().c_str());
-#else
         ofDumpo.close();
 #endif
       }
@@ -155,20 +180,20 @@ class ElRocho
 
     static void dumpObject(const char *pccMessage, const void *pvObject, u4 u4ObjectSize, const char *pccFilename = AFILE_TRACER_FILENAME)
     {
-#if defined(__WINDOWS__) && defined(USE_WINDOWS_DEBUG_OUTPUT)
-      std::stringstream ofDumpo;
-#else
-      std::ofstream ofDumpo((pccFilename ? pccFilename : DD_FILENAME), DD_OPENFLAGS);
+#if defined(__WINDOWS__) && defined(DEBUGFILETRACER_USE_WINDOWS_DEBUG_OUTPUT)
+      std::stringstream osDumpo;
+      osDumpo << "###START: " << pccMessage << " ###" << std::endl;
+      ADebugDumpable::dumpMemory_HexAscii(osDumpo, pvObject, u4ObjectSize);
+      osDumpo << "###END: " << pccMessage << " ###" << std::endl;
+      osDumpo << std::ends;
+      ::OutputDebugStringA(osDumpo.str().c_str());
 #endif
 
+#if defined(DEBUGFILETRACER_USE_FILE_OUTPUT)
+      std::ofstream ofDumpo((pccFilename ? pccFilename : DD_FILENAME), DD_OPENFLAGS);
       ofDumpo << "###START: " << pccMessage << " ###" << std::endl;
       ADebugDumpable::dumpMemory_HexAscii(ofDumpo, pvObject, u4ObjectSize);
       ofDumpo << "###END: " << pccMessage << " ###" << std::endl;
-
-#if defined(__WINDOWS__) && defined(USE_WINDOWS_DEBUG_OUTPUT)
-      ofDumpo << std::ends;
-      ::OutputDebugStringA(ofDumpo.str().c_str());
-#else
       ofDumpo.close();
 #endif
     }
@@ -181,15 +206,16 @@ class ElRocho
 };
 
 //a_Undef these macros as they may be enabled/disabled on per file basis
-#undef AFILE_TRACER_DEBUG_MESSAGE
-#undef AFILE_TRACER_DEBUG_SCOPE
-#undef AFILE_TRACER_DEBUG_OBJECT
-
-#ifdef ENABLE_AFILE_TRACER_DEBUG
+#  undef AFILE_TRACER_DEBUG_MESSAGE
+#  undef AFILE_TRACER_DEBUG_SCOPE
+#  undef AFILE_TRACER_DEBUG_OBJECT
 #  define AFILE_TRACER_DEBUG_MESSAGE(pccMessage, pcvAddress)  { ElRocho tacoPico(pccMessage, pcvAddress, 0x1, AFILE_TRACER_FILENAME); }
 #  define AFILE_TRACER_DEBUG_SCOPE(pccMessage, pcvAddress)  ElRocho tacoGrande(pccMessage, pcvAddress, 0x0, AFILE_TRACER_FILENAME)
 #  define AFILE_TRACER_DEBUG_OBJECT(pccMessage, pvObject, iObjectSize) ElRocho::dumpObject(pccMessage, pvObject, iObjectSize, AFILE_TRACER_FILENAME)
 #else
+#  undef AFILE_TRACER_DEBUG_MESSAGE
+#  undef AFILE_TRACER_DEBUG_SCOPE
+#  undef AFILE_TRACER_DEBUG_OBJECT
 #  define AFILE_TRACER_DEBUG_MESSAGE(pccMessage, pcvAddress) ((void *)NULL)
 #  define AFILE_TRACER_DEBUG_SCOPE(pccMessage, pcvAddress) ((void *)NULL)
 #  define AFILE_TRACER_DEBUG_OBJECT(pccMessage, pvObject, iObjectSize) ((void *)NULL)

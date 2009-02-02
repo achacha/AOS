@@ -11,9 +11,9 @@ $Id$
 #include "AThread.hpp"
 #include "ASynchronization.hpp"
 
-#if defined(__DEBUG_DUMP__) && defined(__WINDOWS__)
-//#define ENABLE_AFILE_TRACER_DEBUG   // This will enable tracing, comment it out to disable
-//#define USE_WINDOWS_DEBUG_OUTPUT    // Instead of a file, redirect output to Windows debug output
+#if defined(__WINDOWS__)
+#define ENABLE_AFILE_TRACER_DEBUG                 // This will enable tracing, comment it out to disable
+#define DEBUGFILETRACER_USE_WINDOWS_DEBUG_OUTPUT  // Redirect output to Windows debug output
 #endif
 #include "debugFileTracer.hpp"
 
@@ -24,7 +24,24 @@ $Id$
   #include <unistd.h>
 #endif
 
-class ABASE_API ADaemon
+//
+// Define ADAEMON_EXPORTS in the project that is including
+//   ADameon.hpp and ADaemon.cpp
+//
+#if defined(_MSC_VER) && defined(ADAEMON_EXPORTS)
+#  pragma message("ADaemon: EXPORT")
+#  define ADAEMON_API __declspec(dllexport)
+#else
+#  pragma message("ADaemon: NONE")
+#  define ADAEMON_API
+#endif
+
+extern AThread *g_pMainServiceThread;
+
+#if defined(__WINDOWS__)
+  extern "C" DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext);
+#endif
+class ADAEMON_API ADaemon
 {
 public:
   /*!
@@ -33,7 +50,6 @@ public:
   ADaemon(const AString& serviceName, const AString& displayName, const AString& description);
   virtual ~ADaemon();
 
-  //a_This is the implementation of the unholy desacration
   //a_This one throws no exceptions, they are caught inside and a simple value is returned (non-zero is successful).
   //a_dwParam is passed to the UNIX child process
   virtual int invoke(u4 dwParam = 0, char **ppcParam = NULL);
@@ -48,7 +64,6 @@ public:
   void wait();                                //a_Wait for service thread to exit (performs a thread join)
 
   static u4 MainServiceThreadProc(AThread& thread);  //a_Calls the virtual callbackMain
-  static AThread *smp_MainServiceThread;             //a_Main service thread, NULL when not active
 
 #if defined(__WINDOWS__)
   //a_NT only: Service informative
@@ -97,12 +112,8 @@ public:
 #endif
 
 protected:
-  static ADaemon *mp_This;                           //a_There is 1 instance of a service per executable set when ADaemon object is created, use ADaemon::get() to access
-
 #if defined(__WINDOWS__)
-  //a_NT only
   static VOID  WINAPI fcbServiceMain(DWORD argc, LPTSTR *argv);
-  static DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext);
 
   //a_These are the workhorses for service control
   int _openService();                          //a_throws Exception
@@ -145,7 +156,6 @@ protected:
 #else
   //a_UNIX only
   static void fcbServiceMain(u4 dwArgc, char **lpszArgv);
-  static void fcbServiceHandler(u4 dwControl, u4 dwEventType, void *lpEventData, void *lpContext);
 
   pid_t               m_pidParent,                  //a_Process ID for parent
                       m_pidChild;                   //a_Process ID for child
@@ -154,6 +164,9 @@ protected:
 private:
   ADaemon() {}
 };
+
+//There is 1 instance of a service per executable set when ADaemon object is created
+extern ADaemon *thisADaemon;
 
 #endif  //#ifndef INCLUDED_ADaemon_HPP__
 

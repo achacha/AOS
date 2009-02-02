@@ -3,13 +3,12 @@ Written by Alex Chachanashvili
 
 $Id$
 */
-#include "pchABase.hpp"
 #include "ADaemon.hpp"
 #include "ASystemException.hpp"
 #include "ALock.hpp"
 
-ADaemon *ADaemon::mp_This(NULL);
-AThread *ADaemon::smp_MainServiceThread(NULL);  //a_Main service thread
+AThread *g_pMainServiceThread(NULL);  //a_Main service thread
+ADaemon *thisADaemon = NULL;
 
 #ifdef __WINDOWS__
 //a_Warnings due to conditional compile with unix code
@@ -20,13 +19,13 @@ AThread *ADaemon::smp_MainServiceThread(NULL);  //a_Main service thread
 
 int ADaemon::sm_iTIMEOUT = 6;            //a_6 seconds timeout (eternity for a computer sometimes)
 
-DWORD WINAPI ADaemon::fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext)
+DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext)
 {
-  AFILE_TRACER_DEBUG_SCOPE("ADaemon::fcbServiceHandler", NULL);
+  AFILE_TRACER_DEBUG_SCOPE("fcbServiceHandler", NULL);
   
-  mp_This->init();
+  thisADaemon->init();
   SERVICE_STATUS ssNow;
-  if (!mp_This->getNTServiceStatus(ssNow))
+  if (!thisADaemon->getNTServiceStatus(ssNow))
     return NO_ERROR;     //a_Problem getting status
 
   try
@@ -35,26 +34,27 @@ DWORD WINAPI ADaemon::fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVO
     {
       case SERVICE_CONTROL_INTERROGATE:
       {
-        if (mp_This->controlInterrogate())
-         mp_This->notifyServiceControlManager(ssNow.dwCurrentState, 0);
+        AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:INTERROGATE", NULL);
+        if (thisADaemon->controlInterrogate())
+         thisADaemon->notifyServiceControlManager(ssNow.dwCurrentState, 0);
       }
       break;
 
       case SERVICE_CONTROL_STOP:
-        smp_MainServiceThread->setRun(false);
         AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:STOP: Flagging thread to stop", NULL);
-        mp_This->notifyServiceControlManager(SERVICE_STOP_PENDING, 1);
-        if (mp_This->controlStopPending() == 0)
+        g_pMainServiceThread->setRun(false);
+        thisADaemon->notifyServiceControlManager(SERVICE_STOP_PENDING, 1);
+        if (thisADaemon->controlStopPending() == 0)
         {
           //a_Abort requested
-          mp_This->notifyServiceControlManager(ssNow.dwCurrentState, 1);
+          thisADaemon->notifyServiceControlManager(ssNow.dwCurrentState, 1);
           return NO_ERROR;
         }
         
         {
           const int iiTimeout = 10;
           int i=0;
-          while (smp_MainServiceThread->isRunning() && ++i < iiTimeout)
+          while (g_pMainServiceThread->isRunning() && ++i < iiTimeout)
           {
             AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler: Waiting for service thread to stop", NULL);
             AThread::sleep(1000);
@@ -63,53 +63,59 @@ DWORD WINAPI ADaemon::fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVO
           if (i >= iiTimeout)
           {  
             AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:STOP: Sledgehammer to the thread, timeout detected", NULL);
-            smp_MainServiceThread->terminate();       //a_Sledgehammer after timeout
+            g_pMainServiceThread->terminate();       //a_Sledgehammer after timeout
           }
         }
 
-        mp_This->notifyServiceControlManager(SERVICE_STOPPED, 0);
-        mp_This->controlStopped();
+        thisADaemon->notifyServiceControlManager(SERVICE_STOPPED, 0);
+        thisADaemon->controlStopped();
         AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:STOP: Stopped", NULL);
      break;
 
       case SERVICE_CONTROL_SHUTDOWN:
-        mp_This->controlShutdown();
+        AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:SHUTDOWN", NULL);
+        thisADaemon->controlShutdown();
       break;
 
       case SERVICE_CONTROL_PAUSE:
-        mp_This->notifyServiceControlManager(SERVICE_PAUSE_PENDING, 1);
-        if (mp_This->controlPausePending() == 0)
+        AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:PAUSE", NULL);
+        thisADaemon->notifyServiceControlManager(SERVICE_PAUSE_PENDING, 1);
+        if (thisADaemon->controlPausePending() == 0)
         {
           //a_Abort requested
-          mp_This->notifyServiceControlManager(ssNow.dwCurrentState, 1);
+          thisADaemon->notifyServiceControlManager(ssNow.dwCurrentState, 1);
           return NO_ERROR;
         }
       
-        if (smp_MainServiceThread)
-          smp_MainServiceThread->suspend();
-        mp_This->notifyServiceControlManager(SERVICE_PAUSED, 0);
-        mp_This->controlPaused();
+        if (g_pMainServiceThread)
+          g_pMainServiceThread->suspend();
+        thisADaemon->notifyServiceControlManager(SERVICE_PAUSED, 0);
+        thisADaemon->controlPaused();
       break;
 
       case SERVICE_CONTROL_CONTINUE:
-        if (smp_MainServiceThread)
-          smp_MainServiceThread->resume();
-        mp_This->notifyServiceControlManager(SERVICE_CONTINUE_PENDING, 1);
-        if (mp_This->controlContinuePending() == 0)
+        AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:CONTINUE", NULL);
+        if (g_pMainServiceThread)
+          g_pMainServiceThread->resume();
+        thisADaemon->notifyServiceControlManager(SERVICE_CONTINUE_PENDING, 1);
+        if (thisADaemon->controlContinuePending() == 0)
         {
           //a_Abort requested
-          mp_This->notifyServiceControlManager(ssNow.dwCurrentState, 1);
+          thisADaemon->notifyServiceControlManager(ssNow.dwCurrentState, 1);
           return NO_ERROR;
         }
       
-        mp_This->notifyServiceControlManager(SERVICE_RUNNING, 0);
-        mp_This->controlRunning();
+        thisADaemon->notifyServiceControlManager(SERVICE_RUNNING, 0);
+        thisADaemon->controlRunning();
       break;
+
+      default:
+        AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:UNHANDLED", NULL);
     }
   }
   catch(AException &eX)
   {
-    MessageBox(NULL,eX.what().toAString().c_str(),"ADaemon::fcbServiceHandler",MB_SERVICE_NOTIFICATION);
+    MessageBox(NULL,eX.what().toAString().c_str(),"fcbServiceHandler",MB_SERVICE_NOTIFICATION);
     AFILE_TRACER_DEBUG_MESSAGE(eX.what().toAString().c_str(), NULL);
   }
 
@@ -126,15 +132,15 @@ void fcbServiceHandler(u4 dwControl, u4 dwEventType, void *lpEventData, void *lp
 
 //a_Main function called that will try to start a service
 #if defined(__WINDOWS__)
-VOID WINAPI ADaemon::fcbServiceMain(DWORD, LPTSTR *)
+VOID WINAPI ADaemon::fcbServiceMain(DWORD argc, LPTSTR *argv)
 {
-  if (!mp_This)
+  if (!thisADaemon)
   {
-    MessageBox(NULL,"mp_This is NULL, this means service class was never created in this instance or went out of scope, should be static or global","ADaemon::fcbServiceMain",MB_SERVICE_NOTIFICATION);
+    MessageBox(NULL,"thisADaemon is NULL, this means service class was never created in this instance or went out of scope, should be static or global","ADaemon::fcbServiceMain",MB_SERVICE_NOTIFICATION);
     return;
   }
 
-  if(!(mp_This->sm_sshService = ::RegisterServiceCtrlHandlerEx(mp_This->m_serviceName.c_str(), (LPHANDLER_FUNCTION_EX)fcbServiceHandler, NULL)))
+  if(!(thisADaemon->sm_sshService = ::RegisterServiceCtrlHandlerEx(thisADaemon->m_serviceName.c_str(), (LPHANDLER_FUNCTION_EX)fcbServiceHandler, NULL)))
   {
     AFILE_TRACER_DEBUG_MESSAGE("fcbServiceMain failed to register service handler.", NULL);
     return;
@@ -143,20 +149,20 @@ VOID WINAPI ADaemon::fcbServiceMain(DWORD, LPTSTR *)
   AFILE_TRACER_DEBUG_MESSAGE("fcbServiceMain: Handler registered", NULL);
 
   //a_This will make the litle clock go by in the dialog
-  mp_This->notifyServiceControlManager(SERVICE_START_PENDING, 1);
+  thisADaemon->notifyServiceControlManager(SERVICE_START_PENDING, 1);
   
   //a_Start pending, start-up code should go here
-  if (mp_This->controlStartPending() == 0)
+  if (thisADaemon->controlStartPending() == 0)
     return;                           //a_Abort requested
  
   //a_Update the clock display if needed
-  mp_This->notifyServiceControlManager(SERVICE_START_PENDING, 3);
+  thisADaemon->notifyServiceControlManager(SERVICE_START_PENDING, 3);
 
   //a_Create a new thread for the service
   try 
   {
-    delete smp_MainServiceThread;      //a_This should always just return, as it should point to NULL
-    smp_MainServiceThread = new AThread((AThread::ATHREAD_PROC *)MainServiceThreadProc, false);
+    delete g_pMainServiceThread;      //a_This should always just return, as it should point to NULL
+    g_pMainServiceThread = new AThread((AThread::ATHREAD_PROC *)MainServiceThreadProc, false);
     AFILE_TRACER_DEBUG_MESSAGE("fcbServiceMain: Service thread created", NULL);
   }
   catch(AException &eX)
@@ -171,21 +177,21 @@ VOID WINAPI ADaemon::fcbServiceMain(DWORD, LPTSTR *)
     return;
   }
   
-  mp_This->notifyServiceControlManager(SERVICE_START_PENDING, 4);
-  smp_MainServiceThread->setRun(true);  //a_Set thread to Run, the thread will in turn set Running flag to true when it is actually running
-  smp_MainServiceThread->start();
+  thisADaemon->notifyServiceControlManager(SERVICE_START_PENDING, 4);
+  g_pMainServiceThread->setRun(true);  //a_Set thread to Run, the thread will in turn set Running flag to true when it is actually running
+  g_pMainServiceThread->start();
 
   u4 progress = 5;
-  while (smp_MainServiceThread->isRun() && smp_MainServiceThread->isRunning())
+  while (g_pMainServiceThread->isRun() && g_pMainServiceThread->isRunning())
   {
     AFILE_TRACER_DEBUG_MESSAGE("fcbServiceMain: Service waiting for thread to start", NULL);
     AThread::sleep(500);
-    mp_This->notifyServiceControlManager(SERVICE_START_PENDING, progress++);
+    thisADaemon->notifyServiceControlManager(SERVICE_START_PENDING, progress++);
   }
 
   AFILE_TRACER_DEBUG_MESSAGE("fcbServiceMain: Service thread started", NULL);
-  mp_This->notifyServiceControlManager(SERVICE_RUNNING, 0);
-  mp_This->controlRunning();
+  thisADaemon->notifyServiceControlManager(SERVICE_RUNNING, 0);
+  thisADaemon->controlRunning();
 
   //a_Wait until done
   AFILE_TRACER_DEBUG_MESSAGE("fcbServiceMain: Starting to wait for signal of termination.", NULL);
@@ -195,17 +201,17 @@ VOID WINAPI ADaemon::fcbServiceMain(DWORD, LPTSTR *)
   {
     AThread::sleep(2000);
   }
-  while(smp_MainServiceThread->isRunning());
+  while(g_pMainServiceThread->isRunning());
     
 
   //a_Finish the thread and delete
-  AFILE_TRACER_DEBUG_MESSAGE((AString("fcbServiceMain: Thread stop signaled, terminating thread: ") + AString::fromPointer(smp_MainServiceThread)).c_str(), NULL);    
+  AFILE_TRACER_DEBUG_MESSAGE((AString("fcbServiceMain: Thread stop signaled, terminating thread: ") + AString::fromPointer(g_pMainServiceThread)).c_str(), NULL);    
 
-  if (smp_MainServiceThread->isRunning())
-    smp_MainServiceThread->terminate();
+  if (g_pMainServiceThread->isRunning())
+    g_pMainServiceThread->terminate();
 
-  delete smp_MainServiceThread;
-  smp_MainServiceThread = NULL;
+  delete g_pMainServiceThread;
+  g_pMainServiceThread = NULL;
 
   return;
 }
@@ -223,8 +229,8 @@ void fcbServiceMain(u4 dwArgc, char **lpszArgv)
   //a_Create a new thread for the service
   try 
   {
-    delete smp_MainServiceThread;      //a_This should always just return, as it should point to NULL
-    smp_MainServiceThread = new AThread((AThread::ATHREAD_PROC *) fcbMainServiceThread, true);
+    delete g_pMainServiceThread;      //a_This should always just return, as it should point to NULL
+    g_pMainServiceThread = new AThread((AThread::ATHREAD_PROC *) fcbMainServiceThread, true);
   }
   catch(AException &eX)
   {
@@ -232,23 +238,23 @@ void fcbServiceMain(u4 dwArgc, char **lpszArgv)
     return;
   }
   
-  smp_MainServiceThread->setRun();
+  g_pMainServiceThread->setRun();
 
   //a_Wait until done
   AFILE_TRACER_DEBUG_MESSAGE("fcbServiceMain::Starting to wait for signal of termination.", NULL);
-  while(smp_MainServiceThread->isRunning())
+  while(g_pMainServiceThread->isRunning())
     AThread::sleep(2000);
 
   AFILE_TRACER_DEBUG_MESSAGE("fcbServiceMain::Exiting!", NULL);
 
-  if (smp_MainServiceThread->isRunning())
+  if (g_pMainServiceThread->isRunning())
   {
   //a_Finish the thread and delete
-    smp_MainServiceThread->terminate();
-    AFILE_TRACER_DEBUG_MESSAGE((AString("fcbServiceMain::Terminating thread: ") + AString::fromPointer(smp_MainServiceThread)).c_str(), NULL);    
+    g_pMainServiceThread->terminate();
+    AFILE_TRACER_DEBUG_MESSAGE((AString("fcbServiceMain::Terminating thread: ") + AString::fromPointer(g_pMainServiceThread)).c_str(), NULL);    
   }
-  delete smp_MainServiceThread;
-  smp_MainServiceThread = NULL;
+  delete g_pMainServiceThread;
+  g_pMainServiceThread = NULL;
 
   return;
 }
@@ -258,7 +264,7 @@ void fcbServiceMain(u4 dwArgc, char **lpszArgv)
 u4 ADaemon::MainServiceThreadProc(AThread& thread)
 {
   u4 ret = 0;
-  if (!mp_This)
+  if (!thisADaemon)
   {
     MessageBox(NULL,"ADaemon global object does not exist, callbackMain not being called.","ADaemon::MainServiceThreadProc",MB_SERVICE_NOTIFICATION);
     return (u4)-1;
@@ -267,7 +273,7 @@ u4 ADaemon::MainServiceThreadProc(AThread& thread)
   {
     thread.setRunning(true);
     AFILE_TRACER_DEBUG_SCOPE("MainServiceThreadProc: ADaemon::callbackMain", NULL);    
-    ret = mp_This->callbackMain(thread);
+    ret = thisADaemon->callbackMain(thread);
   }
   AFILE_TRACER_DEBUG_MESSAGE("MainServiceThreadProc: callbackMain flagged as not running", NULL);    
   thread.setRunning(false);
@@ -293,8 +299,8 @@ ADaemon::ADaemon(const AString& serviceName, const AString& displayName, const A
   //a_Connects this service to a service dispatcher if it exists
   m_iServiceMode = 0;
   
-  AASSERT(NULL, !mp_This);      //a_Only one instance per process
-  mp_This = this;
+  AASSERT(NULL, !thisADaemon);      //a_Only one instance per process
+  thisADaemon = this;
 
 #else
   //a_UNIX only
@@ -312,7 +318,7 @@ ADaemon::~ADaemon()
   }
   catch(...) {}
 
-  mp_This = this;
+  thisADaemon = this;
 }
 
 //a_This function will throw an AException if something fails
@@ -398,8 +404,8 @@ void ADaemon::init()
 void ADaemon::wait()
 {
 #if defined(__WINDOWS__)
-  if (smp_MainServiceThread)
-    smp_MainServiceThread->waitForThreadToExit();
+  if (g_pMainServiceThread)
+    g_pMainServiceThread->waitForThreadToExit();
 #endif
 }
 
@@ -664,7 +670,7 @@ int ADaemon::installNTService(const AString &args)
     SERVICE_WIN32_OWN_PROCESS
       | SERVICE_INTERACTIVE_PROCESS
       ,                                // DWORD dwServiceType,       
-    SERVICE_DEMAND_START,              // DWORD dwStartType,         
+    SERVICE_AUTO_START,                // DWORD dwStartType,         
     SERVICE_ERROR_NORMAL,              // DWORD dwErrorControl,      
     imagePath.c_str(),                 // LPCTSTR lpBinaryPathName,  
     NULL,                              // LPCTSTR lpLoadOrderGroup,  
@@ -753,8 +759,8 @@ int ADaemon::stopNTService()
 {
   AFILE_TRACER_DEBUG_SCOPE("ADaemon::stopNTService", this);
 
-  if (smp_MainServiceThread)
-    smp_MainServiceThread->setRun(false);
+  if (g_pMainServiceThread)
+    g_pMainServiceThread->setRun(false);
   AFILE_TRACER_DEBUG_MESSAGE("ADaemon::stopNTService: Flagged service thread to stop.", this);
 
   try
