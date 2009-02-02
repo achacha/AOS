@@ -1,12 +1,12 @@
 #ifndef INCLUDED__AOSWatchDogDaemon_HPP__
 #define INCLUDED__AOSWatchDogDaemon_HPP__
 
-#define ENABLE_AFILE_TRACER_DEBUG                      // This will enable it, comment it out to disable
-//#define USE_WINDOWS_DEBUG_OUTPUT                       //OPTIONAL: Instead of a file, redirect output to Windows debug output
-#define AFILE_TRACER_FILENAME "C:/tmp/debug.aos.log"   //OPTIONAL: Use another filename
+#define ENABLE_AFILE_TRACER_DEBUG                    // This will enable it, comment it out to disable
+#define DEBUGFILETRACER_USE_WINDOWS_DEBUG_OUTPUT     // Redirect output to Windows debug output
 
-#include "debugFileTracer.hpp"
+#include "apiABase.hpp"
 #include "ADaemon.hpp"
+
 #include "AFilename.hpp"
 #include "AINIProfile.hpp"
 #include "AHTTPRequestHeader.hpp"

@@ -40,7 +40,7 @@ int main(int argc, char **argv)
   }
   AString strCommand(argv[1]);
   
-  static AOSWatchDogDaemon watchdog;
+  AOSWatchDogDaemon watchdog;
   watchdog.init();
   try
   {
@@ -53,15 +53,10 @@ int main(int argc, char **argv)
     }
     else if (strCommand.equalsNoCase("install"))
     {
-      if (!watchdog.existNTService())
-      {
-        if (watchdog.installNTService())
-          std::cout << "Service installed." << std::endl;
-        else
-          std::cout << "Service install failed." << std::endl;
-      }
+      if (watchdog.installNTService())
+        std::cout << "Service installed." << std::endl;
       else
-        std::cout << "Service already installed." << std::endl;
+        std::cout << "Service install failed." << std::endl;
     }
     else if (strCommand.equalsNoCase("remove"))
     {
@@ -130,10 +125,17 @@ int main(int argc, char **argv)
   }
   catch(AException& ex)
   {
+    AFILE_TRACER_DEBUG_MESSAGE((AString("main: ")+ex.what()).c_str(), NULL);
+    std::cerr << ex.what() << std::endl;
+  }
+  catch(std::exception& ex)
+  {
+    AFILE_TRACER_DEBUG_MESSAGE((AString("main: ")+ex.what()).c_str(), NULL);
     std::cerr << ex.what() << std::endl;
   }
   catch(...)
   {
+    AFILE_TRACER_DEBUG_MESSAGE("main: Unknown exception", NULL);
     std::cerr << "Unknown exception" << std::endl;
   }
   watchdog.wait();

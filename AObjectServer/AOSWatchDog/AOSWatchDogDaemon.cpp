@@ -10,7 +10,7 @@ $Id$
 #include "AFileSystem.hpp"
 
 AOSWatchDogDaemon::AOSWatchDogDaemon() :
-  ADaemon("AOSWatchDog", "AOSWatchDog", "AObjectServer watchdog service"),
+  ADaemon("AOSWatchDog", "AOSWatchDog", "AOS Rhino watchdog service"),
   m_SleepTime(1000),
   m_SleepCycles(10)
 {
@@ -18,7 +18,7 @@ AOSWatchDogDaemon::AOSWatchDogDaemon() :
   memset(&m_StartupInfo, 0, sizeof(STARTUPINFO)); 
 
   m_StartupInfo.cb = sizeof(STARTUPINFO);  
-  m_StartupInfo.lpTitle = "AObjectServer";  
+  m_StartupInfo.lpTitle = "AOSRhino";  
 }
 
 u4 AOSWatchDogDaemon::callbackMain(AThread& thread)
@@ -71,18 +71,18 @@ u4 AOSWatchDogDaemon::callbackMain(AThread& thread)
 
 int AOSWatchDogDaemon::_isAObjectServerAlive()
 {
-  AFILE_TRACER_DEBUG_SCOPE("_isAObjectServerAlive", (void *)this);
+  AFILE_TRACER_DEBUG_SCOPE("_isAOSAlive", (void *)this);
   AHTTPResponseHeader response;
   
   AFile_Socket httpSocket(m_RequestHeader, true);
   try
   {
-    AFILE_TRACER_DEBUG_MESSAGE((AString("_isAObjectServerAlive: opening socket: ")+m_RequestHeader.useUrl().getServer()+":"+AString::fromInt(m_RequestHeader.useUrl().getPort())).c_str(), NULL);
+    AFILE_TRACER_DEBUG_MESSAGE((AString("_isAOSAlive: opening socket: ")+m_RequestHeader.useUrl().getServer()+":"+AString::fromInt(m_RequestHeader.useUrl().getPort())).c_str(), NULL);
     httpSocket.open();
   }
   catch(AException& ex)
   {
-    AString str("_isAObjectServerAlive: open socket AException: ");
+    AString str("_isAOSAlive: open socket AException: ");
     ex.emit(str);
     str.append("\r\n");
     m_RequestHeader.emit(str);
@@ -91,25 +91,25 @@ int AOSWatchDogDaemon::_isAObjectServerAlive()
   }
   catch(...)
   {
-    AFILE_TRACER_DEBUG_MESSAGE("_isAObjectServerAlive: Unknown exception trying to connect to the server.\r\n", NULL);
+    AFILE_TRACER_DEBUG_MESSAGE("_isAOSAlive: Unknown exception trying to connect to the server.\r\n", NULL);
     return 0;
   }
 
   try
   {
-    AFILE_TRACER_DEBUG_MESSAGE("_isAObjectServerAlive: sending HTTP request", NULL);
+    AFILE_TRACER_DEBUG_MESSAGE("_isAOSAlive: sending HTTP request", NULL);
     m_RequestHeader.toAFile(httpSocket);
     response.fromAFile(httpSocket);
     if (response.getStatusCode() != 200)
     {
       //a_Watched process is dead, restart it
-      AFILE_TRACER_DEBUG_MESSAGE("_isAObjectServerAlive: Remote process is in error state (ping response != 200)", NULL);
+      AFILE_TRACER_DEBUG_MESSAGE("_isAOSAlive: Remote process is in error state (ping response != 200)", NULL);
       return 2;
     }
   }
   catch(AException& ex)
   {
-    AString str("_isAObjectServerAlive: HTTP request AException: ");
+    AString str("_isAOSAlive: HTTP request AException: ");
     ex.emit(str);
     str.append("\r\n");
     m_RequestHeader.emit(str);
@@ -118,7 +118,7 @@ int AOSWatchDogDaemon::_isAObjectServerAlive()
   }
   catch(...)
   {
-    AFILE_TRACER_DEBUG_MESSAGE("_isAObjectServerAlive: Unknown exception sending HTTP request.\r\n", NULL);
+    AFILE_TRACER_DEBUG_MESSAGE("_isAOSAlive: Unknown exception sending HTTP request.\r\n", NULL);
     return 0;
   }
 
@@ -423,11 +423,11 @@ bool AOSWatchDogDaemon::_terminateAObjectServer()
 int AOSWatchDogDaemon::controlStopPending()
 {
   AFILE_TRACER_DEBUG_MESSAGE("controlStopPending: Attempting to stop the controlled process", NULL);
-  if (smp_MainServiceThread)
+  if (g_pMainServiceThread)
   {
     if (!stopServer())
       return 0;
-    smp_MainServiceThread->setRun(false);
+    g_pMainServiceThread->setRun(false);
   }
   else
   {

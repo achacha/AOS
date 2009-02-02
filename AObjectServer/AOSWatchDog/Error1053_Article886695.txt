@@ -1,0 +1,76 @@
+You receive an "Error 1053: The service did not respond to the start or control request in a timely fashion" error message when a service that uses the local system account tries to start on a Windows Server 2003-based computer
+Article ID	:	886695
+Last Review	:	December 3, 2007
+Revision	:	2.11
+On This Page
+SYMPTOMS
+Services that use the local system account to log on to a Microsoft Windows Server 2003-based computer do not start. By default, services such as the following use the local system account to log on:
+•	World Wide Web Publishing Service
+•	Microsoft Windows Installer
+•	Microsoft Windows Management Instrumentation
+After such a service tries to start, you receive the following error message:
+Error 1053: The service did not respond to the start or control request in a timely fashion.
+Note Typically, this error message does not appear until after a 30-second time-out.
+
+After an indeterminate time after you restart your computer, services that are running under the local system account fail to start. For example, after a period of 12 hours to 5 days, a service such as Windows Installer fails to start. In this case, the error message is returned immediately instead of after the usual 30-second time-out.
+
+You may also receive the following error message:
+DLL Initialization failure (0xc0000142)
+
+CAUSE
+This problem occurs because the Iisutil.dll DLL adds an access control entry (ACE) to the desktop security descriptor for the services that run in the system context. The ACE lets the Microsoft Internet Information Services Worker Process Group (IIS_WPG) account log on to the system service desktop. However, if another process sets the desktop security descriptor for the services that run in the system context to a null value, Iisutil.dll changes the discretionary access control list (DACL). Iisutil.dll changes the DACL list so that any service that uses the noninteractive local system account cannot log on.
+
+Note The noninteractive local system account is the local system account that does not use the Allow service to interact with desktop option. For additional information about this option, see the "More Information" section.
+
+Note A null value security descriptor grants unrestricted access.
+
+RESOLUTION
+Hotfix information
+A supported hotfix is now available from Microsoft. However, this hotfix is intended to correct only the problem that is described in this article. Apply this hotfix only to systems that are experiencing this specific problem. This hotfix might receive additional testing. Therefore, if you are not severely affected by this problem, we recommend that you wait for the next service pack that contains this hotfix.
+
+To resolve this problem, submit a request to Microsoft Online Customer Services to obtain the hotfix. To submit an online request to obtain the hotfix, visit the following Microsoft Web site:
+http://go.microsoft.com/?linkid=6294451 (http://go.microsoft.com/?linkid=6294451)
+Note If additional issues occur or any troubleshooting is required, you might have to create a separate service request. The usual support costs will apply to additional support questions and issues that do not qualify for this specific hotfix. To create a separate service request, visit the following Microsoft Web site:
+http://support.microsoft.com/contactus/?ws=support (http://support.microsoft.com/contactus/?ws=support)
+Prerequisites
+No prerequisites are required.
+Restart requirement
+You must restart your computer after you apply this hotfix.
+Hotfix replacement information
+This hotfix does not replace any other hotfixes.
+File information
+The English version of this hotfix has the file attributes (or later file attributes) that are listed in the following table. The dates and times for these files are listed in coordinated universal time (UTC). When you view the file information, it is converted to local time. To find the difference between UTC and local time, use the Time Zone tab in the Date and Time tool in Control Panel.
+Windows Server 2003, 32-bit editions
+
+   Date         Time   Version       Size     File name
+   -----------------------------------------------------------------
+   05-Oct-2004  21:24  6.0.3790.220  181,248  Iisutil.dll
+
+Windows Server 2003, 64-bit editions
+
+   Date         Time   Version       Size     File name     Platform
+   -----------------------------------------------------------------
+   05-Oct-2004  22:28  6.0.3790.220  409,600  Iisutil.dll   IA-64
+   05-Oct-2004  22:24  6.0.3790.220  181,248  Wiisutil.dll  x86
+
+STATUS
+Microsoft has confirmed that this is a problem in the Microsoft products that are listed in the "Applies to" section.
+
+MORE INFORMATION
+Services that use the local system account to log on to a Windows Server 2003-based computer start if the Allow service to interact with desktop option is turned on. To turn this option on, follow these steps:
+1.	In the Services tool, click the service that you want to start, and then click Properties.
+2.	Right-click the Log On tab, and then click to select the Allow service to interact with desktop check box.
+3.	Click OK to exit the Properties dialog box.
+
+Keywords: 
+	kbbug kbfix kbqfe kbwinserv2003presp1fix kbhotfixserver KB886695
+
+APPLIES TO
+
+    * Microsoft Internet Information Services 6.0
+    * Microsoft Windows Server 2003, Enterprise Edition (32-bit x86)
+    * Microsoft Windows Server 2003, Standard Edition (32-bit x86)
+    * Microsoft Windows Server 2003, Web Edition
+    * Microsoft Windows Server 2003, Enterprise Edition for Itanium-based Systems
+
+Note: This article is from Microsoft Knowledage Base
