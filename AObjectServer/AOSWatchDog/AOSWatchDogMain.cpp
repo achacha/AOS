@@ -29,17 +29,13 @@ void showHelp()
   std::cout << "  console     - Run watchdog in console mode (not as a service).\r\n";
 }
 
+//NOTE: If this function is called with NO arguements, let it call watchdog.init() asap, it will connect to the service dispatch and make sure the service is able to handle responses
+//If this does not happen then Error 1035 will result with no delay when trying to start it
 int main(int argc, char **argv)
 {
   std::cout << _BUILD_INFO_ << std::endl;
 
-  if (argc <= 1)
-  {
-    showHelp();
-    return 0;
-  }
   AString strCommand(argv[1]);
-  
   AOSWatchDogDaemon watchdog;
   watchdog.init();
   try
@@ -116,11 +112,11 @@ int main(int argc, char **argv)
         AThread::sleep(100);
         std::cout << "." << std::flush;
       }
+      watchdog.wait();
     }
     else
     {
-      std::cout << "Unknown command: " << strCommand << std::endl;
-      showHelp();
+      // No console action requested, init() will connect the sevice dispatch to the handler
     }
   }
   catch(AException& ex)
@@ -138,7 +134,6 @@ int main(int argc, char **argv)
     AFILE_TRACER_DEBUG_MESSAGE("main: Unknown exception", NULL);
     std::cerr << "Unknown exception" << std::endl;
   }
-  watchdog.wait();
 
   return 1;
 }

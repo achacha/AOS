@@ -127,7 +127,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../include64a"
-				PreprocessorDefinitions="WIN64;WIN32;_DEBUG;_CONSOLE;ADAEMON_EXPORTS"
+				PreprocessorDefinitions="WIN64;WIN32;_DEBUG;_CONSOLE;ADAEMON_EXPORTS;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -362,10 +362,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\include\ADaemon.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\AOSWatchDogDaemon.cpp"
 				>
 			</File>
@@ -379,10 +375,6 @@
 			Filter="h;hpp;"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D732A7FF}"
 			>
-			<File
-				RelativePath="..\..\include\ADaemon.hpp"
-				>
-			</File>
 			<File
 				RelativePath=".\AOSWatchDogDaemon.hpp"
 				>

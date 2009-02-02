@@ -18,7 +18,7 @@ AOSWatchDogDaemon::AOSWatchDogDaemon() :
   memset(&m_StartupInfo, 0, sizeof(STARTUPINFO)); 
 
   m_StartupInfo.cb = sizeof(STARTUPINFO);  
-  m_StartupInfo.lpTitle = "AOSRhino";  
+  m_StartupInfo.lpTitle = TEXT("AOSRhino");  
 }
 
 u4 AOSWatchDogDaemon::callbackMain(AThread& thread)
@@ -105,6 +105,10 @@ int AOSWatchDogDaemon::_isAObjectServerAlive()
       //a_Watched process is dead, restart it
       AFILE_TRACER_DEBUG_MESSAGE("_isAOSAlive: Remote process is in error state (ping response != 200)", NULL);
       return 2;
+    }
+    else
+    {
+      AFILE_TRACER_DEBUG_MESSAGE("_isAOSAlive: Remote process returned 200, sleeping until next check", NULL);
     }
   }
   catch(AException& ex)
@@ -423,11 +427,11 @@ bool AOSWatchDogDaemon::_terminateAObjectServer()
 int AOSWatchDogDaemon::controlStopPending()
 {
   AFILE_TRACER_DEBUG_MESSAGE("controlStopPending: Attempting to stop the controlled process", NULL);
-  if (g_pMainServiceThread)
+  if (mp_MainServiceThread)
   {
     if (!stopServer())
       return 0;
-    g_pMainServiceThread->setRun(false);
+    mp_MainServiceThread->setRun(false);
   }
   else
   {
