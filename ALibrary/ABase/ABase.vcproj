@@ -492,6 +492,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ADaemon.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ADatabase.cpp"
 				>
 			</File>
@@ -953,6 +957,10 @@
 			</File>
 			<File
 				RelativePath=".\ACookies.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ADaemon.hpp"
 				>
 			</File>
 			<File

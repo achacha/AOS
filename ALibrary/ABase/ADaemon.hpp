@@ -6,7 +6,6 @@ $Id$
 #ifndef INCLUDED_ADaemon_HPP__
 #define INCLUDED_ADaemon_HPP__
 
-#include "apiABase.hpp"
 #include "AString.hpp"
 #include "AThread.hpp"
 #include "ASynchronization.hpp"
@@ -24,34 +23,31 @@ $Id$
   #include <unistd.h>
 #endif
 
-//
-// Define ADAEMON_EXPORTS in the project that is including
-//   ADameon.hpp and ADaemon.cpp
-//
-#if defined(_MSC_VER) && defined(ADAEMON_EXPORTS)
-#  pragma message("ADaemon: EXPORT")
-#  define ADAEMON_API __declspec(dllexport)
-#else
-#  pragma message("ADaemon: NONE")
-#  define ADAEMON_API
-#endif
-
-extern AThread *g_pMainServiceThread;
-
 #if defined(__WINDOWS__)
-  extern "C" DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext);
+extern "C" 
+{
+  ABASE_API DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext);
+
+#  ifdef UNICODE
+  ABASE_API VOID WINAPI fcbServiceMain(DWORD argc, LPTSTR *argv);
+#  else
+  ABASE_API VOID WINAPI fcbServiceMain(DWORD argc, LPSTR *argv);
+#  endif
+}
+
 #endif
-class ADAEMON_API ADaemon
+
+class ABASE_API ADaemon
 {
 public:
   /*!
-    UNIX and NT
+  UNIX and NT
   */
   ADaemon(const AString& serviceName, const AString& displayName, const AString& description);
   virtual ~ADaemon();
 
-  //a_This one throws no exceptions, they are caught inside and a simple value is returned (non-zero is successful).
-  //a_dwParam is passed to the UNIX child process
+  // This one throws no exceptions, they are caught inside and a simple value is returned (non-zero is successful).
+  // dwParam is passed to the UNIX child process
   virtual int invoke(u4 dwParam = 0, char **ppcParam = NULL);
 
   /*!
@@ -59,31 +55,43 @@ public:
   */
   virtual u4 callbackMain(AThread& thread) = 0;
 
-  //a_Must be called as a first thing inside the main() function (does nothing under UNIX)
+  // Must be called as a first thing inside the main() function (does nothing under UNIX)
   void init();                                //a_Initialize the NTService
   void wait();                                //a_Wait for service thread to exit (performs a thread join)
 
-  static u4 MainServiceThreadProc(AThread& thread);  //a_Calls the virtual callbackMain
+  //! Calls the virtual callbackMain
+  static u4 MainServiceThreadProc(AThread& thread);
 
 #if defined(__WINDOWS__)
-  //a_NT only: Service informative
+  SERVICE_STATUS_HANDLE sm_sshService;  //a_Set once the service is registered
+
+  // NT only: Service informative
   int existNTService();                                     //a_Checks if this service exists in system database
   AString getStatus();                                      //a_Returns textual status of the service's state
   int getNTServiceStatus(SERVICE_STATUS &);                 //a_Wrapper for the protected function, doesn't throw an exception
   int isRunningInServiceMode() { return m_iServiceMode; }  //a_non-zero if service manager is running this, else must be console mode
 
-  //a_NT only: Service life-dependent
+  // NT only: Service life-dependent
   int installNTService(const AString &args = AConstant::ASTRING_EMPTY);          //a_Installs the current service
   int removeNTService();                                                    //a_Removes the current service
-  int startNTService(int iArgCount = 0, const char **ppcArgValue = NULL);   //a_Starts the current service
+  
+  /*!
+  Start a service and optionally pass parameters
 
-  //a_NT only: Service controlling
+  If UNICODE then ppcArgValue is LPCWSTR*
+  Else ppcArgValue is LPCSTR*
+  */
+  int startNTService(int iArgCount = 0, const void **ppcArgValue = NULL);
+
+  // NT only: Service controlling
   int pauseNTService();     //a_Pauses the current service
   int continueNTService();  //a_Continues the current service (given it was paused, else it will hurl ye holy exception of the antiochs at thee)
   int stopNTService();      //a_Stops the current service
 
-  //a_NT service notifcation
+  // NT service notifcation
   int notifyServiceControlManager(u4 dwState, u4 dwProgress);
+
+  static AThread *mp_MainServiceThread;
 
   /*!
   service name - internal name of this service (unique and no spaces, not visible to user)
@@ -113,9 +121,7 @@ public:
 
 protected:
 #if defined(__WINDOWS__)
-  static VOID  WINAPI fcbServiceMain(DWORD argc, LPTSTR *argv);
-
-  //a_These are the workhorses for service control
+  // These are the workhorses for service control
   int _openService();                          //a_throws Exception
   int _getNTServiceStatus(SERVICE_STATUS &);   //a_throws Exception
   int _closeService();
@@ -124,35 +130,10 @@ protected:
   int _controlService(u4 dwParam);                 //a_throws Exception
 
   int m_iServiceMode;               //a_If running in service mode
-  static int sm_iTIMEOUT;           //a_Timeout value in seconds used when controlling a service
   
   SERVICE_TABLE_ENTRY m_steServiceTable[2];         //a_Service entry table used when opening and accessing the service
   SC_HANDLE           m_schService,                 //a_Service handle
                       m_schManager;                 //a_ServiceControl manager handle
-  
-  /*!
-  Synchronization class to lock/unlock service database
-  */
-  class ServiceDatabaseSynch : public ASynchronization
-  {
-  public:
-    ServiceDatabaseSynch(SC_HANDLE hSCManager, eInitialState i = ASynchronization::UNLOCKED);
-    virtual ~ServiceDatabaseSynch();
-
-    virtual void lock();
-    virtual bool trylock();
-    virtual void unlock();
-
-    bool islocked();
-
-  private:
-    ServiceDatabaseSynch() {}
-
-    SC_HANDLE m_hSCManager;   //a_Handle to the manager
-    SC_LOCK   m_scLock;       //a_Service database lock
-  };
-  
-  SERVICE_STATUS_HANDLE sm_sshService;  //a_Set once the service is registered
 #else
   //a_UNIX only
   static void fcbServiceMain(u4 dwArgc, char **lpszArgv);
@@ -165,8 +146,9 @@ private:
   ADaemon() {}
 };
 
-//There is 1 instance of a service per executable set when ADaemon object is created
+// There is 1 instance of a service per executable set when ADaemon object is created
 extern ADaemon *thisADaemon;
+
 
 #endif  //#ifndef INCLUDED_ADaemon_HPP__
 
