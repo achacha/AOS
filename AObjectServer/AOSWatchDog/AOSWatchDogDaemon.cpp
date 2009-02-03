@@ -132,7 +132,7 @@ int AOSWatchDogDaemon::_isAObjectServerAlive()
 bool AOSWatchDogDaemon::_init()
 {
   //For debugging use only
-  //MessageBox(NULL,"callbackMain: Waiting for debugger to attach", "AOSWatchDog was asked to wait on startup.",MB_SERVICE_NOTIFICATION);
+  //MessageBox(NULL,"_init: Waiting for debugger to attach", "AOSWatchDog was asked to wait on startup.",MB_SERVICE_NOTIFICATION);
 
   //a_Get module filename and add relative location of the INI
   AString thisPath(1536, 256);
@@ -157,7 +157,12 @@ bool AOSWatchDogDaemon::_init()
     {
       //a_Config error wait for service stop
       AFILE_TRACER_DEBUG_MESSAGE((AString("File not found: ")+iniFilename.toAString()).c_str(), NULL);
-      MessageBox(NULL,iniFilename.toAString().c_str(),"AOSWatchDog:  File Not Found.  Unable to continue, please stop the service.",MB_SERVICE_NOTIFICATION);
+      ::MessageBox(
+        NULL,
+        iniFilename.toAString().c_str(),
+        "AOSWatchDog:  File Not Found.  Unable to continue, please stop the service.",
+        MB_ICONERROR|MB_SERVICE_NOTIFICATION
+      );
       AThread::sleep(5000);
       return false;
     }
@@ -166,21 +171,43 @@ bool AOSWatchDogDaemon::_init()
   }
   catch(AException& ex)
   {
-    AString error("callbackMain: Exception caught in _init: \r\n");
+    AString error("Exception caught in _init: \r\n");
     ex.emit(error);
     AFILE_TRACER_DEBUG_MESSAGE(error.c_str(), NULL);
+    ::MessageBox(
+      NULL, 
+      error.c_str(), 
+      TEXT("Exception init()"), 
+      MB_ICONERROR|MB_SERVICE_NOTIFICATION
+    );
+    AThread::sleep(5000);
     return false;
   }
   catch(...)
   {
-    AString error("callbackMain: Unknown exception caught in _init.\r\n");
+    AString error("Unknown exception caught in _init.\r\n");
     AFILE_TRACER_DEBUG_MESSAGE(error.c_str(), NULL);
+    ::MessageBox(
+      NULL, 
+      error.c_str(), 
+      TEXT("Exception init()"), 
+      MB_ICONERROR|MB_SERVICE_NOTIFICATION
+    );
+    AThread::sleep(5000);
     return false;
   }
 
   //a_Check if we should wait for debugger to attach
-  if (!m_ini.isValue("config", "wait_on_startup", "true"))
-    MessageBox(NULL,"callbackMain: Waiting for debugger to attach", "AOSWatchDog was asked to wait on startup.",MB_SERVICE_NOTIFICATION);
+  if (m_ini.isValue("config", "wait_on_startup", "true"))
+  {
+    ::MessageBox(
+      NULL,
+      "Waiting for debugger to attach", 
+      "AOSWatchDog was asked to wait on startup [config]wait_on_startup",
+      MB_ICONERROR|MB_SERVICE_NOTIFICATION
+    );
+    AThread::sleep(5000);
+  }
 
   m_aosExecutablePath.set(thisPath, false);
   str.clear();
@@ -197,7 +224,12 @@ bool AOSWatchDogDaemon::_init()
   {
     //a_Config error wait for service stop
     AFILE_TRACER_DEBUG_MESSAGE("callbackMain: AOSWatchDog.ini: missing [config]server_isalive_command.  Required for monitoring.", NULL);
-    MessageBox(NULL,"callbackMain: AOSWatchDog.ini: missing [config]server_isalive_command", "AOSWatchDog:  Unable to continue.",MB_SERVICE_NOTIFICATION);
+    ::MessageBox(
+      NULL,
+      TEXT("AOSWatchDog.ini: missing [config]server_isalive_command"), 
+      TEXT("AOSWatchDog: Unable to continue"),
+      MB_ICONERROR|MB_SERVICE_NOTIFICATION
+    );
     AThread::sleep(5000);
 
     return false;
