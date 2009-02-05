@@ -61,3 +61,5 @@ context.syncFileToOutput(os.path.join(context.BASE_AOBJECTSERVER_PATH, "openssl_
 context.syncFileToOutput(os.path.join(context.BASE_AOBJECTSERVER_PATH, "openssl.config"));
 context.syncFileToOutput(os.path.join(context.BASE_AOBJECTSERVER_PATH, "AOSWatchDog", "AOSWatchDog.ini"));
 
+context.fixPermissions(context.BASE_AOBJECTSERVER_PATH);
+context.fixPermissionsRecursive(context.TARGET_AOS_ROOT_PATH);

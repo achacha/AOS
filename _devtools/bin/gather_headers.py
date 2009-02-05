@@ -123,3 +123,9 @@ if (context.win64 == 1 or context.linux64 == 1):
   context.syncPathFiles(os.path.join(context.BASE_ALIBRARYIMPL_PATH, "AGdLib", "freetype", "include", "freetype"), "*.h*", os.path.join(context.TARGET_ALIBRARY_INCLUDE_PATH_64, "freetype"));
   context.syncPathFiles(os.path.join(context.BASE_ALIBRARYIMPL_PATH, "AGdLib", "freetype", "include", "freetype", "config"), "*.h*", os.path.join(context.TARGET_ALIBRARY_INCLUDE_PATH_64, "freetype", "config"));
   context.syncPathFiles(os.path.join(context.BASE_ALIBRARYIMPL_PATH, "AGdLib", "freetype", "include", "freetype", "internal"), "*.h*", os.path.join(context.TARGET_ALIBRARY_INCLUDE_PATH_64, "freetype", "internal"));
+
+# Permissions
+if (context.win32 == 1 or context.linux32 == 1):
+  context.fixPermissions(context.TARGET_ALIBRARY_INCLUDE_PATH_32);
+if (context.win64 == 1 or context.linux64 == 1):
+  context.fixPermissions(context.TARGET_ALIBRARY_INCLUDE_PATH_64);

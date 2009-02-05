@@ -140,7 +140,7 @@ class Context:
     os.system(CMD);
 
   def syncPath(self, source_path, target_path):
-    EXEC_RSYNC_BASE="rsync -tup --exclude=.svn ";
+    EXEC_RSYNC_BASE="rsync "+RSYNC_PARAMS+" ";
     CMD = EXEC_RSYNC_BASE;
     if (self.verbose == 1):
       CMD = CMD + "-v ";
@@ -154,7 +154,7 @@ class Context:
     os.system(CMD);
 
   def syncPathRecursive(self, source_path, target_path):
-    EXEC_RSYNC_BASE="rsync -tup --exclude=.svn -r ";
+    EXEC_RSYNC_BASE="rsync "+RSYNC_PARAMS+" ";
     CMD = EXEC_RSYNC_BASE;
     if (self.verbose == 1):
       CMD = CMD + "-v ";
@@ -261,6 +261,26 @@ class Context:
   def syncAosRoot(self, basepath):
     print("|----------------------------Content: "+basepath+" -> "+self.TARGET_PATH);
     self.syncPathRecursive(os.path.join(basepath, "aos_root"), self.TARGET_PATH);
+
+  def fixPermissions(self, basepath):
+    print("|=============:Permissions fix (777): "+basepath);
+    curdir = os.getcwd();
+    os.chdir(basepath);
+    CMD = "chmod 777 *";
+    if (self.verbose == 1):
+      print(os.getcwd()+":"+CMD);
+    os.system(CMD);
+    os.chdir(curdir);
+
+  def fixPermissionsRecursive(self, basepath):
+    print("|===:Recursive Permissions fix (777): "+basepath);
+    curdir = os.getcwd();
+    os.chdir(basepath);
+    CMD = "chmod -R 777 *";
+    if (self.verbose == 1):
+      print(os.getcwd()+":"+CMD);
+    os.system(CMD);
+    os.chdir(curdir);
 
   def showUsage(self):
     # Basic usage
