@@ -155,6 +155,12 @@ public:
   const ADynamicLibrary& getModules() const;
 
   /*!
+  Uptime timer
+  @return const reference to ATimer
+  */
+  const ATimer& getUptimeTimer() const;
+
+  /*!
   Admin xml
   */
   virtual void adminRegisterObject(AOSAdminRegistry& adminRegistry);
@@ -218,6 +224,9 @@ private:
   
   // Modules to load
   ADynamicLibrary m_Modules;
+
+  // Uptime
+  ATimer m_Uptime;
 };
 
 #endif //INCLUDED__AOSServices_HPP__

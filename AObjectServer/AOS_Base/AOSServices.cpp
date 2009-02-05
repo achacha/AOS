@@ -25,6 +25,7 @@ void AOSServices::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   
+  ADebugDumpable::indent(os, indent+1) << "m_Uptime=" << m_Uptime << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_BasePath=" << m_BasePath << std::endl;
   
   ADebugDumpable::indent(os, indent+1) << "m_Log=" << std::endl;
@@ -69,6 +70,7 @@ void AOSServices::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& req
 {
   AOSAdminInterface::adminEmitXml(eBase, request);
   
+  adminAddProperty(eBase, ASW("uptime",6), m_Uptime);
   adminAddProperty(eBase, ASW("log",3), *mp_Log);
   
   {
@@ -131,6 +133,7 @@ void AOSServices::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeade
 }
 
 AOSServices::AOSServices(const AFilename& basePath) :
+  m_Uptime(true),
   m_BasePath(basePath),
   mp_InputExecutor(NULL),
   mp_ModuleExecutor(NULL),
@@ -429,4 +432,9 @@ AOSResourceManager& AOSServices::useResourceManager()
 {
   AASSERT(this, mp_ResourceManager);
   return *mp_ResourceManager;
+}
+
+const ATimer& AOSServices::getUptimeTimer() const
+{
+  return m_Uptime;
 }

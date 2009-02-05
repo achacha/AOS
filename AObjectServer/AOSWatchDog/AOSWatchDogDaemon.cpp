@@ -155,12 +155,12 @@ bool AOSWatchDogDaemon::_init()
     m_ini.clear();
     if (!AFileSystem::exists(iniFilename))
     {
-      //a_Config error wait for service stop
+      //a_Unable to read INI file
       AFILE_TRACER_DEBUG_MESSAGE((AString("File not found: ")+iniFilename.toAString()).c_str(), NULL);
       ::MessageBox(
         NULL,
-        iniFilename.toAString().c_str(),
         "AOSWatchDog:  File Not Found.  Unable to continue, please stop the service.",
+        iniFilename.toAString().c_str(),
         MB_ICONERROR|MB_SERVICE_NOTIFICATION
       );
       AThread::sleep(5000);
@@ -176,8 +176,8 @@ bool AOSWatchDogDaemon::_init()
     AFILE_TRACER_DEBUG_MESSAGE(error.c_str(), NULL);
     ::MessageBox(
       NULL, 
-      error.c_str(), 
       TEXT("Exception init()"), 
+      error.c_str(), 
       MB_ICONERROR|MB_SERVICE_NOTIFICATION
     );
     AThread::sleep(5000);
@@ -189,8 +189,8 @@ bool AOSWatchDogDaemon::_init()
     AFILE_TRACER_DEBUG_MESSAGE(error.c_str(), NULL);
     ::MessageBox(
       NULL, 
-      error.c_str(), 
       TEXT("Exception init()"), 
+      error.c_str(), 
       MB_ICONERROR|MB_SERVICE_NOTIFICATION
     );
     AThread::sleep(5000);
@@ -242,6 +242,7 @@ bool AOSWatchDogDaemon::_init()
     m_RequestHeader.useUrl().setServer(ip);
     m_RequestHeader.set(AHTTPHeader::HT_REQ_Host, ip);  //HTTP/1.1 reqiured
     m_RequestHeader.useUrl().setProtocol(AUrl::HTTP);
+    m_RequestHeader.set(AHTTPRequestHeader::HT_GEN_Connection, "close");
 
     AString port;
     if (m_ini.getValue("config", "server_port", port))
@@ -277,6 +278,7 @@ bool AOSWatchDogDaemon::_init()
     m_AdminRequestHeader.useUrl().setServer(ip);
     m_AdminRequestHeader.set(AHTTPHeader::HT_REQ_Host, ip);  //HTTP/1.1 reqiured
     m_AdminRequestHeader.useUrl().setProtocol(AUrl::HTTP);
+    m_AdminRequestHeader.set(AHTTPRequestHeader::HT_GEN_Connection, "close");
 
     AString port;
     if (m_ini.getValue("config", "server_admin_port", port))
