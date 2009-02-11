@@ -9,12 +9,15 @@ $Id$
 #include "ALock.hpp"
 #include "AString.hpp"
 #include "ATime.hpp"
-#include "Dbghelp.h"
 #include "templateMapOfPtrs.hpp"
 
+#ifdef __WINDOWS__
+#include "Dbghelp.h"
+#endif
+
 ABase::ABase() :
-  pPrev(NULL),
-  pNext(NULL)
+  pNext(NULL),
+  pPrev(NULL)
 {
 }
 
@@ -125,7 +128,7 @@ public:
     target.append(AString::fromPointer(ptr));
     target.append(",s=",3);
     target.append(AString::fromSize_t(size));
-    
+
     STACKFRAMES::const_iterator it = stackframes.begin();
     if (it != stackframes.end())
       target.append(AConstant::ASTRING_EOL);
@@ -243,7 +246,7 @@ void *ABase::operator new(size_t size)
         break;
       }
 
-      if (0 == stackframe.AddrPC.Offset) 
+      if (0 == stackframe.AddrPC.Offset)
       {
         lastError = GetLastError();
 #ifdef DEBUG_TRACK_ABASE_MEMORY_DISPLAY_TO_COUT
@@ -261,7 +264,7 @@ void *ABase::operator new(size_t size)
         const int IMAGEHLP_MAX_NAMELEN = 1024;
         const int IMAGEHLP_BUFFER_SIZE = sizeof(IMAGEHLP_SYMBOL64)+IMAGEHLP_MAX_NAMELEN+1;
         u1 _internal_buffer[IMAGEHLP_BUFFER_SIZE];
-        memset(_internal_buffer, 0, IMAGEHLP_BUFFER_SIZE); 
+        memset(_internal_buffer, 0, IMAGEHLP_BUFFER_SIZE);
 
         IMAGEHLP_SYMBOL64 *pSymbol = (IMAGEHLP_SYMBOL64 *)((void *)_internal_buffer);
         pSymbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);

@@ -7,6 +7,8 @@ $Id$
 #define INCLUDED__AStackWalker_HPP__
 
 #include "apiABase.hpp"
+
+#if defined(__WINDOWS__)
 #include "AOutputBuffer.hpp"
 #include "AEmittable.hpp"
 #include "AXmlEmittable.hpp"
@@ -49,13 +51,13 @@ public:
     SWO_LINE               = 0x0002,          // Try to get the line for this symbol
     SWO_MODULE_INFO        = 0x0004,          // Try to retrieve the module-infos
     SWO_FILE_VERSION       = 0x0008,          // Also retrieve the version for the DLL/EXE
-                                     
+
     SWO_SYM_BUILDPATH      = 0x0010,          // Generate a "good" symbol-search-path
     SWO_SYM_USESYMSRV      = 0x0020,          // Also use the public Microsoft-Symbol-Server
     SWO_SYM_ALL            = 0x00f0,          //a_All symbol methods
-    
+
     SWO_INIT_INFO          = 0x0100,          //a_Include init information
-    
+
     SWO_SHOW_LOOKUP_ERRORS = 0x1000,          //a_To show errors during symbol lookup or not
 
     // Useful sets
@@ -67,26 +69,26 @@ public:
 
   /*!
   Usage
-  
+
   ARope rope;
   AStackWalker sw;
   sw.ProcessCallstack();
   sw.emit(rope);
   std::cerr << rope << std::endl;
-  
+
   */
   AStackWalker(
     u4 options = AStackWalker::SWO_SET_ALL,
-    const AString& symbolPath = AConstant::ASTRING_EMPTY, 
-    DWORD dwProcessId = -1, 
+    const AString& symbolPath = AConstant::ASTRING_EMPTY,
+    DWORD dwProcessId = -1,
     HANDLE hProcess = NULL
   );
-  
+
   AStackWalker(
-    DWORD dwProcessId, 
+    DWORD dwProcessId,
     HANDLE hProcess
   );
-  
+
   /*!
   Process Callstack
   */
@@ -106,8 +108,8 @@ public:
   */
   BOOL ProcessCallstack(
     bool skipCallingFrame = false,
-    HANDLE hThread = NULL, 
-    CONTEXT *context = NULL, 
+    HANDLE hThread = NULL,
+    CONTEXT *context = NULL,
     PReadProcessMemoryRoutine readMemoryFunction = NULL,
     LPVOID pUserData = NULL  // optional to identify some data in the 'readMemoryFunction'-callback
   );
@@ -135,7 +137,7 @@ public:
   BOOL LoadModules();
 
 #if _MSCVER >= 1300
-// due to some reasons, the "STACKWALK_MAX_NAMELEN" must be declared as "public" 
+// due to some reasons, the "STACKWALK_MAX_NAMELEN" must be declared as "public"
 // in older compilers in order to use it... starting with VC7 we can declare it as "protected"
 protected:
 #endif
@@ -186,5 +188,6 @@ private:
 
   void _clearStackWalkResult();  //a_Clear and deallocate stack walk results
 };
+#endif //__WINDOWS__
 
 #endif //INCLUDED__AStackWalker_HPP__

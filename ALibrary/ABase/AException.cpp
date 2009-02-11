@@ -18,19 +18,23 @@ AException::AException
   errno_t errornum,                    // = 0
   bool walkStack                       // = false
 ) :
-  m_ID(iWhat), 
-  mp_Filename(pccFilename), 
-	m_LineNumber(iLineNumber),
+  m_ID(iWhat),
+  mp_Filename(pccFilename),
+  m_LineNumber(iLineNumber),
   m_ExtraText(extra),
+#ifdef __WINDOWS__
   m_StackWalker(AStackWalker::SWO_SET_STACKONLY),
+#endif
   m_errno(errornum)
 {
   if (pObject)
     pObject->debugDumpToAOutputBuffer(m_DebugDump);
-  
+
   //a_Get stack trace
+#ifdef __WINDOWS__
   if (walkStack)
     m_StackWalker.ProcessCallstack(true);
+#endif
 }
 
 AException::AException(const AException &that) :
@@ -39,7 +43,9 @@ AException::AException(const AException &that) :
   m_LineNumber(that.m_LineNumber),
   m_errno(that.m_errno),
   m_ExtraText(that.m_ExtraText),
+#ifdef __WINDOWS__
   m_StackWalker(that.m_StackWalker),
+#endif
   m_DebugDump(that.m_DebugDump)
 {
 }
@@ -58,8 +64,10 @@ AException& AException::operator=(const AException &that)
   m_LineNumber  = that.m_LineNumber;
   m_errno       = that.m_errno;
   m_ExtraText   = that.m_ExtraText;
+#ifdef __WINDOWS__
   m_StackWalker = that.m_StackWalker;
-  
+#endif
+
   return *this;
 }
 
@@ -128,7 +136,7 @@ void AException::getDescription(AOutputBuffer& target) const throw()
 
     case NotFound:
       target.append("Not found."); break;
-    
+
     case InvalidData:
       target.append("Invalid data."); break;
 
@@ -242,7 +250,7 @@ void AException::getDescription(AOutputBuffer& target) const throw()
 
     case NANUnexpected:
       target.append("NAN not expected for this operation."); break;
-  
+
     case InvalidCharacter:
       target.append("Invalid character detected in the number."); break;
 
@@ -263,7 +271,7 @@ void AException::getDescription(AOutputBuffer& target) const throw()
 
     case InvalidProtocol:
       target.append("Protocol specified is not valid."); break;
-  
+
     case InvalidPathRedirection:
       target.append("Path redirection via '..' going below root."); break;
 
@@ -335,7 +343,7 @@ void AException::emit(AOutputBuffer& target) const
 AXmlElement& AException::emitXml(AXmlElement& thisRoot) const
 {
   AASSERT(NULL, !thisRoot.useName().isEmpty());
-  
+
   ARope rope;
   getDescription(rope);
   thisRoot.addElement(ASW("desc",4)).addData(rope, AXmlElement::ENC_CDATADIRECT);
@@ -351,13 +359,13 @@ AXmlElement& AException::emitXml(AXmlElement& thisRoot) const
 }
 
 const char* AException::getFilename() const throw()
-{ 
+{
   return mp_Filename;
 }
 
 int AException::getLineNumber() const throw()
-{ 
-  return m_LineNumber; 
+{
+  return m_LineNumber;
 }
 
 void AException::getErrnoMessage(AOutputBuffer& target, errno_t errornum)
@@ -367,19 +375,19 @@ void AException::getErrnoMessage(AOutputBuffer& target, errno_t errornum)
     case EPERM:
       target.append("Operation not permitted");
       break;
- 
+
     case ENOENT:
       target.append("No such file or directory");
       break;
- 
+
     case ESRCH:
       target.append("No such process");
       break;
- 
+
     case EINTR:
       target.append("Interrupted function");
       break;
- 
+
     case EIO:
       target.append("I/O error");
       break;
@@ -529,11 +537,13 @@ void AException::getErrnoMessage(AOutputBuffer& target, errno_t errornum)
 }
 
 errno_t AException::getErrno() const throw()
-{ 
-  return m_errno; 
+{
+  return m_errno;
 }
 
+#ifdef __WINDOWS__
 const AStackWalker& AException::getStackWalker() const
 {
   return m_StackWalker;
 }
+#endif

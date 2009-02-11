@@ -23,7 +23,7 @@ $Id$
 //a_export linkage for current dynamic object
 //a_import linkage for all others
 //a_no linkage for isolation
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && defined(__WINDOWS__)
 #  if !defined(__ISOLATION__)
 #    ifdef ABASE_EXPORTS
 #      pragma message("ABase: EXPORT")

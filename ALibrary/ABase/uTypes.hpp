@@ -25,7 +25,7 @@ typedef signed   long     s4;
   typedef unsigned __int64 u8;
   typedef signed   __int64 s8;
 
-#elif defined(__UNIX__)
+#elif defined(__LINUX__)
 
   typedef unsigned long long u8;
   typedef signed   long long s8;

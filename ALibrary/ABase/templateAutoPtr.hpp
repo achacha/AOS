@@ -8,6 +8,7 @@ $Id$
 
 #include "apiABase.hpp"
 #include "ADebugDumpable.hpp"
+#include "AString.hpp"
 
 /*!
 Automatic Scope-Lifetime pointer wrapper templates
@@ -89,13 +90,13 @@ public:
   dtor
   */
   ~AAutoPtr()
-  { 
+  {
     if (m_Ownership && m_Pointer)
     {
       delete m_Pointer;
     }
   }
- 
+
   /*!
   Assign to a pointer and take ownership
   */
@@ -109,7 +110,7 @@ public:
   Reset the pointer and delete the old pointer if owned
   */
   void reset(T* pointer = NULL, bool ownership = true)
-  { 
+  {
     if (m_Ownership)
     {
       delete m_Pointer;
@@ -117,7 +118,7 @@ public:
     m_Pointer = pointer;
     m_Ownership = ownership;
   }
-	
+
   /*!
   Pointer operator
   */
@@ -132,7 +133,7 @@ public:
   Cast operator
   */
   operator T* () { return m_Pointer; }
-  
+
   /*!
   Const cast operator
   */
@@ -224,12 +225,12 @@ public:
   ctor
   */
   explicit AAutoArrayPtr(T* pointer, bool ownership) : m_Pointer(pointer), m_Ownership(ownership) {}
-	
+
   /*!
   dtor
   */
   ~AAutoArrayPtr()
-  { 
+  {
     if (m_Ownership) delete []m_Pointer;
   }
 
@@ -246,18 +247,18 @@ public:
   Reset the pointer and delete the old pointer if owned
   */
   void reset(T* pointer = NULL, bool ownership = true)
-  { 
+  {
     if (m_Ownership)
       delete[] m_Pointer;
     m_Pointer = pointer;
     m_Ownership = ownership;
   }
-	
+
   /*!
   Cast operator
   */
   operator T* () { return m_Pointer; }
-  
+
   /*!
   Const cast operator
   */
@@ -354,16 +355,16 @@ public:
   ctor
   */
   explicit AAutoBasicArrayPtr(T* pointer, bool ownership) : m_Pointer(pointer), m_Ownership(ownership) {}
-  
+
   /*!
   dtor
   */
   ~AAutoBasicArrayPtr()
-  { 
+  {
     if (m_Ownership)
       delete[] m_Pointer;
   }
- 
+
   /*!
   Equals operator with ownership
   */
@@ -378,10 +379,10 @@ public:
   */
   void reset(T* pointer = NULL, bool ownership = true)
   {
-    if (m_Ownership) 
+    if (m_Ownership)
       delete[] m_Pointer;
-    
-    m_Pointer = pointer; 
+
+    m_Pointer = pointer;
     m_Ownership = ownership;
   }
 
@@ -389,7 +390,7 @@ public:
   Cast operator
   */
   operator       T* ()       { return m_Pointer; }
-  
+
   /*!
   Const cast operator
   */

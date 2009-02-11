@@ -29,17 +29,17 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
   //Win64 environment
   #pragma message("ABase (64bit): Windows OS detected")
   #define __WINDOWS__
-  #ifndef WIN64  
+  #ifndef WIN64
   #  define WIN64
-  #endif  
+  #endif
   #ifndef WIN32
   #  define WIN32
   #endif
-  
+
   //a_OS/C flags
   #define HAS_MUTABLE
   #define HAS_BOOL
-  
+
   #define __CDECL __cdecl
 
   //a_Predefine flags needed with Microsoft headers
@@ -66,14 +66,14 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
   //a_OS/C flags
   #define HAS_MUTABLE
   #define HAS_BOOL
-  
+
   #ifndef WINVER				// Allow use of features specific to Windows XP or later.
   #define WINVER 0x0501		// Change this to the appropriate value to target other versions of Windows.
   #endif
 
-  #ifndef _WIN32_WINNT		// Allow use of features specific to Windows XP or later.                   
+  #ifndef _WIN32_WINNT		// Allow use of features specific to Windows XP or later.
   #define _WIN32_WINNT 0x0501	// Change this to the appropriate value to target other versions of Windows.
-  #endif						
+  #endif
 
   #ifndef _WIN32_WINDOWS		// Allow use of features specific to Windows 98 or later.
   #define _WIN32_WINDOWS 0x0500 // Target Windows Me or better (Windows XP uses _WIN32_WINNT define, so this one is really pretty useless nowadays)
@@ -93,8 +93,23 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
     #pragma message("ASystem (32bit): Including winsock2.h")
     #include <winsock2.h>
   #endif
-  
+
 #define ABASE_OS_INFO "Microsoft Windows (32-bit) ABASE_BUILD(" ## __TIMESTAMP__ ## ")"
+#elif defined(LINUX32)
+  #pragma message("ABase (32bit): Linux OS detected")
+  #define __LINUX__
+
+  //a_OS/C flags
+  #define HAS_MUTABLE
+  #define HAS_BOOL
+
+  #undef FD_SETSIZE
+  #define FD_SETSIZE 1024             //a_Allow 1024 simultaneous clients
+
+  #define ABASE_OS_INFO "Linux (32-bit) ABASE_BUILD(" ## __TIMESTAMP__ ## ")"
+#elif defined(LINUX64)
+  #error TODO Linux 64-bit
+  #define ABASE_OS_INFO "Linux (64-bit) ABASE_BUILD(" ## __TIMESTAMP__ ## ")"
 #else
   #error No such OS configuration
 #endif
@@ -143,7 +158,7 @@ NDEBUG - non-debug (release) mode
 
 //EXPERIMENTAL: Enbale trace of allocations of ABase* objects (doesn't always work)
 // Takes a very long time too, so best keep this commented out unless really needed for debugging
-#  ifdef DEBUG_TRACK_ABASE_MEMORY 
+#  ifdef DEBUG_TRACK_ABASE_MEMORY
 #  pragma message("Tracing dynamic allocations of ABase* to std::cout")
 #  endif
 

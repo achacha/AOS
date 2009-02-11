@@ -153,9 +153,9 @@ public:
 #ifdef ENABLE_EXCEPTION_STACKWALK
   AException(
     const ADebugDumpable *const pObject = NULL,
-    int iID = AException::Unknown, 
-    const char* pccFilename = "", 
-    int iLineNumber = 0, 
+    int iID = AException::Unknown,
+    const char* pccFilename = "",
+    int iLineNumber = 0,
     const AEmittable& extra = AConstant::ASTRING_EMPTY,
     errno_t errornum = 0,
     bool walkStack = true
@@ -163,9 +163,9 @@ public:
 #else
   AException(
     const ADebugDumpable *const pObject = NULL,
-    int iID = AException::Unknown, 
-    const char* pccFilename = "", 
-    int iLineNumber = 0, 
+    int iID = AException::Unknown,
+    const char* pccFilename = "",
+    int iLineNumber = 0,
     const AEmittable& extra = AConstant::ASTRING_EMPTY,
     errno_t errornum = 0,
     bool walkStack = false
@@ -196,7 +196,7 @@ public:
   /*!
   General method for retrieving the exception description and location
   NOTE: Do not override this method, getDescription() is what you override
-  
+
   @return description of this exception
   @throw never
   */
@@ -232,7 +232,9 @@ public:
   /*!
   Stack walker
   */
+#ifdef __WINDOWS__
   const AStackWalker& getStackWalker() const;
+#endif
 
   /*!
   errno utility
@@ -251,8 +253,10 @@ protected:
   int            m_LineNumber;
   errno_t        m_errno;
   AString        m_ExtraText;
-  AStackWalker   m_StackWalker;
   ARope          m_DebugDump;
+#ifdef __WINDOWS__
+  AStackWalker   m_StackWalker;
+#endif
 
 private:
   /*!

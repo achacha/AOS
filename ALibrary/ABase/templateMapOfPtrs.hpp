@@ -12,10 +12,10 @@ $Id$
 std::map wrapper that will delete all of its contents when done
 
 Usage:
-Before:  
+Before:
   std::map<int, AString> myMap;
   myMap[0] = AString("foo");
-         
+
 Now:
   AMapOfPtrs<int, AString> myMap;
   myMap[0] = new AString("foo");   // this class will delete this object in dtor
@@ -30,7 +30,7 @@ public:
   AMapOfPtrs() {}
 
   /*!
-  Will call delete on all members 
+  Will call delete on all members
   */
   ~AMapOfPtrs()
   {

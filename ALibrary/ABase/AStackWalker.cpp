@@ -1,5 +1,5 @@
 /**********************************************************************
- * 
+ *
  * StackWalker.cpp
  *
  *
@@ -8,14 +8,14 @@
  *                       http://www.codeproject.com/threads/StackWalker.asp
  *  2005-07-28   v2    - Changed the params of the constructor and ProcessCallstack
  *                       (to simplify the usage)
- *  2005-08-01   v3    - Changed to use 'CONTEXT_FULL' instead of CONTEXT_ALL 
+ *  2005-08-01   v3    - Changed to use 'CONTEXT_FULL' instead of CONTEXT_ALL
  *                       (should also be enough)
  *                     - Changed to compile correctly with the PSDK of VC7.0
  *                       (GetFileVersionInfoSizeA and GetFileVersionInfoA is wrongly defined:
  *                        it uses LPSTR instead of LPCSTR as first paremeter)
  *                     - Added declarations to support VC5/6 without using 'dbghelp.h'
- *                     - Added a 'pUserData' member to the ProcessCallstack function and the 
- *                       PReadProcessMemoryRoutine declaration (to pass some user-defined data, 
+ *                     - Added a 'pUserData' member to the ProcessCallstack function and the
+ *                       PReadProcessMemoryRoutine declaration (to pass some user-defined data,
  *                       which can be used in the readMemoryFunction-callback)
  *  2005-08-02   v4    - OnSymInit now also outputs the OS-Version by default
  *                     - Added example for doing an exception-callstack-walking in main.cpp
@@ -24,6 +24,7 @@
  * $Id$
  **********************************************************************/
 #include "pchABase.hpp"
+#if defined(__WINDOWS__)
 #include <tchar.h>
 #pragma comment(lib, "version.lib")  // for "VerQueryValue"
 
@@ -35,15 +36,15 @@
 ASync_CriticalSection AStackWalker::sm_StackWalkLock;
 
 // The "ugly" assembler-implementation is needed for systems before XP
-// If you have a new PSDK and you only compile for XP and later, then you can use 
+// If you have a new PSDK and you only compile for XP and later, then you can use
 // the "RtlCaptureContext"
-// Currently there is no define which determines the PSDK-Version... 
-// So we just use the compiler-version (and assumes that the PSDK is 
+// Currently there is no define which determines the PSDK-Version...
+// So we just use the compiler-version (and assumes that the PSDK is
 // the one which was installed by the VS-IDE)
 //#if defined(_M_IX86) && (_WIN32_WINNT <= 0x0500) //&& (_MSC_VER < 1400)
 #if !defined(RtlCaptureContext) && defined(_M_IX86)
   #ifdef CURRENT_THREAD_VIA_EXCEPTION
-  // TODO: The following is not a "good" implementation, 
+  // TODO: The following is not a "good" implementation,
   // because the callstack is only valid in the "__except" block...
   #define GET_CURRENT_CONTEXT(context, contextFlags) \
     do { \
@@ -214,7 +215,7 @@ DWORD64
 // Some missing defines (for VC5/6):
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD)-1)
-#endif  
+#endif
 
 
 // secure-CRT_functions are only available starting with VC8
@@ -320,11 +321,11 @@ public:
     if (szSymPath != NULL)
       m_szSymPath = _strdup(szSymPath);
     if (pSI(m_hProcess, m_szSymPath, FALSE) == FALSE)
-    {  
+    {
       if (m_parent->m_options & AStackWalker::SWO_SHOW_LOOKUP_ERRORS)
         m_parent->OnDbgHelpErr("SymInitialize", GetLastError(), 0);
-    }  
-    
+    }
+
     DWORD symOptions = pSGO();  // SymGetOptions
     symOptions |= SYMOPT_LOAD_LINES;
     symOptions |= SYMOPT_FAIL_CRITICAL_ERRORS;
@@ -452,11 +453,11 @@ typedef struct IMAGEHLP_MODULE64_V2 {
   tSSO pSSO;
 
   // StackWalk64()
-  typedef BOOL (__stdcall *tSW)( 
-    DWORD MachineType, 
+  typedef BOOL (__stdcall *tSW)(
+    DWORD MachineType,
     HANDLE hProcess,
-    HANDLE hThread, 
-    LPSTACKFRAME64 StackFrame, 
+    HANDLE hThread,
+    LPSTACKFRAME64 StackFrame,
     PVOID ContextRecord,
     PREAD_PROCESS_MEMORY_ROUTINE64 ReadMemoryRoutine,
     PFUNCTION_TABLE_ACCESS_ROUTINE64 FunctionTableAccessRoutine,
@@ -607,7 +608,7 @@ private:
     tt2 = (char*) malloc(sizeof(char) * TTBUFLEN);
     if (!hMods || !tt || !tt2)
       return FALSE;
-    
+
     if ( ! pEPM( hProcess, hMods, TTBUFLEN, &cbNeeded ) )
     {
       //_ftprintf(fLogFile, _T("%lu: EPM failed, GetLastError = %lu\n"), g_dwShowCount, gle );
@@ -779,7 +780,7 @@ public:
 
 // #############################################################
 AStackWalker::AStackWalker(
-  DWORD dwProcessId, 
+  DWORD dwProcessId,
   HANDLE hProcess
 ) :
   m_options(AStackWalker::SWO_SET_ALL),
@@ -798,9 +799,9 @@ AStackWalker::AStackWalker(
 }
 
 AStackWalker::AStackWalker(
-  u4 options, 
+  u4 options,
   const AString& symbolPath,   // = AConstant::ASTRING_EMPTY
-  DWORD dwProcessId,           // = -1, 
+  DWORD dwProcessId,           // = -1,
   HANDLE hProcess              // = NULL
 ) :
   m_options(options),
@@ -815,7 +816,7 @@ AStackWalker::AStackWalker(
 
   if (!m_hProcess)
     m_hProcess = ::GetCurrentProcess();
-  
+
   mp_swi = new StackWalkerInternal(this, m_hProcess);
   if (!m_symbolPath.isEmpty())
     m_options |= AStackWalker::SWO_SYM_BUILDPATH;
@@ -990,7 +991,7 @@ BOOL AStackWalker::LoadModules()
 
 // The following is used to pass the "userData"-Pointer to the user-provided readMemoryFunction
 // This has to be done due to a problem with the "hProcess"-parameter in x64...
-// Because this class is in no case multi-threading-enabled (because of the limitations 
+// Because this class is in no case multi-threading-enabled (because of the limitations
 // of dbghelp.dll) it is "safe" to use a static-variable
 static AStackWalker::PReadProcessMemoryRoutine s_readMemoryFunction = NULL;
 static LPVOID s_readMemoryFunction_UserData = NULL;
@@ -1139,14 +1140,14 @@ BOOL AStackWalker::ProcessCallstack(
       if (mp_swi->pSGSFA(m_hProcess, stackframe.AddrPC.Offset, &(csEntry.offsetFromSymbol), pSymbol))
       {
         csEntry.name.assign(pSymbol->Name);
-        
+
         // UnDecorateSymbolName()
         u4 ret = mp_swi->pUDSN(pSymbol->Name, csEntry.undName.startUsingCharPtr(STACKWALK_MAX_NAMELEN), STACKWALK_MAX_NAMELEN, UNDNAME_NAME_ONLY );
         if (ret)
           csEntry.undName.stopUsingCharPtr(ret);
         else
           csEntry.undName.stopUsingCharPtr(0);
-          
+
         ret = mp_swi->pUDSN(pSymbol->Name, csEntry.undFullName.startUsingCharPtr(STACKWALK_MAX_NAMELEN), STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE );
         if (ret)
           csEntry.undFullName.stopUsingCharPtr(ret);
@@ -1225,7 +1226,7 @@ BOOL AStackWalker::ProcessCallstack(
     if (frameNum == 0)
       et = firstEntry;
     OnCallstackEntry(et, csEntry);
-    
+
     if (stackframe.AddrReturn.Offset == 0)
     {
       OnCallstackEntry(lastEntry, csEntry);
@@ -1297,7 +1298,7 @@ void AStackWalker::OnCallstackEntry(CallstackEntryType eType, CallstackEntry &en
   if ((eType != lastEntry) && (entry.offset != 0))
   {
     AAutoPtr<ARope> pRope(new ARope(), true);
-    
+
     //a_Module name
     if (!entry.moduleName.isEmpty())
     {
@@ -1312,7 +1313,7 @@ void AStackWalker::OnCallstackEntry(CallstackEntryType eType, CallstackEntry &en
       pRope->append(entry.undName);
     else if (!entry.undFullName.isEmpty())
       pRope->append(entry.undFullName);
-    
+
     //a_Filename
     if (!entry.lineFileName.isEmpty())
     {
@@ -1324,7 +1325,7 @@ void AStackWalker::OnCallstackEntry(CallstackEntryType eType, CallstackEntry &en
         pRope->append(AString::fromU4(entry.lineNumber));
       }
     }
-    
+
     pRope->append(" (");
     pRope->append(AString::fromPointer((LPVOID) entry.offset));
     pRope->append(')');
@@ -1409,3 +1410,4 @@ AXmlElement& AStackWalker::emitXml(AXmlElement& thisRoot) const
 
   return thisRoot;
 }
+#endif  //__WINDOWS__
