@@ -347,6 +347,7 @@ void AUrl::setProtocol(eProtocol protocol)
     case AUrl::HTTPS    : m_strProtocol.assign("https:",6); break;
     case AUrl::FTP      : m_strProtocol.assign("ftp:",4); break;
     case AUrl::FILE     : m_strProtocol.assign("file:",5); break;
+    case AUrl::DATA     : m_strProtocol.assign("data:",5); break;
     case AUrl::MYSQL    : m_strProtocol.assign("mysql:",6); break;
     case AUrl::ODBC     : m_strProtocol.assign("odbc:",5); break;
     case AUrl::SQLITE   : m_strProtocol.assign("sqlite:",7); break;
