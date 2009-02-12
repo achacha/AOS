@@ -12,10 +12,33 @@ $Id$
 
 class AFragmentInterface;
 
+/*!
+Evaluation of fragments is right to left.
+For {abc} = {a}{b}{c}, subsets are not implicitly combined but treated individually
+() counter is limited to 4 byte number (use odometer for bigger)
+
+Fragment	Description
+{@}				Uppercase Alpha [A..Z]
+{&}				Lowercase Alpha [a..z]
+{#}				Number [0..9]
+{^}				Uppercase AlphaNum [A..Z0..9]
+{%}				Lowercase AlphaNum [a..z0..9]
+{?}				AlphaNum [A..Za..z0..9]
+(d)				Counter of d digits (2)=[00..99]
+(d,m)			Counter of d digits to m (3,5)=[000..005]
+(d,m,s)		Counter of d digits from s to m (2,205,90)=[90..205]
+[set]			User defined set [set]
+<d>       Odometer of d digits
+\					Escape character
+...everything else is considered a constant as kept as is...
+*/
 class ABASE_API AFragmentString : public ADebugDumpable
 {
 public:
 	typedef std::vector<AFragmentInterface *> VECTOR_Fragment;
+
+  //! Maximum permutations
+  static const size_t MAX_PERMUTATIONS;  // 0xffffffff
 
 public:
 	AFragmentString() {}
@@ -70,28 +93,8 @@ private:
 
 #endif //INCLUDED__AFragmentString_HPP__
 
-/*
-Evaluation of fragments is right to left.
-For {abc} = {a}{b}{c}, subsets are not implicitly combined but treated individually
-() counter is limited to 4 byte number (use odometer for bigger)
-
-Fragment	Description
-{@}				Uppercase Alpha [A..Z]
-{&}				Lowercase Alpha [a..z]
-{#}				Number [0..9]
-{^}				Uppercase AlphaNum [A..Z0..9]
-{%}				Lowercase AlphaNum [a..z0..9]
-{?}				AlphaNum [A..Za..z0..9]
-(d)				Counter of d digits (2)=[00..99]
-(d,m)			Counter of d digits to m (3,5)=[000..005]
-(d,m,s)		Counter of d digits from s to m (2,205,90)=[90..205]
-[set]			User defined set [set]
-<d>       Odometer of d digits
-\					Escape character
-...everything else is considered a constant as kept as is...
-
-
-Example:
+/*!
+Examples:
 "{@}(2,90,99)"
 
 Result:

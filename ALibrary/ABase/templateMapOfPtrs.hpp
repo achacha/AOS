@@ -32,7 +32,7 @@ public:
   /*!
   Will call delete on all members
   */
-  ~AMapOfPtrs()
+  virtual ~AMapOfPtrs()
   {
     try
     {

@@ -405,7 +405,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tABaseQueue.cpp"
+			RelativePath=".\cDataUrlGenerator.cpp"
 			>
 		</File>
 	</Files>

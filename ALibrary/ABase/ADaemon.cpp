@@ -47,6 +47,7 @@ DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEven
         if (thisADaemon->controlStopPending() == 0)
         {
           //a_Abort requested
+          AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler: controlStopPending request abort", NULL);
           thisADaemon->notifyServiceControlManager(ssNow.dwCurrentState, 1);
           return NO_ERROR;
         }
@@ -67,8 +68,8 @@ DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEven
           }
         }
 
-        thisADaemon->notifyServiceControlManager(SERVICE_STOPPED, 0);
-        thisADaemon->controlStopped();
+        if (thisADaemon->controlStopped())
+          thisADaemon->notifyServiceControlManager(SERVICE_STOPPED, 0);
         AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:STOP: Stopped", NULL);
      break;
 
@@ -598,7 +599,7 @@ int ADaemon::notifyServiceControlManager(u4 dwState, u4 dwProgress)
   ssX.dwCurrentState = dwState;
   ssX.dwWin32ExitCode = 0;
   ssX.dwCheckPoint = dwProgress;
-  ssX.dwWaitHint = 5000; // wait for state change
+  ssX.dwWaitHint = 3000; // wait for state change
 
   return ::SetServiceStatus(sm_sshService, &ssX);
 }

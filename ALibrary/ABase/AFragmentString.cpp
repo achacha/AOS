@@ -10,6 +10,8 @@ $Id$
 #include "AFragmentSet.hpp"
 #include "AFragmentOdometer.hpp"
 
+const size_t AFragmentString::MAX_PERMUTATIONS = 0xffffffff;
+
 void AFragmentString::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;

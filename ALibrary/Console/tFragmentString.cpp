@@ -3,7 +3,7 @@
 int main()
 {
   AFragmentString fragment;
-  fragment.parse(ASWNL(".<2>."));
+  fragment.parse(ASWNL("(1,0,4)"));
   fragment.debugDump();
 
   std::cout << "Permutations=" << fragment.getPermutations() << std::endl;
@@ -16,7 +16,7 @@ int main()
   }
   std::cout << str << std::endl;
 
-  fragment.debugDump();
+//  fragment.debugDump();
 
   return 0;
 }

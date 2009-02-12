@@ -580,6 +580,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AFragmentInterface.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AFragmentOdometer.cpp"
 				>
 			</File>

@@ -9,12 +9,10 @@ $Id$
 #include "ADebugDumpable.hpp"
 #include "AString.hpp"
 
-#define MAX_PERMUTATIONS 0xffffffff
-
 class AFragmentInterface : public ADebugDumpable
 {
 public:
-	virtual ~AFragmentInterface() {}
+	virtual ~AFragmentInterface();
 
 	// Back to first permutation
 	virtual void reset() = 0;

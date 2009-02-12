@@ -285,6 +285,7 @@ size_t AFile_Socket::_writeNonBlocking(const void *buf, size_t size)
         return AConstant::unavail;      //Operation would block so return not available
       
       case WSAECONNRESET:
+      case WSAECONNABORTED:
         return AConstant::npos;        //Remote connection closed
 
       default:
