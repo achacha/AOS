@@ -429,6 +429,33 @@ size_t AFile::skipUntil(
   return ret;
 }
 
+size_t AFile::skipUntilEOF()
+{
+  size_t bytesRead = m_LookaheadBuffer.getSize();
+  m_LookaheadBuffer.clear();
+
+  while (_isNotEof())
+  {
+    switch(readBlockIntoLookahead())
+    {
+      case AConstant::npos:
+      case 0:
+        return bytesRead;
+      
+      case AConstant::unavail:
+        //a_No data available yet, wait and try again
+        return AConstant::unavail;
+      continue;
+
+      default:
+        bytesRead += m_LookaheadBuffer.getSize();
+        m_LookaheadBuffer.clear();
+    }
+  }
+
+  return bytesRead;
+}
+
 size_t AFile::skipUntil(
   char cPattern, 
   bool boolDiscardPattern // = true

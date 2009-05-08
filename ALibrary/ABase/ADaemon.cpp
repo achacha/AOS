@@ -589,19 +589,59 @@ AString ADaemon::getStatus()
 
 int ADaemon::notifyServiceControlManager(u4 dwState, u4 dwProgress)
 {
-  AFILE_TRACER_DEBUG_SCOPE("notifyServiceControlManager", NULL);
+  AFILE_TRACER_DEBUG_SCOPE("ADaemon::notifyServiceControlManager", NULL);
 
   SERVICE_STATUS ssX;
   
   ssX.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
-  ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_PAUSE_CONTINUE;
-  ssX.dwServiceSpecificExitCode = 0;
+  ssX.dwControlsAccepted = 0;
+
+  switch(dwState)
+  {
+    case SERVICE_START_PENDING :
+    case SERVICE_STOP_PENDING :
+    case SERVICE_CONTINUE_PENDING :
+    case SERVICE_PAUSE_PENDING :
+      ssX.dwControlsAccepted = 0; 
+      AFILE_TRACER_DEBUG_MESSAGE("ADaemon::notifyServiceControlManager: PENDING", NULL);
+    break;
+
+    case SERVICE_STOPPED :
+      ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN; 
+      AFILE_TRACER_DEBUG_MESSAGE("ADaemon::notifyServiceControlManager: STOPPED", NULL);
+    break;
+    
+    case SERVICE_RUNNING :
+      ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN; 
+      AFILE_TRACER_DEBUG_MESSAGE("ADaemon::notifyServiceControlManager: RUNNING", NULL);
+    break;
+    
+    case SERVICE_PAUSED : 
+      ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_PAUSE_CONTINUE; 
+      AFILE_TRACER_DEBUG_MESSAGE("ADaemon::notifyServiceControlManager: PAUSED", NULL);
+    break;
+
+    default : 
+    {
+      ssX.dwControlsAccepted = 0;
+      
+      AString str("ADaemon::notifyServiceControlManager: DEFAULT: ");
+      str.append(AString::fromU4(dwState));
+      AFILE_TRACER_DEBUG_MESSAGE(str.c_str(), NULL);
+    }
+  }
+
   ssX.dwCurrentState = dwState;
   ssX.dwWin32ExitCode = 0;
   ssX.dwCheckPoint = dwProgress;
-  ssX.dwWaitHint = 3000; // wait for state change
+  ssX.dwWaitHint = 10000; // wait for state change
 
-  return ::SetServiceStatus(sm_sshService, &ssX);
+  int ret = ::SetServiceStatus(sm_sshService, &ssX);
+  if (!ret)
+  {
+    ATHROW_LAST_OS_ERROR(NULL);
+  }
+  return ret;
 }
 
 int ADaemon::_connectNTServiceToDispatcher()

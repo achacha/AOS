@@ -100,6 +100,8 @@ void AMovingAverage::clear()
 
   for (u4 i=0; i<m_KeepSize; ++i)
     mp_Keep[i] = 0.0;
+  
+  m_KeepPos = 0;
 }
 
 void AMovingAverage::setWeight(double dWeight)

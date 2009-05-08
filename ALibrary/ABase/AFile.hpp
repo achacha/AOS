@@ -118,7 +118,7 @@ public:
   virtual size_t skipLine(size_t maxBytes = AConstant::npos, bool treatEofAsEol = true);
 
   /*!
-  Reads/peeks to EOF and returns number of bytes read, appends result
+  Reads to EOF and returns number of bytes read, appends result, removes data from file
   Allows control of read blocks
   ARope version does NOT clear the rope (rope is to be cleared by the caller, since the object is meant for appends)
   
@@ -126,7 +126,24 @@ public:
           AConstant::unavail if non-blocking and data unavailable but not closed
   */
   virtual size_t readUntilEOF(AOutputBuffer&);
+
+  /*!
+  Peeks to EOF and returns number of bytes read, appends result, does not remove the data from file, does not advance read positions
+  Allows control of read blocks
+  ARope version does NOT clear the rope (rope is to be cleared by the caller, since the object is meant for appends)
+  
+  @return Number of bytes read, 0 bytes read if already at EOF
+          AConstant::unavail if non-blocking and data unavailable but not closed
+  */
   virtual size_t peekUntilEOF(AOutputBuffer&);
+
+  /*!
+  Discards all data until EOF and returns number of bytes read
+
+  @return Number of bytes read, 0 bytes read if already at EOF
+          AConstant::unavail if non-blocking and data unavailable but not closed
+  */
+  virtual size_t skipUntilEOF();
   
   /*!
   Ability to read/skip until delimeter is found, appends result

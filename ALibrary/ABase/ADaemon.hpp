@@ -89,7 +89,7 @@ public:
   int stopNTService();      //a_Stops the current service
 
   // NT service notifcation
-  int notifyServiceControlManager(u4 dwState, u4 dwProgress);
+  virtual int notifyServiceControlManager(u4 dwState, u4 dwProgress);
 
   static AThread *mp_MainServiceThread;
 

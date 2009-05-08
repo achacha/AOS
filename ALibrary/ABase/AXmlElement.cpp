@@ -189,6 +189,17 @@ AXmlElement& AXmlElement::addAttribute(const AString& name, const AString& value
   return *this;
 }
 
+const AXmlElement *AXmlElement::getFirstElement() const
+{
+  CONTAINER::const_iterator cit = m_Content.begin();
+  while (cit != m_Content.end())
+  {
+    if ((*cit)->isElement())
+      return *cit;
+  }
+  return NULL;
+}
+
 AXmlElement *AXmlElement::findElement(const AString& xpath)
 {
   LIST_AString xparts;

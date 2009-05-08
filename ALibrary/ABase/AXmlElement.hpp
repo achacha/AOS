@@ -293,6 +293,13 @@ public:
   const AXmlElement *findElement(const AString& path) const;
 
   /*!
+  Gets the first element in the content
+  
+  @return First element or NULL if none
+  */
+  const AXmlElement *getFirstElement() const;
+
+  /*!
   Searching for path (ignores anything after @)
   If this element is 'a' and contains "b/bb,c/cc@foo",d/dd
   The "/a/c/cc@foo" will be found.  Current element must be first element of the path if absolute
