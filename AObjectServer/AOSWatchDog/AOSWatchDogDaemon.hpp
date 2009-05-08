@@ -17,6 +17,7 @@ public:
   AOSWatchDogDaemon();
   virtual ~AOSWatchDogDaemon() {}
 
+  //! Main callback for the service thread
   virtual u4 callbackMain(AThread& thread);
 
   //! Callbacks

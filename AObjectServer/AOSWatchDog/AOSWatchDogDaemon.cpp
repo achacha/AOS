@@ -354,6 +354,7 @@ bool AOSWatchDogDaemon::startServer()
   strDebug.append(AString::fromPointer((void *)m_ProcessInformation.hThread));
   AFILE_TRACER_DEBUG_MESSAGE(strDebug.c_str(), NULL);
   
+  notifyServiceControlManager(SERVICE_START, 0);
   return true;
 }
 
@@ -361,6 +362,7 @@ bool AOSWatchDogDaemon::stopServer()
 {
   AFILE_TRACER_DEBUG_SCOPE("stopServer", (void *)this);
   
+  bool ret = true;
   if (m_AdminRequestHeader.getUrl().getPort() == 0)
   {
     _terminateAObjectServer();
@@ -372,28 +374,62 @@ bool AOSWatchDogDaemon::stopServer()
     AFile_Socket httpSocket(m_AdminRequestHeader, true);
     try
     {
+      notifyServiceControlManager(SERVICE_STOP_PENDING, 0);
       AFILE_TRACER_DEBUG_MESSAGE((AString("stopServer: opening socket: ")+m_AdminRequestHeader.useUrl().getServer()+":"+AString::fromInt(m_AdminRequestHeader.useUrl().getPort())).c_str(), NULL);
       httpSocket.open();
+      notifyServiceControlManager(SERVICE_STOP_PENDING, 1);
       m_AdminRequestHeader.toAFile(httpSocket);
       response.fromAFile(httpSocket);
+      notifyServiceControlManager(SERVICE_STOP_PENDING, 2);
+
+      //a_Wait for it to stop
+      //int tries = 20;
+      //DWORD dwRet = 0;
+      //while (tries)
+      //{
+      //  AFILE_TRACER_DEBUG_MESSAGE("stopServer: waiting on the process to go away", NULL);
+      //  notifyServiceControlManager(SERVICE_CONTINUE_PENDING, 20-tries);
+      //  
+      //  bool r = ::GetExitCodeProcess(m_ProcessInformation.hProcess, &dwRet);
+      //  AFILE_TRACER_DEBUG_MESSAGE((AString("GetExitCodeProcess=")+AString::fromBool(r)+" dwRet="+AString::fromU4(dwRet)).c_str(), NULL);
+      //  if (dwRet)//!_isAObjectServerAlive())
+      //  {
+      //    AFILE_TRACER_DEBUG_MESSAGE("stopServer: process has stopped", NULL);
+      //    break;
+      //  }
+      //  AThread::sleep(1000);
+      //  --tries;
+      //}
+      //if (!tries)
+      //{
+      //  if(!_terminateAObjectServer())
+      //  {
+      //    AFILE_TRACER_DEBUG_MESSAGE("stopServer: failed to terminate process", NULL);
+      //    ret = false;
+      //  }
+      //}
+
       memset(&m_ProcessInformation, 0, sizeof(PROCESS_INFORMATION));
+      notifyServiceControlManager(SERVICE_STOPPED, 0);
     }
     catch(AException& ex)
     {
       AString str("stopServer: AException: ");
       ex.emit(str);
       AFILE_TRACER_DEBUG_MESSAGE(str.c_str(), NULL);
-      return _terminateAObjectServer();
+      ret = _terminateAObjectServer();
+      notifyServiceControlManager(SERVICE_STOPPED, 0);
     }
     catch(...)
     {
       ARope error("stopServer: Unknown exception trying to stop AObjectServer.\r\n");
       AFILE_TRACER_DEBUG_MESSAGE(error.toAString().c_str(), NULL);
-      return false;
+      ret = false;
     }
   }
 
-  return true;
+  AFILE_TRACER_DEBUG_MESSAGE("stopServer: Service stopped", NULL);
+  return ret;
 }
 
 bool AOSWatchDogDaemon::bounceServer()
@@ -465,7 +501,6 @@ int AOSWatchDogDaemon::controlStopPending()
   {
     if (!stopServer())
       return 0;
-    mp_MainServiceThread->setRun(false);
   }
   else
   {

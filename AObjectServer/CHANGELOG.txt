@@ -6,6 +6,8 @@ Change Log
 - Improved AXmlElement API to allow inserting elements at the head
 - AFilename allows conversion to relative and to absolute path
 - Corrected CoInitializeEx usage in AOSOutput_MsXsl
+- Fixed AOSWatchDog to stop and start the server a lot more reliably
+- Added uptime timer and added publish of it to the /ping command
 
 
 1.6.1.0:
