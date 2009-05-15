@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AObjectServer", "AObjectServer\AObjectServer.vcproj", "{AA8153A0-3581-4865-B0FE-A7D5267A7950}"
 	ProjectSection(ProjectDependencies) = postProject
 		{91CD0707-B34B-47FA-A295-BA6894D833D2} = {91CD0707-B34B-47FA-A295-BA6894D833D2}
@@ -160,13 +160,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOS_SAMPLEPROJECT", "..\AOS
 		{5D653A10-2A01-4DAD-AB60-59294DF36DF2} = {5D653A10-2A01-4DAD-AB60-59294DF36DF2}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "docs", "docs\docs.vcproj", "{DF77D6F4-3DA2-4F28-B056-A4941B994734}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOSConfigure", "AOSConfigure\AOSConfigure.vcproj", "{9DE2ED2F-170E-4568-854B-6A639E475108}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5D653A10-2A01-4DAD-AB60-59294DF36DF2} = {5D653A10-2A01-4DAD-AB60-59294DF36DF2}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -177,12 +170,10 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|Win32.ActiveCfg = Debug|Win32
 		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|Win32.Build.0 = Debug|Win32
-		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|x64.ActiveCfg = Debug|x64
-		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|x64.Build.0 = Debug|x64
+		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|x64.ActiveCfg = Debug|Win32
 		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|Win32.ActiveCfg = Release|Win32
 		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|Win32.Build.0 = Release|Win32
-		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|x64.ActiveCfg = Release|x64
-		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|x64.Build.0 = Release|x64
+		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|x64.ActiveCfg = Release|Win32
 		{ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1}.Debug|Win32.ActiveCfg = Debug|Win32
 		{ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1}.Debug|Win32.Build.0 = Debug|Win32
 		{ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1}.Debug|x64.ActiveCfg = Debug|x64
@@ -359,16 +350,6 @@ Global
 		{80F5B800-795C-440C-9C73-E5D4EBF25B00}.Release|Win32.Build.0 = Release|Win32
 		{80F5B800-795C-440C-9C73-E5D4EBF25B00}.Release|x64.ActiveCfg = Release|x64
 		{80F5B800-795C-440C-9C73-E5D4EBF25B00}.Release|x64.Build.0 = Release|x64
-		{DF77D6F4-3DA2-4F28-B056-A4941B994734}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DF77D6F4-3DA2-4F28-B056-A4941B994734}.Debug|x64.ActiveCfg = Debug|x64
-		{DF77D6F4-3DA2-4F28-B056-A4941B994734}.Release|Win32.ActiveCfg = Release|Win32
-		{DF77D6F4-3DA2-4F28-B056-A4941B994734}.Release|x64.ActiveCfg = Release|x64
-		{9DE2ED2F-170E-4568-854B-6A639E475108}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9DE2ED2F-170E-4568-854B-6A639E475108}.Debug|Win32.Build.0 = Debug|Win32
-		{9DE2ED2F-170E-4568-854B-6A639E475108}.Debug|x64.ActiveCfg = Debug|Win32
-		{9DE2ED2F-170E-4568-854B-6A639E475108}.Release|Win32.ActiveCfg = Release|Win32
-		{9DE2ED2F-170E-4568-854B-6A639E475108}.Release|Win32.Build.0 = Release|Win32
-		{9DE2ED2F-170E-4568-854B-6A639E475108}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
