@@ -6,13 +6,14 @@
 Microsoft Windows build/dev environment
 =======================================
 Python 2.5+
-Microsoft Visual Studio 2008 with Feature Pack 1
-  - requires support for tr1 from feature pack
+Microsoft Visual Studio 2008 with Service Pack 1
+
+IMPORTANT: Microsoft Visual Studio Express only compiles 32-bit targets
+  You also can't change properties of a project of the target is set to 64-bit
 
 
 Microsoft Windows runtime environment
 =====================================
-Python 2.5+
 Visual Studio runtime (appropriate for the server build: 32 or 64 bit)
 
 
@@ -40,11 +41,6 @@ Design Guidelines used during development
 Build notes
 ===========
 - Use Multi-threaded Debug DLL and Multi-threaded DLL for runtime
-
-make_distribution.py <target path> [verbose | clean] - will do everything.
-  create_distribution.py <target path> [verbose | clean] - gathers headers, external binaries and if path is not .. then initernal binaries
-  gather_headers_only.py <target path> [verbose | clean] - gathers headers only
-  build_distribution.py <debug|release|all> <build|rebuild|clean> - invokes MSDEV
 </pre>
 </body>
 </html>

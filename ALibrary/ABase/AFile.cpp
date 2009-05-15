@@ -513,7 +513,9 @@ size_t AFile::find(const AString &strPattern)
   if (AConstant::npos == ret && !_isNotEof())
     return AConstant::npos;
 
-  while ((AConstant::npos == ret || AConstant::unavail == ret) && _isNotEof())
+  while (
+    (AConstant::npos == ret || AConstant::unavail == ret)
+    && _isNotEof())
   {
     ret = readBlockIntoLookahead();
     switch(ret)

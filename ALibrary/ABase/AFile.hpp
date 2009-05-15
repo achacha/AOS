@@ -53,15 +53,20 @@ public:
   virtual ~AFile() {}
 
   /*!
-  Basic checks
+  Check if not EOF
+  Will call _isNotEof member to see if the derived class is EOF and will use buffer to give final result
   */
-  bool isNotEof();                     //a_Will call _isNotEof member to see if the derived class is EOF and will use buffer to give final result
+  virtual bool isNotEof();
+  
+  /*!
+  Check if open
+  */
   virtual bool isOpen() = 0;
 
   /*!
   AString and ARope read/write length specifies # of bytes to read
   
-  NOTE: return 0 if EOF
+  @return 0 if EOF
   */  
   virtual size_t write(const AString&, size_t length);
   virtual size_t read(AString&, size_t length);
@@ -92,7 +97,7 @@ public:
   @return number of bytes read, 0 means EOF
           AConstant::unavail if non-blocking and data unavailable but not closed
   */
-  size_t read(AOutputBuffer& target, size_t length = AConstant::npos);
+  virtual size_t read(AOutputBuffer& target, size_t length = AConstant::npos);
 
   /*!
   Read from a source file and write to this file
@@ -101,7 +106,7 @@ public:
   @param length if npos then read everything
   @return number of bytes read
   */
-  size_t write(AFile& source, size_t length = AConstant::npos);
+  virtual size_t write(AFile& source, size_t length = AConstant::npos);
 
   /*!
   Line reads, appends result
