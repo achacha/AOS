@@ -36,7 +36,7 @@ public:
   {
     try
     {
-      for (iterator it = begin(); it != end(); ++it)
+      for (typename std::map<K, T*>::iterator it = this->begin(); it != this->end(); ++it)
         delete (*it).second;
     } catch(...) {}
   }
@@ -47,7 +47,7 @@ private:
   Should be done explicitly to properly copy the contained pointers
   */
   AMapOfPtrs(const AMapOfPtrs&) {}
-  AMapOfPtrs& operator=(const AMapOfPtrs&) { return *this }
+  AMapOfPtrs& operator=(const AMapOfPtrs&) { return *this; }
 };
 
 #endif // _templateMapOfPtrs_HPP_

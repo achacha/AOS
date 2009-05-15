@@ -22,7 +22,7 @@ ADaemon *thisADaemon = NULL;
 DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext)
 {
   AFILE_TRACER_DEBUG_SCOPE("fcbServiceHandler", NULL);
-  
+
   thisADaemon->init();
   SERVICE_STATUS ssNow;
   if (!thisADaemon->getNTServiceStatus(ssNow))
@@ -51,7 +51,7 @@ DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEven
           thisADaemon->notifyServiceControlManager(ssNow.dwCurrentState, 1);
           return NO_ERROR;
         }
-        
+
         {
           const int iiTimeout = 10;
           int i=0;
@@ -62,7 +62,7 @@ DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEven
           }
 
           if (i >= iiTimeout)
-          {  
+          {
             AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:STOP: Sledgehammer to the thread, timeout detected", NULL);
             thisADaemon->mp_MainServiceThread->terminate();       //a_Sledgehammer after timeout
           }
@@ -87,7 +87,7 @@ DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEven
           thisADaemon->notifyServiceControlManager(ssNow.dwCurrentState, 1);
           return NO_ERROR;
         }
-      
+
         if (thisADaemon->mp_MainServiceThread)
           thisADaemon->mp_MainServiceThread->suspend();
         thisADaemon->notifyServiceControlManager(SERVICE_PAUSED, 0);
@@ -105,7 +105,7 @@ DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEven
           thisADaemon->notifyServiceControlManager(ssNow.dwCurrentState, 1);
           return NO_ERROR;
         }
-      
+
         thisADaemon->notifyServiceControlManager(SERVICE_RUNNING, 0);
         thisADaemon->controlRunning();
       break;
@@ -155,16 +155,16 @@ VOID WINAPI fcbServiceMain(DWORD argc, LPSTR *argv)
 
   //a_This will make the litle clock go by in the dialog
   thisADaemon->notifyServiceControlManager(SERVICE_START_PENDING, 1);
-  
+
   //a_Start pending, start-up code should go here
   if (thisADaemon->controlStartPending() == 0)
     return;                           //a_Abort requested
- 
+
   //a_Update the clock display if needed
   thisADaemon->notifyServiceControlManager(SERVICE_START_PENDING, 3);
 
   //a_Create a new thread for the service
-  try 
+  try
   {
     delete thisADaemon->mp_MainServiceThread;      //a_This should always just return, as it should point to NULL
     thisADaemon->mp_MainServiceThread = new AThread((AThread::ATHREAD_PROC *)ADaemon::MainServiceThreadProc, false);
@@ -181,7 +181,7 @@ VOID WINAPI fcbServiceMain(DWORD argc, LPSTR *argv)
     MessageBox(NULL,"Unknown Exception Caught","ADaemon::fcbServiceMain",MB_SERVICE_NOTIFICATION);
     return;
   }
-  
+
   thisADaemon->notifyServiceControlManager(SERVICE_START_PENDING, 4);
   thisADaemon->mp_MainServiceThread->setRun(true);  //a_Set thread to Run, the thread will in turn set Running flag to true when it is actually running
   thisADaemon->mp_MainServiceThread->start();
@@ -207,10 +207,10 @@ VOID WINAPI fcbServiceMain(DWORD argc, LPSTR *argv)
     AThread::sleep(2000);
   }
   while(thisADaemon->mp_MainServiceThread->isRunning());
-    
+
 
   //a_Finish the thread and delete
-  AFILE_TRACER_DEBUG_MESSAGE((AString("fcbServiceMain: Thread stop signaled, terminating thread: ") + AString::fromPointer(thisADaemon->mp_MainServiceThread)).c_str(), NULL);    
+  AFILE_TRACER_DEBUG_MESSAGE((AString("fcbServiceMain: Thread stop signaled, terminating thread: ") + AString::fromPointer(thisADaemon->mp_MainServiceThread)).c_str(), NULL);
 
   if (thisADaemon->mp_MainServiceThread->isRunning())
     thisADaemon->mp_MainServiceThread->terminate();
@@ -232,7 +232,7 @@ void fcbServiceMain(u4 dwArgc, char **lpszArgv)
     return;                           //a_Abort requested
 
   //a_Create a new thread for the service
-  try 
+  try
   {
     delete thisADaemon->mp_MainServiceThread;      //a_This should always just return, as it should point to NULL
     thisADaemon->mp_MainServiceThread = new AThread((AThread::ATHREAD_PROC *) fcbMainServiceThread, true);
@@ -242,7 +242,7 @@ void fcbServiceMain(u4 dwArgc, char **lpszArgv)
     AFILE_TRACER_DEBUG_MESSAGE(eX.what(), NULL);
     return;
   }
-  
+
   thisADaemon->mp_MainServiceThread->setRun();
 
   //a_Wait until done
@@ -256,7 +256,7 @@ void fcbServiceMain(u4 dwArgc, char **lpszArgv)
   {
   //a_Finish the thread and delete
     thisADaemon->mp_MainServiceThread->terminate();
-    AFILE_TRACER_DEBUG_MESSAGE((AString("fcbServiceMain::Terminating thread: ") + AString::fromPointer(thisADaemon->mp_MainServiceThread)).c_str(), NULL);    
+    AFILE_TRACER_DEBUG_MESSAGE((AString("fcbServiceMain::Terminating thread: ") + AString::fromPointer(thisADaemon->mp_MainServiceThread)).c_str(), NULL);
   }
   delete thisADaemon->mp_MainServiceThread;
   thisADaemon->mp_MainServiceThread = NULL;
@@ -277,10 +277,10 @@ u4 ADaemon::MainServiceThreadProc(AThread& thread)
   else
   {
     thread.setRunning(true);
-    AFILE_TRACER_DEBUG_SCOPE("MainServiceThreadProc: ADaemon::callbackMain", NULL);    
+    AFILE_TRACER_DEBUG_SCOPE("MainServiceThreadProc: ADaemon::callbackMain", NULL);
     ret = thisADaemon->callbackMain(thread);
   }
-  AFILE_TRACER_DEBUG_MESSAGE("MainServiceThreadProc: callbackMain flagged as not running", NULL);    
+  AFILE_TRACER_DEBUG_MESSAGE("MainServiceThreadProc: callbackMain flagged as not running", NULL);
   thread.setRunning(false);
   return ret;
 }
@@ -298,12 +298,12 @@ ADaemon::ADaemon(const AString& serviceName, const AString& displayName, const A
   m_steServiceTable[1].lpServiceProc = NULL;         //a_Must be NULL
 
   m_schService = NULL;                               //a_ServiceControl service
-  m_schManager = NULL;                               //a_ServiceControl manager  
+  m_schManager = NULL;                               //a_ServiceControl manager
   sm_sshService = NULL;
 
   //a_Connects this service to a service dispatcher if it exists
   m_iServiceMode = 0;
-  
+
   AASSERT(NULL, !thisADaemon);      //a_Only one instance per process
   thisADaemon = this;
 
@@ -371,7 +371,7 @@ int ADaemon::invoke(u4 dwParam, char **ppcParam)
 //a_UNIX version
   //a_Attempt to fork this process, if it fails throw as exception
   if ((m_pidParent = fork()) < 0)
-    ATHROW_EX(this, AException, AException::OperationFailed, "ADaemon::invokeUnable to fork process.");
+    ATHROW_EX(this, AException::OperationFailed, "ADaemon::invokeUnable to fork process.");
   else
     if (m_pidParent != 0)
       return 0;   //a_Process forked.  Current parent process terminating.
@@ -390,7 +390,7 @@ int ADaemon::invoke(u4 dwParam, char **ppcParam)
   if (m_pdcbMain)
     (*m_pdcbMain)(dwParam, ppcParam);   //a_Call the main process
   else
-    ATHROW_EX(this, AException, AException::OperationFailed, "ADaemon::invoke:Main process missing.");
+    ATHROW_EX(this, AException::OperationFailed, "ADaemon::invoke:Main process missing.");
 
   AFILE_TRACER_DEBUG_MESSAGE("ADaemon::invoke: returning", NULL);
 
@@ -440,21 +440,21 @@ int ADaemon::_getNTServiceStatus(SERVICE_STATUS &ssService)
     _closeService();
     ATHROW_LAST_OS_ERROR(NULL);
   }
-  
+
   //a_At this point we have the status structure filled
   return 1;
   //a_NOTE: Service will not be closed here unless something went wrong
 }
 
 int ADaemon::_openService()
-{  
+{
   AFILE_TRACER_DEBUG_SCOPE("ADaemon::_openService", this);
   if (m_schManager && m_schService)
   {
     AFILE_TRACER_DEBUG_MESSAGE("ADaemon::_openService: Service already opened", this);
     return 1;
   }
-  
+
   m_schManager = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
   if (NULL == m_schManager)
   {
@@ -506,7 +506,7 @@ int ADaemon::_controlService(u4 dwParam)
     {
       u4 lastOSError = ::GetLastError();
       _closeService();
-      
+
       //a_Do not throw, just use exception to look up error for logging
       ASystemException osx(lastOSError, NULL, __FILE__, __LINE__);
       AFILE_TRACER_DEBUG_MESSAGE((ASWNL("ADaemon::_controlService: Unable to control service: ")+osx.what()).c_str(), this);
@@ -582,7 +582,7 @@ AString ADaemon::getStatus()
     case SERVICE_PAUSED : ret = "STATUS: The service is paused."; break;
     default : ret = "STATUS: Unknown.";
   }
-  
+
   _closeService();
   return ret;
 }
@@ -592,7 +592,7 @@ int ADaemon::notifyServiceControlManager(u4 dwState, u4 dwProgress)
   AFILE_TRACER_DEBUG_SCOPE("ADaemon::notifyServiceControlManager", NULL);
 
   SERVICE_STATUS ssX;
-  
+
   ssX.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
   ssX.dwControlsAccepted = 0;
 
@@ -602,29 +602,29 @@ int ADaemon::notifyServiceControlManager(u4 dwState, u4 dwProgress)
     case SERVICE_STOP_PENDING :
     case SERVICE_CONTINUE_PENDING :
     case SERVICE_PAUSE_PENDING :
-      ssX.dwControlsAccepted = 0; 
+      ssX.dwControlsAccepted = 0;
       AFILE_TRACER_DEBUG_MESSAGE("ADaemon::notifyServiceControlManager: PENDING", NULL);
     break;
 
     case SERVICE_STOPPED :
-      ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN; 
+      ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN;
       AFILE_TRACER_DEBUG_MESSAGE("ADaemon::notifyServiceControlManager: STOPPED", NULL);
     break;
-    
+
     case SERVICE_RUNNING :
-      ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN; 
+      ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN;
       AFILE_TRACER_DEBUG_MESSAGE("ADaemon::notifyServiceControlManager: RUNNING", NULL);
     break;
-    
-    case SERVICE_PAUSED : 
-      ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_PAUSE_CONTINUE; 
+
+    case SERVICE_PAUSED :
+      ssX.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_PAUSE_CONTINUE;
       AFILE_TRACER_DEBUG_MESSAGE("ADaemon::notifyServiceControlManager: PAUSED", NULL);
     break;
 
-    default : 
+    default :
     {
       ssX.dwControlsAccepted = 0;
-      
+
       AString str("ADaemon::notifyServiceControlManager: DEFAULT: ");
       str.append(AString::fromU4(dwState));
       AFILE_TRACER_DEBUG_MESSAGE(str.c_str(), NULL);
@@ -656,7 +656,7 @@ int ADaemon::_connectNTServiceToDispatcher()
     {
       case ERROR_FAILED_SERVICE_CONTROLLER_CONNECT :
         AFILE_TRACER_DEBUG_MESSAGE("ADaemon::_connectNTServiceToDispatcher: console mode", this);
-        m_iServiceMode = 0; 
+        m_iServiceMode = 0;
       return 0;                   //a_Could not connect with controller, console mode
 
       case ERROR_INVALID_DATA :
@@ -668,7 +668,7 @@ int ADaemon::_connectNTServiceToDispatcher()
         return -1;    //a_Some other unknown error?!?
     }
   }
-  
+
   m_iServiceMode = 1;           //a_Service mode
 
   AFILE_TRACER_DEBUG_MESSAGE("Service connected to controller.", this);
@@ -709,19 +709,19 @@ int ADaemon::installNTService(const AString &args)
   }
 
   m_schService = ::CreateService(
-    m_schManager,                      // SC_HANDLE hSCManager,      
-    m_serviceName.c_str(),             // LPCTSTR lpServiceName,     
-    m_displayName.c_str(),             // LPCTSTR lpDisplayName,     
-    SERVICE_ALL_ACCESS,                // DWORD dwDesiredAccess,     
-    SERVICE_WIN32_OWN_PROCESS,         // DWORD dwServiceType,       
-    SERVICE_AUTO_START,                // DWORD dwStartType,         
-    SERVICE_ERROR_NORMAL,              // DWORD dwErrorControl,      
-    imagePath.c_str(),                 // LPCTSTR lpBinaryPathName,  
-    NULL,                              // LPCTSTR lpLoadOrderGroup,  
-    NULL,                              // LPDWORD lpdwTagId,         
-    NULL,                              // LPCTSTR lpDependencies,    
+    m_schManager,                      // SC_HANDLE hSCManager,
+    m_serviceName.c_str(),             // LPCTSTR lpServiceName,
+    m_displayName.c_str(),             // LPCTSTR lpDisplayName,
+    SERVICE_ALL_ACCESS,                // DWORD dwDesiredAccess,
+    SERVICE_WIN32_OWN_PROCESS,         // DWORD dwServiceType,
+    SERVICE_AUTO_START,                // DWORD dwStartType,
+    SERVICE_ERROR_NORMAL,              // DWORD dwErrorControl,
+    imagePath.c_str(),                 // LPCTSTR lpBinaryPathName,
+    NULL,                              // LPCTSTR lpLoadOrderGroup,
+    NULL,                              // LPDWORD lpdwTagId,
+    NULL,                              // LPCTSTR lpDependencies,
     NULL,                              // LPCTSTR lpServiceStartName,
-    NULL                               // LPCTSTR lpPassword         
+    NULL                               // LPCTSTR lpPassword
   );
 
   if (NULL == m_schService)
@@ -739,8 +739,8 @@ int ADaemon::installNTService(const AString &args)
       SERVICE_DESCRIPTION sd;
       sd.lpDescription = m_description.startUsingCharPtr();
       if (!::ChangeServiceConfig2(
-          m_schService, 
-          SERVICE_CONFIG_DESCRIPTION, 
+          m_schService,
+          SERVICE_CONFIG_DESCRIPTION,
           &sd
         )
       )
@@ -763,7 +763,7 @@ int ADaemon::startNTService(int iArgCount, const void **ppcArgValue)
 
     if (iArgCount > 0 && ppcArgValue[iArgCount] != NULL)
       ATHROW(NULL, AException::InvalidParameter);    //a_The ppcArgValue array is not NULL terminated
-    
+
 #ifdef UNICODE
     LPCWSTR *argv = (LPCWSTR *)ppcArgValue;
     if (!::StartService(m_schService, iArgCount, argv))
@@ -797,7 +797,7 @@ int ADaemon::startNTService(int iArgCount, const void **ppcArgValue)
     AFILE_TRACER_DEBUG_MESSAGE("ADaemon::startNTService: Unknown Exception", this);
     _closeService();
     throw;
-  } 
+  }
 
   _closeService();
   AFILE_TRACER_DEBUG_MESSAGE("ADaemon::startNTService: Service started.", this);
@@ -823,8 +823,8 @@ int ADaemon::stopNTService()
   {
     _closeService();
     throw;
-  } 
-  
+  }
+
   AFILE_TRACER_DEBUG_MESSAGE("Service stopped.", this);
 
   return 1;
@@ -842,8 +842,8 @@ int ADaemon::pauseNTService()
   {
     _closeService();
     throw;
-  } 
-  
+  }
+
   AFILE_TRACER_DEBUG_MESSAGE("Service paused.", this);
 
   return 1;
@@ -861,8 +861,8 @@ int ADaemon::continueNTService()
   {
     _closeService();
     throw;
-  } 
-  
+  }
+
   AFILE_TRACER_DEBUG_MESSAGE("Service continued.", this);
 
   return 1;
@@ -874,7 +874,7 @@ int ADaemon::removeNTService()
     return 1;               //a_If it's not there, removing it is that much simpler
 
   _openService();           //a_Exception handled by calling process
-  
+
   SERVICE_STATUS ssNow;
   memset(&ssNow, 0, sizeof(SERVICE_STATUS));
   try
@@ -892,7 +892,7 @@ int ADaemon::removeNTService()
     if (ssNow.dwCurrentState != SERVICE_STOPPED)
     {
       //a_Service is not stopped
-      try 
+      try
       {
         _controlService(SERVICE_CONTROL_STOP);
       }

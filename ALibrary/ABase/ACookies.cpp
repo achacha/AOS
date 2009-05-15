@@ -80,7 +80,7 @@ ACookie &ACookies::addCookie(const AString& name, const AString &value)
     pcookieNew->setNameValue(name, value);
   }
   else
-  {  
+  {
     //a_Will URL encode the value
     pcookieNew = new ACookie(name, value);
     m_Cookies.push_back(pcookieNew);
@@ -92,7 +92,7 @@ ACookie &ACookies::addCookie(const AString& name, const AString &value)
 bool ACookies::exists(const AString& name) const
 {
   ACookie *pcookieNew = __findCookie(name);
-  
+
   return (pcookieNew ? true : false);
 }
 
@@ -152,7 +152,7 @@ void ACookies::parse(const AString &strLine)
     //a_Get the next item in the line
     nvPair.parse(strLine, pos);
 
-    if (nvPair.getName().isEmpty() == FALSE)
+    if (!nvPair.getName().isEmpty())
     {
       //a_Determine if this is an attribute
       if (nvPair.getName()[0x0] == '$')
@@ -161,7 +161,7 @@ void ACookies::parse(const AString &strLine)
         //a_Version must be 1, but may be another value (not likely though)
         if (nvPair.isNameNoCase("$VERSION"))
           iVersion = atoi(nvPair.getValue().c_str());
-      
+
         //a_Following parameters can only apply to the cookie that exists/created, ignore if out of sequence
         if (pcookieX)
         {
@@ -172,7 +172,7 @@ void ACookies::parse(const AString &strLine)
             pcookieX->setDomain(nvPair.getValue());
         }
       }
-      
+
       pcookieX = __findCookie(nvPair.getName());
       if (NULL == pcookieX)
       {
@@ -221,7 +221,7 @@ void ACookies::parseSetCookieLine(const AString &strLine)
         pcookieX->setPath(nvPair.getValue());
       else if (nvPair.isNameNoCase("DOMAIN"))
         pcookieX->setDomain(nvPair.getValue());
-      else if (nvPair.isNameNoCase("EXPIRES")) 
+      else if (nvPair.isNameNoCase("EXPIRES"))
       {
         ATime tX;
         tX.parseRFCtime( nvPair.getValue() );
@@ -260,7 +260,7 @@ void ACookies::emitResponseHeaderString(AOutputBuffer& target) const
   for (size_t i = 0; i < m_Cookies.size(); ++i)
   {
     target.append("Set-Cookie: ", 12);
-    
+
     m_Cookies[i]->emitResponseHeaderString(target);
     target.append(AConstant::ASTRING_CRLF);
   }
@@ -284,7 +284,7 @@ void ACookies::expireCookie(const AString& name)
   ACookie *pcookieX = __findCookie(name);
   if (!pcookieX)
     pcookieX = &addCookie(name, "");    //a_Add the cookie to the list as expired
-  
+
   if (pcookieX)
     pcookieX->setExpired();
 }
@@ -304,12 +304,12 @@ void ACookies::removeCookie(const AString& name)
   }
 }
 
-void ACookies::emit(AOutputBuffer& target) const 
-{ 
+void ACookies::emit(AOutputBuffer& target) const
+{
   emitRequestHeaderString(target);
 }
 
-AXmlElement& ACookies::emitXml(AXmlElement& thisRoot) const 
+AXmlElement& ACookies::emitXml(AXmlElement& thisRoot) const
 {
   AASSERT(this, !thisRoot.useName().isEmpty());
 
@@ -320,7 +320,7 @@ AXmlElement& ACookies::emitXml(AXmlElement& thisRoot) const
 }
 
 size_t ACookies::size() const
-{ 
+{
   return m_Cookies.size();
 }
 

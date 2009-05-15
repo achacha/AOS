@@ -6,8 +6,9 @@ $Id$
 #include "pchABase.hpp"
 #pragma hdrstop
 
-BOOL APIENTRY DllMain( HANDLE, 
-                       DWORD ul_reason_for_call, 
+#ifdef __WINDOWS__
+BOOL APIENTRY DllMain( HANDLE,
+                       DWORD ul_reason_for_call,
                        LPVOID
 					           )
 {
@@ -21,4 +22,4 @@ BOOL APIENTRY DllMain( HANDLE,
     }
     return TRUE;
 }
-
+#endif //__WINDOWS__

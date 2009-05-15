@@ -40,13 +40,13 @@ ABasePtrContainer::~ABasePtrContainer()
 }
 
 ABasePtrContainer::HOLDER& ABasePtrContainer::useContainer()
-{ 
-  return m_BasePtrs; 
+{
+  return m_BasePtrs;
 }
 
 void ABasePtrContainer::insert(
-  const AString& name, 
-  ABase *pBase, 
+  const AString& name,
+  ABase *pBase,
   bool ownership, // = false
   bool overwrite  // = true
 )
@@ -75,7 +75,7 @@ void ABasePtrContainer::insert(
 }
 
 void ABasePtrContainer::setOwnership(
-  const AString& name, 
+  const AString& name,
   bool ownership  // = true
 )
 {
@@ -112,7 +112,7 @@ void ABasePtrContainer::remove(const AString& name)
   HOLDER::iterator it = m_BasePtrs.find(name);
   if (it != m_BasePtrs.end())
   {
-    delete *it->second;    //a_Delete holder object first
+    delete it->second;     //a_Delete holder object first
     m_BasePtrs.erase(it);  //a_Remove holder from collection
   }
   else
@@ -149,6 +149,6 @@ AXmlElement& ABasePtrContainer::emitXml(AXmlElement& thisRoot) const
 {
   for (HOLDER::const_iterator cit = m_BasePtrs.begin(); cit != m_BasePtrs.end(); ++cit)
     thisRoot.addElement((*cit).first).addData(ASWNL(typeid((*cit).second).name()), AXmlElement::ENC_CDATADIRECT);
-  
+
   return thisRoot;
 }
