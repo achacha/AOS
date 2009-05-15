@@ -15,11 +15,6 @@ void AFile_IOStream::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-AFile_IOStream& AFile_IOStream::operator>>(std::istream& (__CDECL * _f)(std::istream&)) { (*mp_IStream) >> _f; return *this; }
-AFile_IOStream& AFile_IOStream::operator>>(std::ios& (__CDECL * _f)(std::ios&))         { (*mp_IStream) >> _f; return *this; }
-AFile_IOStream& AFile_IOStream::operator<<(std::ostream& (__CDECL * _f)(std::ostream&)) { (*mp_OStream) << _f; return *this; }
-AFile_IOStream& AFile_IOStream::operator<<(std::ios& (__CDECL * _f)(std::ios&))         { (*mp_OStream) << _f; return *this; }
-
 AFile_IOStream::AFile_IOStream(std::ostream *pOstream, std::istream *pIStream) :
   mp_OStream(pOstream),
   mp_IStream(pIStream)

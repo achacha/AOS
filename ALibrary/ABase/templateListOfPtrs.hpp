@@ -22,7 +22,7 @@ Now:
   AListOfPtrs<AString> myList;
   myVector.push_back(new AString("foo"));   // this class will delete this object in dtor
 */
-template<class T>
+template<typename T>
 class AListOfPtrs : public std::list<T*>
 {
 public:

@@ -24,12 +24,6 @@ public:
 	AFile_IOStream(std::ostream& Ostream, std::istream& IStream);
 	AFile_IOStream(const AFile_IOStream& aSource);
 
-  //a_Operators for stream functions
-  inline AFile_IOStream& operator>>(std::istream& (__CDECL * _f)(std::istream&));
-  inline AFile_IOStream& operator>>(std::ios& (__CDECL * _f)(std::ios&));
-  inline AFile_IOStream& operator<<(std::ostream& (__CDECL * _f)(std::ostream&));
-  inline AFile_IOStream& operator<<(std::ios& (__CDECL * _f)(std::ios&));
-
   /*!
   Casting operators for access to actual ostream and istream object pointers
   Example:
