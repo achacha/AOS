@@ -122,31 +122,54 @@ int main(int argc, char **argv)
       // Initialize the global objects
       //
       AString strError;
-      if (pservices->initDatabasePool())
+      bool boolDatabaseInitialized = false;
+      int retriesLeft = 11;
+      const int DBCONNECT_TIMEOUT = 1000;  // milliseconds per retry
+      while (!boolDatabaseInitialized)
       {
-        size_t rows = pservices->loadGlobalObjects(strError);
-        if (AConstant::npos == rows)
+        if (!--retriesLeft)
         {
-          AOS_DEBUGTRACE((AString("DBERROR: Global init: ")+strError).c_str(), NULL);
-          return -1;
+          //a_Failed to connect to the database
+          ATHROW_EX(NULL, AException::OperationFailed, ASWNL("Failed to initialized the database after 10 retries, check database nd connection URL"));
         }
-        else
+
+        try
         {
-          str.clear();
-          str.assign("Database connection pool connected ");
-          pservices->useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_CONNECTIONS, str);
-          str.append("x to ");
-          pservices->useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_URL, str);
-          AOS_DEBUGTRACE(str.c_str(), NULL);
-          str.assign("Querying for global variables, processed ");
-          str.append(AString::fromSize_t(rows));
-          str.append(" rows.");
-          AOS_DEBUGTRACE(str.c_str(), NULL);
+          if (pservices->initDatabasePool())
+          {
+            size_t rows = pservices->loadGlobalObjects(strError);
+            if (AConstant::npos == rows)
+            {
+              AOS_DEBUGTRACE((AString("DBERROR: Global init: ")+strError).c_str(), NULL);
+              return -1;
+            }
+            else
+            {
+              str.clear();
+              str.assign("Database connection pool connected ");
+              pservices->useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_CONNECTIONS, str);
+              str.append("x to ");
+              pservices->useConfiguration().useConfigRoot().emitString(AOSConfiguration::DATABASE_URL, str);
+              AOS_DEBUGTRACE(str.c_str(), NULL);
+              str.assign("Querying for global variables, processed ");
+              str.append(AString::fromSize_t(rows));
+              str.append(" rows.");
+              AOS_DEBUGTRACE(str.c_str(), NULL);
+            }
+          }
+          else
+          {
+            AOS_DEBUGTRACE("Database was not initialized, skipping global init.", NULL);
+          }
         }
-      }
-      else
-      {
-        AOS_DEBUGTRACE("Database was not initialized, skipping global init.", NULL);
+        catch(AException& ex)
+        {
+          str.assign("main.dbinit: ");
+          str.append(ex);
+          traceMultiline(str, NULL);
+          pservices->useLog().addException(ex);
+          AThread::sleep(DBCONNECT_TIMEOUT);
+        }
       }
 
       //
