@@ -1,5 +1,5 @@
 {&type:title}{%html} The {%noun:$subject}
-{%pronoun_s:proper} {%verb} a {%adjective:article} {$subject}, {%connect} can {%pronoun_s} {%adverb} {%verb}<br/>
+{%pronoun_s:proper} {%verb} {%adjective:article} {$subject}, {%connect} can {%pronoun_s} {%adverb} {%verb}<br/>
 {%noun_proper} {%adverb} {%verb:plural}, {%connect} the {%noun} is {%adjective}<br/>
 {%pronoun_s} {%verb} the {%noun} of {%adjective:article} {$subject}<br/>
 {%pronoun_p_pos} {%noun} is {%verb:infinite,article} {%noun} {%preposition} {%adjective:article} {%noun}<br/>
