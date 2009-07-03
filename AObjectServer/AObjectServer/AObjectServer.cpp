@@ -135,7 +135,8 @@ int main(int argc, char **argv)
 
         try
         {
-          if (pservices->initDatabasePool())
+          boolDatabaseInitialized = pservices->initDatabasePool();
+          if (boolDatabaseInitialized)
           {
             size_t rows = pservices->loadGlobalObjects(strError);
             if (AConstant::npos == rows)
