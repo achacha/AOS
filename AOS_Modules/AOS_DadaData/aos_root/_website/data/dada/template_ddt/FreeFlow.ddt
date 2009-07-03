@@ -1,10 +1,15 @@
-{&type:title}{%html} The {%noun:$subject}
-{%pronoun_s:proper} {%verb} {%adjective:article} {$subject}, {%connect} can {%pronoun_s} {%adverb} {%verb}<br/>
-{%noun_proper} {%adverb} {%verb:plural}, {%connect} the {%noun} is {%adjective}<br/>
-{%pronoun_s} {%verb} the {%noun} of {%adjective:article} {$subject}<br/>
-{%pronoun_p_pos} {%noun} is {%verb:infinite,article} {%noun} {%preposition} {%adjective:article} {%noun}<br/>
-{%verb:present} still and {%verb:present} {%adverb}<br/>
-In {%noun:article} of {%noun:plural}, {%noun:article} is {%adjective:article} and {%adjective:article} {$subject}!<br/>
+{&type:title}{%html} The {%noun_proper:$subject}
+{$subject} {%adverb} {%verb:plural}, {%connect} the {%noun} is {%adjective}<br/>
+{%pronoun_s:proper} {%verb:plural} {%adjective:article} {%noun}, {%connect} {%pronoun_s} can {%adverb} {%verb}<br/>
+...{%pronoun_s} {%verb:plural} the {%noun} of {%adjective:article} {$subject}<br/>
+{%pronoun_p_pos} {%noun} is {%verb:present,article} {%noun} {%preposition} {%adjective:article} {%noun}<br/>
+<br/>
+In {%noun:article} of {%noun:plural}, {%noun:article} is {%adjective:article} and {%adjective} {$subject}!<br/>
 {%verb:present} in {%location} is like {%verb:present} {%adjective:article} {%noun}<br/>
 {%pronoun_p} don't {%verb} {%preposition} {%verb:present} {%noun:article%, it only {%verb:plural} {%noun}<br/>
-In the {%location}, {%noun:article} is {%adverb:article} {%verb:present} {$subject}...<br/>
+In {%location}, {%noun:article} is {%adverb:article} {%verb:present} {%noun_proper}...<br/>
+<br/>
+{%verb:present,proper} still and {%verb:present} {%adverb}!<br/>
+...{$subject}<br/>
+...{$subject}<br/>
+...{$subject}<br/>

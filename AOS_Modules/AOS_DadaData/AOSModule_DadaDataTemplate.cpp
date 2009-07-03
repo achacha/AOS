@@ -187,7 +187,7 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
         switch (c)
         {
           case '%':
-            //a_Process the tag {%type:tar,tag,...}
+            //a_Process the tag {%type:tag,tag,...}
             _appendWordType(pddh, globals, strType, target);
           break;
 

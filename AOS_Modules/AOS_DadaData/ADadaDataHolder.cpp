@@ -124,7 +124,7 @@ void ADadaDataHolder::_loadWords(const AString& type, const AFilename& filename,
     if (!str.isEmpty() && '#' != str.at(0))
     {
       m_wordmap[type].push_back(str);
-      str.clear();
     }
+    str.clear();
   }
 }

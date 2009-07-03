@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>Dada Documentation</title>
+  <meta name="generator" content="Amaya, see http://www.w3.org/Amaya/">
+</head>
+
+<body>
+<h1>Dada Poem Engine</h1>
+
+<h1></h1>
+
+<h3 style="background-color:#8080ff">Defining data set of words</h3>
+
+<p>Configuring the dataset in <em>conf/AOS_DadaData.xml</em></p>
+
+<p></p>
+
+<p style="font-size: 10pt"><span
+style="font-family: Courier New,Courier,monospace">&lt;dataset
+name="<strong>dada</strong>"&gt;<strong></strong></span></p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;!--
+Set specific data --&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>noun</strong>"&gt;dada/dataset_dada/noun.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>noun_proper</strong>"&gt;dada/dataset_dada/noun_proper.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>verb</strong>"&gt;dada/dataset_dada/verb.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>adjective</strong>"&gt;dada/dataset_dada/adjective.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>adverb</strong>"&gt;dada/dataset_dada/adverb.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>location</strong>"&gt;dada/dataset_dada/location.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;"></p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;!--
+Inherit from common base data --&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>html</strong>"&gt;dada/base/html.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>connect</strong>"&gt;dada/base/connect.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>preposition</strong>"&gt;dada/base/preposition.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>pronoun_s</strong>"&gt;dada/base/pronoun_singular.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>pronoun_p</strong>"&gt;dada/base/pronoun_plural.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>pronoun_s_pos</strong>"&gt;dada/base/pronoun_singular_possesive.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>pronoun_p_pos</strong>"&gt;dada/base/pronoun_plural_possesive.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>pronoun_s_pos_pers</strong>"&gt;dada/base/pronoun_singular_possesive_personal.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:2em;">&lt;data
+type="<strong>pronoun_p_pos_pers</strong>"&gt;dada/base/pronoun_plural_possesive_personal.dat&lt;/data&gt;</p>
+
+<p
+style="font-family: Courier New,Courier,monospace;font-size: 10pt;margin-left:0em">&lt;/dataset&gt;</p>
+
+<p style="margin-left:0;"><span style="font-size: 10pt"><span
+style="font-family: Courier New,Courier,monospace"></span></span></p>
+
+<p>The type defined for each data element is the name that will be used to
+refer to it using %TYPE. Path is relative to _webroot/data directory.</p>
+
+<p></p>
+
+<h3 style="background-color:#8080ff">Word Type Replacement</h3>
+
+<p></p>
+
+<p style="margin-left:2em;"><strong>{%TYPE:TAG,TAG...}</strong></p>
+
+<p></p>
+
+<h4>TAG applicable to all TYPEs:</h4>
+
+<p style="margin-left:2em;"><strong>article</strong> - Prepends <em>a</em> or
+<em>an</em> to the word<em></em></p>
+
+<p style="margin-left:2em;"><strong>plural</strong> - will try to guess the
+best way to make the word plural</p>
+
+<p style="margin-left:2em;"><strong>uppercase</strong> - will convert the
+entire word to upper case</p>
+
+<p style="margin-left:2em;"><strong>lowercase</strong> - will convert the
+entire word to lower case</p>
+
+<p style="margin-left:2em;"><strong>proper</strong> - will capitalize the first
+letter of the word</p>
+
+<p style="margin-left:2em;"></p>
+
+<p></p>
+
+<h4>TAG applicable to a TYPE called <em>verb</em>:</h4>
+
+<p style="margin-left:2em;"><strong>present</strong> - appends -ing ending to
+the verb</p>
+
+<p style="margin-left:2em;"><strong>past</strong> - append -ed or -d to the
+verb</p>
+
+<p style="margin-left:2em;"></p>
+
+<h3>
+<div style="background-color:#8080ff">
+TAG to add the word to the variable map</div>
+</h3>
+
+<p></p>
+
+<p style="margin-left:2em;"><strong>{$KEY:TAG,TAG...}</strong></p>
+
+<p></p>
+
+<p>inserts the current word into the map as <em>myname</em> -&gt; <em>current
+word</em></p>
+
+<p style="margin-left:2em;">this can be accessed using {$myname}
+(<em></em><em>see below</em>)</p>
+
+<p></p>
+
+<p></p>
+
+<h4>TAG applicable to variable insertion:</h4>
+
+<p style="margin-left:2em;"><strong>article</strong> - Prepends <em>a</em> or
+<em>an</em> to the word<em></em></p>
+
+<p style="margin-left:2em;"><strong>plural</strong> - will try to guess the
+best way to make the word plural</p>
+
+<p style="margin-left:2em;"><strong>uppercase</strong> - will convert the
+entire word to upper case</p>
+
+<p style="margin-left:2em;"><strong>lowercase</strong> - will convert the
+entire word to lower case</p>
+
+<p style="margin-left:2em;"><strong>proper</strong> - will capitalize the first
+letter of the word</p>
+
+<p style="margin-left:2em;"></p>
+
+<p></p>
+
+<h3>
+<div style="background-color:#8080ff">
+Adding attributes to the entire line </div>
+</h3>
+
+<p style="margin-left:2em;"><strong>{&amp;NAME:VALUE}</strong></p>
+
+<p style="margin-left:2em;"></p>
+
+<p>adds line element attribte for the given line</p>
+
+<p></p>
+
+<p style="background-color:#ffff80"><strong>Input:</strong></p>
+
+<p style="margin-left:2em;"><code>{&amp;type:title}Line contents
+here!</code></p>
+
+<p></p>
+
+<p style="background-color:#ffff80;"><strong>Output:</strong></p>
+
+<p style="margin-left:2em;"><code><span>&lt;line type="title"&gt;Line contents
+here!&lt;line&gt;</span></code></p>
+
+<p></p>
+</body>
+</html>
