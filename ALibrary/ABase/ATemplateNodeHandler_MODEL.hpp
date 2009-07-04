@@ -57,6 +57,11 @@ public:
   virtual ATemplateNode *create(AFile&);
 
   /*!
+  Clone
+  */
+  virtual ATemplateNodeHandler *clone();
+
+  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;

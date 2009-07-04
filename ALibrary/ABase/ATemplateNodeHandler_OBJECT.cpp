@@ -45,6 +45,11 @@ ATemplateNode *ATemplateNodeHandler_OBJECT::create(AFile& file)
   return pNode;
 }
 
+ATemplateNodeHandler *ATemplateNodeHandler_OBJECT::clone()
+{ 
+  return new ATemplateNodeHandler_OBJECT();
+}
+
 ///////////////////////////////////////// ATemplateNodeHandler_OBJECT::Node ///////////////////////////////////////////////////////////////////////////
 
 ATemplateNodeHandler_OBJECT::Node::Node(ATemplateNodeHandler *pHandler) :

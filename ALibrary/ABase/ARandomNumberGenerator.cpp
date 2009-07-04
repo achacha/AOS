@@ -28,9 +28,9 @@ void ARandomNumberGenerator::debugDump(std::ostream& os, int indent) const
 {
   //a_Header
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "sm_rngMap.size=" << (u4)sm_rngMap.size() << std::endl;
-  AMapOfPtrs<int, ARandomNumberGenerator>::const_iterator cit = sm_rngMap.begin();
-  while (sm_rngMap.end() != cit)
+  ADebugDumpable::indent(os, indent+1) << "sm_rngMap.size=" << (u4)sm_rngMap.get().size() << std::endl;
+  AMapOfPtrs<int, ARandomNumberGenerator>::TYPE::const_iterator cit = sm_rngMap.use().begin();
+  while (sm_rngMap.use().end() != cit)
   {
     ADebugDumpable::indent(os, indent+1) << "sm_rngMap[" << (*cit).first << "]=";
     (*cit).second->debugDump(os, indent+2);
@@ -41,18 +41,18 @@ void ARandomNumberGenerator::debugDump(std::ostream& os, int indent) const
 
 void ARandomNumberGenerator::init()
 {
-  AASSERT(NULL, sm_rngMap.find(ARandomNumberGenerator::Uniform) == sm_rngMap.end());
-  ARandomNumberGenerator::sm_rngMap[ARandomNumberGenerator::Uniform] = new ARng_Uniform();
-  ARandomNumberGenerator::sm_rngMap[ARandomNumberGenerator::Lecuyer] = new ARng_Lecuyer();
-  ARandomNumberGenerator::sm_rngMap[ARandomNumberGenerator::Marsaglia] = new ARng_Marsaglia();
+  AASSERT(NULL, sm_rngMap.use().find(ARandomNumberGenerator::Uniform) == sm_rngMap.use().end());
+  ARandomNumberGenerator::sm_rngMap.use()[ARandomNumberGenerator::Uniform] = new ARng_Uniform();
+  ARandomNumberGenerator::sm_rngMap.use()[ARandomNumberGenerator::Lecuyer] = new ARng_Lecuyer();
+  ARandomNumberGenerator::sm_rngMap.use()[ARandomNumberGenerator::Marsaglia] = new ARng_Marsaglia();
 }
 
 ARandomNumberGenerator& ARandomNumberGenerator::get(RNG_TYPE rng)
 {
-  if (sm_rngMap.find(rng) == sm_rngMap.end())
+  if (sm_rngMap.use().find(rng) == sm_rngMap.use().end())
     ATHROW(NULL, AException::InitializationFailure);
 
-  return *(sm_rngMap[rng]);
+  return *(sm_rngMap.use()[rng]);
 }
 
 double ARandomNumberGenerator::nextUnit()

@@ -20,12 +20,15 @@ Before:
 
 Now:
   AListOfPtrs<AString> myList;
-  myVector.push_back(new AString("foo"));   // this class will delete this object in dtor
+  myList.use().push_back(new AString("foo"));   // this class will delete this object in dtor
 */
 template<typename T>
-class AListOfPtrs : public std::list<T*>
+class AListOfPtrs
 {
 public:
+  //! Type
+  typedef std::list<T*> TYPE;
+
   /*!
   default ctor
   */
@@ -38,10 +41,23 @@ public:
   {
     try
     {
-      for (typename std::list<T*>::iterator it = this->begin(); it != this->end(); ++it)
+      for (TYPE::iterator it = m_Container.begin(); it != m_Container.end(); ++it)
         delete *it;
     } catch(...) {}
   }
+
+  /*!
+  Access the actual container
+  */
+  TYPE& use() { return m_Container; }
+
+  /*!
+  Access the actual constant container
+  */
+  const TYPE& get() const { return m_Container; }
+
+protected:
+  TYPE m_Container;
 
 private:
   /*!

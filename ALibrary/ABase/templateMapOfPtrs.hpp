@@ -21,8 +21,11 @@ Now:
   myMap[0] = new AString("foo");   // this class will delete this object in dtor
 */
 template<class K, class T>
-class AMapOfPtrs : public std::map<K, T*>
+class AMapOfPtrs
 {
+public:
+  typedef public std::map<K, T*> TYPE;
+
 public:
   /*!
   Default ctor
@@ -36,10 +39,23 @@ public:
   {
     try
     {
-      for (typename std::map<K, T*>::iterator it = this->begin(); it != this->end(); ++it)
+      for (TYPE::iterator it = m_Container.begin(); it != m_Container.end(); ++it)
         delete (*it).second;
     } catch(...) {}
   }
+
+  /*!
+  Access the actual container
+  */
+  TYPE& use() { return m_Container; }
+
+  /*!
+  Access the actual constant container
+  */
+  const TYPE& get() const { return m_Container; }
+
+protected:
+  TYPE m_Container;
 
 private:
   /*!

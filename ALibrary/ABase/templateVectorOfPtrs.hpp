@@ -14,18 +14,21 @@ std::vector wrapper that will delete all of its contents when done
 Usage:
 Before:  
   std::vector<AString *> myVector;
-  myVector.push_back(new AString("foo"));
+  myVector.use().push_back(new AString("foo"));
   ...
   //later need to delete the content
          
 Now:
   AVectorOfPtrs<AString> myVector;
-  myVector.push_back(new AString("foo"));   // this class will delete this object in dtor
+  myVector.use().push_back(new AString("foo"));   // this class will delete this object in dtor
 **/
 
 template<class T>
-class AVectorOfPtrs : public std::vector<T*>
+class AVectorOfPtrs
 {
+public:
+  typedef std::vector<T*> TYPE;
+
 public:
   /*!
   Default ctor
@@ -35,7 +38,7 @@ public:
   /*!
   ctor with initial size
   */
-  AVectorOfPtrs(size_t initialSize) : std::vector<T*>(initialSize) {}
+  AVectorOfPtrs(size_t initialSize) : m_Conatiner(initialSize) {}
 
   /**
   Will call delete on all members 
@@ -44,10 +47,23 @@ public:
   {
     try
     {
-      for (iterator it = begin(); it != end(); ++it)
+      for (TYPE::iterator it = m_Container.begin(); it != m_Container.end(); ++it)
         delete *it;
     } catch(...) {}
   }
+
+  /*!
+  Access the actual container
+  */
+  TYPE& use() { return m_Container; }
+
+  /*!
+  Access the actual constant container
+  */
+  const TYPE& get() const { return m_Container; }
+
+protected:
+  TYPE m_Container;
 
 private:
   /*!

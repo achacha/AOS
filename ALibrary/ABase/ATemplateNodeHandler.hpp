@@ -55,6 +55,11 @@ public:
   */
   virtual ATemplateNode *create(AFile&) = 0;
 
+  /*!
+  Clone self
+  */
+  virtual ATemplateNodeHandler *clone() = 0;
+
 protected:
   /*!
   No copy ctor, each instance is attached to a template

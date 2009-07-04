@@ -12,7 +12,7 @@ void ACookieJar::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() <<" @ " << std::hex << this << std::dec << ") { " << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Domains={" << std::endl;
-  for(DOMAINS::const_iterator cit = m_Domains.begin(); cit != m_Domains.end(); ++cit)
+  for(DOMAINS::TYPE::const_iterator cit = m_Domains.get().begin(); cit != m_Domains.get().end(); ++cit)
   {
     ADebugDumpable::indent(os, indent+2) << cit->first << "={" << std::endl;
     cit->second->debugDump(os, indent+3);
@@ -36,14 +36,14 @@ void ACookieJar::add(ACookie *pcookie)
     ATHROW_EX(pcookie, AException::InvalidObject, ASWNL("Cookie did not specify a valid domain"));
 
   Node *p = _getNode(pcookie->getDomain(), pcookie->getPath(), true);
-  p->m_Cookies[pcookie->getName()] = pcookie;
+  p->m_Cookies.use()[pcookie->getName()] = pcookie;
 }
 
 ACookieJar::Node *ACookieJar::_getNode(const AString& domain, const AString& path, bool createIfNotFound)
 {
   Node *pCurrentNode = NULL;
-  DOMAINS::iterator itDomain = m_Domains.find(domain);
-  if (itDomain == m_Domains.end())
+  DOMAINS::TYPE::iterator itDomain = m_Domains.use().find(domain);
+  if (itDomain == m_Domains.use().end())
   {
     //a_Domain does not exist
     if (!createIfNotFound)
@@ -51,7 +51,7 @@ ACookieJar::Node *ACookieJar::_getNode(const AString& domain, const AString& pat
 
     //a_Insert new root node
     pCurrentNode = new Node();
-    m_Domains[domain] = pCurrentNode;
+    m_Domains.use()[domain] = pCurrentNode;
   }
   else
   {
@@ -64,8 +64,8 @@ ACookieJar::Node *ACookieJar::_getNode(const AString& domain, const AString& pat
   while (dirs.size() > 0)
   {
     AString& dir = dirs.front();
-    ACookieJar::Node::NODES::iterator it = pCurrentNode->m_Nodes.find(dir);
-    if (it != pCurrentNode->m_Nodes.end())
+    ACookieJar::Node::NODES::TYPE::iterator it = pCurrentNode->m_Nodes.use().find(dir);
+    if (it != pCurrentNode->m_Nodes.use().end())
     {
       //a_Dir already exists
       pCurrentNode = it->second;
@@ -76,7 +76,7 @@ ACookieJar::Node *ACookieJar::_getNode(const AString& domain, const AString& pat
       {
         //a_Dir not found, create
         Node *pNewNode = new Node(pCurrentNode);
-        pCurrentNode->m_Nodes[dir] = pNewNode;
+        pCurrentNode->m_Nodes.use()[dir] = pNewNode;
         pCurrentNode = pNewNode;
       }
       else
@@ -90,8 +90,8 @@ ACookieJar::Node *ACookieJar::_getNode(const AString& domain, const AString& pat
 
 ACookieJar::Node *ACookieJar::_getNodeOrExistingParent(const AString& domain, const AString& path)
 {
-  DOMAINS::iterator itDomain = m_Domains.find(domain);
-  if (itDomain == m_Domains.end())
+  DOMAINS::TYPE::iterator itDomain = m_Domains.use().find(domain);
+  if (itDomain == m_Domains.use().end())
     return NULL;  // Domain does not exist
 
   Node *pCurrentNode = itDomain->second;
@@ -101,8 +101,8 @@ ACookieJar::Node *ACookieJar::_getNodeOrExistingParent(const AString& domain, co
   while (dirs.size() > 0)
   {
     AString& dir = dirs.front();
-    ACookieJar::Node::NODES::iterator it = pCurrentNode->m_Nodes.find(dir);
-    if (it == pCurrentNode->m_Nodes.end())
+    ACookieJar::Node::NODES::TYPE::iterator it = pCurrentNode->m_Nodes.use().find(dir);
+    if (it == pCurrentNode->m_Nodes.use().end())
       break;  //a_Return current node, sub node not found
     else
       pCurrentNode = it->second;
@@ -114,7 +114,7 @@ ACookieJar::Node *ACookieJar::_getNodeOrExistingParent(const AString& domain, co
 
 void ACookieJar::emit(AOutputBuffer& target) const 
 { 
-  for (DOMAINS::const_iterator cit = m_Domains.begin(); cit != m_Domains.end(); ++cit)
+  for (DOMAINS::TYPE::const_iterator cit = m_Domains.get().begin(); cit != m_Domains.get().end(); ++cit)
   {
     target.append(cit->first);
     target.append(AConstant::ASTRING_CRLF);
@@ -163,11 +163,11 @@ bool ACookieJar::remove(const AString& domain, const AString& path, const AStrin
   Node *pNode = _getNode(domain, path);
   if (pNode)
   {
-    ACookieJar::Node::COOKIES::iterator it = pNode->m_Cookies.find(name);
-    if (it != pNode->m_Cookies.end())
+    ACookieJar::Node::COOKIES::TYPE::iterator it = pNode->m_Cookies.use().find(name);
+    if (it != pNode->m_Cookies.use().end())
     {
       delete it->second;
-      pNode->m_Cookies.erase(it);
+      pNode->m_Cookies.use().erase(it);
       return true;
     }
     else
