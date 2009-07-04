@@ -1,60 +1,40 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: ATemplateNodeHandler_DADA.cpp 239 2008-09-02 20:52:54Z achacha $
 */
 #include "pchAOS_DadaData.hpp"
-#include "AOSModule_DadaDataTemplate.hpp"
-#include "ADadaDataHolder.hpp"
-#include "AFile_AString.hpp"
+#include "ATemplateNodeHandler_DADA.hpp"
+#include "AXmlDocument.hpp"
+#include "AXmlElement.hpp"
+#include "ATemplate.hpp"
+#include "ABasePtrContainer.hpp"
+#include "AFile_Physical.hpp"
 #include "AWordUtility.hpp"
 #include "ARandomNumberGenerator.hpp"
-#include "AFile_Physical.hpp"
 
-const AString AOSModule_DadaDataTemplate::S_DELIM_START("{",1);
-const AString AOSModule_DadaDataTemplate::S_DELIM_END("}",1);
-const AString AOSModule_DadaDataTemplate::S_DADA("dada",4);
-const AString AOSModule_DadaDataTemplate::S_LINE("line",4);
+const AString ATemplateNodeHandler_DADA::S_DELIM_START("{",1);
+const AString ATemplateNodeHandler_DADA::S_DELIM_END("}",1);
 
-const AString AOSModule_DadaDataTemplate::CLASS("Dada.template");
+const AString ATemplateNodeHandler_DADA::TAGNAME("DADA",4);
 
-const AString& AOSModule_DadaDataTemplate::getClass() const
+void ATemplateNodeHandler_DADA::debugDump(std::ostream& os, int indent) const
 {
-  return CLASS;
-}
-
-void AOSModule_DadaDataTemplate::debugDump(std::ostream& os, int indent) const
-{
-  ADebugDumpable::indent(os, indent) << "(AOSModule_DadaDataTemplate @ " << std::hex << this << std::dec << ") {" << std::endl;
-
-  ADebugDumpable::indent(os, indent+1) << "m_Templates={" << std::endl;
-  TEMPLATES::const_iterator citT = m_Templates.begin();
-  while (citT != m_Templates.end())
-  {
-    ADebugDumpable::indent(os, indent+2) << citT->first << " size=" << u4(citT->second.size()) << std::endl;
-    ++citT;
-  }
-  ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-
-  AOSModuleInterface::debugDump(os, indent+1);
-
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
+  ADebugDumpable::indent(os, indent) << "TAGNAME=" << getTagName() << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-AOSModule_DadaDataTemplate::AOSModule_DadaDataTemplate(AOSServices& services) :
-  AOSModuleInterface(services)
+ATemplateNodeHandler_DADA::ATemplateNodeHandler_DADA(AOSServices& services) :
+  m_Services(services)
 {
 }
 
-void AOSModule_DadaDataTemplate::adminEmitXml(
-  AXmlElement& eBase, 
-  const AHTTPRequestHeader& request
-)
+ATemplateNodeHandler_DADA::~ATemplateNodeHandler_DADA()
 {
-  AOSModuleInterface::adminEmitXml(eBase, request);
 }
 
-void AOSModule_DadaDataTemplate::init()
+void ATemplateNodeHandler_DADA::init()
 {
   AXmlElement::CONST_CONTAINER nodes;
 
@@ -109,53 +89,66 @@ void AOSModule_DadaDataTemplate::init()
   }
 }
 
-AOSContext::ReturnCode AOSModule_DadaDataTemplate::execute(AOSContext& context, const AXmlElement& params)
+void ATemplateNodeHandler_DADA::deinit()
 {
-  AString templateName;
-  if (!context.useRequestParameterPairs().get(ASW("templateName",12), templateName))
+}
+
+const AString& ATemplateNodeHandler_DADA::getTagName() const
+{
+  return ATemplateNodeHandler_DADA::TAGNAME;
+}
+
+ATemplateNode *ATemplateNodeHandler_DADA::create(AFile& file)
+{
+  ATemplateNodeHandler_DADA::Node *pNode = new ATemplateNodeHandler_DADA::Node(this);
+  pNode->fromAFile(file);
+  return pNode;
+}
+
+ATemplateNodeHandler *ATemplateNodeHandler_DADA::clone()
+{ 
+  return new ATemplateNodeHandler_DADA(m_Services);
+}
+
+///////////////////////////////////////// ATemplateNodeHandler_DADA::Node ///////////////////////////////////////////////////////////////////////////
+
+ATemplateNodeHandler_DADA::Node::Node(ATemplateNodeHandler *pHandler) :
+  ATemplateNode(pHandler)
+{
+}
+
+ATemplateNodeHandler_DADA::Node::Node(const ATemplateNodeHandler_DADA::Node& that) :
+  ATemplateNode(that)
+{
+}
+
+ATemplateNodeHandler_DADA::Node::~Node()
+{
+}
+
+void ATemplateNodeHandler_DADA::Node::process(ATemplateContext& context, AOutputBuffer& output)
+{
+  AAutoPtr<AEventVisitor::ScopedEvent> scoped;
+  if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
   {
-    context.addError(getClass(), ASWNL("Please specify 'templateName' parameter."));
-    return AOSContext::RETURN_ERROR;
+    scoped.reset(new AEventVisitor::ScopedEvent(context.useEventVisitor(), ASWNL("ATemplateNodeHandler_DADA"), m_BlockData, AEventVisitor::EL_DEBUG));
   }
 
-  AString strSet;
-  if (!context.useRequestParameterPairs().get(ASW("dataset",7), strSet))
-  {
-    context.addError(getClass(), ASWNL("Please specify 'dataset' parameter."));
-    return AOSContext::RETURN_ERROR;
-  }
+#pragma message("ATemplateNodeHandler_DADA::Node::process: MUST selecte dataset dynamically")
 
-  ADadaDataHolder *pddh = m_Objects.useAsPtr<ADadaDataHolder>(strSet);
+  AString strSet("dada");  //TODO: Find a way to select this (attributes in nodes)
+  ADadaDataHolder *pddh = ((ATemplateNodeHandler_DADA *)mp_Handler)->m_Objects.useAsPtr<ADadaDataHolder>(strSet);
   if (!pddh)
   {
-    context.addError(getClass(), AString("AOSModule_DadaDataTemplate: ADadaDataHolder not found at: ")+strSet);
-    return AOSContext::RETURN_ERROR;
+    context.useEventVisitor().addEvent(AString("ADadaTemplateProcessor: ADadaDataHolder not found at: ")+strSet, AEventVisitor::EL_ERROR);
+    return;
   }
   
   VARIABLEMAP globals;
-  TEMPLATES::iterator it = m_Templates.find(templateName);
-  if (it != m_Templates.end())
-  {
-    VECTOR_AString& templateLines = (*it).second;
-    for (size_t i=0; i<templateLines.size(); ++i)
-    {
-      _generateLine(pddh, globals, templateLines.at(i), context.useModel());
-    }
-  }
-  else
-  {
-    context.addError(getClass(), ARope("Not found templateName: ")+templateName);
-    return AOSContext::RETURN_ERROR;
-  }
-  
-  return AOSContext::RETURN_OK;
+  _generateLine(pddh, globals, m_BlockData, context, output);
 }
 
-void AOSModule_DadaDataTemplate::deinit()
-{
-}
-
-void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& format, AXmlElement& element)
+void ATemplateNodeHandler_DADA::Node::_generateLine(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& format, ATemplateContext& context, AOutputBuffer& output)
 {
   if (format.isEmpty())
     return;
@@ -164,8 +157,6 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
   size_t readresult;
   char c = '\x0';
   AString target(1024, 1024), strType(64,128);
-  AXmlAttributes attributes;
-  AXmlElement& eDada = element.overwriteElement(S_DADA);
   while (AConstant::npos != file.readUntil(target, S_DELIM_START, true, true))
   {
     file.read(c);
@@ -173,9 +164,8 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
     if (0 == readresult)
     {
       file.readUntilEOF(target);
-      eDada.addElement(S_LINE).addData(target).addAttributes(attributes);
+      output.append(target);
       target.clear();
-      attributes.clear();
       break;
     }
 
@@ -196,16 +186,12 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
             _appendVariable(pddh, globals, strType, target);
           break;
 
-          case '&':
-            //a_ {&name:value}
-            _parseAttributes(strType, attributes);
-          break;
-
           default:
-            target.append("{ERROR:", 7);
+            //a_Passthru of unknown tags
+            target.append('{');
             target.append(strType);
             target.append('}');
-            m_Services.useLog().append(AString("AOSModule_DadaDataTemplate::_generateLine: unknown type:")+strType);
+            context.useEventVisitor().addEvent(AString("ADadaTemplateProcessor::_generateLine: unknown type:")+strType, AEventVisitor::EL_WARN);
           break;
         }
         strType.clear(); 
@@ -213,12 +199,11 @@ void AOSModule_DadaDataTemplate::_generateLine(ADadaDataHolder *pddh, VARIABLEMA
     }
   }
   file.readUntilEOF(target);
-  eDada.addElement(S_LINE).addData(target).addAttributes(attributes);
+  output.append(target);
   target.clear();
-  attributes.clear();
 }
 
-void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& target)
+void ATemplateNodeHandler_DADA::Node::_appendVariable(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& target)
 {
   AASSERT(this, strType.getSize() > 0);
 
@@ -296,7 +281,7 @@ void AOSModule_DadaDataTemplate::_appendVariable(ADadaDataHolder *pddh, VARIABLE
   }
 }
 
-void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& target)
+void ATemplateNodeHandler_DADA::Node::_appendWordType(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& target)
 {
   //a_First remove control tags "TYPE:controltag1,controltag2,..."
   AString strTypeName, strControl;
@@ -330,8 +315,6 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLE
     LIST_AString::iterator itN = listControlNames.begin();
     while (itN != listControlNames.end())
     {
-//      TRACE1("Checking control: %s\n", (*it).c_str());
-      
       if ('$' == (*itN).at(0, '\x0'))
       {
         //a_Add variable to global map
@@ -416,21 +399,5 @@ void AOSModule_DadaDataTemplate::_appendWordType(ADadaDataHolder *pddh, VARIABLE
     target.append('%');
     target.append(strType);
     target.append('%');
-  }
-}
-
-void AOSModule_DadaDataTemplate::_parseAttributes(const AString& data, AXmlAttributes& attributes)
-{
-  size_t pos = data.find(':');
-  if (AConstant::npos != pos)
-  {
-    AString name, value;
-    data.peek(name, 0, pos);
-    data.peek(value, pos+1);
-    attributes.insert(name, value);
-  }
-  else
-  {
-    attributes.insert(data);
   }
 }

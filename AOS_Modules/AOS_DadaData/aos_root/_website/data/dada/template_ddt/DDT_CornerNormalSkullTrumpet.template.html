@@ -1,6 +1,12 @@
+<html>
+<head>
 <style type="text/css">dada_html_img { float:left; }</style>
+</head>
+<body>
 
-{&type:title}The {%noun_proper:$subject} {%html}
+%[DADA]{{{
+<h1>The {%noun_proper:$subject} {%html}</h1>
+
 {$subject} {%adverb} {%verb:plural}, {%connect} the {%noun} is {%adjective}<br/>
 {%pronoun_s:proper} {%verb:plural} {%adjective:article} {%noun}, {%connect} {%pronoun_s} can {%adverb} {%verb}<br/>
 <span style="margin-left:2em"/>{%pronoun_s} {%verb:plural} the {%noun} of {%adjective:article} {%noun}<br/>
@@ -16,3 +22,7 @@ In {%location}, {%noun:article} is {%adverb:article} {%verb:present} {%noun_prop
 ...{$subject}<br/>
 ...{$subject}<br/>
 ...{$subject}<br/>
+}}}[DADA]%
+
+</body>
+</html>
