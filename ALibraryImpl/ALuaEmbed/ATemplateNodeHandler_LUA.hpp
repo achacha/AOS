@@ -60,6 +60,11 @@ public:
   virtual void deinit();
 
   /*!
+  Clone
+  */
+  virtual ATemplateNodeHandler *clone();
+
+  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;

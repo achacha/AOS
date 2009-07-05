@@ -7,7 +7,7 @@ $Id$
 #include "ATemplateNodeHandler_LUA.hpp"
 #include "ALuaTemplateContext.hpp"
 
-const AString ATemplateNodeHandler_LUA::TAGNAME("LUA",3);
+const AString ATemplateNodeHandler_LUA::TAGNAME("aos:lua");
 
 void ATemplateNodeHandler_LUA::debugDump(std::ostream& os, int indent) const
 {
@@ -39,6 +39,11 @@ ATemplateNode *ATemplateNodeHandler_LUA::create(AFile& file)
   ATemplateNodeHandler_LUA::Node *pNode = new ATemplateNodeHandler_LUA::Node(this);
   pNode->fromAFile(file);
   return pNode;
+}
+
+ATemplateNodeHandler *ATemplateNodeHandler_LUA::clone()
+{ 
+  return new ATemplateNodeHandler_LUA();
 }
 
 void ATemplateNodeHandler_LUA::init()
