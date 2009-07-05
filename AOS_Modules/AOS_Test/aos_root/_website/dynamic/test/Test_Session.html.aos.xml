@@ -8,21 +8,21 @@
 <html>
 <head><title>Session test</title></head>
 <body>
-%[LUA]{{{
+<aos:lua>
 if (model.existElement("test/sessionCreated")) then
   print("Created new session, counter set to 0<br/>");
 else
   print("Session exists, incrementing count.");
   print("Model reports  : "	.. model.emitContentFromPath("test/count") .. "<br/>");
 end
-}}}[LUA]%
+</aos:lua>
 <br/>
-<b>Template value in model under <i>test/count</i> = </b>%[MODEL]{{{test/count}}}[MODEL]% <small> uses % [MODEL]{{{test/count}}}[MODEL]%</small><br/>
-<b>Template value in session under <i>count</i> = </b>%[SESSION]{{{count}}}[SESSION]% <small> uses % [SESSION]{{{count}}}[SESSION]%</small><br/>
+<b>Template value in model under <i>test/count</i> = </b><aos:model>test/count</aos:model> <small> uses &lt;aos:model&gt;test/count&lt;/aos:model&gt;</small><br/>
+<b>Template value in session under <i>count</i> = </b><aos:session>count</aos:session> <small> uses &lt;aos:session&gt;count&lt;/aos:session&gt;</small><br/>
 
 <br/><hr/>
-Request time: %[MODEL]{{{request_time/interval}}}[MODEL]% ms<br/>
-Context time: %[MODEL]{{{context_time/interval}}}[MODEL]% ms<br/>
+Request time: <aos:model>request_time/interval</aos:model> ms<br/>
+Context time: <aos:model>context_time/interval</aos:model> ms<br/>
 <br/>
 </body>
 </html>

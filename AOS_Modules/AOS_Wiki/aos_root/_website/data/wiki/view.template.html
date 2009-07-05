@@ -4,7 +4,7 @@
     <link href="/wiki/wiki.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-<div class ="wikitop">%[LUA]{{{
+<div class ="wikitop"><aos:lua>
 local editUrlBase = model.emitContentFromPath('/root/wiki/edit-url');
 local editUrl;
 
@@ -21,10 +21,10 @@ else
 	print( '<a href=\"' .. editUrl .. '">edit</a>'); 
 end
 
-}}}[LUA]%</div>
+</aos:lua></div>
 <hr/>
-  <div class="wikibody_view" id="wiki_body">%[LUA]{{{
+  <div class="wikibody_view" id="wiki_body"><aos:lua>
 print( model.emitContentFromPath("/root/wiki/row/data") );
-}}}[LUA]%</div>
+</aos:lua></div>
 </body>
 </html>

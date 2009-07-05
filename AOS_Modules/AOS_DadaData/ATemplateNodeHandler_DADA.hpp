@@ -96,11 +96,15 @@ public:
     virtual void process(ATemplateContext& context, AOutputBuffer& output);
 
   private:
-    typedef MAP_AString_AString VARIABLEMAP;
+    class VARIABLEMAP : public ABase
+    {
+    public:
+      MAP_AString_AString vmap;
+    };
 
-    void _generateLine(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& format, ATemplateContext& context, AOutputBuffer& output);
-    void _appendWordType(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& output);
-    void _appendVariable(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& output);
+    void _generateLine(ADadaDataHolder *pddh, MAP_AString_AString& globals, const AString& format, ATemplateContext& context, AOutputBuffer& output);
+    void _appendWordType(ADadaDataHolder *pddh, MAP_AString_AString& globals, const AString& strType, AOutputBuffer& output);
+    void _appendVariable(ADadaDataHolder *pddh, MAP_AString_AString& globals, const AString& strType, AOutputBuffer& output);
   };
 
 private:

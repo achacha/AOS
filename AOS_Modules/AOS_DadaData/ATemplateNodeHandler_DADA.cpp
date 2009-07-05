@@ -16,7 +16,7 @@ $Id: ATemplateNodeHandler_DADA.cpp 239 2008-09-02 20:52:54Z achacha $
 const AString ATemplateNodeHandler_DADA::S_DELIM_START("{",1);
 const AString ATemplateNodeHandler_DADA::S_DELIM_END("}",1);
 
-const AString ATemplateNodeHandler_DADA::TAGNAME("DADA",4);
+const AString ATemplateNodeHandler_DADA::TAGNAME("aos:dada");
 
 void ATemplateNodeHandler_DADA::debugDump(std::ostream& os, int indent) const
 {
@@ -144,11 +144,16 @@ void ATemplateNodeHandler_DADA::Node::process(ATemplateContext& context, AOutput
     return;
   }
   
-  VARIABLEMAP globals;
-  _generateLine(pddh, globals, m_BlockData, context, output);
+  VARIABLEMAP *pGlobals = context.useObjects().useAsPtr<VARIABLEMAP>(ASW("DADA_GLOBALS",12));
+  if (NULL == pGlobals)
+  {
+    pGlobals = new VARIABLEMAP();
+    context.useObjects().insert(ASW("DADA_GLOBALS",12), pGlobals, true);
+  }
+  _generateLine(pddh, pGlobals->vmap, m_BlockData, context, output);
 }
 
-void ATemplateNodeHandler_DADA::Node::_generateLine(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& format, ATemplateContext& context, AOutputBuffer& output)
+void ATemplateNodeHandler_DADA::Node::_generateLine(ADadaDataHolder *pddh, MAP_AString_AString& globals, const AString& format, ATemplateContext& context, AOutputBuffer& output)
 {
   if (format.isEmpty())
     return;
@@ -203,7 +208,7 @@ void ATemplateNodeHandler_DADA::Node::_generateLine(ADadaDataHolder *pddh, VARIA
   target.clear();
 }
 
-void ATemplateNodeHandler_DADA::Node::_appendVariable(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& target)
+void ATemplateNodeHandler_DADA::Node::_appendVariable(ADadaDataHolder *pddh, MAP_AString_AString& globals, const AString& strType, AOutputBuffer& target)
 {
   AASSERT(this, strType.getSize() > 0);
 
@@ -226,7 +231,7 @@ void ATemplateNodeHandler_DADA::Node::_appendVariable(ADadaDataHolder *pddh, VAR
   }
 
   //a_Find it in the global lookup
-  VARIABLEMAP::iterator it = globals.find(strTypeName);
+  MAP_AString_AString::iterator it = globals.find(strTypeName);
   if (it != globals.end())
   {
     AString str((*it).second);
@@ -281,7 +286,7 @@ void ATemplateNodeHandler_DADA::Node::_appendVariable(ADadaDataHolder *pddh, VAR
   }
 }
 
-void ATemplateNodeHandler_DADA::Node::_appendWordType(ADadaDataHolder *pddh, VARIABLEMAP& globals, const AString& strType, AOutputBuffer& target)
+void ATemplateNodeHandler_DADA::Node::_appendWordType(ADadaDataHolder *pddh, MAP_AString_AString& globals, const AString& strType, AOutputBuffer& target)
 {
   //a_First remove control tags "TYPE:controltag1,controltag2,..."
   AString strTypeName, strControl;

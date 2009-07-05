@@ -25,12 +25,12 @@ function copyit(inputvalue, targetfield) {
     <link  href="/wiki/wiki.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-<a href="%[LUA]{{{ print( model.emitContentFromPath('/root/wiki/view-url') ); }}}[LUA]%">view<a><br/>
+<a href="<aos:lua> print( model.emitContentFromPath('/root/wiki/view-url') ); </aos:lua>">view<a><br/>
 <hr/>
-<form id="wikiedit_form" method="POST" action="%[LUA]{{{ print( model.emitContentFromPath('/root/wiki/view-url') ); }}}[LUA]%">
-  <textarea class="wikibody_edit" name="wiki.newdata" cols="120" rows="30">%[LUA]{{{
+<form id="wikiedit_form" method="POST" action="<aos:lua> print( model.emitContentFromPath('/root/wiki/view-url') ); </aos:lua>">
+  <textarea class="wikibody_edit" name="wiki.newdata" cols="120" rows="30"><aos:lua>
 print( model.emitContentFromPath("/root/wiki/row/data") );
-}}}[LUA]%</textarea><br/>
+</aos:lua></textarea><br/>
   <input type="checkbox" name="dumpContext"/>
   <input type="submit" value="Save"/>
 </form>

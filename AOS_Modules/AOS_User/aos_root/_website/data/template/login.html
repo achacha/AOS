@@ -25,7 +25,7 @@ The password is SHA-1 encoded on change.
 -->
 <p>
 Login form will query the password and use SHA-1 to encode it and submit.<br/>
-Redirect to SESSION variable /SESSION/user/ru = %[SESSION]{{{user/ru}}}[SESSION]%	
+Redirect to SESSION variable /SESSION/user/ru = <aos:session>user/ru</aos:session>	
  if succesful which would have been set by the controller that redirected you here</p>
 <br/>
 Currently any username and password will work.<br/>
@@ -42,9 +42,9 @@ page as already logged in you have a hostname mismatch.<br/>
   <input type="hidden" name="pwd"/>
   <small><input type="checkbox" name="dumpContext" value="1"/><b>DEBUG</b>: add &amp;dumpContext=1</small><br/>
 <!-- Insert original parameters -->	
-%[LUA]{{{
+<aos:lua>
 print("<!-- original params -->");
-}}}[LUA]%	
+</aos:lua>	
 </form>
 <form id="scratchpad" method="get" onsubmit="return 0;">
   <table>

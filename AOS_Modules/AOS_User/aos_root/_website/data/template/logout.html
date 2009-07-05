@@ -3,10 +3,10 @@
 <head><title>Login</title></head>
 <body bgcolor="#eeeeee">
 <p>
-Hello %[SESSION]{{{user/username}}}[SESSION]%!  You are logged in.<br/>
+Hello <aos:session>user/username</aos:session>!  You are logged in.<br/>
 <br/>
 <form id="login" method="get" action="/user/User_Logout">
-  <input type="hidden" name="un" value="%[SESSION]{{{user/username}}}[SESSION]%"/>
+  <input type="hidden" name="un" value="<aos:session>user/username</aos:session>"/>
   <input type="submit" name="logout" value="Logout"/>
   <small><input type="checkbox" name="dumpContext" value="1"/><b>DEBUG</b>: add &amp;dumpContext=1</small><br/>
 </form>
