@@ -10,7 +10,7 @@ $Id$
 #include "ATemplate.hpp"
 #include "ABasePtrContainer.hpp"
 
-const AString ATemplateNodeHandler_MODEL::TAGNAME("MODEL",5);
+const AString ATemplateNodeHandler_MODEL::TAGNAME("aos:model");
 
 void ATemplateNodeHandler_MODEL::debugDump(std::ostream& os, int indent) const
 {

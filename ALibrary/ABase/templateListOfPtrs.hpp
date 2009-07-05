@@ -23,7 +23,7 @@ Now:
   myList.use().push_back(new AString("foo"));   // this class will delete this object in dtor
 */
 template<typename T>
-class AListOfPtrs
+class AListOfPtrs : public ABase
 {
 public:
   //! Type

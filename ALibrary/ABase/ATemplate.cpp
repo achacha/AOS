@@ -11,10 +11,10 @@ $Id$
 #include "ATemplateNodeHandler_OBJECT.hpp"
 #include "ATemplateNodeHandler_MODEL.hpp"
 
-const AString ATemplate::TAG_START("%[",2);
-const AString ATemplate::BLOCK_START("]{{{",4);
-const AString ATemplate::BLOCK_END("}}}[",4);
-const AString ATemplate::TAG_END("]%",2);
+const AString ATemplate::TAG_START("<",1);
+const AString ATemplate::BLOCK_START(">",1);
+const AString ATemplate::BLOCK_END("</",2);
+const AString ATemplate::TAG_END(">",1);
 
 void ATemplate::debugDump(std::ostream& os, int indent) const
 {

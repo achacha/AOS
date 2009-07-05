@@ -21,7 +21,7 @@ Now:
   myMap[0] = new AString("foo");   // this class will delete this object in dtor
 */
 template<class K, class T>
-class AMapOfPtrs
+class AMapOfPtrs : public ABase
 {
 public:
   typedef public std::map<K, T*> TYPE;

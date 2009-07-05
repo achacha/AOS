@@ -8,7 +8,7 @@ $Id$
 #include "ATemplate.hpp"
 #include "ABasePtrContainer.hpp"
 
-const AString ATemplateNodeHandler_OBJECT::TAGNAME("OBJECT",6);
+const AString ATemplateNodeHandler_OBJECT::TAGNAME("aos:object");
 
 void ATemplateNodeHandler_OBJECT::debugDump(std::ostream& os, int indent) const
 {

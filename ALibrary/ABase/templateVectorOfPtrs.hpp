@@ -24,7 +24,7 @@ Now:
 **/
 
 template<class T>
-class AVectorOfPtrs
+class AVectorOfPtrs : public ABase
 {
 public:
   typedef std::vector<T*> TYPE;
