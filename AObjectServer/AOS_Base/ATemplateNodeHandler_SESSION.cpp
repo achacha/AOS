@@ -10,7 +10,7 @@ $Id$
 #include "AOSContext.hpp"
 #include "AEventVisitor.hpp"
 
-const AString ATemplateNodeHandler_SESSION::TAGNAME("SESSION",7);
+const AString ATemplateNodeHandler_SESSION::TAGNAME("aos:session");
 
 void ATemplateNodeHandler_SESSION::debugDump(std::ostream& os, int indent) const
 {

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../xsd/resource.xsd">
-  <message><![CDATA[This brilliant message is in en-gb, accessed via <b>% [RESOURCE]{{{/resource/message}}}[RESOURCE]%</b>]]></message>
+  <message><![CDATA[This brilliant message is in en-gb, accessed via <b>&lt;aos:resource&gt;/resource/message&lt;/aos:resource&gt;</b>]]></message>
 </resource>

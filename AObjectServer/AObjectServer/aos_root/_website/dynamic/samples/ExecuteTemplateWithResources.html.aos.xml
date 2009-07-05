@@ -3,6 +3,6 @@
   <input/>
   <module/>
   <output class="Template">
-    <template><![CDATA[ %[RESOURCE]{{{/resource/message}}}[RESOURCE]% ]]></template>
+    <template><![CDATA[ <aos:resource>/resource/message</aos:resource> ]]></template>
   </output>
 </controller>

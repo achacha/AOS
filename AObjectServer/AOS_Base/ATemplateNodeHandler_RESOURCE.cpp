@@ -11,7 +11,7 @@ $Id: ATemplateNodeHandler_RESOURCE.cpp 253 2008-08-05 22:53:39Z achacha $
 #include "AEventVisitor.hpp"
 #include "AOSServices.hpp"
 
-const AString ATemplateNodeHandler_RESOURCE::TAGNAME("RESOURCE",8);
+const AString ATemplateNodeHandler_RESOURCE::TAGNAME("aos:resource");
 
 void ATemplateNodeHandler_RESOURCE::debugDump(std::ostream& os, int indent) const
 {

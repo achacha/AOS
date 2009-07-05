@@ -16,23 +16,23 @@ pre.output {
 
 <h2>Result of all scripts concatinated as one</h2>
 
-<pre class="output">%[LUA]{{{
+<pre class="output"><aos:lua>
 print(model.emitContentFromPath("/root/script/output"));	
-}}}[LUA]%</pre>
+</aos:lua></pre>
 
 <br/>
 <hr/>
 
 <h2>Reslt of all scripts separated</h2>
 
-%[LUA]{{{
+<aos:lua>
 local output = {model.emitContentFromPath("/root/script/output", 1)};
 for i,scriptout in ipairs(output) do
 	print("<pre class='output'>");
 	print(scriptout);	
 	print("</pre>");
 end
-}}}[LUA]%
+</aos:lua>
 
 <br/>
 </body>

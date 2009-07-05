@@ -216,6 +216,14 @@ void AOSServices::init()
   mp_ModuleExecutor = new AOSModuleExecutor(*this);
   mp_OutputExecutor = new AOSOutputExecutor(*this);
   mp_SessionManager = new AOSSessionManager(*this);
+
+  //a_Add AOS specific template handlers
+  //a_Add Lua handler
+  m_TemplateNodeHandlers.use().push_back(new ATemplateNodeHandler_LUA());
+
+  //a_Add session data handler
+  m_TemplateNodeHandlers.use().push_back(new ATemplateNodeHandler_SESSION());
+  m_TemplateNodeHandlers.use().push_back(new ATemplateNodeHandler_RESOURCE());
 }
 
 bool AOSServices::initDatabasePool()
@@ -390,16 +398,23 @@ AOSCacheManager& AOSServices::useCacheManager()
   return *mp_CacheManager;
 }
 
+void AOSServices::addTemplateHandler(ATemplateNodeHandler *pHandler)
+{
+  m_TemplateNodeHandlers.use().push_back(pHandler);
+}
+
 ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
 {
   AAutoPtr<ATemplate> pTemplate(new ATemplate(), true);
   
-  //a_Add Lua handler
-  pTemplate->addHandler(new ATemplateNodeHandler_LUA());
-
-  //a_Add session data handler
-  pTemplate->addHandler(new ATemplateNodeHandler_SESSION());
-  pTemplate->addHandler(new ATemplateNodeHandler_RESOURCE());
+  for (
+    AListOfPtrs<ATemplateNodeHandler>::TYPE::iterator it = m_TemplateNodeHandlers.use().begin();
+    it != m_TemplateNodeHandlers.use().end();
+    ++it
+  )
+  {
+    pTemplate->addHandler((*it)->clone());
+  }
 
   pTemplate.setOwnership(false);
   return pTemplate.use();

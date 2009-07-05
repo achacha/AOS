@@ -16,22 +16,22 @@
 <body bgcolor="#f0f0ff">
 
 <div class="error-message">
-%[LUA]{{{
+<aos:lua>
 if (model.existElement("/root/ERROR")) then
   print(model.emitContentFromPath("/root/ERROR"));
 end
-}}}[LUA]%
+</aos:lua>
 </div>
 <div class="generic-message">
-%[LUA]{{{ 
+<aos:lua> 
 if (model.existElement("/root/MESSAGE")) then
 	print(model.getText("/root/MESSAGE")); 
 end
-}}}[LUA]%
+</aos:lua>
 </div>
 <br/>
 <br/>
-<small><font color="blue">Request time: %[MODEL]{{{/root/request_time}}}[MODEL]% milliseconds</font></small><br/>
-<small><font color="blue">Context time: %[MODEL]{{{/root/context_time}}}[MODEL]% milliseconds</font></small><br/>
+<small><font color="blue">Request time: <aos:model>/root/request_time</aos:model> milliseconds</font></small><br/>
+<small><font color="blue">Context time: <aos:model>/root/context_time</aos:model> milliseconds</font></small><br/>
 </body>
 </html>

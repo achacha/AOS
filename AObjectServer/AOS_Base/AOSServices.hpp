@@ -21,6 +21,7 @@ $Id$
 #include "AOSOutputExecutor.hpp"
 #include "ADynamicLibrary.hpp"
 #include "AOSResourceManager.hpp"
+#include "templateListOfPtrs.hpp"
 
 class AOS_BASE_API AOSServices : public AOSAdminInterface
 {
@@ -147,6 +148,15 @@ public:
   ATemplate* createTemplate(u4 deafultLuaLibraries = ALuaEmbed::LUALIB_ALL);
 
   /*!
+  Adds an additional handler to include with templates created by createTemplate
+
+  NOTE: Object will be OWNED and DELETED by AOSServices
+
+  @param handler of type ATemplateNodeHandler
+  */
+  void addTemplateHandler(ATemplateNodeHandler *);
+
+  /*!
   Get dynamic library object
   Used in loading modules and contains a map of module names to modules
 
@@ -227,6 +237,9 @@ private:
 
   // Uptime
   ATimer m_Uptime;
+
+  // Template node handlers to add to the ATemplate types from createTemplate call
+  AListOfPtrs<ATemplateNodeHandler> m_TemplateNodeHandlers;
 };
 
 #endif //INCLUDED__AOSServices_HPP__

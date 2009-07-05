@@ -14,8 +14,8 @@ You can have both if and ifnot on a template<br />
 <xmp class="code_xml"><module class="Template">
   <mime-extension>html</mime-extension>
   <filename if="/root/somepath/exists">script/something.html</filename>
-  <template if="/root/somepath/exists">/root/somepath/exists = %[MODEL]{{{/root/somepath/exists}}}[MODEL]%</template>
-  <template>/root/executed = %[MODEL]{{{/root/executed}}}[MODEL]%</template>
+  <template if="/root/somepath/exists">/root/somepath/exists = <aos:model>/root/somepath/exists</aos:model></template>
+  <template>/root/executed = <aos:model>/root/executed</aos:model></template>
   <filename ifnot="/root/somepath/doesnotexist">script/something_not.html</filename>
   <template>Some template text inserted here</template>
   <filename if="/root/somepath/alsoexists">script/something_more.html</filename>

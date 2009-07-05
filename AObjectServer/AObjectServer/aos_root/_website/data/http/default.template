@@ -1,19 +1,19 @@
 <html>
 <head>
-  <title>HTTP Error %[LUA]{{{
+  <title>HTTP Error <aos:lua>
 print(model.emitContentFromPath("/root/RESPONSE/status@code"));
 print(" - ");
 print(model.emitContentFromPath("/root/RESPONSE/status"));
-}}}[LUA]%
+</aos:lua>
 </head>
 <body>
-<font color="red"><b>HTTP Error %[LUA]{{{
+<font color="red"><b>HTTP Error <aos:lua>
 print(model.emitContentFromPath("/root/REQUEST/AUrl/url"));
 print("<br/>");
 print(model.emitContentFromPath("/root/RESPONSE/status@code"));
 print("</b>: ");
 print(model.emitContentFromPath("/root/RESPONSE/status"));
-}}}[LUA]%
+</aos:lua>
 
 </body>
 </html>

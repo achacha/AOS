@@ -38,10 +38,10 @@ path = destination of the output and is relative to the model root or absolute s
   &lt;template&gt;
 &lt;![CDADA[
 <div class="code">Plain text,
-%[LUA]{{{
+<aos:lua>
 print "Lua script";
 model.addText("/root/justinserted","model text");
-}}}[LUA]%, %[MODEL]{{{/root/justinserted}}}[MODEL]%!
+</aos:lua>, <aos:model>/root/justinserted</aos:model>!
 </div>]]&gt;&lt;/template&gt;
   &lt;path&gt;/root/myoutput&lt;/path&gt;
 &lt;/module&gt;

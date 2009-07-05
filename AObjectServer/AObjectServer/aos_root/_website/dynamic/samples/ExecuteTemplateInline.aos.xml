@@ -2,10 +2,10 @@
 <controller>
   <input/>
   <module class="Template">
-    <template><![CDATA[foo=%[LUA]{{{
+    <template><![CDATA[foo=<aos:lua>
 model.setText("/root/inline-script-added", "Set directly by ExecuteTemplateInline command");
 print(model.emitContentFromPath("/root/inline-script-added"));	
-}}}[LUA]%]]></template>
+</aos:lua>]]></template>
     <outpath>output/template</outpath>
   </module>
   <output/>

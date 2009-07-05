@@ -4,7 +4,7 @@
 
 int main()
 {
-  AFile_AString tdata("Hello %[SESSION]{{{some/path}}}[SESSION]%");
+  AFile_AString tdata("Hello <aos:session>some/path</aos:session>");
 
   AAutoPtr<ATemplate> pTemplate(new ATemplate(), true);
   

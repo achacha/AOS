@@ -4,6 +4,6 @@
 </head>
 <body>
 <font color="red">HTTP500: Internal server error.</font>
-<!-- %[LUA]{{{ print(model.emitContentFromPath("/root/REQUEST/AUrl/url")); }}}[LUA]% -->
+<!-- <aos:lua> print(model.emitContentFromPath("/root/REQUEST/AUrl/url")); </aos:lua> -->
 </body>
 </html>

@@ -1,4 +1,4 @@
-%[LUA]{{{
+<aos:lua>
 model.addText("/root/inline-script-added", "Added by data/template/TestLuaScript.template");
 print(model.emitContentFromPath("/root/inline-script-added"));	
-}}}[LUA]%
+</aos:lua>

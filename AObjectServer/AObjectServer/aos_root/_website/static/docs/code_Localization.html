@@ -12,7 +12,7 @@
 For a given locale (determined by Session override or Accept-Languages: HTTP header) the resource is looked up and content is emitted.</div><br />
 <br />
 
-<b class="code">%[RESOURCE]{{{xml_path}}}[RESOURCE]%</b><br />
+<b class="code"><aos:resource>xml_path</aos:resource></b><br />
 <br />
 <h5 class="heading">Example</h5>
 Assuming HTTP request has:<br />
@@ -28,7 +28,7 @@ and<br />
 <br />
 then the template token evaluates to:<br />
 <br />
-%[RESOURCE]{{{/resource/message}}}[RESOURCE]% = <b>Arrr!</b><br />
+<aos:resource>/resource/message</aos:resource> = <b>Arrr!</b><br />
 <br />
 If you provide a locale specific XML resource collection for each language then when it changes the correct one will be used when template is output.  This is in addition to the locale specific content <a href="config_locale.html">provided</a>.
 </body>
