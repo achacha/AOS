@@ -57,10 +57,10 @@ public:
   /*!
   Delimiters
   */
-  static const AString TAG_START;     //a_ "%["
-  static const AString BLOCK_START;   //a_ "]{{{"
-  static const AString BLOCK_END;     //a_ "}}}["
-  static const AString TAG_END;       //a_ "]%"
+  //static const AString TAG_START;     //a_ "%["
+  //static const AString BLOCK_START;   //a_ "]{{{"
+  //static const AString BLOCK_END;     //a_ "}}}["
+  //static const AString TAG_END;       //a_ "]%"
 
   /*!
   Default handler enums

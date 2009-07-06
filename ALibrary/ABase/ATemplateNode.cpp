@@ -64,16 +64,34 @@ void ATemplateNode::emit(AOutputBuffer& target) const
   }
   else
   {
-    //a_Tag name exists
-    target.append(ATemplate::TAG_START);
-    target.append(tag);
-    target.append(ATemplate::BLOCK_START);
+    if (m_BlockData.isEmpty())
+    {
+      target.append(AXmlElement::sstr_Start);
+      target.append(tag);
+      if (m_Attributes.size() > 0)
+      {
+        target.append(' ');
+        m_Attributes.emit(target);
+      }
+      target.append(AXmlElement::sstr_EndSingular);
+    }
+    else
+    {
+      target.append(AXmlElement::sstr_Start);
+      target.append(tag);
+      if (m_Attributes.size() > 0)
+      {
+        target.append(' ');
+        m_Attributes.emit(target);
+      }
+      target.append(AXmlElement::sstr_End);
 
-    target.append(m_BlockData);
+      target.append(m_BlockData);
 
-    target.append(ATemplate::BLOCK_END);
-    target.append(tag);
-    target.append(ATemplate::TAG_END);
+      target.append(AXmlElement::sstr_StartEnd);
+      target.append(tag);
+      target.append(AXmlElement::sstr_End);
+    }
   }
 }
 
@@ -87,49 +105,55 @@ void ATemplateNode::toAFile(AFile& aFile) const
   }
   else
   {
-    //a_Tag name exists
-    aFile.write(ATemplate::TAG_START);
-    aFile.write(tag);
-    aFile.write(ATemplate::BLOCK_START);
+    if (m_BlockData.isEmpty())
+    {
+      aFile.write(AXmlElement::sstr_Start);
+      aFile.write(tag);
+      if (m_Attributes.size() > 0)
+      {
+        aFile.write(' ');
+        m_Attributes.toAFile(aFile);
+      }
+      aFile.write(AXmlElement::sstr_EndSingular);
+    }
+    else
+    {
+      aFile.write(AXmlElement::sstr_Start);
+      aFile.write(tag);
+      if (m_Attributes.size() > 0)
+      {
+        aFile.write(' ');
+        m_Attributes.toAFile(aFile);
+      }
+      aFile.write(AXmlElement::sstr_End);
 
-    aFile.write(m_BlockData);
+      aFile.write(m_BlockData);
 
-    aFile.write(ATemplate::BLOCK_END);
-    aFile.write(tag);
-    aFile.write(ATemplate::TAG_END);
+      aFile.write(AXmlElement::sstr_StartEnd);
+      aFile.write(tag);
+      aFile.write(AXmlElement::sstr_End);
+    }
   }
 }
 
 void ATemplateNode::fromAFile(AFile& aFile)
 {
-  const AString& tag = getTagName();
+  AString endToken;
+  endToken.append('/');
+  endToken.append(getTagName());
 
   m_BlockData.clear();
 
-  AString endToken;
-  if (tag.isEmpty())
-  {
-    //a_No tag name, read until next tag starts
-    endToken.assign(ATemplate::BLOCK_START);
+  //a_Locate end tag in file if not found throw exception, MUST have end
+  if (AConstant::npos == aFile.readUntil(m_BlockData, endToken))
+    ATHROW_EX(this, AException::EndOfBuffer, endToken);
+  
+  m_BlockData.rremoveUntilNotOneOf(AXmlElement::sstr_StartOrWhitespace);
 
-    //a_Read until TAG_START
-    if (AConstant::npos == aFile.readUntil(m_BlockData, ATemplate::TAG_START, false, false))
-      aFile.readUntilEOF(m_BlockData);  //a_No more delimeters, read to EOF
-  }
-  else
-  {
-    //a_End tag delimiter
-    endToken.assign(ATemplate::BLOCK_END);
-    endToken.append(getTagName());
-    endToken.append(ATemplate::TAG_END);
+  aFile.skipUntilNotOneOf(AXmlElement::sstr_EndOrWhitespace);
 
-    //a_Read until end token into a string file which is parsed on per-line basis
-    //a_If end token not found, read everything to EOF
-    if (AConstant::npos == aFile.readUntil(m_BlockData, endToken, true, true))
-      aFile.readUntilEOF(m_BlockData);
-
-    _handleDataAfterRead();
-  }
+  //a_Allow derived nodes to process data after read
+  _handleDataAfterRead();
 }
 
 void ATemplateNode::_handleDataAfterRead()
@@ -149,4 +173,14 @@ const AString& ATemplateNode::getTagName() const
 void ATemplateNode::process(ATemplateContext& context, AOutputBuffer& output)
 {
   m_BlockData.emit(output);
+}
+
+AXmlAttributes& ATemplateNode::useAttributes()
+{
+  return m_Attributes;
+}
+
+const AXmlAttributes& ATemplateNode::getAttributes() const
+{
+  return m_Attributes;
 }

@@ -487,7 +487,7 @@ size_t AFile::skipUntil(
   return ret;
 }
 
-size_t AFile::skipOver(
+size_t AFile::skipUntilNotOneOf(
   const AString& strDelimeters  // = AConstant::ASTRING_WHITESPACE
 )
 {
@@ -499,6 +499,28 @@ size_t AFile::skipOver(
   while (strDelimeters.find(c) != AConstant::npos)
   {
     read(c);
+    ++ret;
+    if (!peek(c))
+      return AConstant::npos;
+  }
+
+  return ret;
+}
+
+size_t AFile::readUntilNotOneOf(
+  AOutputBuffer& target,
+  const AString& strDelimeters  // = AConstant::ASTRING_WHITESPACE
+)
+{
+  char c;
+  if (!peek(c))
+    return AConstant::npos;
+
+  size_t ret = 0;
+  while (strDelimeters.find(c) != AConstant::npos)
+  {
+    read(c);
+    target.append(c);
     ++ret;
     if (!peek(c))
       return AConstant::npos;

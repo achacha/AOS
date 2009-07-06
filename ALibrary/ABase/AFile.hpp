@@ -191,7 +191,15 @@ public:
   @return AConstant::npos if EOF, otherwise number of characters skipped over
           AConstant::unavail if non-blocking and data unavailable but not closed
   */
-  virtual size_t skipOver(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+  virtual size_t skipUntilNotOneOf(const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
+
+  /*!
+  Ability to read over delimeters
+  
+  @return AConstant::npos if EOF, otherwise number of characters read
+          AConstant::unavail if non-blocking and data unavailable but not closed
+  */
+  virtual size_t readUntilNotOneOf(AOutputBuffer& target, const AString& strDelimeters = AConstant::ASTRING_WHITESPACE);
 
   /*!
   Read some data into lookahead buffer

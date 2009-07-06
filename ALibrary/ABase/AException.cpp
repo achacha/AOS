@@ -204,7 +204,7 @@ void AException::getDescription(AOutputBuffer& target) const throw()
       target.append("Name-Value pair type is unknown or not set."); break;
 
     case EndOfBuffer :
-      target.append("Encountered an end-of-buffer while parsing NV pair."); break;
+      target.append("Encountered an end-of-buffer while parsing."); break;
 
     case EmptyName :
       target.append("Name cannot be empty."); break;

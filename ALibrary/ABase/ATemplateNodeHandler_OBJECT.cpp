@@ -38,10 +38,13 @@ const AString& ATemplateNodeHandler_OBJECT::getTagName() const
   return ATemplateNodeHandler_OBJECT::TAGNAME;
 }
 
-ATemplateNode *ATemplateNodeHandler_OBJECT::create(AFile& file)
+ATemplateNode *ATemplateNodeHandler_OBJECT::create(AFile *pFile)
 {
   ATemplateNodeHandler_OBJECT::Node *pNode = new ATemplateNodeHandler_OBJECT::Node(this);
-  pNode->fromAFile(file);
+  
+  if (pFile)
+    pNode->fromAFile(*pFile);
+  
   return pNode;
 }
 
@@ -73,6 +76,9 @@ void ATemplateNodeHandler_OBJECT::Node::process(ATemplateContext& context, AOutp
   {
     scoped.reset(new AEventVisitor::ScopedEvent(context.useEventVisitor(), ASW("ATemplateNodeHandler_OBJECT",27), m_BlockData, AEventVisitor::EL_DEBUG));
   }
+
+  if (m_BlockData.isEmpty())
+    return;
 
   const AEmittable *pObject = context.useObjects().getAsPtr<const AEmittable>(m_BlockData);
   if (pObject)

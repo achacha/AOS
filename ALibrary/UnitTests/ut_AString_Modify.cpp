@@ -5,12 +5,8 @@ $Id$
 */
 #include "pchUnitTests.hpp"
 
-int ut_AString_Modify()
+void ut_AString_Modify_0(int& iRet)
 {
-  std::cerr << "ut_AString_Modify" << std::endl;
-
-  int iRet = 0x0;
-  
   AString str("here and here and here");
   AString str1("there");
   str.overwrite(0x0, 0x4, str1);
@@ -83,6 +79,37 @@ int ut_AString_Modify()
   str1.assign("test:");
   str.appendN(5, str1);
   ASSERT_UNIT_TEST(!str.compare("test:test:test:test:test:"), "AString::append", "2", iRet);
+}
+
+void ut_AString_Modify_1(int& iRet)
+{
+  AString str;
+
+  str.assign("head/  /");
+  int ret = str.rremoveUntilNotOneOf(ASWNL(" /"));
+  ASSERT_UNIT_TEST(ret == 4, "AString::rremoveUntilNotOneOf", "0", iRet);
+  ASSERT_UNIT_TEST(!str.compare("head"), "AString::rremoveUntilNotOneOf", "1", iRet);
+  ret = str.rremoveUntilNotOneOf(ASWNL(" /"));
+  ASSERT_UNIT_TEST(ret == 0, "AString::rremoveUntilNotOneOf", "2", iRet);
+
+  str.assign(" / head");
+  ret = str.removeUntilNotOneOf(ASWNL(" /"));
+  ASSERT_UNIT_TEST(ret == 3, "AString::removeUntilNotOneOf", "0", iRet);
+  ASSERT_UNIT_TEST(!str.compare("head"), "AString::removeUntilNotOneOf", "1", iRet);
+  ret = str.removeUntilNotOneOf(ASWNL(" /"));
+  ASSERT_UNIT_TEST(ret == 0, "AString::removeUntilNotOneOf", "2", iRet);
+
+
+}
+
+int ut_AString_Modify()
+{
+  std::cerr << "ut_AString_Modify" << std::endl;
+
+  int iRet = 0x0;
+
+  ut_AString_Modify_0(iRet);
+  ut_AString_Modify_1(iRet);
 
   return iRet;
 }

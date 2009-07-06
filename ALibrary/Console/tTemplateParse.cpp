@@ -10,7 +10,8 @@
 void testSimpleParse()
 {
   AFile_AString strfile(
-"Hello ' % [MODEL]{{{user/name}}}[MODEL]%!\
+"Hello ' <aos:model  >user/name</aos:model>!\r\n\
+<aos:model name=\"value\"/><html><head></head>foo</html>\
 ");
 
   ABasePtrContainer objects;

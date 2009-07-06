@@ -11,10 +11,10 @@ $Id$
 #include "ATemplateNodeHandler_OBJECT.hpp"
 #include "ATemplateNodeHandler_MODEL.hpp"
 
-const AString ATemplate::TAG_START("<",1);
-const AString ATemplate::BLOCK_START(">",1);
-const AString ATemplate::BLOCK_END("</",2);
-const AString ATemplate::TAG_END(">",1);
+//const AString ATemplate::TAG_START("<",1);
+//const AString ATemplate::BLOCK_START(">",1);
+//const AString ATemplate::BLOCK_END("</",2);
+//const AString ATemplate::TAG_END(">",1);
 
 void ATemplate::debugDump(std::ostream& os, int indent) const
 {
@@ -95,7 +95,7 @@ void ATemplate::addNode(const AString& tagname, AFile& source)
 {
   AASSERT_EX(this, m_Handlers.end() != m_Handlers.find(tagname), tagname);  //a_Tag handler not found
   ATemplateNodeHandler *pHandler = m_Handlers[tagname];
-  AAutoPtr<ATemplateNode> pNode(pHandler->create(source), true);
+  AAutoPtr<ATemplateNode> pNode(pHandler->create(&source), true);
   m_Nodes.push_back(pNode);
   pNode.setOwnership(false);
 }
@@ -118,25 +118,53 @@ void ATemplate::toAFile(AFile& aFile) const
 
 void ATemplate::fromAFile(AFile& aFile)
 {
-  AString tagName;
+  AString str(1024, 256);
+  AString temp(1024, 1024);
   AAutoPtr<ATemplateNode> pText(new ATemplateNode(), true);  //a_Text block accumulator
+
+  // Find start, everything until that is a text block
+  AString tagName;
+  AString attributeBlock;
+  char delimiter;
   size_t ret = AConstant::npos;
-  while(AConstant::npos != (ret = aFile.readUntil(pText->useBlockData(), ATemplate::TAG_START)))
+  while(AConstant::npos != (ret = aFile.readUntil(pText->useBlockData(), AXmlElement::sstr_Start)))
   {
-    if (AConstant::npos == (ret = aFile.readUntil(tagName, ATemplate::BLOCK_START)))
+    temp.clear();
+    aFile.readUntilNotOneOf(temp);
+
+    aFile.readUntilOneOf(tagName, AXmlElement::sstr_End, true, false);  // remove but keep delimiter
+    delimiter = tagName.rget();
+    temp.append(tagName);
+    
+    bool isSingular = false;
+    if ('/' == tagName.last())
     {
-      pText->useBlockData().append(ATemplate::TAG_START);
-      break;  //a_No more
+      // Singular form
+      tagName.rremove();
+      isSingular = true;
+    }
+    tagName.stripTrailing();
+
+    //a_Extract attributes
+    size_t endTag = tagName.find(' ');
+    if (AConstant::npos != endTag)
+    {
+      //a_Possible attributes
+      tagName.get(attributeBlock, endTag);
     }
 
-    //a_Get the handler 
+    // Check if tag is registered
     HANDLERS::iterator it = m_Handlers.find(tagName);
     if (m_Handlers.end() == it)
     {
       //a_No such tag, add to the current text node and keep going
-      pText->useBlockData().append(ATemplate::TAG_START);
+      pText->useBlockData().append(AXmlElement::sstr_Start);
       pText->useBlockData().append(tagName);
-      pText->useBlockData().append(ATemplate::BLOCK_START);
+      //pText->useBlockData().append(isSingular ? AXmlElement::sstr_EndSingular : AXmlElement::sstr_End);
+      
+      //a_Put back and reparse in case attributes contain tags
+      aFile.putBack(delimiter);
+      aFile.putBack(attributeBlock);
     }
     else
     {
@@ -147,16 +175,26 @@ void ATemplate::fromAFile(AFile& aFile)
         pText.setOwnership(false);
 
         //a_Create new active text node
-        pText.reset(new ATemplateNode());
+        pText.reset(new ATemplateNode(), true);
       }
 
       //a_Handle the node
-      ATemplateNode *pNode = it->second->create(aFile);
+      ATemplateNode *pNode = NULL;
+      if (isSingular)
+        pNode = it->second->create();   //a_Singular nodes do not need parsing
+      else
+        pNode = it->second->create(&aFile);
+
+      if (!attributeBlock.isEmpty())
+      {
+        pNode->useAttributes().parse(attributeBlock);
+      }
 
       //a_Add parsed node
       m_Nodes.push_back(pNode);
     }
     tagName.clear();
+    attributeBlock.clear();
   }
 
   //a_Read to EOF

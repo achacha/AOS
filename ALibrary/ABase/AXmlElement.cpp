@@ -17,6 +17,7 @@ const AString AXmlElement::sstr_Start("<");
 const AString AXmlElement::sstr_StartComment("<!--");
 const AString AXmlElement::sstr_StartInstruction("<?");
 const AString AXmlElement::sstr_StartEnd("</");
+const AString AXmlElement::sstr_StartOrWhitespace("< \t\n\r");
 const AString AXmlElement::sstr_EndSingular("/>");
 const AString AXmlElement::sstr_End(">");
 const AString AXmlElement::sstr_EndOrWhitespace("/> \t\n\r");
@@ -1077,12 +1078,12 @@ void AXmlElement::fromAFile(AFile& file)
     return;
 
   //a_Skip over whitespace between < and tagname
-  file.skipOver();
+  file.skipUntilNotOneOf();
 
   //a_Extract name and skip over whitespace
   m_Name.clear();
   file.readUntilOneOf(m_Name, AXmlElement::sstr_EndOrWhitespace, false);
-  file.skipOver();
+  file.skipUntilNotOneOf();
   
   //a_Find /> or >
   char c = ' ';
@@ -1112,7 +1113,7 @@ void AXmlElement::fromAFile(AFile& file)
   while (!boolEndTagFound)
   {
     //a_Read data until next tag starts
-    file.skipOver();                //a_Skip over whitespace
+    file.skipUntilNotOneOf();                //a_Skip over whitespace
     str.clear();
     if (AConstant::npos == file.readUntilOneOf(str, AXmlElement::sstr_Start))
       break;
@@ -1124,7 +1125,7 @@ void AXmlElement::fromAFile(AFile& file)
     }
 
     //a_Skip over whitespace between < and start of the tag name
-    file.skipOver();
+    file.skipUntilNotOneOf();
 
     file.peek(c);
     switch(c)
@@ -1135,7 +1136,7 @@ void AXmlElement::fromAFile(AFile& file)
         file.read(c);
         str.clear();
         file.readUntilOneOf(str, AXmlElement::sstr_EndOrWhitespace);
-        file.skipOver(AXmlElement::sstr_EndOrWhitespace);                //a_Skip over whitespace and >
+        file.skipUntilNotOneOf(AXmlElement::sstr_EndOrWhitespace);                //a_Skip over whitespace and >
         if (str != m_Name)
           ATHROW_EX(&file, AException::InvalidData, AString("Close tag </")+str+"> does not match opened tag <"+m_Name+">");
         

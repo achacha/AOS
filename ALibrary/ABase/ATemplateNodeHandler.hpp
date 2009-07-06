@@ -52,8 +52,9 @@ public:
 
   /*!
   Creator method used for handling this tag
+  If AFile is NULL then empty node is created
   */
-  virtual ATemplateNode *create(AFile&) = 0;
+  virtual ATemplateNode *create(AFile *pFile = NULL) = 0;
 
   /*!
   Clone self

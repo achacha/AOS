@@ -676,6 +676,14 @@ public:
   size_t removeUntilOneOf(const AString& delimiters = AConstant::ASTRING_WHITESPACE, bool removeDelimiters = true);
 
   /*!
+  Remove until a one of the delimiters is NOT found
+
+  @param delimiters to remove until one is NOT found
+  @return characters removed
+  */
+  size_t removeUntilNotOneOf(const AString& delimiters = AConstant::ASTRING_WHITESPACE);
+
+  /*!
   Remove until a one of the delimiters is found, if not found will clear
 
   @param delimiter to remove until
@@ -692,6 +700,14 @@ public:
   @return AConstant::npos if not found, >=0 otherwise
   */
   size_t rremoveUntilOneOf(const AString& delimiters = AConstant::ASTRING_WHITESPACE, bool removeDelimiters = true);
+
+  /*!
+  Reverse remove until a one of the delimiters is NOT found
+
+  @param delimiters to remove until one is NOT found
+  @return characters removed
+  */
+  size_t rremoveUntilNotOneOf(const AString& delimiters = AConstant::ASTRING_WHITESPACE);
 
   /*!
   Reverse remove until a given delimiter, if not found will clear

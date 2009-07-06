@@ -189,7 +189,7 @@ void AXmlDocument::fromAFile(AFile& file)
     if (AConstant::npos == file.skipUntilOneOf('<'))
       break;
 
-    if (AConstant::npos == file.skipOver())                  //a_Skip over whitespace between < and tagname
+    if (AConstant::npos == file.skipUntilNotOneOf())                  //a_Skip over whitespace between < and tagname
       break;
 
     //a_Determine if it's an instruction or element
@@ -205,7 +205,7 @@ void AXmlDocument::fromAFile(AFile& file)
       if (0 != str.find(ASW("!--",3)))
       {
         //a_Comment not found
-        if (AConstant::npos == file.skipOver())
+        if (AConstant::npos == file.skipUntilNotOneOf())
           ATHROW(this, AException::InvalidData);
       }
         
@@ -216,7 +216,7 @@ void AXmlDocument::fromAFile(AFile& file)
       if (AConstant::npos == file.readUntil(str, p->getTypeTerminator()))
         ATHROW_EX(&file, AException::InvalidData, AString("Cannot find terminator for type: ")+p->getTypeTerminator());
 
-      if (AConstant::npos == file.skipOver())
+      if (AConstant::npos == file.skipUntilNotOneOf())
         ATHROW(&file, AException::InvalidData);
 
       p->parse(str);

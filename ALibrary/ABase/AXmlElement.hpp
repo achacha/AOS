@@ -719,6 +719,7 @@ public:
   static const AString sstr_StartComment;                  //a_ "<!--"
   static const AString sstr_StartInstruction;              //a_ "<?"
   static const AString sstr_StartEnd;                      //a_ "</"
+  static const AString sstr_StartOrWhitespace;             //a_ "< \t\n\r"
   static const AString sstr_EndSingular;                   //a_ "/>"
   static const AString sstr_End;                           //a_ ">"
   static const AString sstr_EndOrWhitespace;               //a_ "/> \t\n\r"

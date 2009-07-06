@@ -1173,6 +1173,18 @@ size_t AString::removeUntilOneOf(
   return AConstant::npos;
 }
 
+size_t AString::removeUntilNotOneOf(
+  const AString& delimiters  //= AConstant::ASTRING_WHITESPACE
+)
+{
+  size_t pos = findNotOneOf(delimiters);
+  if (0 == pos || AConstant::npos == pos)
+    return 0;
+
+  _remove(pos, 0);
+  return pos;
+}
+
 size_t AString::removeUntil(
   char delimiter, 
   bool removeDelimiters // = false
@@ -2373,6 +2385,19 @@ size_t AString::rremoveUntilOneOf(
     clear();
   }
   return pos;
+}
+
+size_t AString::rremoveUntilNotOneOf(
+  const AString& delimiters //= AConstant::ASTRING_WHITESPACE
+)
+{
+  size_t pos = rfindNotOneOf(delimiters);
+  if (0 == pos || AConstant::npos == pos)
+    return 0;
+
+  size_t ret = m_Length - pos - 1;
+  setSize(pos + 1);
+  return ret;
 }
 
 size_t AString::rremoveUntil(

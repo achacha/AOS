@@ -40,10 +40,13 @@ const AString& ATemplateNodeHandler_MODEL::getTagName() const
   return ATemplateNodeHandler_MODEL::TAGNAME;
 }
 
-ATemplateNode *ATemplateNodeHandler_MODEL::create(AFile& file)
+ATemplateNode *ATemplateNodeHandler_MODEL::create(AFile *pFile)
 {
   ATemplateNodeHandler_MODEL::Node *pNode = new ATemplateNodeHandler_MODEL::Node(this);
-  pNode->fromAFile(file);
+  
+  if (pFile)
+    pNode->fromAFile(*pFile);
+
   return pNode;
 }
 
@@ -75,6 +78,9 @@ void ATemplateNodeHandler_MODEL::Node::process(ATemplateContext& context, AOutpu
   {
     scoped.reset(new AEventVisitor::ScopedEvent(context.useEventVisitor(), ASW("ATemplateNodeHandler_MODEL",26), m_BlockData, AEventVisitor::EL_DEBUG));
   }
+
+  if (m_BlockData.isEmpty())
+    return;
 
   AXmlElement *pElement = context.useModel().useRoot().findElement(m_BlockData);
   if (pElement)

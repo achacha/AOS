@@ -7,10 +7,11 @@ $Id$
 #define INCLUDED__ATemplateNode_HPP__
 
 #include "apiABase.hpp"
+#include "AString.hpp"
+#include "AXmlAttributes.hpp"
 #include "ASerializable.hpp"
 #include "ADebugDumpable.hpp"
 #include "AXmlEmittable.hpp"
-#include "AString.hpp"
 
 class ATemplate;
 class ATemplateContext;
@@ -66,6 +67,20 @@ public:
   virtual void fromAFile(AFile& aFile);
 
   /*!
+  Access the attributes defined for this specific node
+  
+  @return AXmlAttributes object for this node
+  */
+  AXmlAttributes& useAttributes();
+
+  /*!
+  Access the attributes defined for this specific node
+  
+  @return const AXmlAttributes object for this node
+  */
+  const AXmlAttributes& getAttributes() const;
+
+  /*!
   Process the template node that contains the data for this tag to handle
 
   @param context of the execution
@@ -87,6 +102,9 @@ protected:
 
   //a_Block data
   AString m_BlockData;
+
+  //a_Attributes specified as part of the node
+  AXmlAttributes m_Attributes;
 
   //a_Handler of this node
   ATemplateNodeHandler *mp_Handler;
