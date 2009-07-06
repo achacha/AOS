@@ -14,14 +14,20 @@ Internal constants used by related modules in this library
 class AOS_DADADATA_API AOS_DadaData_Constants
 {
 public:
-  //! Extension to simulate when setting content-type (looks up content-type mapping for a given extension)
-  static const AString MIME_EXTENSION;
+  //! Dataset element
+  static const AString S_DATASET;
 
-  //! Template
-  static const AString TEMPLATE;
+  //! Default to use
+  static const AString   S_DEFAULT;
 
-  //! Filename
-  static const AString FILENAME;
+  //! Name of the query parameter override
+  static const AString   S_QUERYOVERRIDE;
+
+  //! Path to dataset data in the model
+  static const AString DATASETPATH;
+
+  //! Path to store globals for the given template
+  static const AString GLOBALSPATH;
 };
 
 #endif

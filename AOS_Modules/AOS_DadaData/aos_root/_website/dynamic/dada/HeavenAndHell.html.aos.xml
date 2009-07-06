@@ -2,12 +2,12 @@
 <controller>
   <module class="Dada.Properties">
     <dataset>
-      <default>dada</default>
+      <default>lyrics</default>
       <query-parameter>dataset</query-parameter>
     </dataset>
   </module>
 
 	<output class='Template'>
-		<filename>dada/template_ddt/TheBizzareForgery.template.html</filename>
+		<filename>dada/template_lyrics/HeavenAndHell.template.html</filename>
 	</output>
 </controller>

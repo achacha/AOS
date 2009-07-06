@@ -42,15 +42,4 @@
 		<data type="pronoun_s_pos_pers">dada/base/pronoun_singular_possesive_personal.dat</data>
 		<data type="pronoun_p_pos_pers">dada/base/pronoun_plural_possesive_personal.dat</data>
 	</dataset>
-
-	<!-- templates that get used with set data -->
-	<template name="test">dada/template_debug/test.ddt</template>
-
-	<template name="FreeFlow">dada/template_ddt/FreeFlow.ddt</template>
-	<template name="TheRaven">dada/template_ddt/TheRaven.ddt</template>
-
-	<template name="BeforeTheDawn">dada/template_lyrics/BeforeTheDawn.ddt</template>
-	<template name="AtWarWithSatan">dada/template_lyrics/AtWarWithSatan.ddt</template>
-	<template name="PianoMan">dada/template_lyrics/PianoMan.ddt</template>
-	<template name="SabbathBloodySabbath">dada/template_lyrics/SabbathBloodySabbath.ddt</template>
 </AOS_DadaData>

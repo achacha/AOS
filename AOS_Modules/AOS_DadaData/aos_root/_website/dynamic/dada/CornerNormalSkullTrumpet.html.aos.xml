@@ -1,5 +1,12 @@
-<?xml version="1.0" encoding="utf-8" ?> 
+<?xml version="1.0" encoding="utf-8"?> 
 <controller>
+  <module class="Dada.Properties">
+    <dataset>
+      <default>dada</default>
+      <query-parameter>dataset</query-parameter>
+    </dataset>
+  </module>
+
 	<output class='Template'>
 		<filename>dada/template_ddt/DDT_CornerNormalSkullTrumpet.template.html</filename>
 	</output>

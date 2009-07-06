@@ -387,6 +387,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AOSModule_DadaTemplateProperties.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ATemplateNodeHandler_DADA.cpp"
 				>
 			</File>
@@ -440,6 +444,10 @@
 			</File>
 			<File
 				RelativePath=".\AOS_DadaData_Constants.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AOSModule_DadaTemplateProperties.hpp"
 				>
 			</File>
 			<File

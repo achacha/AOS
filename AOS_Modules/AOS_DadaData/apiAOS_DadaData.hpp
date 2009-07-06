@@ -12,4 +12,6 @@ $Id$
 #define AOS_DADADATA_API __declspec(dllimport)
 #endif
 
+#include "AOS_DadaData_Constants.hpp"
+
 #endif // INCLUDED__apiAOSDadaData_HPP__

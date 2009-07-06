@@ -8,6 +8,7 @@ $Id$
 #include "apiAOS_DadaData.hpp"
 
 #include "ATemplateNodeHandler_DADA.hpp"
+#include "AOSModule_DadaTemplateProperties.hpp"
 
 BOOL APIENTRY DllMain(
   HANDLE hModule, 
@@ -34,6 +35,9 @@ extern "C" AOS_DADADATA_API int aos_register(
 )
 {
   services.useLog().add(ASWNL("AOS_DadaData: aos_register"), ALog::EVENT_INFO);
+
+  //a_Register template properties module
+  moduleExecutor.registerModule(new AOSModule_DadaTemplateProperties(services));
 
   //Register the DADA template handler
   services.addTemplateHandler(new ATemplateNodeHandler_DADA(services));

@@ -1,13 +1,65 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>Dada Documentation</title>
   <meta name="generator" content="Amaya, see http://www.w3.org/Amaya/">
 </head>
 
 <body>
 <h1>Dada Poem Engine</h1>
+
+<p></p>
+
+<h3 style="background-color:#8080ff">Defining controller</h3>
+
+<p>Example controller:
+<strong>dynamic/dada/CornerNormalSkullTrumpet.html.aos.xml</strong></p>
+
+<p>Defines a URI: <strong>/dada/CornerNormalSkullTrumpet.html</strong></p>
+
+<p></p>
+<pre><span style="background-color:#feffdd">&lt;?xml version="1.0" encoding="utf-8"?&gt; 
+&lt;controller&gt;
+
+&lt;!-- This module configures the dada template processor --&gt;
+  <strong>&lt;module class="Dada.Properties"&gt;
+    &lt;dataset&gt;
+      &lt;default&gt;dada&lt;/default&gt;
+      &lt;query-parameter&gt;dataset&lt;/query-parameter&gt;
+    &lt;/dataset&gt;
+  &lt;/module&gt;</strong>
+
+&lt;!--
+<strong>aos:dada</strong> template node handler was added to the templates
+
+The template will execute and process appropriate nodes
+See <strong>Template</strong> output generator documentation 
+ --&gt;
+  &lt;output class='Template'&gt;
+    &lt;filename&gt;dada/template_ddt/DDT_CornerNormalSkullTrumpet.template.html&lt;/filename&gt;
+  &lt;/output&gt;
+
+&lt;/controller&gt;</span></pre>
+
+<p></p>
+
+<p>Data.Template parameters</p>
+
+<p style="margin-left:2em;"><strong>dataset/query-parameter</strong> - query
+parameter name to check and if present use value as the dataset name</p>
+
+<p style="margin-left:2em;"><strong>dataset/default</strong> - default dataset
+to use if query parameter does not override it</p>
+
+<p></p>
+
+<p></p>
+
+<h3 style="background-color:#8080ff">Adding dada template section</h3>
+<p>&lt;aos:dada&gt;<em>content to be processed goes here</em>&lt;/aos:dada&gt;</p>
+
+<p></p>
 
 <p></p>
 
@@ -100,6 +152,13 @@ style="font-family: Courier New,Courier,monospace"></span></span></p>
 
 <p>The type defined for each data element is the name that will be used to
 refer to it using %TYPE. Path is relative to _webroot/data directory.</p>
+
+<p></p>
+<hr>
+
+<p></p>
+
+<h1 style="background-color:#8080ff">Word replacement engine</h1>
 
 <p></p>
 

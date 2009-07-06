@@ -98,10 +98,13 @@ const AString& ATemplateNodeHandler_DADA::getTagName() const
   return ATemplateNodeHandler_DADA::TAGNAME;
 }
 
-ATemplateNode *ATemplateNodeHandler_DADA::create(AFile& file)
+ATemplateNode *ATemplateNodeHandler_DADA::create(AFile *pFile)
 {
   ATemplateNodeHandler_DADA::Node *pNode = new ATemplateNodeHandler_DADA::Node(this);
-  pNode->fromAFile(file);
+  
+  if (pFile)
+    pNode->fromAFile(*pFile);
+  
   return pNode;
 }
 
@@ -131,24 +134,31 @@ void ATemplateNodeHandler_DADA::Node::process(ATemplateContext& context, AOutput
   AAutoPtr<AEventVisitor::ScopedEvent> scoped;
   if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
   {
-    scoped.reset(new AEventVisitor::ScopedEvent(context.useEventVisitor(), ASWNL("ATemplateNodeHandler_DADA"), m_BlockData, AEventVisitor::EL_DEBUG));
+    scoped.reset(new AEventVisitor::ScopedEvent(context.useEventVisitor(), ASWNL("ATemplateNodeHandler_DADA::Node"), m_BlockData, AEventVisitor::EL_DEBUG));
   }
 
-#pragma message("ATemplateNodeHandler_DADA::Node::process: MUST selecte dataset dynamically")
+  if (m_BlockData.isEmpty())
+    return;
 
-  AString strSet("dada");  //TODO: Find a way to select this (attributes in nodes)
-  ADadaDataHolder *pddh = ((ATemplateNodeHandler_DADA *)mp_Handler)->m_Objects.useAsPtr<ADadaDataHolder>(strSet);
+  AString dataset;
+  if (!context.useModel().useRoot().emitContentFromPath(AOS_DadaData_Constants::DATASETPATH, dataset))
+  {
+    context.useEventVisitor().addEvent(ASWNL("ATemplateNodeHandler_DADA::Node:") + " dataset not defined for the node", AEventVisitor::EL_ERROR);
+    return;
+  }
+
+  ADadaDataHolder *pddh = ((ATemplateNodeHandler_DADA *)mp_Handler)->m_Objects.useAsPtr<ADadaDataHolder>(dataset);
   if (!pddh)
   {
-    context.useEventVisitor().addEvent(AString("ADadaTemplateProcessor: ADadaDataHolder not found at: ")+strSet, AEventVisitor::EL_ERROR);
+    context.useEventVisitor().addEvent(ASWNL("ATemplateNodeHandler_DADA::Node:") + " ADadaDataHolder not found for name: "+dataset, AEventVisitor::EL_ERROR);
     return;
   }
   
-  VARIABLEMAP *pGlobals = context.useObjects().useAsPtr<VARIABLEMAP>(ASW("DADA_GLOBALS",12));
+  VARIABLEMAP *pGlobals = context.useObjects().useAsPtr<VARIABLEMAP>(AOS_DadaData_Constants::GLOBALSPATH);
   if (NULL == pGlobals)
   {
     pGlobals = new VARIABLEMAP();
-    context.useObjects().insert(ASW("DADA_GLOBALS",12), pGlobals, true);
+    context.useObjects().insert(AOS_DadaData_Constants::GLOBALSPATH, pGlobals, true);
   }
   _generateLine(pddh, pGlobals->vmap, m_BlockData, context, output);
 }
@@ -196,7 +206,7 @@ void ATemplateNodeHandler_DADA::Node::_generateLine(ADadaDataHolder *pddh, MAP_A
             target.append('{');
             target.append(strType);
             target.append('}');
-            context.useEventVisitor().addEvent(AString("ADadaTemplateProcessor::_generateLine: unknown type:")+strType, AEventVisitor::EL_WARN);
+            context.useEventVisitor().addEvent(ASWNL("ATemplateNodeHandler_DADA::Node:") + " unknown type:" + strType, AEventVisitor::EL_WARN);
           break;
         }
         strType.clear(); 
