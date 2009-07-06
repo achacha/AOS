@@ -40,10 +40,13 @@ const AString& ATemplateNodeHandler_SESSION::getTagName() const
   return ATemplateNodeHandler_SESSION::TAGNAME;
 }
 
-ATemplateNode *ATemplateNodeHandler_SESSION::create(AFile& file)
+ATemplateNode *ATemplateNodeHandler_SESSION::create(AFile *pFile)
 {
   ATemplateNodeHandler_SESSION::Node *pNode = new ATemplateNodeHandler_SESSION::Node(this);
-  pNode->fromAFile(file);
+  
+  if (pFile)
+    pNode->fromAFile(*pFile);
+  
   return pNode;
 }
 
@@ -70,6 +73,9 @@ void ATemplateNodeHandler_SESSION::Node::process(ATemplateContext& ctx, AOutputB
   {
     scoped.reset(new AEventVisitor::ScopedEvent(ctx.useEventVisitor(), ASW("ATemplateNodeHandler_SESSION",28), m_BlockData, AEventVisitor::EL_DEBUG));
   }
+
+  if (m_BlockData.isEmpty())
+    return;
 
   //a_Context
   AOSContext *pContext = ctx.useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);

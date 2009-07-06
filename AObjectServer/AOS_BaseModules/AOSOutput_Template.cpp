@@ -98,6 +98,10 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
     AString str(1024, 512);
     if ((*cit)->getName().equals(AOS_BaseModules_Constants::TEMPLATE))
     {
+      if (context.useEventVisitor().isLoggingDebug())
+      {
+        context.useEventVisitor().startEvent(getClass() + ": Creating new inline template", AEventVisitor::EL_DEBUG);
+      }
       // Create a new template
       AAutoPtr<ATemplate> pTemplate(m_Services.createTemplate(), true);
 
@@ -117,6 +121,10 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
       (*cit)->emitContent(str);
       filename.join(str, false);
 
+      if (context.useEventVisitor().isLoggingDebug())
+      {
+        context.useEventVisitor().startEvent(getClass()+": Fetching/parsing template for: "+filename, AEventVisitor::EL_DEBUG);
+      }
       AAutoPtr<ATemplate> pT(NULL, false);
       if (ACacheInterface::NOT_FOUND == m_Services.useCacheManager().getTemplate(context, filename, pT))
       {
@@ -128,7 +136,9 @@ AOSContext::ReturnCode AOSOutput_Template::execute(AOSContext& context)
 
       //a_Parse template
       if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
-        context.useEventVisitor().startEvent(ARope("Processing template file: ")+filename, AEventVisitor::EL_DEBUG);
+      {
+        context.useEventVisitor().startEvent(getClass()+"Processing template file: "+filename, AEventVisitor::EL_DEBUG);
+      }
       AASSERT(this, pT.isNotNull());
       pT->process(context.useLuaTemplateContext(), context.useOutputBuffer());
     }

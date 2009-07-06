@@ -41,10 +41,13 @@ const AString& ATemplateNodeHandler_RESOURCE::getTagName() const
   return ATemplateNodeHandler_RESOURCE::TAGNAME;
 }
 
-ATemplateNode *ATemplateNodeHandler_RESOURCE::create(AFile& file)
+ATemplateNode *ATemplateNodeHandler_RESOURCE::create(AFile *pFile)
 {
   ATemplateNodeHandler_RESOURCE::Node *pNode = new ATemplateNodeHandler_RESOURCE::Node(this);
-  pNode->fromAFile(file);
+  
+  if (pFile)
+    pNode->fromAFile(*pFile);
+  
   return pNode;
 }
 
@@ -71,6 +74,9 @@ void ATemplateNodeHandler_RESOURCE::Node::process(ATemplateContext& ctx, AOutput
   {
     scoped.reset(new AEventVisitor::ScopedEvent(ctx.useEventVisitor(), ASW("ATemplateNodeHandler_RESOURCE",28), m_BlockData, AEventVisitor::EL_DEBUG));
   }
+
+  if (m_BlockData.isEmpty())
+    return;
 
   // Get resource
   AOSContext *pContext = ctx.useObjects().useAsPtr<AOSContext>(AOSContext::OBJECTNAME);

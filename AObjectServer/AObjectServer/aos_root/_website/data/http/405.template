@@ -4,6 +4,6 @@
 </head>
 <body>
 <font color="red">HTTP405: Method not allowed.</font>
-<!-- <aos:lua> print(model.emitContentFromPath("/root/REQUEST/AUrl/url")); </aos:lua> -->
+<!-- <aos:lua> print(model.emitContentFromPath("/root/REQUEST/url/url")); </aos:lua> -->
 </body>
 </html>

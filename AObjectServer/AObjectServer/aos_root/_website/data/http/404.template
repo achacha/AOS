@@ -4,6 +4,6 @@
 </head>
 <body>
 <font color="red">HTTP404: File not found.</font>
-<!-- <aos:lua> print(model.emitContentFromPath("/root/REQUEST/AUrl/url")); </aos:lua> -->
+<!-- <aos:lua> print(model.emitContentFromPath("/root/REQUEST/url/url")); </aos:lua> -->
 </body>
 </html>

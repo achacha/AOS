@@ -8,7 +8,7 @@ print(model.emitContentFromPath("/root/RESPONSE/status"));
 </head>
 <body>
 <font color="red"><b>HTTP Error <aos:lua>
-print(model.emitContentFromPath("/root/REQUEST/AUrl/url"));
+print(model.emitContentFromPath("/root/REQUEST/url/url"));
 print("<br/>");
 print(model.emitContentFromPath("/root/RESPONSE/status@code"));
 print("</b>: ");
