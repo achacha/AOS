@@ -34,10 +34,13 @@ const AString& ATemplateNodeHandler_LUA::getTagName() const
   return ATemplateNodeHandler_LUA::TAGNAME;
 }
 
-ATemplateNode *ATemplateNodeHandler_LUA::create(AFile& file)
+ATemplateNode *ATemplateNodeHandler_LUA::create(AFile *pFile)
 {
   ATemplateNodeHandler_LUA::Node *pNode = new ATemplateNodeHandler_LUA::Node(this);
-  pNode->fromAFile(file);
+  
+  if (pFile)
+    pNode->fromAFile(*pFile);
+  
   return pNode;
 }
 
@@ -77,6 +80,9 @@ void ATemplateNodeHandler_LUA::Node::process(ATemplateContext& context, AOutputB
   {
     scoped.reset(new AEventVisitor::ScopedEvent(context.useEventVisitor(), ASW("ATemplateNodeHandler_LUA",24), m_BlockData, AEventVisitor::EL_DEBUG));
   }
+
+  if (m_BlockData.isEmpty())
+    return;
 
   ALuaTemplateContext *pLuaTemplateContext = dynamic_cast<ALuaTemplateContext *>(&context);
   if (pLuaTemplateContext)

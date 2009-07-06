@@ -47,7 +47,7 @@ public:
   /*!
   Creator method used for parsing this tag
   */
-  virtual ATemplateNode *create(AFile&);
+  virtual ATemplateNode *create(AFile *pFile = NULL);
 
   /*!
   Initialize internal resources
