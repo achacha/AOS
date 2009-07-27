@@ -62,21 +62,26 @@ public:
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
-  Determines if a command is enabled
   Disabled commands will be skipped and static equivaltent will be checked
     if static not found then 404 results
+  
+  @return if a controller is enabled
   */
   bool isEnabled() const;
-  
+
   /*!
-  If this is an ajax command and to supress extra XML in the model
-  Only what is added explicitly by commands is what you get
+  If controller is ajax based
+  Only what is added explicitly by modules is what you get
+
+  @return if this is an ajax controller and to supress extra XML in the model
   */
   bool isForceAjax() const;
   
   /*!
-  Checks if the dynamic command is forcing no cache
+  Checks if the dynamic controller is forcing no cache
   This can be turned on by a controller config and browser will cache
+
+  @return if cache is requested to not cache on HTTP response header
   */
   bool isCacheControlNoCache() const;
 
@@ -87,7 +92,7 @@ public:
   bool isSessionRequired() const;
 
   /*!
-  Command specified gzip of the output
+  Controller specified gzip of the output
   If something invalid or out of range is specified then 0 is assumed
   
   @return 0-9, 0=off, 1=minimum, 9=maximum
@@ -95,9 +100,9 @@ public:
   int getGZipLevel() const;
 
   /*!
-  Gets the path of the command with command name
+  Gets the path of the controller with name
 
-  @return absolute base path + command name
+  @return absolute base path + controller name
   */
   const AString& getPath() const;
 
@@ -110,8 +115,8 @@ public:
   void emitBasePath(AOutputBuffer&) const;
 
   /*!
-  Returns alias to use instead of this command
-  If empty then this is a valid command else lookup the alias name
+  Returns alias to use instead of this controller
+  If empty then this is a valid controller else lookup the alias name
   */
   const AString& getAlias() const;
   

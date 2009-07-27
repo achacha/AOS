@@ -14,6 +14,8 @@ $Id$
 #include "ATemplateNodeHandler_SESSION.hpp"
 #include "ATemplateNodeHandler_RESOURCE.hpp"
 
+extern "C" int luaopen_aos(lua_State *L);
+
 const AString AOSServices::CLASS("AOSServices");
 
 const AString& AOSServices::getClass() const
@@ -154,6 +156,9 @@ AOSServices::AOSServices(const AFilename& basePath) :
   mutexfile.useFilename().assign(ASW("aos.mutex",9));
   mp_Log = new ALog_AFile(new ASync_Mutex(mutexfile.toAString()), logfile, ALog::EVENTMASK_ALL_ERRORS);
 
+  //a_Lua callbacks
+  m_LuaRegisterCallbacks.push_back(luaopen_aos);
+  
   //a_Must have admin registry before configuration
   mp_AdminRegistry = new AOSAdminRegistry(*mp_Log);
 }
@@ -403,7 +408,7 @@ void AOSServices::addTemplateHandler(ATemplateNodeHandler *pHandler)
   m_TemplateNodeHandlers.use().push_back(pHandler);
 }
 
-ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
+ATemplate *AOSServices::createTemplate()
 {
   AAutoPtr<ATemplate> pTemplate(new ATemplate(), true);
   
@@ -419,6 +424,20 @@ ATemplate *AOSServices::createTemplate(u4 defaultLuaLibraries)
   pTemplate.setOwnership(false);
   return pTemplate.use();
 }
+
+ALuaTemplateContext *AOSServices::createLuaTemplateContext(
+  AOSContext& context, 
+  u4 deafultLuaLibraries // = ALuaEmbed::LUALIB_ALL
+)
+{
+  ALuaTemplateContext *pLuaContext = new ALuaTemplateContext(context.useContextObjects(), context.useModelXmlDocument(), context.useEventVisitor(), deafultLuaLibraries);
+  
+  for (LUA_REGISTER_CALLBACKS::iterator it = m_LuaRegisterCallbacks.begin(); it != m_LuaRegisterCallbacks.end(); ++it)
+    pLuaContext->addUserDefinedLibrary(*it);
+  
+  return pLuaContext;
+}
+
 
 AOSInputExecutor& AOSServices::useInputExecutor() 
 { 

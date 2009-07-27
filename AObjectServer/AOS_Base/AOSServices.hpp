@@ -140,12 +140,9 @@ public:
   /*!
   Create an instance of ATemplate with CODE and LUA processor with AOS specific LUA library loaded 
   
-  @see AOSLuaFunctions.hpp
-  @see ALuaEmbed.hpp
-
-  NOTE: OWNED and DELETED by caller
+  @return ATemplate pointer, OWNED and DELETED by caller
   */
-  ATemplate* createTemplate(u4 deafultLuaLibraries = ALuaEmbed::LUALIB_ALL);
+  ATemplate* createTemplate();
 
   /*!
   Adds an additional handler to include with templates created by createTemplate
@@ -155,6 +152,16 @@ public:
   @param handler of type ATemplateNodeHandler
   */
   void addTemplateHandler(ATemplateNodeHandler *);
+
+  /*!
+  Create a template context needed for executing the templates
+
+  @see AOSLuaFunctions.hpp
+  @see ALuaEmbed.hpp
+
+  @return ALuaTemplateContext pointer, OWNED and DELETED by caller
+  */
+  ALuaTemplateContext *createLuaTemplateContext(AOSContext&, u4 deafultLuaLibraries = ALuaEmbed::LUALIB_ALL);
 
   /*!
   Get dynamic library object
@@ -240,6 +247,9 @@ private:
 
   // Template node handlers to add to the ATemplate types from createTemplate call
   AListOfPtrs<ATemplateNodeHandler> m_TemplateNodeHandlers;
+
+  typedef std::list<ALuaEmbed::LUA_OPENLIBRARY_FPTR> LUA_REGISTER_CALLBACKS;
+  LUA_REGISTER_CALLBACKS m_LuaRegisterCallbacks;
 };
 
 #endif //INCLUDED__AOSServices_HPP__

@@ -12,8 +12,6 @@ $Id$
 #include "ASocketException.hpp"
 #include "AZlib.hpp"
 
-extern "C" int luaopen_aos(lua_State *L);
-
 const AString AOSContext::XML_ROOT("root");
 const AString AOSContext::OBJECTNAME("__AOSContext__");
 
@@ -1707,9 +1705,8 @@ ALuaTemplateContext& AOSContext::useLuaTemplateContext()
 {
   if (!mp_LuaTemplateContext)
   {
-    mp_LuaTemplateContext = new ALuaTemplateContext(m_ContextObjects, m_OutputXmlDocument, m_EventVisitor, m_DefaultLuaLibraries);
-    mp_LuaTemplateContext->addUserDefinedLibrary(luaopen_aos);  //a_Add AOS function library loader
-
+    mp_LuaTemplateContext = m_Services.createLuaTemplateContext(*this, m_DefaultLuaLibraries);
+      
     //a_Reference self from inside the objects
     AASSERT(this, NULL == mp_LuaTemplateContext->useObjects().get(OBJECTNAME));
     mp_LuaTemplateContext->useObjects().insert(OBJECTNAME, this, false);
