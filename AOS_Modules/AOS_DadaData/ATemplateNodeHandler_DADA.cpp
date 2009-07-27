@@ -283,6 +283,19 @@ void ATemplateNodeHandler_DADA::Node::_appendVariable(ADadaDataHolder *pddh, MAP
       if (!(*itN).compare("proper", 6))
       {
         str.use(0) = (u1)toupper(str.at(0));
+
+        size_t nextStart;
+        size_t nextSpace = str.find(' ', 1);
+        while (AConstant::npos != nextSpace)
+        {
+          nextStart = nextSpace + 1;
+          if (nextStart < str.getSize())
+            str.use(nextStart) = (u1)toupper(str.at(nextStart));
+          else
+            break;
+
+          nextSpace = str.find(' ', nextStart);
+        }
       }
 
       ++itN;
@@ -334,6 +347,8 @@ void ATemplateNodeHandler_DADA::Node::_appendWordType(ADadaDataHolder *pddh, MAP
       {
         //a_Add variable to global map
         (*itN).peek(strSaveVariable, 1);
+        globals[strSaveVariable] = str;
+        strSaveVariable.clear();
       }
       else if (!strTypeName.compare("verb"))
       {
@@ -394,19 +409,25 @@ void ATemplateNodeHandler_DADA::Node::_appendWordType(ADadaDataHolder *pddh, MAP
       if (!(*itN).compare("proper", 6))
       {
         str.use(0) = (u1)toupper(str.at(0));
+
+        size_t nextStart;
+        size_t nextSpace = str.find(' ', 1);
+        while (AConstant::npos != nextSpace)
+        {
+          nextStart = nextSpace + 1;
+          if (nextStart < str.getSize())
+            str.use(nextStart) = (u1)toupper(str.at(nextStart));
+          else
+            break;
+
+          nextSpace = str.find(' ', nextStart);
+        }
       }
 
       ++itN;
     }
     
     target.append(str);
-
-    //a_Save it if save variable was detected
-    if (!strSaveVariable.isEmpty())
-    {
-      globals[strSaveVariable] = str;
-      strSaveVariable.clear();
-    }
   }
   else
   {

@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?> 
+<?xml version="1.0" encoding="utf-8" ?> 
 <controller>
   <module class="Dada.Properties">
     <dataset>
-      <default>lyrics</default>
+      <default>debug</default>
       <query-parameter>dataset</query-parameter>
     </dataset>
   </module>
 
 	<output class='Template'>
-		<filename>dada/template_lyrics/AtWarWithSatan.template.html</filename>
+		<filename>dada/template_debug/debug.template.html</filename>
 	</output>
 </controller>
