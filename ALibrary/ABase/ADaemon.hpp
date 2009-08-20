@@ -88,8 +88,14 @@ public:
   int continueNTService();  //a_Continues the current service (given it was paused, else it will hurl ye holy exception of the antiochs at thee)
   int stopNTService();      //a_Stops the current service
 
-  // NT service notifcation
-  virtual int notifyServiceControlManager(u4 dwState, u4 dwProgress);
+  /*!
+  NT service notifcation
+
+  @param dwState state of the service
+  @param dwProgress check state
+  @param dwWaitHint how long this should take
+  */
+  virtual int notifyServiceControlManager(u4 dwState, u4 dwProgress, u4 dwWaitHint = 1000);
 
   static AThread *mp_MainServiceThread;
 

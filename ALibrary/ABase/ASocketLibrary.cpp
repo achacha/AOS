@@ -7,6 +7,7 @@ $Id$
 #include "ASocketLibrary.hpp"
 #include "ASocketException.hpp"
 #include "ATextConverter.hpp"
+#include "AThread.hpp"
 #include <Iphlpapi.h>
 
 const AString ASocketLibrary::ANY_ADDRESS("AnyAddress");
@@ -31,18 +32,23 @@ ASocketLibrary::ASocketLibrary()
   int err; 
   wVersionRequested = MAKEWORD(1, 1); 
  
-  err = WSAStartup(wVersionRequested, &wsaData); 
- 
-  if (err != 0) 
-      /* Tell the user that we couldn't find a useable */ 
-      /* winsock.dll.     */ 
-      return; 
- 
-  /* Confirm that the Windows Sockets DLL supports 1.1.*/ 
-  /* Note that if the DLL supports versions greater */ 
-  /* than 1.1 in addition to 1.1, it will still return */ 
-  /* 1.1 in wVersion since that is the version we */ 
-  /* requested. */ 
+  int tries = 30;
+  while (WSASYSNOTREADY == (err = WSAStartup(wVersionRequested, &wsaData))) 
+  {
+    AThread::sleep(100);
+    err = WSAStartup(wVersionRequested, &wsaData); 
+  }
+
+  if (0 == tries || err != 0)
+  {
+    //a_Timed out waiting for socket system to initialize
+    ATHROW(NULL, ASocketException::APIFailure);
+    return;
+  }
+
+  // Confirm that the Windows Sockets DLL supports 1.1
+  // Note that if the DLL supports versions greater than 1.1 in addition to 1.1, it will still return
+  // 1.1 in wVersion since that is the version we requested.
   if ( LOBYTE( wsaData.wVersion ) != 1 || HIBYTE( wsaData.wVersion ) != 1 )
   { 
       //a_Could not find winsock.dll
