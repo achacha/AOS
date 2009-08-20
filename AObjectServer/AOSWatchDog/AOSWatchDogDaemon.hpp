@@ -22,6 +22,7 @@ public:
 
   //! Callbacks
   virtual int controlStopPending();
+  virtual int controlShutdown();
 
   //! Utility to bounce server
   bool bounceServer();
