@@ -19,6 +19,19 @@ public:
   //! List of thread pointers
   typedef std::list<AThread *> THREADS;
 
+  //! Threadpool events
+  enum Event
+  {
+    MonitorStarting = 1,         //! Monitor thread is starting
+    MonitorCreatedThread,        //! Monitor created an additional thread
+    MonitorDestroyedThread,      //! Monitor destroyed an existing thread
+    MonitorFinishedIterations,   //! Monitored threads finished set number of iterations
+    MonitorExiting               //! Monitor thead is exiting
+  };
+
+  //! Callback to an event
+  typedef void (*THREADPOOL_CALLBACK)(AThreadPool&, AThreadPool::Event e);
+
 public:
   /*!
   Create pool based on a threadproc (which becomes threadproc of the template thread)
@@ -27,12 +40,14 @@ public:
   @param threads to maintain active simultaneously
   @param pThis pointer to the thread that is retrieved with thread.getThis()
   @param pParameter pointer to the thread that is retrieved with thread.getParameter()
+  @param pCallback to call or NULL to disable callbacks
   */
   AThreadPool(
     AThread::ATHREAD_PROC *threadproc, 
     int threads = 1, 
-    ABase *pThis = NULL, 
-    ABase *pParameter = NULL
+    ABase *pThreadThis = NULL, 
+    ABase *pThreadParameter = NULL,
+    THREADPOOL_CALLBACK pCallback = NULL
   );
   
   /*!
@@ -41,6 +56,13 @@ public:
   */
   virtual ~AThreadPool();
 
+  /*!
+  Sets a callback handler
+
+  @param pCallback or NULL to clear
+  */
+  void setThreadPoolManagerCallback(THREADPOOL_CALLBACK pCallback = NULL);
+  
   /*!
   Waits until monitor thread exits
 
@@ -182,6 +204,10 @@ public:
   ABase *getParameter();
 
   /*!
+  Set a callback handler
+  */
+
+  /*!
   Access the thtread container
   This is not very safe unless the SyncObject is locked during use
 
@@ -242,7 +268,8 @@ protected:
     int threads, 
     ABase *pThis, 
     ABase *pParameter,
-    AThread::ATHREAD_PROC *threadprocMonitor
+    AThread::ATHREAD_PROC *threadprocMonitor,
+    THREADPOOL_CALLBACK pCallback = NULL
   );
 
   //Thread container
@@ -273,6 +300,11 @@ protected:
 
   // Timer for the runtime of the pool
   ATimer m_ThreadPoolTimer;
+
+  // Callback handler
+  void _callCallback(AThreadPool::Event e);
+  THREADPOOL_CALLBACK mp_Callback;
+  ASync_CriticalSection m_CallbackSynchObject;
 
 private:
   AThreadPool() {}

@@ -42,11 +42,13 @@ void AThreadPool::debugDump(std::ostream& os, int indent) const
 
 AThreadPool::AThreadPool(
   AThread::ATHREAD_PROC *threadproc,
-  int threadCount,   // = 1
-  ABase *pThis,       // = NULL
-  ABase *pParameter   // = NULL
+  int threadCount,               // = 1
+  ABase *pThis,                  // = NULL
+  ABase *pParameter,             // = NULL
+  THREADPOOL_CALLBACK pCallback // = NULL
 ) :
   mp_threadproc(threadproc),
+  mp_Callback(pCallback),
   mp_This(pThis),
   mp_Parameter(pParameter),
   m_MonitorThread(AThreadPool::_threadprocDefaultMonitor, false),
@@ -67,9 +69,11 @@ AThreadPool::AThreadPool(
   int threadCount,
   ABase *pThis,
   ABase *pParameter,
-  AThread::ATHREAD_PROC *threadprocMonitor
+  AThread::ATHREAD_PROC *threadprocMonitor,
+  THREADPOOL_CALLBACK pCallback // = NULL
 ) :
   mp_threadproc(threadproc),
+  mp_Callback(pCallback),
   mp_This(pThis),
   mp_Parameter(pParameter),
   m_MonitorThread(threadprocMonitor, false),
@@ -95,6 +99,19 @@ AThreadPool::~AThreadPool()
   catch(...) {}
 }
 
+void AThreadPool::setThreadPoolManagerCallback(THREADPOOL_CALLBACK pCallback)
+{
+  ALock lock(m_CallbackSynchObject);
+  mp_Callback = pCallback;
+}
+
+void AThreadPool::_callCallback(AThreadPool::Event e)
+{
+  ALock lock(m_CallbackSynchObject);
+  if (mp_Callback)
+    mp_Callback(*this, e);
+}
+
 void AThreadPool::emit(AOutputBuffer&) const
 {
   //TODO: display status, may need a safe way to do this
@@ -102,13 +119,13 @@ void AThreadPool::emit(AOutputBuffer&) const
 
 u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
 {
-  thread.setRunning(true);
-  
   AThreadPool *pThis = (AThreadPool *)thread.getThis();
   AASSERT(pThis, pThis);
 
   bool shouldSleepMore = false;
+  thread.setRunning(true);
   pThis->m_ThreadPoolTimer.start();
+  pThis->_callCallback(MonitorStarting);
   try
   {
     do
@@ -153,6 +170,8 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
 
           if (AConstant::npos != pThis->m_TotalThreadCreationCount)
             --pThis->m_TotalThreadCreationCount;
+
+          pThis->_callCallback(MonitorCreatedThread);
         }
       }
       else if (threadcount > pThis->m_DesiredThreadCount)
@@ -168,6 +187,8 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
           shouldSleepMore = true;
           ++it;
           --diff;
+
+          pThis->_callCallback(MonitorDestroyedThread);
         }
       }
 
@@ -203,7 +224,12 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
         }
         else
           ++it;
+
+        pThis->_callCallback(MonitorDestroyedThread);
       }
+
+      if (!pThis->m_TotalThreadCreationCount && !pThis->m_Threads.size())          
+        pThis->_callCallback(MonitorFinishedIterations);
     }
     while (thread.isRun());
     pThis->m_ThreadPoolTimer.stop();
@@ -217,6 +243,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
     thread.useExecutionState().assign("Unknown exception caught");
   }
 
+  pThis->_callCallback(MonitorExiting);
   thread.setRunning(false);
   return 0;
 }

@@ -3,15 +3,47 @@
 #include "AThreadPool.hpp"
 #include "ALock.hpp"
 #include "AFile_IOStream.hpp"
-#include "ACriticalSection.hpp"
+#include "ASync_CriticalSection.hpp"
 
-class CommonData
+class CommonData: public ABase
 {
 public:
   CommonData() : m_count(0) {}
   int m_count;
-  ACriticalSection m_cs;
+  ASync_CriticalSection m_cs;
 };
+
+bool g_MonitorExited = false;
+
+void callbackThreadPoolMonitor(AThreadPool& pool, AThreadPool::Event e)
+{
+  switch(e)
+  {
+    case AThreadPool::MonitorStarting:
+      std::cout << "Creating monitor" << std::endl;
+    break;
+
+    case AThreadPool::MonitorCreatedThread:
+      std::cout << "++thread" << std::endl;
+    break;
+
+    case AThreadPool::MonitorDestroyedThread:
+      std::cout << "--thread" << std::endl;
+    break;
+
+    case AThreadPool::MonitorFinishedIterations:
+      std::cout << "Iterations done" << std::endl;
+    break;
+
+    case AThreadPool::MonitorExiting:
+      std::cout << "Exiting monitor" << std::endl;
+      g_MonitorExited = true;
+    break;
+
+    default:
+      std::cout << "Wut? e=" << e << std::endl;
+  }
+}
 
 u4 mythreadproc(AThread& thread)
 {
@@ -20,7 +52,7 @@ u4 mythreadproc(AThread& thread)
 
   u4 id = thread.getId();
   thread.setRunning(true);
-  do
+//  do
   {
     {
       ALock lock(pData->m_cs);
@@ -29,7 +61,7 @@ u4 mythreadproc(AThread& thread)
     }
     AThread::sleep(300);
   }
-  while (thread.isRun());
+//  while (thread.isRun());
   thread.setRunning(false);
 
   return 0;
@@ -38,12 +70,13 @@ u4 mythreadproc(AThread& thread)
 int main()
 {
   CommonData data;
-  AThreadPool threadpool(mythreadproc, 20, NULL, &data);
+  AThreadPool threadpool(mythreadproc, 20, NULL, &data, callbackThreadPoolMonitor);
+  threadpool.setTotalThreadCreationCount(30);
   threadpool.start();
 
   AFile_IOStream io;
   AString str;
-  while (AConstant::npos != io.readLine(str))
+  while (!g_MonitorExited && AConstant::npos != io.readLine(str))
   {
     if (str.equalsNoCase("exit"))
       break;
