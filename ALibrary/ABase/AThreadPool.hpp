@@ -23,7 +23,10 @@ public:
   enum Event
   {
     MonitorStarting = 1,         //! Monitor thread is starting
+    MonitorSleeping,             //! Monitor thread is sleeping until next cycle
     MonitorCreatedThread,        //! Monitor created an additional thread
+    MonitorFlagToStopThread,     //! Monitor is flagging a thread to stop
+    MonitorCheckStopThread,      //! Checking if a thread flagged for stop is finished
     MonitorDestroyedThread,      //! Monitor destroyed an existing thread
     MonitorFinishedIterations,   //! Monitored threads finished set number of iterations
     MonitorExiting               //! Monitor thead is exiting

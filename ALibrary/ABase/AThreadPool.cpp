@@ -122,7 +122,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
   AThreadPool *pThis = (AThreadPool *)thread.getThis();
   AASSERT(pThis, pThis);
 
-  bool shouldSleepMore = false;
+  bool skipNextSleep = false, shouldSleepMore = false;
   thread.setRunning(true);
   pThis->m_ThreadPoolTimer.start();
   pThis->_callCallback(MonitorStarting);
@@ -131,11 +131,18 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
     do
     {
       size_t threadcount = pThis->m_Threads.size();  // all running threads
-      if (threadcount == pThis->m_DesiredThreadCount || !pThis->m_TotalThreadCreationCount)
+      if (
+        !skipNextSleep 
+        && (threadcount == pThis->m_DesiredThreadCount || !pThis->m_TotalThreadCreationCount)
+      )
       {
         // Short sleep since desired number of threads are running or we are not creating any more
+        pThis->_callCallback(MonitorSleeping);
+
         AThread::sleep(pThis->m_monitorCycleSleep);
       }
+      else
+        skipNextSleep = false;
 
       // Stopping condition
       if (
@@ -188,13 +195,15 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
           ++it;
           --diff;
 
-          pThis->_callCallback(MonitorDestroyedThread);
+          pThis->_callCallback(MonitorFlagToStopThread);
         }
       }
 
       // Short sleep to allow time for threads to start up or shut down gracefully
       if (shouldSleepMore)
       {
+        pThis->_callCallback(MonitorSleeping);
+
         AThread::sleep(pThis->m_monitorCycleSleep);
         shouldSleepMore = false;
       }
@@ -212,6 +221,8 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
           ++it;
           pThis->m_Threads.erase(itKill);
           delete p;
+          
+          pThis->_callCallback(MonitorDestroyedThread);
         }
         else if (!(*it)->isRun() && (*it)->isRunning())
         {
@@ -221,15 +232,22 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
           (*itKill)->terminate();
           pThis->m_Threads.erase(itKill);
           delete p;
+          
+          pThis->_callCallback(MonitorDestroyedThread);
         }
         else
+        {
           ++it;
-
-        pThis->_callCallback(MonitorDestroyedThread);
+          
+          pThis->_callCallback(MonitorCheckStopThread);
+        }
       }
 
       if (!pThis->m_TotalThreadCreationCount && !pThis->m_Threads.size())          
+      {
         pThis->_callCallback(MonitorFinishedIterations);
+        skipNextSleep = true;
+      }
     }
     while (thread.isRun());
     pThis->m_ThreadPoolTimer.stop();

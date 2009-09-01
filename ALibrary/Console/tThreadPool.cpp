@@ -13,6 +13,8 @@ public:
   ASync_CriticalSection m_cs;
 };
 
+ASync_CriticalSection g_ConsoleOutput;
+
 bool g_MonitorExited = false;
 
 void callbackThreadPoolMonitor(AThreadPool& pool, AThreadPool::Event e)
@@ -20,28 +22,67 @@ void callbackThreadPoolMonitor(AThreadPool& pool, AThreadPool::Event e)
   switch(e)
   {
     case AThreadPool::MonitorStarting:
-      std::cout << "Creating monitor" << std::endl;
+    {
+      ALock lock(g_ConsoleOutput);
+      std::cout << "[Creating monitor]" << std::flush;
+    }
     break;
 
     case AThreadPool::MonitorCreatedThread:
-      std::cout << "++thread" << std::endl;
+    {
+      ALock lock(g_ConsoleOutput);
+      std::cout << "+[" << pool.getActiveThreadCount() << "]" << std::flush;
+    }
+    break;
+
+    case AThreadPool::MonitorCheckStopThread:
+    {
+      ALock lock(g_ConsoleOutput);
+      std::cout << "?[" << pool.getActiveThreadCount() << "]" << std::flush;
+    }
+    break;
+
+    case AThreadPool::MonitorFlagToStopThread:
+    {
+      ALock lock(g_ConsoleOutput);
+      std::cout << ">[" << pool.getActiveThreadCount() << "]" << std::flush;
+    }
     break;
 
     case AThreadPool::MonitorDestroyedThread:
-      std::cout << "--thread" << std::endl;
+    {
+      ALock lock(g_ConsoleOutput);
+      std::cout << "-[" << pool.getActiveThreadCount() << "]" << std::flush;
+    }
     break;
 
     case AThreadPool::MonitorFinishedIterations:
-      std::cout << "Iterations done" << std::endl;
+    {
+      ALock lock(g_ConsoleOutput);
+      std::cout << "[Iterations done]" << std::flush;
+    }
+    break;
+
+    case AThreadPool::MonitorSleeping:
+    {
+      ALock lock(g_ConsoleOutput);
+      std::cout << "[Monitor is sleeping]" << std::flush;
+    }
     break;
 
     case AThreadPool::MonitorExiting:
-      std::cout << "Exiting monitor" << std::endl;
+    {
+      ALock lock(g_ConsoleOutput);
+      std::cout << "[Exiting monitor, type 'exit' and ENTER]" << std::endl;
       g_MonitorExited = true;
+    }
     break;
 
     default:
+    {
+      ALock lock(g_ConsoleOutput);
       std::cout << "Wut? e=" << e << std::endl;
+    }
   }
 }
 
@@ -52,16 +93,21 @@ u4 mythreadproc(AThread& thread)
 
   u4 id = thread.getId();
   thread.setRunning(true);
-//  do
+
   {
     {
       ALock lock(pData->m_cs);
       pData->m_count++;
+    }
+
+    {
+      ALock lock(g_ConsoleOutput);
       std::cout << "[" << AString::fromU4(thread.getId()) << "," << pData->m_count << "]" << std::flush;
     }
+
     AThread::sleep(300);
   }
-//  while (thread.isRun());
+
   thread.setRunning(false);
 
   return 0;
