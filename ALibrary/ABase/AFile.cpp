@@ -699,7 +699,12 @@ size_t AFile::peekUntilEOF(AOutputBuffer& target)
 size_t AFile::readUntilEOF(AOutputBuffer& target)
 {
   //a_Read everything
-  size_t bytesRead = 0;
+  size_t bytesRead = m_LookaheadBuffer.getSize();
+  if (bytesRead > 0)
+  {
+    m_LookaheadBuffer.emit(target);
+    m_LookaheadBuffer.clear();
+  }
   while (_isNotEof())
   {
     switch (readBlockIntoLookahead())
@@ -709,20 +714,16 @@ size_t AFile::readUntilEOF(AOutputBuffer& target)
       continue;
 
       case AConstant::npos:
-        break;
+        bytesRead += m_LookaheadBuffer.getSize();
+        m_LookaheadBuffer.emit(target);
+        m_LookaheadBuffer.clear();
+        return bytesRead;
 
       default:
         bytesRead += m_LookaheadBuffer.getSize();
         m_LookaheadBuffer.emit(target);
         m_LookaheadBuffer.clear();
     }
-  }
-
-  if (!m_LookaheadBuffer.isEmpty())
-  {
-    bytesRead += m_LookaheadBuffer.getSize();
-    m_LookaheadBuffer.emit(target);
-    m_LookaheadBuffer.clear();
   }
 
   return bytesRead;
