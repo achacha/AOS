@@ -40,6 +40,7 @@ const AString AConstant::ASTRING_CLOSEBRACE("}",1);
 const AString AConstant::ASTRING_QUESTIONMARK("?",1);
 const AString AConstant::ASTRING_UNDEFINED("undefined",9);
 const AString AConstant::ASTRING_EQUALS("=",1);
+const AString AConstant::ASTRING_MINUS("-",1);
 const AString AConstant::ASTRING_SLASH("/",1);
 const AString AConstant::ASTRING_DOUBLESLASH("//",2);
 const AString AConstant::ASTRING_TRUE("true",4);

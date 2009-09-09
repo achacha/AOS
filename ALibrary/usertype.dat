@@ -5,6 +5,7 @@ ABasePtrQueue
 ABitArray
 ACacheInterface
 ACache_FileSystem
+ACommandLineParser
 AConstant
 AChecksum
 AConstant

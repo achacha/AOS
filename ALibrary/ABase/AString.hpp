@@ -761,6 +761,11 @@ public:
   bool isEmpty() const;
 
   /*!
+  Returns true if the buffer is logically not empty
+  */
+  bool isNotEmpty() const;
+
+  /*!
   Reserves space for the string only, does not alter content (but may truncate if size is less than actual)
   Reserving more space doesn't mean you can access it, just allocated for future use (useful before doing lots of appends)
   To resize the actual string and pad it use setSize(...) call

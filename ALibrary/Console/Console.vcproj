@@ -405,7 +405,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tThreadPool.cpp"
+			RelativePath=".\tCommandLineParser.cpp"
 			>
 		</File>
 	</Files>

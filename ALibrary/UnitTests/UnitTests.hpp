@@ -36,6 +36,7 @@ int ut_ANumber_Unique();                  // 38
 int ut_ANameValuePair_General();          // 39
 int ut_AFragmentString_General();         // 40
 int ut_ABitArray_General();               // 41
+int ut_ACommandLineParser_General();      // 45
 int ut_AObject_General();                 // 50
 int ut_AFile_Socket_General();            // 52
 int ut_AFixedSizeCounter_General();       // 60

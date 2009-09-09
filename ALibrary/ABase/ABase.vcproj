@@ -431,6 +431,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ACommandLineParser.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AConstant.cpp"
 				>
 			</File>
@@ -904,6 +908,10 @@
 			</File>
 			<File
 				RelativePath=".\AChecksum.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ACommandLineParser.hpp"
 				>
 			</File>
 			<File

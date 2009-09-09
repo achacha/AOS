@@ -45,6 +45,7 @@ void display()
   std::cout << "39  : ANameValuePair" << std::endl;
 	std::cout << "40  : AFragmentString" << std::endl;
 	std::cout << "41  : ABitArray" << std::endl;
+  std::cout << "45  : ACommandLineParser" << std::endl;
   std::cout << "50  : AObject" << std::endl;
   std::cout << "52  : AFile_Socket" << std::endl;
   std::cout << "65  : ATimer" << std::endl;
@@ -95,6 +96,7 @@ int executeTest(int iTestNumber)
     case  39 : pfnX = ut_ANameValuePair_General; break;
     case  40 : pfnX = ut_AFragmentString_General; break;
     case  41 : pfnX = ut_ABitArray_General; break;
+    case  45 : pfnX = ut_ACommandLineParser_General; break;
     case  50 : pfnX = ut_AObject_General; break;
     case  52 : pfnX = ut_AFile_Socket_General; break;
     case  65 : pfnX = ut_ATimer_General; break;

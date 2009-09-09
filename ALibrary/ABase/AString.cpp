@@ -2476,6 +2476,11 @@ bool AString::isEmpty() const
   return (m_Length ? false : true); 
 }
 
+bool AString::isNotEmpty() const 
+{ 
+  return (m_Length ? true : false); 
+}
+
 void AString::justifyRight(
   size_t size,
   char pad //= ' '

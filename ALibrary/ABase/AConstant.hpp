@@ -48,6 +48,7 @@ public:
   static const AString ASTRING_OPENBRACE;     //a_"{"
   static const AString ASTRING_CLOSEBRACE;    //a_"}"
   static const AString ASTRING_QUESTIONMARK;  //a_"?"
+  static const AString ASTRING_MINUS;         //a_"-"
   static const AString ASTRING_UNDEFINED;     //a_"undefined"
   static const AString ASTRING_EQUALS;        //a_"="
   static const AString ASTRING_SLASH;         //a_"/"

@@ -549,6 +549,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ut_ACommandLineParser_General.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ut_ACookie_General.cpp"
 				>
 			</File>
