@@ -16,15 +16,8 @@ $Id$
 #endif
 #include "debugFileTracer.hpp"
 
-#if defined(SOLARIS)
-  #include <sys/types.h>
-  #include <sys/stat.h>
-  #include <fcntl.h>
-  #include <unistd.h>
-#endif
-
 #if defined(__WINDOWS__)
-extern "C" 
+extern "C"
 {
   ABASE_API DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext);
 
@@ -62,6 +55,18 @@ public:
   //! Calls the virtual callbackMain
   static u4 MainServiceThreadProc(AThread& thread);
 
+  static AThread *mp_MainServiceThread;
+
+  /*!
+  service name - internal name of this service (unique and no spaces, not visible to user)
+  display name - name of the service as show to the user
+  description - description of the service, visible to the user (2nd column in cservic manager cpl)
+  */
+  //a_Defined by user of the class and instance specific
+  AString m_serviceName;
+  AString m_displayName;
+  AString m_description;
+
 #if defined(__WINDOWS__)
   SERVICE_STATUS_HANDLE sm_sshService;  //a_Set once the service is registered
 
@@ -74,7 +79,7 @@ public:
   // NT only: Service life-dependent
   int installNTService(const AString &args = AConstant::ASTRING_EMPTY);          //a_Installs the current service
   int removeNTService();                                                    //a_Removes the current service
-  
+
   /*!
   Start a service and optionally pass parameters
 
@@ -96,18 +101,6 @@ public:
   @param dwWaitHint how long this should take
   */
   virtual int notifyServiceControlManager(u4 dwState, u4 dwProgress, u4 dwWaitHint = 1000);
-
-  static AThread *mp_MainServiceThread;
-
-  /*!
-  service name - internal name of this service (unique and no spaces, not visible to user)
-  display name - name of the service as show to the user
-  description - description of the service, visible to the user (2nd column in cservic manager cpl)
-  */
-  //a_Defined by user of the class and instane specific
-  AString m_serviceName;
-  AString m_displayName;
-  AString m_description;
 
   /*!
   Handlers for service state changes
@@ -136,7 +129,7 @@ protected:
   int _controlService(u4 dwParam);                 //a_throws Exception
 
   int m_iServiceMode;               //a_If running in service mode
-  
+
   SERVICE_TABLE_ENTRY m_steServiceTable[2];         //a_Service entry table used when opening and accessing the service
   SC_HANDLE           m_schService,                 //a_Service handle
                       m_schManager;                 //a_ServiceControl manager handle
@@ -161,7 +154,7 @@ extern ADaemon *thisADaemon;
 /////////////////////////////////////////////////////////////////////////////////
 //
 // ADaemon - class used for summoning and banishing daemon processes (ie. services)
-// 
+//
 // If you get error 1053 instantly when starting a service, something is not being exported or function is not being found.
 //   Remember __declspec(dllexport) for your derived class so it is visible to service manager.
 //
@@ -234,7 +227,7 @@ extern ADaemon *thisADaemon;
 //      }
 //      thread.setRun(false);  //a_Flag thread to stop execution
 //      std::cout << "Thread signaled to stop." << std::flush;
-//      
+//
 //      //a_Wait until it exits gracefully
 //      while(thread.isRunning())
 //      {

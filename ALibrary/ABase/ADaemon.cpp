@@ -7,10 +7,14 @@ $Id$
 #include "ADaemon.hpp"
 #include "ASystemException.hpp"
 
-AThread *ADaemon::mp_MainServiceThread = NULL;
+#ifdef __LINUX__
+#include <sys/stat.h>
+#endif
+
 ADaemon *thisADaemon = NULL;
 
 #ifdef __WINDOWS__
+AThread *ADaemon::mp_MainServiceThread = NULL;
 //a_Warnings due to conditional compile with unix code
 #pragma warning (disable:4100)  // unreferenced formal parameter
 #pragma warning (disable:4101)  // unreferenced local variable
@@ -231,14 +235,11 @@ void fcbServiceMain(u4 dwArgc, char **lpszArgv)
   //a_Start pending, start-up code should go here
   AFILE_TRACER_DEBUG_SCOPE("fcbServiceMain", NULL);
 
-  if (controlStartPending() == 0)
-    return;                           //a_Abort requested
-
   //a_Create a new thread for the service
   try
   {
     delete thisADaemon->mp_MainServiceThread;      //a_This should always just return, as it should point to NULL
-    thisADaemon->mp_MainServiceThread = new AThread((AThread::ATHREAD_PROC *) fcbMainServiceThread, true);
+    thisADaemon->mp_MainServiceThread = new AThread((AThread::ATHREAD_PROC *)ADaemon::MainServiceThreadProc, true);
   }
   catch(AException &eX)
   {
@@ -275,7 +276,11 @@ u4 ADaemon::MainServiceThreadProc(AThread& thread)
   u4 ret = 0;
   if (!thisADaemon)
   {
+#ifdef __WINDOWS__
     MessageBox(NULL,"ADaemon global object does not exist, callbackMain not being called.","ADaemon::MainServiceThreadProc",MB_SERVICE_NOTIFICATION);
+#else
+    std::cerr << "ADaemon global object does not exist, callbackMain not being called." << std::endl;
+#endif
     return (u4)-1;
   }
   else
@@ -376,7 +381,7 @@ int ADaemon::invoke(u4 dwParam, char **ppcParam)
 //a_UNIX version
   //a_Attempt to fork this process, if it fails throw as exception
   if ((m_pidParent = fork()) < 0)
-    ATHROW_EX(this, AException::OperationFailed, "ADaemon::invokeUnable to fork process.");
+    ATHROW_EX(NULL, AException::OperationFailed, ASWNL("ADaemon::invokeUnable to fork process."));
   else
     if (m_pidParent != 0)
       return 0;   //a_Process forked.  Current parent process terminating.
@@ -392,10 +397,7 @@ int ADaemon::invoke(u4 dwParam, char **ppcParam)
   //a_Execute the main function for the fork
   AFILE_TRACER_DEBUG_MESSAGE("ADaemon::invoke: calling m_pdcbMain", NULL);
 
-  if (m_pdcbMain)
-    (*m_pdcbMain)(dwParam, ppcParam);   //a_Call the main process
-  else
-    ATHROW_EX(this, AException::OperationFailed, "ADaemon::invoke:Main process missing.");
+  fcbServiceMain(dwParam, ppcParam);   //a_Call the main process
 
   AFILE_TRACER_DEBUG_MESSAGE("ADaemon::invoke: returning", NULL);
 
@@ -597,8 +599,8 @@ AString ADaemon::getStatus()
 }
 
 int ADaemon::notifyServiceControlManager(
-  u4 dwState, 
-  u4 dwProgress, 
+  u4 dwState,
+  u4 dwProgress,
   u4 dwWaitHint   // = 1000
 )
 {
@@ -1024,7 +1026,7 @@ int ADaemon::controlPaused()
   AFILE_TRACER_DEBUG_SCOPE("ADaemon::controlPaused", this);
   return 1;
 }
-#else  //__WINDOWS__
+
 int ADaemon::controlStartPending()
 {
   AFILE_TRACER_DEBUG_SCOPE("ADaemon::controlStartPending", this);

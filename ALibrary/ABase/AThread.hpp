@@ -25,17 +25,17 @@ public:
   Default thread object, no thread proc yet
   */
   AThread();
-  
+
   /*!
   copy ctor
 
   @param that other thread to copy and start immediately if the original thread was flagged to start
   */
   AThread(const AThread& that);
-  
+
   /*!
   Associate thread and thread proc and optionally start on creation
-  
+
   Reason for ABase * instead of void * is to allow the use of dynamic_cast<> to verify that you got what you expected
 
   Thread proc signature:  u4 threadprocName(AThread& thisThread);
@@ -46,7 +46,7 @@ public:
   @param pParameter is available via getParameter()/setParameter() - this is anything you want to pass to the thread process
   */
   AThread(ATHREAD_PROC *pThreadProc, bool boolStart = false, ABase *pThis = NULL, ABase *pParameter = NULL);
-  
+
   /*!
   dtor
   */
@@ -59,7 +59,7 @@ public:
   @param pThis pointer to be available to the threadproc via thisThread.getThis() and is often died to the object that owns the thread
   */
   void setThis(ABase *pThis);
-  
+
   /*!
   Gets the user specified value, can be anything a long as threadproc knows what to do with it
 
@@ -72,11 +72,11 @@ public:
   Passing data to the thread main after it starts
    use set before you start the thread to set the parameter
    use get from inside your function to retrieve the parameter
-  
+
   @param pParam some arbitrary parameter to be available for threadproc (can be anything as long a threadproc knows what to do with it)
   */
   void setParameter(ABase *pParam);
-  
+
   /*!
   Gets a user specified parameter, can be anything a long as threadproc knows what to do with it
 
@@ -90,7 +90,7 @@ public:
   @return thread id (OS specific identifier)
   */
   u4 getId() const;
-  
+
   /*!
   Get thread handle available in Microsoft Windows
 
@@ -102,11 +102,11 @@ public:
 
   /*!
   Start the thread
-  
+
   @throw AException if threadproc is not set or thread already running
   */
   void start();
-  
+
   /*!
   Thread stop
     Calls setRun(false), then waits for isRunning() to be true
@@ -137,7 +137,7 @@ public:
   @throw AException if the thread object is invalid or operation failed (system call failed)
   */
   u4 suspend();
-  
+
   /*!
   Each call to resume decrements the suspend_counter by 1, when suspend_counter == 0 thread resumes
     setting boolForceResume to true will call resume until the suspend_counter == 0 and force a resume
@@ -156,7 +156,7 @@ public:
 
   /*!
   True if a thread object was created (false here may be an issue with OS)
-  
+
   @return true if thread has been created
   */
   bool isThreadCreated();
@@ -172,18 +172,18 @@ public:
   /*!
    Thread state management
     these are here to help you control the thread and available for convenient and need not be used at all
-   
+
    isRunning is to be used by the client to see if the thread is still running
    setRunning should only be set in the thread proc, true at start and false on exit/exception
     isThreadActive can be used also, but it will use OS command to check if the thread is running (bit more brute force)
-   
+
    isRun is for use inside the thread proc, while this is true the thread should execute, when false it should try and exit
    setRun used by the client to signal a thread to stop
-   
+
    Difference between Run and Running:
      Run is what the client wants it to do
      Running is what the thread is actually doing at this moment
-   
+
    NOTE: Run is set to whatever you have the start flag set as
   */
   bool isRunning() const;
@@ -195,7 +195,7 @@ public:
   Bit flags to be read by a running thread; simple ON/OFF messaging
   It is to be used by the user to communicate between the threads and controller
   The parent app can set a certain bit and the thread to acknowledge the request can clear it
-  
+
   For more advanced communication use get/setParameter() with a pointer to a struct/class/etc
 
   See: ABitArray class for more info on what it supports
@@ -224,7 +224,7 @@ public:
   threat.resetUserTimer();                   // reset it so that manager thread does not kill it
 
   ...
-  
+
   Somewhere else a manager thread checks isUserTimerTimedOut() and if it is either setRun(false) or terminate() can be called
   */
   void startUserTimer(u4 millisecond_timeout);
@@ -278,7 +278,9 @@ protected:
   Thread HANDLE non NULL for valid thread
   */
   u4     mu4_ThreadId;
+#ifdef __WINDOWS__
   HANDLE mh_Thread;
+#endif
 
   /*
   User controlled variables
@@ -291,12 +293,16 @@ protected:
   /*
   Wrapper thread main
   */
+#ifdef __WINDOWS__
   static u4 __stdcall _ThreadProc(void *pThis);
+#else
+  static u4 _ThreadProc(void *pThis);
+#endif
 };
 
 #endif
 
-/*!  
+/*!
 // Sample program using AThread
 #include "AThread.hpp"
 #include "ATimer.hpp"
@@ -312,7 +318,7 @@ u4 threadprocSample(AThread& thread)
     do
     {
       thread.useExecutionState().assign("Doing some work");
-      
+
       // Do some work
       std::cout << "." << std::flush;
 

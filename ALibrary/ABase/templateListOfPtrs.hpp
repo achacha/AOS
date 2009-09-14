@@ -41,7 +41,7 @@ public:
   {
     try
     {
-      for (TYPE::iterator it = m_Container.begin(); it != m_Container.end(); ++it)
+      for (typename TYPE::iterator it = m_Container.begin(); it != m_Container.end(); ++it)
         delete *it;
     } catch(...) {}
   }

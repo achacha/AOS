@@ -86,8 +86,10 @@ $Id$
 // Max rows
 #define DEBUG_MAXSIZE_AResultSet 500000
 
-// Enable stacktrace in debug mode
+// Enable windows specific stacktrace in debug mode
+#ifdef __WINDOWS__
 #define ENABLE_EXCEPTION_STACKWALK 1
+#endif
 #endif
 
 //a_Basic ABase classes

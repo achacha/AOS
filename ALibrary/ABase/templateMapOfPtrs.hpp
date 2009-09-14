@@ -20,11 +20,11 @@ Now:
   AMapOfPtrs<int, AString> myMap;
   myMap[0] = new AString("foo");   // this class will delete this object in dtor
 */
-template<class K, class T>
+template<typename K, typename T>
 class AMapOfPtrs : public ABase
 {
 public:
-  typedef public std::map<K, T*> TYPE;
+  typedef std::map<K, T*> TYPE;
 
 public:
   /*!
@@ -39,7 +39,7 @@ public:
   {
     try
     {
-      for (TYPE::iterator it = m_Container.begin(); it != m_Container.end(); ++it)
+      for (typename TYPE::iterator it = m_Container.begin(); it != m_Container.end(); ++it)
         delete (*it).second;
     } catch(...) {}
   }
