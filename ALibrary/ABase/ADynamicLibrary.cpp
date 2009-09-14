@@ -7,8 +7,8 @@ $Id$
 #include "ADynamicLibrary.hpp"
 #include "AException.hpp"
 
-#ifndef __WINDOWS__
-  #pragma error("ADynamicLibrary not implemented yet")
+#if defined(__LINUX__)
+#include <dlfcn.h>
 #endif
 
 
@@ -32,7 +32,11 @@ ADynamicLibrary::~ADynamicLibrary()
   try
   {
     for (MAP_Libraries::iterator it = m_Libraries.begin(); it != m_Libraries.end(); ++it)
+#if defined(__WINDOWS__)
       ::FreeLibrary((HMODULE)(*it).second);
+#elif defined(__LINUX__)
+      dlclose((*it).second);
+#endif
   }
   catch(...){}
 }
@@ -47,14 +51,23 @@ void *ADynamicLibrary::_load(const AString& strLibraryName)
   MAP_Libraries::iterator it = m_Libraries.find(strLibraryName);
   if (it != m_Libraries.end())
   {
-    ATHROW_EX(this, AException::InvalidParameter, AString("Library already loaded: ") + strLibraryName);
+    ATHROW_EX(this, AException::InvalidParameter, AString("Library already loaded: ")+strLibraryName);
   }
 
   AString str(strLibraryName);
+  void *pLibrary = NULL;
+#if defined(__WINDOWS__)
   str.append(".dll", 4);
   HMODULE hmodule = ::LoadLibrary(str.c_str());
-  void *pLibrary = (void *)hmodule;
+  pLibrary = (void *)hmodule;
+#elif defined(__LINUX__)
+  pLibrary = dlopen(str.c_str(), RTLD_NOW);
+#endif
 
+  if (!pLibrary)
+  {
+    ATHROW_EX(this, AException::NotFound, AString("Unable to load library: ")+strLibraryName);
+  }
   m_Libraries[strLibraryName] = pLibrary;
 
   return pLibrary;
@@ -68,9 +81,14 @@ bool ADynamicLibrary::unload(const AString& strLibraryName)
     ATHROW_EX(this, AException::InvalidParameter, AString("Library not loaded: ") + strLibraryName);
   }
 
-  m_Libraries.erase(it);
   HMODULE hmodule = (HMODULE)((*it).second);
+  AASSERT(this, hmodule);
+  m_Libraries.erase(it);
+#if defined(__WINDOWS__)
   return (::FreeLibrary(hmodule) ? true : false);
+#elif defined(__LINUX__)
+  return 0 == dlclose(hmodule);
+#endif
 }
 
 void *ADynamicLibrary::getEntryPoint(const AString& strLibraryName, const AString& strSymbolName)
@@ -84,7 +102,7 @@ void *ADynamicLibrary::getEntryPoint(const AString& strLibraryName, const AStrin
     {
       ATHROW_EX(this, AException::InvalidParameter, AString("Library not loaded: ") + strLibraryName);
     }
-    
+
     hmodule = (HMODULE)pLibrary;
   }
   else
@@ -95,7 +113,12 @@ void *ADynamicLibrary::getEntryPoint(const AString& strLibraryName, const AStrin
   if (!hmodule)
     return NULL;
 
-  void *procAddress = ::GetProcAddress(hmodule, strSymbolName.c_str());
+  void *procAddress = NULL;
+#if defined(__WINDOWS__)
+  procAddress = ::GetProcAddress(hmodule, strSymbolName.c_str());
+#elif defined(__LINUX__)
+  procAddress = dlsym(hmodule, strSymbolName.c_str());
+#endif
   return procAddress;
 }
 

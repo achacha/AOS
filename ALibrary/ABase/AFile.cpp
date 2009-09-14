@@ -8,6 +8,10 @@ $Id$
 #include "AException.hpp"
 #include "ARope.hpp"
 
+#ifndef min
+#define min(a, b)  (((a) < (b)) ? (a) : (b))
+#endif
+
 void AFile::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -87,15 +91,15 @@ size_t AFile::readLine(
   }
 
   if (
-       ret > 0 
-    && strRead.getSize() > originalSize 
+       ret > 0
+    && strRead.getSize() > originalSize
     && strRead.last() == '\r'
   )
   {
     //a_Remove CR that was before LF
     strRead.rremove();
   }
-  
+
   //a_Check if blank line read
   if (originalSize == strRead.getSize())
   {
@@ -109,7 +113,7 @@ size_t AFile::readLine(
 }
 
 size_t AFile::peekLine(
-  AString &strPeek, 
+  AString &strPeek,
   size_t maxBytes,    // = AConstant::npos
   bool treatEofAsEol  // = true
 )
@@ -125,7 +129,7 @@ size_t AFile::peekLine(
     {
       case 0:
         return AConstant::npos;     //No more data to read then not found
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return  AConstant::unavail;
@@ -161,7 +165,7 @@ size_t AFile::skipLine(
     {
       case 0:
         return AConstant::npos;     //No more data to read then not found
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -183,7 +187,7 @@ size_t AFile::skipLine(
 
 size_t AFile::readUntilOneOf(
   AString &strRead,
-  const AString &strDelimeters, 
+  const AString &strDelimeters,
   bool boolRemoveDelimiter /* = true */,
   bool boolDiscardDelimiter /* = true */)
 {
@@ -199,7 +203,7 @@ size_t AFile::readUntilOneOf(
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -227,7 +231,7 @@ size_t AFile::peekUntilOneOf(AString &strPeek, const AString &strDelimeters)
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -241,7 +245,7 @@ size_t AFile::peekUntilOneOf(AString &strPeek, const AString &strDelimeters)
 }
 
 size_t AFile::skipUntilOneOf(
-  const AString &strDelimeters, 
+  const AString &strDelimeters,
   bool boolDiscardDelimeter // = true
 )
 {
@@ -257,7 +261,7 @@ size_t AFile::skipUntilOneOf(
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -272,7 +276,7 @@ size_t AFile::skipUntilOneOf(
 }
 
 size_t AFile::skipUntilOneOf(
-  char delimeter, 
+  char delimeter,
   bool boolDiscardDelimeter // = true
 )
 {
@@ -294,7 +298,7 @@ size_t AFile::peekUntil(AString& strPeek, const AString& strPattern)
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -321,7 +325,7 @@ size_t AFile::peekUntil(AString& strPeek, char cPattern)
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -335,9 +339,9 @@ size_t AFile::peekUntil(AString& strPeek, char cPattern)
 }
 
 size_t AFile::readUntil(
-  AString& strRead, 
-  const AString& strPattern, 
-  bool boolRemovePattern,   // = true 
+  AString& strRead,
+  const AString& strPattern,
+  bool boolRemovePattern,   // = true
   bool boolDiscardPattern   // = true
 )
 {
@@ -353,7 +357,7 @@ size_t AFile::readUntil(
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -368,9 +372,9 @@ size_t AFile::readUntil(
 }
 
 size_t AFile::readUntil(
-  AString& strRead, 
-  char cPattern, 
-  bool boolRemovePattern,   // = true 
+  AString& strRead,
+  char cPattern,
+  bool boolRemovePattern,   // = true
   bool boolDiscardPattern   // = true
 )
 {
@@ -384,7 +388,7 @@ size_t AFile::readUntil(
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -399,7 +403,7 @@ size_t AFile::readUntil(
 }
 
 size_t AFile::skipUntil(
-  const AString& strPattern, 
+  const AString& strPattern,
   bool boolDiscardPattern // = true
 )
 {
@@ -415,7 +419,7 @@ size_t AFile::skipUntil(
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -441,7 +445,7 @@ size_t AFile::skipUntilEOF()
       case AConstant::npos:
       case 0:
         return bytesRead;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -457,7 +461,7 @@ size_t AFile::skipUntilEOF()
 }
 
 size_t AFile::skipUntil(
-  char cPattern, 
+  char cPattern,
   bool boolDiscardPattern // = true
 )
 {
@@ -473,7 +477,7 @@ size_t AFile::skipUntil(
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -545,7 +549,7 @@ size_t AFile::find(const AString &strPattern)
       case AConstant::npos:
       case 0:
         return AConstant::npos;
-      
+
       case AConstant::unavail:
         //a_No data available yet, wait and try again
         return AConstant::unavail;
@@ -571,7 +575,7 @@ size_t AFile::writeLine(
 
   if (AConstant::npos != written && AConstant::unavail != written)
     written += _write(strEOL.data(), strEOL.getSize());
-  
+
   return written;
 }
 
@@ -581,7 +585,7 @@ size_t AFile::write(const void *pcvBuffer, size_t length)
 }
 
 size_t AFile::read(
-  AOutputBuffer& target, 
+  AOutputBuffer& target,
   size_t length
 )
 {
@@ -593,22 +597,22 @@ size_t AFile::read(
   {
     size_t bytesToRead = min(BUFFER_SIZE, length);
     bytesRead = read(buffer, bytesToRead);
-    
+
     target.append(buffer, bytesRead);
 
     length -= bytesRead;
     totalBytesRead += bytesRead;
-    
+
     //a_Check for partial read which usually signifies EOF
     if (bytesRead != bytesToRead)
       break;
   }
-  
+
   return totalBytesRead;
 }
 
 size_t AFile::write(
-  AFile& source, 
+  AFile& source,
   size_t length // = AConstant::npos
 )
 {
@@ -643,7 +647,7 @@ size_t AFile::skip(size_t length)
     bytesread = read(tempBuffer, (length > 128 ? 128 : length));
     if (AConstant::npos == bytesread || !bytesread)
       break;
-    
+
     AASSERT(this, AConstant::npos != bytesread);
     length -= bytesread;
     totalbytesread += bytesread;
@@ -652,7 +656,7 @@ size_t AFile::skip(size_t length)
 }
 
 size_t AFile::write(
-  const AString& line, 
+  const AString& line,
   size_t length // = AConstant::npos
 )
 {
@@ -733,9 +737,9 @@ size_t AFile::readBlockIntoLookahead()
 {
   AString str;
   char *p = str.startUsingCharPtr(m_ReadBlock);
-  
+
   size_t bytesRead = _read(p, m_ReadBlock);
-  
+
   switch(bytesRead)
   {
     case AConstant::npos:
@@ -776,7 +780,7 @@ size_t AFile::read(void *pTarget, size_t bytesLeft)
   while (m_LookaheadBuffer.getSize() < bytesLeft)
   {
     size_t bytesReadPass = readBlockIntoLookahead();
-    
+
     if (AConstant::unavail == bytesReadPass)
       return AConstant::unavail;
 
@@ -794,7 +798,7 @@ size_t AFile::read(void *pTarget, size_t bytesLeft)
   AASSERT(this, AConstant::unavail != bytesRead);
   if (bytesRead)
     m_LookaheadBuffer.popFront((char *)pTarget + inLookahead, bytesRead);
-  
+
   return bytesRead + inLookahead;
 }
 
@@ -811,7 +815,7 @@ size_t AFile::peek(void *pTarget, size_t bytesLeft)
   {
     if (!_isNotEof())
       return 0;
-    
+
     //a_Read file memory until we have what we need
     while (m_LookaheadBuffer.getSize() < bytesLeft && _isNotEof())
     {
@@ -829,7 +833,7 @@ size_t AFile::peek(void *pTarget, size_t bytesLeft)
           ret = m_LookaheadBuffer.getSize();
           if (ret > 0)
             m_LookaheadBuffer.peekFront((char *)pTarget, ret);
-          
+
           return ret;
         }
       }
@@ -843,7 +847,7 @@ size_t AFile::peek(void *pTarget, size_t bytesLeft)
 size_t AFile::_writeNetworkOrder(const u1* pData, size_t uLength)
 {
   size_t ret = 0x0;
-  
+
   switch(uLength)
   {
     case 0x1:
@@ -933,11 +937,11 @@ size_t AFile::_writeNetworkOrderU2(const u1* pData)
 
 #ifdef _WIN32_
   u1 pBuffer[0x2];
-  
+
   //a_Reverse bytes
   pBuffer[0x0] = pData[0x3];
   pBuffer[0x1] = pData[0x2];
-  
+
   //a_Write 2 bytes
   ret = write(pBuffer, 0x2);
 #else
@@ -953,10 +957,10 @@ size_t AFile::_readNetworkOrderU2(u1* pData)
 
 #ifdef _WIN32_
   u1 pBuffer[0x2];
-  
+
   //a_Read 2 bytes
   ret = read(pBuffer, 0x2);
-  
+
   //a_Reverse
   pData[0x0] = pBuffer[0x1];
   pData[0x1] = pBuffer[0x0];
@@ -973,10 +977,10 @@ size_t AFile::_peekNetworkOrderU2(u1* pData)
 
 #ifdef _WIN32_
   u1 pBuffer[0x2];
-  
+
   //a_Read 2 bytes
   ret = peek(pBuffer, 0x2);
-  
+
   //a_Reverse
   pData[0x0] = pBuffer[0x1];
   pData[0x1] = pBuffer[0x0];
@@ -993,13 +997,13 @@ size_t AFile::_writeNetworkOrdersize_t(const u1* pData)
 
 #ifdef _WIN32_
   u1 pBuffer[0x4];
-  
+
   //a_Reverse bytes
   pBuffer[0x0] = pData[0x3];
   pBuffer[0x1] = pData[0x2];
   pBuffer[0x2] = pData[0x1];
   pBuffer[0x3] = pData[0x0];
-  
+
   //a_Write 4 bytes
   ret = write(pBuffer, 0x4);
 #else
@@ -1015,10 +1019,10 @@ size_t AFile::_readNetworkOrdersize_t(u1* pData)
 
 #ifdef _WIN32_
   u1 pBuffer[0x4];
-  
+
   //a_Read 4 bytes
   ret = read(pBuffer, 0x4);
-  
+
   //a_Reverse
   pData[0x0] = pBuffer[0x3];
   pData[0x1] = pBuffer[0x2];
@@ -1037,10 +1041,10 @@ size_t AFile::_peekNetworkOrdersize_t(u1* pData)
 
 #ifdef _WIN32_
   u1 pBuffer[0x4];
-  
+
   //a_Read 4 bytes
   ret = peek(pBuffer, 0x4);
-  
+
   //a_Reverse
   pData[0x0] = pBuffer[0x3];
   pData[0x1] = pBuffer[0x2];
@@ -1059,7 +1063,7 @@ size_t AFile::_writeNetworkOrderU8(const u1* pData)
 
 #ifdef _WIN32_
   u1 pBuffer[0x8];
-  
+
   //a_Reverse bytes
   pBuffer[0x0] = pData[0x7];
   pBuffer[0x1] = pData[0x6];
@@ -1069,7 +1073,7 @@ size_t AFile::_writeNetworkOrderU8(const u1* pData)
   pBuffer[0x5] = pData[0x2];
   pBuffer[0x6] = pData[0x1];
   pBuffer[0x7] = pData[0x0];
-  
+
   //a_Write 8 bytes
   ret = write(pBuffer, 0x8);
 #else
@@ -1085,10 +1089,10 @@ size_t AFile::_readNetworkOrderU8(u1* pData)
 
 #ifdef _WIN32_
   u1 pBuffer[0x8];
-  
+
   //a_Read 8 bytes
   ret = read(pBuffer, 0x8);
-  
+
   //a_Reverse
   pData[0x0] = pBuffer[0x7];
   pData[0x1] = pBuffer[0x6];
@@ -1111,10 +1115,10 @@ size_t AFile::_peekNetworkOrderU8(u1* pData)
 
 #ifdef _WIN32_
   u1 pBuffer[0x8];
-  
+
   //a_Read 8 bytes
   ret = peek(pBuffer, 0x8);
-  
+
   //a_Reverse
   pData[0x0] = pBuffer[0x7];
   pData[0x1] = pBuffer[0x6];

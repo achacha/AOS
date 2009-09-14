@@ -12,10 +12,15 @@ $Id$
 
 class ABASE_API ADynamicLibrary : public ADebugDumpable
 {
-public :
+public:
+#if defined(__LINUX__)
+  typedef void * HMODULE;
+#endif
+
+public:
   //! ctor
   ADynamicLibrary();
-  
+
   /*!
   dtor
   Unloads all loaded libraries and release system resources
@@ -26,7 +31,7 @@ public :
   Load and Unload a dynamic library, return true is load successful
   Name is without the extension (e.g. MyLib will map to MyLib.dll on windows, libMyLib.so on unix, etc)
    i.e. On windows to load MyLib.dll you use load("MyLib") and .dll will be appended by this class
-  
+
   @param libraryName to load
   @return true if loaded successfully
   */
@@ -53,7 +58,7 @@ public :
 
   /*!
   Get a list of loaded modules
-  
+
   @param target to add module names to
   @return number of modules added to list
   */

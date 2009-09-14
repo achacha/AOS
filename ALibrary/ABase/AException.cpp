@@ -323,7 +323,9 @@ const ARope& AException::what() const throw()
   }
   mm_What.append(AConstant::ASTRING_EOL);
 
+#if defined(__WINDOWS__)
   m_StackWalker.emit(mm_What);
+#endif
 
   if (!m_DebugDump.isEmpty())
   {
@@ -352,7 +354,9 @@ AXmlElement& AException::emitXml(AXmlElement& thisRoot) const
   thisRoot.addElement(ASW("linenum",7)).addData(m_LineNumber);
   thisRoot.addElement(ASW("extra",5)).addData(m_ExtraText, AXmlElement::ENC_CDATADIRECT);
   thisRoot.addElement(ASW("errno",5)).addData(m_errno);
+#if defined(__WINDOWS__)
   thisRoot.addElement(ASW("stacktrace",10)).addData(m_StackWalker);
+#endif
   thisRoot.addElement(ASW("debugdump",9)).addData(m_DebugDump, AXmlElement::ENC_CDATADIRECT);
 
   return thisRoot;
