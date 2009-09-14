@@ -5,6 +5,7 @@ $Id$
 */
 #include "pchABase.hpp"
 #include "ASystemException.hpp"
+#include <errno.h>
 
 ASystemException::ASystemException
 (
@@ -46,7 +47,13 @@ void ASystemException::getDescription(AOutputBuffer& target) const throw()
       if (m_lastOSError > 0)
         _getLastOSError(target, m_lastOSError);
       else
+      {
+#if defined(__WINDOWS__)
         _getLastOSError(target, ::GetLastError());
+#else
+        _getLastOSError(target, errno);
+#endif
+      }
     break;
 
     default:
@@ -63,16 +70,16 @@ void ASystemException::setLastOSError(u4 lastOSError)
 void ASystemException::_getLastOSError(AOutputBuffer& target, u4 lastOSError) const throw()
 {
   LPVOID lpMsgBuf;
-  FormatMessage( 
-      FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-      FORMAT_MESSAGE_FROM_SYSTEM | 
+  FormatMessage(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER |
+      FORMAT_MESSAGE_FROM_SYSTEM |
       FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       lastOSError,
       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
       (LPTSTR) &lpMsgBuf,
       0,
-      NULL 
+      NULL
   );
   target.append(ASWNL((LPCSTR)lpMsgBuf));
   LocalFree(lpMsgBuf);
@@ -81,6 +88,6 @@ void ASystemException::_getLastOSError(AOutputBuffer& target, u4 lastOSError) co
 void ASystemException::_getLastOSError(AOutputBuffer& target, u4 lastOSError) const throw()
 {
   target.append(ASW("errno=",6));
-  target.append(AString::fromLong(errno));
+  target.append(AString::fromInt(errno));
 }
 #endif

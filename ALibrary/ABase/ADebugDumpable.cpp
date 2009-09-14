@@ -11,9 +11,7 @@ $Id$
 void ADebugDumpable::debugDump(std::ostream& os /* = std::cerr */, int indent /* = 0 */) const
 {
   //a_By default display the type of the class and this pointer address
-  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "typeid(*this).raw_name()=" << typeid(*this).raw_name() << std::endl;
-  ADebugDumpable::indent(os, indent) << "}" << std::endl;
+  ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ")" << std::endl;
 }
 
 void ADebugDumpable::debugDumpToAOutputBuffer(AOutputBuffer& target, int indent /* = 0 */) const
@@ -38,9 +36,9 @@ void ADebugDumpable::trace(const char *pcc)
 }
 
 void ADebugDumpable::dumpMemory_Ascii(
-  AOutputBuffer& target, 
-  const void *pvObject, 
-  size_t objectSize, 
+  AOutputBuffer& target,
+  const void *pvObject,
+  size_t objectSize,
   size_t indent,      // = 0
   size_t bytesPerRow  // = 32
 )
@@ -72,9 +70,9 @@ void ADebugDumpable::dumpMemory_Ascii(
 }
 
 void ADebugDumpable::dumpMemory_Ascii(
-  std::ostream& os, 
-  const void *pvObject, 
-  size_t objectSize, 
+  std::ostream& os,
+  const void *pvObject,
+  size_t objectSize,
   size_t indent,      // = 0
   size_t bytesPerRow  // = 32
 )
@@ -106,13 +104,13 @@ void ADebugDumpable::dumpMemory_Ascii(
 }
 
 void ADebugDumpable::dumpMemory_HexAscii(
-  AOutputBuffer& target, 
-  const void *pvObject, 
-  size_t objectSize, 
+  AOutputBuffer& target,
+  const void *pvObject,
+  size_t objectSize,
   size_t indent,       // = 0
   size_t bytesPerRow   // = 16
 )
-{ 
+{
   u1 u1X;
   char cX;
   size_t x;
@@ -138,7 +136,7 @@ void ADebugDumpable::dumpMemory_HexAscii(
       target.append(' ');
 
     target.append(": ",2);
-    
+
     //a_Hex
     for (x = 0; x < bytesPerRow; ++x)
     {
@@ -146,7 +144,7 @@ void ADebugDumpable::dumpMemory_HexAscii(
       {
         for (;x < bytesPerRow; ++x)
           target.append("   ",3);
-        
+
         break;
       }
 
@@ -164,13 +162,13 @@ void ADebugDumpable::dumpMemory_HexAscii(
 }
 
 void ADebugDumpable::dumpMemory_HexAscii(
-  std::ostream& os, 
-  const void *pvObject, 
-  size_t objectSize, 
+  std::ostream& os,
+  const void *pvObject,
+  size_t objectSize,
   size_t indent,       // = 0
   size_t bytesPerRow   // = 16
 )
-{ 
+{
   u1 u1X;
   char cX;
   size_t x;
@@ -196,7 +194,7 @@ void ADebugDumpable::dumpMemory_HexAscii(
       os << " ";
 
     os << ": ";
-    
+
     //a_Hex
     for (x = 0; x < bytesPerRow; ++x)
     {
@@ -204,7 +202,7 @@ void ADebugDumpable::dumpMemory_HexAscii(
       {
         for (;x < bytesPerRow; ++x)
           os << "   ";
-        
+
         break;
       }
 
@@ -220,10 +218,10 @@ void ADebugDumpable::dumpMemory_HexAscii(
 }
 
 void ADebugDumpable::dumpMemory_Hex(
-  AOutputBuffer& target, 
-  const void *pvObject, 
-  size_t objectSize, 
-  size_t indent,      // = 0 
+  AOutputBuffer& target,
+  const void *pvObject,
+  size_t objectSize,
+  size_t indent,      // = 0
   size_t bytesPerRow  // = 16
 )
 {
@@ -241,7 +239,7 @@ void ADebugDumpable::dumpMemory_Hex(
       {
         for (;x < bytesPerRow; ++x)
           target.append("   ",3);
-        
+
         break;
       }
 
@@ -258,10 +256,10 @@ void ADebugDumpable::dumpMemory_Hex(
 }
 
 void ADebugDumpable::dumpMemory_Hex(
-  std::ostream& os, 
-  const void *pvObject, 
-  size_t objectSize, 
-  size_t indent,      // = 0 
+  std::ostream& os,
+  const void *pvObject,
+  size_t objectSize,
+  size_t indent,      // = 0
   size_t bytesPerRow  // = 16
 )
 {
@@ -279,7 +277,7 @@ void ADebugDumpable::dumpMemory_Hex(
       {
         for (;x < bytesPerRow; ++x)
           os << "   ";
-        
+
         break;
       }
 
@@ -294,7 +292,7 @@ void ADebugDumpable::dumpMemory_Hex(
 }
 
 AOutputBuffer& ADebugDumpable::indent(AOutputBuffer& target, size_t indent)
-{	
+{
   while (indent > 0)
   {
     target.append(AConstant::ASTRING_TWOSPACES);
@@ -305,7 +303,7 @@ AOutputBuffer& ADebugDumpable::indent(AOutputBuffer& target, size_t indent)
 }
 
 std::ostream& ADebugDumpable::indent(std::ostream& os, size_t indent)
-{	
+{
   while (indent > 0)
   {
 	  os << "  ";
@@ -317,6 +315,7 @@ std::ostream& ADebugDumpable::indent(std::ostream& os, size_t indent)
 
 bool ADebugDumpable::isPointerValid(void *p)
 {
+#if defined(__WINDOWS__) && defined(_DEBUG)
   switch(sizeof(p))
   {
     case 4 :
@@ -358,6 +357,7 @@ bool ADebugDumpable::isPointerValid(void *p)
     default:
       ATHROW(NULL, AException::ProgrammingError);  //a_Neither 32 or 64 bit?
   }
+#endif
 
   return true;
 }

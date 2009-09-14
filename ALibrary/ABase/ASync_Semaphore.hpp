@@ -10,10 +10,16 @@ $Id$
 #include "ASynchronization.hpp"
 #include "AString.hpp"
 
+#ifdef __LINUX__
+#include <semaphore.h>
+#endif
+
 class ABASE_API ASync_Semaphore : public ASynchronization
 {
 #if defined(__WINDOWS__)
   public: typedef HANDLE Handle;
+#elif defined(__LINUX__)
+  public: typedef sem_t * Handle;
 #endif
 
   public :
@@ -31,8 +37,8 @@ class ABASE_API ASync_Semaphore : public ASynchronization
     virtual ASynchronization *clone() const { return new ASync_Semaphore(mstr_Name, m_maxCount); }
 
 protected:
-    Handle m_handle;
     size_t m_maxCount;
+    Handle m_handle;
     AString mstr_Name;
 
   private :
