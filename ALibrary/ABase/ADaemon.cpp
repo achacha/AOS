@@ -1027,10 +1027,4 @@ int ADaemon::controlPaused()
   return 1;
 }
 
-int ADaemon::controlStartPending()
-{
-  AFILE_TRACER_DEBUG_SCOPE("ADaemon::controlStartPending", this);
-  return 1;
-}
-
 #endif //__WINDOWS__
