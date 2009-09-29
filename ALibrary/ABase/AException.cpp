@@ -64,7 +64,7 @@ AException& AException::operator=(const AException &that)
   m_LineNumber  = that.m_LineNumber;
   m_errno       = that.m_errno;
   m_ExtraText   = that.m_ExtraText;
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) && defined(_DEBUG)
   m_StackWalker = that.m_StackWalker;
 #endif
 
