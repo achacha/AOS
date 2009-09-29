@@ -19,22 +19,6 @@ public:
   //! List of thread pointers
   typedef std::list<AThread *> THREADS;
 
-  //! Threadpool events
-  enum Event
-  {
-    MonitorStarting = 1,         //! Monitor thread is starting
-    MonitorSleeping,             //! Monitor thread is sleeping until next cycle
-    MonitorCreatedThread,        //! Monitor created an additional thread
-    MonitorFlagToStopThread,     //! Monitor is flagging a thread to stop
-    MonitorCheckStopThread,      //! Checking if a thread flagged for stop is finished
-    MonitorDestroyedThread,      //! Monitor destroyed an existing thread
-    MonitorFinishedIterations,   //! Monitored threads finished set number of iterations
-    MonitorExiting               //! Monitor thead is exiting
-  };
-
-  //! Callback to an event
-  typedef void (*THREADPOOL_CALLBACK)(AThreadPool&, AThreadPool::Event e);
-
 public:
   /*!
   Create pool based on a threadproc (which becomes threadproc of the template thread)
@@ -43,14 +27,12 @@ public:
   @param threads to maintain active simultaneously
   @param pThis pointer to the thread that is retrieved with thread.getThis()
   @param pParameter pointer to the thread that is retrieved with thread.getParameter()
-  @param pCallback to call or NULL to disable callbacks
   */
   AThreadPool(
     AThread::ATHREAD_PROC *threadproc, 
     int threads = 1, 
     ABase *pThreadThis = NULL, 
-    ABase *pThreadParameter = NULL,
-    THREADPOOL_CALLBACK pCallback = NULL
+    ABase *pThreadParameter = NULL
   );
   
   /*!
@@ -58,13 +40,6 @@ public:
   It may be cleaner to issue a stop() then wait until getRunningThreadCount() == 0
   */
   virtual ~AThreadPool();
-
-  /*!
-  Sets a callback handler
-
-  @param pCallback or NULL to clear
-  */
-  void setThreadPoolManagerCallback(THREADPOOL_CALLBACK pCallback = NULL);
   
   /*!
   Waits until monitor thread exits
@@ -106,7 +81,7 @@ public:
   @param b true - Set thread monitor to create new threads if some threads exit
            false - Do not create new threads after they exit
   */
-  void setCreatingNewThreads(bool b = false);
+  void setCreatingNewThreads(bool b);
 
   /*!
   Sets the run flag on all running threads
@@ -116,8 +91,8 @@ public:
   void setRunStateOnThreads(bool isRun);
   
   /*!
-  Stop thread pool and terminate threads that refuse to stop
-  Should be used if graceful stop if not viable 
+  Flag running threads to stop and wait a short time for them to stop
+  Terminate any threads that do not stop in a timely fashion
   */
   virtual void stop();
 
@@ -271,8 +246,7 @@ protected:
     int threads, 
     ABase *pThis, 
     ABase *pParameter,
-    AThread::ATHREAD_PROC *threadprocMonitor,
-    THREADPOOL_CALLBACK pCallback = NULL
+    AThread::ATHREAD_PROC *threadprocMonitor
   );
 
   //Thread container
@@ -303,11 +277,6 @@ protected:
 
   // Timer for the runtime of the pool
   ATimer m_ThreadPoolTimer;
-
-  // Callback handler
-  void _callCallback(AThreadPool::Event e);
-  THREADPOOL_CALLBACK mp_Callback;
-  ASync_CriticalSection m_CallbackSynchObject;
 
 private:
   AThreadPool() {}

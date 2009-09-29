@@ -232,7 +232,7 @@ public:
   /*!
   Stack walker
   */
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) && defined(_DEBUG)
   const AStackWalker& getStackWalker() const;
 #endif
 
@@ -254,7 +254,7 @@ protected:
   errno_t        m_errno;
   AString        m_ExtraText;
   ARope          m_DebugDump;
-#ifdef __WINDOWS__
+#if defined(__WINDOWS__) && defined(_DEBUG)
   AStackWalker   m_StackWalker;
 #endif
 

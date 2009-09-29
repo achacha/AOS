@@ -88,7 +88,15 @@ $Id$
 
 // Enable windows specific stacktrace in debug mode
 #ifdef __WINDOWS__
+
+#ifndef DISABLE_EXCEPTION_STACKWALK
 #define ENABLE_EXCEPTION_STACKWALK 1
+#pragma message("Enabling Stack Walker exceptions")
+#else
+#undef ENABLE_EXCEPTION_STACKWALK
+#pragma message("Disabling Stack Walker exceptions")
+#endif
+
 #endif
 #endif
 
@@ -96,6 +104,6 @@ $Id$
 #include "AConstant.hpp"
 
 //a_Version
-#define ABase_INFO "ABase 1.2.6 " ## ABASE_OS_INFO
+#define ABase_INFO "ABase 1.2.7 " ## ABASE_OS_INFO
 
 #endif //INCLUDED__apiABase_HPP__
