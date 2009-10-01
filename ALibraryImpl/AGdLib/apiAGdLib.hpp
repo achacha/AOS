@@ -37,6 +37,6 @@ $Id$
 #endif
 #endif
 
-#define GDLib_INFO "gdlib " ## GD_VERSION_STRING
+#define GDLib_INFO "AGdLib " ## __BUILDTYPE__ ## " Build(" ## __TIMESTAMP__ ## ") using gdlib " ## GD_VERSION_STRING
 
 #endif //INCLUDED__apiAGdLib_HPP__

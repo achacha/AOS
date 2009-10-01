@@ -34,6 +34,6 @@ $Id$
 #endif
 #include "openssl/opensslv.h"
 
-#define ACrypto_INFO OPENSSL_VERSION_TEXT
+#define ACrypto_INFO "ACrypto " ## __BUILDTYPE__ ## " Build(" ## __TIMESTAMP__ ## ") using " ## OPENSSL_VERSION_TEXT
 
 #endif //INCLUDED__apiACrypto_HPP__

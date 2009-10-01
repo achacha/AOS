@@ -26,6 +26,6 @@ $Id$
 #include "apiABase.hpp"
 #include "LuaInternals.hpp"
 
-#define ALuaEmbed_INFO LUA_RELEASE
+#define ALuaEmbed_INFO "ALuaEmbed " ## __BUILDTYPE__ ## " Build(" ## __TIMESTAMP__ ## ") using " ## LUA_RELEASE
 
 #endif //INCLUDED__apiALuaEmbed_HPP__

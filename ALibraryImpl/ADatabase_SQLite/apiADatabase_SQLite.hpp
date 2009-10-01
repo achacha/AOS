@@ -29,6 +29,6 @@ $Id$
 #include "apiABase.hpp"
 #include "sqlite3.h"
 
-#define ADatabase_SQLite_INFO "SQLite " ## SQLITE_VERSION
+#define ADatabase_SQLite_INFO "ADatabase_SQLite " ## __BUILDTYPE__ ## " Build(" ## __TIMESTAMP__ ## ") using SQLite " ## SQLITE_VERSION
 
 #endif //INCLUDED__apiADatabase_SQLite_HPP__

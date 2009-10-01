@@ -31,6 +31,6 @@ $Id$
 
 #include "apiABase.hpp"
 
-#define AZlib_INFO "zlib 1.2.3"
+#define AZlib_INFO "AZlib " ## __BUILDTYPE__ ## " Build(" ## __TIMESTAMP__ ## ") using zlib 1.2.3"
 
 #endif //INCLUDED__apiAZlib_HPP__
