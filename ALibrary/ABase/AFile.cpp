@@ -90,6 +90,15 @@ size_t AFile::readLine(
     }
   }
 
+  if (AConstant::npos == ret && treatEofAsEol)
+  {
+    //a_Got to EOF and did not find delimiter, return everything
+    ret = m_LookaheadBuffer.getSize();
+    m_LookaheadBuffer.emit(strRead);
+    m_LookaheadBuffer.clear();
+    return ret;
+  }
+
   if (
        ret > 0
     && strRead.getSize() > originalSize

@@ -8,7 +8,7 @@ $Id$
 #include "ASystemException.hpp"
 #include "ALock.hpp"
 
-#define DEFAULT_MONITOR_CYCLE_SLEEP 1000
+#define DEFAULT_MONITOR_CYCLE_SLEEP 100
 #define DEFAULT_STOP_CYCLE_SLEEP 100
 #define DEFAULT_MONITOR_STARTUP_SLEEPTIME 10
 

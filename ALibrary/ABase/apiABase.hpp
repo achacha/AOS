@@ -104,6 +104,6 @@ $Id$
 #include "AConstant.hpp"
 
 //a_Version
-#define ABase_INFO "ABase 1.2.7 " ## ABASE_OS_INFO
+#define ABase_INFO "ABase 1.2.8 " ## __BUILDTYPE__ ## " Build(" ## __TIMESTAMP__ ## ") for " ## ABASE_OS_INFO
 
 #endif //INCLUDED__apiABase_HPP__

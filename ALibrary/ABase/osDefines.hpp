@@ -53,8 +53,7 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
     #include <windows.h>   //a_Include windows.h if this is not an MFC app
   #endif
 
-  #define ABASE_OS_INFO "Microsoft Windows (64-bit) ABASE_BUILD(" ## __TIME__ ## ")"
-
+  #define ABASE_OS_INFO "64-bit Windows"
 #elif defined(_WIN32) || defined(WIN32)
   //Win32 environment
   #pragma message("ABase (32bit): Windows OS detected")
@@ -94,7 +93,7 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
     #include <winsock2.h>
   #endif
 
-#define ABASE_OS_INFO "Microsoft Windows (32-bit) ABASE_BUILD(" ## __TIMESTAMP__ ## ")"
+#define ABASE_OS_INFO "32-bit Windows"
 #elif defined(LINUX32)
   #pragma message("ABase (32bit): Linux OS detected")
   #define __LINUX__
@@ -106,10 +105,10 @@ LITTLE_ENDIAN - processor specific, intel is big endian, motorola is little endi
   #undef FD_SETSIZE
   #define FD_SETSIZE 1024             //a_Allow 1024 simultaneous clients
 
-  #define ABASE_OS_INFO "Linux (32-bit) ABASE_BUILD(" ## __TIMESTAMP__ ## ")"
+  #define ABASE_OS_INFO "32-bit Linux"
 #elif defined(LINUX64)
   #error TODO Linux 64-bit
-  #define ABASE_OS_INFO "Linux (64-bit) ABASE_BUILD(" ## __TIMESTAMP__ ## ")"
+  #define ABASE_OS_INFO "64-bit Linux"
 #else
   #error No such OS configuration
 #endif
@@ -127,8 +126,10 @@ NDEBUG - non-debug (release) mode
 #endif
 #if defined(_DEBUG)
   #pragma message("osDefines.hpp: Debug Mode")
+  #define __BUILDTYPE__ "Debug"
 #elif defined(NDEBUG)
   #pragma message("osDefines.hpp: Release Mode")
+  #define __BUILDTYPE__ "Optimized"
 #else
   #error Must define _DEBUG or NDEBUG to define debug or release mode
 #endif
