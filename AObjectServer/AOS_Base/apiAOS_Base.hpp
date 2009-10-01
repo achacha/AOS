@@ -42,6 +42,6 @@ typedef int (PROC_AOS_Register)(AOSInputExecutor&, AOSModuleExecutor&, AOSOutput
 #define AOS_SERVER_NAME "AOS Rhino/1.6.0.0"
 #define AOS_SERVER_INFO "Rhino/1.6.0.0 " ## ABASE_OS_INFO
 #define AOS_ADMIN_SERVER_NAME "AOS Rhino Admin Server/1.3.1.0"
-#define AOS_Base_INFO AOS_SERVER_INFO ## "\tSERVER_BUILD(" ## __TIME__ ## " " ## __DATE__ ## ")"
+#define AOS_Base_INFO AOS_SERVER_INFO ## " " ## __BUILDTYPE__ ## " Build(" ## __TIMESTAMP__ ## ")"
 
 #endif //__apiAOS_Base_HPP__
