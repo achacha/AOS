@@ -15,7 +15,7 @@ $Id$
 void AThreadPool::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_monitorCycleSleep=" << m_monitorCycleSleep << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_MonitorCycleSleep=" << m_MonitorCycleSleep << std::endl;
   
   ADebugDumpable::indent(os, indent+1) << "mp_threadproc=" << AString::fromPointer(mp_threadproc) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_This=" << AString::fromPointer(mp_This) << std::endl;
@@ -51,7 +51,7 @@ AThreadPool::AThreadPool(
   mp_Parameter(pParameter),
   m_MonitorThread(AThreadPool::_threadprocDefaultMonitor, false),
   m_DesiredThreadCount(threadCount),
-  m_monitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
+  m_MonitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
   m_CreateNewThreads(true),
   m_TotalThreadCreationCount(AConstant::npos)
 {
@@ -74,7 +74,7 @@ AThreadPool::AThreadPool(
   mp_Parameter(pParameter),
   m_MonitorThread(threadprocMonitor, false),
   m_DesiredThreadCount(threadCount),
-  m_monitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
+  m_MonitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
   m_CreateNewThreads(true),
   m_TotalThreadCreationCount(AConstant::npos)
 {
@@ -119,7 +119,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
       )
       {
         // Short sleep since desired number of threads are running or we are not creating any more
-        AThread::sleep(pThis->m_monitorCycleSleep);
+        AThread::sleep(pThis->m_MonitorCycleSleep);
       }
       else
         skipNextSleep = false;
@@ -178,7 +178,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
       // Short sleep to allow time for threads to start up or shut down gracefully
       if (shouldSleepMore)
       {
-        AThread::sleep(pThis->m_monitorCycleSleep);
+        AThread::sleep(pThis->m_MonitorCycleSleep);
         shouldSleepMore = false;
       }
 
@@ -360,12 +360,12 @@ size_t AThreadPool::getActiveThreadCount()
 
 u4 AThreadPool::getMonitorCycleSleep() const
 {
-  return m_monitorCycleSleep;
+  return m_MonitorCycleSleep;
 }
 
 void AThreadPool::setMonitorCycleSleep(u4 sleeptime)
 {
-  m_monitorCycleSleep = sleeptime;
+  m_MonitorCycleSleep = sleeptime;
 }
 
 const AThreadPool::THREADS& AThreadPool::getThreads() const

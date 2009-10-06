@@ -259,7 +259,7 @@ protected:
   static u4 _threadprocDefaultMonitor(AThread& thread);
   AThread::ATHREAD_PROC *mp_threadprocMonitor;
   AThread m_MonitorThread;
-  u4 m_monitorCycleSleep;
+  u4 m_MonitorCycleSleep;
 
   // Flag if new threads are to be created
   bool m_CreateNewThreads;

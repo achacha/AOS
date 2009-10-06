@@ -39,10 +39,11 @@ public:
   virtual AXmlElement& emitXml(AXmlElement& thisRoot) const;
 
   /*!
-  Resets(clears) the timer and starts it again
+  Clears the timer and starts it again
+  @see reset
   */
   void start();
-  
+
   /*!
   Stops timer
   */
