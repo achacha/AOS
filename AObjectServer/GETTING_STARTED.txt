@@ -1,17 +1,9 @@
 Requirements
 ------------
 Python 2.4 or higher  ( http://www.python.org/ )
-Microsoft Development Environment 2005
+Microsoft Development Environment 2008
 Microsoft XML 6.0 engine ( http://www.microsoft.com/downloads/details.aspx?FamilyID=993C0BCF-3BCF-4009-BE21-27E85E1857B1&displaylang=en )
 	exact name: Microsoft Core XML Services (MSMXL) 6.0   (If the link may goes dead)
-
-
-  
-Preparing First Build
----------------------
-1. Unzip into your work directory (Assuming C:\aos\ in the instructions below)
-2. Using 'Start | Run' and execute 'cmd' for the command prompt
-
 
 
 Building AObjectServer

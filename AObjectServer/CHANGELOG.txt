@@ -1,6 +1,16 @@
 Change Log
 ----------
 
+1.8.0.0:
+- Improved threading model to allow handling even higher load demands
+- AOSWatchDog will wait until TCP/IP stack is initialized when OS reboots
+- AOS_Dada added as an example project
+- Internal library versions available via the admin site
+- Upgrade to Lua 5.14
+- Upgrade to SSLeay 0.98k
+- Upgrade to SQLite 3.6.18
+- Various performance enhancements
+
 1.7.0.0:
 - Admin website lister and content viewer
 - Improved AXmlElement API to allow inserting elements at the head

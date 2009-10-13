@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C++ Express 2008
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AObjectServer", "AObjectServer\AObjectServer.vcproj", "{AA8153A0-3581-4865-B0FE-A7D5267A7950}"
 	ProjectSection(ProjectDependencies) = postProject
 		{91CD0707-B34B-47FA-A295-BA6894D833D2} = {91CD0707-B34B-47FA-A295-BA6894D833D2}
@@ -170,10 +170,12 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|Win32.ActiveCfg = Debug|Win32
 		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|Win32.Build.0 = Debug|Win32
-		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|x64.ActiveCfg = Debug|Win32
+		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|x64.ActiveCfg = Debug|x64
+		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Debug|x64.Build.0 = Debug|x64
 		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|Win32.ActiveCfg = Release|Win32
 		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|Win32.Build.0 = Release|Win32
-		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|x64.ActiveCfg = Release|Win32
+		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|x64.ActiveCfg = Release|x64
+		{AA8153A0-3581-4865-B0FE-A7D5267A7950}.Release|x64.Build.0 = Release|x64
 		{ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1}.Debug|Win32.ActiveCfg = Debug|Win32
 		{ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1}.Debug|Win32.Build.0 = Debug|Win32
 		{ABAA6EBD-BBAD-4BD4-95DB-89DCB2717CE1}.Debug|x64.ActiveCfg = Debug|x64
