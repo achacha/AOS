@@ -830,9 +830,8 @@ AOSContext::Status AOSContext::_postProcessHttpHeader()
 
   //a_Check if to keep the connection alive
   if (
-    AOSConfiguration::IS_HTTP_PIPELINING_ENABLED                                                 // user enabled
+    AOSConfiguration::IS_HTTP_PIPELINING_ENABLED                               // user enabled
     && m_RequestHeader.isHttpPipeliningEnabled()                               // request header allows it 
-    && AHTTPRequestHeader::METHOD_ID_PUT != m_RequestHeader.getMethodId()      // method is not POST
   )
   {
     //a_HTTP pipelining turned on
