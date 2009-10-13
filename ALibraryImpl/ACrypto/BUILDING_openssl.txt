@@ -1,6 +1,9 @@
+See FAQ at bottom of this document if you get any build errors.
+
 32-bit
 ======
-Pre-requisites: Microsoft Visual Studio (cmd prompt), perl
+Pre-requisites: Microsoft Visual Studio (cmd prompt), perl, Microsoft 32-bit Assembler (ml)
+Hint: Use Micosoft Visual Studio 200x prompt (not the x64 version) it has ML.EXE specified in path
 
 1. cd into openssl-xxx directory
 2. ms\do_masm.bat
@@ -8,26 +11,30 @@ Pre-requisites: Microsoft Visual Studio (cmd prompt), perl
 
 4. RELEASE BUILD:
   a. modify ms\ntdll.mak
-    LIB_CFLAG= /DLL -D_WINDLL
+    LIB_CFLAG= add /DLL
     CFLAG= add /GS
+	       remove /WX           (OpenSSL uses old-style C runtime functions which are level 4 warning in Visual C++)
+	LFLAGS= add /MACHINE:X86
   
-  b. nmake -f ms\ntdll.mak
-  c. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into release directory
+  b. nmake -f ms\ntdll.mak clean
+  c. nmake -f ms\ntdll.mak /A
+  d. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into release directory
 	
 5. DEBUG BUILD: 
   a. modify ms\ntdll.mak (debugging flags to match ALibrary)
     
-CFLAG= /Od /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /MDd /Zi /MDd /RTC1 /EHsc /Gm /Od /W3 /GF /Gy /GS /nologo -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DAES_ASM -DBN_ASM -DOPENSSL_BN_ASM_PART_WORDS -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_USE_APPLINK -I. /Fdout32dll -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_SEED -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_TLSEXT -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE
+CFLAG=/Od /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /MDd /Zi /MDd /RTC1 /EHsc /Gm /Od /W3 /GF /Gy /GS  before /nologo, rest should be left as is
+LIB_CFLAG= add /DEBUG
 
-LIB_CFLAG= /DLL -D_WINDLL /DEBUG
-
-  b. nmake -f ms\ntdll.mak
-  c. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into debug directory
+  b. nmake -f ms\ntdll.mak clean
+  c. nmake -f ms\ntdll.mak /A
+  d. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into debug directory
 
 
 64-bit
 ======
-Pre-requisites: Microsoft Visual Studio (cmd prompt), perl
+Pre-requisites: Microsoft Visual Studio with 64-bit support (cmd prompt), perl, Microsoft 64-bit Assembler (ml64)
+Hint: Use Micosoft Visual Studio 200x x64 prompt it has ML64.EXE specified in path
 
 1. cd into openssl-xxx directory
 2. ms\do_win64a.bat
@@ -35,18 +42,46 @@ Pre-requisites: Microsoft Visual Studio (cmd prompt), perl
 
 4. RELEASE BUILD:
   a. modify ms\ntdll.mak
-    LIB_CFLAG= /DLL -D_WINDLL
+    LIB_CFLAG= add /DLL
     CFLAG= add -DWIN64
-    Remove all reference to bufferoverflowu.lib
+    REMOVE all reference to bufferoverflowu.lib
 	
-  b. nmake -f ms\ntdll.mak
-  c. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into release directory
+  b. nmake -f ms\ntdll.mak clean
+  c. nmake -f ms\ntdll.mak /A
+  d. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into release directory
 
 5. DEBUG BUILD: 
   a. modify ms\ntdll.mak (debugging flags to match ALibrary)
     CFLAG= /Od /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /MDd /Zi /MDd /RTC1 /EHsc /Gm /Od /W3 /GF /Gy /nologo -DWIN64 -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DAES_ASM -DBN_ASM -DOPENSSL_BN_ASM_PART_WORDS -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_USE_APPLINK -I. /Fdout32dll -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_SEED -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_TLSEXT -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE
     LIB_CFLAG= /DLL -D_WINDLL /DEBUG
-    Remove all reference to bufferoverflowu.lib
 
-  b. nmake -f ms\ntdll.mak
-  c. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into debug directory
+  b. nmake -f ms\ntdll.mak clean
+  c. nmake -f ms\ntdll.mak /A
+  d. From out32dll, copy libeay32.*, ssleay32.*, and openssl.exe into debug directory
+
+  
+  
+
+
+  
+FAQ for 32-bit build
+====================
+Q. If you get following errors in 32-bit build:
+
+.\crypto\sha\asm\sha512-sse2.asm(35) : error A2008: syntax error : xmm
+.\crypto\sha\asm\sha512-sse2.asm(36) : error A2008: syntax error : xmm
+.\crypto\sha\asm\sha512-sse2.asm(37) : error A2008: syntax error : xmm
+.\crypto\sha\asm\sha512-sse2.asm(38) : error A2008: syntax error : xmm
+.\crypto\sha\asm\sha512-sse2.asm(41) : error A2179: structure improperly initialized
+.\crypto\sha\asm\sha512-sse2.asm(41) : error A2008: syntax error : ,
+.\crypto\sha\asm\sha512-sse2.asm(42) : error A2179: structure improperly initialized
+.\crypto\sha\asm\sha512-sse2.asm(42) : error A2008: syntax error : ,
+.\crypto\sha\asm\sha512-sse2.asm(43) : error A2179: structure improperly initialized
+.\crypto\sha\asm\sha512-sse2.asm(43) : error A2008: syntax error : ,
+.\crypto\sha\asm\sha512-sse2.asm(44) : error A2179: structure improperly initialized
+.\crypto\sha\asm\sha512-sse2.asm(44) : error A2008: syntax error : ,
+...
+
+A. Then you are using an old version of ml.exe, try at least version 8.0 or newer (search microsoft.com)
+
+
