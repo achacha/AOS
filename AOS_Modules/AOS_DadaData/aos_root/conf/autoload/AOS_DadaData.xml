@@ -54,7 +54,7 @@
 		<data type="adjective">dada/dataset_debug/adjective.dat</data>
 		<data type="adverb">dada/dataset_debug/adverb.dat</data>
 		<data type="location">dada/dataset_debug/location.dat</data>
-		<data type="html">dada/dataset_debug/html.dat</data>
+		<data type="sketch">dada/dataset_debug/sketch.dat</data>
 		<data type="connect">dada/dataset_debug/connect.dat</data>
 		<data type="preposition">dada/dataset_debug/preposition.dat</data>
 		<data type="pronoun_s">dada/dataset_debug/pronoun_singular.dat</data>
