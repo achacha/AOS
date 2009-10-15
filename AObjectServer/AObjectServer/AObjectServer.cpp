@@ -77,7 +77,7 @@ int main(int argc, char **argv)
   try
   {
     // Check if config base path was provided
-    AFilename basePath(ASW("../aos_root/",11), true);
+    AFilename basePath(ASW("../aos_root/",12), true);
     if (argc > 1)
     {
       // Check existance of config base path
@@ -86,12 +86,12 @@ int main(int argc, char **argv)
 
     if (!AFileSystem::exists(basePath))
     {
-      str.assign("main: Base path does not exist: ");
-      basePath.emit(str);
+      str.assign("main: Could not find root directory in ../aos_root please specify location of the root directory.");
       AOS_DEBUGTRACE(str.c_str(), NULL);
       return -1;
     }
-    else
+    
+
     {
       AFilename absPath;
       AFileSystem::expand(basePath, absPath);

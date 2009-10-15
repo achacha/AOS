@@ -1,26 +1,31 @@
-Requirements
-------------
+1. Requirements
+---------------
 Python 2.4 or higher  ( http://www.python.org/ )
-Microsoft Development Environment 2008
 Microsoft XML 6.0 engine ( http://www.microsoft.com/downloads/details.aspx?FamilyID=993C0BCF-3BCF-4009-BE21-27E85E1857B1&displaylang=en )
-	exact name: Microsoft Core XML Services (MSMXL) 6.0   (If the link may goes dead)
+	exact name: Microsoft Core XML Services (MSMXL) 6.0   (If the link goes dead)
 
 
-Building AObjectServer
-----------------------
+2. Building AObjectServer (if using SDK, if not skip to Section 3)
+------------------------------------------------------------------
+Requires: Microsoft Visual Studio 2008 (aka MSDEV)
+
+
 1. With MSDEV open c:\aos\AObjectServer\AObjectServer.sln
 2. Right click on AObjectServer project and "Set As StartUp Project"
-3. Set the correct target "Win32" or "x64"
-3. Build | Build Solution
+3. Right click on AObjectServer project and "Properties" | "Configuration Properties" | "Debugging"
+  - Set "Working Directory" to: $(TargetDir)
+4. Set the correct target "Win32" or "x64", "Debug" or "Release"
+  - NOTE: With Express version of Visual Studio, x64 may not be available
+5. Build | Build Solution
 
 
 
-Running AObjectServer
----------------------
+3. Running AObjectServer
+------------------------
 _debug/AObjectServer.exe       - Win32 debug console mode
 _release/AObjectServer.exe     - Win32 optimized release console mode
 _debug64a/AObjectServer.exe    - Win64 debug console mode
-_release64a/AObjectServer.exe  - Win64 optimized release  console mode
+_release64a/AObjectServer.exe  - Win64 optimized release console mode
 
 AObjectServer.exe <location of aos_root directory>        - default is to load ../aos_root/
 
@@ -36,8 +41,9 @@ The config is tuned for development:
 You can create different configuration by copying aos_root directory to a new place and giving AObjectServer the path to it.
 
 
-Using windows services
-----------------------
+
+4. Using as windows service
+---------------------------
 AOSWatchDog launches AObjectServer.exe when it is not found.
 
 AOSWatchDog status        - status of the service
@@ -57,10 +63,11 @@ Once AObjectServer shuts down, then AOSWatchDog will start a new instance of it.
 To completely shut it down:
   1. Stop AOSWatchDog service
   2. Shut AObjectServer down
+
   
 
-Adding new module project (which can contain any number of modules)
--------------------------
+5. Adding new module project (which can contain any number of modules)
+----------------------------------------------------------------------
 1. cd c:\aos\AOS_Modules\
 2. new_AOS_Project.py MyNewProject SomeNewModule
 
@@ -70,8 +77,6 @@ Adding new module project (which can contain any number of modules)
 	To create more modules, just add new classes derived from AOSModuleInterface
 	  you can use this blank module as a template for new modules
 
-
-
 Adding your new project to the workspace
 ----------------------------------------
 1. Right click on solution and select Add | Existing Project...
@@ -79,8 +84,8 @@ Adding your new project to the workspace
 
 
 
-Creating new content
---------------------
+6. Creating new content
+-----------------------
 We will use AOSModules/AOS_Example for this.
 
 You will notice that your new project and all module projects contain a directory 'aosconfig'.

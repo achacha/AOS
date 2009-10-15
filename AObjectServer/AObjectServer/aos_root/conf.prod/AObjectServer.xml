@@ -64,9 +64,9 @@
   </listen>
 
   <database>
-    <!--url>mysql://aos:aos@equinox/aos/</url-->
+    <!--url>mysql://aos:aos@localhost/aos/</url-->
     <!--url>odbc://aos:aos@localhost/aos_global/</url-->
-    <url desc="SQLite3 database in ./aos_root/db/AObjectServer.db, relative to the directory with executable">sqlite:///../aos_root/db/AObjectServer.db</url>
+    <url desc="SQLite3 database in ../aos_root/db/AObjectServer.db, relative to the directory with executable">sqlite:///../aos_root/db/AObjectServer.db</url>
     <connections>8</connections>
   </database>
 

@@ -176,7 +176,7 @@ a dedicated hobby.  Ideally I could do this full time, but bills need to be paid
 Following libraries are provided with full source and are intended to be buildable:
   AOS_Base  - base application server logic
   AObjectServer - executable implementation of an HTTP application server
-  AOSWatchDog - optional service executor for Windows XP and 2003
+  AOSWatchDog - optional service executor for Windows XP+ and 2003+
 
 Following libraries are provided in binary libraries and C/C++ headers:
   ABase

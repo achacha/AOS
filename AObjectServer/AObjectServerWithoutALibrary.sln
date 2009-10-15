@@ -2,6 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AObjectServer", "AObjectServer\AObjectServer.vcproj", "{AA8153A0-3581-4865-B0FE-A7D5267A7950}"
 	ProjectSection(ProjectDependencies) = postProject
+		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E} = {96B19A0C-3D35-4589-B46F-6E0A68A33C6E}
 		{96B19A0C-3D35-4589-B46F-6E0A68A33C7F} = {96B19A0C-3D35-4589-B46F-6E0A68A33C7F}
 		{96B19A0C-3D35-4589-B46F-6E0A68A33C7F} = {96B19A0C-3D35-4589-B46F-6E0A68A33C7F}
 		{96B19A0C-3D35-4589-B46F-6E0A68A33C7F} = {96B19A0C-3D35-4589-B46F-6E0A68A33C7F}
@@ -56,6 +57,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOS_Classified", "..\AOS_Mo
 	ProjectSection(ProjectDependencies) = postProject
 		{5D653A10-2A01-4DAD-AB60-59294DF36DF2} = {5D653A10-2A01-4DAD-AB60-59294DF36DF2}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AOS_DadaData", "..\AOS_Modules\AOS_DadaData\AOS_DadaData.vcproj", "{96B19A0C-3D35-4589-B46F-6E0A68A33C6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +140,14 @@ Global
 		{A5D2C184-A340-4F46-852A-A69866312F00}.Release|Win32.Build.0 = Release|Win32
 		{A5D2C184-A340-4F46-852A-A69866312F00}.Release|x64.ActiveCfg = Release|x64
 		{A5D2C184-A340-4F46-852A-A69866312F00}.Release|x64.Build.0 = Release|x64
+		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E}.Debug|Win32.Build.0 = Debug|Win32
+		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E}.Debug|x64.ActiveCfg = Debug|x64
+		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E}.Debug|x64.Build.0 = Debug|x64
+		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E}.Release|Win32.ActiveCfg = Release|Win32
+		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E}.Release|Win32.Build.0 = Release|Win32
+		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E}.Release|x64.ActiveCfg = Release|x64
+		{96B19A0C-3D35-4589-B46F-6E0A68A33C6E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
