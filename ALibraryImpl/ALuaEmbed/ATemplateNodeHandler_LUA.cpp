@@ -44,6 +44,28 @@ ATemplateNode *ATemplateNodeHandler_LUA::create(AFile *pFile)
   return pNode;
 }
 
+void ATemplateNodeHandler_LUA::Node::fromAFile(AFile& aFile)
+{
+  AString endToken;
+  endToken.append('/');
+  endToken.append(getTagName());
+
+  m_BlockData.clear();
+
+  //a_Locate end tag in file if not found throw exception, MUST have end
+  if (AConstant::npos == aFile.readUntil(m_BlockData, endToken))
+  {
+    aFile.readUntilEOF(m_BlockData);
+  }
+  else
+  {
+    m_BlockData.rremoveUntilNotOneOf(AXmlElement::sstr_StartOrWhitespace);
+    aFile.skipUntilNotOneOf(AXmlElement::sstr_EndOrWhitespace);
+  }
+  //a_Allow derived nodes to process data after read
+  _handleDataAfterRead();
+}
+
 ATemplateNodeHandler *ATemplateNodeHandler_LUA::clone()
 { 
   return new ATemplateNodeHandler_LUA();

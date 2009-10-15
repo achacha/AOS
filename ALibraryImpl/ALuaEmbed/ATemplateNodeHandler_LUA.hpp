@@ -98,6 +98,11 @@ public:
     virtual void process(ATemplateContext& context, AOutputBuffer& output);
 
     /*!
+    Read from file and if end token not found read to EOF and make it the script
+    */
+    void fromAFile(AFile& aFile);
+    
+    /*!
     ADebugDumpable
     */
     virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
