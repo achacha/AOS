@@ -35,6 +35,7 @@ context.syncAosRoot(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Example"));
 context.syncAosRoot(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Test"));
 context.syncAosRoot(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_User"));
 context.syncAosRoot(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Wiki"));
+context.syncAosRoot(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_DadaData"));
 
 # Docs
 print("|----------------------------Docs: "+os.path.join(context.BASE_AOBJECTSERVER_PATH, "docs")+" -> "+context.TARGET_PATH);
@@ -74,9 +75,14 @@ if (context.binary == 0):
   context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Test"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Test"));
   context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_User"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_User"));
   context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Wiki"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Wiki"));
+  context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_DadaData"), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_DadaData"));
   context.syncPathFilesWithPCH(os.path.join(context.BASE_AOSMODULES_PATH), "*.*", os.path.join(context.TARGET_PATH, "AOS_Modules"));
   os.system("rm "+os.path.join(context.TARGET_PATH, "AOS_Modules", "AOS_Modules.*"));
   os.remove(os.path.join(context.TARGET_PATH, "AOS_Modules", "lint.cmd"));
+  
+  # Hive executable
+  context.syncExecutable("Hive");
+
 else:
   #Copy AObjectServer and AOS_Modules binaries
   print("--------------Sync executables---------------------");
@@ -89,6 +95,7 @@ else:
   context.syncLibrary("AOS_Test");
   context.syncLibrary("AOS_User");
   context.syncLibrary("AOS_Wiki");
+  context.syncLibrary("AOS_DadaData");
   
 # Extras
 context.syncPathFiles(os.path.join(context.BASE_AOBJECTSERVER_PATH), "GETTING_STARTED.txt", context.TARGET_PATH);

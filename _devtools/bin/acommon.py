@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os,sys;
 
-RSYNC_PARAMS="-trupEgo --progress --exclude=.svn";
+RSYNC_PARAMS="-trupEgo --progress --exclude=.svn --exclude=*.user";
 
 class Context:
   flags = {};
