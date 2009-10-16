@@ -748,7 +748,6 @@ size_t AFile::readBlockIntoLookahead()
   char *p = str.startUsingCharPtr(m_ReadBlock);
 
   size_t bytesRead = _read(p, m_ReadBlock);
-
   switch(bytesRead)
   {
     case AConstant::npos:
@@ -789,7 +788,6 @@ size_t AFile::read(void *pTarget, size_t bytesLeft)
   while (m_LookaheadBuffer.getSize() < bytesLeft)
   {
     size_t bytesReadPass = readBlockIntoLookahead();
-
     if (AConstant::unavail == bytesReadPass)
       return AConstant::unavail;
 

@@ -156,7 +156,7 @@ public:
   void parseCookie(const AString& strCookieLine);
 
   /*!
-  Helpers
+  Does the request ask for http pipelining to be enabled
 
   @return true if HTTP pipelining is requested
   */

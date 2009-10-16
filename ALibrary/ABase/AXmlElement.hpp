@@ -232,6 +232,15 @@ public:
   u8 getU8(const AString& path, u8 iDefault) const;
 
   /*!
+  double from content at the path
+
+  @param path to look up
+  @param dDefault default value if path does not refer to an existing element
+  @return result that is converted to double if does not exist default is returned
+  */
+  double getDouble(const AString& path, double dDefault) const;
+
+  /*!
   bool from content at the path
 
   @param path to look up

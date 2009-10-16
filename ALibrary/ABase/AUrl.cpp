@@ -260,6 +260,9 @@ void AUrl::overlay(const AUrl &urlSource)
         }
         else
         {
+          // Source path exists and it is absolute, replace path and filename with source
+          m_strPath = urlSource.m_strPath;
+
           // Source URL path is empty but may have a filename
           if (! urlSource.m_strFilename.isEmpty())
           {

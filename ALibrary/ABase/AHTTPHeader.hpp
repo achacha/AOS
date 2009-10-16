@@ -159,8 +159,10 @@ public:
 
   @param name of the header pair
   @param value of the header pair
+  @param overwrite the first found if already exists
+  @see add
   */
-  void set(const AString& name, const AString& value);
+  void set(const AString& name, const AString& value, bool overwrite = true);
   
   /*!
   Remove header pair
@@ -260,6 +262,14 @@ public:
   size_t getContentLength() const;
 
   /*!
+  Helper to get Content-Type
+
+  @param target to append content type to
+  @return true if content-type exists
+  */
+  bool getContentType(AOutputBuffer& target) const;
+
+  /*!
   ADebugDumpable
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
@@ -288,6 +298,7 @@ protected:
   // Status code description
   AString _getStatusCodeDescription(int iStatusCode);
 
+  // Copy method
   void _copy(const AHTTPHeader&);
 };
 

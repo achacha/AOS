@@ -271,18 +271,16 @@ void AHTTPHeader::parseTokenLine(const AString &line)
     //a_Check to see if the request and response was to handle it
     if (!_handledByChild(nvpair))
     {
-      if (m_Pairs.find(nvpair.getName()) != m_Pairs.end())
-        ATHROW_EX(this, AException::DataConflict, nvpair.getName());
-
       //a_Child did not handle it, we will
       m_Pairs.insert(MMAP_AString_NVPair::value_type(nvpair.getName(), nvpair));
     }
   }
 }
 
-void AHTTPHeader::set(const AString& name, const AString& value)
+void AHTTPHeader::set(const AString& name, const AString& value, bool overwrite)
 {
-  remove(name);
+  if (overwrite)
+    remove(name);
   add(name, value);
 }
 
@@ -400,3 +398,9 @@ size_t AHTTPHeader::getContentLength() const
   else
     return AConstant::npos;
 }
+
+bool AHTTPHeader::getContentType(AOutputBuffer& target) const
+{
+  return get(AHTTPHeader::HT_ENT_Content_Type, target) > 0;
+}
+

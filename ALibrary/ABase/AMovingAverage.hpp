@@ -26,30 +26,68 @@ class ABASE_API AMovingAverage : public ASerializable, public ADebugDumpable, pu
 public:
   /*!
   keepLastNSamples - number of last samples to keep saved
-  weightAdjuster - sample weight of is multiplied by this every sample (samples are less important the more we get)
+  weightAdjuster - wieught is multiplied by adjuster every sample (samples are less important the more we get), initial weight is 1.0 and cannot be get than minimum
   weightMinimum - minimum value a sample weight will have (higher value will allow new samples to significantly alter the average, lower will harder the average against new data and slightly alter it)
+
+  Algorithm for  void addSample(double SampleValue):
+      Average = (1.0 - Weight) * Average + Weight * SampleValue;
+      Weight = MIN(Weight * WeightAdjuster, WeightMinimum);
+      ++Count;
+      SaveSampleValue();
   */
   AMovingAverage(
-    u4 keepLastNSamples = 16, 
+    u4 keepBufferSize = 16, 
     double weightAdjuster = 0.92,
     double weightMinimum = 0.008
   );
   virtual ~AMovingAverage();
                     
   /*!
-  Access methods
+  Add a sample
+
+  @param sampleValue to add to the average
   */
-  void   addSample(double dSample);
+  void addSample(double sampleValue);
+  
+  /*!
+  @return current average
+  */
   double getAverage() const;
-  u8     getCount() const;
-  void   setInitialAverage(double dInitial);
-  void   clear();                              //a_The parameters do NOT get cleared only data
+  
+  /*!
+  @return total samples proccessed
+  */
+  u8 getCount() const;
+  
+  /*!
+  Set initial average value (by default 0.0)
+
+  @param initial value
+  */
+  void setInitialAverage(double initial = 0.0);
+
+  /*!
+  Resize the keep buffer and discard all existing data
+
+  @param new size
+  */
+  void setKeepBufferSize(size_t size);
+  
+  /*!
+  Clear the data and average
+  Set inital average to 0.0 and initial weight to 1.0
+  Adjuster and minimum are not changed
+  */
+  void clear();
 
   /*!
   WeightAdjuster is used to reduce the Weigth as more samples are added (weight multiplied by adjuster every sample)
-  WeightMinimum is the lost value that the weight will get to (if it gets to 0.0 then at that point all new values are ignored)
   */
   void setWeightAdjuster(double dAdjuster);  //a_[0.0, 1.0]
+
+  /*!
+  WeightMinimum is the lost value that the weight will get to (if it gets to 0.0 then at that point all new values are ignored)
+  */
   void setWeightMinimum(double dMinimum);    //a_[0.0, 1.0]
 
   /*!
@@ -93,11 +131,11 @@ private:
   //a_Count of the samples
   u8 m_Count;
 
-  //a_Weigth of the average when compared against incomming value;  Must be between 0 and 1, 
+  //a_Weigth of the average when compared against incomming value;  Must be between 0.0 and 1.0, 
   double m_Weight;		
   double m_WeightAdjuster;
   double m_WeightMinimum;
-
+  
   //a_Store last N samples in a rotating array
   double *mp_Keep;
   u4      m_KeepPos;

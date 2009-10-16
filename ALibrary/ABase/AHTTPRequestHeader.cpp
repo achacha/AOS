@@ -313,7 +313,8 @@ bool AHTTPRequestHeader::isHttpPipeliningEnabled() const
   bool isEnabled = equalsNoCase(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
   isEnabled |= !equalsNoCase(AHTTPHeader::HT_GEN_Connection, ASW("close",5));
   isEnabled &= mstr_HTTPVersion.equals(AHTTPHeader::HTTP_VERSION_1_1);
-  isEnabled &= ((m_MethodId == AHTTPRequestHeader::METHOD_ID_POST || m_MethodId == AHTTPRequestHeader::METHOD_ID_PUT) && exists(AHTTPHeader::HT_ENT_Content_Length));
+  if (m_MethodId == AHTTPRequestHeader::METHOD_ID_POST || m_MethodId == AHTTPRequestHeader::METHOD_ID_PUT)
+    isEnabled &= exists(AHTTPHeader::HT_ENT_Content_Length);
 
   return isEnabled;
 }

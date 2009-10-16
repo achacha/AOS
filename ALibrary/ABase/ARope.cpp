@@ -215,8 +215,8 @@ size_t ARope::read(AFile& file, size_t length /* = AConstant::npos */)
   size_t totalBytesRead = 0;
   while (length > 0)
   {
-    bytesRead = file.read(mp_LastBlock + m_BlockSize - m_LastBlockFree, m_LastBlockFree);
-    if (bytesRead == AConstant::npos)
+    bytesRead = file.read(mp_LastBlock + m_BlockSize - m_LastBlockFree, (length >= m_LastBlockFree ? m_LastBlockFree : length));
+    if (bytesRead == AConstant::npos || !bytesRead)
       break;  //a_EOF
     
     m_LastBlockFree -= bytesRead;

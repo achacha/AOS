@@ -318,3 +318,13 @@ void AHTTPResponseHeader::setLastModified(const ATime& modified)
   modified.emitRFCtime(str);
   set(HT_ENT_Last_Modified, str);
 }
+
+bool AHTTPResponseHeader::isHttpPipeliningEnabled() const
+{
+  bool isEnabled = equalsNoCase(AHTTPHeader::HT_GEN_Connection, ASW("keep-alive",10));
+  isEnabled |= !equalsNoCase(AHTTPHeader::HT_GEN_Connection, ASW("close",5));
+  isEnabled &= mstr_HTTPVersion.equals(AHTTPHeader::HTTP_VERSION_1_1);
+  isEnabled &= exists(AHTTPHeader::HT_ENT_Content_Length);
+
+  return isEnabled;
+}

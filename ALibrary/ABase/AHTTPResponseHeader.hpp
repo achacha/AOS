@@ -110,6 +110,14 @@ public:
   static bool isValidStatusCode(int statusCode);
 
   /*!
+  Does the server support http pipelining
+  Assumes the request header contained the keep-alive request
+
+  @return true if HTTP pipelining is supported by server
+  */
+  bool isHttpPipeliningEnabled() const;
+
+  /*!
   Access
 
   @return get status code

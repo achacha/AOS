@@ -589,6 +589,15 @@ u8 AXmlElement::getU8(const AString& path, u8 u8Default) const
     return u8Default;
 }
 
+double AXmlElement::getDouble(const AString& path, double dDefault) const
+{
+  AString str;
+  if (emitContentFromPath(path, str))
+    return str.toDouble();
+  else
+    return dDefault;
+}
+
 size_t AXmlElement::getSize_t(const AString& path, size_t iDefault) const
 {
   AString str;

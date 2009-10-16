@@ -44,9 +44,9 @@ AMovingAverage::AMovingAverage(
   double weightAdjuster, // = 0.93
   double weightMinimum   // = 0.005
 ) :
-  m_Weight(1.0),
-  m_Average(0.0),
   m_Count(0),
+  m_Average(0.0),
+  m_Weight(1.0),
   m_WeightAdjuster(weightAdjuster),
   m_WeightMinimum(weightMinimum),
   m_KeepSize(keepLastNSamples),
@@ -54,6 +54,7 @@ AMovingAverage::AMovingAverage(
 {
   AASSERT(this, weightAdjuster >= 0.0 && weightAdjuster <= 1.0);
   AASSERT(this, weightMinimum >= 0.0 && weightMinimum <= 1.0);
+  AASSERT(this, m_KeepSize < DEBUG_MAXSIZE_AMovingAverageKeep);
 
   if (!keepLastNSamples)
     m_KeepSize = 1;
@@ -72,10 +73,22 @@ AMovingAverage::~AMovingAverage()
   catch(...) {}
 }
 
+void AMovingAverage::setKeepBufferSize(size_t size)
+{
+  if (size > m_KeepSize)
+  {
+    delete []mp_Keep;
+    m_KeepSize = size;
+    m_KeepPos = 0;
+    mp_Keep = new double[m_KeepSize];
+    for (u4 i=0; i<m_KeepSize; ++i)
+      mp_Keep[i] = 0.0;
+  }
+}
+
 void AMovingAverage::addSample(double dSample)
 {
-  m_Average = (1.0 - m_Weight) * m_Average + 
-               m_Weight * dSample;
+  m_Average = (1.0 - m_Weight) * m_Average + m_Weight * dSample;
  
   //a_Now adjust the weigth
   if (m_Weight > m_WeightMinimum)
