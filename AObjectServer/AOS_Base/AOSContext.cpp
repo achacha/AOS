@@ -369,37 +369,53 @@ void AOSContext::setLocaleOnRequestHeader(const AString& locale)
 
 bool AOSContext::_waitForFirstChar()
 {
-  int sleeptime = AOSConfiguration::SLEEP_STARTTIME;
-  int tries = 0;
+  //int sleeptime = AOSConfiguration::SLEEP_STARTTIME;
+  //int tries = 0;
+  //char c;
+  //while (tries < AOSConfiguration::FIRST_CHAR_RETRIES)
+  //{
+  //  if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
+  //  {
+  //    ARope rope("AOSContext: Sleep cycle ");
+  //    rope.append(AString::fromInt(tries));
+  //    m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
+  //  }
+
+  //  AThread::sleep(sleeptime);
+  //  sleeptime += AOSConfiguration::SLEEP_INCREMENT;
+  //  ++tries;
+  //  size_t ret = mp_RequestFile->peek(c);
+  //  switch(ret)
+  //  {
+  //    case AConstant::npos:
+  //      return false;
+
+  //    case AConstant::unavail:
+  //    case 0:
+  //      break;       // No data available yet, keep waiting
+
+  //    default:
+  //      return true; // Read something
+  //  }
+  //}
+
+  //return false;
+
   char c;
-  while (tries < AOSConfiguration::FIRST_CHAR_RETRIES)
-  {
-    if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
-    {
-      ARope rope("AOSContext: Sleep cycle ");
-      rope.append(AString::fromInt(tries));
-      m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
-    }
+  return (mp_RequestFile->peek(c) > 0);
 
-    AThread::sleep(sleeptime);
-    sleeptime += AOSConfiguration::SLEEP_INCREMENT;
-    ++tries;
-    size_t ret = mp_RequestFile->peek(c);
-    switch(ret)
-    {
-      case AConstant::npos:
-        return false;
+  //char c;
+  //size_t ret = mp_RequestFile->peek(c);
+  //switch(ret)
+  //{
+  //  case AConstant::unavail:
+  //  case 0:
+  //  case AConstant::npos:
+  //    return false;
 
-      case AConstant::unavail:
-      case 0:
-        break;       // No data available yet, keep waiting
-
-      default:
-        return true; // Read something
-    }
-  }
-
-  return false;
+  //  default:
+  //    return true; // Read something
+  //}
 }
 
 AOSContext::Status AOSContext::_processHttpHeader()
@@ -434,7 +450,8 @@ AOSContext::Status AOSContext::_processHttpHeader()
       }
       else
       {
-        bytesRead = mp_RequestFile->read(c);
+        m_EventVisitor.startEvent(ASW("AOSContext: Data unavailable, going into isAvailable",52), AEventVisitor::EL_DEBUG);
+        return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
       }
     }
     break;
@@ -464,8 +481,15 @@ AOSContext::Status AOSContext::_processHttpHeader()
         }
         else
         {
+          m_EventVisitor.startEvent(ASW("AOSContext: First character detected as available",49), AEventVisitor::EL_DEBUG);
           if (bytesRead = mp_RequestFile->read(c) > 0)
+          {
+            if (m_EventVisitor.isLoggingDebug())
+            {
+              m_EventVisitor.startEvent(AString("AOSContext: First character read: ",34)+c, AEventVisitor::EL_DEBUG);
+            }
             m_ConnectionFlags.clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
+          }
           else
           {
             //a_Something wrong here, peek says data is ready, read can't get it
@@ -1589,7 +1613,7 @@ bool AOSContext::processStaticPage()
     break;
 
     default:
-      AASSERT(this, false);  //a_Unknown return type?
+      ATHROW(this, AException::ProgrammingError);  //a_Unknown return type?
   }
   
   //a_Check if context is being dumped

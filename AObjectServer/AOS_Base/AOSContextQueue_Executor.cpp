@@ -65,7 +65,7 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         {
           AString error("AOSContext pointer is invalid: ");
           error.append(AString::fromPointer(pContext));
-          AASSERT_EX(NULL, false, error);
+          ATHROW_EX(NULL, AException::InvalidData, error);
           continue;
         }
 #endif
@@ -217,8 +217,8 @@ u4 AOSContextQueue_Executor::_threadproc(AThread& thread)
         {
           //a_keep-alive found, pipelining enabled
           if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_INFO))
-            pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Pipelining detected, going into preExecute",68), AEventVisitor::EL_INFO);
-          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &pContext);
+            pContext->useEventVisitor().startEvent(ASW("AOSContextQueue_Executor: Pipelining detected, going into isAvailable",69), AEventVisitor::EL_INFO);
+          m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_IS_AVAILABLE, &pContext);
         }
         else
         {
