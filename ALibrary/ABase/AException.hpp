@@ -158,7 +158,7 @@ public:
     int iLineNumber = 0,
     const AEmittable& extra = AConstant::ASTRING_EMPTY,
     errno_t errornum = 0,
-    bool walkStack = true
+    bool walkStack = false  //TODO fix
   );
 #else
   AException(

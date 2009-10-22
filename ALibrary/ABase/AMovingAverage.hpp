@@ -36,7 +36,7 @@ public:
       SaveSampleValue();
   */
   AMovingAverage(
-    u4 keepBufferSize = 16, 
+    size_t keepBufferSize = 16, 
     double weightAdjuster = 0.92,
     double weightMinimum = 0.008
   );
@@ -138,8 +138,8 @@ private:
   
   //a_Store last N samples in a rotating array
   double *mp_Keep;
-  u4      m_KeepPos;
-  u4      m_KeepSize;
+  size_t  m_KeepPos;
+  size_t  m_KeepSize;
 };
 
 #endif //INCLUDED__AMovingAverage_HPP__

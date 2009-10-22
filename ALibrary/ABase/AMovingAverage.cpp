@@ -24,7 +24,7 @@ void AMovingAverage::debugDump(std::ostream& os, int indent) const
   //a_Keep buffer
   ADebugDumpable::indent(os, indent+1) << "mp_Keep={" << std::endl;
   ADebugDumpable::indent(os, indent+2);
-  for (u4 i=0; i<m_KeepSize; ++i)
+  for (size_t i=0; i<m_KeepSize; ++i)
   {
     os << i << ":" << mp_Keep[i] << "  ";
     if (!((i+1) % 8))
@@ -40,7 +40,7 @@ void AMovingAverage::debugDump(std::ostream& os, int indent) const
 }
 
 AMovingAverage::AMovingAverage(
-  u4 keepLastNSamples,   // = 16
+  size_t keepLastNSamples,   // = 16
   double weightAdjuster, // = 0.93
   double weightMinimum   // = 0.005
 ) :
@@ -60,7 +60,7 @@ AMovingAverage::AMovingAverage(
     m_KeepSize = 1;
 
   mp_Keep = new double[m_KeepSize];
-  for (u4 i=0; i<m_KeepSize; ++i)
+  for (size_t i=0; i<m_KeepSize; ++i)
     mp_Keep[i] = 0.0;
 }
 
@@ -81,7 +81,7 @@ void AMovingAverage::setKeepBufferSize(size_t size)
     m_KeepSize = size;
     m_KeepPos = 0;
     mp_Keep = new double[m_KeepSize];
-    for (u4 i=0; i<m_KeepSize; ++i)
+    for (size_t i=0; i<m_KeepSize; ++i)
       mp_Keep[i] = 0.0;
   }
 }
@@ -111,7 +111,7 @@ void AMovingAverage::clear()
   m_Count   = 0;
   m_Weight  = 1.0;
 
-  for (u4 i=0; i<m_KeepSize; ++i)
+  for (size_t i=0; i<m_KeepSize; ++i)
     mp_Keep[i] = 0.0;
   
   m_KeepPos = 0;
@@ -152,7 +152,7 @@ void AMovingAverage::fromAFile(AFile& aFile)
   aFile.read(m_KeepPos);
   delete []mp_Keep;
   mp_Keep = new double[m_KeepSize];
-  for (u4 i=0; i<m_KeepSize; ++i)
+  for (size_t i=0; i<m_KeepSize; ++i)
     aFile.read(mp_Keep[i]);
 }
 
@@ -165,7 +165,7 @@ void AMovingAverage::toAFile(AFile& aFile) const
   aFile.write(m_WeightMinimum);
   aFile.write(m_KeepSize);
   aFile.write(m_KeepPos);
-  for (u4 i=0; i<m_KeepSize; ++i)
+  for (size_t i=0; i<m_KeepSize; ++i)
     aFile.write(mp_Keep[i]);
 }
 
@@ -176,11 +176,11 @@ void AMovingAverage::emit(AOutputBuffer& target) const
   num.setPrecision(4);
   num.emit(target);
   target.append("  count=");
-  target.append(AString::fromU4(m_Count));
+  target.append(AString::fromSize_t(m_Count));
   if (mp_Keep)
   {
     target.append("  samples={");
-    u4 i=0;
+    size_t i=0;
     while(i<m_KeepSize)
     {
       target.append(AString::fromDouble(mp_Keep[i]));
@@ -197,12 +197,12 @@ AXmlElement& AMovingAverage::emitXml(AXmlElement& thisRoot) const
   AASSERT(this, !thisRoot.useName().isEmpty());
   
   thisRoot.addElement(ASW("average",7)).addData(m_Average);
-  thisRoot.addElement(ASW("count",5)).addData(AString::fromU4(m_Count));
+  thisRoot.addElement(ASW("count",5)).addData(AString::fromSize_t(m_Count));
 
   AXmlElement& keep = thisRoot.addElement(ASW("keep",4));
   if (mp_Keep)
   {
-    for (u4 i=0; i<m_KeepSize; ++i)
+    for (size_t i=0; i<m_KeepSize; ++i)
     {
       if (i == m_KeepPos)
         keep.addElement(ASW("sample",6)).addData(mp_Keep[i]).addAttribute(ASW("pos",3), AConstant::ASTRING_ONE);

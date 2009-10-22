@@ -66,7 +66,7 @@ public:
     const AFilename& key,                             // Filename to find
     HANDLE& pFile,                                    // Gets the handle to the item
     ATime& modified,                                  // Set to modified date of the file (the one in cache)
-    const ATime& ifModifiedSince = ATime::GENESIS     // Controls the return status to include FOUND_NOT_MODIFIED if applies
+    const ATime& ifModifiedSince = ATime::EPOCH     // Controls the return status to include FOUND_NOT_MODIFIED if applies
   );
 
   /*!

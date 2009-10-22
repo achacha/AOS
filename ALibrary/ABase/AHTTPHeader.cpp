@@ -341,7 +341,7 @@ void AHTTPHeader::fromAFile(AFile& aFile)
 
   while (AConstant::unavail == bytesRead && aFile.isNotEof())
   {
-    AThread::sleep(100);
+    AThread::sleep(50);
     bytesRead = aFile.readLine(str, AConstant::npos, false);
   }
 
@@ -360,7 +360,7 @@ void AHTTPHeader::fromAFile(AFile& aFile)
       bytesRead = aFile.readLine(str, AConstant::npos, false);
       while (AConstant::npos == bytesRead && aFile.isNotEof())
       {
-        AThread::sleep(100);
+        AThread::sleep(50);
         bytesRead = aFile.readLine(str, AConstant::npos, false);
       }
       if (str.getSize() > 0)

@@ -91,7 +91,9 @@ $Id$
 #ifdef __WINDOWS__
 
 #ifndef DISABLE_EXCEPTION_STACKWALK
-#define ENABLE_EXCEPTION_STACKWALK 1
+//TODO Current stack walker is not thread safe
+//#define ENABLE_EXCEPTION_STACKWALK 1
+#undef ENABLE_EXCEPTION_STACKWALK
 #pragma message("Enabling Stack Walker exceptions")
 #else
 #undef ENABLE_EXCEPTION_STACKWALK

@@ -46,7 +46,7 @@ public:
 
   @param sleepTime applicable to windows to sleep between polling if the thread is still alive
   */
-  void waitForThreadsToExit(u4 sleepTime = 200);
+  void waitForThreadsToExit(size_t sleepTime = 200);
 
   /*!
   Set total number of threads to create after start() is called
@@ -132,14 +132,14 @@ public:
 
   @return sleep time in milliseconds
   */
-  u4 getMonitorCycleSleep() const;    
+  size_t getMonitorCycleSleep() const;    
 
   /*!
   Set how long the monitor sleeps between monitoring cycles
 
   @param sleeptime in milliseconds
   */
-  void setMonitorCycleSleep(u4 sleeptime);
+  void setMonitorCycleSleep(size_t sleeptime);
 
   /*!
   AThread this pointer accessed with getThis()
@@ -259,7 +259,7 @@ protected:
   static u4 _threadprocDefaultMonitor(AThread& thread);
   AThread::ATHREAD_PROC *mp_threadprocMonitor;
   AThread m_MonitorThread;
-  u4 m_MonitorCycleSleep;
+  size_t m_MonitorCycleSleep;
 
   // Flag if new threads are to be created
   bool m_CreateNewThreads;

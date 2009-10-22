@@ -13,7 +13,7 @@ $Id$
 //FORMAT: Wdy, DD Mon YYYY HH:MM:SS UT+-TIMEZONE
 const AString ATime::S_RFC1036("%a, %d-%b-%Y %H:%M:%S UT");
   
-const ATime ATime::GENESIS(0);
+const ATime ATime::EPOCH(0);
 
 // Loggable formats
 const AString ATime::LOGGABLE_YYYYMMDDHHMMSS("%Y%m%d%H%M%S");
@@ -30,23 +30,48 @@ void ATime::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-size_t ATime::getTickCount()
+u4 ATime::getTickCount32()
 {
+#ifdef __WINDOWS__
   return ::GetTickCount();
+#else
+#error Not implemented
+#endif
+}
+
+u8 ATime::getTickCount()
+{
+#ifdef __WINDOWS__
+  #if WINVER >= 0x0600
+    return ::GetTickCount64();
+  #else
+    return (u8)::GetTickCount();
+  #endif
+#else
+#error Not implemented
+#endif
 }
 
 u8 ATime::getHighPerfCounter()
 {
+#ifdef __WINDOWS__
   LARGE_INTEGER largeInt;
   AVERIFY(NULL, ::QueryPerformanceCounter(&largeInt));
   return largeInt.QuadPart;
+#else
+#error Not implemented
+#endif
 }
 
 u8 ATime::getHighPerfFrequency()
 {
+#ifdef __WINDOWS__
   LARGE_INTEGER largeInt;
   AVERIFY(NULL, ::QueryPerformanceFrequency(&largeInt));
   return largeInt.QuadPart;
+#else
+#error Not implemented
+#endif
 }
 
 ATime::ATime(ATime::eType e) :

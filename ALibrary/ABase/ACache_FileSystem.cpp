@@ -258,7 +258,7 @@ ACache_FileSystem::STATUS ACache_FileSystem::get(
       containerItem.m_Cache[strKey] = p;
 
       pFile.reset(NULL);
-      modified = ATime::GENESIS;
+      modified = ATime::EPOCH;
 
       AASSERT(this, containerItem.m_Cache.size() < DEBUG_MAXSIZE_ACache_FileSystem);  //Debug only limit
       return ACacheInterface::NOT_FOUND;

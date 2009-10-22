@@ -104,7 +104,7 @@ void AFile_Socket::open()
     sadd.sin_addr.s_addr = inet_addr(m_SocketInfo.m_address.c_str());
 
     //a_Connect
-    int result = ::connect(m_SocketInfo.m_handle, (sockaddr *)&sadd, sizeof(sadd));
+    int result = ::connect(m_SocketInfo.m_handle, (SOCKADDR *)&sadd, sizeof(sadd));
     if (result!=0)
     {
       int lastError = ::WSAGetLastError();
@@ -204,9 +204,7 @@ size_t AFile_Socket::_read(void *buf, size_t size)
 
 size_t AFile_Socket::_readBlocking(void *buf, size_t size)
 {
-  
   size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf, size, 0);
-    
   if (bytesReceived == SOCKET_ERROR)
   {
     int err = ::WSAGetLastError();

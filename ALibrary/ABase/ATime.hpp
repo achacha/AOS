@@ -31,7 +31,7 @@ public:
     UT = 0x1    //a_GMT and UT are same
   };
 
-  static const ATime GENESIS;   //a_Begining of time (time_t = 0)
+  static const ATime EPOCH;   //a_Begining of time (time_t = 0)
 
 public:
   /*!
@@ -46,9 +46,20 @@ public:
   ~ATime();
 
   /*!
-  Pure utility function, has little to do with the ATime class
+  32-bit version of the tick count, it will wrap after 49.7 days
+
+  @return Number of milliseconds since the computer was turned on (and OS timer started)
   */
-  static size_t getTickCount();
+  static u4 getTickCount32();
+
+  /*!
+  Pure utility function, has little to do with the ATime class
+
+  This can be used as a random number seed
+
+  @return Number of milliseconds since the computer was turned on (and OS timer started)
+  */
+  static u8 getTickCount();
   
   /*!
   High performance timer

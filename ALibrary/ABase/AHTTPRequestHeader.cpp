@@ -340,7 +340,7 @@ ATime AHTTPRequestHeader::getIfModifiedSince() const
     return ret;
   }
   else
-    return ATime::GENESIS;
+    return ATime::EPOCH;
 }
 
 bool AHTTPRequestHeader::isFormPost() const

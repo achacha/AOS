@@ -112,10 +112,9 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
   {
     do
     {
-      size_t threadcount = pThis->m_Threads.size();  // all running threads
       if (
         !skipNextSleep 
-        && (threadcount == pThis->m_DesiredThreadCount || !pThis->m_TotalThreadCreationCount)
+        && (pThis->m_Threads.size() == pThis->m_DesiredThreadCount || !pThis->m_TotalThreadCreationCount)
       )
       {
         // Short sleep since desired number of threads are running or we are not creating any more
@@ -126,7 +125,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
 
       // Stopping condition
       if (
-             !threadcount
+             !pThis->m_Threads.size()
           && (
                !pThis->m_TotalThreadCreationCount 
             || !pThis->m_CreateNewThreads
@@ -138,40 +137,40 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
         break;
       }
       
-      if (threadcount < pThis->m_DesiredThreadCount)
       {
-        while (
-             pThis->m_CreateNewThreads 
-          && pThis->m_TotalThreadCreationCount > 0 
-          && threadcount < pThis->m_DesiredThreadCount)
-        {
-          // More
-          ALock lock(pThis->m_SynchObjectThreadPool);
-          AASSERT(pThis, pThis->mp_threadproc);
-          AASSERT(pThis, ADebugDumpable::isPointerValid(pThis->mp_threadproc));
-
-          AThread *pthread = new AThread(pThis->mp_threadproc, true, pThis->mp_This, pThis->mp_Parameter);
-          pThis->m_Threads.push_back(pthread);
-          shouldSleepMore = true;                // Allow the thread to start
-          ++threadcount;
-
-          if (AConstant::npos != pThis->m_TotalThreadCreationCount)
-            --pThis->m_TotalThreadCreationCount;
-        }
-      }
-      else if (threadcount > pThis->m_DesiredThreadCount)
-      {
-        // Less
         ALock lock(pThis->m_SynchObjectThreadPool);
-        size_t diff = threadcount - pThis->m_DesiredThreadCount;
-        THREADS::iterator it = pThis->m_Threads.begin();
-        while (diff > 0)
+        if (pThis->m_Threads.size() < pThis->m_DesiredThreadCount)
         {
-          AASSERT(pThis, it != pThis->m_Threads.end());
-          (*it)->setRun(false);
-          shouldSleepMore = true;
-          ++it;
-          --diff;
+          while (
+               pThis->m_CreateNewThreads 
+            && pThis->m_TotalThreadCreationCount > 0 
+            && pThis->m_Threads.size() < pThis->m_DesiredThreadCount)
+          {
+            // More
+            AASSERT(pThis, pThis->mp_threadproc);
+            AASSERT(pThis, ADebugDumpable::isPointerValid(pThis->mp_threadproc));
+
+            AThread *pthread = new AThread(pThis->mp_threadproc, true, pThis->mp_This, pThis->mp_Parameter);
+            pThis->m_Threads.push_back(pthread);
+            shouldSleepMore = true;                // Allow the thread to start
+
+            if (AConstant::npos != pThis->m_TotalThreadCreationCount)
+              --pThis->m_TotalThreadCreationCount;
+          }
+        }
+        else if (pThis->m_Threads.size() > pThis->m_DesiredThreadCount)
+        {
+          // Less
+          size_t diff = pThis->m_Threads.size() - pThis->m_DesiredThreadCount;
+          THREADS::iterator it = pThis->m_Threads.begin();
+          while (diff > 0)
+          {
+            AASSERT(pThis, it != pThis->m_Threads.end());
+            (*it)->setRun(false);
+            shouldSleepMore = true;
+            ++it;
+            --diff;
+          }
         }
       }
 
@@ -183,34 +182,33 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
       }
 
       // Terminate any thread that has been flagged for stopping and has not stopped yet
-      THREADS::iterator it = pThis->m_Threads.begin();
-      while (it != pThis->m_Threads.end())
       {
-        AThread *p = *it;
-        if (!(*it)->isRunning())
+        THREADS::iterator it = pThis->m_Threads.begin();
+        while (it != pThis->m_Threads.end())
         {
-          ALock lock(pThis->m_SynchObjectThreadPool);
-          // Thread somehow died, cleanup
-          THREADS::iterator itKill = it;
-          ++it;
-          pThis->m_Threads.erase(itKill);
-          delete p;
-        }
-        else if (!(*it)->isRun() && (*it)->isRunning())
-        {
-          ALock lock(pThis->m_SynchObjectThreadPool);
-          THREADS::iterator itKill = it;
-          ++it;
-          (*itKill)->terminate();
-          pThis->m_Threads.erase(itKill);
-          delete p;
-        }
-        else
-        {
-          ++it;
+          AThread *p = *it;
+          if (!(*it)->isRunning())
+          {
+            // Thread somehow died, cleanup
+            THREADS::iterator itKill = it;
+            ++it;
+            pThis->m_Threads.erase(itKill);
+            delete p;
+          }
+          else if (!(*it)->isRun() && (*it)->isRunning())
+          {
+            THREADS::iterator itKill = it;
+            ++it;
+            (*itKill)->terminate();
+            pThis->m_Threads.erase(itKill);
+            delete p;
+          }
+          else
+          {
+            ++it;
+          }
         }
       }
-
       if (!pThis->m_TotalThreadCreationCount && !pThis->m_Threads.size())          
       {
         skipNextSleep = true;
@@ -358,12 +356,12 @@ size_t AThreadPool::getActiveThreadCount()
   return ret;
 }
 
-u4 AThreadPool::getMonitorCycleSleep() const
+size_t AThreadPool::getMonitorCycleSleep() const
 {
   return m_MonitorCycleSleep;
 }
 
-void AThreadPool::setMonitorCycleSleep(u4 sleeptime)
+void AThreadPool::setMonitorCycleSleep(size_t sleeptime)
 {
   m_MonitorCycleSleep = sleeptime;
 }
@@ -394,7 +392,7 @@ const ATimer& AThreadPool::getThreadPoolTimer() const
   return m_ThreadPoolTimer;
 }
 
-void AThreadPool::waitForThreadsToExit(u4 sleepTime)
+void AThreadPool::waitForThreadsToExit(size_t sleepTime)
 {
   while (this->m_MonitorThread.isRunning())
     AThread::sleep(sleepTime);
