@@ -265,6 +265,7 @@ void AThreadPool::stop()
 
   // Signal threads to stop
   setRunStateOnThreads(false);
+  m_ThreadPoolTimer.stop();
 
   // Wait a bit for threads to stop
   int retry1 = 30;
