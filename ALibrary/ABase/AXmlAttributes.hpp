@@ -41,9 +41,19 @@ public:
   */
   AXmlAttributes(const AString& strLineToParse);
 
-  //! dtor
+  /*!
+  dtor
+  */
   virtual ~AXmlAttributes();
 
+  /*!
+  Copy operator
+
+  @param that other object to copy
+  @return reference to this
+  */
+  AXmlAttributes& operator= (const AXmlAttributes& that);
+  
   /*!
   A way to add two AXmlAttribute types together
 

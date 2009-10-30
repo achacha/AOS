@@ -147,6 +147,15 @@ public:
   bool remove(const AString& path);
   
   /*!
+  Copies from the target element
+  New parent is always NULL (current object is a detached tree)
+
+  @param that other element to copy
+  @return reference to this
+  */
+  AXmlElement& operator=(const AXmlElement& that);
+  
+  /*!
   Checks if this element contains child elements
 
   @return true if this element contains other elements

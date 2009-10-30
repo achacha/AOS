@@ -90,9 +90,10 @@ void ATemplateNodeHandler_MODEL::Node::process(ATemplateContext& context, AOutpu
   }
   else
   {
-    ARope rope("Unable to find element for '");
+    ARope rope("<!--Unable to find element for '",32);
     rope.append(m_BlockData);
-    rope.append('\'');
+    rope.append("'-->",4);
+    output.append(rope);
   }
 }
 

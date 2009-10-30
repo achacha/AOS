@@ -85,6 +85,18 @@ AXmlElement::~AXmlElement()
   catch(...) {}
 }
 
+AXmlElement& AXmlElement::operator=(const AXmlElement& that)
+{
+  clear();
+  m_Name = that.m_Name;
+  m_Attributes = that.m_Attributes;
+  
+  for (CONTAINER::const_iterator cit = that.m_Content.begin(); cit != that.m_Content.end(); ++cit)
+    m_Content.push_back((*cit)->clone());
+
+  return *this;
+}
+
 void AXmlElement::clear()
 {
   clearContent();
@@ -271,17 +283,22 @@ const AXmlElement *AXmlElement::findElement(const AString& xpath) const
 
 AXmlElement *AXmlElement::_get(LIST_AString& xparts) const
 {
-  AString& strName = xparts.front();
+  AString strName(xparts.front());
   CONTAINER::const_iterator cit = m_Content.begin();
+  xparts.pop_front();
   while (cit != m_Content.end())
   {
     if ((*cit)->isNameEquals(strName))
     {
-      xparts.pop_front();
+      AXmlElement *pElement;
       if (xparts.size() > 0)
-        return (*cit)->_get(xparts);
+        pElement = (*cit)->_get(xparts);
       else 
-        return (*cit);
+        pElement = (*cit);
+    
+      //a_If found return, else continue searching
+      if (pElement)
+        return pElement;
     }
     ++cit;
   }

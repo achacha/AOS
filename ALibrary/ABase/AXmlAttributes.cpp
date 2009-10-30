@@ -34,6 +34,13 @@ AXmlAttributes::AXmlAttributes(const AXmlAttributes& that)
   append(that);
 }
 
+AXmlAttributes& AXmlAttributes::operator= (const AXmlAttributes& that)
+{
+  clear();
+  append(that);
+  return *this;
+}
+
 AXmlAttributes::AXmlAttributes(const AString &strLine)
 {
   parse(strLine);
