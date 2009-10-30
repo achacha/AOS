@@ -32,7 +32,9 @@ int main(int argc, char **argv)
     AFile_Physical file(f);
     file.open();
 
-    AXmlDocument model("root");
+    AXmlDocument model;
+    model.useRoot().useName().assign("root");
+
     AEventVisitor visitor;
 
     ALuaTemplateContext ctx(*pobjects, model, visitor);
