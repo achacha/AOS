@@ -150,7 +150,7 @@ void ATemplateNode::fromAFile(AFile& aFile)
   
   m_BlockData.rremoveUntilNotOneOf(AXmlElement::sstr_StartOrWhitespace);
 
-  aFile.skipUntilNotOneOf(AXmlElement::sstr_EndOrWhitespace);
+  aFile.skipUntilNotOneOf(AXmlElement::sstr_EndSingular);
 
   //a_Allow derived nodes to process data after read
   _handleDataAfterRead();

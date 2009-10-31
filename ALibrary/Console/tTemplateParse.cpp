@@ -9,13 +9,10 @@
 
 void testSimpleParse()
 {
-//  AFile_AString strfile(
-//"Hello ' <aos:model  >user/name</aos:model>!\r\n\
-//<html><head><title>located at <aos:model name=\"something\">user/loc</aos:model></title></head>foo</html>\
-//");
-
-    AFile_AString strfile(
-"<aos:model>user/name</aos:model> - <aos:model>user/loc</aos:model>");
+  AFile_AString strfile(
+"Hello ' <aos:model  >user/name</aos:model>!\r\n\
+<html><head><title>located at <aos:model name=\"something\">user/loc</aos:model></title></head>foo\
+<aos:model>user/name</aos:model> - <aos:model>user/loc</aos:model></html>");
 
   ABasePtrContainer objects;
   AEventVisitor visitor;
@@ -26,29 +23,29 @@ void testSimpleParse()
   ATemplateContext ctx(objects, model, visitor);
 
   //a_Read template
-  ATemplate tm;
-  tm.fromAFile(strfile);
+  ATemplate templ;
+  templ.fromAFile(strfile);
 
   //a_Write it to cout
   AFile_IOStream iosfile;
-  //std::cout << "---------------------debugDump---------------------" << std::endl;
-  //tm.debugDump();
-  //std::cout << "---------------------debugDump---------------------" << std::endl;
+  std::cout << "---------------------debugDump---------------------" << std::endl;
+  templ.debugDump();
+  std::cout << "---------------------debugDump---------------------" << std::endl;
   //std::cout << "\r\n---------------------toAFile-----------------------" << std::endl;
-  //tm.toAFile(iosfile);
+  //templ.toAFile(iosfile);
   //std::cout << "---------------------toAFile-----------------------" << std::endl;
   std::cout << "\r\n---------------------emit-----------------------" << std::endl;
-  tm.emit(iosfile);
+  templ.emit(iosfile);
   std::cout << "---------------------emit-----------------------" << std::endl;
   //std::cout << "\r\n---------------------emitXml-----------------------" << std::endl;
   //AXmlElement xml;
-  //tm.emitXml(xml);
+  //templ.emitXml(xml);
   //xml.emit(iosfile,0);
   //std::cout << "---------------------emitXml-----------------------" << std::endl;
 
   //a_Evaluate and emit to cout
   ARope rope;
-  tm.process(ctx, rope);
+  templ.process(ctx, rope);
   std::cout << "\r\n---------------------process---------------------" << std::endl;
   rope.emit(iosfile);
   std::cout << "---------------------process---------------------" << std::endl;

@@ -19,26 +19,11 @@ void AString::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Length=" << m_Length << ":" << m_InternalBufferSize << ":" << m_BufferIncrement << "  getHash()=" << getHash() << std::endl;
-  bool ascii = true;
-  for(size_t i=0; i<m_Length; ++i)
-  {
-    if (mp_Buffer[i] < 20 || mp_Buffer[i] > 127)
-    {
-      ascii=false;
-      break;
-    }
-  }
-
   if (m_Length)
   {
-    if (ascii)
-		ADebugDumpable::indent(os, indent+1) << "mp_Buffer=" << AString::fromPointer(mp_Buffer) << std::endl;
-    else
-    {
-      ADebugDumpable::indent(os, indent+1) << "mp_Buffer=" << AString::fromPointer(mp_Buffer) << " {" << std::endl;
-      ADebugDumpable::dumpMemory_HexAscii(os, mp_Buffer, m_Length, indent+2); 
-      ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
-    }
+    ADebugDumpable::indent(os, indent+1) << "mp_Buffer=" << AString::fromPointer(mp_Buffer) << " {" << std::endl;
+    ADebugDumpable::dumpMemory_HexAscii(os, mp_Buffer, m_Length, indent+2); 
+    ADebugDumpable::indent(os, indent+1) << "}" << std::endl;
   }
   ADebugDumpable::indent(os,indent+1) << "mbool_Wrapped=" << (mbool_Wrapped ? "true" : "false") << std::endl;
   ADebugDumpable::indent(os, indent) << "}" << std::endl;

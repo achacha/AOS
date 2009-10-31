@@ -767,7 +767,7 @@ size_t AFile::readBlockIntoLookahead()
 size_t AFile::read(void *pTarget, size_t bytesLeft)
 {
   size_t inLookahead = m_LookaheadBuffer.getSize();
-  if (inLookahead > bytesLeft)
+  if (inLookahead >= bytesLeft)
   {
     //a_Have all the data
     m_LookaheadBuffer.popFront((char *)pTarget, bytesLeft);
@@ -812,7 +812,7 @@ size_t AFile::read(void *pTarget, size_t bytesLeft)
 size_t AFile::peek(void *pTarget, size_t bytesLeft)
 {
   size_t inLookahead = m_LookaheadBuffer.getSize();
-  if (inLookahead > bytesLeft)
+  if (inLookahead >= bytesLeft)
   {
     //a_Have all the data
     m_LookaheadBuffer.peekFront((char *)pTarget, bytesLeft);

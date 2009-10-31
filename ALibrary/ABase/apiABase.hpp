@@ -90,7 +90,7 @@ $Id$
 // Enable windows specific stacktrace in debug mode
 #ifdef __WINDOWS__
 
-#ifndef DISABLE_EXCEPTION_STACKWALK
+#if defined(DISABLE_EXCEPTION_STACKWALK) && defined(_DEBUG)
 //TODO Current stack walker is not thread safe
 //#define ENABLE_EXCEPTION_STACKWALK 1
 #undef ENABLE_EXCEPTION_STACKWALK
