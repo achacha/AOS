@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Hive execution script
+
+http://www.achacha.org/Hive/
+-->
+<hive>
+  <manager>
+		<force-log desc="If the log is to be written for each chain executed">false</force-log>
+		<monitor>
+		  <cycle-sleep-time>20</cycle-sleep-time>
+		</monitor>
+		<average>
+		  <keep desc="How many samples to keep before rotating">25</keep>
+		  <adjuster desc="Initial multiplier that will adjust incoming samples, should start close to 1.0 (0.0,1.0)">0.95</adjuster>
+		  <minimum desc="Minimum value the adjuster will go over time, should be close to zero (0.0,1.0)">0.005</minimum>
+		</average>
+  </manager>
+	<config>
+    <global>
+      <server>127.0.0.1</server>
+      <port>80</port>
+    </global>
+		<base desc="Base configuration for each step class in the factory">
+		  <Url>
+        <url><![CDATA[http://<aos:model>server</aos:model>:<aos:model>port</aos:model>/]]></url>
+				<header-field name="Host"><![CDATA[<aos:model>server</aos:model>]]></header-field>
+				<header-field name="User-Agent"><![CDATA[Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)]]></header-field>
+				<header-field name="Keep-Alive">300</header-field>
+				<header-field name="Connection" append="false">Keep-Alive</header-field>
+				<validator>
+					<status-code>200</status-code>
+				</validator>
+		    </Url>
+			<TcpIp/>
+			<Sleep/>
+			<LuaScript/>
+		</base>
+
+		<chain name="debug" desc="Debug chain">
+			<step type="Url">
+				<url>/10k.txt</url>
+			</step>
+		</chain>
+
+		<chain name="0-ping" desc="Ping server">
+			<step type="Url">
+				<url>/ping</url>
+			</step>
+		</chain>
+		
+		<chain name="unit" desc="Unit tests">
+			<step type="Url">
+				<url>/ping</url>
+			</step>
+			<step type="Url">
+				<url>/list.html</url>
+			</step>
+			<step type="Url">
+				<url>/aos.png</url>
+			</step>
+			<step type="Url">
+				<url>/samples/sql.xml</url>
+			</step>
+			<step type="Url">
+				<url>/imagegen/generated_X.png</url>
+			</step>
+			<step type="Url">
+				<url>/samples/DisplayInputWithTemplate.html</url>
+			</step>
+			<step type="Url">
+				<url>/samples/DisplayInputWithTemplateParts.html</url>
+			</step>
+			<step type="Url">
+				<url>/samples/DisplayInputWithXslt.html</url>
+			</step>
+			<step type="Url">
+				<url>/dada/TheBizzareForgery.html</url>
+			</step>
+			<step type="Url">
+				<url>/dada/CornerNormalSkullTrumpet.html</url>
+			</step>
+			<step type="Url">
+				<url>/samples/InsertIntoModel.xml</url>
+			</step>
+			<step type="Url">
+				<url>/samples/InsertIntoModel.json</url>
+			</step>
+			<step type="Url">
+				<url>/samples/InsertIntoModel.template</url>
+			</step>
+			<step type="Url">
+				<url>/samples/InsertIntoModel.xslt</url>
+			</step>
+		</chain>
+	</config>
+</hive>
+
