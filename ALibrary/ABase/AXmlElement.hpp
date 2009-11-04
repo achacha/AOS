@@ -643,6 +643,14 @@ public:
   const AXmlElement::CONTAINER& getContentContainer() const;
 
   /*!
+  Content
+  List of AXmlElement objects contained in this one
+
+  @return container of the content elements
+  */
+  AXmlElement::CONTAINER& useContentContainer();
+
+  /*!
   Get parent element
   
   @return parent element or NULL if none

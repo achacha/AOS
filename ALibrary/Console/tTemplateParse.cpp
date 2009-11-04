@@ -12,7 +12,7 @@ void testSimpleParse()
   AFile_AString strfile(
 "Hello ' <aos:model  >user/name</aos:model>!\r\n\
 <html><head><title>located at <aos:model name=\"something\">user/loc</aos:model></title></head>foo\
-<aos:model>user/name</aos:model> - <aos:model>user/loc</aos:model></html>");
+<aos:model>user/name</aos:model> - <aos:model>user/loc</aos:model></html><aos:model>user/name</aos:model>/");
 
   ABasePtrContainer objects;
   AEventVisitor visitor;

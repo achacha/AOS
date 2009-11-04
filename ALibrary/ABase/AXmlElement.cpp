@@ -359,6 +359,11 @@ const AXmlElement::CONTAINER& AXmlElement::getContentContainer() const
   return m_Content;
 }
 
+AXmlElement::CONTAINER& AXmlElement::useContentContainer()
+{
+  return m_Content;
+}
+
 size_t AXmlElement::find(const AString& path, AXmlElement::CONST_CONTAINER& result) const
 {
   AString strAttribute;

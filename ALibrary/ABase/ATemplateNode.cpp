@@ -149,8 +149,21 @@ void ATemplateNode::fromAFile(AFile& aFile)
     ATHROW_EX(this, AException::EndOfBuffer, endToken);
   
   m_BlockData.rremoveUntilNotOneOf(AXmlElement::sstr_StartOrWhitespace);
+  
+  //a_Remove whitespace between element name and either > or />
+  aFile.skipUntilNotOneOf();
+  
+  char c;
+  aFile.read(c);
+  if (c != '/' && c != '>')
+    ATHROW_EX(this, AException::EndOfBuffer, endToken);
 
-  aFile.skipUntilNotOneOf(AXmlElement::sstr_EndSingular);
+  if (c == '/')
+  {
+    aFile.read(c);
+    if (c != '>')
+      ATHROW_EX(this, AException::EndOfBuffer, endToken);
+  }
 
   //a_Allow derived nodes to process data after read
   _handleDataAfterRead();
