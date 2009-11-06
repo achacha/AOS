@@ -141,6 +141,12 @@ AXmlElement& AHTTPRequestHeader::emitXml(AXmlElement& thisRoot) const
 
 void AHTTPRequestHeader::emit(AOutputBuffer& target) const
 {
+  if (mstr_HTTPVersion.equals(AHTTPHeader::HTTP_VERSION_1_1) && !exists(AHTTPHeader::HT_REQ_Host))
+  {
+    //a_RFC2616 Section 14.23 requires host: for HTTP/1.1
+    AASSERT_EX(this, AException::InvalidObject, ASWNL("HTTP/1.1 requires 'host:' to contain server requested")); 
+  }
+
   //a_The parent will output it as the initial line
   target.append(mstr_Method);
   target.append(AConstant::ASTRING_SPACE);
@@ -154,9 +160,7 @@ void AHTTPRequestHeader::emit(AOutputBuffer& target) const
   
   //a_Cookies
   if (mcookies_Request.size())
-  {
     mcookies_Request.emitRequestHeaderString(target);
-  }
 
   //a_Add the empty line to signify the end
   target.append(AConstant::ASTRING_CRLF);
@@ -164,6 +168,12 @@ void AHTTPRequestHeader::emit(AOutputBuffer& target) const
 
 void AHTTPRequestHeader::emitProxyHeader(AOutputBuffer& target) const
 {
+  if (mstr_HTTPVersion.equals(AHTTPHeader::HTTP_VERSION_1_1) && !exists(AHTTPHeader::HT_REQ_Host))
+  {
+    //a_RFC2616 Section 14.23 requires host: for HTTP/1.1
+    AASSERT_EX(this, AException::InvalidObject, ASWNL("HTTP/1.1 requires 'host:' to contain server requested")); 
+  }
+
   target.append(mstr_Method);
   target.append(' ');
   murl_Request.emit(target);
@@ -171,19 +181,15 @@ void AHTTPRequestHeader::emitProxyHeader(AOutputBuffer& target) const
   target.append(mstr_HTTPVersion);
   target.append(AConstant::ASTRING_CRLF);
 
-  if (mstr_HTTPVersion.equals(AHTTPHeader::HTTP_VERSION_1_1))
-  {
-    //a_RFC2616 Section 14.23 requires host: for HTTP/1.1
-    if (!exists(AHTTPHeader::HT_REQ_Host))
-      ATHROW_EX(this, AException::InvalidObject, ASWNL("HTTP/1.1 requires 'host:' to contain server requested")); 
-  }
-
   //a_Parent class will do the body
   AHTTPHeader::emit(target);
 
   //a_Cookies
   if (mcookies_Request.size())
     mcookies_Request.emitRequestHeaderString(target);
+
+  //a_Add the empty line to signify the end
+  target.append(AConstant::ASTRING_CRLF);
 }
 
 void AHTTPRequestHeader::setMethod(const AString &strNewMethod)

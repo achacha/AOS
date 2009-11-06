@@ -7,6 +7,7 @@ $Id$
 #include "AFile.hpp"
 #include "AException.hpp"
 #include "ARope.hpp"
+#include "AThread.hpp"
 
 #ifndef min
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
@@ -718,21 +719,39 @@ size_t AFile::readUntilEOF(AOutputBuffer& target)
     m_LookaheadBuffer.emit(target);
     m_LookaheadBuffer.clear();
   }
+  
+  const size_t SLEEPTIME = 10;
+  const int RETRIES = 3;
+  int retry = RETRIES;
   while (_isNotEof())
   {
     switch (readBlockIntoLookahead())
     {
       case AConstant::unavail:
-        return AConstant::unavail;
+        //a_Wait a bit just in case we are reading faster than data coming in
+        if (retry > 0)
+        {
+          AThread::sleep(SLEEPTIME);
+          --retry;
+        }
+        else
+        {
+          if (bytesRead > 0)
+            return bytesRead;  //a_We read something
+          else
+            return AConstant::unavail;  //a_If nothing read then socket is not available (closed already or would block in non-blocking mode)
+        }
       continue;
 
       case AConstant::npos:
+        retry = RETRIES;
         bytesRead += m_LookaheadBuffer.getSize();
         m_LookaheadBuffer.emit(target);
         m_LookaheadBuffer.clear();
         return bytesRead;
 
       default:
+        retry = RETRIES;
         bytesRead += m_LookaheadBuffer.getSize();
         m_LookaheadBuffer.emit(target);
         m_LookaheadBuffer.clear();

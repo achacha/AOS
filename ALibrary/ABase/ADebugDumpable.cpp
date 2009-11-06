@@ -150,7 +150,7 @@ void ADebugDumpable::dumpMemory_HexAscii(
 
       u1X = *((unsigned char *)pvObject + base * bytesPerRow + x);
       target.append(u1X < 16 ? AConstant::ASTRING_ZERO : AConstant::ASTRING_EMPTY);
-      target.append(AString::fromU1(u1X));
+      target.append(AString::fromU1(u1X, 16));
       target.append(' ');
     }
 
@@ -245,7 +245,7 @@ void ADebugDumpable::dumpMemory_Hex(
 
       u1X = *((unsigned char *)pvObject + base * bytesPerRow + x);
       target.append(u1X < 16 ? AConstant::ASTRING_ZERO : AConstant::ASTRING_EMPTY);
-      target.append(AString::fromU1(u1X));
+      target.append(AString::fromU1(u1X, 16));
       target.append(' ');
     }
     target.append(AConstant::ASTRING_EOL);
