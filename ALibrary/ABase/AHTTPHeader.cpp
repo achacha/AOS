@@ -83,7 +83,7 @@ void AHTTPHeader::debugDump(std::ostream& os, int indent) const
 }
 
 AHTTPHeader::AHTTPHeader() :
-  mstr_HTTPVersion(HTTP_VERSION_1_1)
+  mstr_HTTPVersion(HTTP_VERSION_1_0)
 {
 }
 

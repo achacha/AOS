@@ -8,7 +8,7 @@ $Id$
 #include "ASystemException.hpp"
 #include "ALock.hpp"
 
-#define DEFAULT_MONITOR_CYCLE_SLEEP 100
+#define DEFAULT_MONITOR_CYCLE_SLEEP 10
 #define DEFAULT_STOP_CYCLE_SLEEP 100
 #define DEFAULT_MONITOR_STARTUP_SLEEPTIME 10
 
@@ -21,8 +21,9 @@ void AThreadPool::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent+1) << "mp_This=" << AString::fromPointer(mp_This) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "mp_Parameter=" << AString::fromPointer(mp_Parameter) << std::endl;
 
-  ADebugDumpable::indent(os, indent+1) << "m_TotalThreadCreationCount=" << m_TotalThreadCreationCount;
-  ADebugDumpable::indent(os, indent+1) << "  m_CreateNewThreads=" << AString::fromBool(m_CreateNewThreads) << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_TotalThreadsCreated=" << m_TotalThreadsCreated << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_TotalThreadCreationCount=" << m_TotalThreadCreationCount  << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_CreateNewThreads=" << AString::fromBool(m_CreateNewThreads) << std::endl;
 
   {
     ALock lock(const_cast<ASync_CriticalSection *>(&m_SynchObjectThreadPool));
@@ -53,7 +54,8 @@ AThreadPool::AThreadPool(
   m_DesiredThreadCount(threadCount),
   m_MonitorCycleSleep(DEFAULT_MONITOR_CYCLE_SLEEP),
   m_CreateNewThreads(true),
-  m_TotalThreadCreationCount(AConstant::npos)
+  m_TotalThreadCreationCount(AConstant::npos),
+  m_TotalThreadsCreated(0)
 {
   m_MonitorThread.setThis(this);
 
@@ -154,6 +156,10 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
             pThis->m_Threads.push_back(pthread);
             shouldSleepMore = true;                // Allow the thread to start
 
+            
+            // Increment total created 
+            ++pThis->m_TotalThreadsCreated;
+
             if (AConstant::npos != pThis->m_TotalThreadCreationCount)
               --pThis->m_TotalThreadCreationCount;
           }
@@ -235,6 +241,7 @@ void AThreadPool::start()
   if (!m_MonitorThread.isThreadActive() || !m_MonitorThread.isRunning())
   {
     m_CreateNewThreads = true;
+    m_TotalThreadsCreated = 0;
     if (!m_TotalThreadCreationCount)
       m_TotalThreadCreationCount = AConstant::npos;
     
@@ -261,7 +268,6 @@ void AThreadPool::setRunStateOnThreads(bool isRun)
 void AThreadPool::stop()
 {
   m_CreateNewThreads = false;
-  m_TotalThreadCreationCount = 0;
 
   // Signal threads to stop
   setRunStateOnThreads(false);
@@ -393,8 +399,18 @@ const ATimer& AThreadPool::getThreadPoolTimer() const
   return m_ThreadPoolTimer;
 }
 
+ATimer& AThreadPool::useThreadPoolTimer()
+{
+  return m_ThreadPoolTimer;
+}
+
 void AThreadPool::waitForThreadsToExit(size_t sleepTime)
 {
   while (this->m_MonitorThread.isRunning())
     AThread::sleep(sleepTime);
+}
+
+size_t AThreadPool::getTotalThreadsCreated() const
+{
+  return m_TotalThreadsCreated;
 }

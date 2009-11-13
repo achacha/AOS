@@ -67,6 +67,13 @@ public:
   size_t getTotalThreadCreationCount() const;
 
   /*!
+  Get the total threads created
+
+  @return total threads created
+  */
+  size_t getTotalThreadsCreated() const;
+
+  /*!
   Start thread pool
   */
   virtual void start();
@@ -211,7 +218,14 @@ public:
   ASynchronization& useSync();
 
   /*!
-  Thread pool timer, starts when manager starts and stops when it stops/exits
+  Thread pool timer, normally starts when manager starts and stops when it stops/exits
+
+  @return ATimer object reference
+  */
+  ATimer& useThreadPoolTimer();
+
+  /*!
+  Thread pool timer, normally starts when manager starts and stops when it stops/exits
 
   @return constant ATimer object reference
   */
@@ -266,6 +280,9 @@ protected:
   
   // Total number of threads to create
   size_t m_TotalThreadCreationCount;
+
+  // Total number of threads created
+  volatile size_t m_TotalThreadsCreated;
 
   // Parameters needed for creating new threads
   AThread::ATHREAD_PROC *mp_threadproc;
