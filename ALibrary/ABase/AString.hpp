@@ -736,14 +736,26 @@ public:
   Will erase contents and release(free/delete) the buffer if clear(true) is called
   */
   virtual void clear() { clear(false); }    //a_By default, memory is not released
+
+	/*!
+  Will erase contents and release(free/delete) the buffer if clear(true) is called
+  */
   void clear(bool bReleaseBuffer);
       
 	/*!
   Current logical length of the contents
+  @return size of this string buffer
   */
   virtual size_t getSize() const;
 
 	/*!
+  Convenience method calls getSize()
+  @return size of this string buffer
+  @see getSize
+  */
+  virtual size_t size() const;
+
+  /*!
   Physical size returned which is to be used mostly for information purposes as it may have no bearing on logical buffer size
   */
   size_t getPhysicalSize() const;

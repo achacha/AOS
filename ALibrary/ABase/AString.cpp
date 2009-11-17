@@ -1299,6 +1299,11 @@ size_t AString::getSize() const
   return m_Length;
 }
 
+size_t AString::size() const
+{
+  return getSize();
+}
+
 size_t AString::getPhysicalSize() const
 {
   return m_InternalBufferSize;
