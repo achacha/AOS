@@ -146,23 +146,23 @@
     <is-available>
       <queues desc="Queues in the is-available queue manager, each queue has single select thread">13</queues>
       <loop-delay desc="Milliseconds of sleep between bulk selects">10</loop-delay>
-      <empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</empty-queue-sleep-delay>
+      <empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</empty-queue-sleep-delay>
       <no-data-timeout desc="Milliseconds before a socket is closed due to inactivity">180000</no-data-timeout>
     </is-available>
     <pre-executor>
-      <threads desc="Threads in the pre-executor queue manager">7</threads>
+      <threads desc="Threads in the pre-executor queue manager">100</threads>
       <queues desc="Queues in the pre-executor queue manager">13</queues>
-      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
+      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">3</sleep-delay>
     </pre-executor>
     <executor>
-      <threads desc="Threads in the executor queue manager">7</threads>
+      <threads desc="Threads in the executor queue manager">80</threads>
       <queues desc="Queues in the executor queue manager">13</queues>
-      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">20</sleep-delay>
+      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">3</sleep-delay>
     </executor>
     <error-executor>
       <threads desc="Threads in the executor queue manager">3</threads>
       <queues desc="Queues in the executor queue manager">3</queues>
-      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">100</sleep-delay>
+      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">50</sleep-delay>
     </error-executor>
   </context-queues>
   
