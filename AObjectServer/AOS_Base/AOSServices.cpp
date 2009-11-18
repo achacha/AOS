@@ -405,6 +405,7 @@ AOSCacheManager& AOSServices::useCacheManager()
 
 void AOSServices::addTemplateHandler(ATemplateNodeHandler *pHandler)
 {
+  pHandler->init();
   m_TemplateNodeHandlers.use().push_back(pHandler);
 }
 
@@ -418,7 +419,9 @@ ATemplate *AOSServices::createTemplate()
     ++it
   )
   {
-    pTemplate->addHandler((*it)->clone());
+    ATemplateNodeHandler *pHandler = (*it)->clone();
+    pHandler->init();
+    pTemplate->addHandler(pHandler);
   }
 
   pTemplate.setOwnership(false);

@@ -43,12 +43,18 @@ http://www.achacha.org/Hive/
 			</step>
 		</chain>
 
-		<chain name="0-ping" desc="Ping server">
+		<chain name="ping" desc="Ping server">
 			<step type="Url">
 				<url>/ping</url>
 			</step>
 		</chain>
 		
+		<chain name="Dada_BF" desc="The Bizzare Forgery">
+			<step type="Url">
+				<url>/dada/TheBizzareForgery.html</url>
+			</step>
+		</chain>
+    
 		<chain name="unit" desc="Unit tests">
 			<step type="Url">
 				<url>/ping</url>

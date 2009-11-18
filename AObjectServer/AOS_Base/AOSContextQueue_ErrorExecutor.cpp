@@ -131,7 +131,7 @@ u4 AOSContextQueue_ErrorExecutor::_threadproc(AThread& thread)
             if (m_Services.useCacheManager().getStatusTemplate(statusCode, pTemplate))
             {
               //a_Template for this status code is found, so process and emit into output buffer
-              pTemplate->process(pContext->useLuaTemplateContext(), pContext->useOutputBuffer(), true);
+              pTemplate->process(pContext->useLuaTemplateContext(), pContext->useOutputBuffer());
               if (pContext->useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
               {
                 ARope rope("Using error template for status ");

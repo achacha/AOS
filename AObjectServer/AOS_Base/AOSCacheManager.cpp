@@ -331,17 +331,12 @@ ACacheInterface::STATUS AOSCacheManager::getTemplate(AOSContext& context, const 
   AASSERT(this, mp_TemplateCache);
   if (m_IsTemplateCacheEnabled)
   {
-    TEMPLATE_CACHE::iterator it;
     
-    {
-      ALock lock(m_TemplateSync);
-      it = mp_TemplateCache->find(filename);
-    }
-
+    ALock lock(m_TemplateSync);
+    TEMPLATE_CACHE::iterator it = mp_TemplateCache->find(filename);
     if (mp_TemplateCache->end() == it)
     {
       //a_Not found in cache, try to read and parse
-      ALock lock(m_TemplateSync);
       if (AFileSystem::exists(filename))
       {
         //a_File exists, parse and cache
