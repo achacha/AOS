@@ -110,13 +110,21 @@ public:
 private:
   AOSServices& m_Services;
 
-  ABasePtrContainer m_Objects;
-
   static const AString S_DELIM_START;
   static const AString S_DELIM_END;
  
+  // Templates
   typedef std::map<AString, VECTOR_AString> TEMPLATES;
-  TEMPLATES m_Templates;
+  static TEMPLATES m_Templates;
+
+  // Dada data shared by all templates
+  static ABasePtrContainer m_Objects;
+
+  // Sync to check if static data was loaded
+  ASync_CriticalSection m_InitSync;
+
+  // Load static data
+  void _loadStaticData();
 };
 
 #endif //INCLUDED__ATemplateNodeHandler_DADA_HPP__

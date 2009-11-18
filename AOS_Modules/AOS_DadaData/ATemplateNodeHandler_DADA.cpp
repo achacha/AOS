@@ -18,6 +18,10 @@ const AString ATemplateNodeHandler_DADA::S_DELIM_END("}",1);
 
 const AString ATemplateNodeHandler_DADA::TAGNAME("aos:dada");
 
+ATemplateNodeHandler_DADA::TEMPLATES ATemplateNodeHandler_DADA::m_Templates;
+
+ABasePtrContainer ATemplateNodeHandler_DADA::m_Objects;
+
 void ATemplateNodeHandler_DADA::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << "@ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -35,6 +39,13 @@ ATemplateNodeHandler_DADA::~ATemplateNodeHandler_DADA()
 }
 
 void ATemplateNodeHandler_DADA::init()
+{
+  ALock lock(m_InitSync);
+  if (0 == m_Objects.useContainer().size())
+    _loadStaticData();
+}
+
+void ATemplateNodeHandler_DADA::_loadStaticData()
 {
   AXmlElement::CONST_CONTAINER nodes;
 
