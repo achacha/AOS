@@ -18,6 +18,13 @@ All calls involving AOutputBuffer are append based
 class ABASE_API ATextConverter
 {
 public:
+  static const AString CDATA_UNSAFE;
+  static const AString CDATA_SAFE;
+  static const AString HTML_UNSAFE;
+  static const AString HEXDUMP_PAD;
+  static const AString FILENAME_SAFE;
+
+public:
   /*!
   Encoding Base64 (ratio input:output=3:4)
   Faster than generic encode64, optimized for Base64
@@ -167,6 +174,15 @@ public:
   static void makeSQLSafe(const AString& source, AOutputBuffer& target);
 
   /*!
+  Make the string safe as a filename
+  Any unsafe characters will be converted to _
+
+  @param source to make safe
+  @param target to append result to
+  */
+  static void makeFilenameSafe(const AString& source, AOutputBuffer& target);
+
+  /*!
   String conversion to hex dump (ratio input:output=1:2)
   By default converts non-ASCII chacaters to '.'
 
@@ -177,11 +193,6 @@ public:
   static void convertStringToHexDump(const AString& source, AOutputBuffer& target, bool includeNonAscii = false);    
 
 private:
-  static const AString CDATA_UNSAFE;
-  static const AString CDATA_SAFE;
-  static const AString HTML_UNSAFE;
-  static const AString HEXDUMP_PAD;
-
   //a_Decode64 helper
   static int _decodeBase64Character(int iCharacter);
 };

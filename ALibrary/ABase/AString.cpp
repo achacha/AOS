@@ -930,7 +930,7 @@ size_t AString::peek(AOutputBuffer& bufDestination, size_t sourceIndex, size_t b
     ATHROW(this, AException::IndexOutOfBounds);
 
   //a_Check for read beyond end of content
-  if (m_Length - sourceIndex - bytes < 0)
+  if (m_Length < sourceIndex + bytes)
     ATHROW(this, AException::ReadBeyondEndOfBuffer);
 
   //a_Copy needed bytes
@@ -1208,7 +1208,7 @@ size_t AString::get(AString& bufDestination, size_t sourceIndex, size_t bytes)
     ATHROW(this, AException::IndexOutOfBounds);
 
   //a_And move
-  if (m_Length - sourceIndex - bytes < 0)
+  if (m_Length < sourceIndex + bytes)
     ATHROW(this, AException::ReadBeyondEndOfBuffer);
 
   //a_Copy needed bytes

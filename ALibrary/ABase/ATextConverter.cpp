@@ -12,6 +12,7 @@ const AString ATextConverter::CDATA_UNSAFE("]]>");          //a_Cannot have this
 const AString ATextConverter::CDATA_SAFE("%5d%5d%3e");      //a_Replacement
 const AString ATextConverter::HTML_UNSAFE("<>&");           //a_Unsafe inside HTML tags/data
 const AString ATextConverter::HEXDUMP_PAD("00000000");      //a_Maximum of 8 zeros used in padding
+const AString ATextConverter::FILENAME_SAFE("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_./\\() ");
 
 void ATextConverter::encodeBase64(const AString& source, AOutputBuffer& target)
 {
@@ -545,3 +546,17 @@ void ATextConverter::makeSQLSafe(const AString& source, AOutputBuffer& target)
     }
   }
 }
+
+void ATextConverter::makeFilenameSafe(const AString& source, AOutputBuffer& target)
+{
+  char c = 0;
+  for(size_t i=0; i<source.getSize(); ++i)
+  {
+    c = source.at(i);
+    if (FILENAME_SAFE.find(c))
+      target.append(c);
+    else
+      target.append('_');
+  }
+}
+

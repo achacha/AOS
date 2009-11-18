@@ -119,20 +119,11 @@ public:
   Initializes handlers if they are hibernated
   Output based on a given source XML root element and output buffer
   Evaluate template against a model and objects
-
-  If hibernateHandlersWhenDone is true, hibernate is called when done with processing
   */
   virtual void process(
     ATemplateContext& context,
-    AOutputBuffer& output,
-    bool hibernateHandlersWhenDone = false
+    AOutputBuffer& output
   );
-
-  /*!
-  De-initialize and release handler based resources
-  Useul for conserving memory if template is going into cache, etc
-  */
-  virtual void hibernate();
 
   /*!
   AXmlEmittable, emits the template
@@ -164,13 +155,16 @@ public:
   */
   virtual void debugDump(std::ostream& os = std::cerr, int indent = 0x0) const;
 
-private:
+protected:
+  //! Initialize handlers
+  void _initializeHandlers();
+
+  //! Deinitialize handlers
+  void _deinitializeHandlers();
+
   //! Load deafult handlers
   void _loadDefaultHandlers(ATemplate::HandlerMask mask);
 
-  //! Initialization state
-  bool m_Initialized;
-  
   //! Parsed nodes
   typedef std::list<ATemplateNode *> NODES;
   NODES m_Nodes;

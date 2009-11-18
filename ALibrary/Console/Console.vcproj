@@ -405,7 +405,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tTemplateParse.cpp"
+			RelativePath=".\tAStringPeek.cpp"
 			>
 		</File>
 	</Files>

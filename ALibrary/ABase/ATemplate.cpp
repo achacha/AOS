@@ -19,7 +19,6 @@ $Id$
 void ATemplate::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
-  ADebugDumpable::indent(os, indent+1) << "m_Initialized=" << AString::fromBool(m_Initialized) << std::endl;
   ADebugDumpable::indent(os, indent+1) << "m_Nodes={  ";
   ADebugDumpable::indent(os, indent+2) << "size=" << m_Nodes.size() << std::endl;
   NODES::const_iterator cit = m_Nodes.begin();
@@ -36,32 +35,34 @@ void ATemplate::debugDump(std::ostream& os, int indent) const
 ATemplate::ATemplate(
   const AString& source,
   HandlerMask mask // = ATemplate::HANDLER_ALL
-) :
-  m_Initialized(false)
+)
 {
   _loadDefaultHandlers(mask);
 
   AFile_AString strfile(source);
   fromAFile(strfile);
+
+  _initializeHandlers();
 }
 
 ATemplate::ATemplate(
   AFile& source, 
   HandlerMask mask // = ATemplate::HANDLER_ALL
-) :
-  m_Initialized(false)
+)
 {
   _loadDefaultHandlers(mask);
 
   fromAFile(source);
+
+  _initializeHandlers();
 }
 
 ATemplate::ATemplate(
   HandlerMask mask // = ATemplate::HANDLER_ALL
-) :
-  m_Initialized(false)
+)
 {
   _loadDefaultHandlers(mask);
+  _initializeHandlers();
 }
 
 ATemplate::~ATemplate()
@@ -72,11 +73,26 @@ ATemplate::~ATemplate()
     for (NODES::iterator it = m_Nodes.begin(); it != m_Nodes.end(); ++it)
       delete (*it);
   
-    //a_Delete handlers
-    for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
-      delete it->second;
+    _deinitializeHandlers();
   }
   catch(...) {}
+}
+
+void ATemplate::_initializeHandlers()
+{
+  //a_Initialize handlers
+  for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
+    (*it).second->init();
+}
+
+void ATemplate::_deinitializeHandlers()
+{
+  //a_Delete handlers
+  for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
+  {
+    it->second->deinit();
+    delete it->second;
+  }
 }
 
 void ATemplate::_loadDefaultHandlers(ATemplate::HandlerMask mask)
@@ -210,8 +226,7 @@ void ATemplate::fromAFile(AFile& aFile)
 
 void ATemplate::process(
   ATemplateContext& context,
-  AOutputBuffer& output,
-  bool hibernateHandlersWhenDone  // = false
+  AOutputBuffer& output
 )
 {
   if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
@@ -219,49 +234,14 @@ void ATemplate::process(
     context.useEventVisitor().startEvent(ASW("ATemplate::process",18), AEventVisitor::EL_INFO);
   }
   
-  if (!m_Initialized)
-  {
-    //a_Initialize handlers
-    for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
-      (*it).second->init();
-
-    m_Initialized = true;
-  }
-
-  if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
-  {
-    context.useEventVisitor().startEvent(ASW("ATemplate::process:loop",23), AEventVisitor::EL_DEBUG);
-  }
-
   for (NODES::const_iterator cit = m_Nodes.begin(); cit != m_Nodes.end(); ++cit)
   {
     (*cit)->process(context, output);
   }
 
-  if (hibernateHandlersWhenDone)
-  {
-    if (context.useEventVisitor().isLogging(AEventVisitor::EL_DEBUG))
-    {
-      context.useEventVisitor().startEvent(ASW("ATemplate::process:hibernate",28), AEventVisitor::EL_DEBUG);
-    }
-    hibernate();
-  }
-
   if (context.useEventVisitor().isLogging(AEventVisitor::EL_INFO))
   {
     context.useEventVisitor().endEvent();
-  }
-}
-
-void ATemplate::hibernate()
-{
-  if (m_Initialized)
-  {
-    //a_De-initialize handlers
-    for (HANDLERS::iterator it = m_Handlers.begin(); it != m_Handlers.end(); ++it)
-      (*it).second->deinit();
-
-    m_Initialized = false;
   }
 }
 
