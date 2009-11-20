@@ -193,7 +193,7 @@ public:
   */
 
   /*!
-  Access the thtread container
+  Access the thread container
   This is not very safe unless the SyncObject is locked during use
 
   {
