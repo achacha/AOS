@@ -32,6 +32,11 @@ public:
     FTYPE_CYGWIN = 3    //!< separated by '/', drive letter replaced with /cygdrive/X/
   };
 
+  /*!
+  File prefix:  file:///
+  */
+  static const AString FILE_PREFIX;
+
   /*! Characters reserved by Windows and invalid in a filename */
   static const AString RESERVED;  //!< Set of reserved filename characters:  |\?*<":>/
 
@@ -195,6 +200,13 @@ public:
   */
   void emitDrive(AOutputBuffer& target) const;
 
+  /*!
+  Emit as file:/// URL to the specified path
+
+  @param target to emit to
+  */
+  void emitFileUrl(AOutputBuffer& target) const;
+  
   /*!
   Helper
   */

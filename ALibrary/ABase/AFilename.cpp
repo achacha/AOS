@@ -7,7 +7,8 @@ $Id$
 #include "AFilename.hpp"
 #include "AXmlElement.hpp"
 
-const AString AFilename::RESERVED = "|\\?*<\":>/";
+const AString AFilename::RESERVED("|\\?*<\":>/");
+const AString AFilename::FILE_PREFIX("file:///");
 
 void AFilename::debugDump(std::ostream& os, int indent) const
 {
@@ -221,6 +222,12 @@ void AFilename::emit(
     //a_Check if trailing slash is not needed
     emitPath(target, ftype, noTrailingSlash);
   }
+}
+
+void AFilename::emitFileUrl(AOutputBuffer& target) const
+{
+  target.append(FILE_PREFIX);
+  emit(target, AFilename::FTYPE_DEFAULT);
 }
 
 AXmlElement& AFilename::emitXml(AXmlElement& thisRoot) const
