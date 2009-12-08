@@ -369,53 +369,8 @@ void AOSContext::setLocaleOnRequestHeader(const AString& locale)
 
 bool AOSContext::_waitForFirstChar()
 {
-  //int sleeptime = AOSConfiguration::SLEEP_STARTTIME;
-  //int tries = 0;
-  //char c;
-  //while (tries < AOSConfiguration::FIRST_CHAR_RETRIES)
-  //{
-  //  if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
-  //  {
-  //    ARope rope("AOSContext: Sleep cycle ");
-  //    rope.append(AString::fromInt(tries));
-  //    m_EventVisitor.startEvent(rope, AEventVisitor::EL_DEBUG);
-  //  }
-
-  //  AThread::sleep(sleeptime);
-  //  sleeptime += AOSConfiguration::SLEEP_INCREMENT;
-  //  ++tries;
-  //  size_t ret = mp_RequestFile->peek(c);
-  //  switch(ret)
-  //  {
-  //    case AConstant::npos:
-  //      return false;
-
-  //    case AConstant::unavail:
-  //    case 0:
-  //      break;       // No data available yet, keep waiting
-
-  //    default:
-  //      return true; // Read something
-  //  }
-  //}
-
-  //return false;
-
   char c;
   return (mp_RequestFile->peek(c) > 0);
-
-  //char c;
-  //size_t ret = mp_RequestFile->peek(c);
-  //switch(ret)
-  //{
-  //  case AConstant::unavail:
-  //  case 0:
-  //  case AConstant::npos:
-  //    return false;
-
-  //  default:
-  //    return true; // Read something
-  //}
 }
 
 AOSContext::Status AOSContext::_processHttpHeader()
