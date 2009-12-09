@@ -64,6 +64,7 @@ public:
     ~ScopedEvent();
 
   private:
+    ATimer m_ScopeTimer;
     AEventVisitor& m_Visitor;
     AString mstr_Where;
     AString mstr_Message;

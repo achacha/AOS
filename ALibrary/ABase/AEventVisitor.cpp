@@ -61,9 +61,10 @@ AEventVisitor::ScopedEvent::ScopedEvent(
   m_Visitor(visitor),
   mstr_Where(strWhere),
   mstr_Message(strMessage),
-  m_Level(level)
+  m_Level(level),
+  m_ScopeTimer(true)
 {
-  if (m_Visitor.isLogging(m_Level))
+  if (m_Visitor.isLoggingDebug())
   {
     ARope message("+++ctor[",8);
     message.append(mstr_Where);
@@ -75,13 +76,23 @@ AEventVisitor::ScopedEvent::ScopedEvent(
 
 AEventVisitor::ScopedEvent::~ScopedEvent()
 {
-  if (m_Visitor.isLogging(m_Level))
+  m_ScopeTimer.stop();
+  if (m_Visitor.isLoggingDebug())
   {
     ARope message("---dtor[",8);
     message.append(mstr_Where);
     message.append("]",1);
     message.append(mstr_Message);
     m_Visitor.startEvent(message, m_Level);
+  }
+  if (m_Visitor.isLogging(m_Level))
+  {
+    ARope message("---scope(",9);
+    message.append(m_ScopeTimer);
+    message.append("ms)[",4);
+    message.append(mstr_Where);
+    message.append(']');
+    message.append(mstr_Message);
   }
 }
 
