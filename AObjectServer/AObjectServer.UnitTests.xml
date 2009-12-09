@@ -5,22 +5,22 @@ Hive execution script
 http://www.achacha.org/Hive/
 -->
 <hive>
-  <manager>
-		<force-log desc="If the log is to be written for each chain executed">false</force-log>
-		<monitor>
-		  <cycle-sleep-time>20</cycle-sleep-time>
-		</monitor>
-		<average>
-		  <keep desc="How many samples to keep before rotating">25</keep>
-		  <adjuster desc="Initial multiplier that will adjust incoming samples, should start close to 1.0 (0.0,1.0)">0.95</adjuster>
-		  <minimum desc="Minimum value the adjuster will go over time, should be close to zero (0.0,1.0)">0.005</minimum>
-		</average>
-  </manager>
 	<config>
     <global>
       <server>127.0.0.1</server>
       <port>80</port>
     </global>
+    <manager>
+      <force-log desc="If the log is to be written for each chain executed">false</force-log>
+      <monitor>
+        <cycle-sleep-time>20</cycle-sleep-time>
+      </monitor>
+      <average>
+        <keep desc="How many samples to keep before rotating">25</keep>
+        <adjuster desc="Initial multiplier that will adjust incoming samples, should start close to 1.0 (0.0,1.0)">0.95</adjuster>
+        <minimum desc="Minimum value the adjuster will go over time, should be close to zero (0.0,1.0)">0.005</minimum>
+      </average>
+    </manager>
 		<base desc="Base configuration for each step class in the factory">
 		  <Url>
         <url><![CDATA[http://<aos:model>server</aos:model>:<aos:model>port</aos:model>/]]></url>
