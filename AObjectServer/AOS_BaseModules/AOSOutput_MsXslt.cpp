@@ -12,6 +12,7 @@ $Id$
 #include "ATextGenerator.hpp"
 #include "AOSServices.hpp"
 
+#define _WIN32_DCOM 
 #import <msxml6.dll>
 
 const AString AOSOutput_MsXslt::CLASS("Xslt");
@@ -76,8 +77,6 @@ void AOSOutput_MsXslt::adminProcessAction(AXmlElement& eBase, const AHTTPRequest
 AOSOutput_MsXslt::AOSOutput_MsXslt(AOSServices& services) :
   AOSOutputGeneratorInterface(services)
 {
-  CoInitializeEx(NULL, COINIT_MULTITHREADED);
-
   m_IsCacheEnabled = m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/base-modules/AOSOutput_MsXslt/cache/enabled",51), true);
 }
 
@@ -90,15 +89,16 @@ AOSOutput_MsXslt::~AOSOutput_MsXslt()
     delete (*it).second.m_ComPtr;
     ++it;
   }
-  CoUninitialize();
 }
 
 void AOSOutput_MsXslt::init()
 {
+  CoInitializeEx(NULL,COINIT_MULTITHREADED);
 }
 
 void AOSOutput_MsXslt::deinit()
 {
+  CoUninitialize();
 }
 
 AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& filename)
@@ -112,14 +112,16 @@ AOSOutput_MsXslt::XslDocHolder *AOSOutput_MsXslt::_readXslFile(const AString& fi
     ATHROW_EX(this, AException::InvalidParameter, AString("Empty filename"));
   }
 
-  HRESULT hr = (*p).CreateInstance(__uuidof(MSXML2::DOMDocument60));
+  HRESULT hr = (*p).CreateInstance(__uuidof(MSXML2::DOMDocument60), NULL, CLSCTX_INPROC_SERVER);
   if (FAILED(hr))
   {
     delete p;
     ATHROW_LAST_OS_ERROR(this);
   }
 
-	(*p)->async = VARIANT_FALSE;
+  (*p)->put_async(VARIANT_FALSE);  
+  (*p)->put_validateOnParse(VARIANT_FALSE);
+  //(*p)->put_resolveExternals(VARIANT_FALSE);
   if (! (*p)->load((const _bstr_t)filename.c_str()) )
   {
     BSTR bstr;
