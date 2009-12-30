@@ -61,3 +61,9 @@ ALuaEmbed& ALuaTemplateContext::useLua()
 
   return *mp_Lua;
 }
+
+bool ALuaTemplateContext::execute(const AEmittable& code, AOutputBuffer& output)
+{
+  return useLua().execute(code, *this, output);
+}
+

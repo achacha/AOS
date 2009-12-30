@@ -35,6 +35,16 @@ public:
   virtual ~ALuaTemplateContext();
 
   /*!
+  Execute Lua code using current context opbject
+  
+  @param code to execute
+  @param output buffer
+
+  @return true if all is well, false if error occured (written to outputbuffer)
+  */
+  bool execute(const AEmittable& code, AOutputBuffer& output);
+
+  /*!
   Access Lua interpreter (lazy-eval, created first time this method is called)
   
   First time you use it will initialize lua and load libraries

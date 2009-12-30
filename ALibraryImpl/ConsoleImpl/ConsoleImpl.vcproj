@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib;../ALuaEmbed;../ALuaEmbed/lua-5.1.4/src"
+				AdditionalIncludeDirectories="../../ALibrary/ABase;../APythonEmbed;../ADatabase_MySQL;../AZlib;../ACrypto;../ADatabase_ODBC;../ADatabase_SQLite;../AGdLib;../ALuaEmbed;&quot;../ALuaEmbed/lua-5.1.4/src&quot;;../AXslt;../AXslt/iconv-1.9.2.win32/include;../AXslt/libxml2-2.7.6.win32/include;"
 				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -352,7 +352,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\tLuaInTemplate.cpp"
+			RelativePath=".\tLuaScript.cpp"
 			>
 		</File>
 	</Files>
