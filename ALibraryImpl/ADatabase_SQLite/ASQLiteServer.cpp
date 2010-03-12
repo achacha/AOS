@@ -8,12 +8,14 @@ $Id$
 #include "AResultSet.hpp"
 #include "AXmlElement.hpp"
 #include "AString.hpp"
+#include "AFileSystem.hpp"
 
 void ASQLiteServer::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
   ADatabase::debugDump(os, indent+1);
   ADebugDumpable::indent(os, indent+1) << "mp_db=0x" << std::hex << (void *)mp_db << std::dec << std::endl;
+  ADebugDumpable::indent(os, indent+1) << "m_CreateNew=" << m_CreateNew << std::endl;
   AString strPath;
   _getDBFilename(strPath);
   ADebugDumpable::indent(os, indent+1) << "DB filename=" << strPath << std::endl;
@@ -22,13 +24,15 @@ void ASQLiteServer::debugDump(std::ostream& os, int indent) const
 
 ASQLiteServer::ASQLiteServer() :
   ADatabase(),
-  mp_db(NULL)
+  mp_db(NULL),
+  m_CreateNew(false)
 {
 }
 
-ASQLiteServer::ASQLiteServer(const AUrl& url) :
+ASQLiteServer::ASQLiteServer(const AUrl& url, bool createNewIfNotFound) :
   ADatabase(url),
-  mp_db(NULL)
+  mp_db(NULL),
+  m_CreateNew(createNewIfNotFound)
 {
 }
 
@@ -46,22 +50,37 @@ bool ASQLiteServer::init(AString& error)
   AASSERT_EX(this, !mbool_Initialized, ASWNL("SQLite already initialized."));
   AASSERT_EX(this, !mp_db, ASWNL("sqlite3 object already exists."));
 
+  mbool_Initialized=false;
+
   AString strPath;
   _getDBFilename(strPath);
-  int rc = sqlite3_open(strPath.c_str(), &mp_db);
-  if(rc)
+  AFilename dbFilename(strPath, false);
+  if (m_CreateNew || AFileSystem::exists(dbFilename))
   {
-    error.append("Can't open database: ");
-    error.append(sqlite3_errmsg(mp_db));
-    sqlite3_close(mp_db);
-    error.append('(');
-    error.append(strPath);
-    error.append(')');
-    return false;
-  }
+    int rc = sqlite3_open(strPath.c_str(), &mp_db);
+    if(rc)
+    {
+      error.append("Can't open database: ");
+      error.append(sqlite3_errmsg(mp_db));
+      sqlite3_close(mp_db);
+      error.append('(');
+      error.append(strPath);
+      error.append(')');
+      return false;
+    }
 
-  mbool_Initialized=true;
-  return true;
+    mbool_Initialized=true;
+  }
+  else
+  {
+    AFilename absolute;
+    AFileSystem::expand(dbFilename, absolute);
+    error.append("File not found (auto-create is not enabled): ");
+    error.append('(');
+    error.append(absolute);
+    error.append(')');
+  }
+  return mbool_Initialized;
 }
 
 bool ASQLiteServer::reconnect(AString& error)
@@ -114,6 +133,8 @@ sqlite3 *ASQLiteServer::getDBHandle()
 
 size_t ASQLiteServer::executeSQL(const AString& query, AResultSet& target, AString& error)
 {
+  AASSERT(this, NULL != mp_db);
+
   char *zErrMsg = NULL;
 
   target.clear();

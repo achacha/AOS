@@ -29,7 +29,12 @@ class ADATABASE_SQLITE_API ASQLiteServer : public ADatabase
 {
 public:
   ASQLiteServer();
-  ASQLiteServer(const AUrl& url);
+  
+  /*!
+  @param url to connect to e.g. sqlite://c:/tmp/mydatabase.db or sqlite:///./relative/path/my.db
+  @param createNewIfNotFound if database does not exist, should a new one be created
+  */
+  ASQLiteServer(const AUrl& url, bool createNewIfNotFound = false);
   virtual ~ASQLiteServer();
   
   /*!
@@ -66,6 +71,9 @@ private:
   //a_SQLite specific
   sqlite3 *mp_db;
 
+  //a_If new is to be created if file not found
+  bool m_CreateNew;
+  
   /*
   SELECT query processing
   pvParam is a pointer to AResultSet
