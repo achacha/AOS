@@ -14,11 +14,11 @@ std::map wrapper that will delete all of its contents when done
 Usage:
 Before:
   std::map<int, AString> myMap;
-  myMap[0] = AString("foo");
+  myMap.use()[0] = AString("foo");
 
 Now:
   AMapOfPtrs<int, AString> myMap;
-  myMap[0] = new AString("foo");   // this class will delete this object in dtor
+  myMap.use()[0] = new AString("foo");   // this class will delete this object in dtor
 */
 template<typename K, typename T>
 class AMapOfPtrs : public ABase
