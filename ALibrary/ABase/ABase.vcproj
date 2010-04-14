@@ -55,7 +55,6 @@
 				PreprocessorDefinitions="_DEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
@@ -63,7 +62,6 @@
 				BrowseInformation="1"
 				BrowseInformationFile="$(IntDir)\"
 				WarningLevel="4"
-				SuppressStartupBanner="false"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -156,8 +154,6 @@
 				BrowseInformation="1"
 				BrowseInformationFile="$(IntDir)\"
 				WarningLevel="4"
-				SuppressStartupBanner="false"
-				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -243,7 +239,6 @@
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32"
-				StringPooling="false"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
@@ -252,8 +247,6 @@
 				AssemblerListingLocation=""
 				BrowseInformation="0"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="0"
 				CompileAs="0"
 			/>
 			<Tool
@@ -335,14 +328,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
+				Optimization="2"
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN64"
-				StringPooling="false"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="false"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
@@ -352,7 +343,6 @@
 				ProgramDataBaseFileName="$(IntDir)/vc70.pdb"
 				BrowseInformation="0"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
 			<Tool
@@ -372,7 +362,6 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir)"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				GenerateMapFile="true"
 				MapFileName="$(OutDir)/$(TargetName).map"
 				RandomizedBaseAddress="1"
