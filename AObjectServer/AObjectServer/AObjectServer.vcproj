@@ -58,7 +58,6 @@
 				BrowseInformation="1"
 				BrowseInformationFile="$(IntDir)\"
 				WarningLevel="4"
-				SuppressStartupBanner="false"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -132,7 +131,6 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="../../include64a,../AOS_Base"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;WIN64;"
-				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				BufferSecurityCheck="true"
@@ -145,8 +143,6 @@
 				BrowseInformation="1"
 				BrowseInformationFile="$(IntDir)\"
 				WarningLevel="4"
-				SuppressStartupBanner="false"
-				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -218,7 +214,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="3"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="../../include,../AOS_Base"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
@@ -319,7 +315,6 @@
 				GenerateXMLDocumentationFiles="false"
 				BrowseInformation="0"
 				WarningLevel="3"
-				DebugInformationFormat="0"
 				CompileAs="0"
 			/>
 			<Tool
