@@ -32,8 +32,18 @@ AOSContext::ReturnCode AOSModule_classified_submit::execute(AOSContext& context,
   // title
   if (context.useRequestParameterPairs().get("title", str))
   {
-    //a_Encode URL to hide any special characters (this is an alternative to makeSQLSafe)
-    ATextConverter::encodeURL(str, query);
+    if (str.isNotEmpty())
+    {
+      //a_Encode URL to hide any special characters (this is an alternative to makeSQLSafe)
+      AString strSafe;
+      ATextConverter::makeSQLSafe(str, strSafe);
+      ATextConverter::encodeURL(strSafe, query);
+    }
+    else
+    {
+      context.addError(getClass(), ASWNL("Empty 'title' input"));
+      return AOSContext::RETURN_ERROR;
+    }
   }
   else
   {
@@ -46,8 +56,18 @@ AOSContext::ReturnCode AOSModule_classified_submit::execute(AOSContext& context,
   str.clear();
   if (context.useRequestParameterPairs().get("contact_email", str))
   {
-    //a_Encode URL to hide any special characters
-    ATextConverter::encodeURL(str, query);
+    if (str.isNotEmpty())
+    {
+      //a_Encode URL to hide any special characters
+      AString strSafe;
+      ATextConverter::makeSQLSafe(str, strSafe);
+      ATextConverter::encodeURL(strSafe, query);
+    }
+    else
+    {
+      context.addError(getClass(), ASWNL("Empty 'contact_email' input"));
+      return AOSContext::RETURN_ERROR;
+    }
   }
   else
   {
@@ -58,19 +78,23 @@ AOSContext::ReturnCode AOSModule_classified_submit::execute(AOSContext& context,
 
   // price
   str.clear();
-  if (context.useRequestParameterPairs().get("price", str))
+  if (context.useRequestParameterPairs().get("price", str) && str.isNotEmpty())
   {
     //a_Encode URL to hide any special characters
-    ATextConverter::encodeURL(str, query);
+    AString strSafe;
+    ATextConverter::makeSQLSafe(str, strSafe);
+    ATextConverter::encodeURL(strSafe, query);
   }
   query.append("','",3);
 
   // desc
   str.clear();
-  if (context.useRequestParameterPairs().get("descript", str))
+  if (context.useRequestParameterPairs().get("descript", str) && str.isNotEmpty())
   {
     //a_Encode URL to hide any special characters
-    ATextConverter::encodeURL(str, query);
+    AString strSafe;
+    ATextConverter::makeSQLSafe(str, strSafe);
+    ATextConverter::encodeURL(strSafe, query);
   }
   else
   {
