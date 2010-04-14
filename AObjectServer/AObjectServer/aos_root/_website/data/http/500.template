@@ -3,7 +3,15 @@
   <title>HTTP status code 500: Internal server error</title>
 </head>
 <body>
-<font color="red">HTTP500: Internal server error.</font>
 <!-- <aos:lua> print(model.emitContentFromPath("/root/REQUEST/url/url")); </aos:lua> -->
+<aos:lua>
+print("<div style='background-color:#ffa0a0;color:#000000;font-weight:bold;font-size:16px;'><pre>\r\n\r\n");
+if (model.existElement("/root/ERROR")) then
+  print(model.emitContentFromPath("/root/ERROR")); 
+else
+  print(model.emitContentFromPath("HTTP500: Internal server error. See admin site for AOSContextManager.")); 
+end
+print("</pre></div>");
+</aos:lua>
 </body>
 </html>

@@ -348,7 +348,10 @@ void AOSConfiguration::loadControllers()
     AFileSystem::FileInfos directoryConfigs;
     const AString& EXT1 = ASW("aos",3);
     const AString& EXT2 = ASW("xml",3);
-    if (AFileSystem::dir(m_AosBaseDynamicDir, fileList, true, true) > 0)
+    if (
+         AFileSystem::exists(m_AosBaseDynamicDir)
+      && AFileSystem::dir(m_AosBaseDynamicDir, fileList, true, true) > 0
+    )
     {
       for(AFileSystem::FileInfos::iterator it = fileList.begin(); it != fileList.end(); ++it)
       {

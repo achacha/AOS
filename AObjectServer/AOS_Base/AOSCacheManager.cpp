@@ -124,6 +124,21 @@ void AOSCacheManager::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader&
 
     adminAddProperty(elem, ASW("item_count",10), AString::fromSize_t(mp_TemplateCache->size()));  
   }
+
+  {
+    AXmlElement& elem = eBase.addElement(ASW("object",6)).addAttribute(ASW("name",4), ASW("status_template_cache",21));
+
+    adminAddPropertyWithAction(
+      elem, 
+      ASW("enabled",7), 
+      AString::fromBool(m_IsStatusTemplateCacheEnabled),
+      ASW("Update",6), 
+      ASWNL("1:Enable status template caching, 0:Disable and clear, -1:Clear only"),
+      ASW("Set",3)
+    );
+
+    adminAddProperty(elem, ASW("item_count",10), AString::fromSize_t(mp_StatusTemplateCache->size()));  
+  }
 }
 
 void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
@@ -179,6 +194,31 @@ void AOSCacheManager::adminProcessAction(AXmlElement& eBase, const AHTTPRequestH
         }
       }
     }
+    else if (str.equals(ASW("AOSCacheManager.status_template_cache.enabled",46)))
+    {
+      str.clear();
+      if (request.getUrl().getParameterPairs().get(ASW("Set",3), str))
+      {
+        if (str.equals("0"))
+        {
+          //a_Clear and disable
+          m_IsStatusTemplateCacheEnabled = false;
+          
+          ALock lock(m_StatusTemplateSync);
+          mp_StatusTemplateCache->clear();
+        }
+        else if (str.equals("-1"))
+        {
+          ALock lock(m_StatusTemplateSync);
+          mp_StatusTemplateCache->clear();
+        }
+        else
+        {
+          //a_Enable
+          m_IsStatusTemplateCacheEnabled = true;
+        }
+      }
+    }
   }
 }
 
@@ -201,8 +241,9 @@ AOSCacheManager::AOSCacheManager(AOSServices& services) :
     mp_DataFileCache = new ACache_FileSystem(maxItems, maxFileSizeInK * 1024, cacheCount);
   }
 
-  //a_Status template cache
+  //a_Status template cache (on by default on startup)
   mp_StatusTemplateCache = new STATUS_TEMPLATE_CACHE();
+  m_IsStatusTemplateCacheEnabled = true;
 
   //a_Parsed template cache
   mp_TemplateCache = new TEMPLATE_CACHE();
@@ -398,14 +439,20 @@ bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTe
   AASSERT(this, mp_StatusTemplateCache);
   STATUS_TEMPLATE_CACHE::iterator it;
   
+  if (m_IsStatusTemplateCacheEnabled)
   {
     ALock lock(m_StatusTemplateSync);
     it = mp_StatusTemplateCache->find(statusCode);
   }
+  else
+  {
+    //a_Not caching so simulate not found case
+    it = mp_StatusTemplateCache->end();
+  }
 
   if (mp_StatusTemplateCache->end() == it)
   {
-    //a_Not found insert
+    //a_Not found insert or cache not enabled
     ALock lock(m_StatusTemplateSync);
     AString pathFilename("/config/server/error-templates/HTTP-",36);
     ATextOdometer odo(AString::fromInt(statusCode), 3);
@@ -426,7 +473,7 @@ bool AOSCacheManager::getStatusTemplate(int statusCode, AAutoPtr<ATemplate>& pTe
     else
     {
       //a_Template for this error is not found (may not exist)
-      //a_Try to use default filee if available or use NULL if neither exists
+      //a_Try to use default file if available or use NULL if neither exists
       filename.clear();
       filename.set(m_Services.useConfiguration().getAosBaseDataDirectory(), true);
       filename.join(

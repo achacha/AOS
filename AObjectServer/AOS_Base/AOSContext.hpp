@@ -374,6 +374,13 @@ public:
   void setResponseRedirect(const AString& url);
 
   /*!
+  Sets/appends /root/ERROR element text
+  
+  @param message to add to known error element
+  */
+  void setErrorMessage(const AString& message);
+
+  /*!
   Directrory config object (NULL if does not exist)
   */
   const AOSDirectoryConfig *getDirConfig() const;

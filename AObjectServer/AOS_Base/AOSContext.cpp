@@ -949,7 +949,9 @@ void AOSContext::addError(
   }
   m_Services.useLog().add(where, what, rope, ALog::EVENT_CRITICAL_ERROR);
   m_EventVisitor.startEvent(where+":"+what, AEventVisitor::EL_ERROR);
-  m_OutputXmlDocument.useRoot().addElement(S_ERROR).addData(what);
+  AXmlElement& errElement = m_OutputXmlDocument.useRoot().overwriteElement(S_ERROR);
+  errElement.addData(what);
+  errElement.addData(AConstant::ASTRING_CRLF);
 }
 
 AEventVisitor& AOSContext::useEventVisitor()

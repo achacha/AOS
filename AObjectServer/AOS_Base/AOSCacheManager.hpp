@@ -102,6 +102,7 @@ private:
   typedef std::map<int, ATemplate *> STATUS_TEMPLATE_CACHE;
   STATUS_TEMPLATE_CACHE *mp_StatusTemplateCache;
   ASync_CriticalSectionSpinLock m_StatusTemplateSync;
+  bool m_IsStatusTemplateCacheEnabled;
 
   //a_Put file into status template cache
   ATemplate *_putFileIntoStatusTemplateCache(int key, const AString& filename);
