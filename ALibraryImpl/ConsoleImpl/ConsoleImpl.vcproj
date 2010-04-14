@@ -46,7 +46,6 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="../../ALibrary/ABase,../APythonEmbed,../ADatabase_MySQL,../AZlib,../ACrypto,../ADatabase_ODBC,../ADatabase_SQLite,../AXsl,../AGdLib;../ALuaEmbed;../ALuaEmbed/lua-5.1.4/src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
-				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -54,6 +53,7 @@
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				BrowseInformation="1"
+				WarningLevel="4"
 				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
@@ -137,6 +137,7 @@
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				BrowseInformation="1"
+				WarningLevel="4"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -216,8 +217,6 @@
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -234,8 +233,6 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(OutDir)"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -267,8 +264,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="../../_release64"
-			IntermediateDirectory="../../_release64/$(ProjectName)"
+			OutputDirectory="../../_release64a"
+			IntermediateDirectory="../../_release64a/$(ProjectName)"
 			ConfigurationType="1"
 			CharacterSet="2"
 			>
@@ -298,8 +295,6 @@
 				PrecompiledHeaderThrough="pch$(ProjectName).hpp"
 				PrecompiledHeaderFile="$(IntDir)/$(ProjectName).pch"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -316,13 +311,11 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(OutDir)"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				GenerateMapFile="true"
+				MapFileName="$(OutDir)/$(TargetName).map"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
