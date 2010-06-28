@@ -32,7 +32,7 @@ struct SSLData
   SSL_CTX*    ctx;
   SSL*        ssl;
   X509*       client_cert;
-  SSL_METHOD* meth;
+  const SSL_METHOD* meth;
 };
 
 void ASocketListener_SSL::debugDump(std::ostream& os, int indent) const

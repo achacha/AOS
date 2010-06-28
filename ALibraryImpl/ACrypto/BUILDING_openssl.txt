@@ -1,20 +1,21 @@
 See FAQ at bottom of this document if you get any build errors.
 
+Last updated for: OpenSSL 1.0.0a
+
 32-bit
 ======
-Pre-requisites: Microsoft Visual Studio (cmd prompt), perl, Microsoft 32-bit Assembler (ml)
-Hint: Use Micosoft Visual Studio 200x prompt (not the x64 version) it has ML.EXE specified in path
+Pre-requisites: Microsoft Visual Studio (cmd prompt), perl
+Hint: Use Micosoft Visual Studio 20xx prompt (not the x64 version) it has ML.EXE specified in path
+Hint: If you have cygwin add path to cygwin\bin it has perl
 
 1. cd into openssl-xxx directory
-2. ms\do_masm.bat
+2. ms\do_ms.bat
 3. perl Configure VC-WIN32
 
 4. RELEASE BUILD:
   a. modify ms\ntdll.mak
-    LIB_CFLAG= add /DLL
     CFLAG= add /GS
-	       remove /WX           (OpenSSL uses old-style C runtime functions which are level 4 warning in Visual C++)
-	LFLAGS= add /MACHINE:X86
+    LFLAGS= add /MACHINE:X86
   
   b. nmake -f ms\ntdll.mak clean
   c. nmake -f ms\ntdll.mak /A
@@ -35,16 +36,17 @@ LIB_CFLAG= add /DEBUG
 ======
 Pre-requisites: Microsoft Visual Studio with 64-bit support (cmd prompt), perl, Microsoft 64-bit Assembler (ml64)
 Hint: Use Micosoft Visual Studio 200x x64 prompt it has ML64.EXE specified in path
+Hint: If you have cygwin add path to cygwin\bin it has perl
 
 1. cd into openssl-xxx directory
 2. ms\do_win64a.bat
-3. perl Configure VC-WIN64A
+3. perl Configure VC-WIN64A no-asm
 
 4. RELEASE BUILD:
   a. modify ms\ntdll.mak
-    LIB_CFLAG= add /DLL
-    CFLAG= add -DWIN64
-    REMOVE all reference to bufferoverflowu.lib
+    CFLAG=
+      add -DWIN64
+      remove /WX
 	
   b. nmake -f ms\ntdll.mak clean
   c. nmake -f ms\ntdll.mak /A
@@ -52,8 +54,8 @@ Hint: Use Micosoft Visual Studio 200x x64 prompt it has ML64.EXE specified in pa
 
 5. DEBUG BUILD: 
   a. modify ms\ntdll.mak (debugging flags to match ALibrary)
-    CFLAG= /Od /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /MDd /Zi /MDd /RTC1 /EHsc /Gm /Od /W3 /GF /Gy /nologo -DWIN64 -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DDSO_WIN32 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DAES_ASM -DBN_ASM -DOPENSSL_BN_ASM_PART_WORDS -DMD5_ASM -DSHA1_ASM -DRMD160_ASM -DOPENSSL_USE_APPLINK -I. /Fdout32dll -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_SEED -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_TLSEXT -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE
-    LIB_CFLAG= /DLL -D_WINDLL /DEBUG
+    CFLAG= /Od /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /MDd /Zi /MDd /RTC1 /EHsc /Gm /Od /W3 /GF /Gy -DOPENSSL_THREADS -DDSO_WIN32 -DWIN64 -W3 -Gs0 -Gy -nologo -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DUNICODE -D_UNICODE -D_CRT_SECURE_NO_DEPRECATE -DOPENSSL_USE_APPLINK -I. -DOPENSSL_NO_RC5 -DOPENSSL_NO_MD2 -DOPENSSL_NO_KRB5 -DOPENSSL_NO_JPAKE -DOPENSSL_NO_STATIC_ENGINE
+    LIB_CFLAG= /DEBUG
 
   b. nmake -f ms\ntdll.mak clean
   c. nmake -f ms\ntdll.mak /A

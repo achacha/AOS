@@ -1,8 +1,9 @@
 compling zlib 1.2.3
 
 1. Test build the ASM code from the appropriate contrib directory.
-
-  a. For x86 the following fix is needed:
+  
+  a. contrib\masmx86\bld_ml32.bat
+    1. For x86 the following fix is needed:
         had to download masm from microsoft to compile zlib. It turns out that zlib assembly has 4 compile errors that have to be fixed by hand:
 
         inffas32.asm(647) : error A2070: invalid instruction operands
@@ -14,12 +15,19 @@ compling zlib 1.2.3
 
         - movd mm7,[esi]
         + movd mm7,dword ptr[esi] 
+        
+    2. Add masm32 to path so 'ml' is found
+    3. Run 'bld_ml32.bat'
 
-  b. x64 version worked fine using bld_ml64.bat
+  b. x64 version worked fine using contrib\masmx64\bld_ml64.bat
 
-2. Unzip visualc9-x86 to zlib123/projects directory and build wuth Visual Studio 2008+
+2.
+  a. Unzip visualc9-x86 to zlib123/projects directory and build wuth Visual Studio 2008
+  b. Unzip visualstudio2010-x86 to zlib123/projects directory and build wuth Visual Studio 2010
 
-3. Unzip visualc9-x64 to the zlib123/projects directory and build with Visual Studio 2008+
+3. 
+  a. Unzip visualc9-x64 to the zlib123/projects directory and build with Visual Studio 2008
+  a. Unzip visualstudio2010-x64 to the zlib123/projects directory and build with Visual Studio 2010
 
 4. DEBUG from    x64/DLL ASM Debug
    RELEASE from  x64/DLL ASM Release

@@ -26,7 +26,7 @@ struct SSLData
   SSL_CTX*    ctx;
   SSL*        ssl;
   X509*       server_cert;
-  SSL_METHOD* meth;
+  const SSL_METHOD* meth;
 };
 
 void AFile_Socket_SSL::debugDump(std::ostream& os, int indent) const
