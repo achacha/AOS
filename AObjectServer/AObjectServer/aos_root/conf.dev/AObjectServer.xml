@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- /config/server -->
+<server>
+  <website-directory desc="Directory name of the website content that contains dynamic, data.*, static.* directories">_website</website-directory>
+
+  <debug>
+    <allow-dumpContext desc="If true, will allow dumpContext query parameter to display debug information instead of the output page (should be false in production)">true</allow-dumpContext>
+    <allow-overrideInput desc="If true, will allow overrideInput to alter the input processor class of a controller (should be false in production)">true</allow-overrideInput>
+    <allow-overrideOutput desc="If true, will allow overrideOutput to alter the output generator class of a controller (should be false in production)">true</allow-overrideOutput>
+  </debug>
+
+  <context-manager>
+    <log-level desc="Default logging level for the context (5=debug 4=info 3=warning 2=event 1=error)">5</log-level>
+    <history-maxsize desc="Number of contexts to save in history (non-error containing)">50</history-maxsize>
+    <error-history-maxsize desc="Number of error containing contexts to save in history">100</error-history-maxsize>
+    <freestore>
+      <initial-size desc="Number of context objects to pre-allocate, must be less than or equal to the max-size">10</initial-size>
+      <max-size desc="Maximum context objects to keep allocated">500</max-size>
+    </freestore>
+  </context-manager>
+  
+  <log>
+    <mask desc="Mask to use for writing logged events (see documentation for Logging, default is errors only 0x000000ff)">0xffffffff</mask>
+    <max-file-size desc="Maximum size per log file before creating a new log file and incrementing filename (in bytes, default 1MB)">1048576</max-file-size>
+    <cycle-sleep desc="How long to sleeep between log write cycles, if no log messages aare available logger will keep sleeping for this time, in milliseconds, default is 1000"/>
+  </log>
+
+  <template-cache desc="Template objects that are read from file and kept in a parsed state for execution">
+    <enabled>false</enabled>
+  </template-cache>
+
+  <static-file-cache desc="Static item cache (all static directories), maximum memory size is (max_items * max_filesize)">
+    <enabled>false</enabled>
+    <max-items desc="Maximum number of items to store in the static cache">10240</max-items>
+    <max-filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max-filesize>
+    <cache-count desc="Number of caches to use (must be a prime number)">5</cache-count>
+  </static-file-cache>
+
+  <data-file-cache desc="Data item cache (all data directories), maximum memory size is (max_items * max_filesize)">
+    <enabled>false</enabled>
+    <max-items desc="Maximum number of items to store in the static cache">10240</max-items>
+    <max-filesize desc="Maximum number of kbytes to cache, file larger than this will be read from disk every time">512</max-filesize>
+    <cache-count desc="Number of caches to use (must be a prime number)">5</cache-count>
+  </data-file-cache>
+
+  <listen>
+    <!-- Listener ports -->
+    <http>
+      <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+      <port>80</port>
+      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">40</listener-sleep>
+    </http>
+    <https>
+      <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+      <port>443</port>
+      <listener-sleep desc="Milliseconds to sleep while waiting for a connection">80</listener-sleep>
+      <cert desc="Relative path from aos_root base for the certificate file">certs/aos_cert.pem</cert>
+      <pkey desc="Relative path from aos_root base for the private key file">certs/aos_pkey.pem</pkey>
+    </https>
+    <admin>
+      <host desc="Hostname or IP of the network interface to bind to, empty implies first available"/>
+      <port>12345</port>
+    </admin>
+  </listen>
+
+  <database>
+    <!--url>mysql://aos:aos@localhost/aos/</url-->
+    <!--url>odbc://aos:aos@localhost/aos_global/</url-->
+    <url desc="SQLite3 database in ../aos_root/db/AObjectServer.db, relative to the directory with executable">sqlite:///../aos_root/db/AObjectServer.db</url>
+    <connections>2</connections>
+  </database>
+
+  <reported>
+    <!-- Reported overrides -->
+    <hostname desc="Hostname reported to clients, this is used if request Host field is missing. If this is empty and Host is missing then local ip is used."/>
+    <server desc="Server field in the response http header, usually identifies server type and version"/>
+    <http desc="Reported HTTP port, none means use 80"/>
+    <https desc="Reported HTTPS port, none means use 443"/>
+  </reported>
+
+  <gzip-compression>
+    <enabled>true</enabled>
+    <default-level desc="GZip compression level 0-none, 1-min and 9-max">6</default-level>
+    <extensions desc="Extensions which should be compressed">
+      <ext>html</ext>
+      <ext>htm</ext>
+      <ext>xhtml</ext>
+      <ext>xml</ext>
+      <ext>txt</ext>
+      <ext>js</ext>
+      <ext>css</ext>
+    </extensions>
+    <minimum-threshold desc="Compress files larger than this, in bytes">4096</minimum-threshold>
+  </gzip-compression>
+
+  <locale>
+    <base desc="This is the default language for the base directory">en-us</base>
+    <remap desc="Allows some locales to be remapped or when more than one locale can exist for a given language, default will do xx-yy, then xx, then use default">
+      <lang desc="Remap locale en is effectively en-us, since more than one en-XX can exist" name="en">en-us</lang>
+      <lang desc="Remap locale" name="zh">zh-cn</lang>
+      <lang desc="Remap locale" name="es">es-es</lang>
+      <lang desc="Remap locale" name="de">de-de</lang>
+    </remap>
+  </locale>
+  
+  <main>
+    <sleep desc="Milliseconds to sleep while checking for a shutdown, default is 3000"/>
+  </main>
+  
+  <!-- error-stylesheet desc="If present this will contain a relative path to an XSL stylesheet that will be embedded into error XML for transform at the browser">/xsl/GlobalError.xsl</error-stylesheet -->
+  <error-templates desc="HTTP status response templates, located relative to aos_data directory">
+    <default desc="Default template when a status code does not have an explicit template">http/default.template</default>
+    <HTTP-400>http/400.template</HTTP-400>
+    <HTTP-400>http/403.template</HTTP-400>
+    <HTTP-404>http/404.template</HTTP-404>
+    <HTTP-500>http/500.template</HTTP-500>
+  </error-templates>
+  
+  <default-filename>index.html</default-filename>
+  <default-input-processor>application/x-www-form-urlencoded</default-input-processor>
+  <default-output-generator>XML</default-output-generator>
+  <default-mime-type desc="MIME type to use when it cannot be mapped from the mime-types file and extension of the controller"><![CDATA[text/xml; charset=utf-8]]></default-mime-type>
+  <mime-types desc="Filename that contains MIME mappings based on controller's extension">mime_types.ini</mime-types>
+  
+  <session-manager>
+    <holder-size desc="Number of buckets (hash based, prime better) to use for holding session maps">3</holder-size>
+    <timeout desc="Number of milliseconds since session was last used and expires">600000</timeout>
+    <sleep-cycle desc="Number of milliseconds to sleep between checking sessions for exipration, default is 3000"/>
+    <database-persistence desc="Database persistence of session data">
+      <enabled>false</enabled>
+    </database-persistence>
+  </session-manager>
+  
+  <http>
+    <blocking desc="Use blocking or non-blocking socket IO">false</blocking>
+    <first-char-read-tries desc="Number of times to try and read the first character">15</first-char-read-tries>
+    <first-char-sleep-start desc="Initial sleep time trying to read first character">30</first-char-sleep-start>
+    <first-char-sleep-increment desc="Amount to increment the sleep time for each try">20</first-char-sleep-increment>
+    <wait-for-http-data-timeout desc="Milliseconds to wait for complete header after initial byte before giving up, in ms">60000</wait-for-http-data-timeout>
+    <http11-pipelining-enabled desc="Enabled pipelining if keep-alive is specified">true</http11-pipelining-enabled>
+    <unavailable-sleep-time desc="Milliseconds to sleep while trying to flush the output and the socket is unavailable (would block)">100</unavailable-sleep-time>
+    <unavailable-retries desc="Number of retries (sleeps) while waiting for an unavailable socket">100</unavailable-retries>
+  </http>
+  
+  <context-queues>
+    <is-available>
+      <queues desc="Queues in the is-available queue manager, each queue has single select thread">2</queues>
+      <loop-delay desc="Milliseconds of sleep between bulk selects">10</loop-delay>
+      <empty-queue-sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</empty-queue-sleep-delay>
+      <no-data-timeout desc="Milliseconds before a socket is closed due to inactivity">180000</no-data-timeout>
+    </is-available>
+    <pre-executor>
+      <threads desc="Threads in the pre-executor queue manager">3</threads>
+      <queues desc="Queues in the pre-executor queue manager">2</queues>
+      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep-delay>
+    </pre-executor>
+    <executor>
+      <threads desc="Threads in the executor queue manager">3</threads>
+      <queues desc="Queues in the executor queue manager">2</queues>
+      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">10</sleep-delay>
+    </executor>
+    <error-executor>
+      <threads desc="Threads in the executor queue manager">1</threads>
+      <queues desc="Queues in the executor queue manager">2</queues>
+      <sleep-delay desc="Milliseconds of sleep when there are no more clients to process and before checking queue again">50</sleep-delay>
+    </error-executor>
+  </context-queues>
+  
+  <admin>
+    <base-http-dir desc="Location of admin site relative to the root directory">admin/</base-http-dir>
+  </admin>
+</server>

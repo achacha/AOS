@@ -1,0 +1,13 @@
+This directory contains configuration for a production server.
+
+If this directory is not called 'conf':
+ - Rename existing conf directory to conf.dev
+ - Rename current directory to conf
+ 
+Template caching: OFF
+Static caching: OFF
+XSL caching: OFF
+dumpContext query string parameter: ON
+outputOverride query string parameter: ON
+Default event level logged: 5 (DEBUG)
+Lower thread/qeueue count
