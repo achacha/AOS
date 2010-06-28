@@ -1,18 +1,19 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ABase", "ABase\ABase.vcxproj", "{1AEE01DF-B02A-4B19-8A4D-256157FE0320}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ABase", "ABase\ABase.vcproj", "{1AEE01DF-B02A-4B19-8A4D-256157FE0320}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Console", "Console\Console.vcxproj", "{F438D5AA-6868-4BC8-9972-252AD0D09524}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Console", "Console\Console.vcproj", "{F438D5AA-6868-4BC8-9972-252AD0D09524}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C52D1DD3-8B8C-4D34-8BE2-3102F67693CC} = {C52D1DD3-8B8C-4D34-8BE2-3102F67693CC}
+		{1AEE01DF-B02A-4B19-8A4D-256157FE0320} = {1AEE01DF-B02A-4B19-8A4D-256157FE0320}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab", "Lab\Lab.vcproj", "{CB33DB32-6F46-4284-A18E-992E55211B2A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1AEE01DF-B02A-4B19-8A4D-256157FE0320} = {1AEE01DF-B02A-4B19-8A4D-256157FE0320}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab", "Lab\Lab.vcxproj", "{CB33DB32-6F46-4284-A18E-992E55211B2A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1AEE01DF-B02A-4B19-8A4D-256157FE0320} = {1AEE01DF-B02A-4B19-8A4D-256157FE0320}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcxproj", "{C52D1DD3-8B8C-4D34-8BE2-3102F67693CC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcproj", "{C52D1DD3-8B8C-4D34-8BE2-3102F67693CC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1AEE01DF-B02A-4B19-8A4D-256157FE0320} = {1AEE01DF-B02A-4B19-8A4D-256157FE0320}
 	EndProjectSection
