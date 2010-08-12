@@ -1,0 +1,316 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Admin">
+      <UniqueIdentifier>{4ee9b17f-6b46-44e7-bb43-b39a9fee5f3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Admin\Header Files">
+      <UniqueIdentifier>{9760a1f3-ef08-4223-8103-850e9628599f}</UniqueIdentifier>
+      <Extensions>h;hpp;</Extensions>
+    </Filter>
+    <Filter Include="Admin\Source Files">
+      <UniqueIdentifier>{7a528c4a-22db-4fe8-8097-fe9fda6403f5}</UniqueIdentifier>
+      <Extensions>c;cpp;</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AOS_Base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSCacheManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContextManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContextQueue_ErrorExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContextQueue_Executor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContextQueue_IsAvailable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContextQueue_PreExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContextQueueInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContextQueueThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContextQueueThreadPool_RoundRobinSwarm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSContextUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSDatabaseConnectionPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSDirectoryConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSInputExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSInputProcessorInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSLuaFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModuleExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModuleInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModuleInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModules.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSOutputExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSOutputGeneratorInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSRequestListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSResourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSServices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSSessionData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSSessionManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSSessionMapHolder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSUser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSXmlElementUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ATemplateNodeHandler_RESOURCE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ATemplateNodeHandler_SESSION.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pchAOS_Base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdmin.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminCommand_display.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminCommand_list.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminCommand_modify.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminCommand_version.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminCommand_website_list.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminCommand_website_view.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminCommandContext.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminCommandInterface.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSAdminCommandRegistry.cpp">
+      <Filter>Admin\Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AOS.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminRegistry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSCacheManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSConfiguration.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContext.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContextManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContextQueue_ErrorExecutor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContextQueue_Executor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContextQueue_IsAvailable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContextQueue_PreExecutor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContextQueueInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContextQueueThreadPool.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContextQueueThreadPool_RoundRobinSwarm.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSContextUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSController.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSDatabaseConnectionPool.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSDirectoryConfig.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSInputExecutor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSInputProcessorInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModuleExecutor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModuleInfo.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModuleInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModules.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSOutputExecutor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSOutputGeneratorInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSRequestListener.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSResourceManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSServices.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSSessionData.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSSessionManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSSessionMapHolder.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSUser.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSXmlElementUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="apiAOS_Base.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ATemplateNodeHandler_RESOURCE.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ATemplateNodeHandler_SESSION.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pchAOS_Base.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdmin.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminCommand_display.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminCommand_list.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminCommand_modify.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminCommand_version.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminCommand_website_list.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminCommand_website_view.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminCommandContext.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminCommandInterface.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSAdminCommandRegistry.hpp">
+      <Filter>Admin\Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

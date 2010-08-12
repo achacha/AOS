@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Input Processors">
+      <UniqueIdentifier>{749818f1-40a2-48ce-a79f-ab52496585aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input Processors\Header Files">
+      <UniqueIdentifier>{72ff8b46-1cc3-46a4-ad71-1827cfb2a71c}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Input Processors\Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FC}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Output Generators">
+      <UniqueIdentifier>{9a19f345-a98d-43b6-8b50-693ae6c51733}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Output Generators\Header Files">
+      <UniqueIdentifier>{3e929532-552d-428d-b6a6-7a4d7460282a}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Output Generators\Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FE}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Modules">
+      <UniqueIdentifier>{8f58c7b9-ee49-4d22-a734-04949df83327}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Header Files">
+      <UniqueIdentifier>{9d9e263e-9dce-4333-8f7b-d26eb63cd54b}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Modules\Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FD}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AOS_BaseModules.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOS_BaseModules_Constants.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pchAOS_BaseModules.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSInput_HtmlForm.cpp">
+      <Filter>Input Processors\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSInput_HtmlFormMultiPart.cpp">
+      <Filter>Input Processors\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSInput_NOP.cpp">
+      <Filter>Input Processors\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSOutput_File.cpp">
+      <Filter>Output Generators\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSOutput_JSON.cpp">
+      <Filter>Output Generators\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSOutput_MsXslt.cpp">
+      <Filter>Output Generators\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSOutput_NOP.cpp">
+      <Filter>Output Generators\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSOutput_Redirect.cpp">
+      <Filter>Output Generators\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSOutput_Template.cpp">
+      <Filter>Output Generators\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSOutput_XML.cpp">
+      <Filter>Output Generators\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_AddStatistics.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_AlterContext.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_ExecuteQuery.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_FileList.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_InsertIntoModel.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_LuaScript.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_NOP.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_SaveToFile.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_SetSessionLocale.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AOSModule_Template.cpp">
+      <Filter>Modules\Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AOS_BaseModules_Constants.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="apiAOS_BaseModules.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pchAOS_BaseModules.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSInput_HtmlForm.hpp">
+      <Filter>Input Processors\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSInput_HtmlFormMultiPart.hpp">
+      <Filter>Input Processors\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSInput_NOP.hpp">
+      <Filter>Input Processors\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSOutput_File.hpp">
+      <Filter>Output Generators\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSOutput_JSON.hpp">
+      <Filter>Output Generators\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSOutput_MsXslt.hpp">
+      <Filter>Output Generators\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSOutput_NOP.hpp">
+      <Filter>Output Generators\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSOutput_Redirect.hpp">
+      <Filter>Output Generators\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSOutput_Template.hpp">
+      <Filter>Output Generators\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSOutput_XML.hpp">
+      <Filter>Output Generators\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_AddStatistics.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_AlterContext.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_ExecuteQuery.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_FileList.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_InsertIntoModel.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_LuaScript.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_NOP.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_SaveToFile.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_SetSessionLocale.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AOSModule_Template.hpp">
+      <Filter>Modules\Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
