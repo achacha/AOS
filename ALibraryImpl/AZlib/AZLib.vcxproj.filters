@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="External Header Files">
+      <UniqueIdentifier>{ca88de5a-c013-413c-86a0-b997321ceaf0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AZlib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AZlibMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pchAZlib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="apiAZlib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AZlib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pchAZlib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deflate.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inffast.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inffixed.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inflate.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inftrees.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trees.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zconf.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zconf.in.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zutil.h">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+</Project>

@@ -87,6 +87,8 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -109,7 +111,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../ALibrary/ABase;../APythonEmbed;../ADatabase_MySQL;../AZlib;../ACrypto;../ADatabase_ODBC;../ADatabase_SQLite;../AGdLib;../ALuaEmbed;../ALuaEmbed/lua-5.1.4/src;../AXslt;../AXslt/iconv-1.9.2.win32/include;../AXslt/libxml2-2.7.6.win32/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -119,8 +121,9 @@
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -146,6 +149,9 @@
       <PrecompiledHeaderFile>pch$(ProjectName).hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -174,6 +180,9 @@
       <PrecompiledHeaderFile>pch$(ProjectName).hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>

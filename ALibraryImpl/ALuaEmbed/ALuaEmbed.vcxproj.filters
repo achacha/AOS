@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7B5-4376-A166-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89CD-4b94-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Lua Header Files">
+      <UniqueIdentifier>{18ec833f-c020-4591-858b-b77ce8211706}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua Source Files">
+      <UniqueIdentifier>{298d4f63-38e4-499e-a2b2-572b913d5a9c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ALuaEmbed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ALuaEmbedMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ALuaTemplateContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ATemplateNodeHandler_LUA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaFunctions_alibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaFunctions_model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaFunctions_objects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaFunctions_web.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pchALuaEmbed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lapi.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lauxlib.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lbaselib.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lcode.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\ldblib.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\ldebug.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\ldo.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\ldump.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lfunc.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lgc.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\linit.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\liolib.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\llex.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lmathlib.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lmem.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\loadlib.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lobject.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lopcodes.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\loslib.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lparser.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lstate.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lstring.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lstrlib.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\ltable.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\ltablib.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\ltm.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lundump.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lvm.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\lzio.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lua-5.1.4\src\print.c">
+      <Filter>Lua Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ALuaEmbed.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ALuaTemplateContext.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="apiALuaEmbed.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ATemplateNodeHandler_LUA.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaInternals.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pchALuaEmbed.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lapi.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lauxlib.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lcode.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\ldebug.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\ldo.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lfunc.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lgc.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\llex.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\llimits.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lmem.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lobject.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lopcodes.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lparser.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lstate.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lstring.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\ltable.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\ltm.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lua.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\luaconf.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lualib.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lundump.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lvm.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lua-5.1.4\src\lzio.h">
+      <Filter>Lua Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LUA_2_ALibrary.txt" />
+  </ItemGroup>
+</Project>

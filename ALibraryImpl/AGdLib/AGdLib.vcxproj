@@ -88,6 +88,9 @@
       <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
@@ -106,7 +109,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../ALibrary/ABase;./libpng;./libgd;../AZlib;./libjpeg/include64a;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;AGDLIB_EXPORTS;BGDWIN32;HAVE_LIBPNG;HAVE_LIBJPEG;FT2_BUILD_LIBRARY;HAVE_LIBFREETYPE;HAVE_FT2BUILD_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeaderFile>pchAGdLib.hpp</PrecompiledHeaderFile>
@@ -115,7 +118,9 @@
       <BrowseInformation>true</BrowseInformation>
       <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
       <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
@@ -131,7 +136,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>../../ALibrary/ABase;./libpng;./libgd;../AZlib;./libjpeg/include;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;AGDLIB_EXPORTS;BGDWIN32;HAVE_LIBPNG;HAVE_LIBJPEG;FT2_BUILD_LIBRARY;HAVE_LIBFREETYPE;HAVE_FT2BUILD_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -141,6 +146,8 @@
       <PrecompiledHeaderFile>pchAGdLib.hpp</PrecompiledHeaderFile>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <WarningLevel>Level3</WarningLevel>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
@@ -164,7 +171,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>../../ALibrary/ABase;./libpng;./libgd;../AZlib;./libjpeg/include64a;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_WINDOWS;_USRDLL;AGDLIB_EXPORTS;BGDWIN32;HAVE_LIBPNG;HAVE_LIBJPEG;FT2_BUILD_LIBRARY;HAVE_LIBFREETYPE;HAVE_FT2BUILD_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -174,6 +181,8 @@
       <PrecompiledHeaderFile>pchAGdLib.hpp</PrecompiledHeaderFile>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <WarningLevel>Level3</WarningLevel>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>

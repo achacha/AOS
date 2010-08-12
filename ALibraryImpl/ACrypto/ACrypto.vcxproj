@@ -88,6 +88,8 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -107,7 +109,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../ALibrary/ABase;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;WIN32;_DEBUG;_WINDOWS;_USRDLL;ACRYPTO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -120,8 +122,9 @@
       <BrowseInformation>true</BrowseInformation>
       <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
       <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -138,7 +141,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>../../ALibrary/ABase;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ACRYPTO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -150,6 +153,7 @@
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <WarningLevel>Level3</WarningLevel>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -174,7 +178,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>../../ALibrary/ABase;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_WINDOWS;_USRDLL;ACRYPTO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -186,6 +190,7 @@
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <WarningLevel>Level3</WarningLevel>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>

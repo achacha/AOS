@@ -1,0 +1,377 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="libgd Header Files">
+      <UniqueIdentifier>{008b3bec-d985-4f1d-8890-ad4c012ce61f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libgd Source Files">
+      <UniqueIdentifier>{53a9d3e8-a0bd-45c1-b703-da0c8f10385a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libpng Header Files">
+      <UniqueIdentifier>{414014eb-840e-4aa1-ab8b-ff6c94eab2e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libpng Source Files">
+      <UniqueIdentifier>{45995892-61a5-4e2c-8e4b-30d73ffeff9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype Header Files">
+      <UniqueIdentifier>{7b9dd50f-fe3e-4417-a802-767dfe969717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype Source Files">
+      <UniqueIdentifier>{710a4e5d-67a3-4a0c-80d7-58cdebad392c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="freetype Source Files\FT_MODULES">
+      <UniqueIdentifier>{d36a499b-9cad-4aae-b0d8-0bb75260bd0e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AGdCanvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AGdLibMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AGdLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gdIOCtx_AFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gdIOCtx_AOutputBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pchAGdLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_gd.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_gd2.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_gif_in.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_gif_out.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_io.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_io_dp.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_io_file.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_io_ss.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_jpeg.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_png.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_security.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_ss.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_topal.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gd_wbmp.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdcache.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdfontg.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdfontl.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdfontmb.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdfonts.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdfontt.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdft.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdfx.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdhelpers.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdkanji.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdtables.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\gdxpm.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\strlcpy.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libgd\wbmp.c">
+      <Filter>libgd Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\png.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngerror.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pnggccrd.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngget.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngmem.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngpread.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngread.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngrio.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngrtran.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngrutil.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngset.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngtest.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngtrans.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngvcrd.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngwio.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngwrite.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngwtran.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libpng\pngwutil.c">
+      <Filter>libpng Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\autofit\autofit.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\bdf\bdf.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\cff\cff.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftbase.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftbitmap.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\cache\ftcache.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftdebug.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftgasp.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftglyph.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\gzip\ftgzip.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftinit.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\lzw\ftlzw.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftstroke.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftsystem.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\smooth\smooth.c">
+      <Filter>freetype Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftbbox.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftmm.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftpfr.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftsynth.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\fttype1.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\base\ftwinfnt.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\pcf\pcf.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\pfr\pfr.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\psaux\psaux.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\pshinter\pshinter.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\psnames\psmodule.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\raster\raster.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\sfnt\sfnt.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\truetype\truetype.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\type1\type1.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\cid\type1cid.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\type42\type42.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="freetype\winfonts\winfnt.c">
+      <Filter>freetype Source Files\FT_MODULES</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AGdCanvas.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AGdLibrary.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="apiAGdLib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gdIOCtx_AFile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gdIOCtx_AOutputBuffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pchAGdLib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\entities.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gd.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gd_io.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gdcache.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gdfontg.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gdfontl.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gdfontmb.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gdfonts.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gdfontt.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gdfx.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\gdhelpers.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\jisx0208.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libgd\wbmp.h">
+      <Filter>libgd Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\png.h">
+      <Filter>libpng Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libpng\pngconf.h">
+      <Filter>libpng Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\ft2build.h">
+      <Filter>freetype Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\freetype\config\ftconfig.h">
+      <Filter>freetype Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\freetype\config\ftheader.h">
+      <Filter>freetype Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\freetype\config\ftmodule.h">
+      <Filter>freetype Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\freetype\config\ftoption.h">
+      <Filter>freetype Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\include\freetype\config\ftstdlib.h">
+      <Filter>freetype Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
