@@ -205,11 +205,16 @@ size_t ARope::read(AFile& file, size_t length /* = AConstant::npos */)
   if (length <= m_LastBlockFree)
   {
     bytesRead = file.read(mp_LastBlock + m_BlockSize - m_LastBlockFree, length);
-    if (bytesRead == AConstant::npos)
-      return 0;  //a_EOF, nothing read
+    switch(bytesRead)
+    {
+      case AConstant::unavail:
+      case AConstant::npos:
+        return 0;  //a_EOF or would block, nothing read
 
-    m_LastBlockFree -= bytesRead;
-    return bytesRead;
+      default:
+        m_LastBlockFree -= bytesRead;
+        return bytesRead;
+    }
   }
   
   size_t totalBytesRead = 0;

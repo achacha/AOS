@@ -86,7 +86,7 @@ int AWordUtility::splitSyllables(const AString& source, VECTOR_AString& result, 
   return count;
 }
 
-void AWordUtility::getSoundexForm(const AString& source, AString& result)
+void AWordUtility::getSoundexForm(const AString& source, AString& result, size_t minSize)
 {
   result.clear();
   if (source.isEmpty())
@@ -240,8 +240,8 @@ void AWordUtility::getSoundexForm(const AString& source, AString& result)
     ++pos;
   }
 
-  if (result.getSize() < 4)
-    result.setSize(4, '0');
+  if (result.getSize() < minSize)
+    result.setSize(minSize, '0');
 }
 
 size_t AWordUtility::getRhymeLevel(const AString& wordOne, const AString& wordTwo)
@@ -276,9 +276,12 @@ Pre-process
 Process ending
   Before   After
   e        (remove)
+  es       s
   ie       i
+  ies      s
   ng       n
   y        i
+  eau      o
 
 Process
   Before   After
@@ -294,7 +297,7 @@ Process
   mb       m
   nc       nk
   oo       U
-  ou       o
+  ou       u
   ph       f
   ps       s
   q(~u)    k    (q without u)
@@ -319,11 +322,9 @@ Phonetics:
 void AWordUtility::getPhoneticForm(const AString& source, AString& result)
 {
   AString work(source);
-  AString temp;
   work.makeLower();
 
   const char IGNORE_CHAR = '_';
-  u4 pos = 0;
   result.clear();
   size_t workSize = work.getSize();
   if (!workSize)
@@ -341,9 +342,9 @@ void AWordUtility::getPhoneticForm(const AString& source, AString& result)
 
   //a_STEP 2
   //a_Ending (data in reverse) (before and after data must be same size)
-  const int iiEndingCount = 6;
-  const AString endBefore[iiEndingCount] = {  "e", "yc", "gn", "uae", "y", "eu" };
-  const AString endAfter[iiEndingCount]  = {  "_", "is", "_n", "__o", "i", "_i" };
+  const int iiEndingCount = 9;
+  const AString endBefore[iiEndingCount] = {  "e", "se", "sei", "ei", "yc", "gn", "uae", "y", "eu" };
+  const AString endAfter[iiEndingCount]  = {  "_", "s_", "s_i", "_i", "is", "_n", "__o", "i", "_i" };
   work.reverse();
   for (i=0; i<iiEndingCount; ++i)
   {
@@ -354,9 +355,11 @@ void AWordUtility::getPhoneticForm(const AString& source, AString& result)
   }
   work.reverse();
 
-  //a_STEP 3
+
+  //a_STEP 4
   //a_Iterate and process sounds
-  pos = 0;
+  AString temp;
+  u4 pos = 0;
   while(pos < workSize)
   {
     switch(work.at(pos))
@@ -430,6 +433,11 @@ void AWordUtility::getPhoneticForm(const AString& source, AString& result)
           temp.append('n');
           ++pos;
         }
+        else if ('s' == work.at(pos+1, '\x0'))
+        {
+          temp.append('x');
+          ++pos;
+        }
         else
           temp.append('k');
       break;
@@ -465,7 +473,7 @@ void AWordUtility::getPhoneticForm(const AString& source, AString& result)
         }
         else if ('u' == work.at(pos+1, '\x0'))
         {
-          temp.append('o');
+          temp.append('u');
           ++pos;
         }
         else
@@ -636,44 +644,58 @@ void AWordUtility::getSoundsLikeForm(const AString& source, AString& result)
       case 'b':
       case 'f':
       case 'p':
-      case 'v':
-      case 'w':
-        result.append('1');
+        result.append('p');
       break;
 
       case 'm':
       case 'n':
-        result.append('2');
+        result.append('m');
       break;
 
       case 's':
       case 'x':
       case 'z':
-        result.append('3');
+        result.append('s');
       break;
 
       case 'c':
       case 'k':
       case 'q':
-        result.append('4');
+        result.append('k');
       break;
 
       case 'g':
       case 'j':
-        result.append('5');
+        result.append('g');
       break;
 
       case 'd':
       case 't':
-        result.append('6');
+        result.append('d');
       break;
 
       case 'l':
-        result.append('7');
+        result.append('l');
+      break;
+
+      case 'r':
+        result.append('r');
+      break;
+
+      case 'v':
+      case 'w':
+        result.append('v');
       break;
     }
     ++pos;
   }
+}
+
+void AWordUtility::getPhoneticSoundsLikeForm(const AString& source, AString& result)
+{
+  AString tmp;
+  AWordUtility::getPhoneticForm(source, tmp);
+  AWordUtility::getSoundsLikeForm(tmp, result);
 }
 
 void AWordUtility::getPlural(const AString& one, AString& many)

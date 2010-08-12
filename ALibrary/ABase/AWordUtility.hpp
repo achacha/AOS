@@ -35,15 +35,21 @@ public:
   Converts to equivalent Soundex pattern for comparisson
   result cleared by default
   This is a very approximate form and resulting form will match a lot of similar sounding words
-  minimum size is 4
+  minimum size defaults to 4  (set to 0 will have no minimum size)
   */
-  static void getSoundexForm(const AString& source, AString& result);
+  static void getSoundexForm(const AString& source, AString& result, size_t minSize = 4);
 
   /*!
   Conversts to equivalent phonetic form for comparisson
   result cleared by default
   */
   static void getPhoneticForm(const AString& source, AString& result);
+
+  /*!
+  Conversts to equivalent phonetic form then does a SoundsLike for comparisson
+  result cleared by default
+  */
+  static void getPhoneticSoundsLikeForm(const AString& source, AString& result);
 
   /*!
    Checks if two words most likely rhyme
