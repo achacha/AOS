@@ -37,10 +37,6 @@ context.syncAosRoot(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_User"));
 context.syncAosRoot(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_Wiki"));
 context.syncAosRoot(os.path.join(context.BASE_AOSMODULES_PATH, "AOS_DadaData"));
 
-# Docs
-print("|----------------------------Docs: "+os.path.join(context.BASE_AOBJECTSERVER_PATH, "docs")+" -> "+context.TARGET_PATH);
-context.syncPathRecursive(os.path.join(context.BASE_AOBJECTSERVER_PATH, "docs"), context.TARGET_PATH);
-
 # AObjectServer and AOS_Modules
 if (context.binary == 0):
   # Copy AObjectServer and AOS_Modules source
