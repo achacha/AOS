@@ -86,21 +86,6 @@ $Id$
 
 // Max rows
 #define DEBUG_MAXSIZE_AResultSet 500000
-
-// Enable windows specific stacktrace in debug mode
-#ifdef __WINDOWS__
-
-#if defined(DISABLE_EXCEPTION_STACKWALK) && defined(_DEBUG)
-//TODO Current stack walker is not thread safe
-//#define ENABLE_EXCEPTION_STACKWALK 1
-#undef ENABLE_EXCEPTION_STACKWALK
-#pragma message("Enabling Stack Walker exceptions")
-#else
-#undef ENABLE_EXCEPTION_STACKWALK
-#pragma message("Disabling Stack Walker exceptions")
-#endif
-
-#endif
 #endif
 
 //a_Basic ABase classes

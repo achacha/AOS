@@ -3,6 +3,8 @@ Written by Alex Chachanashvili
 
 $Id$
 */
+//#define WINDOWS_CRTDBG_ENABLED 1
+#define ENABLE_EXCEPTION_STACKWALK 1
 #include "apiABase.hpp"
 #include <AException.hpp>
 #include <AString.hpp>
