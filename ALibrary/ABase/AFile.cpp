@@ -7,7 +7,7 @@ $Id$
 #include "AFile.hpp"
 #include "AException.hpp"
 #include "ARope.hpp"
-#include "AThread.hpp"
+#include "ATime.hpp"
 
 #ifndef min
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
@@ -731,7 +731,7 @@ size_t AFile::readUntilEOF(AOutputBuffer& target)
         //a_Wait a bit just in case we are reading faster than data coming in
         if (retry > 0)
         {
-          AThread::sleep(SLEEPTIME);
+          ATime::sleep(SLEEPTIME);
           --retry;
         }
         else

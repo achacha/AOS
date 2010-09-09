@@ -15,26 +15,16 @@ AException::AException
   const char* pccFilename,             // = ""
   int iLineNumber,                     // = 0
   const AEmittable& extra,             // = AConstant::ASTRING_EMPTY
-  errno_t errornum,                    // = 0
-  bool walkStack                       // = false
+  errno_t errornum                     // = 0
 ) :
   m_ID(iWhat),
   mp_Filename(pccFilename),
   m_LineNumber(iLineNumber),
   m_ExtraText(extra),
-#if defined(__WINDOWS__) && defined(_DEBUG)
-  m_StackWalker(AStackWalker::SWO_SET_STACKONLY),
-#endif
   m_errno(errornum)
 {
   if (pObject)
     pObject->debugDumpToAOutputBuffer(m_DebugDump);
-
-  //a_Get stack trace
-#if defined(__WINDOWS__) && defined(_DEBUG)
-  if (walkStack)
-    m_StackWalker.ProcessCallstack(true);
-#endif
 }
 
 AException::AException(const AException &that) :
@@ -43,9 +33,6 @@ AException::AException(const AException &that) :
   m_LineNumber(that.m_LineNumber),
   m_errno(that.m_errno),
   m_ExtraText(that.m_ExtraText),
-#if defined(__WINDOWS__) && defined(_DEBUG)
-  m_StackWalker(that.m_StackWalker),
-#endif
   m_DebugDump(that.m_DebugDump)
 {
 }
@@ -64,9 +51,6 @@ AException& AException::operator=(const AException &that)
   m_LineNumber  = that.m_LineNumber;
   m_errno       = that.m_errno;
   m_ExtraText   = that.m_ExtraText;
-#if defined(__WINDOWS__) && defined(_DEBUG)
-  m_StackWalker = that.m_StackWalker;
-#endif
 
   return *this;
 }
@@ -323,10 +307,6 @@ const ARope& AException::what() const throw()
   }
   mm_What.append(AConstant::ASTRING_EOL);
 
-#if defined(__WINDOWS__) && defined(_DEBUG)
-  m_StackWalker.emit(mm_What);
-#endif
-
   if (!m_DebugDump.isEmpty())
   {
     mm_What.append(AConstant::ASTRING_EOL);
@@ -354,9 +334,6 @@ AXmlElement& AException::emitXml(AXmlElement& thisRoot) const
   thisRoot.addElement(ASW("linenum",7)).addData(m_LineNumber);
   thisRoot.addElement(ASW("extra",5)).addData(m_ExtraText, AXmlElement::ENC_CDATADIRECT);
   thisRoot.addElement(ASW("errno",5)).addData(m_errno);
-#if defined(__WINDOWS__) && defined(_DEBUG)
-  thisRoot.addElement(ASW("stacktrace",10)).addData(m_StackWalker);
-#endif
   thisRoot.addElement(ASW("debugdump",9)).addData(m_DebugDump, AXmlElement::ENC_CDATADIRECT);
 
   return thisRoot;
@@ -544,10 +521,3 @@ errno_t AException::getErrno() const throw()
 {
   return m_errno;
 }
-
-#if defined(__WINDOWS__) && defined(_DEBUG)
-const AStackWalker& AException::getStackWalker() const
-{
-  return m_StackWalker;
-}
-#endif

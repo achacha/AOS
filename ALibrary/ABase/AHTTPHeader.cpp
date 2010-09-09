@@ -8,7 +8,7 @@ $Id$
 #include "AOutputBuffer.hpp"
 #include "AFile.hpp"
 #include "ARope.hpp"
-#include "AThread.hpp"
+#include "ATime.hpp"
 
 const AString AHTTPHeader::HTTP_VERSION_0_9("HTTP/0.9",8);
 const AString AHTTPHeader::HTTP_VERSION_1_0("HTTP/1.0",8);
@@ -341,7 +341,7 @@ void AHTTPHeader::fromAFile(AFile& aFile)
 
   while (AConstant::unavail == bytesRead && aFile.isNotEof())
   {
-    AThread::sleep(50);
+    ATime::sleep(50);
     bytesRead = aFile.readLine(str, AConstant::npos, false);
   }
 
@@ -360,7 +360,7 @@ void AHTTPHeader::fromAFile(AFile& aFile)
       bytesRead = aFile.readLine(str, AConstant::npos, false);
       while (AConstant::npos == bytesRead && aFile.isNotEof())
       {
-        AThread::sleep(50);
+        ATime::sleep(50);
         bytesRead = aFile.readLine(str, AConstant::npos, false);
       }
       if (str.getSize() > 0)

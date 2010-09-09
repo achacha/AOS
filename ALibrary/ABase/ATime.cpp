@@ -30,6 +30,15 @@ void ATime::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
+void ABASE_API ATime::sleep(u4 milliseconds)
+{
+#ifdef __WINDOWS__
+  ::Sleep(milliseconds);
+#else
+#error Not implemented
+#endif
+}
+
 u4 ATime::getTickCount32()
 {
 #ifdef __WINDOWS__

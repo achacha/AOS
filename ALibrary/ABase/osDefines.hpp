@@ -178,17 +178,6 @@ NDEBUG - non-debug (release) mode
 // Enable windows specific stacktrace in debug mode
 #ifdef __WINDOWS__
 
-#if defined(DISABLE_EXCEPTION_STACKWALK) && defined(_DEBUG)
-//TODO Current stack walker is not thread safe
-//#define ENABLE_EXCEPTION_STACKWALK 1
-#undef ENABLE_EXCEPTION_STACKWALK
-#pragma message("Enabling Stack Walker exceptions")
-#else
-#undef ENABLE_EXCEPTION_STACKWALK
-#pragma message("Disabling Stack Walker exceptions")
-#endif
-
-
 #  if defined(_DEBUG) && defined(WINDOWS_CRTDBG_ENABLED)
 #  define _CRTDBG_MAP_ALLOC 1
 #  include "crtdbg.h"

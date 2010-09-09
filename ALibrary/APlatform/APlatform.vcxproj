@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1AEE01DF-B02A-4B19-8A4D-256157FE0320}</ProjectGuid>
-    <RootNamespace>ABase</RootNamespace>
+    <ProjectGuid>{1AEE91DF-B02A-4B19-8A4D-256157FE0320}</ProjectGuid>
+    <RootNamespace>APlatform</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -79,14 +79,14 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>$(OutDir)ABase.tlb</TypeLibraryName>
+      <TypeLibraryName>$(OutDir)APlatform.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)../ABase;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;APLATFORM_EXPORTS;_WINDOWS;_USRDLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -124,14 +124,14 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>$(OutDir)ABase.tlb</TypeLibraryName>
+      <TypeLibraryName>$(OutDir)APlatform.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN64;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)../ABase;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;APLATFORM_EXPORTS;_WINDOWS;_USRDLL;WIN64;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -174,7 +174,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>$(OutDir)ABase.tlb</TypeLibraryName>
+      <TypeLibraryName>$(OutDir)APlatform.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -182,8 +182,8 @@
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)../ABase;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;APLATFORM_EXPORTS;_WINDOWS;_USRDLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -222,7 +222,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>$(OutDir)ABase.tlb</TypeLibraryName>
+      <TypeLibraryName>$(OutDir)APlatform.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -230,8 +230,8 @@
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;ABASE_EXPORTS;_WINDOWS;_USRDLL;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)../ABase;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;APLATFORM_EXPORTS;_WINDOWS;_USRDLL;WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -240,7 +240,7 @@
       <AssemblerListingLocation>
       </AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)vc70.pdb</ProgramDataBaseFileName>
+      <ProgramDatAPlatformFileName>$(IntDir)vc70.pdb</ProgramDatAPlatformFileName>
       <BrowseInformation>
       </BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
@@ -266,92 +266,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ABase.cpp" />
-    <ClCompile Include="ABaseMain.cpp" />
-    <ClCompile Include="ABasePtrContainer.cpp" />
-    <ClCompile Include="ABasePtrQueue.cpp" />
-    <ClCompile Include="ABitArray.cpp" />
-    <ClCompile Include="ACacheInterface.cpp" />
-    <ClCompile Include="AChecksum.cpp" />
-    <ClCompile Include="ACommandLineParser.cpp" />
-    <ClCompile Include="AConstant.cpp" />
-    <ClCompile Include="AContentType_Binary.cpp" />
-    <ClCompile Include="AContentType_Form.cpp" />
-    <ClCompile Include="AContentType_TextXml.cpp" />
-    <ClCompile Include="AContentTypeFactory.cpp" />
-    <ClCompile Include="AContentTypeInterface.cpp" />
-    <ClCompile Include="ACookie.cpp" />
-    <ClCompile Include="ACookieJar.cpp" />
-    <ClCompile Include="ACookieJar_Node.cpp" />
-    <ClCompile Include="ACookies.cpp" />
-    <ClCompile Include="ADatabase.cpp" />
-    <ClCompile Include="ADatabase_NOP.cpp" />
-    <ClCompile Include="ADebugDumpable.cpp" />
-    <ClCompile Include="ADigest_MD5.cpp" />
-    <ClCompile Include="ADigest_SHA1.cpp" />
-    <ClCompile Include="ADynamicLibrary.cpp" />
-    <ClCompile Include="AEmittable.cpp" />
-    <ClCompile Include="AEventVisitor.cpp" />
-    <ClCompile Include="AException.cpp" />
-    <ClCompile Include="AFile.cpp" />
-    <ClCompile Include="AFile_AString.cpp" />
-    <ClCompile Include="AFile_IOStream.cpp" />
-    <ClCompile Include="AFilename.cpp" />
-    <ClCompile Include="AFileRandomAccess.cpp" />
-    <ClCompile Include="AFragmentConstant.cpp" />
-    <ClCompile Include="AFragmentCounter.cpp" />
-    <ClCompile Include="AFragmentInterface.cpp" />
-    <ClCompile Include="AFragmentOdometer.cpp" />
-    <ClCompile Include="AFragmentSet.cpp" />
-    <ClCompile Include="AFragmentString.cpp" />
-    <ClCompile Include="AHTTPHeader.cpp" />
-    <ClCompile Include="AHTTPRequestHeader.cpp" />
-    <ClCompile Include="AHTTPResponseHeader.cpp" />
-    <ClCompile Include="AJsonEmittable.cpp" />
-    <ClCompile Include="ALock.cpp" />
-    <ClCompile Include="ALog.cpp" />
-    <ClCompile Include="ALog_ScopeEvents.cpp" />
-    <ClCompile Include="AMovingAverage.cpp" />
-    <ClCompile Include="ANamePointerPair.cpp" />
-    <ClCompile Include="ANameValuePair.cpp" />
-    <ClCompile Include="ansiHelpers.cpp" />
-    <ClCompile Include="ANumber.cpp" />
-    <ClCompile Include="AOutputBuffer.cpp" />
-    <ClCompile Include="AParsable.cpp" />
-    <ClCompile Include="AQueryString.cpp" />
-    <ClCompile Include="ARandomAccessBuffer.cpp" />
-    <ClCompile Include="ARandomNumberGenerator.cpp" />
-    <ClCompile Include="AResultSet.cpp" />
-    <ClCompile Include="ARng_Lecuyer.cpp" />
-    <ClCompile Include="ARng_Marsaglia.cpp" />
-    <ClCompile Include="ARng_Uniform.cpp" />
-    <ClCompile Include="ARope.cpp" />
-    <ClCompile Include="ARopeDeque.cpp" />
-    <ClCompile Include="AString.cpp" />
-    <ClCompile Include="AStringHashMap.cpp" />
-    <ClCompile Include="ASynchronization.cpp" />
-    <ClCompile Include="ATemplate.cpp" />
-    <ClCompile Include="ATemplateContext.cpp" />
-    <ClCompile Include="ATemplateNode.cpp" />
-    <ClCompile Include="ATemplateNodeHandler.cpp" />
-    <ClCompile Include="ATemplateNodeHandler_MODEL.cpp" />
-    <ClCompile Include="ATemplateNodeHandler_OBJECT.cpp" />
-    <ClCompile Include="ATextConverter.cpp" />
-    <ClCompile Include="ATextGenerator.cpp" />
-    <ClCompile Include="ATextOdometer.cpp" />
-    <ClCompile Include="ATime.cpp" />
-    <ClCompile Include="ATimer.cpp" />
-    <ClCompile Include="AUrl.cpp" />
-    <ClCompile Include="AWordUtility.cpp" />
-    <ClCompile Include="AXmlAttributes.cpp" />
-    <ClCompile Include="AXmlData.cpp" />
-    <ClCompile Include="AXmlDocument.cpp" />
-    <ClCompile Include="AXmlElement.cpp" />
-    <ClCompile Include="AXmlEmittable.cpp" />
-    <ClCompile Include="AXmlInstruction.cpp" />
-    <ClCompile Include="AXmlParsable.cpp" />
-    <ClCompile Include="extABase.cpp" />
-    <ClCompile Include="pchABase.cpp">
+    <ClCompile Include="ACache_FileSystem.cpp" />
+    <ClCompile Include="ADaemon.cpp" />
+    <ClCompile Include="ADatabasePool.cpp" />
+    <ClCompile Include="AFileSystem.cpp" />
+    <ClCompile Include="AFile_Physical.cpp" />
+    <ClCompile Include="AFile_Socket.cpp" />
+    <ClCompile Include="AFile_SocketDatagram.cpp" />
+    <ClCompile Include="AINIProfile.cpp" />
+    <ClCompile Include="ALog_AFile.cpp" />
+    <ClCompile Include="APlatformMain.cpp" />
+    <ClCompile Include="ASocketException.cpp" />
+    <ClCompile Include="ASocketLibrary.cpp" />
+    <ClCompile Include="ASocketListener.cpp" />
+    <ClCompile Include="ASync_Counter.cpp" />
+    <ClCompile Include="ASync_CriticalSection.cpp" />
+    <ClCompile Include="ASync_CriticalSectionSpinLock.cpp" />
+    <ClCompile Include="ASync_Event.cpp" />
+    <ClCompile Include="ASync_Mutex.cpp" />
+    <ClCompile Include="ASync_Semaphore.cpp" />
+    <ClCompile Include="ASystemException.cpp" />
+    <ClCompile Include="AThread.cpp" />
+    <ClCompile Include="AThreadPool.cpp" />
+    <ClCompile Include="AThread_NOP.cpp" />
+    <ClCompile Include="pchAPlatform.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
@@ -370,116 +308,30 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ABase.hpp" />
-    <ClInclude Include="ABasePtrContainer.hpp" />
-    <ClInclude Include="ABasePtrQueue.hpp" />
-    <ClInclude Include="ABitArray.hpp" />
-    <ClInclude Include="ACacheInterface.hpp" />
-    <ClInclude Include="AChecksum.hpp" />
-    <ClInclude Include="ACommandLineParser.hpp" />
-    <ClInclude Include="AConstant.hpp" />
-    <ClInclude Include="AContentType_Binary.hpp" />
-    <ClInclude Include="AContentType_Form.hpp" />
-    <ClInclude Include="AContentType_TextXml.hpp" />
-    <ClInclude Include="AContentTypeFactory.hpp" />
-    <ClInclude Include="AContentTypeInterface.hpp" />
-    <ClInclude Include="ACookie.hpp" />
-    <ClInclude Include="ACookieJar.hpp" />
-    <ClInclude Include="ACookies.hpp" />
-    <ClInclude Include="ADatabase.hpp" />
-    <ClInclude Include="ADatabase_NOP.hpp" />
-    <ClInclude Include="ADebugDumpable.hpp" />
-    <ClInclude Include="ADigest_MD5.hpp" />
-    <ClInclude Include="ADigest_SHA1.hpp" />
-    <ClInclude Include="ADigestInterface.hpp" />
-    <ClInclude Include="ADynamicLibrary.hpp" />
-    <ClInclude Include="AEmittable.hpp" />
-    <ClInclude Include="AEventVisitor.hpp" />
-    <ClInclude Include="AException.hpp" />
-    <ClInclude Include="AFile.hpp" />
-    <ClInclude Include="AFile_AString.hpp" />
-    <ClInclude Include="AFile_IOStream.hpp" />
-    <ClInclude Include="AFilename.hpp" />
-    <ClInclude Include="AFileRandomAccess.hpp" />
-    <ClInclude Include="AFragmentConstant.hpp" />
-    <ClInclude Include="AFragmentCounter.hpp" />
-    <ClInclude Include="AFragmentInterface.hpp" />
-    <ClInclude Include="AFragmentOdometer.hpp" />
-    <ClInclude Include="AFragmentSet.hpp" />
-    <ClInclude Include="AFragmentString.hpp" />
-    <ClInclude Include="AHTTPHeader.hpp" />
-    <ClInclude Include="AHTTPRequestHeader.hpp" />
-    <ClInclude Include="AHTTPResponseHeader.hpp" />
-    <ClInclude Include="AJsonEmittable.hpp" />
-    <ClInclude Include="ALock.hpp" />
-    <ClInclude Include="ALog.hpp" />
-    <ClInclude Include="AMovingAverage.hpp" />
-    <ClInclude Include="ANamePointerPair.hpp" />
-    <ClInclude Include="ANameValuePair.hpp" />
-    <ClInclude Include="ansiHelpers.hpp" />
-    <ClInclude Include="ANumber.hpp" />
-    <ClInclude Include="AOutputBuffer.hpp" />
-    <ClInclude Include="AParsable.hpp" />
-    <ClInclude Include="apiABase.hpp" />
-    <ClInclude Include="AQueryString.hpp" />
-    <ClInclude Include="ARandomAccessBuffer.hpp" />
-    <ClInclude Include="ARandomNumberGenerator.hpp" />
-    <ClInclude Include="AResultSet.hpp" />
-    <ClInclude Include="ARng_Lecuyer.hpp" />
-    <ClInclude Include="ARng_Marsaglia.hpp" />
-    <ClInclude Include="ARng_Uniform.hpp" />
-    <ClInclude Include="ARope.hpp" />
-    <ClInclude Include="ARopeDeque.hpp" />
-    <ClInclude Include="ASerializable.hpp" />
-    <ClInclude Include="AString.hpp" />
-    <ClInclude Include="AStringHashMap.hpp" />
-    <ClInclude Include="ASynchronization.hpp" />
-    <ClInclude Include="ATemplate.hpp" />
-    <ClInclude Include="ATemplateContext.hpp" />
-    <ClInclude Include="ATemplateNode.hpp" />
-    <ClInclude Include="ATemplateNodeHandler.hpp" />
-    <ClInclude Include="ATemplateNodeHandler_MODEL.hpp" />
-    <ClInclude Include="ATemplateNodeHandler_OBJECT.hpp" />
-    <ClInclude Include="ATextConverter.hpp" />
-    <ClInclude Include="ATextGenerator.hpp" />
-    <ClInclude Include="ATextOdometer.hpp" />
-    <ClInclude Include="ATime.hpp" />
-    <ClInclude Include="ATimer.hpp" />
-    <ClInclude Include="AUrl.hpp" />
-    <ClInclude Include="AWordUtility.hpp" />
-    <ClInclude Include="AXmlAttributes.hpp" />
-    <ClInclude Include="AXmlData.hpp" />
-    <ClInclude Include="AXmlDocument.hpp" />
-    <ClInclude Include="AXmlElement.hpp" />
-    <ClInclude Include="AXmlEmittable.hpp" />
-    <ClInclude Include="AXmlInstruction.hpp" />
-    <ClInclude Include="AXmlParsable.hpp" />
-    <ClInclude Include="debugFileTracer.hpp" />
-    <ClInclude Include="extABase.hpp" />
-    <ClInclude Include="macroDelete.hpp" />
-    <ClInclude Include="osDefines.hpp" />
-    <ClInclude Include="pchABase.hpp" />
-    <ClInclude Include="templateAArrayCanvas.hpp" />
-    <ClInclude Include="templateAutoPtr.hpp" />
-    <ClInclude Include="templateListOfPtrs.hpp" />
-    <ClInclude Include="templateMapOfPtrs.hpp" />
-    <ClInclude Include="templateSingletonPattern.hpp" />
-    <ClInclude Include="templatesRange.hpp" />
-    <ClInclude Include="templateVectorOfPtrs.hpp" />
-    <ClInclude Include="uTypes.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\autoexp.dat.append" />
-    <CustomBuild Include="..\usertype.dat">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying usertype.dat to MSDev home</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy "%(FullPath)" "$(DevEnvDir)"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DevEnvDir)\%(Filename)%(Extension);%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying usertype.dat to MSDev home</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy "%(FullPath)" "$(DevEnvDir)"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(DevEnvDir)\%(Filename)%(Extension);%(Outputs)</Outputs>
-    </CustomBuild>
+    <ClInclude Include="ACache_FileSystem.hpp" />
+    <ClInclude Include="ADaemon.hpp" />
+    <ClInclude Include="ADatabasePool.hpp" />
+    <ClInclude Include="AFileSystem.hpp" />
+    <ClInclude Include="AFile_Physical.hpp" />
+    <ClInclude Include="AFile_Socket.hpp" />
+    <ClInclude Include="AFile_SocketDatagram.hpp" />
+    <ClInclude Include="AINIProfile.hpp" />
+    <ClInclude Include="ALog_AFile.hpp" />
+    <ClInclude Include="apiAPlatform.hpp" />
+    <ClInclude Include="ASocketException.hpp" />
+    <ClInclude Include="ASocketLibrary.hpp" />
+    <ClInclude Include="ASocketListener.hpp" />
+    <ClInclude Include="ASync_Counter.hpp" />
+    <ClInclude Include="ASync_CriticalSection.hpp" />
+    <ClInclude Include="ASync_CriticalSectionSpinLock.hpp" />
+    <ClInclude Include="ASync_Event.hpp" />
+    <ClInclude Include="ASync_Mutex.hpp" />
+    <ClInclude Include="ASync_Semaphore.hpp" />
+    <ClInclude Include="ASystemException.hpp" />
+    <ClInclude Include="AThread.hpp" />
+    <ClInclude Include="AThreadPool.hpp" />
+    <ClInclude Include="AThread_NOP.hpp" />
+    <ClInclude Include="pchAPlatform.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

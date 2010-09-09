@@ -11,7 +11,6 @@ $Id$
 #include "AXmlEmittable.hpp"
 #include "AString.hpp"
 #include "ARope.hpp"
-#include "AStackWalker.hpp"
 #include <exception>
 #include <cassert>
 
@@ -150,27 +149,14 @@ public:
   /*!
   Default construction is of an unknown exception
   */
-#ifdef ENABLE_EXCEPTION_STACKWALK
   AException(
     const ADebugDumpable *const pObject = NULL,
     int iID = AException::Unknown,
     const char* pccFilename = "",
     int iLineNumber = 0,
     const AEmittable& extra = AConstant::ASTRING_EMPTY,
-    errno_t errornum = 0,
-    bool walkStack = false  //TODO fix
+    errno_t errornum = 0
   );
-#else
-  AException(
-    const ADebugDumpable *const pObject = NULL,
-    int iID = AException::Unknown,
-    const char* pccFilename = "",
-    int iLineNumber = 0,
-    const AEmittable& extra = AConstant::ASTRING_EMPTY,
-    errno_t errornum = 0,
-    bool walkStack = false
-  );
-#endif
 
   //! copy ctor
   AException(const AException &);
@@ -230,13 +216,6 @@ public:
   virtual void getDescription(AOutputBuffer&) const throw();
 
   /*!
-  Stack walker
-  */
-#if defined(__WINDOWS__) && defined(_DEBUG)
-  const AStackWalker& getStackWalker() const;
-#endif
-
-  /*!
   errno utility
   */
   static void getErrnoMessage(AOutputBuffer& target, errno_t errornum);
@@ -254,9 +233,6 @@ protected:
   errno_t        m_errno;
   AString        m_ExtraText;
   ARope          m_DebugDump;
-#if defined(__WINDOWS__) && defined(_DEBUG)
-  AStackWalker   m_StackWalker;
-#endif
 
 private:
   /*!

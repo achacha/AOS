@@ -35,6 +35,14 @@ public:
 
 public:
   /*!
+  Sleep time
+
+  @milliseconds to sleep
+  */
+  static void sleep(u4 milliseconds);
+
+public:
+  /*!
   By default it is initialized to the time this object was created
   Each time_t struct is time in seconds since Jan 01, 1970
     the releative offset can be used with math operators to get

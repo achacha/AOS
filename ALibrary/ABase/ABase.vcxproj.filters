@@ -26,9 +26,6 @@
     <ClCompile Include="ABitArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ACache_FileSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ACacheInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -68,16 +65,10 @@
     <ClCompile Include="ACookies.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ADaemon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ADatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ADatabase_NOP.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ADatabasePool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ADebugDumpable.cpp">
@@ -110,22 +101,10 @@
     <ClCompile Include="AFile_IOStream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AFile_Physical.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AFile_Socket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AFile_SocketDatagram.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AFilename.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AFileRandomAccess.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AFileSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AFragmentConstant.cpp">
@@ -155,9 +134,6 @@
     <ClCompile Include="AHTTPResponseHeader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AINIProfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AJsonEmittable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -165,9 +141,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ALog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ALog_AFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ALog_ScopeEvents.cpp">
@@ -221,46 +194,13 @@
     <ClCompile Include="ARopeDeque.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ASocketException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ASocketLibrary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ASocketListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AStackWalker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AStringHashMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ASync_Counter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ASync_CriticalSection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ASync_CriticalSectionSpinLock.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ASync_Event.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ASync_Mutex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ASync_Semaphore.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ASynchronization.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ASystemException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ATemplate.cpp">
@@ -288,15 +228,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ATextOdometer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AThread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AThread_NOP.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AThreadPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ATime.cpp">
@@ -352,9 +283,6 @@
     <ClInclude Include="ABitArray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ACache_FileSystem.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ACacheInterface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -391,16 +319,10 @@
     <ClInclude Include="ACookies.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ADaemon.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ADatabase.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ADatabase_NOP.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ADatabasePool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ADebugDumpable.hpp">
@@ -436,22 +358,10 @@
     <ClInclude Include="AFile_IOStream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AFile_Physical.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AFile_Socket.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AFile_SocketDatagram.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AFilename.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AFileRandomAccess.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AFileSystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AFragmentConstant.hpp">
@@ -481,9 +391,6 @@
     <ClInclude Include="AHTTPResponseHeader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AINIProfile.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AJsonEmittable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -491,9 +398,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ALog.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ALog_AFile.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AMovingAverage.hpp">
@@ -550,46 +454,13 @@
     <ClInclude Include="ASerializable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ASocketException.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ASocketLibrary.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ASocketListener.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AStackWalker.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AString.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AStringHashMap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ASync_Counter.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ASync_CriticalSection.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ASync_CriticalSectionSpinLock.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ASync_Event.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ASync_Mutex.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ASync_Semaphore.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ASynchronization.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ASystemException.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ATemplate.hpp">
@@ -617,15 +488,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ATextOdometer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AThread.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AThread_NOP.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AThreadPool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ATime.hpp">
