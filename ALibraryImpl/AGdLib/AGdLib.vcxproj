@@ -75,7 +75,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../ALibrary/ABase;./libpng;./libgd;../AZlib;./libjpeg/include;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)../../ALibrary/ABase;$(ProjectDir)../../ALibrary/APlatform;./libpng;./libgd;../AZlib;./libjpeg/include;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;AGDLIB_EXPORTS;BGDWIN32;HAVE_LIBPNG;HAVE_LIBJPEG;FT2_BUILD_LIBRARY;HAVE_LIBFREETYPE;HAVE_FT2BUILD_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -110,7 +110,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../ALibrary/ABase;./libpng;./libgd;../AZlib;./libjpeg/include64a;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)../../ALibrary/ABase;$(ProjectDir)../../ALibrary/APlatform;./libpng;./libgd;../AZlib;./libjpeg/include64a;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;AGDLIB_EXPORTS;BGDWIN32;HAVE_LIBPNG;HAVE_LIBJPEG;FT2_BUILD_LIBRARY;HAVE_LIBFREETYPE;HAVE_FT2BUILD_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -144,7 +144,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>../../ALibrary/ABase;./libpng;./libgd;../AZlib;./libjpeg/include;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)../../ALibrary/ABase;$(ProjectDir)../../ALibrary/APlatform;./libpng;./libgd;../AZlib;./libjpeg/include;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;AGDLIB_EXPORTS;BGDWIN32;HAVE_LIBPNG;HAVE_LIBJPEG;FT2_BUILD_LIBRARY;HAVE_LIBFREETYPE;HAVE_FT2BUILD_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -179,7 +179,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>../../ALibrary/ABase;./libpng;./libgd;../AZlib;./libjpeg/include64a;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)../../ALibrary/ABase;$(ProjectDir)../../ALibrary/APlatform;./libpng;./libgd;../AZlib;./libjpeg/include64a;./freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;WIN64;NDEBUG;_WINDOWS;_USRDLL;AGDLIB_EXPORTS;BGDWIN32;HAVE_LIBPNG;HAVE_LIBJPEG;FT2_BUILD_LIBRARY;HAVE_LIBFREETYPE;HAVE_FT2BUILD_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>

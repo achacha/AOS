@@ -6,6 +6,7 @@
 #endif // _MSC_VER > 1000
 
 #include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "apiACrypto.hpp"
 
 #include "AString.hpp"
