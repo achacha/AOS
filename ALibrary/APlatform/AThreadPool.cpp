@@ -152,10 +152,13 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
             AASSERT(pThis, pThis->mp_threadproc);
             AASSERT(pThis, ADebugDumpable::isPointerValid(pThis->mp_threadproc));
 
-            AThread *pthread = new AThread(pThis->mp_threadproc, true, pThis->mp_This, pThis->mp_Parameter);
+            AThread *pthread = new AThread(pThis->mp_threadproc, false, pThis->mp_This, pThis->mp_Parameter);
             pThis->m_Threads.push_back(pthread);
-            shouldSleepMore = true;                // Allow the thread to start
-
+            
+            // Allow the thread to start
+            pthread->start();
+            AThread::sleep(5);                   // For some odd reason creating too many threads in a short time confuses things
+            shouldSleepMore = true;
             
             // Increment total created 
             ++pThis->m_TotalThreadsCreated;
