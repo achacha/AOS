@@ -124,7 +124,7 @@
       <BrowseInformation>true</BrowseInformation>
       <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
       <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -141,6 +141,7 @@
       <GenerateMapFile>true</GenerateMapFile>
       <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
       <MapExports>true</MapExports>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
