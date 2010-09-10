@@ -36,10 +36,13 @@ void APLATFORM_API AThread::sleep(u4 uMilliSeconds)
 //a_ and cleans up on exit
 u4 AThread::_ThreadProc(void *pThis)
 {
+  AASSERT(NULL, pThis);
+  AASSERT(NULL, ADebugDumpable::isPointerValid(pThis));
   AThread& thread = *(AThread*)pThis;
+
   u4 uRet = thread.mp_ThreadProc(thread);
 
-  thread.mh_Thread    = NULL;
+//  thread.mh_Thread    = NULL;
   thread.mu4_ThreadId = 0x0;
 
   return uRet;
@@ -98,6 +101,8 @@ AThread::~AThread()
 
 void AThread::start()
 {
+  AASSERT(this, this);
+  AASSERT(this, ADebugDumpable::isPointerValid(this));
   if (!mp_ThreadProc)
     ATHROW(this, AException::InvalidObject);
 
@@ -120,6 +125,8 @@ void AThread::start()
   AASSERT(this, mp_ThreadProc);
   AASSERT(this, ADebugDumpable::isPointerValid(mp_ThreadProc));
   mh_Thread = ::CreateThread(NULL, 0x0, (LPTHREAD_START_ROUTINE)mp_ThreadProc, this, 0x0, &mu4_ThreadId);
+  if (!mh_Thread)
+    ATHROW_LAST_OS_ERROR(this);
 }
 
 bool AThread::stop(int tries, u4 sleepTime, bool terminateIfNotStopped)

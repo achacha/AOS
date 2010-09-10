@@ -13,7 +13,7 @@ $Id: ALog_AFile.cpp 277 2009-01-05 23:11:18Z achacha $
 #include "AXmlElement.hpp"
 #include "ATextGenerator.hpp"
 
-const u4 ALog_AFile::DEFAULT_CYCLE_SLEEP=1000;
+const u4 ALog_AFile::DEFAULT_CYCLE_SLEEP=500;
 const u4 ALog_AFile::DEFAULT_MAX_FILE_SIZE = 1024 * 1024;
 
 void ALog_AFile::debugDump(std::ostream& os, int indent) const
@@ -206,9 +206,6 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
 
       if (thread.isRun())
       {
-        while (0 == pThis->m_BuffersToWrite.size())
-          AThread::sleep(pThis->getLoggerCycleSleep());
-        
         if (pThis->m_enableLogFileRotate && pThis->mp_File)
         {
           //a_Rotate log if size exceeds maximum
@@ -219,6 +216,9 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
             pThis->m_filenameRotation.next(pPhysicalFile->useFilename().useFilename());
           }
         }
+
+        while (thread.isRun() && 0 == pThis->m_BuffersToWrite.size())
+          AThread::sleep(pThis->getLoggerCycleSleep());
       }
     }
     catch(AException& ex)

@@ -10,6 +10,7 @@ $Id: AThreadPool.hpp 320 2009-11-20 23:28:41Z achacha $
 #include "ADebugDumpable.hpp"
 #include "AThread.hpp"
 #include "ASync_CriticalSection.hpp"
+#include "ABasePtrQueue.hpp"
 
 /*!
 Ability to manage a homogenous pool of threads under one facade
@@ -18,7 +19,7 @@ class APLATFORM_API AThreadPool : public ADebugDumpable
 {
 public:
   //! List of thread pointers
-  typedef std::list<AThread *> THREADS;
+  typedef ABasePtrQueue THREADS;
 
 public:
   /*!
@@ -281,7 +282,7 @@ protected:
   // threadproc to monitor the thread pool
   static u4 _threadprocDefaultMonitor(AThread& thread);
   AThread::ATHREAD_PROC *mp_threadprocMonitor;
-  AThread m_MonitorThread;
+  AThread *mp_MonitorThread;
   size_t m_MonitorCycleSleep;
 
   // Flag if new threads are to be created
