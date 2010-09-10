@@ -13,7 +13,7 @@ $Id$
 #include "AResultSet.hpp"
 
 #define DEFAULT_HOLDER_SIZE 13
-#define DEFAULT_SLEEP_DURATION 3000
+#define DEFAULT_SLEEP_DURATION 500
 
 const AString AOSSessionManager::SESSIONID("AOSSession", 10);
 const AString AOSSessionManager::CLASS("AOSSessionManager");
@@ -100,14 +100,17 @@ AOSSessionManager::~AOSSessionManager()
 {
   //a_Stop manager thread first
   m_Thread.setRun(false);
-  int wait = 3;
+  int wait = 10;
   while (m_Thread.isRunning() && wait)
   {
     --wait;
     AThread::sleep(DEFAULT_SLEEP_DURATION);
   }
   if (m_Thread.isRunning())
+  {
+    m_Services.useLog().add(ASWNL("AOSSessionManager thread did not exit gracefully, terminating."), ALog::EVENT_WARNING);
     m_Thread.terminate();  //a_It must stop before cleanup
+  }
 
   //a_Cleanup sessions
   for (size_t i=0; i<m_HolderSize; ++i)

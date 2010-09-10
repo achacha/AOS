@@ -182,6 +182,9 @@ int main(int argc, char **argv)
         return -1;
       }
 
+      // Associate queue for the listener
+      AOSRequestListener listener(*pservices, AOSContextManager::STATE_PRE_EXECUTE);
+
       //
       // Create and configure the queues
       //
@@ -190,34 +193,34 @@ int main(int argc, char **argv)
         pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/is-available/queues", 2)
       ), true);
       
-      AAutoPtr<AOSContextQueueThreadPool> pQueueError(new AOSContextQueue_ErrorExecutor(
+      AAutoPtr<AOSContextQueueThreadPool_RoundRobinSwarm> pQueueError(new AOSContextQueue_ErrorExecutor(
         *pservices,
         pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/threads", 16), 
         pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/error-executor/queues", 4)
       ), true);
-      int sleepDelay = pservices->useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+      int sleepDelay = pservices->useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/error-executor/sleep-delay"), AOSContextQueueThreadPool_RoundRobinSwarm::DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueError->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for error-executor/sleep-delay is invalid, using default", NULL);
 
-      AAutoPtr<AOSContextQueueThreadPool> pQueuePre(new AOSContextQueue_PreExecutor(
+      AAutoPtr<AOSContextQueueThreadPool_RoundRobinSwarm> pQueuePre(new AOSContextQueue_PreExecutor(
         *pservices, 
         pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/threads", 16), 
         pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/pre-executor/queues", 4)
       ), true);
-      sleepDelay = pservices->useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/pre-executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+      sleepDelay = pservices->useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/pre-executor/sleep-delay"), AOSContextQueueThreadPool_RoundRobinSwarm::DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueuePre->setSleepDelay(sleepDelay);
       else
         AOS_DEBUGTRACE("Sleep delay for pre-executor/sleep-delay is invalid, using default", NULL);
 
-      AAutoPtr<AOSContextQueueThreadPool> pQueueExecutor(new AOSContextQueue_Executor(
+      AAutoPtr<AOSContextQueueThreadPool_RoundRobinSwarm> pQueueExecutor(new AOSContextQueue_Executor(
         *pservices, 
         pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/threads", 64), 
         pservices->useConfiguration().useConfigRoot().getSize_t("/config/server/context-queues/executor/queues", 3)
       ), true);
-      sleepDelay = pservices->useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/executor/sleep-delay"), DEFAULT_SLEEP_DELAY);
+      sleepDelay = pservices->useConfiguration().useConfigRoot().getInt(ASWNL("/config/server/context-queues/executor/sleep-delay"), AOSContextQueueThreadPool_RoundRobinSwarm::DEFAULT_SLEEP_DELAY);
       if (sleepDelay > 0)
         pQueueExecutor->setSleepDelay(sleepDelay);
       else
@@ -235,8 +238,10 @@ int main(int argc, char **argv)
       pQueueExecutor.setOwnership(false);
       pQueueError.setOwnership(false);
 
-      // Associate queue for the listener
-      AOSRequestListener listener(*pservices, AOSContextManager::STATE_PRE_EXECUTE);
+      //
+      // Start listener
+      //
+      listener.startListening();
 
       //
       // Start all the queues (listener is the last thing to start, see below)
@@ -246,11 +251,14 @@ int main(int argc, char **argv)
       pQueueExecutor->start();
       pQueueError->start();
 
+      // Wait for all queues to be ready
+      while (!pservices->useContextManager().isAllQueuesReady())
+        AThread::sleep(10);
 
       //
-      // Start listener
+      // Start accepting and processing connections
       //
-      listener.startListening();
+      listener.startAccepting();
 
       //
       // Start admin listener

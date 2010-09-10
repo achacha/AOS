@@ -18,14 +18,20 @@ class AOS_BASE_API AOSContextQueueInterface : public AOSAdminInterface
 public:
   /*!
   ctor
+
+  @param services reference to AOSServices object
   */
   AOSContextQueueInterface(AOSServices& services);
+  
+  //! dtor
   virtual ~AOSContextQueueInterface();
     
   /*!
   Externally add AOSContext* synchronously to this queue for processing
+
+  @param p AOSContext to add
   */
-  virtual void add(AOSContext *) = 0;
+  virtual void add(AOSContext *p) = 0;
 
   /*!
   Start the queue
@@ -36,6 +42,13 @@ public:
   Stop the queue
   */
   virtual void stop() = 0;
+
+  /*!
+  Check if queue is running
+
+  @return true if all queues/threads are running
+  */
+  virtual bool isRunning() = 0;
 
   /*!
   AOSAdminInterface

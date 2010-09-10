@@ -25,7 +25,7 @@ public:
   /*!
   Create HTTP and HTTPS listeners
   firstQueue - first queue to receive AOSContext* once accepted (not OWNED by this object)
-  **/
+  */
   AOSRequestListener(
     AOSServices&, 
     AOSContextManager::ContextQueueState firstQueue
@@ -33,15 +33,28 @@ public:
   ~AOSRequestListener();
   
   /*!
-  Start listener threads
-  **/
+  Start listening on the socket but not processing requests
+  */
   void startListening();
-  void stopListening();
+  
+  /*!
+  Start accepting and processing requests
+  */
+  void startAccepting();
+  
+  /*!
+  Stop processing and listening
+  */
+  void stop();
+  
+  /*!
+  Check if processing requests
+  */
   bool isRunning() const;
 
   /*!
   AOSAdminInterface
-  **/
+  */
   virtual void adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request);
   virtual const AString& getClass() const;
 
@@ -60,7 +73,13 @@ private:
     const AFilename& getCertificateFilename() const;
     const AFilename& getPrivateKeyFilename() const;
 
+    // If socket should start processing
+    void setRun(bool b);
+    bool isRun() const;
+
   private:
+    bool m_isRun;
+
     AFilename m_cert;
     AFilename m_pkey;
     int m_port;
@@ -69,6 +88,10 @@ private:
     LISTEN_DATA() {}
   };
   
+  // Listen data for each socket
+  LISTEN_DATA *mp_HttpData;
+  LISTEN_DATA *mp_HttpsData;
+
   //a_Queues
   ASync_CriticalSection m_QueueAdd;
   ASync_CriticalSection m_QueueRemove;

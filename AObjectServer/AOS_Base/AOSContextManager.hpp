@@ -44,6 +44,11 @@ public:
   virtual ~AOSContextManager();
   
   /*!
+  Returns true if all queues are ready and running
+  */
+  bool isAllQueuesReady();
+
+  /*!
   Advance context to next queue state
 
   @param state to change into

@@ -223,7 +223,6 @@
     <ClCompile Include="AOSContextQueue_IsAvailable.cpp" />
     <ClCompile Include="AOSContextQueue_PreExecutor.cpp" />
     <ClCompile Include="AOSContextQueueInterface.cpp" />
-    <ClCompile Include="AOSContextQueueThreadPool.cpp" />
     <ClCompile Include="AOSContextQueueThreadPool_RoundRobinSwarm.cpp" />
     <ClCompile Include="AOSContextUtils.cpp" />
     <ClCompile Include="AOSController.cpp" />
@@ -278,7 +277,6 @@
     <ClInclude Include="AOSContextQueue_IsAvailable.hpp" />
     <ClInclude Include="AOSContextQueue_PreExecutor.hpp" />
     <ClInclude Include="AOSContextQueueInterface.hpp" />
-    <ClInclude Include="AOSContextQueueThreadPool.hpp" />
     <ClInclude Include="AOSContextQueueThreadPool_RoundRobinSwarm.hpp" />
     <ClInclude Include="AOSContextUtils.hpp" />
     <ClInclude Include="AOSController.hpp" />

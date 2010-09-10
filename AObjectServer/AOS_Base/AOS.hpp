@@ -11,6 +11,7 @@ $Id$
 #define INCLUDED__AOS_HPP__
 
 #include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "apiALuaEmbed.hpp"
 #include "apiAOS_Base.hpp"
 

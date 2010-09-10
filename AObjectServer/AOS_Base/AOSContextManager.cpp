@@ -563,3 +563,13 @@ void AOSContextManager::changeQueueState(AOSContextManager::ContextQueueState st
   }
   *ppContext = NULL;
 }
+
+bool AOSContextManager::isAllQueuesReady()
+{
+  bool bRunning = m_Queues[STATE_PRE_EXECUTE]->isRunning();
+  bRunning     &= m_Queues[STATE_EXECUTE]->isRunning();
+  bRunning     &= m_Queues[STATE_IS_AVAILABLE]->isRunning();
+  bRunning     &= m_Queues[STATE_ERROR]->isRunning();
+
+  return bRunning;
+}

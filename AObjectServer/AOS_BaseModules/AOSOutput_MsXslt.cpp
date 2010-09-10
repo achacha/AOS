@@ -85,7 +85,7 @@ AOSOutput_MsXslt::~AOSOutput_MsXslt()
   DocContainer::iterator it = m_Dox.begin();
   while (it != m_Dox.end())
   {
-    ((MSXML2::IXMLDOMDocument3Ptr *)((*it).second).m_ComPtr)->Release();
+//a_This is now being done by MS code: ((MSXML2::IXMLDOMDocument3Ptr *)((*it).second).m_ComPtr)->Release();
     delete (*it).second.m_ComPtr;
     ++it;
   }

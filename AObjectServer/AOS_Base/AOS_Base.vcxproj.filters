@@ -58,9 +58,6 @@
     <ClCompile Include="AOSContextQueueInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AOSContextQueueThreadPool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AOSContextQueueThreadPool_RoundRobinSwarm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -202,9 +199,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AOSContextQueueInterface.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AOSContextQueueThreadPool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AOSContextQueueThreadPool_RoundRobinSwarm.hpp">

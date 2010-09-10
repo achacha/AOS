@@ -19,7 +19,8 @@ const AString& AOSRequestListener::getClass() const
 }
 
 AOSRequestListener::LISTEN_DATA::LISTEN_DATA(AOSServices& services, const AString& configpath) : 
-  m_port(-1)
+  m_port(-1),
+  m_isRun(false)
 {
   AXmlElement *pBase = services.useConfiguration().useConfigRoot().findElement(configpath);
   if (!pBase)
@@ -41,6 +42,16 @@ AOSRequestListener::LISTEN_DATA::LISTEN_DATA(AOSServices& services, const AStrin
     m_pkey.set(services.useConfiguration().getBaseDir());
     m_pkey.join(str, false);
   }
+}
+
+void AOSRequestListener::LISTEN_DATA::setRun(bool b)
+{
+  m_isRun = b;
+}
+
+bool AOSRequestListener::LISTEN_DATA::isRun() const
+{
+  return m_isRun;
 }
 
 int AOSRequestListener::LISTEN_DATA::getPort() const
@@ -81,13 +92,17 @@ AOSRequestListener::AOSRequestListener(
   mthread_Listener(AOSRequestListener::threadprocListener),
   mthread_SecureListener(AOSRequestListener::threadprocSecureListener),
   m_Services(services),
-  m_FirstQueue(firstQueue)
+  m_FirstQueue(firstQueue),
+  mp_HttpData(NULL),
+  mp_HttpsData(NULL)
 {
   adminRegisterObject(m_Services.useAdminRegistry());
 }
 
 AOSRequestListener::~AOSRequestListener()
 {
+  delete mp_HttpData;
+  delete mp_HttpsData;
 }
 
 void AOSRequestListener::startListening()
@@ -99,13 +114,14 @@ void AOSRequestListener::startListening()
   {
     if (m_Services.useConfiguration().useConfigRoot().exists(ASW("/config/server/listen/http",26)))
     {
-      LISTEN_DATA *p = new LISTEN_DATA(m_Services, ASW("/config/server/listen/http",26));
-      if (p->getPort() > 0)
+      delete mp_HttpData;
+      mp_HttpData = new LISTEN_DATA(m_Services, ASW("/config/server/listen/http",26));
+      if (mp_HttpData->getPort() > 0)
       {
-        if (!ASocketLibrary::canBindToPort(p->getPort()))
+        if (!ASocketLibrary::canBindToPort(mp_HttpData->getPort()))
         {
           AString str("Unable to bind to HTTP port ");
-          str.append(AString::fromInt(p->getPort()));
+          str.append(AString::fromInt(mp_HttpData->getPort()));
           str.append(", already in use.");
           AOS_DEBUGTRACE(str.c_str(), NULL);
           ATHROW_EX(this, ASocketException::UnableToOpen, str);
@@ -113,14 +129,14 @@ void AOSRequestListener::startListening()
         else
         {
           mthread_Listener.setThis(this);
-          mthread_Listener.setParameter(p);
+          mthread_Listener.setParameter(mp_HttpData);
           mthread_Listener.start();
         }
       }
       else
       {
         AString str("HTTP invalid port specified:");
-        str.append(AString::fromInt(p->getPort()));
+        str.append(AString::fromInt(mp_HttpData->getPort()));
         AOS_DEBUGTRACE(str.c_str(), NULL);
         ATHROW_EX(this, ASocketException::UnableToOpen, str);
       }
@@ -131,35 +147,37 @@ void AOSRequestListener::startListening()
   {
     if (m_Services.useConfiguration().useConfigRoot().exists(ASW("/config/server/listen/https",27)))
     {
-      LISTEN_DATA *p = new LISTEN_DATA(m_Services, ASW("/config/server/listen/https",27));
-      if (p->getPort() > 0)
+      AASSERT(this, !mp_HttpsData);
+      delete mp_HttpsData;
+      mp_HttpsData = new LISTEN_DATA(m_Services, ASW("/config/server/listen/https",27));
+      if (mp_HttpsData->getPort() > 0)
       {
         bool ready = true;
-        if (p->getCertificateFilename().getFilename().isEmpty())
+        if (mp_HttpsData->getCertificateFilename().getFilename().isEmpty())
         {
           ready = false;
           AString str("AObjectServer HTTPS on port ");
-          str.append(AString::fromInt(p->getPort()));
+          str.append(AString::fromInt(mp_HttpsData->getPort()));
           str.append(" missing cert element, secure socket not listening.");
           AOS_DEBUGTRACE(str.c_str(), NULL);
           ATHROW_EX(this, ASocketException::UnableToOpen, str);
         }
         
-        if (p->getPrivateKeyFilename().getFilename().isEmpty())
+        if (mp_HttpsData->getPrivateKeyFilename().getFilename().isEmpty())
         {
           ready = false;
           AString str("AObjectServer HTTPS on port ");
-          str.append(AString::fromInt(p->getPort()));
+          str.append(AString::fromInt(mp_HttpsData->getPort()));
           str.append(" missing pkey element, secure socket not listening.");
           AOS_DEBUGTRACE(str.c_str(), NULL);
           ATHROW_EX(this, ASocketException::UnableToOpen, str);
         }
 
-        if (!ASocketLibrary::canBindToPort(p->getPort()))
+        if (!ASocketLibrary::canBindToPort(mp_HttpsData->getPort()))
         {
           ready = false;
           AString str("Unable to bind to https port ");
-          str.append(AString::fromInt(p->getPort()));
+          str.append(AString::fromInt(mp_HttpsData->getPort()));
           str.append(", already in use.");
           AOS_DEBUGTRACE(str.c_str(), NULL);
           ATHROW_EX(this, ASocketException::UnableToOpen, str);
@@ -168,14 +186,14 @@ void AOSRequestListener::startListening()
         if (ready)
         {
           mthread_SecureListener.setThis(this);
-          mthread_SecureListener.setParameter(p);
+          mthread_SecureListener.setParameter(mp_HttpsData);
           mthread_SecureListener.start();
         }
       }
       else
       {
         AString str("HTTPS invalid port specified:");
-        str.append(AString::fromInt(p->getPort()));
+        str.append(AString::fromInt(mp_HttpsData->getPort()));
         AOS_DEBUGTRACE(str.c_str(), NULL);
         ATHROW_EX(this, ASocketException::UnableToOpen, str);
       }
@@ -183,8 +201,16 @@ void AOSRequestListener::startListening()
   }
 }
 
-void AOSRequestListener::stopListening()
+void AOSRequestListener::startAccepting()
 {
+  mp_HttpData->setRun(true);
+  mp_HttpsData->setRun(true);
+}
+
+void AOSRequestListener::stop()
+{
+  mp_HttpData->setRun(false);
+  mp_HttpsData->setRun(false);
   mthread_Listener.setRun(false);
   mthread_SecureListener.setRun(false);
 }
@@ -192,33 +218,39 @@ void AOSRequestListener::stopListening()
 u4 AOSRequestListener::threadprocListener(AThread& thread)
 {
   AOSRequestListener *pThis = dynamic_cast<AOSRequestListener *>(thread.getThis());
-  AAutoPtr<LISTEN_DATA> pData(dynamic_cast<LISTEN_DATA *>(thread.getParameter()), true);
+  LISTEN_DATA* pData = dynamic_cast<LISTEN_DATA *>(thread.getParameter());
 
   AASSERT(NULL, pThis);
-  AASSERT(NULL, pData.get());
+  AASSERT(NULL, pData);
 
   bool httpBlockingMode = pThis->m_Services.useConfiguration().useConfigRoot().getBool(ASW("/config/server/listen/http/blocking",35), false);
   int WAIT_FOR_CONNECTION_DELAY = pThis->m_Services.useConfiguration().useConfigRoot().getInt(ASW("/config/server/listen/http/listener-sleep",41), 50);
   AASSERT(pThis, WAIT_FOR_CONNECTION_DELAY > 0);
 
+  ASocketListener listener(pData->getPort(), pData->getHost());
+  listener.open();
+
+  pThis->m_Services.useLog().add(ARope("AObjectServer waiting to start.  HTTP listening on ")+pData->getHost()+ASW(":",1)+AString::fromInt(pData->getPort()));
+  {
+    AString str("AObjectServer waiting to start, HTTP listening on ");
+    str.append(listener.getSocketInfo().m_address);
+    str.append(':');
+    str.append(AString::fromInt(listener.getSocketInfo().m_port));
+    str.append(" aos_root: ");
+    str.append(pThis->m_Services.useConfiguration().getBaseDir());
+    AOS_DEBUGTRACE(str.c_str(), NULL);
+  }
+
+  // Wait for the queues to be ready before starting
+  while(!pData->isRun()) AThread::sleep(20);
+
+  pThis->m_Services.useLog().add(ASWNL("AObjectServer HTTP started."));
+  AOS_DEBUGTRACE("AObjectServer HTTP started.", NULL);
+
   thread.setRunning(true);
   AOSContext *pContext = NULL;
   try
   {
-    ASocketListener listener(pData->getPort(), pData->getHost());
-    listener.open();
-
-    pThis->m_Services.useLog().add(ARope("AObjectServer started.  HTTP listening on ")+pData->getHost()+ASW(":",1)+AString::fromInt(pData->getPort()));
-    {
-      AString str("AObjectServer HTTP listening on ");
-      str.append(listener.getSocketInfo().m_address);
-      str.append(':');
-      str.append(AString::fromInt(listener.getSocketInfo().m_port));
-      str.append(" aos_root: ");
-      str.append(pThis->m_Services.useConfiguration().getBaseDir());
-      AOS_DEBUGTRACE(str.c_str(), NULL);
-    }
-
     while(thread.isRun())
     {
       if (listener.isAcceptWaiting())
@@ -285,9 +317,10 @@ u4 AOSRequestListener::threadprocListener(AThread& thread)
 u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
 {
   AOSRequestListener *pThis = dynamic_cast<AOSRequestListener *>(thread.getThis());
-  AAutoPtr<LISTEN_DATA> pData(dynamic_cast<LISTEN_DATA *>(thread.getParameter()), true);
+  LISTEN_DATA *pData = dynamic_cast<LISTEN_DATA *>(thread.getParameter());
+  
   AASSERT(NULL, pThis);
-  AASSERT(NULL, pData.get());
+  AASSERT(NULL, pData);
 
   int WAIT_FOR_CONNECTION_DELAY = pThis->m_Services.useConfiguration().useConfigRoot().getInt(ASW("/config/server/listen/https/listener-sleep",42), 50);
   AASSERT(pThis, WAIT_FOR_CONNECTION_DELAY > 0);
@@ -303,9 +336,9 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
     );
   listener.open();
 
-  pThis->m_Services.useLog().add(ARope("AObjectServer started.  HTTPS listening on ")+pData->getHost()+ASW(":",1)+AString::fromInt(pData->getPort()));
+  pThis->m_Services.useLog().add(ARope("AObjectServer waiting to start.  HTTPS listening on ")+pData->getHost()+ASW(":",1)+AString::fromInt(pData->getPort()));
   {
-    AString str("AObjectServer HTTPS listening on ");
+    AString str("AObjectServer waiting to start, HTTPS listening on ");
     str.append(listener.getSocketInfo().m_address);
     str.append(':');
     str.append(AString::fromInt(listener.getSocketInfo().m_port));
@@ -313,6 +346,12 @@ u4 AOSRequestListener::threadprocSecureListener(AThread& thread)
     str.append(pThis->m_Services.useConfiguration().getBaseDir());
     AOS_DEBUGTRACE(str.c_str(), NULL);
   }
+
+  // Wait for the queues to be ready before starting
+  while(!pData->isRun()) AThread::sleep(20);
+
+  pThis->m_Services.useLog().add(ASWNL("AObjectServer HTTPS started."));
+  AOS_DEBUGTRACE("AObjectServer HTTPS started.", NULL);
 
   thread.setRunning(true);
   AOSContext *pContext = NULL;

@@ -34,6 +34,13 @@ public:
   virtual void stop();
 
   /*!
+  Check if queue is running
+
+  @return true if all queues/threads are running
+  */
+  virtual bool isRunning();
+
+  /*!
   Externally add AOSContext* synchronously to this queue for processing
   **/
   virtual void add(AOSContext *);

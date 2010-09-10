@@ -4,6 +4,7 @@ Written by Alex Chachanashvili
 $Id$
 */
 #include "pchAOS_Base.hpp"
+#include "ASync_CriticalSection.hpp"
 
 ASync_CriticalSection g_DebugTraceSync; 
 

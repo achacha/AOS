@@ -199,6 +199,16 @@ void AOSContextQueue_IsAvailable::stop()
   }
 }
 
+bool AOSContextQueue_IsAvailable::isRunning()
+{
+  for (size_t i=0; i<m_Queues.size(); ++i)
+  {
+    if (!(m_Queues.at(i)->pthread->isRunning()))
+      return false;
+  }
+  return true;
+}
+
 u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
 {
   AOSContextQueue_IsAvailable::QueueWithThread *pThis = dynamic_cast<AOSContextQueue_IsAvailable::QueueWithThread *>(thread.getThis());

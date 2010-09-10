@@ -8,6 +8,9 @@ $Id$
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
 
+//a_Delay delay for loop sleep in milliseconds
+const int AOSContextQueueThreadPool_RoundRobinSwarm::DEFAULT_SLEEP_DELAY(5);
+
 const AString AOSContextQueueThreadPool_RoundRobinSwarm::CLASS("AOSContextQueueThreadPool_RoundRobinSwarm");
 
 const AString& AOSContextQueueThreadPool_RoundRobinSwarm::getClass() const
@@ -17,7 +20,31 @@ const AString& AOSContextQueueThreadPool_RoundRobinSwarm::getClass() const
 
 void AOSContextQueueThreadPool_RoundRobinSwarm::adminEmitXml(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSContextQueueThreadPool::adminEmitXml(eBase, request);
+  AOSContextQueueInterface::adminEmitXml(eBase, request);
+
+  adminAddProperty(
+    eBase,
+    ASW("ThreadPool.threadCount",22),
+    AString::fromSize_t(m_ThreadPool.getThreadCount())
+  );
+
+  adminAddPropertyWithAction(
+    eBase, 
+    ASW("ThreadPool.sleepDelay",21),
+    AString::fromInt(m_SleepDelay),
+    ASW("Update",6), 
+    ASW("Sleep delay",11),
+    ASW("newSleepDelay",13)
+  );
+
+  adminAddPropertyWithAction(
+    eBase, 
+    ASW("ThreadPool.threadCount",22),
+    AString::fromSize_t(m_ThreadPool.getThreadCount()),
+    ASW("Update",6), 
+    ASW("Thread count",12),
+    ASW("newThreadCount",14)
+  );
 
   adminAddProperty(
     eBase,
@@ -55,7 +82,7 @@ void AOSContextQueueThreadPool_RoundRobinSwarm::adminEmitXml(AXmlElement& eBase,
 
 void AOSContextQueueThreadPool_RoundRobinSwarm::adminProcessAction(AXmlElement& eBase, const AHTTPRequestHeader& request)
 {
-  AOSContextQueueThreadPool::adminProcessAction(eBase, request);
+  AOSContextQueueInterface::adminProcessAction(eBase, request);
 }
 
 AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinSwarm(
@@ -63,8 +90,10 @@ AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinS
   size_t threadCount,              // = 16
   size_t queueCount                // = 4
 ) :
+  m_ThreadPool(AOSContextQueueThreadPool_RoundRobinSwarm::_threadprocWrapperRoundRobbin, threadCount),
+  AOSContextQueueInterface(services),
+  m_SleepDelay(DEFAULT_SLEEP_DELAY),
   m_queueCount(queueCount),
-  AOSContextQueueThreadPool(services, threadCount),
   m_currentWriteQueue(0),
   m_currentReadQueue(((long)queueCount)-1)
 {
@@ -76,6 +105,15 @@ AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinS
     m_Queues[i] = new ABasePtrQueue(new ASync_CriticalSection());
     m_AddCounters[i] = 0;
   }
+}
+
+u4 AOSContextQueueThreadPool_RoundRobinSwarm::_threadprocWrapperRoundRobbin(AThread& thread)
+{
+  AOSContextQueueThreadPool_RoundRobinSwarm *pThis = dynamic_cast<AOSContextQueueThreadPool_RoundRobinSwarm *>(thread.getThis());
+  AASSERT(pThis, pThis);
+  AASSERT(pThis, ADebugDumpable::isPointerValid(pThis));
+
+  return pThis->_threadproc(thread);
 }
 
 AOSContextQueueThreadPool_RoundRobinSwarm::~AOSContextQueueThreadPool_RoundRobinSwarm()
@@ -127,4 +165,19 @@ AOSContext *AOSContextQueueThreadPool_RoundRobinSwarm::_nextContext()
   }
 
   return pContext;
+}
+
+void AOSContextQueueThreadPool_RoundRobinSwarm::setSleepDelay(int sleepDelay)
+{
+  m_SleepDelay = sleepDelay;
+}
+
+int AOSContextQueueThreadPool_RoundRobinSwarm::getSleepDelay() const
+{
+  return m_SleepDelay;
+}
+
+bool AOSContextQueueThreadPool_RoundRobinSwarm::isRunning()
+{
+  return m_ThreadPool.isRunning();
 }

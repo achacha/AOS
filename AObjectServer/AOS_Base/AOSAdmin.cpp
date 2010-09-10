@@ -348,7 +348,7 @@ void AOSAdmin::_shutdown(
 
   AOS_DEBUGTRACE("Trying to stop AOSRequestListener...", NULL);
   AASSERT(NULL, pListener);
-  pListener->stopListening();
+  pListener->stop();
   AOS_DEBUGTRACE("AOSRequestListener stopped.", NULL);
   elem.addElement(ASWNL("AOSRequestListener"));
 

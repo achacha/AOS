@@ -27,6 +27,7 @@ class ALog;
 
 //a_Include api headers for other libararies which then import the appropriate LIBs
 #include <apiABase.hpp>
+#include <apiAPlatform.hpp>
 
 class ASync_CriticalSection;
 AOS_BASE_API extern ASync_CriticalSection g_DebugTraceSync; 
