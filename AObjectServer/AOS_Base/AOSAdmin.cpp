@@ -352,14 +352,6 @@ void AOSAdmin::_shutdown(
   AOS_DEBUGTRACE("AOSRequestListener stopped.", NULL);
   elem.addElement(ASWNL("AOSRequestListener"));
 
-  AOS_DEBUGTRACE("Signaling queue threads to start existing worker threads...", NULL);
-  AASSERT(NULL, pcqPreExecutor);
-  pcqPreExecutor->useThreadPool().setRunStateOnThreads(false);
-  AASSERT(NULL, pcqExecutor);
-  pcqExecutor->useThreadPool().setRunStateOnThreads(false);
-  AASSERT(NULL, pcqErrorExecutor);
-  pcqErrorExecutor->useThreadPool().setRunStateOnThreads(false);
-
   AOS_DEBUGTRACE("Trying to stop AOSRequestQueue_IsAvailable...", NULL);
   AASSERT(NULL, pcqIsAvailable);
   pcqIsAvailable->stop();

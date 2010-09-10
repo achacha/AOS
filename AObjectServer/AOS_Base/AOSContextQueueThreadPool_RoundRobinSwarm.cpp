@@ -7,6 +7,7 @@ $Id$
 #include "AOSContextQueueThreadPool_RoundRobinSwarm.hpp"
 #include "AOSContext.hpp"
 #include "AOSServices.hpp"
+#include <typeinfo>
 
 //a_Delay delay for loop sleep in milliseconds
 const int AOSContextQueueThreadPool_RoundRobinSwarm::DEFAULT_SLEEP_DELAY(5);
@@ -109,6 +110,8 @@ AOSContextQueueThreadPool_RoundRobinSwarm::AOSContextQueueThreadPool_RoundRobinS
 
 u4 AOSContextQueueThreadPool_RoundRobinSwarm::_threadprocWrapperRoundRobbin(AThread& thread)
 {
+  AASSERT(NULL, thread.getThis());
+  AASSERT(NULL, ADebugDumpable::isPointerValid(thread.getThis()));
   AOSContextQueueThreadPool_RoundRobinSwarm *pThis = dynamic_cast<AOSContextQueueThreadPool_RoundRobinSwarm *>(thread.getThis());
   AASSERT(pThis, pThis);
   AASSERT(pThis, ADebugDumpable::isPointerValid(pThis));
