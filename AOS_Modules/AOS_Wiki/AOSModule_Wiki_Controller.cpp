@@ -45,7 +45,7 @@ AOSContext::ReturnCode AOSModule_Wiki_Controller::execute(AOSContext& context, c
   {
     //a_View mode, add edit path/filename
     AUrl editUrl(context.useRequestUrl());
-    editUrl.useParameterPairs().insert(ASW("wiki.edit",9), ASW("1",1));
+    editUrl.useParameterPairs().add(ASW("wiki.edit",9), ASW("1",1));
     context.useModel().overwriteElement(ASW("wiki/edit-url",13)).addData(editUrl.getPathFileAndQueryString(), AXmlElement::ENC_CDATADIRECT);
   }
 
@@ -75,7 +75,7 @@ AOSContext::ReturnCode AOSModule_Wiki_Controller::execute(AOSContext& context, c
     //a_Add new parameter with path
   AString strParam;
   strPathAndFilename.peek(strParam, startOfBase+strBasePath.getSize());
-  context.useRequestUrl().useParameterPairs().insert(ASW("wikipath",8), strParam);
+  context.useRequestUrl().useParameterPairs().add(ASW("wikipath",8), strParam);
 
   return AOSContext::RETURN_OK;
 }
