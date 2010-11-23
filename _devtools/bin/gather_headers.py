@@ -46,12 +46,19 @@ if (context.win64 == 1 or context.linux64 == 1):
   if (not os.path.exists(context.TARGET_ALIBRARY_INCLUDE_PATH_64)):
     os.makedirs(context.TARGET_ALIBRARY_INCLUDE_PATH_64);
 
-# ALibrary include
+# ALibrary/ABase include
 print("|----------HEADERS: ALibrary/ABase-------------------------|");
 if (context.win32 == 1 or context.linux32 == 1):
   context.syncPathFiles(os.path.join(context.BASE_ALIBRARY_PATH, "ABase"), "*.h*", context.TARGET_ALIBRARY_INCLUDE_PATH_32);
 if (context.win64 == 1 or context.linux64 == 1):
   context.syncPathFiles(os.path.join(context.BASE_ALIBRARY_PATH, "ABase"), "*.h*", context.TARGET_ALIBRARY_INCLUDE_PATH_64);
+
+# ALibrary/APlatform include
+print("|----------HEADERS: ALibrary/APlatform---------------------|");
+if (context.win32 == 1 or context.linux32 == 1):
+  context.syncPathFiles(os.path.join(context.BASE_ALIBRARY_PATH, "APlatform"), "*.h*", context.TARGET_ALIBRARY_INCLUDE_PATH_32);
+if (context.win64 == 1 or context.linux64 == 1):
+  context.syncPathFiles(os.path.join(context.BASE_ALIBRARY_PATH, "APlatform"), "*.h*", context.TARGET_ALIBRARY_INCLUDE_PATH_64);
 
 # ADatabase_MySQL
 print("|----------HEADERS: ALibraryImpl/ADatabase_MySQL-----------|");

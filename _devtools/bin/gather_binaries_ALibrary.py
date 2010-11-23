@@ -21,6 +21,8 @@ if (context.targetDoesNotExist()):
 # ALibrary include
 print("|========================== ABase sync binaries ==============================|");
 context.syncLibrary("ABase");
+print("|========================== ABase sync binaries ==============================|");
+context.syncLibrary("APlatform");
 print("|========================== ACrypt sync binaries =============================|");
 context.syncLibrary("ACrypto");
 print("|========================== ADatabase_MySQL sync binaries ====================|");
