@@ -103,12 +103,12 @@ public:
   void set(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);
 
   /*!
-  Insert name/value pair
+  Add name/value pair
 
   @param name of pair
   @param value of pair
   */
-  void insert(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);
+  void add(const AString& name, const AString &value = AConstant::ASTRING_EMPTY);
   
   /*!
   Remove name and all of its values

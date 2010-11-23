@@ -74,9 +74,9 @@ AString ASocketLibrary::getLocalHostName()
   return name;
 }
 
-VECTOR_AString ASocketLibrary::getHostAddresses(const AString &hostName)
+VECTOR_AString *ASocketLibrary::getHostAddresses(const AString &hostName)
 {
-  VECTOR_AString result;
+  VECTOR_AString *result = new VECTOR_AString();
 
 #if defined(__WINDOWS__)
   hostent* pHostInfo = gethostbyname(hostName.c_str());
@@ -85,14 +85,15 @@ VECTOR_AString ASocketLibrary::getHostAddresses(const AString &hostName)
 #endif
 
   for (char**p=pHostInfo->h_addr_list; *p; p++)
-    result.push_back(inet_ntoa(*((in_addr*)*p)));
+    result->push_back(inet_ntoa(*((in_addr*)*p)));
 
   return result;
 }
 
 AString ASocketLibrary::getDefaultIp() 
 {
-  return *getHostAddresses(getLocalHostName()).begin();
+  AAutoPtr<VECTOR_AString> addresses(getHostAddresses(getLocalHostName()), true); 
+  return *(addresses->begin());
 }
 
 AString ASocketLibrary::getIPFromAddress(const AString &address)
@@ -103,11 +104,11 @@ AString ASocketLibrary::getIPFromAddress(const AString &address)
   {
     // address doesn't contain a valid IP number, perhaps it's a hostname
     // get the first address found for it
-    VECTOR_AString IPlist = getHostAddresses(address);
-    if( IPlist.empty() )
+    AAutoPtr<VECTOR_AString> IPlist(getHostAddresses(address), true);
+    if( IPlist->empty() )
       ATHROW_LAST_SOCKET_ERROR(NULL);
 
-    const AString& aIP = IPlist.front();
+    const AString& aIP = IPlist->front();
     addr = inet_addr(aIP.c_str());
     if( addr == INADDR_NONE )
     {

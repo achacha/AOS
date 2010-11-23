@@ -211,7 +211,7 @@ void AQueryString::set(const AString& name, const AString &value)
   m_Pairs.insert(MMAP_AString_NVPair::value_type(str, ANameValuePair(str, value, ANameValuePair::CGI)));
 }
 
-void AQueryString::insert(const AString &name, const AString &value)
+void AQueryString::add(const AString &name, const AString &value)
 {
   AString str(name);
   str.makeLower();

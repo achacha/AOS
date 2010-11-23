@@ -175,9 +175,9 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
   AASSERT(NULL, pThis->mp_File);
 
   thread.setRunning(true);
-  while(thread.isRun())
+  try
   {
-    try
+    while(thread.isRun())
     {
       if (pThis->m_BuffersToWrite.size() > 0)
       {
@@ -200,12 +200,8 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
             break;
           }
         }
-
         pThis->mp_File->close();
-      }
 
-      if (thread.isRun())
-      {
         if (pThis->m_enableLogFileRotate && pThis->mp_File)
         {
           //a_Rotate log if size exceeds maximum
@@ -216,18 +212,18 @@ u4 ALog_AFile::threadprocLogger(AThread& thread)
             pThis->m_filenameRotation.next(pPhysicalFile->useFilename().useFilename());
           }
         }
-
-        while (thread.isRun() && 0 == pThis->m_BuffersToWrite.size())
-          AThread::sleep(pThis->getLoggerCycleSleep());
       }
+
+      while (thread.isRun() && 0 == pThis->m_BuffersToWrite.size())
+        AThread::sleep(pThis->getLoggerCycleSleep());
     }
-    catch(AException& ex)
-    {
-      //a_TODO: need a better way to report exception
-      std::cerr << ex.what() << std::endl;
-      thread.setRunning(false);
-      return -1;
-    }
+  }
+  catch(AException& ex)
+  {
+    //a_TODO: need a better way to report exception
+    std::cerr << ex.what() << std::endl;
+    thread.setRunning(false);
+    return -1;
   }
 
   thread.setRunning(false);

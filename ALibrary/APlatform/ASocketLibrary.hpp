@@ -47,10 +47,14 @@ public:
 
   //a_Utility functions
   static AString getLocalHostName();
-  static VECTOR_AString getHostAddresses(const AString &hostName);
   static AString getDefaultIp();
   static AString getIPFromAddress(const AString &address);
   
+  /*!
+  @return a pointer to all host addresses associated with the name, called must delete when done
+  */
+  static VECTOR_AString *getHostAddresses(const AString &hostName);
+
   /*!
   Checks if port is available
   */

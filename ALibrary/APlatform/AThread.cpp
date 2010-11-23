@@ -40,9 +40,12 @@ u4 AThread::_ThreadProc(void *pThis)
   AASSERT(NULL, ADebugDumpable::isPointerValid(pThis));
   AThread& thread = *(AThread*)pThis;
 
+  thread.mbool_ThreadProcExited = false;
+  thread.mbool_ThreadProcCalled = true;
+  
   u4 uRet = thread.mp_ThreadProc(thread);
-
-//  thread.mh_Thread    = NULL;
+  
+  thread.mbool_ThreadProcExited = true;
   thread.mu4_ThreadId = 0x0;
 
   return uRet;
@@ -54,6 +57,8 @@ AThread::AThread() :
   mpv_Parameter(NULL),
   mu4_ThreadId(0x0),
   mh_Thread(NULL),
+  mbool_ThreadProcCalled(false),
+  mbool_ThreadProcExited(false),
   mbool_Running(false),
   mbool_Run(true),
   m_UserTimer(false),
@@ -67,6 +72,8 @@ AThread::AThread(ATHREAD_PROC *pThreadProc, bool boolStart, ABase *pThis, ABase 
   mpv_Parameter(pParameter),
   mu4_ThreadId(0x0),
   mh_Thread(NULL),
+  mbool_ThreadProcCalled(false),
+  mbool_ThreadProcExited(false),
   mbool_Running(false),
   mbool_Run(true),
   m_UserTimer(false),
@@ -82,6 +89,8 @@ AThread::AThread(const AThread& that) :
   mpv_Parameter(that.mpv_Parameter),
   mu4_ThreadId(0x0),
   mh_Thread(NULL),
+  mbool_ThreadProcCalled(false),
+  mbool_ThreadProcExited(false),
   mbool_Running(false),
   mbool_Run(that.mbool_Run),
   m_UserTimer(false),
@@ -124,7 +133,7 @@ void AThread::start()
   
   AASSERT(this, mp_ThreadProc);
   AASSERT(this, ADebugDumpable::isPointerValid(mp_ThreadProc));
-  mh_Thread = ::CreateThread(NULL, 0x0, (LPTHREAD_START_ROUTINE)mp_ThreadProc, this, 0x0, &mu4_ThreadId);
+  mh_Thread = ::CreateThread(NULL, 0x0, (LPTHREAD_START_ROUTINE)AThread::_ThreadProc, this, 0x0, &mu4_ThreadId);
   if (!mh_Thread)
     ATHROW_LAST_OS_ERROR(this);
 }
@@ -158,6 +167,7 @@ void AThread::terminate(u4 uExitCode)
     ::CloseHandle(mh_Thread);
   }
 
+  mbool_ThreadProcExited = true;
   mh_Thread    = NULL;
   mu4_ThreadId = 0x0;
 }
@@ -185,6 +195,16 @@ bool AThread::isThreadCreated()
     return true;
   else
     return false;
+}
+
+bool AThread::isThreadProcCalled()
+{
+  return mbool_ThreadProcCalled;
+}
+
+bool AThread::isThreadProcExited()
+{
+  return mbool_ThreadProcExited;
 }
 
 u4 AThread::getExitCode()

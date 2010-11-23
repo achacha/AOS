@@ -19,11 +19,9 @@ $Id$
 /*!
 Generic template parser/processor
 
-
-Tag format: {START_TAG}{TAG}{BLOCK_START} .. tag body .. {BLOCK_END}{TAG}{TAR_END}
-Code Example  : %[LUA]{{{ print("Hello World"); }}}[LUA]%    (To use lua, you have to addHandler(new ATemplateNodeHandler_LUA()) to the template)
-Model example: %[MODEL]{{{ /model/path }}}%[MODEL]%
-Object example: %[OBJECT]{{{ object_name }}}%[OBJECT]%
+Code Example  : <aos:lua>{{{ print("Hello World"); }}}</aos:lua>    (To use lua, you have to addHandler(new ATemplateNodeHandler_LUA()) to the template)
+Model example: <aos:model>{{{ /model/path }}}</aos:model>
+Object example: <aos:object>{{{ object_name }}}</aos:object>
 
 
 Usage:
@@ -54,14 +52,6 @@ Usage:
 class ABASE_API ATemplate : public ADebugDumpable, public ASerializable, public AXmlEmittable
 {
 public:
-  /*!
-  Delimiters
-  */
-  //static const AString TAG_START;     //a_ "%["
-  //static const AString BLOCK_START;   //a_ "]{{{"
-  //static const AString BLOCK_END;     //a_ "}}}["
-  //static const AString TAG_END;       //a_ "]%"
-
   /*!
   Default handler enums
   */
@@ -142,6 +132,13 @@ public:
   virtual void toAFile(AFile& aFile) const;
   virtual void fromAFile(AFile& aFile);
 
+  /*!
+  Helper function that takes AString and uses AFile_AString to call fromAFile
+  
+  @param source AString data
+  */
+  void ATemplate::fromAString(const AString& source);
+  
   /*!
   Attach a node handler
   This object will OWN and DELETE the handler when done with it

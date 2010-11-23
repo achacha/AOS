@@ -162,7 +162,26 @@ public:
   bool isThreadCreated();
 
   /*!
+  Used to detect if the threadproc was called and it may have exited which could leave
+   running as false and run as true and appear that the threat has not yet started when it has actually exited
+
+  @return true if the threadproc was called
+  */
+  bool isThreadProcCalled();
+
+  /*!
+  IF isThreadProcCalled==true && isThreadProcExited==true THEN thread executed and exited
+  IF isThreadProcCalled==true && isThreadProcExited==false THEN thread is still running
+  IF isThreadProcCalled==false && isThreadProcExited==false THEN thread has never been (or not yet) started
+  IF isThreadProcCalled==false && isThreadProcExited==true THEN can never happen
+
+  @return true if the thread has exited
+  */
+  bool isThreadProcExited();
+
+  /*!
   Get the return code for a thread that exited
+  Initially it is AString::npos
 
   @return exit code returned by threadproc if a thread has already exited
   @throw AException if thread is running or not started
@@ -186,9 +205,25 @@ public:
 
    NOTE: Run is set to whatever you have the start flag set as
   */
+
+  /*!
+  @return if the thread is currently running
+  */
   bool isRunning() const;
+
+  /*!
+  @param boolRunning if the thread is running, called by the threadproc
+  */
   void setRunning(bool boolRunning = true);
+  
+  /*!
+  @return if the thread should continue running
+  */
   bool isRun() const;
+  
+  /*!
+  @param boolRun if the thread should keep running
+  */
   void setRun(bool boolRun = true);
 
   /*!
@@ -270,6 +305,8 @@ protected:
   /*
   Flags that threads will use for querying
   */
+  bool mbool_ThreadProcCalled;
+  bool mbool_ThreadProcExited;
   bool mbool_Run;
   bool mbool_Running;
 

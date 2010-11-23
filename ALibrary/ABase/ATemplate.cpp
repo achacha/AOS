@@ -11,11 +11,6 @@ $Id$
 #include "ATemplateNodeHandler_OBJECT.hpp"
 #include "ATemplateNodeHandler_MODEL.hpp"
 
-//const AString ATemplate::TAG_START("<",1);
-//const AString ATemplate::BLOCK_START(">",1);
-//const AString ATemplate::BLOCK_END("</",2);
-//const AString ATemplate::TAG_END(">",1);
-
 void ATemplate::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
@@ -132,6 +127,12 @@ void ATemplate::toAFile(AFile& aFile) const
   }
 }
 
+void ATemplate::fromAString(const AString& source)
+{
+  AFile_AString strfile(source);
+  fromAFile(strfile);
+}
+
 void ATemplate::fromAFile(AFile& aFile)
 {
   AString str(1024, 256);
@@ -176,7 +177,6 @@ void ATemplate::fromAFile(AFile& aFile)
       //a_No such tag, add to the current text node and keep going
       pText->useBlockData().append(AXmlElement::sstr_Start);
       pText->useBlockData().append(tagName);
-      //pText->useBlockData().append(isSingular ? AXmlElement::sstr_EndSingular : AXmlElement::sstr_End);
       
       //a_Put back and reparse in case attributes contain tags
       aFile.putBack(delimiter);
