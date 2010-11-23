@@ -34,7 +34,7 @@ AOSContext::ReturnCode AOSModule_AlterContext::execute(AOSContext& context, cons
 
       if (!name.isEmpty())
       {
-        context.useRequestParameterPairs().insert(name, value);
+        context.useRequestParameterPairs().add(name, value);
       }
     }
   }

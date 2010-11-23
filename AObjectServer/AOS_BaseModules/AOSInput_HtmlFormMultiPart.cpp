@@ -154,8 +154,8 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
               {
                 context.useEventVisitor().addEvent(ARope("Adding multipart file parameter: ",33)+strName, AEventVisitor::EL_DEBUG);
                 pePart->addElement(ASW("context-object-name",19), strObjectName);
-                context.useRequestParameterPairs().insert(strName, strObjectName);
-                context.useRequestParameterPairs().insert(strName+".filename", strFilename);
+                context.useRequestParameterPairs().add(strName, strObjectName);
+                context.useRequestParameterPairs().add(strName+".filename", strFilename);
                 context.useContextObjects().insert(strObjectName, pData.use(), true, true);
                 pData.setOwnership(false);
               }
@@ -166,7 +166,7 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             {
               //a_Add to request query
               context.useEventVisitor().addEvent(ARope("Adding multipart form parameter: ",33)+strName, AEventVisitor::EL_DEBUG);
-              context.useRequestParameterPairs().insert(strName, *pData);
+              context.useRequestParameterPairs().add(strName, *pData);
             }
 
             //a_Remove trailing CRLF or --CRLF (if EOM) after boundary
