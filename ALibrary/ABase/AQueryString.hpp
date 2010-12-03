@@ -15,7 +15,7 @@ $Id$
 AQueryString are name value pairs separated by &
   e.g.  name1=value%201&name_2=Some%20other%20value ...etc...
 
-  name is always case insensitive and forced to lower case
+  name is case sensitive (since some servers are case sensitive when parsing query string)
 */
 class ABASE_API AQueryString : public ADebugDumpable, public AXmlEmittable
 {
@@ -64,7 +64,7 @@ public:
   /*!
   Parse string, can specify an alternate pairs types supported by ANameValuePair
   */
-  void parse(const AString& strLine, ANameValuePair::NameValueType type = ANameValuePair::CGI);
+  void parse(const AString& strLine, ANameValuePair::NameValueType type = ANameValuePair::CGI_CASE);
 
   /*!
   AEmittable

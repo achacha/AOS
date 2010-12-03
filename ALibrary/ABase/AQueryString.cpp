@@ -126,10 +126,7 @@ size_t AQueryString::get(const AString& name, LIST_NVPair& result) const
   size_t ret = 0;
   result.clear();
 
-  AString str(name);
-  str.makeLower();
-
-  std::pair<MMAP_AString_NVPair::const_iterator, MMAP_AString_NVPair::const_iterator> iters = m_Pairs.equal_range(str);
+  std::pair<MMAP_AString_NVPair::const_iterator, MMAP_AString_NVPair::const_iterator> iters = m_Pairs.equal_range(name);
   while (iters.first != iters.second)
   {
     result.push_back((*(iters.first)).second);
@@ -143,10 +140,7 @@ size_t AQueryString::get(const AString& name, LIST_NVPair& result) const
 bool AQueryString::get(const AString& name, AString& target) const
 {
   target.clear();
-  AString str(name);
-  str.makeLower();
-
-  MMAP_AString_NVPair::const_iterator cit = m_Pairs.find(str);
+  MMAP_AString_NVPair::const_iterator cit = m_Pairs.find(name);
   if (cit != m_Pairs.end())
   {
     target.assign((*cit).second.getValue());
@@ -158,10 +152,7 @@ bool AQueryString::get(const AString& name, AString& target) const
 
 void AQueryString::remove(const AString& name, const AString &value /*= AConstant::ASTRING_EMPTY */)
 {
-  AString str(name);
-  str.makeLower();
-
-  MMAP_AString_NVPair::iterator it = m_Pairs.find(str);
+  MMAP_AString_NVPair::iterator it = m_Pairs.find(name);
   if (it != m_Pairs.end())
   {
     if (value.isEmpty())
@@ -188,35 +179,23 @@ void AQueryString::remove(const AString& name, const AString &value /*= AConstan
 
 size_t AQueryString::count(const AString& name) const
 {
-  AString str(name);
-  str.makeLower();
-
-  return m_Pairs.count(str);
+  return m_Pairs.count(name);
 }
 
 bool AQueryString::exists(const AString& name) const
 {
-  AString str(name);
-  str.makeLower();
-
-  return m_Pairs.count(str) > 0;
+  return m_Pairs.count(name) > 0;
 }
 
 void AQueryString::set(const AString& name, const AString &value)
 {
-  AString str(name);
-  str.makeLower();
-
-  m_Pairs.erase(str);
-  m_Pairs.insert(MMAP_AString_NVPair::value_type(str, ANameValuePair(str, value, ANameValuePair::CGI)));
+  m_Pairs.erase(name);
+  m_Pairs.insert(MMAP_AString_NVPair::value_type(name, ANameValuePair(name, value, ANameValuePair::CGI)));
 }
 
 void AQueryString::add(const AString &name, const AString &value)
 {
-  AString str(name);
-  str.makeLower();
-
-  m_Pairs.insert(MMAP_AString_NVPair::value_type(str, ANameValuePair(str, value, ANameValuePair::CGI)));
+  m_Pairs.insert(MMAP_AString_NVPair::value_type(name, ANameValuePair(name, value, ANameValuePair::CGI)));
 }
 
 void AQueryString::clear()
@@ -226,7 +205,7 @@ void AQueryString::clear()
 
 void AQueryString::parse(
   const AString &strLine, 
-  ANameValuePair::NameValueType type // = ANameValuePair::CGI
+  ANameValuePair::NameValueType type // = ANameValuePair::CGI_CASE
 ) 
 {
   size_t pos = 0;
@@ -270,11 +249,7 @@ size_t AQueryString::getDelimited(
 ) const
 {
   size_t ret = 0;
-
-  AString str(name);
-  str.makeLower();
-
-  std::pair<MMAP_AString_NVPair::const_iterator, MMAP_AString_NVPair::const_iterator> iters = m_Pairs.equal_range(str);
+  std::pair<MMAP_AString_NVPair::const_iterator, MMAP_AString_NVPair::const_iterator> iters = m_Pairs.equal_range(name);
   while (iters.first != iters.second)
   {
     result.append((*(iters.first)).second.getValue());
