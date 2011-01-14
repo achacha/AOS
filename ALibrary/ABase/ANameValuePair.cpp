@@ -37,7 +37,7 @@ void ANameValuePair::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-ANameValuePair::ANameValuePair(const AString& name, const AString& strValue, NameValueType eType) :
+ANameValuePair::ANameValuePair(const AString& name, const AString& value, NameValueType eType) :
   m_name(128, 128),
   m_value(128, 128),
   m_separator("=",1),
@@ -50,8 +50,7 @@ ANameValuePair::ANameValuePair(const AString& name, const AString& strValue, Nam
   if (ANameValuePair::CGI != eType)
     setType(eType);
 
-  m_name.assign(name); 
-  m_value.assign(strValue);
+  setNameValue(name, value);
 }
 
 ANameValuePair::ANameValuePair(NameValueType eType) :

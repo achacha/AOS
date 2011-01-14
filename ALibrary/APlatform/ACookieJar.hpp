@@ -1,12 +1,12 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: ACookieJar.hpp 243 2008-09-16 22:13:48Z achacha $
 */
 #ifndef INCLUDED__ACookieJar_HPP__
 #define INCLUDED__ACookieJar_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "ACookie.hpp"
 #include "templateListOfPtrs.hpp"
 #include "templateMapOfPtrs.hpp"
@@ -18,7 +18,7 @@ class AHTTPResponseHeader;
 Collection of cookies based on path
 This is how a browser would store them, for server view use Cookies class instead
 */
-class ABASE_API ACookieJar: public ADebugDumpable
+class APLATFORM_API ACookieJar: public ADebugDumpable
 {
 public:
   /*!

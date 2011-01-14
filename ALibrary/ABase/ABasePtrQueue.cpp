@@ -252,7 +252,6 @@ bool ABasePtrQueue::isEmpty() const
 
 size_t ABasePtrQueue::size() const
 {
-  ALock lock(mp_Sync);
   return m_Size;
 }
 
@@ -283,9 +282,8 @@ const ABase *ABasePtrQueue::getTail() const
 
 size_t ABasePtrQueue::findFromFront(ABase *p)
 {
-  AASSERT(this, p);
-
   ALock lock(mp_Sync);
+  AASSERT(this, p);
   size_t pos = 0;
   ABase *pX = mp_Head;
   while (pX)

@@ -1,18 +1,18 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AContentType_Form.hpp 205 2008-05-29 13:58:16Z achacha $
 */
 #ifndef INCLUDED__AContentType_Form_HPP__
 #define INCLUDED__AContentType_Form_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "AContentTypeInterface.hpp"
 #include "AQueryString.hpp"
 
 class ANameValuePair;
 
-class ABASE_API AContentType_Form : public AContentTypeInterface
+class APLATFORM_API AContentType_Form : public AContentTypeInterface
 {
 public:
   static const AString CONTENT_TYPE;  // application/x-www-form-urlencoded

@@ -14,7 +14,6 @@ class ASynchronization;
 /*!
 Queue of ABase* types
 Internally implemented as a double linked list
-Indexed operations are linear O(1)
 
 Container does NOT delete anything implicitly when destroyed
 MUST call clear(true) to delete contents and clear container
@@ -46,6 +45,7 @@ public:
   @return access to ABase * (NULL if list empty or index out of bounds)
   */
   const ABase *getAt(size_t index) const;
+  template<class T> T* getAt(size_t index) { return dynamic_cast<T *>(getAt(index)); }
   
   /*!
   Use ABase * at given index from front
@@ -54,6 +54,7 @@ public:
   @return access to ABase * (NULL if list empty or index out of bounds)
   */
   ABase *useAt(size_t index);
+  template<class T> T* useAt(size_t index) { return dynamic_cast<T *>(useAt(index)); }
 
   /*!
   Pop object from the front
@@ -62,6 +63,7 @@ public:
   @return removed ABase * (NULL if list empty or index out of bounds)
   */
   ABase *popFront(size_t index = 0);
+  template<class T> T* popFront(size_t index = 0)  { return dynamic_cast<T *>(popFront(index)); }
 
   /*!
   Pop object from the back
@@ -70,6 +72,7 @@ public:
   @return removed ABase * (NULL if list empty or index out of bounds)
   */
   ABase *popBack(size_t index = 0);
+  template<class T> T* popBack(size_t index = 0)  { return dynamic_cast<T *>(popBack(index)); }
 
   /*!
   Push object to front
@@ -147,6 +150,7 @@ public:
   @return head pointer
   */
   ABase *useHead();
+  template<class T> T* useHead()  { return dynamic_cast<T *>(useHead()); }
 
   /*!
   Access the head pointer
@@ -156,6 +160,7 @@ public:
   @return tail pointer
   */
   ABase *useTail();
+  template<class T> T* useTail() { return dynamic_cast<T *>(useTail()); }
 
   /*!
   Access the head pointer
@@ -165,6 +170,7 @@ public:
   @return constant head pointer
   */
   const ABase *getHead() const;
+  template<class T> const T* getHead() const { return dynamic_cast<T *>(getHead()); }
 
   /*!
   Access the head pointer
@@ -174,6 +180,7 @@ public:
   @return constant tail pointer
   */
   const ABase *getTail() const;
+  template<class T> const T* getTail() const { return dynamic_cast<T *>(getTail()); }
 
   /*!
   Removes pointer from container

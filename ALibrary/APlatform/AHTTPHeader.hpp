@@ -1,18 +1,19 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AHTTPHeader.hpp 310 2009-10-16 21:40:38Z achacha $
 */
 #ifndef INCLUDED__AHTTPHeader_HPP__
 #define INCLUDED__AHTTPHeader_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "ANameValuePair.hpp"
 #include "ADebugDumpable.hpp"
 #include "AXmlEmittable.hpp"
 #include "AParsable.hpp"
+#include "AFile_Socket.hpp"
 
-class ABASE_API AHTTPHeader : public ADebugDumpable, public ASerializable, public AXmlEmittable, public AParsable
+class APLATFORM_API AHTTPHeader : public ADebugDumpable, public ASerializable, public AXmlEmittable, public AParsable
 {
 public:
   /*!
@@ -105,6 +106,11 @@ public:
   ASerializable (reading from AFile type)
   */
   virtual void fromAFile(AFile&);
+
+  /*!
+  Read from socket
+  */
+  virtual size_t fromAFile_Socket(AFile_Socket& aSocket, bool throwExceptionOnError = true);
 
   /*!
     Used in quick parsing of headers

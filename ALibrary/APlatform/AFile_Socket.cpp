@@ -205,8 +205,14 @@ size_t AFile_Socket::_read(void *buf, size_t size)
 size_t AFile_Socket::_readBlocking(void *buf, size_t size)
 {
   size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf, size, 0);
+  if (0 == bytesReceived)
+  {
+    m_EOF = true;
+    return 0;
+  }
   if (bytesReceived == SOCKET_ERROR)
   {
+    m_EOF = true;
     int err = ::WSAGetLastError();
     switch(err)
     {
@@ -225,9 +231,14 @@ size_t AFile_Socket::_readBlocking(void *buf, size_t size)
 size_t AFile_Socket::_readNonBlocking(void *buf, size_t size)
 {
   size_t bytesReceived = ::recv(m_SocketInfo.m_handle, (char *) buf, size, 0);
-    
+  if (0 == bytesReceived)
+  {
+    m_EOF = true;
+    return 0;
+  }
   if (bytesReceived == SOCKET_ERROR)
   {
+    m_EOF = true;
     int err = ::WSAGetLastError();
     switch(err)
     {
@@ -258,6 +269,7 @@ size_t AFile_Socket::_writeBlocking(const void *buf, size_t size)
     switch(err)
     {
       case WSAECONNRESET:
+        m_EOF = true;
         return AConstant::npos;        //Remote connection closed
 
       default:

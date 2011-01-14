@@ -1,9 +1,9 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AContentTypeFactory.cpp 259 2008-11-04 22:02:51Z achacha $
 */
-#include "pchABase.hpp"
+#include "pchAPlatform.hpp"
 #include "AString.hpp"
 #include "AContentType_Binary.hpp"
 #include "AContentType_Form.hpp"

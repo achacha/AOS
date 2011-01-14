@@ -1,17 +1,17 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: ACookies.hpp 247 2008-09-26 20:19:37Z achacha $
 */
 #ifndef INCLUDED__ACookies_HPP__
 #define INCLUDED__ACookies_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "AString.hpp"
 #include "ACookie.hpp"
 #include "AXmlEmittable.hpp"
 
-class ABASE_API ACookies: public ADebugDumpable, public AXmlEmittable
+class APLATFORM_API ACookies: public ADebugDumpable, public AXmlEmittable
 {
 public:
   //! Container used to store the cookie pointers

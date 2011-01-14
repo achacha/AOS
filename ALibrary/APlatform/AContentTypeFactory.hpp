@@ -1,12 +1,12 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AContentTypeFactory.hpp 205 2008-05-29 13:58:16Z achacha $
 */
 #ifndef INCLUDED__AContentTypeFactory_HPP__
 #define INCLUDED__AContentTypeFactory_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 
 class AString;
 class AContentTypeInterface;
@@ -17,7 +17,7 @@ class AHTTPHeader;
   "application/x-www-form-urlencoded" creates AContentType_Form
   else creates AContentType_Binary
 */
-class ABASE_API AContentTypeFactory
+class APLATFORM_API AContentTypeFactory
 {
 public:
   /*

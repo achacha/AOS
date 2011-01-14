@@ -75,6 +75,14 @@ Throws a socket exception based on the ::WSAGetLastError()
 #define ATHROW_LAST_SOCKET_ERROR(debugdumpable) throw ASocketException(::GetLastError(), debugdumpable, __FILE__, __LINE__, AConstant::ASTRING_EMPTY);
 
 /*!
+Throws a socket exception based on the ::WSAGetLastError()
+
+@param debugdumpable ADebugDumpable * to include in exception (calls debugDump())
+@throw AException always
+*/
+#define ATHROW_LAST_SOCKET_ERROR_EX(debugdumpable, extra) throw ASocketException(::GetLastError(), debugdumpable, __FILE__, __LINE__, extra);
+
+/*!
 Throws a socket exception given an error number
 
 @param debugdumpable ADebugDumpable * to include in exception (calls debugDump())

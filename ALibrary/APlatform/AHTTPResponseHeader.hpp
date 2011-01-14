@@ -1,19 +1,19 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AHTTPResponseHeader.hpp 310 2009-10-16 21:40:38Z achacha $
 */
 #ifndef INCLUDED__AHTTPResponseHeader_HPP__
 #define INCLUDED__AHTTPResponseHeader_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "AHTTPHeader.hpp"
 #include "ACookies.hpp"
 
 /*!
 HTTP response header class
 */
-class ABASE_API AHTTPResponseHeader : public AHTTPHeader
+class APLATFORM_API AHTTPResponseHeader : public AHTTPHeader
 {
 public:
   /*!
@@ -27,6 +27,7 @@ public:
   */
   enum STATUS_CODES
   {
+    SC_000_Invalid                           = 000,
     SC_100_Continue                          = 100,
     SC_101_Switching_Protocols               = 101,
     SC_200_Ok                                = 200,

@@ -1,9 +1,9 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AHTTPRequestHeader.cpp 316 2009-11-06 20:57:09Z achacha $
 */
-#include "pchABase.hpp"
+#include "pchAPlatform.hpp"
 #include "AHTTPRequestHeader.hpp"
 #include "AOutputBuffer.hpp"
 #include "AXmlElement.hpp"

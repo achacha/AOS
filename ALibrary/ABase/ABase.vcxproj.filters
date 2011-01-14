@@ -38,33 +38,6 @@
     <ClCompile Include="AConstant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AContentType_Binary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AContentType_Form.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AContentType_TextXml.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AContentTypeFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AContentTypeInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ACookie.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ACookieJar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ACookieJar_Node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ACookies.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ADatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -123,15 +96,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AFragmentString.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AHTTPHeader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AHTTPRequestHeader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AHTTPResponseHeader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AJsonEmittable.cpp">
@@ -295,30 +259,6 @@
     <ClInclude Include="AConstant.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AContentType_Binary.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AContentType_Form.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AContentType_TextXml.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AContentTypeFactory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AContentTypeInterface.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ACookie.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ACookieJar.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ACookies.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ADatabase.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -380,15 +320,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AFragmentString.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AHTTPHeader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AHTTPRequestHeader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AHTTPResponseHeader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AJsonEmittable.hpp">

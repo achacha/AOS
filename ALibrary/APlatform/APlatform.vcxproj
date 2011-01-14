@@ -268,12 +268,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ACache_FileSystem.cpp" />
+    <ClCompile Include="AContentTypeFactory.cpp" />
+    <ClCompile Include="AContentTypeInterface.cpp" />
+    <ClCompile Include="AContentType_Binary.cpp" />
+    <ClCompile Include="AContentType_Form.cpp" />
+    <ClCompile Include="AContentType_TextXml.cpp" />
+    <ClCompile Include="ACookie.cpp" />
+    <ClCompile Include="ACookieJar.cpp" />
+    <ClCompile Include="ACookieJar_Node.cpp" />
+    <ClCompile Include="ACookies.cpp" />
     <ClCompile Include="ADaemon.cpp" />
     <ClCompile Include="ADatabasePool.cpp" />
     <ClCompile Include="AFileSystem.cpp" />
     <ClCompile Include="AFile_Physical.cpp" />
     <ClCompile Include="AFile_Socket.cpp" />
     <ClCompile Include="AFile_SocketDatagram.cpp" />
+    <ClCompile Include="AHTTPHeader.cpp" />
+    <ClCompile Include="AHTTPRequestHeader.cpp" />
+    <ClCompile Include="AHTTPResponseHeader.cpp" />
     <ClCompile Include="AINIProfile.cpp" />
     <ClCompile Include="ALog_AFile.cpp" />
     <ClCompile Include="APlatformMain.cpp" />
@@ -310,12 +322,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ACache_FileSystem.hpp" />
+    <ClInclude Include="AContentTypeFactory.hpp" />
+    <ClInclude Include="AContentTypeInterface.hpp" />
+    <ClInclude Include="AContentType_Binary.hpp" />
+    <ClInclude Include="AContentType_Form.hpp" />
+    <ClInclude Include="AContentType_TextXml.hpp" />
+    <ClInclude Include="ACookie.hpp" />
+    <ClInclude Include="ACookieJar.hpp" />
+    <ClInclude Include="ACookies.hpp" />
     <ClInclude Include="ADaemon.hpp" />
     <ClInclude Include="ADatabasePool.hpp" />
     <ClInclude Include="AFileSystem.hpp" />
     <ClInclude Include="AFile_Physical.hpp" />
     <ClInclude Include="AFile_Socket.hpp" />
     <ClInclude Include="AFile_SocketDatagram.hpp" />
+    <ClInclude Include="AHTTPHeader.hpp" />
+    <ClInclude Include="AHTTPRequestHeader.hpp" />
+    <ClInclude Include="AHTTPResponseHeader.hpp" />
     <ClInclude Include="AINIProfile.hpp" />
     <ClInclude Include="ALog_AFile.hpp" />
     <ClInclude Include="apiAPlatform.hpp" />

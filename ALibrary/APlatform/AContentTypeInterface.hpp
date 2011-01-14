@@ -1,12 +1,12 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AContentTypeInterface.hpp 205 2008-05-29 13:58:16Z achacha $
 */
 #ifndef __AContentTypeInterface_HPP__
 #define __AContentTypeInterface_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "AString.hpp"
 #include "ASerializable.hpp"
 #include "ADebugDumpable.hpp"
@@ -17,7 +17,7 @@ class AFile;
 class AUrl;
 class AHTTPHeader;
 
-class ABASE_API AContentTypeInterface : public ASerializable, public ADebugDumpable
+class APLATFORM_API AContentTypeInterface : public ASerializable, public ADebugDumpable
 {
 public:
   AContentTypeInterface(const AString& type);

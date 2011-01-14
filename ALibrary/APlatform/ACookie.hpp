@@ -1,18 +1,18 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: ACookie.hpp 247 2008-09-26 20:19:37Z achacha $
 */
 #ifndef INCLUDED__ACookie_HPP__
 #define INCLUDED__ACookie_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "AString.hpp"
 #include "ATime.hpp"
 #include "ADebugDumpable.hpp"
 #include "AXmlEmittable.hpp"
 
-class ABASE_API ACookie : public ADebugDumpable, public AXmlEmittable
+class APLATFORM_API ACookie : public ADebugDumpable, public AXmlEmittable
 {
 public:
   /*!

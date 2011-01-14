@@ -54,6 +54,7 @@ public:
   @return NULL if none
   */
   const ABase *getNext() const;
+  template<class T> const T *getNext() const { return dynamic_cast<T *>(getNext()); }
 
   /*!
   Get the previous item in the chain
@@ -61,6 +62,7 @@ public:
   @return NULL if none
   */
   const ABase *getPrev() const;
+  template<class T> const T *getPrev() const { return dynamic_cast<T *>(getPrev()); }
 
   /*!
   Use the next item in the chain
@@ -68,6 +70,7 @@ public:
   @return NULL if none
   */
   ABase *useNext();
+  template<class T> T *useNext() { return dynamic_cast<T *>(useNext()); }
 
   /*!
   Use the previous item in the chain
@@ -75,6 +78,7 @@ public:
   @return NULL if none
   */
   ABase *usePrev();
+  template<class T> T *usePrev() { return dynamic_cast<T *>(usePrev()); }
 
   /*!
   Unlink current item from a list
@@ -91,6 +95,7 @@ public:
   @return this for convenience
   */
   ABase *unlink();
+  template<class T> T *unlink() { return dynamic_cast<T *>(unlink()); }
 
 /*!
 If DEBUG_TRACK_ABASE_MEMORY is defined all allocation/deallocation via new/new[]/delete/delete[] of ABase objects is traced to std::cout

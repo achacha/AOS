@@ -1,14 +1,15 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AHTTPHeader.cpp 329 2010-09-09 22:09:11Z achacha $
 */
-#include "pchABase.hpp"
+#include "pchAPlatform.hpp"
 #include "AHTTPHeader.hpp"
 #include "AOutputBuffer.hpp"
 #include "AFile.hpp"
 #include "ARope.hpp"
 #include "ATime.hpp"
+#include "ASocketException.hpp"
 
 const AString AHTTPHeader::HTTP_VERSION_0_9("HTTP/0.9",8);
 const AString AHTTPHeader::HTTP_VERSION_1_0("HTTP/1.0",8);
@@ -374,6 +375,68 @@ void AHTTPHeader::fromAFile(AFile& aFile)
     //a_For non-blocking sockets HTTP header reads must be written by used, this function assumes blocking
     ATHROW_EX(this, AException::InsuffiecientData, ASWNL("Unable to read first line of HTTP header, may be a result of using non-blocking socket"));
   }
+}
+
+size_t AHTTPHeader::fromAFile_Socket(AFile_Socket& aSocket, bool throwExceptionOnError)
+{
+  //a_Very simple routine for reading HTTP header, waits indefinitely for lines
+  AString str(1024, 1024);
+  size_t bytesRead = aSocket.readLine(str, AConstant::npos, false);
+  if (0 == bytesRead && !aSocket.isNotEof())
+    return 0;
+  size_t totalBytesRead = bytesRead;
+  if (AConstant::npos == bytesRead)
+  {
+    if (throwExceptionOnError)
+      ATHROW_LAST_SOCKET_ERROR_EX(this, ASWNL("Failed to read data from socket"));
+    
+    return AConstant::npos;
+  }
+
+  while (AConstant::unavail == bytesRead && aSocket.isNotEof())
+  {
+    ATime::sleep(50);
+    bytesRead = aSocket.readLine(str, AConstant::npos, false);
+    if (0 == bytesRead && !aSocket.isNotEof())
+      return totalBytesRead;
+    totalBytesRead += bytesRead;
+  }
+
+  if (bytesRead > 0)
+  {
+    if (!parseLineZero(str))
+    {
+      ATHROW_LAST_SOCKET_ERROR_EX(this, ASWNL("Unable to parse line zero"));
+    }
+
+    str.assign(".");
+    while (!str.isEmpty())
+    {
+      str.clear();
+      bytesRead = aSocket.readLine(str, AConstant::npos, false);
+      if (0 == bytesRead && !aSocket.isNotEof())
+        return totalBytesRead;
+      totalBytesRead += bytesRead;
+      while (AConstant::npos == bytesRead && aSocket.isNotEof())
+      {
+        ATime::sleep(50);
+        bytesRead = aSocket.readLine(str, AConstant::npos, false);
+        if (0 == bytesRead && !aSocket.isNotEof())
+          return totalBytesRead;
+        totalBytesRead += bytesRead;
+      }
+      if (str.getSize() > 0)
+        parseTokenLine(str);
+    }
+  }
+  else
+  {
+    //a_Either first line is not valid or non-blocking socket is used
+    //a_For non-blocking sockets HTTP header reads must be written by used, this function assumes blocking
+    ATHROW_LAST_SOCKET_ERROR_EX(this, ASWNL("Unable to read first line of HTTP header, may be a result of using non-blocking socket"));
+  }
+
+  return totalBytesRead;
 }
 
 size_t AHTTPHeader::getKeepAliveTimeout() const

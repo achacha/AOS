@@ -1,9 +1,9 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AContentType_Binary.cpp 205 2008-05-29 13:58:16Z achacha $
 */
-#include "pchABase.hpp"
+#include "pchAPlatform.hpp"
 #include "AContentType_Binary.hpp"
 
 const AString AContentType_Binary::CONTENT_TYPE("application/octet-stream",24);

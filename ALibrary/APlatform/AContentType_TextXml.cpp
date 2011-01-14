@@ -1,9 +1,9 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AContentType_TextXml.cpp 205 2008-05-29 13:58:16Z achacha $
 */
-#include "pchABase.hpp"
+#include "pchAPlatform.hpp"
 #include "AContentType_TextXml.hpp"
 
 const AString AContentType_TextXml::CONTENT_TYPE("text/xml",8);  // text/xml

@@ -57,7 +57,9 @@ size_t AFile::readLine(
       return ret;
     }
     else
-      return AConstant::npos;
+    {
+      return AConstant::unavail;  // Not EOF but not enough
+    }
   }
 
   while ((AConstant::npos == ret || AConstant::unavail == ret) && _isNotEof())
@@ -77,21 +79,23 @@ size_t AFile::readLine(
           //a_Read to end and return
           ret = m_LookaheadBuffer.getSize();
           if (!ret)
+          {
             return AConstant::npos;       //a_No more data
+          }
 
           m_LookaheadBuffer.emit(strRead);
           m_LookaheadBuffer.clear();
           return ret;
         }
         else
-          return AConstant::npos;       //a_No end of line found
+          continue;   //a_Try to read more in case it becomes available
 
       default:
         ret = m_LookaheadBuffer.popFrontUntil(strRead, '\n', true, true, maxBytes);
     }
   }
 
-  if (AConstant::npos == ret && treatEofAsEol)
+  if (!_isNotEof() && treatEofAsEol)
   {
     //a_Got to EOF and did not find delimiter, return everything
     ret = m_LookaheadBuffer.getSize();
@@ -117,7 +121,9 @@ size_t AFile::readLine(
   }
 
   if (originalSize == strRead.getSize() && !isNotEof() && m_LookaheadBuffer.isEmpty())
+  {
     return AConstant::npos;
+  }
   else
     return strRead.getSize();
 }
@@ -763,10 +769,9 @@ size_t AFile::readUntilEOF(AOutputBuffer& target)
 
 size_t AFile::readBlockIntoLookahead()
 {
-  AString str;
-  char *p = str.startUsingCharPtr(m_ReadBlock);
+  AAutoArrayPtr<char> p(new char[m_ReadBlock], true);
 
-  size_t bytesRead = _read(p, m_ReadBlock);
+  size_t bytesRead = _read(p.use(), m_ReadBlock);
   switch(bytesRead)
   {
     case AConstant::npos:
@@ -777,7 +782,7 @@ size_t AFile::readBlockIntoLookahead()
       return AConstant::unavail;
 
     default:
-      m_LookaheadBuffer.pushBack(p, bytesRead);
+      m_LookaheadBuffer.pushBack(p.use(), bytesRead);
   }
 
   return bytesRead;

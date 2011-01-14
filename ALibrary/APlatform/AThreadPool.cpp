@@ -93,6 +93,8 @@ AThreadPool::~AThreadPool()
   {
     if (mp_MonitorThread->isRunning())
       stop();
+    
+    pDelete(mp_MonitorThread);
   }
   catch(...) {}
 }

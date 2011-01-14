@@ -1,12 +1,12 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AHTTPRequestHeader.hpp 310 2009-10-16 21:40:38Z achacha $
 */
 #ifndef INCLUDED__AHTTPRequestHeader_HPP__
 #define INCLUDED__AHTTPRequestHeader_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "AHTTPHeader.hpp"
 #include "AUrl.hpp"
 #include "ACookies.hpp"
@@ -14,7 +14,7 @@ $Id$
 /*!
 HTTP request header class
 */
-class ABASE_API AHTTPRequestHeader : public AHTTPHeader
+class APLATFORM_API AHTTPRequestHeader : public AHTTPHeader
 {
 public:
   /*!

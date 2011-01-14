@@ -1,17 +1,17 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AContentType_Binary.hpp 205 2008-05-29 13:58:16Z achacha $
 */
 #ifndef INCLUDED__AContentType_Binary_HPP__
 #define INCLUDED__AContentType_Binary_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "AContentTypeInterface.hpp"
 
 class AOutputBuffer;
 
-class ABASE_API AContentType_Binary : public AContentTypeInterface
+class APLATFORM_API AContentType_Binary : public AContentTypeInterface
 {
 public:
   static const AString CONTENT_TYPE;  // application/octet-stream

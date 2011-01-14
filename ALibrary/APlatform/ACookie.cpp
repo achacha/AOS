@@ -1,9 +1,9 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: ACookie.cpp 247 2008-09-26 20:19:37Z achacha $
 */
-#include "pchABase.hpp"
+#include "pchAPlatform.hpp"
 #include "ACookie.hpp"
 #include "AException.hpp"
 #include "AOutputBuffer.hpp"

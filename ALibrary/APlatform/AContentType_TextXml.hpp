@@ -1,18 +1,18 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AContentType_TextXml.hpp 205 2008-05-29 13:58:16Z achacha $
 */
 #ifndef INCLUDED__AContentType_TextXml_HPP__
 #define INCLUDED__AContentType_TextXml_HPP__
 
-#include "apiABase.hpp"
+#include "apiAPlatform.hpp"
 #include "AContentTypeInterface.hpp"
 #include "AXmlDocument.hpp"
 
 class AOutputBuffer;
 
-class ABASE_API AContentType_TextXml : public AContentTypeInterface
+class APLATFORM_API AContentType_TextXml : public AContentTypeInterface
 {
 public:
   static const AString CONTENT_TYPE;  // text/xml

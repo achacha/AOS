@@ -1,9 +1,9 @@
 /*
 Written by Alex Chachanashvili
 
-$Id$
+$Id: AContentTypeInterface.cpp 259 2008-11-04 22:02:51Z achacha $
 */
-#include "pchABase.hpp"
+#include "pchAPlatform.hpp"
 #include "AContentTypeInterface.hpp"
 #include "AFile.hpp"
 #include "AHTTPHeader.hpp"

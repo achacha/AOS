@@ -54,7 +54,7 @@ public:
   ctor/dtor/etc
   Parses the input (default to CGI type)
   */
-  ANameValuePair(const AString& name, const AString& strValue = AConstant::ASTRING_EMPTY, NameValueType eType = ANameValuePair::CGI_CASE);
+  ANameValuePair(const AString& name, const AString& value = AConstant::ASTRING_EMPTY, NameValueType eType = ANameValuePair::CGI_CASE);
   ANameValuePair(NameValueType eType = ANameValuePair::CGI_CASE);
   virtual ~ANameValuePair();
 
