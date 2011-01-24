@@ -89,7 +89,7 @@ AEventVisitor::ScopedEvent::~ScopedEvent()
   {
     ARope message("---scope(",9);
     message.append(m_ScopeTimer);
-    message.append("ms)[",4);
+    message.append("ms)[",4); //-V112
     message.append(mstr_Where);
     message.append(']');
     message.append(mstr_Message);
@@ -170,7 +170,7 @@ bool AEventVisitor::isLoggingError() const
 void AEventVisitor::startEvent(
   const AEmittable &message, 
   AEventVisitor::EventLevel level,  // = AEventVisitor::EL_EVENT
-  double timeLimit             // = INVALID_TIME_INTERVAL
+  double timeLimit                  // = INVALID_TIME_INTERVAL
 )
 {
   //a_If logging is disabled or below threshold, do nothing
@@ -296,7 +296,7 @@ AXmlElement& AEventVisitor::emitXml(AXmlElement& thisRoot, AEventVisitor::EventL
   thisRoot.addAttribute(ASW("errors",6), AString::fromSize_t(m_ErrorCount));
   thisRoot.addAttribute(ASW("threshold",9), AString::fromSize_t(m_LevelThreshold));
   thisRoot.addAttribute(ASW("display",7), AString::fromSize_t(threshold));
-  thisRoot.addElement(ASW("name",4)).addData(m_Name, AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addElement(ASW("name",4)).addData(m_Name, AXmlElement::ENC_CDATADIRECT); //-V112
   thisRoot.addElement(ASW("timer",5)).addData(m_LifespanTimer);
 
   //a_Emit events
@@ -338,7 +338,7 @@ double AEventVisitor::getCurrentEventTimeInterval() const
 
 bool AEventVisitor::isCurrentEventOverTimeLimit() const
 {
-  return (INVALID_TIME_INTERVAL == m_stateTimeLimit || m_stateTimer.getInterval() < m_stateTimeLimit ? false : true);
+  return (0.0 > m_stateTimeLimit || m_stateTimer.getInterval() < m_stateTimeLimit ? false : true);
 }
 
 void AEventVisitor::clear()

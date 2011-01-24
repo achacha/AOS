@@ -832,7 +832,7 @@ void ARopeDeque::_popAll(char *pcTarget)
 {
   //a_Copy everything, request > than data available
   size_t offset = 0;
-  if (mp_FrontBlock && m_BlockSize - m_FrontBlockFree > 0)
+  if (mp_FrontBlock && m_BlockSize > m_FrontBlockFree)
   {
     memcpy(pcTarget, mp_FrontBlock + m_FrontBlockFree, m_BlockSize - m_FrontBlockFree);
     offset += m_BlockSize - m_FrontBlockFree;
@@ -849,7 +849,7 @@ void ARopeDeque::_popAll(char *pcTarget)
   }
   m_Blocks.clear();
 
-  if (mp_BackBlock && m_BlockSize - m_BackBlockFree > 0)
+  if (mp_BackBlock && m_BlockSize > m_BackBlockFree)
   {
     memcpy(pcTarget + offset, mp_BackBlock, m_BlockSize - m_BackBlockFree);
     m_BackBlockFree = m_BlockSize;
@@ -860,7 +860,7 @@ void ARopeDeque::_peekAll(char *pcTarget) const
 {
   //a_Copy everything, request > than data available, do not remove any of the data
   size_t offset = 0;
-  if (mp_FrontBlock && m_BlockSize - m_FrontBlockFree > 0)
+  if (mp_FrontBlock && m_BlockSize > m_FrontBlockFree)
   {
     memcpy(pcTarget, mp_FrontBlock + m_FrontBlockFree, m_BlockSize - m_FrontBlockFree);
     offset += m_BlockSize - m_FrontBlockFree;
@@ -874,7 +874,7 @@ void ARopeDeque::_peekAll(char *pcTarget) const
     ++cit;
   }
 
-  if (mp_BackBlock && m_BlockSize - m_BackBlockFree > 0)
+  if (mp_BackBlock && m_BlockSize > m_BackBlockFree)
   {
     memcpy(pcTarget + offset, mp_BackBlock, m_BlockSize - m_BackBlockFree);
   }

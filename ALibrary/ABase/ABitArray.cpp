@@ -13,15 +13,15 @@ $Id$
 void ABitArray::debugDump(std::ostream& os, int indent) const
 {
   ADebugDumpable::indent(os, indent) << "(" << typeid(*this).name() << " @ " << std::hex << this << std::dec << ") {" << std::endl;
-  AString str(32, 16);
+  AString str(32, 16); //-V112
   for (size_t x=0; x<m_size; ++x)
   {
-    if ((x % 32) == 0)
+    if ((x % 32) == 0) //-V112
       ADebugDumpable::indent(os, indent);
     if (x % 8 == 0)
       str.append(" ");
     str.append(isSet(m_size-x-1) ? "1" : "0");
-    if ((x % 32) == 31)
+    if ((x % 32) == 31) //-V112
     {
       os << str << " :" << x << std::endl;
       str.clear();
@@ -173,7 +173,7 @@ void ABitArray::set(const AString& strBitset, ABitArray::Mode mode /* = ABitArra
     case ABitArray::Hexadecimal:
     {
       //a_Each char is 4 bits 0-F, 2 chars is 1 byte (8 bits)  e.g. "3C" = 0x3c
-      clear(size * 4, 0x0);                
+      clear(size * 4, 0x0);                 //-V112
       size_t x = 0, offset;
       for (size_t t=0; t<size; t+=2)
       {
@@ -239,7 +239,7 @@ AXmlElement& ABitArray::emitXml(AXmlElement& thisRoot) const
 
   ARope rope;
   get(rope, m_OutputMode);
-  thisRoot.addElement(ASW("data",4)).addData(rope, AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addElement(ASW("data",4)).addData(rope, AXmlElement::ENC_CDATADIRECT); //-V112
   return thisRoot;
 }
 

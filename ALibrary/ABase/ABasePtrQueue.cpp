@@ -158,8 +158,6 @@ ABase *ABasePtrQueue::remove(ABase *p)
 {
   ALock lock(mp_Sync);
 
-  AASSERT(this, findFromFront(p) >= 0);
-  
   return _remove(p);
 }
 

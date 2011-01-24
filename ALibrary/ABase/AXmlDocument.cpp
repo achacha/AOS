@@ -10,7 +10,7 @@ $Id$
 #include "AXmlInstruction.hpp"
 #include "AException.hpp"
 
-const AString AXmlDocument::DEFAULT_ROOT("root",4);
+const AString AXmlDocument::DEFAULT_ROOT("root",4); //-V112
 
 void AXmlDocument::debugDump(std::ostream& os /* = std::cerr */, int indent /* = 0x0 */) const
 {

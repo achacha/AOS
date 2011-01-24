@@ -849,9 +849,6 @@ size_t AString::_rfindNoCase(const char* pccSource, size_t length, size_t startI
 //a_ clear() is the only method to modify the internal size and buffer allocation
 void AString::_resize(size_t newBufferSize)
 {
-  if (newBufferSize < 0)
-    ATHROW(this, AException::InvalidParameter);
-
   //a_Check is need to grow
   if (newBufferSize >= m_InternalBufferSize)
   {
@@ -999,7 +996,7 @@ size_t AString::peekUntil(AOutputBuffer& target, size_t sourceIndex, char delimi
 u1& AString::use(size_t index)
 { 
   //a_Index should be < length and if index == length that should be the '\x0'
-  if (index > m_Length || index < 0)
+  if (index > m_Length)
     ATHROW_EX(this, AException::IndexOutOfBounds, AString::fromSize_t(index));
 
   return (u1&)mp_Buffer[index]; 
@@ -1008,7 +1005,7 @@ u1& AString::use(size_t index)
 u1 AString::get(size_t index)
 {
   //a_Index should be < length and if index == length that should be the '\x0'
-  if (index > m_Length || index < 0)
+  if (index > m_Length)
     ATHROW_EX(this, AException::IndexOutOfBounds, AString::fromSize_t(index));
 
   //a_First peek the value
@@ -1204,7 +1201,7 @@ size_t AString::get(AString& bufDestination, size_t sourceIndex, size_t bytes)
     bytes = m_Length - sourceIndex;
 
   //a_Index should be < length and if index == length that should be the '\x0'
-  if (sourceIndex > m_Length || sourceIndex < 0)
+  if (sourceIndex > m_Length)
     ATHROW(this, AException::IndexOutOfBounds);
 
   //a_And move
@@ -1223,10 +1220,10 @@ size_t AString::get(AString& bufDestination, size_t sourceIndex, size_t bytes)
 void AString::_remove(size_t bytes, size_t sourceIndex)
 {
   //a_Now the move
-  size_t moveSize = m_Length - sourceIndex - bytes;
-  if (moveSize < 0)
+  if (m_Length < sourceIndex + bytes)
     ATHROW(this, AException::ReadBeyondEndOfBuffer);
 
+  size_t moveSize = m_Length - sourceIndex - bytes;
   for (size_t x = 0; x < moveSize; ++x)
     mp_Buffer[sourceIndex + x] = mp_Buffer[sourceIndex + bytes + x];
 
@@ -1722,7 +1719,7 @@ wchar_t AString::toUnicode(size_t &startPos) const
       
   
     }
-    else if (((mp_Buffer[posThis] >> 0x4) & 0x0F) == 0x0E)
+    else if (((mp_Buffer[posThis] >> 0x4) & 0x0F) == 0x0E) //-V112
     {
       //a_Check for bounds
       if (posThis + 0x2 >= m_Length)
@@ -2066,7 +2063,7 @@ wchar_t* AString::getDoubleByte(size_t wideCharCount) const
     
       posThis += 2;
     }
-    else if (((mp_Buffer[posThis] >> 0x4) & 0x0F) == 0x0E)
+    else if (((mp_Buffer[posThis] >> 0x4) & 0x0F) == 0x0E) //-V112
     {
       //a_Check for bounds
       if (posThis + 2 >= m_Length)
@@ -2912,7 +2909,7 @@ bool AString::toBool() const
     AASSERT(this, mp_Buffer);
     if (
         '1' == *mp_Buffer
-      || !_strnicmp(mp_Buffer, "true", 4)
+      || !_strnicmp(mp_Buffer, "true", 4) //-V112
       || !_strnicmp(mp_Buffer, "yes", 3)
     )
       return true;

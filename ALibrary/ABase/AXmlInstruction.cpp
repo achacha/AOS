@@ -41,7 +41,7 @@ AXmlInstruction::~AXmlInstruction()
 AXmlInstruction::AXmlInstruction(const AString& name, AXmlElement *pParent /* = NULL */) :
   AXmlElement(pParent)
 {
-  if (name.equals("?xml", 4))
+  if (name.equals("?xml", 4)) //-V112
     setType(AXmlInstruction::XML_HEADER);
   else if (name.equals("!--", 3))
     setType(AXmlInstruction::COMMENT);
@@ -80,7 +80,7 @@ void AXmlInstruction::setType(AXmlInstruction::TYPE type)
   switch(type)
   {
     case XML_HEADER:
-      m_Name.assign("?xml", 4);
+      m_Name.assign("?xml", 4); //-V112
       break;
 
     case XML_STYLESHEET:

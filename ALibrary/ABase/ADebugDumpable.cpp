@@ -91,7 +91,7 @@ void ADebugDumpable::dumpMemory_Ascii(
         break;
 
       cX = *((char *)pvObject + base * bytesPerRow + x);
-      if (u1(cX) < 0x20 || u1(cX) > 0x7F)
+      if (u1(cX) < 0x20 || u1(cX) > 0x7F) //-V112
         os << '.';
       else
         os << cX;
@@ -185,7 +185,7 @@ void ADebugDumpable::dumpMemory_HexAscii(
         break;
 
       cX = *((char *)pvObject + base * bytesPerRow + x);
-      if (u1(cX) < 0x20 || u1(cX) > 0x7F)
+      if (u1(cX) < 0x20 || u1(cX) > 0x7F) //-V112
         os << '.';
       else
         os << cX;

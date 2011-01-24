@@ -221,7 +221,7 @@ void ADigest_MD5::_transform(const AString& strData, u4 offset)
     _u1_to_u4(X, strData.c_str() + offset, 64 );
   else
   {
-    AASSERT(NULL, strData.getSize() - offset > 0);
+    AASSERT(NULL, strData.getSize() > offset);
     _u1_to_u4(X, strData.c_str() + offset, strData.getSize() - offset);
   }
 
@@ -230,7 +230,7 @@ void ADigest_MD5::_transform(const AString& strData, u4 offset)
   _FF (d, a, b, c, X[ 1], MD5_S12, MD5_T02); 
   _FF (c, d, a, b, X[ 2], MD5_S13, MD5_T03); 
   _FF (b, c, d, a, X[ 3], MD5_S14, MD5_T04); 
-  _FF (a, b, c, d, X[ 4], MD5_S11, MD5_T05); 
+  _FF (a, b, c, d, X[ 4], MD5_S11, MD5_T05);  //-V112
   _FF (d, a, b, c, X[ 5], MD5_S12, MD5_T06); 
   _FF (c, d, a, b, X[ 6], MD5_S13, MD5_T07); 
   _FF (b, c, d, a, X[ 7], MD5_S14, MD5_T08); 
@@ -251,7 +251,7 @@ void ADigest_MD5::_transform(const AString& strData, u4 offset)
   _GG (a, b, c, d, X[ 5], MD5_S21, MD5_T21); 
   _GG (d, a, b, c, X[10], MD5_S22, MD5_T22); 
   _GG (c, d, a, b, X[15], MD5_S23, MD5_T23); 
-  _GG (b, c, d, a, X[ 4], MD5_S24, MD5_T24); 
+  _GG (b, c, d, a, X[ 4], MD5_S24, MD5_T24);  //-V112
   _GG (a, b, c, d, X[ 9], MD5_S21, MD5_T25); 
   _GG (d, a, b, c, X[14], MD5_S22, MD5_T26); 
   _GG (c, d, a, b, X[ 3], MD5_S23, MD5_T27); 
@@ -267,7 +267,7 @@ void ADigest_MD5::_transform(const AString& strData, u4 offset)
   _HH (c, d, a, b, X[11], MD5_S33, MD5_T35); 
   _HH (b, c, d, a, X[14], MD5_S34, MD5_T36); 
   _HH (a, b, c, d, X[ 1], MD5_S31, MD5_T37); 
-  _HH (d, a, b, c, X[ 4], MD5_S32, MD5_T38); 
+  _HH (d, a, b, c, X[ 4], MD5_S32, MD5_T38);  //-V112
   _HH (c, d, a, b, X[ 7], MD5_S33, MD5_T39); 
   _HH (b, c, d, a, X[10], MD5_S34, MD5_T40); 
   _HH (a, b, c, d, X[13], MD5_S31, MD5_T41); 
@@ -292,7 +292,7 @@ void ADigest_MD5::_transform(const AString& strData, u4 offset)
   _II (d, a, b, c, X[15], MD5_S42, MD5_T58); 
   _II (c, d, a, b, X[ 6], MD5_S43, MD5_T59); 
   _II (b, c, d, a, X[13], MD5_S44, MD5_T60); 
-  _II (a, b, c, d, X[ 4], MD5_S41, MD5_T61); 
+  _II (a, b, c, d, X[ 4], MD5_S41, MD5_T61);  //-V112
   _II (d, a, b, c, X[11], MD5_S42, MD5_T62); 
   _II (c, d, a, b, X[ 2], MD5_S43, MD5_T63); 
   _II (b, c, d, a, X[ 9], MD5_S44, MD5_T64); 
@@ -307,7 +307,7 @@ void ADigest_MD5::_transform(const AString& strData, u4 offset)
 u4 ADigest_MD5::_rotate_left(u4 x, int n)
 {
   //rotate and return x
-  return (x << n) | (x >> (32-n));
+  return (x << n) | (x >> (32-n)); //-V112
 }
 
 void ADigest_MD5::_FF( u4& A, u4 B, u4 C, u4 D, u4 X, u4 S, u4 T)
@@ -345,13 +345,13 @@ void ADigest_MD5::_II( u4& A, u4 B, u4 C, u4 D, u4 X, u4 S, u4 T)
 void ADigest_MD5::_u4_to_u1(AString& Output, const u4 *Input, u4 nLength)
 {
   //entry invariants
-  AASSERT(NULL,  nLength % 4 == 0 );
+  AASSERT(NULL,  nLength % 4 == 0 ); //-V112
   Output.clear();
 
   //transfer the data by shifting and copying
   u4 i = 0;
   u4 j = 0;
-  for ( ; j < nLength; i++, j += 4) 
+  for ( ; j < nLength; i++, j += 4)  //-V112
   {
     Output.append((char)(Input[i] & 0xff));
     Output.append((char)((Input[i] >> 8) & 0xff));
@@ -363,14 +363,14 @@ void ADigest_MD5::_u4_to_u1(AString& Output, const u4 *Input, u4 nLength)
 void ADigest_MD5::_u1_to_u4(u4 *Output, const char *Input, u4 nLength)
 {
   //entry invariants
-  AASSERT(NULL, nLength % 4 == 0);
+  AASSERT(NULL, nLength % 4 == 0); //-V112
 
   //initialisations
   u4 i=0; //index to Output array
   u4 j=0; //index to Input array
 
   //transfer the data by shifting and copying
-  for ( ; j < nLength; i++, j += 4)
+  for ( ; j < nLength; i++, j += 4) //-V112
   {
     Output[i] = (u4)Input[j]      | 
           (u4)Input[j+1] << 8 | 

@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tSoundex.cpp" />
+    <ClCompile Include="tTime.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F438D5AA-6868-4BC8-9972-252AD0D09524}</ProjectGuid>

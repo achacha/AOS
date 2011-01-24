@@ -15,8 +15,9 @@ $Id$
 
 /*!
 Macro for logging events based on level
+Compare if interval is < 0.0
 */
-#define INVALID_TIME_INTERVAL -1.0
+#define INVALID_TIME_INTERVAL -0.32
 
 /*!
 Event visitor acts as a mini in-memory timer

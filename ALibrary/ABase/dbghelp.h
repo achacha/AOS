@@ -542,7 +542,7 @@ typedef struct _MODLOAD_DATA {
     DWORD   flags;                  // options
 } MODLOAD_DATA, *PMODLOAD_DATA;
 
-typedef struct _MODLOAD_CVMISC {
+typedef struct _MODLOAD_CVMISC { //-V401
     DWORD   oCV;                    // ofset to the codeview record
     size_t  cCV;                    // size of the codeview record
     DWORD   oMisc;                  // offset to the misc record
@@ -1232,7 +1232,7 @@ typedef struct _IMAGEHLP_MODULE64 {
     DWORD    CheckSum;               // checksum from the pe header
     DWORD    NumSyms;                // number of symbols in the symbol table
     SYM_TYPE SymType;                // type of symbols loaded
-    CHAR     ModuleName[32];         // module name
+    CHAR     ModuleName[32];         // module name //-V112
     CHAR     ImageName[256];         // image name
     CHAR     LoadedImageName[256];   // symbol file name
     // new elements: 07-Jun-2002
@@ -1317,7 +1317,7 @@ typedef struct _IMAGEHLP_MODULEW {
 // source file line data structure
 //
 
-typedef struct _IMAGEHLP_LINE64 {
+typedef struct _IMAGEHLP_LINE64 { //-V401
     DWORD    SizeOfStruct;           // set to sizeof(IMAGEHLP_LINE64)
     PVOID    Key;                    // internal
     DWORD    LineNumber;             // line number in file
@@ -1325,7 +1325,7 @@ typedef struct _IMAGEHLP_LINE64 {
     DWORD64  Address;                // first instruction of line
 } IMAGEHLP_LINE64, *PIMAGEHLP_LINE64;
 
-typedef struct _IMAGEHLP_LINEW64 {
+typedef struct _IMAGEHLP_LINEW64 { //-V401
     DWORD    SizeOfStruct;           // set to sizeof(IMAGEHLP_LINE64)
     PVOID    Key;                    // internal
     DWORD    LineNumber;             // line number in file
@@ -2688,7 +2688,7 @@ SymGetTypeInfo(
 #define IMAGEHLP_GET_TYPE_INFO_UNCACHED 0x00000001
 #define IMAGEHLP_GET_TYPE_INFO_CHILDREN 0x00000002
 
-typedef struct _IMAGEHLP_GET_TYPE_INFO_PARAMS {
+typedef struct _IMAGEHLP_GET_TYPE_INFO_PARAMS { //-V401
     IN  ULONG    SizeOfStruct;
     IN  ULONG    Flags;
     IN  ULONG    NumIds;
@@ -3919,13 +3919,13 @@ typedef struct _MINIDUMP_MEMORY64_LIST {
 // Support for user supplied exception information.
 //
 
-typedef struct _MINIDUMP_EXCEPTION_INFORMATION {
+typedef struct _MINIDUMP_EXCEPTION_INFORMATION { //-V401
     DWORD ThreadId;
     PEXCEPTION_POINTERS ExceptionPointers;
     BOOL ClientPointers;
 } MINIDUMP_EXCEPTION_INFORMATION, *PMINIDUMP_EXCEPTION_INFORMATION;
 
-typedef struct _MINIDUMP_EXCEPTION_INFORMATION64 {
+typedef struct _MINIDUMP_EXCEPTION_INFORMATION64 { //-V401
     DWORD ThreadId;
     ULONG64 ExceptionRecord;
     ULONG64 ContextRecord;
@@ -4316,7 +4316,7 @@ typedef struct _MINIDUMP_CALLBACK_OUTPUT {
             BOOL CheckCancel;
             BOOL Cancel;
         };
-        HANDLE Handle;
+        HANDLE Handle; //-V117
         struct {
             MINIDUMP_MEMORY_INFO VmRegion;
             BOOL Continue;

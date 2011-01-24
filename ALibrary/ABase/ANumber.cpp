@@ -239,9 +239,7 @@ void ANumber::setNumber(const AString& strSource, int iPrecision)
   if (strWork.isEmpty())
     return;
 
-  u4 iLength;
-  if ((iLength = strWork.getSize()) < 0x0)
-    ATHROW(this, AException::InvalidObject);
+  u4 iLength = strWork.getSize();
   
   //a_First validate that it is a number with valid character
   //a_Can contain Ee to denote exponentials that will be expanded
@@ -295,7 +293,7 @@ void ANumber::setNumber(const AString& strSource, int iPrecision)
 
 
   //a_Leading decimal
-  if (decimal == iStart && decimal >= 0)
+  if (decimal == iStart)
   {
     //a_Now extract the number out
     mstr__Number.assign(AConstant::ASTRING_ZERO);
@@ -848,7 +846,7 @@ ANumber& ANumber::sqrt()
   AString strSource(mstr__Number);
   AString strWork(m__Precision * 2 + 8, 128);
   AString strResult(m__Precision * 2 + 8, 128);
-  AString strAcc(4, 4);
+  AString strAcc(4, 4); //-V112
   u4 currentPrecision = 0;
   u4 decimal = strSource.find('.');
   if (decimal == AConstant::npos)
@@ -866,9 +864,9 @@ ANumber& ANumber::sqrt()
   }
 
   AString strTemp(m__Precision * 2 + 8, 128);
-  AString strTempAcc(m__Precision + 4, 128);
-  AString strAccAppend(4, 4);
-  AString strResultNoDot(m__Precision + 4, 128);
+  AString strTempAcc(m__Precision + 4, 128); //-V112
+  AString strAccAppend(4, 4); //-V112
+  AString strResultNoDot(m__Precision + 4, 128); //-V112
   AString strProduct(m__Precision * 2 + 8, 128);
   bool boolPeriodAdded = false;
 

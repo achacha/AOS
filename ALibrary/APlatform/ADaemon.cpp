@@ -302,7 +302,7 @@ ADaemon::ADaemon(const AString& serviceName, const AString& displayName, const A
 {
 #if defined(__WINDOWS__)
   m_steServiceTable[0].lpServiceName = m_serviceName.startUsingCharPtr();
-  m_steServiceTable[0].lpServiceProc = fcbServiceMain;
+  m_steServiceTable[0].lpServiceProc = fcbServiceMain; //-V525
   m_steServiceTable[1].lpServiceName = NULL;         //a_Must be NULL
   m_steServiceTable[1].lpServiceProc = NULL;         //a_Must be NULL
 

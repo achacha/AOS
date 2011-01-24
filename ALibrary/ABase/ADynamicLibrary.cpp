@@ -57,7 +57,7 @@ void *ADynamicLibrary::_load(const AString& strLibraryName)
   AString str(strLibraryName);
   void *pLibrary = NULL;
 #if defined(__WINDOWS__)
-  str.append(".dll", 4);
+  str.append(".dll", 4); //-V112
   HMODULE hmodule = ::LoadLibrary(str.c_str());
   pLibrary = (void *)hmodule;
 #elif defined(__LINUX__)

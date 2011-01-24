@@ -34,7 +34,7 @@ void ATextConverter::encodeBase64(const AString& source, AOutputBuffer& target)
   {
     iTemp <<= 6 - iBits;
     target.append(AConstant::CHARSET_BASE64[ 0x3f & iTemp ]);
-    if ( iBits == 4 )
+    if ( iBits == 4 ) //-V112
       target.append('=');
     else if ( iBits == 2 )
       target.append("==", 2);
@@ -123,7 +123,7 @@ void ATextConverter::encode64(
   {
     iTemp <<= 6 - iBits;
     target.append(charset[ 0x3f & iTemp ]);
-    if ( iBits == 4 )
+    if ( iBits == 4 ) //-V112
       target.append('.');
     else if ( iBits == 2 )
     {
@@ -420,7 +420,7 @@ void ATextConverter::convertStringToHexDump(const AString& source, AOutputBuffer
 {
   AString strTemp;
   size_t size = source.getSize();
-  size_t rows = size >> 0x4;           //a_16 items per row
+  size_t rows = size >> 0x4;           //a_16 items per row //-V112
   char cX;
   size_t i;
 

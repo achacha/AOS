@@ -49,7 +49,7 @@ AXmlElement& ATemplateNode::emitXml(AXmlElement& thisRoot) const
   AASSERT(this, !thisRoot.useName().isEmpty());
 
   thisRoot.addAttribute(ASW("tag",3), getTagName());
-  thisRoot.addElement(ASW("data",4)).addData(m_BlockData, AXmlElement::ENC_CDATADIRECT);
+  thisRoot.addElement(ASW("data",4)).addData(m_BlockData, AXmlElement::ENC_CDATADIRECT); //-V112
 
   return thisRoot;
 }

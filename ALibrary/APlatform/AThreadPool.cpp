@@ -88,7 +88,6 @@ AThreadPool::AThreadPool(
 
 AThreadPool::~AThreadPool()
 {
-  AASSERT(this, NULL != mp_MonitorThread);
   try
   {
     if (mp_MonitorThread->isRunning())

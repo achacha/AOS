@@ -250,7 +250,7 @@ AXmlElement& ATemplate::emitXml(AXmlElement& thisRoot) const
   AASSERT(this, !thisRoot.useName().isEmpty());
 
   for (NODES::const_iterator cit = m_Nodes.begin(); cit != m_Nodes.end(); ++cit)
-    (*cit)->emitXml(thisRoot.addElement(ASW("node",4)));
+    (*cit)->emitXml(thisRoot.addElement(ASW("node",4))); //-V112
 
   return thisRoot;
 }

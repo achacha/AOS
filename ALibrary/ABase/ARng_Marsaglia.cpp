@@ -58,7 +58,7 @@ u4 ARng_Marsaglia::_nextU4()
 { 
 	u8 t, a=611373678LL;
 	t = a * m_Q[m_i] + m_carry; 
-	m_carry = u4(t>>32);
+	m_carry = u4(t>>32); //-V112
 	
   if(--m_i)
 	  return m_Q[m_i] = u4(t);

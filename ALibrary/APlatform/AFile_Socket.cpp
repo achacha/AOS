@@ -224,7 +224,6 @@ size_t AFile_Socket::_readBlocking(void *buf, size_t size)
     }
   }
   
-  AASSERT(this, bytesReceived >= 0);
   return bytesReceived;
 }
 
@@ -253,7 +252,6 @@ size_t AFile_Socket::_readNonBlocking(void *buf, size_t size)
     }
   }
   
-  AASSERT(this, bytesReceived >= 0);
   return bytesReceived;
 }
 
@@ -277,7 +275,6 @@ size_t AFile_Socket::_writeBlocking(const void *buf, size_t size)
     }
   }
 
-  AASSERT(this, bytesSent >= 0);
   return bytesSent;
 }
 

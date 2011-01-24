@@ -173,7 +173,7 @@ void AMovingAverage::emit(AOutputBuffer& target) const
 {
   target.append("average=");
   ANumber num(m_Average);
-  num.setPrecision(4);
+  num.setPrecision(4); //-V112
   num.emit(target);
   target.append("  count=");
   target.append(AString::fromSize_t(m_Count));
@@ -199,7 +199,7 @@ AXmlElement& AMovingAverage::emitXml(AXmlElement& thisRoot) const
   thisRoot.addElement(ASW("average",7)).addData(m_Average);
   thisRoot.addElement(ASW("count",5)).addData(AString::fromSize_t(m_Count));
 
-  AXmlElement& keep = thisRoot.addElement(ASW("keep",4));
+  AXmlElement& keep = thisRoot.addElement(ASW("keep",4)); //-V112
   if (mp_Keep)
   {
     for (size_t i=0; i<m_KeepSize; ++i)

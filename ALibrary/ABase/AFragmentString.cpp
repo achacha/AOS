@@ -152,8 +152,6 @@ size_t AFragmentString::parse(const AString& str)
             b = (u1)strT.toInt();
             if (b > 9)
               b = 9;
-            if (b < 0)
-              b = 0;
             if ((iF = strT.find(',')) == AConstant::npos)
             {
               // Only 1 number, the digit value

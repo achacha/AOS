@@ -190,8 +190,8 @@ void ATime::asctime(AOutputBuffer& target) const
   if (mt_Time >= 0x0)
   {
 #if (_MSC_VER >= 1400)
-    char buffer[32];
-    errno_t errornum = ::ctime_s(buffer, 32, &mt_Time);
+    char buffer[32]; //-V112
+    errno_t errornum = ::ctime_s(buffer, 32, &mt_Time); //-V112
     if (errornum)
       ATHROW_ERRNO(this, AException::APIFailure, errornum);
     target.append(buffer);
@@ -208,8 +208,8 @@ void ATime::ctime(AOutputBuffer& target) const
   if (mt_Time >= 0x0)
   {
 #if (_MSC_VER >= 1400)
-    char buffer[32];
-    errno_t errornum = ::ctime_s(buffer, 32, &mt_Time);
+    char buffer[32]; //-V112
+    errno_t errornum = ::ctime_s(buffer, 32, &mt_Time); //-V112
     if (errornum)
       ATHROW_ERRNO(this, AException::APIFailure, errornum);
     target.append(buffer);
@@ -492,7 +492,7 @@ int ATime::getWeekdayFromString(const AString& strWeekday)
     case 'T':
     case 't':
       if      (!strWeekday.findNoCase("TUE")) return 0x2;
-      else if (!strWeekday.findNoCase("THU")) return 0x4;
+      else if (!strWeekday.findNoCase("THU")) return 0x4; //-V112
     break;
 
     case 'W':
@@ -536,7 +536,7 @@ int ATime::getMonthFromString(const AString& strMonth)
     case 'M':
     case 'm':
       if      (!strMonth.findNoCase("MAR")) return 0x2;
-      else if (!strMonth.findNoCase("MAY")) return 0x4;
+      else if (!strMonth.findNoCase("MAY")) return 0x4; //-V112
     break;
 
     case 'A':
@@ -632,7 +632,7 @@ bool ATime::operator <=(const ATime& t) const
 
 bool ATime::operator ==(const ATime& t) const
 {
-  return (0.0 == difftime(t) ? true : false);
+  return (t.me_Type == me_Type && t.mt_Time == mt_Time ? true : false);
 }
 
 bool ATime::operator >(const ATime& t) const 
