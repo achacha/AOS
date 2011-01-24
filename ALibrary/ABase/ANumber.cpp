@@ -846,7 +846,7 @@ ANumber& ANumber::sqrt()
   AString strSource(mstr__Number);
   AString strWork(m__Precision * 2 + 8, 128);
   AString strResult(m__Precision * 2 + 8, 128);
-  AString strAcc(4, 4); //-V112
+  AString strAcc(4, 4);
   u4 currentPrecision = 0;
   u4 decimal = strSource.find('.');
   if (decimal == AConstant::npos)
@@ -864,9 +864,9 @@ ANumber& ANumber::sqrt()
   }
 
   AString strTemp(m__Precision * 2 + 8, 128);
-  AString strTempAcc(m__Precision + 4, 128); //-V112
-  AString strAccAppend(4, 4); //-V112
-  AString strResultNoDot(m__Precision + 4, 128); //-V112
+  AString strTempAcc(m__Precision + 4, 128);
+  AString strAccAppend(4, 4);
+  AString strResultNoDot(m__Precision + 4, 128);
   AString strProduct(m__Precision * 2 + 8, 128);
   bool boolPeriodAdded = false;
 

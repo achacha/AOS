@@ -129,8 +129,8 @@ AXmlElement& ATimer::emitXml(AXmlElement& thisRoot) const
     thisRoot.addAttribute(ASW("running",7), AConstant::ASTRING_TRUE);
 
   thisRoot.addElement(ASW("interval",8)).addData(AString::fromDouble(getInterval()))
-    .addAttribute(ASW("freq", 4), AString::fromDouble(sm_frequency, 6)) //-V112
-    .addAttribute(ASW("unit", 4), ASW("ms",2)); //-V112
+    .addAttribute(ASW("freq", 4), AString::fromDouble(sm_frequency, 6)) 
+    .addAttribute(ASW("unit", 4), ASW("ms",2)); 
 
   thisRoot.addElement(ASW("start_count",11)).addData(AString::fromU8(m_startCount));
   thisRoot.addElement(ASW("stop_count",10)).addData(AString::fromU8(m_stopCount));

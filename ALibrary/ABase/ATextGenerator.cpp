@@ -150,11 +150,11 @@ void ATextGenerator::generateUniqueId(AOutputBuffer& target, size_t size /* = 32
   rope.append((const char *)&x, sizeof(size_t));
   
   size_t bytesToAdd = size - sizeof(size_t);
-  while(bytesToAdd >= 4) //-V112
+  while(bytesToAdd >= 4) 
   {
     x = ARandomNumberGenerator::get(ARandomNumberGenerator::Lecuyer).nextU4();
-    rope.append((const char *)&x, 4); //-V112
-    bytesToAdd -= 4; //-V112
+    rope.append((const char *)&x, 4); 
+    bytesToAdd -= 4; 
   }
   while(bytesToAdd > 0)
   {

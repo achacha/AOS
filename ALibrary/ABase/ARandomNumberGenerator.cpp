@@ -73,7 +73,7 @@ u2 ARandomNumberGenerator::nextU2()
 u8 ARandomNumberGenerator::nextU8()
 { 
   u8 ret = _nextU4();
-  ret <<= 32; //-V112
+  ret <<= 32;
   ret |= _nextU4();
   return ret;
 }

@@ -26,7 +26,7 @@ const AString AConstant::ASTRING_DOUBLEQUOTE("\"",1);
 const AString AConstant::ASTRING_TAB("\t",1);
 const AString AConstant::ASTRING_SPACE(" ",1);
 const AString AConstant::ASTRING_TWOSPACES("  ",2);
-const AString AConstant::ASTRING_WHITESPACE(" \r\n\t",4); //-V112
+const AString AConstant::ASTRING_WHITESPACE(" \r\n\t",4);
 const AString AConstant::ASTRING_NULL("(null)",6);
 const AString AConstant::ASTRING_PERIOD(".",1);
 const AString AConstant::ASTRING_DOUBLEPERIOD("..",2);
@@ -43,12 +43,12 @@ const AString AConstant::ASTRING_EQUALS("=",1);
 const AString AConstant::ASTRING_MINUS("-",1);
 const AString AConstant::ASTRING_SLASH("/",1);
 const AString AConstant::ASTRING_DOUBLESLASH("//",2);
-const AString AConstant::ASTRING_TRUE("true",4); //-V112
+const AString AConstant::ASTRING_TRUE("true",4);
 const AString AConstant::ASTRING_FALSE("false",5);
 const AString AConstant::ASTRING_CR("\r",1);
 const AString AConstant::ASTRING_LF("\n",1);
 const AString AConstant::ASTRING_CRLF("\r\n",2);
-const AString AConstant::ASTRING_CRLFCRLF("\r\n\r\n",4); //-V112
+const AString AConstant::ASTRING_CRLFCRLF("\r\n\r\n",4);
 
 const AString AConstant::CHARSET_URLSAFE_ALPHANUM("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_$.+",67);
 const AString AConstant::CHARSET_ALPHANUM("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",62);

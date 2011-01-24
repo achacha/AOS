@@ -328,7 +328,7 @@ AXmlElement& AException::emitXml(AXmlElement& thisRoot) const
 
   ARope rope;
   getDescription(rope);
-  thisRoot.addElement(ASW("desc",4)).addData(rope, AXmlElement::ENC_CDATADIRECT); //-V112
+  thisRoot.addElement(ASW("desc",4)).addData(rope, AXmlElement::ENC_CDATADIRECT);
   thisRoot.addElement(ASW("id",2)).addData(m_ID);
   thisRoot.addElement(ASW("filename",8)).addData(AString(*mp_Filename), AXmlElement::ENC_CDATADIRECT);
   thisRoot.addElement(ASW("linenum",7)).addData(m_LineNumber);

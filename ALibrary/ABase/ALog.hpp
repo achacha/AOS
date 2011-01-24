@@ -93,7 +93,7 @@ public:
 
     EVENTMASK_SILENT       = 0x00000000,         //No messages
     EVENTMASK_DEFAULT      = 0xff0fffff,         //All except INFO logged, INFO must be explicitly turned on
-    EVENTMASK_ALL          = 0xffffffff          //Everything //-V112
+    EVENTMASK_ALL          = 0xffffffff          //Everything
   };
 
 public:

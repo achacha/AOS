@@ -89,7 +89,7 @@ AEventVisitor::ScopedEvent::~ScopedEvent()
   {
     ARope message("---scope(",9);
     message.append(m_ScopeTimer);
-    message.append("ms)[",4); //-V112
+    message.append("ms)[",4);
     message.append(mstr_Where);
     message.append(']');
     message.append(mstr_Message);
@@ -296,7 +296,7 @@ AXmlElement& AEventVisitor::emitXml(AXmlElement& thisRoot, AEventVisitor::EventL
   thisRoot.addAttribute(ASW("errors",6), AString::fromSize_t(m_ErrorCount));
   thisRoot.addAttribute(ASW("threshold",9), AString::fromSize_t(m_LevelThreshold));
   thisRoot.addAttribute(ASW("display",7), AString::fromSize_t(threshold));
-  thisRoot.addElement(ASW("name",4)).addData(m_Name, AXmlElement::ENC_CDATADIRECT); //-V112
+  thisRoot.addElement(ASW("name",4)).addData(m_Name, AXmlElement::ENC_CDATADIRECT);
   thisRoot.addElement(ASW("timer",5)).addData(m_LifespanTimer);
 
   //a_Emit events

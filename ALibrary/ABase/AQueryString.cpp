@@ -114,7 +114,7 @@ AXmlElement& AQueryString::emitXml(AXmlElement& thisRoot) const
 {
   AASSERT(this, !thisRoot.useName().isEmpty());
 
-  thisRoot.addAttribute(ASW("size",4), u8(m_Pairs.size())); //-V112
+  thisRoot.addAttribute(ASW("size",4), u8(m_Pairs.size()));
   for(MMAP_AString_NVPair::const_iterator cit = m_Pairs.begin(); cit != m_Pairs.end(); ++cit)
     thisRoot.addElement((*cit).second.getName()).addData((*cit).second.getValue(), AXmlElement::ENC_CDATASAFE);
 

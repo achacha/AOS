@@ -1038,7 +1038,7 @@ size_t AFile::_writeNetworkOrdersize_t(const u1* pData)
   //a_Write 4 bytes
   ret = write(pBuffer, 0x4);
 #else
-  ret = write(pData, 0x4); //-V112
+  ret = write(pData, 0x4);
 #endif
 
   return ret;
@@ -1060,7 +1060,7 @@ size_t AFile::_readNetworkOrdersize_t(u1* pData)
   pData[0x2] = pBuffer[0x1];
   pData[0x3] = pBuffer[0x0];
 #else
-  ret = read(pData, 0x4); //-V112
+  ret = read(pData, 0x4);
 #endif
 
   return ret;
@@ -1082,7 +1082,7 @@ size_t AFile::_peekNetworkOrdersize_t(u1* pData)
   pData[0x2] = pBuffer[0x1];
   pData[0x3] = pBuffer[0x0];
 #else
-  ret = peek(pData, 0x4); //-V112
+  ret = peek(pData, 0x4);
 #endif
 
   return ret;

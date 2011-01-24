@@ -1719,7 +1719,7 @@ wchar_t AString::toUnicode(size_t &startPos) const
       
   
     }
-    else if (((mp_Buffer[posThis] >> 0x4) & 0x0F) == 0x0E) //-V112
+    else if (((mp_Buffer[posThis] >> 0x4) & 0x0F) == 0x0E) 
     {
       //a_Check for bounds
       if (posThis + 0x2 >= m_Length)
@@ -2063,7 +2063,7 @@ wchar_t* AString::getDoubleByte(size_t wideCharCount) const
     
       posThis += 2;
     }
-    else if (((mp_Buffer[posThis] >> 0x4) & 0x0F) == 0x0E) //-V112
+    else if (((mp_Buffer[posThis] >> 0x4) & 0x0F) == 0x0E) 
     {
       //a_Check for bounds
       if (posThis + 2 >= m_Length)
@@ -2909,7 +2909,7 @@ bool AString::toBool() const
     AASSERT(this, mp_Buffer);
     if (
         '1' == *mp_Buffer
-      || !_strnicmp(mp_Buffer, "true", 4) //-V112
+      || !_strnicmp(mp_Buffer, "true", 4) 
       || !_strnicmp(mp_Buffer, "yes", 3)
     )
       return true;

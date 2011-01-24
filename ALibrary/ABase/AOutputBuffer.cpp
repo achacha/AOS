@@ -90,7 +90,7 @@ size_t AOutputBuffer::appendU4(u4 d)
   //a_Write bytes
   return _append(pBuffer, 0x4);
 #else
-  return _append((const char *)&d, 0x4); //-V112
+  return _append((const char *)&d, 0x4);
 #endif
 }
 
@@ -138,7 +138,7 @@ size_t AOutputBuffer::appendU4_LSB(u4 d)
 {
 #ifndef _WIN32_
   u1 *pData = (u1 *)&d;
-  char pBuffer[0x4]; //-V112
+  char pBuffer[0x4];
   
   //a_Reverse bytes
   pBuffer[0x0] = pData[0x3];
@@ -147,7 +147,7 @@ size_t AOutputBuffer::appendU4_LSB(u4 d)
   pBuffer[0x3] = pData[0x0];
   
   //a_Write 4 bytes
-  return _append(pBuffer, 0x4); //-V112
+  return _append(pBuffer, 0x4);
 #else
   return _append((const char *)&d, 0x4);
 #endif
@@ -163,8 +163,8 @@ size_t AOutputBuffer::appendU8_LSB(u8 d)
   pBuffer[0x0] = pData[0x7];
   pBuffer[0x1] = pData[0x6];
   pBuffer[0x2] = pData[0x5];
-  pBuffer[0x3] = pData[0x4]; //-V112
-  pBuffer[0x4] = pData[0x3]; //-V112
+  pBuffer[0x3] = pData[0x4];
+  pBuffer[0x4] = pData[0x3];
   pBuffer[0x5] = pData[0x2];
   pBuffer[0x6] = pData[0x1];
   pBuffer[0x7] = pData[0x0];

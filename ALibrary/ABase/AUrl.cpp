@@ -348,7 +348,7 @@ void AUrl::setProtocol(eProtocol protocol)
   {
     case AUrl::HTTP     : m_strProtocol.assign("http:",5); break;
     case AUrl::HTTPS    : m_strProtocol.assign("https:",6); break;
-    case AUrl::FTP      : m_strProtocol.assign("ftp:",4); break; //-V112
+    case AUrl::FTP      : m_strProtocol.assign("ftp:",4); break; 
     case AUrl::FILE     : m_strProtocol.assign("file:",5); break;
     case AUrl::DATA     : m_strProtocol.assign("data:",5); break;
     case AUrl::MYSQL    : m_strProtocol.assign("mysql:",6); break;
@@ -674,7 +674,7 @@ AXmlElement& AUrl::emitXml(AXmlElement& thisRoot) const
   {
     thisRoot.addElement(ASW("mediaType",9)).addData(m_strServer);
     thisRoot.addElement(ASW("base64",6)).addData(m_isBase64 ? AConstant::ASTRING_TRUE : AConstant::ASTRING_FALSE);
-    thisRoot.addElement(ASW("data",4)).addData(m_strFilename, AXmlElement::ENC_CDATASAFE); //-V112
+    thisRoot.addElement(ASW("data",4)).addData(m_strFilename, AXmlElement::ENC_CDATASAFE); 
   }
   else
   {
@@ -682,8 +682,8 @@ AXmlElement& AUrl::emitXml(AXmlElement& thisRoot) const
     thisRoot.addElement(ASW("password",8)).addData(m_strPassword);
     thisRoot.addElement(ASW("server",6)).addData(m_strServer);
     if (AUrl::NONE != m_iPort)
-      thisRoot.addElement(ASW("port",4)).addData(m_iPort); //-V112
-    thisRoot.addElement(ASW("path",4)).addData(m_strPath); //-V112
+      thisRoot.addElement(ASW("port",4)).addData(m_iPort); 
+    thisRoot.addElement(ASW("path",4)).addData(m_strPath); 
     thisRoot.addElement(ASW("filename",8)).addData(m_strFilename);
   }
 
@@ -835,7 +835,7 @@ void AUrl::setProtocol(const AString &strProtocol)
 	  if (m_strProtocol.equals("http:",5)) { m_iPort = AUrl::HTTP; return; }
 	  if (m_strProtocol.equals("data:",5)) { m_iPort = AUrl::DATA; return; }
 	  if (m_strProtocol.equals("https:",6)) { m_iPort = AUrl::HTTPS; return; }
-	  if (m_strProtocol.equals("ftp:",4)) { m_iPort = AUrl::FTP; return; } //-V112
+	  if (m_strProtocol.equals("ftp:",4)) { m_iPort = AUrl::FTP; return; } 
 	  if (m_strProtocol.equals("file:",5)) { m_iPort = AUrl::FILE; return; }
 	  if (m_strProtocol.equals("mysql:",6)) { m_iPort = AUrl::MYSQL; return; }
 	  if (m_strProtocol.equals("odbc:",5)) { m_iPort = AUrl::ODBC; return; }
@@ -855,7 +855,7 @@ AUrl::eProtocol AUrl::getProtocolEnum() const
 	if (m_strProtocol.equals("http:",5)) { return AUrl::HTTP; }
 	if (m_strProtocol.equals("data:",5)) { return AUrl::DATA; }
 	if (m_strProtocol.equals("https:",6)) { return AUrl::HTTPS; }
-	if (m_strProtocol.equals("ftp:",4)) { return AUrl::FTP; } //-V112
+	if (m_strProtocol.equals("ftp:",4)) { return AUrl::FTP; } 
 	if (m_strProtocol.equals("file:",5)) { return AUrl::FILE; }
 	if (m_strProtocol.equals("mysql:",6)) { return AUrl::MYSQL; }
 	if (m_strProtocol.equals("odbc:",5)) { return AUrl::ODBC; }

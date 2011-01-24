@@ -239,7 +239,7 @@ AXmlElement& AFilename::emitXml(AXmlElement& thisRoot) const
     thisRoot.addElement(ASW("drive",5)).addData(m_Drive);
 
   //a_Path
-  AXmlElement& basePath = thisRoot.addElement(ASW("path",4)); //-V112
+  AXmlElement& basePath = thisRoot.addElement(ASW("path",4));
   for (LIST_AString::const_iterator cit = m_PathNames.begin(); cit != m_PathNames.end(); ++cit)
   {
     basePath.addElement(ASW("dir",3)).addData(*cit);
@@ -247,9 +247,9 @@ AXmlElement& AFilename::emitXml(AXmlElement& thisRoot) const
 
   //a_Filename
   if (!m_Filename.isEmpty())
-    thisRoot.addElement(ASW("name",4)).addData(m_Filename); //-V112
+    thisRoot.addElement(ASW("name",4)).addData(m_Filename);
 
-  thisRoot.addElement(ASW("full",4)).addData(*this); //-V112
+  thisRoot.addElement(ASW("full",4)).addData(*this);
   
   return thisRoot;
 }
