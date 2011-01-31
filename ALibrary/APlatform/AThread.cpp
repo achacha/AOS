@@ -103,7 +103,7 @@ AThread::AThread(const AThread& that) :
 
 AThread::~AThread()
 {
-  stop(3, 200, true);
+  stop(3, 200);
   if (mh_Thread)
     ::CloseHandle(mh_Thread);
 }
@@ -138,7 +138,7 @@ void AThread::start()
     ATHROW_LAST_OS_ERROR(this);
 }
 
-bool AThread::stop(int tries, u4 sleepTime, bool terminateIfNotStopped)
+bool AThread::stop(int tries, u4 sleepTime)
 {
   setRun(false);
   while (isRunning() && tries>0)
@@ -147,29 +147,9 @@ bool AThread::stop(int tries, u4 sleepTime, bool terminateIfNotStopped)
     AThread::sleep(sleepTime);
   }
   if (isRunning())
-  {
-    if (!terminateIfNotStopped)
-      return false;
-
-    terminate();
-  }
-  return true;
-}
-
-void AThread::terminate(u4 uExitCode)
-{
-  mbool_Run = false;
-  mbool_Running = false;
-
-  if (mh_Thread)
-  {
-    ::TerminateThread(mh_Thread, uExitCode);
-    ::CloseHandle(mh_Thread);
-  }
-
-  mbool_ThreadProcExited = true;
-  mh_Thread    = NULL;
-  mu4_ThreadId = 0x0;
+    return false;
+  else
+    return true;
 }
 
 bool AThread::isThreadActive()

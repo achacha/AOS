@@ -10,6 +10,9 @@ $Id$
 #include "AHTTPRequestHeader.hpp"
 #include "AHTTPResponseHeader.hpp"
 
+// Uncomment to verbose trace to screen
+//#define DEBUG_ME 1
+
 ASocketLibrary g_SockerLibrary;
 
 class Params : public ABase
@@ -46,7 +49,9 @@ u4 threadprocServer(AThread& thread)
         responseHeader.clear();
 
         requestHeader.fromAFile(connection);
-
+#ifdef DEBUG_ME
+        std::cout << "Received request\r\n---\r\n" << requestHeader << "\r\n---\r\n" << std::endl;
+#endif
         if (requestHeader.get(UNIT_TEST_REQUEST, testId))
         {
           responseHeader.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
@@ -64,6 +69,9 @@ u4 threadprocServer(AThread& thread)
         {
           responseHeader.setStatusCode(AHTTPResponseHeader::SC_500_Internal_Server_Error);
         }
+#ifdef DEBUG_ME
+        std::cout << "Sending response\r\n---\r\n" << responseHeader << "\r\n---\r\n" << std::endl;
+#endif
         responseHeader.toAFile(connection);
         connection.close();
       }
@@ -129,9 +137,14 @@ int ut_AFile_Socket_General()
     AHTTPResponseHeader response;
     request.set(AHTTPHeader::HT_REQ_Host, UNIT_TEST_HOST);
     request.set(UNIT_TEST_REQUEST, "1");
+#ifdef DEBUG_ME
+    std::cout << "Sending request\r\n---\r\n" << request << "\r\n---\r\n" << std::endl;
+#endif
     request.toAFile(client);
     response.fromAFile(client);
-
+#ifdef DEBUG_ME
+    std::cout << "Got response\r\n---\r\n" << response << "\r\n---\r\n" << std::endl;
+#endif
     AString str;
   //  request.debugDump();
   //  response.debugDump();
@@ -162,7 +175,6 @@ int ut_AFile_Socket_General()
   if (!server.stop())
   {
     ASSERT_UNIT_TEST(false, "Thread did not stop gracefully", "", iRet);
-    server.terminate(-1);
   }
 
   return iRet;

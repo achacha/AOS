@@ -115,10 +115,9 @@ public:
 
   @param tries of to wait for the thread to exit
   @param sleepTime between tries while waiting for thtead to exit
-  @param terminateIfNotStopped if true will call hard terminate if thread does not stop in time (not recommended for well writtent threadprocs)
   @return true if successfully stopped, false if thread is still running
   */
-  bool stop(int tries = 6, u4 sleepTime = 250, bool terminateIfNotStopped = false);
+  bool stop(int tries = 6, u4 sleepTime = 250);
 
   /*!
   Waits until threadproc is done and returns a.k.a.  pthread_join() on *nix
@@ -260,7 +259,7 @@ public:
 
   ...
 
-  Somewhere else a manager thread checks isUserTimerTimedOut() and if it is either setRun(false) or terminate() can be called
+  Somewhere else a manager thread checks isUserTimerTimedOut() and if it is either setRun(false) can be called
   */
   void startUserTimer(u4 millisecond_timeout);
   bool isUserTimerTimedOut() const;
@@ -271,14 +270,6 @@ public:
   Sleep for milliseconds
   */
   static void sleep(u4 uMilliSeconds);
-
-  /*!
-  DANGER: Do not use this unless absolutely necessary
-  Thread termination function
-  It should be used as the last resort, setRun/isRunning are a cleaner way
-    the thread should be allowed to gracefully exit
-  */
-  void terminate(u4 uExitCode = 0x0);
 
   /*!
   AEmittable (paarent of ADebugDumpable)

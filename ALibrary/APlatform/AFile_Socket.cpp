@@ -237,17 +237,19 @@ size_t AFile_Socket::_readNonBlocking(void *buf, size_t size)
   }
   if (bytesReceived == SOCKET_ERROR)
   {
-    m_EOF = true;
     int err = ::WSAGetLastError();
     switch(err)
     {
       case WSAEWOULDBLOCK:
+        m_EOF = false;                  //Unavailble, file open but no data yet
         return AConstant::unavail;      //Operation would block so return not available
       
       case WSAECONNRESET:
+        m_EOF = true;
         return AConstant::npos;         //Remote connection closed
 
       default:
+        m_EOF = true;
         ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
     }
   }
@@ -271,6 +273,7 @@ size_t AFile_Socket::_writeBlocking(const void *buf, size_t size)
         return AConstant::npos;        //Remote connection closed
 
       default:
+        m_EOF = true;
         ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
     }
   }
@@ -289,13 +292,16 @@ size_t AFile_Socket::_writeNonBlocking(const void *buf, size_t size)
     switch(err)
     {
       case WSAEWOULDBLOCK:
+        m_EOF = false;
         return AConstant::unavail;      //Operation would block so return not available
       
       case WSAECONNRESET:
       case WSAECONNABORTED:
+        m_EOF = true;
         return AConstant::npos;        //Remote connection closed
 
       default:
+        m_EOF = true;
         ATHROW_LAST_SOCKET_ERROR_KNOWN(this, err);
     }
   }

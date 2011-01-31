@@ -205,15 +205,14 @@ size_t ARope::read(AFile& file, size_t length /* = AConstant::npos */)
   if (length <= m_LastBlockFree)
   {
     bytesRead = file.read(mp_LastBlock + m_BlockSize - m_LastBlockFree, length);
-    switch(bytesRead)
+    if (bytesRead == AConstant::unavail || bytesRead == AConstant::npos)
     {
-      case AConstant::unavail:
-      case AConstant::npos:
-        return 0;  //a_EOF or would block, nothing read
-
-      default:
-        m_LastBlockFree -= bytesRead;
-        return bytesRead;
+      return 0;  //a_EOF or would block, nothing read
+    }
+    else
+    {
+      m_LastBlockFree -= bytesRead;
+      return bytesRead;
     }
   }
   
@@ -295,15 +294,14 @@ size_t ARope::access(
       //a_Spans beyond current block
       size_t bytesToCopy = m_BlockSize - index;
       size_t written = target.append((*cit)+index, bytesToCopy);
-      switch(written)
+      if (AConstant::unavail == written || AConstant::npos == written)
       {
-        case AConstant::unavail:
-        case AConstant::npos:
-          return (totalBytes ? totalBytes : written);
-        
-        default:
-          if (written < bytesToCopy)
-            return totalBytes + written;
+        return (totalBytes ? totalBytes : written);
+      }
+      else
+      {
+        if (written < bytesToCopy)
+          return totalBytes + written;
       }
 
       index = 0;
@@ -315,13 +313,14 @@ size_t ARope::access(
     {
       //a_All data in current block
       size_t written = target.append((*cit)+index, bytes);
-      switch(written)
+      if (AConstant::unavail == written || AConstant::npos == written)
       {
-        case AConstant::unavail:
-        case AConstant::npos:
-          return (totalBytes ? totalBytes : written);
+        return (totalBytes ? totalBytes : written);
       }
-      return totalBytes + written;
+      else
+      {
+        return totalBytes + written;
+      }
     }
 
     //a_Copy rest of the bytes
@@ -329,15 +328,14 @@ size_t ARope::access(
     {
       size_t bytesToCopy = (bytes > m_BlockSize ? m_BlockSize : bytes);
       size_t written = target.append(*cit, bytesToCopy);
-      switch(written)
+      if (AConstant::unavail == written || AConstant::npos == written)
       {
-        case AConstant::unavail:
-        case AConstant::npos:
-          return (totalBytes ? totalBytes : written);
-        
-        default:
-          if (written < bytesToCopy)
-            return totalBytes + written;
+        return (totalBytes ? totalBytes : written);
+      }
+      else
+      {
+        if (written < bytesToCopy)
+          return totalBytes + written;
       }
 
       bytes -= written;
@@ -351,15 +349,14 @@ size_t ARope::access(
   {
     size_t bytesToCopy = (m_BlockSize - m_LastBlockFree < bytes ? m_BlockSize - m_LastBlockFree : bytes);
     size_t written = target.append(mp_LastBlock, bytesToCopy);
-    switch(written)
+    if (AConstant::unavail == written || AConstant::npos == written)
     {
-      case AConstant::unavail:
-      case AConstant::npos:
-        return (totalBytes ? totalBytes : written);
-      
-      default:
-        if (written < bytesToCopy)
-          return totalBytes + written;
+      return (totalBytes ? totalBytes : written);
+    }
+    else
+    {
+      if (written < bytesToCopy)
+        return totalBytes + written;
     }
 
     totalBytes += written;

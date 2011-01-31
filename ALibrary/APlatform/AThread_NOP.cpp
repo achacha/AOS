@@ -62,15 +62,6 @@ void AThread_NOP::start()
   mu4_ThreadId = 0x0;
 }
 
-void AThread_NOP::terminate(u4)
-{
-  //a_Doesn't really do anything, just resets the object
-  mbool_Run = false;
-  mbool_Running = false;
-  mh_Thread    = NULL;
-  mu4_ThreadId = 0x0;
-}
-
 bool AThread_NOP::isThreadActive()
 {
   //a_If no thread object, then it is not active

@@ -122,8 +122,6 @@ ALog_AFile::~ALog_AFile()
       AThread::sleep(getLoggerCycleSleep());
       --i;
     }
-    if (i == 0)
-      m_LoggerThread.terminate(-1);
 
     //a_Flush data
     if (mp_File)

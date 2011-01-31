@@ -38,7 +38,7 @@ public:
   );
   
   /*!
-  dtor will signal threads to stop and after a short wait terminate them
+  dtor will signal threads to stop
   It may be cleaner to issue a stop() then wait until getRunningThreadCount() == 0
   */
   virtual ~AThreadPool();
@@ -109,14 +109,13 @@ public:
   
   /*!
   Flag running threads to stop and wait a short time for them to stop
-  Terminate any threads that do not stop in a timely fashion
   */
   virtual void stop();
 
   /*!
   How many threads to keep active
   Will create new threads as need
-  If new count is less than existing threads will be signaled to stop and if they don't stop in time they will be terminated
+  If new count is less than existing threads will be signaled to stop
   
   @param count of threads to keep active
   */

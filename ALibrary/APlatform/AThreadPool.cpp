@@ -117,7 +117,7 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
     {
       if (
         !skipNextSleep 
-        && (pThis->m_Threads.size() == pThis->m_DesiredThreadCount || !pThis->m_TotalThreadCreationCount)
+        && (pThis->m_Threads.size() == pThis->m_DesiredThreadCount || pThis->m_TotalThreadCreationCount)
       )
       {
         // Short sleep since desired number of threads are running or we are not creating any more
@@ -183,6 +183,21 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
             --diff;
           }
         }
+        else if (pThis->m_Threads.size() > 0)
+        {
+          //a_Cleanup exited threads
+          ABase *pBase = pThis->m_Threads.useHead();
+          while (pBase)
+          {
+            AThread *pThread = dynamic_cast<AThread *>(pBase);
+            if (!pThread->isRunning())
+            {
+              ABase *pKill = pBase;
+              pBase = pBase->useNext();
+              pThis->m_Threads.remove(pKill);
+            }
+          }
+        }
       }
 
       // Short sleep to allow time for threads to start up or shut down gracefully
@@ -190,39 +205,6 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
       {
         AThread::sleep(pThis->m_MonitorCycleSleep);
         shouldSleepMore = false;
-      }
-
-      // Terminate any thread that has been flagged for stopping and has not stopped yet
-      {
-        ABase *pBase = pThis->m_Threads.useHead();
-        while (pBase)
-        {
-          AThread *pThread = dynamic_cast<AThread *>(pBase);
-          if (!pThread->isRunning())
-          {
-            // Thread somehow died, cleanup
-            ABase *pKill = pBase;
-            pBase = pBase->useNext();
-            pThis->m_Threads.remove(pKill);
-            delete pKill;
-          }
-          else if (!pThread->isRun() && pThread->isRunning())
-          {
-            ABase *pKill = pBase;
-            pBase = pBase->useNext();
-            dynamic_cast<AThread *>(pKill)->terminate();
-            pThis->m_Threads.remove(pKill);
-            delete pKill;
-          }
-          else
-          {
-            pBase = pBase->useNext();
-          }
-        }
-      }
-      if (!pThis->m_TotalThreadCreationCount && !pThis->m_Threads.size())          
-      {
-        skipNextSleep = true;
       }
     }
     while (thread.isRun());
@@ -297,20 +279,7 @@ void AThreadPool::stop()
   }
   if (!retry2 && mp_MonitorThread->isRunning())
   {
-    mp_MonitorThread->terminate();
     m_ThreadPoolTimer.stop();      // Only needed when a monitor thread is terminated
-  }
-
-  if (!retry1 && m_Threads.size() > 0)
-  {
-    ALock lock(m_SynchObjectThreadPool);
-    // Now that monitor is dead, kill anything that is still alive
-    for (ABase *pBase = m_Threads.useHead(); NULL != pBase; pBase = pBase->useNext())
-    {
-      dynamic_cast<AThread *>(pBase)->terminate();
-      delete pBase;
-    }
-    m_Threads.clear();
   }
 }
 

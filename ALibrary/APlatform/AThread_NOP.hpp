@@ -58,9 +58,6 @@ public:
   u4 getExitCode();
 
   //! Do nothing in this class
-  void terminate(u4 uExitCode = 0x0);
-
-  //! Do nothing in this class
   u4 waitForThreadToExit(u4 sleepTime = 50);
 
   //! Do nothing in this class

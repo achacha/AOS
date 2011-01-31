@@ -16,6 +16,9 @@ const size_t AConstant::MAX_SIZE_T(_UI32_MAX);  // 0xffffffffui32
 #pragma error("Unknown size_t max size")
 #endif
 
+const int AConstant::npos = -1;
+const int AConstant::unavail = -2;
+
 const AString AConstant::ASTRING_EMPTY;
 const AString AConstant::ASTRING_ZERO("0",1);
 const AString AConstant::ASTRING_DOUBLEZERO("00",2);

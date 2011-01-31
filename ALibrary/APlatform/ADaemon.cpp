@@ -64,12 +64,6 @@ DWORD WINAPI fcbServiceHandler(DWORD dwControl, DWORD dwEventType, LPVOID lpEven
             AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler: Waiting for service thread to stop", NULL);
             AThread::sleep(1000);
           }
-
-          if (i >= iiTimeout)
-          {
-            AFILE_TRACER_DEBUG_MESSAGE("fcbServiceHandler:STOP: Sledgehammer to the thread, timeout detected", NULL);
-            thisADaemon->mp_MainServiceThread->terminate();       //a_Sledgehammer after timeout
-          }
         }
 
         if (thisADaemon->controlStopped())
@@ -215,12 +209,6 @@ VOID WINAPI fcbServiceMain(DWORD argc, LPSTR *argv)
 
   //a_Finish the thread and delete
   AFILE_TRACER_DEBUG_MESSAGE("fcbServiceMain: Thread stop signaled", NULL);
-
-  if (thisADaemon->mp_MainServiceThread->isRunning())
-  {
-    AFILE_TRACER_DEBUG_MESSAGE((AString("fcbServiceMain: Terminating thread: ") + AString::fromPointer(thisADaemon->mp_MainServiceThread)).c_str(), NULL);
-    thisADaemon->mp_MainServiceThread->terminate();
-  }
 
   delete thisADaemon->mp_MainServiceThread;
   thisADaemon->mp_MainServiceThread = NULL;

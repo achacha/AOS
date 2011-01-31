@@ -7,6 +7,9 @@ $Id: ut_AStringHashMap_General.cpp 205 2008-05-29 13:58:16Z achacha $
 #include "AThreadPool.hpp"
 #include "ASync_CriticalSection.hpp"
 
+// Uncomment to debug to screen
+//#define DEBUG_ME 1
+
 class UTTPData : public ABase
 {
 public:
@@ -23,6 +26,9 @@ static u4 _threadprocUnitTestThreadPool(AThread& thread)
   {
     ALock lock(pData->sync);
     ++(pData->counter);
+#ifdef DEBUG_ME
+    std::cout << "[" << thread.getId() << ":" << pData->counter << "]" << std::endl;
+#endif
   }
 
   thread.setRunning(false);

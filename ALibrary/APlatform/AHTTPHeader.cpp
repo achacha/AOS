@@ -346,7 +346,7 @@ void AHTTPHeader::fromAFile(AFile& aFile)
     bytesRead = aFile.readLine(str, AConstant::npos, false);
   }
 
-  if (bytesRead > 0)
+  if (str.getSize() > 0)
   {
     if (!parseLineZero(str))
     {
@@ -402,7 +402,7 @@ size_t AHTTPHeader::fromAFile_Socket(AFile_Socket& aSocket, bool throwExceptionO
     totalBytesRead += bytesRead;
   }
 
-  if (bytesRead > 0)
+  if (str.getSize() > 0)
   {
     if (!parseLineZero(str))
     {

@@ -13,14 +13,24 @@ class ABASE_API AString;
 class ABASE_API AConstant
 {
 public:
-  enum
-  {
-    //! Generic error/notfound result code
-    npos = -1,
-
-    //! Unavailable/unable to complete result code
-    unavail = -2
-  };
+//#if defined(_WIN64)
+//  enum
+//  {
+//    npos = _UI64_MAX,       //! Generic error/notfound result code
+//    unavail = _UI64_MAX-1   //! Unavailable/unable to complete result code
+//  };
+//#elif defined(_WIN32)
+//  enum
+//  {
+//    npos = _UI32_MAX,       //! Generic error/notfound result code
+//    unavail = _UI32_MAX-1   //! Unavailable/unable to complete result code
+//  };
+//#else
+//#pragma error("Unknown size_t max size")
+//#endif
+//
+  static const int npos;
+  static const int unavail;
 
   //! Maximum size for size_t type
   static const size_t MAX_SIZE_T;
