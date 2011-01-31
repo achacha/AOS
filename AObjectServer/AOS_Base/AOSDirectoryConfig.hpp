@@ -23,7 +23,7 @@ public:
   static const AString ELEMENT;
 
 public:
-  AOSDirectoryConfig(const AString path, const AXmlElement& base, ALog& alog);
+  AOSDirectoryConfig(const AString& path, const AXmlElement& base, ALog& alog);
   virtual ~AOSDirectoryConfig();
 
   /*!

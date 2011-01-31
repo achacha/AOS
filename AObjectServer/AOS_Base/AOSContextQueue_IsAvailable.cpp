@@ -188,14 +188,10 @@ void AOSContextQueue_IsAvailable::stop()
       break;
   }
 
-  //a_Terminate hung threads
+  //a_Cleanup
   for (size_t i=0; i<m_Queues.size(); ++i)
   {
-    if (m_Queues.at(i)->pthread && m_Queues.at(i)->pthread->isRunning())
-    {
-      m_Queues.at(i)->pthread->terminate();
-      delete m_Queues.at(i)->pthread;
-    }
+    delete m_Queues.at(i)->pthread;
   }
 }
 

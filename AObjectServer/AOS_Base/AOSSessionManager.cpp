@@ -106,11 +106,6 @@ AOSSessionManager::~AOSSessionManager()
     --wait;
     AThread::sleep(DEFAULT_SLEEP_DURATION);
   }
-  if (m_Thread.isRunning())
-  {
-    m_Services.useLog().add(ASWNL("AOSSessionManager thread did not exit gracefully, terminating."), ALog::EVENT_WARNING);
-    m_Thread.terminate();  //a_It must stop before cleanup
-  }
 
   //a_Cleanup sessions
   for (size_t i=0; i<m_HolderSize; ++i)

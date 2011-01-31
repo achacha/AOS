@@ -24,7 +24,7 @@ void AOSDirectoryConfig::debugDump(std::ostream& os, int indent) const
   ADebugDumpable::indent(os, indent) << "}" << std::endl;
 }
 
-AOSDirectoryConfig::AOSDirectoryConfig(const AString path, const AXmlElement& base, ALog& log) :
+AOSDirectoryConfig::AOSDirectoryConfig(const AString& path, const AXmlElement& base, ALog& log) :
   m_Path(path),
   m_Log(log)
 {
