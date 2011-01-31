@@ -196,6 +196,10 @@ u4 AThreadPool::_threadprocDefaultMonitor(AThread& thread)
               pBase = pBase->useNext();
               pThis->m_Threads.remove(pKill);
             }
+            else
+            {
+              pBase = pBase->useNext();
+            }
           }
         }
       }
