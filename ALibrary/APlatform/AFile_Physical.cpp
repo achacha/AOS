@@ -235,15 +235,14 @@ size_t AFile_Physical::access(
     }
 
     size_t written = target.append(buffer, bytesRead);
-    switch(written)
+    if (AConstant::unavail == written || AConstant::npos == written)
     {
-      case AConstant::unavail:
-      case AConstant::npos:
-        return (totalBytes > 0 ? totalBytes : written);
-       
-      default:
-        bytes -= bytesRead;
-        totalBytes += bytesRead;
+      return (totalBytes > 0 ? totalBytes : written);
+    }
+    else
+    {
+      bytes -= bytesRead;
+      totalBytes += bytesRead;
     }
   }
   
