@@ -227,6 +227,7 @@ void AOSAdmin::_processRequest(AFile_Socket& client, AHTTPRequestHeader& request
     }
     
     AHTTPResponseHeader response;
+    response.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
     ARope outputBuffer;
     if (AFileSystem::exists(httpFileServe))
     {
@@ -266,6 +267,7 @@ void AOSAdmin::_processAdmin(AFile_Socket& client, AHTTPRequestHeader& request)
   ARope outputBuffer;
   AString command;
   AHTTPResponseHeader response;
+  response.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
   response.set(AHTTPHeader::HT_RES_Server, AOS_ADMIN_SERVER_NAME);
 
   if (!request.useUrl().useParameterPairs().get(ASW("command",7), command))

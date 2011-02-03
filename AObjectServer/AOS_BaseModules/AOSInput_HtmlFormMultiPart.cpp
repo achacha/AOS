@@ -53,14 +53,14 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
       while (AConstant::unavail == bytesRead)
       {
         bytesRead = context.useSocket().readUntil(str, strBoundary, true, true);
-        switch(bytesRead)
+        if (AConstant::npos == bytesRead)
         {
-          case AConstant::npos:
-            context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read to boundary"));
-            return AOSContext::RETURN_ERROR;
-
-          case AConstant::unavail:
-            AThread::sleep(1);
+          context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read to boundary"));
+          return AOSContext::RETURN_ERROR;
+        }
+        else if (AConstant::unavail)
+        {
+          AThread::sleep(3);
         }
       }
       str.clear();
@@ -69,14 +69,14 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
       while(AConstant::unavail == bytesRead)
       {
         bytesRead = context.useSocket().readLine(str);  //a_Remove CRLF after boundary
-        switch(bytesRead)
+        if (AConstant::npos == bytesRead)
         {
-          case AConstant::npos:
-            context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read line after boundary"));
-            return AOSContext::RETURN_ERROR;
-
-          case AConstant::unavail:
-            AThread::sleep(1);
+          context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read line after boundary"));
+          return AOSContext::RETURN_ERROR;
+        }
+        else if (AConstant::unavail == bytesRead)
+        {
+          AThread::sleep(3);
         }
       }
       AASSERT_EX(this, !bytesRead, AString::fromSize_t(bytesRead));
@@ -99,14 +99,14 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
         while(AConstant::unavail == bytesRead)
         {
           bytesRead = context.useSocket().readLine(str);
-          switch(bytesRead)
+          if (AConstant::npos == bytesRead)
           {
-            case AConstant::npos:
-              context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read MIME line "));
-              return AOSContext::RETURN_ERROR;
-
-            case AConstant::unavail:
-              AThread::sleep(1);
+            context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read MIME line "));
+            return AOSContext::RETURN_ERROR;
+          }
+          else if (AConstant::unavail == bytesRead)
+          {
+            AThread::sleep(3);
           }
         }
 
@@ -125,14 +125,14 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             while (AConstant::unavail == bytesRead)
             {
               bytesRead = context.useSocket().readUntil(*pData, strBoundary, true, true);
-              switch(bytesRead)
+              if (AConstant::npos == bytesRead)
               {
-                case AConstant::npos:
-                  context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read to boundary"));
-                  return AOSContext::RETURN_ERROR;
-
-                case AConstant::unavail:
-                  AThread::sleep(1);
+                context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read to boundary"));
+                return AOSContext::RETURN_ERROR;
+              }
+              else if (AConstant::unavail == bytesRead)
+              {
+                AThread::sleep(3);
               }
             }
 
@@ -175,14 +175,14 @@ AOSContext::ReturnCode AOSInput_HtmlFormMultiPart::execute(AOSContext& context)
             while(AConstant::unavail == bytesRead)
             {
               bytesRead = context.useSocket().readLine(str);  //a_Remove CRLF after boundary
-              switch(bytesRead)
+              if (AConstant::npos == bytesRead)
               {
-                case AConstant::npos:
-                  context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read line after boundary"));
-                  return AOSContext::RETURN_ERROR;
-
-                case AConstant::unavail:
-                  AThread::sleep(1);
+                context.addError(getClass(), ASWNL("AOSInput_HtmlFormMultiPart: unable to read line after boundary"));
+                return AOSContext::RETURN_ERROR;
+              }
+              else if (AConstant::unavail == bytesRead)
+              {
+                AThread::sleep(3);
               }
             }
             

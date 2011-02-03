@@ -180,6 +180,7 @@ void AOSContext::reset(AFile_Socket *pFile)
 
   m_RequestHeader.clear();
   m_ResponseHeader.clear();
+  m_ResponseHeader.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
   m_OutputBuffer.clear();
   m_OutputXmlDocument.clear(XML_ROOT);
   mp_Controller = NULL;
@@ -392,73 +393,72 @@ AOSContext::Status AOSContext::_processHttpHeader()
   
   bytesRead = mp_RequestFile->read(c);
 
+#pragma message("Using fixed 8K blocks to read, may want this configurable")
   AString str(8188, 1024);
-  switch (bytesRead)
+  if (AConstant::unavail == bytesRead)
   {
-    case AConstant::unavail:
+    //a_Data not available, try and read-wait to get it
+    if (!_waitForFirstChar())
     {
-      //a_Data not available, try and read-wait to get it
+      m_EventVisitor.startEvent(ASW("AOSContext: Unable to read first char after retries",51), AEventVisitor::EL_WARN);
+      return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
+    }
+    else
+    {
+      m_EventVisitor.startEvent(ASW("AOSContext: Data unavailable, going into isAvailable",52), AEventVisitor::EL_DEBUG);
+      return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
+    }
+  }
+  else if (AConstant::npos == bytesRead)
+  {
+    m_EventVisitor.startEvent(ASW("AOSContext: Error reading first char",36), AEventVisitor::EL_ERROR);
+    return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
+  }
+  else if (!bytesRead)
+  {
+    if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_ISAVAILABLE_PENDING))
+    {
+      //a_0 bytes read yet isAvailable flagged it as having data which implies closed socket
+      //a_Should not come here, isAvailable will handle closed sockets
+      //a_If select thinks there is data but we cannot read any then socket is dead
+      m_EventVisitor.startEvent(ASWNL("AOSContext: Handling closed socket (should be in isAvailable)"));
+      if (mp_RequestFile)
+        mp_RequestFile->close();
+      return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
+    }
+    else
+    {
+      //a_No data read wait and try to get more
       if (!_waitForFirstChar())
       {
-        m_EventVisitor.startEvent(ASW("AOSContext: Unable to read first char after retries",51), AEventVisitor::EL_WARN);
+        m_EventVisitor.startEvent(ASW("AOSContext: Zero data read looking for first char",49), AEventVisitor::EL_DEBUG);
         return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
       }
       else
       {
-        m_EventVisitor.startEvent(ASW("AOSContext: Data unavailable, going into isAvailable",52), AEventVisitor::EL_DEBUG);
-        return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
-      }
-    }
-    break;
-
-    case AConstant::npos:
-      m_EventVisitor.startEvent(ASW("AOSContext: Error reading first char",36), AEventVisitor::EL_ERROR);
-      return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
-
-    case 0:
-      if (m_ConnectionFlags.isSet(AOSContext::CONFLAG_ISAVAILABLE_PENDING))
-      {
-        //a_0 bytes read yet isAvailable flagged it as having data which implies closed socket
-        //a_Should not come here, isAvailable will handle closed sockets
-        //a_If select thinks there is data but we cannot read any then socket is dead
-        m_EventVisitor.startEvent(ASWNL("AOSContext: Handling closed socket (should be in isAvailable)"));
-        if (mp_RequestFile)
-          mp_RequestFile->close();
-        return AOSContext::STATUS_HTTP_SOCKET_CLOSED;
-      }
-      else
-      {
-        //a_No data read wait and try to get more
-        if (!_waitForFirstChar())
+        m_EventVisitor.startEvent(ASW("AOSContext: First character detected as available",49), AEventVisitor::EL_DEBUG);
+        if (bytesRead = mp_RequestFile->read(c) > 0)
         {
-          m_EventVisitor.startEvent(ASW("AOSContext: Zero data read looking for first char",49), AEventVisitor::EL_DEBUG);
-          return AOSContext::STATUS_HTTP_INCOMPLETE_NODATA;
+          if (m_EventVisitor.isLoggingDebug())
+          {
+            m_EventVisitor.startEvent(AString("AOSContext: First character read: ",34)+c, AEventVisitor::EL_DEBUG);
+          }
+          m_ConnectionFlags.clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
         }
         else
         {
-          m_EventVisitor.startEvent(ASW("AOSContext: First character detected as available",49), AEventVisitor::EL_DEBUG);
-          if (bytesRead = mp_RequestFile->read(c) > 0)
-          {
-            if (m_EventVisitor.isLoggingDebug())
-            {
-              m_EventVisitor.startEvent(AString("AOSContext: First character read: ",34)+c, AEventVisitor::EL_DEBUG);
-            }
-            m_ConnectionFlags.clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
-          }
-          else
-          {
-            //a_Something wrong here, peek says data is ready, read can't get it
-            ATHROW(this, AException::ProgrammingError);
-          }
+          //a_Something wrong here, peek says data is ready, read can't get it
+          ATHROW(this, AException::ProgrammingError);
         }
       }
-    break;
-
-    default:
-      //a_Data was read, clear the pending flag set by isAvailable
-      m_ConnectionFlags.clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
-    break;
+    }
   }
+  else
+  {
+    //a_Data was read, clear the pending flag set by isAvailable
+    m_ConnectionFlags.clearBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
+  }
+
   AASSERT(this, 1 == bytesRead);
 
   //a_Start request timer once we have first character
@@ -1610,56 +1610,49 @@ size_t AOSContext::_write(ARandomAccessBuffer& data, size_t originalSize)
   while (bytesToWrite)
   {
     size_t ret = data.access(*mp_RequestFile, index, bytesToWrite);
-    switch(ret)
+    if (!ret)
     {
       //a_Finished writing or EOF on read
-      case 0:
+      if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
       {
-        if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
-        {
-          AString str("AOSContext: flush returned 0, written bytes so far: ");
-          str.append(AString::fromSize_t(bytesWritten));
-          m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
-        }
+        AString str("AOSContext: flush returned 0, written bytes so far: ");
+        str.append(AString::fromSize_t(bytesWritten));
+        m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
       }
       return (bytesWritten > 0 ? bytesWritten : ret);
-
-      case AConstant::npos:
+    }
+    else if (AConstant::npos == ret)
+    {
+      if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
       {
-        if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
-        {
-          AString str("AOSContext: flush returned npos, written bytes so far: ");
-          str.append(AString::fromSize_t(bytesWritten));
-          m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
-        }
+        AString str("AOSContext: flush returned npos, written bytes so far: ");
+        str.append(AString::fromSize_t(bytesWritten));
+        m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
       }
-      return (bytesWritten > 0 ? bytesWritten : ret);
-
+    }
+    else if (AConstant::unavail == ret)
+    {
       //a_Would block
-      case AConstant::unavail:
+      if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
       {
-        if (m_EventVisitor.isLogging(AEventVisitor::EL_DEBUG))
-        {
-          AString str("AOSContext: flush returned unavail, sleeping and retrying, written bytes so far: ");
-          str.append(AString::fromSize_t(bytesWritten));
-          m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
-        }
-        if (sleepRetries < AOSConfiguration::UNAVAILABLE_RETRIES)
-        {
-          ++sleepRetries;
-          AThread::sleep(AOSConfiguration::UNAVAILABLE_SLEEP_TIME);
-        }
-        else
-          return (bytesWritten > 0 ? bytesWritten : ret);
+        AString str("AOSContext: flush returned unavail, sleeping and retrying, written bytes so far: ");
+        str.append(AString::fromSize_t(bytesWritten));
+        m_EventVisitor.addEvent(str, AEventVisitor::EL_DEBUG);
       }
-      break;
-        
-      default:
-        bytesToWrite -= ret;
-        bytesWritten += ret;
-        index += ret;
-        sleepRetries = 0;
-      break;
+      if (sleepRetries < AOSConfiguration::UNAVAILABLE_RETRIES)
+      {
+        ++sleepRetries;
+        AThread::sleep(AOSConfiguration::UNAVAILABLE_SLEEP_TIME);
+      }
+      else
+        return (bytesWritten > 0 ? bytesWritten : ret);
+    }
+    else
+    {
+      bytesToWrite -= ret;
+      bytesWritten += ret;
+      index += ret;
+      sleepRetries = 0;
     }
   }
 

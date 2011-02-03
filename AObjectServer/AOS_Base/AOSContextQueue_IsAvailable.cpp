@@ -258,17 +258,8 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                 try
                 {
                   bytesRead = pContext->useSocket().readBlockIntoLookahead();
-                }
-                catch(AException e)
-                {
-                  bytesRead = AConstant::npos;  //a_Following switch will handle this
-                  pContext->useEventVisitor().addEvent(ASW("AOSContextQueue_IsAvailable: Exception reading from socket",58), AEventVisitor::EL_ERROR);
-                }
 
-                switch(bytesRead)
-                {
-                  case AConstant::npos:
-                  case 0:
+                  if (!bytesRead || AConstant::npos == bytesRead)
                   {
                     //a_No data to read, socket is closed
                     pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_IS_SOCKET_CLOSED);
@@ -280,11 +271,10 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                       pThis->queue.remove(pContext);
                     }
                     pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
-                    
                   }
-                  break;
-
-                  case AConstant::unavail:
+                  else if (AConstant::unavail == bytesRead)
+                  {
+                    // Would block, keep waiting
                     if (pContext->useTimeoutTimer().getInterval() > pOwner->m_NoDataTimeout)
                     {
                       AString str;
@@ -302,9 +292,8 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                       }
                       pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_TERMINATE, &pContext);
                     }
-                  break;  // Would block, keep waiting
-
-                  default:
+                  }
+                  else
                   {
                     //a_Add to next queue
                     pContext->useConnectionFlags().setBit(AOSContext::CONFLAG_ISAVAILABLE_PENDING);
@@ -317,6 +306,13 @@ u4 AOSContextQueue_IsAvailable::_threadprocWorker(AThread& thread)
                     }
                     pOwner->m_Services.useContextManager().changeQueueState(AOSContextManager::STATE_PRE_EXECUTE, &pContext);
                   }
+                }
+                catch(AException e)
+                {
+                  bytesRead = AConstant::npos;  //a_Following switch will handle this
+                  ARope rope("AOSContextQueue_IsAvailable: Exception reading from socket",58);
+                  rope.append(e);
+                  pContext->useEventVisitor().addEvent(rope, AEventVisitor::EL_ERROR);
                 }
 
                 --availCount;

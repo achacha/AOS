@@ -33,14 +33,14 @@ AOSContext::ReturnCode AOSInput_HtmlForm::execute(AOSContext& context)
       while (AConstant::unavail == bytesRead)
       {
         bytesRead = context.useSocket().read(str, toRead);
-        switch(bytesRead)
+        if (AConstant::npos == bytesRead)
         {
-          case AConstant::npos:
-            context.addError(getClass(), ASWNL("AOSInput_HtmlForm: unable to read form data"));
-            return AOSContext::RETURN_ERROR;
-
-          case AConstant::unavail:
-            AThread::sleep(1);
+          context.addError(getClass(), ASWNL("AOSInput_HtmlForm: unable to read form data"));
+          return AOSContext::RETURN_ERROR;
+        }
+        else if (AConstant::unavail)
+        {
+          AThread::sleep(3);
         }
       }
 
