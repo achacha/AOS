@@ -57,6 +57,7 @@ AHTTPRequestHeader& AHTTPRequestHeader::operator=(const AHTTPRequestHeader& that
 {
   if (&that != this)
   {
+    clear();
     this->AHTTPHeader::_copy(that);
     _copy(that);
   }

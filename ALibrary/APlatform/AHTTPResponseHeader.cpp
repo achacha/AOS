@@ -41,6 +41,7 @@ AHTTPResponseHeader::AHTTPResponseHeader(const AHTTPResponseHeader& that) :
 
 AHTTPResponseHeader AHTTPResponseHeader::operator=(const AHTTPResponseHeader& that)
 {
+  clear();
   mcookies_Response.clear();
   this->AHTTPHeader::_copy(that);
   _copy(that);
@@ -140,6 +141,8 @@ AXmlElement& AHTTPResponseHeader::emitXml(AXmlElement& thisRoot) const
 
 void AHTTPResponseHeader::emit(AOutputBuffer& target) const
 {
+  AASSERT(this, mi_StatusCode);
+
   //a_The parent will output it as the initial line
   target.append(mstr_HTTPVersion);
   target.append(' ');
