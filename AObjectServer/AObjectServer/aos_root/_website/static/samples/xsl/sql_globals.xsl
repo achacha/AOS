@@ -5,7 +5,7 @@
     <html>
       <head>
         <title>Global variables</title>
-        <script type="text/javascript" src="/js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="/js/jquery/jquery-1.6.js"></script>
         <script type="text/javascript" src="/js/jquery/jquery.colorize-1.2.0.js"></script>
 
         <script type="text/javascript">

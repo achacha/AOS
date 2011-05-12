@@ -270,6 +270,10 @@ void AOSAdmin::_processAdmin(AFile_Socket& client, AHTTPRequestHeader& request)
   response.setStatusCode(AHTTPResponseHeader::SC_200_Ok);
   response.set(AHTTPHeader::HT_RES_Server, AOS_ADMIN_SERVER_NAME);
 
+  if (m_Services.useLog().isEventMask(ALog::EVENT_DEBUG))
+  {
+	m_Services.useLog().add(ASW("ADMIN",5), ASW("URL",3), request.useUrl(), ALog::EVENT_DEBUG);
+  }
   if (!request.useUrl().useParameterPairs().get(ASW("command",7), command))
   {
     //a_No command
